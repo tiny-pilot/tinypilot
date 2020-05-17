@@ -1,3 +1,13 @@
+import dataclasses
+
+
+@dataclasses.dataclass
+class JavaScriptKeyEvent:
+    alt_key: bool
+    shift_key: bool
+    ctrl_key: bool
+    key: str
+    key_code: int
 
 # JS keycodes source: https://github.com/wesbos/keycodes
 # HID keycodes source: https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
@@ -178,5 +188,8 @@ _JS_TO_HID_KEYCODES = {
   255: 'toggle touchpad',
 }
 
-def convert(js_keycode):
-  return _JS_TO_HID_KEYCODES[js_keycode]
+def convert(js_key_event):
+  control_chars = 0
+  for i, pressed in enumerate([js_key_event.ctrl_key, js_key_event.shift_key, js_key_event.alt_key]):
+    control_chars |= 1 << i
+  return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
