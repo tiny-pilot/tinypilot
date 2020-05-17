@@ -191,5 +191,6 @@ _JS_TO_HID_KEYCODES = {
 def convert(js_key_event):
   control_chars = 0
   for i, pressed in enumerate([js_key_event.ctrl_key, js_key_event.shift_key, js_key_event.alt_key]):
-    control_chars |= 1 << i
+    if pressed:
+      control_chars |= 1 << i
   return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
