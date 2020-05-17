@@ -2,6 +2,9 @@ import logging
 
 import flask
 
+import hid
+import js_to_hid
+
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
@@ -16,18 +19,10 @@ logger = logging.getLogger(__name__)
 logger.info('Starting app')
 
 
-# TODO: Make CORS based on command-line
-
-@app.route('/virtual-keyboard', methods=['OPTIONS'])
-def virtual_keyboard_options():
-    response = flask.jsonify({})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Accept')
-    return response
-
 @app.route('/virtual-keyboard', methods=['POST'])
 def virtual_keyboard_post():
     payload = flask.request.json
+    hid_keycode = js_to_hid.convert(payload.keyCode)
+    hid.send(hid_keycode)
     response = flask.jsonify(payload)
-    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
