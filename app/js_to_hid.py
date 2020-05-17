@@ -16,7 +16,7 @@ _JS_TO_HID_KEYCODES = {
   3: 'break',
   8: 0x2a, # Backspace / Delete
   9: 0x2b, # Tab
-  12: 'clear',
+  12: 0x53, # Clear
   13: 0x29, # Enter
   # HID has support for left and right control keys, but JS does not, so we
   # map all JS control keys to left versions of HID key codes.
@@ -24,29 +24,26 @@ _JS_TO_HID_KEYCODES = {
   17: 0xe0, # Ctrl (left)
   18: 0xe1, # Alt (left)
   19: 0x48, # Pause/Break
-  20: 'caps lock',
-  21: 'hangul',
-  25: 'hanja',
-  27: 'escape',
-  28: 'conversion',
-  29: 'non-conversion',
+  20: 0x39, # Caps Lock
+  21: 0x90, # Hangeul
+  25: 0x91, # Hanja
+  27: 0x29, # Escape
   32: 0x2c, # Spacebar
-  33: 'page up',
-  34: 'page down',
-  35: 'end',
-  36: 'home',
-  37: 'left arrow',
-  38: 'up arrow',
-  39: 'right arrow',
-  40: 'down arrow',
-  41: 'select',
-  42: 'print',
-  43: 'execute',
-  44: 'Print Screen',
+  33: 0x4b, # Page Up
+  34: 0x4e, # Page Down
+  35: 0x4d, # End
+  36: 0x41, # Home
+  37: 0x50, # Left Arrow
+  38: 0x52, # Up Arrow
+  39: 0x4f, # Right Arrow
+  40: 0x51, # Down Arrow
+  41: 0x77, # Select
+  43: 0x74, # Execute
+  44: 0x46, # Print Screen
   45: 'insert',
-  46: 'delete',
-  47: 'help',
-  48: '0',
+  46: 0x4c, # Delete
+  47: 0x75, # Help
+  48: 0x27, # 0
   49: 0x1e, # 1
   50: 0x1f, # 2
   51: 0x20, # 3
@@ -57,8 +54,8 @@ _JS_TO_HID_KEYCODES = {
   56: 0x25, # 8
   57: 0x26, # 9
   58: ':',
-  59: 'semicolon (firefox), equals',
-  60: '<',
+  59: 0x53, # TODO: 'semicolon (firefox), equals',
+  60: 0xc5, # <
   61: 'equals (firefox)',
   63: 'ß',
   64: '@ (firefox)',
@@ -193,4 +190,5 @@ def convert(js_key_event):
   for i, pressed in enumerate([js_key_event.ctrl_key, js_key_event.shift_key, js_key_event.alt_key]):
     if pressed:
       control_chars |= 1 << i
+  # TODO: Handle missing keys
   return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
