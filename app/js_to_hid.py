@@ -13,7 +13,7 @@ class JavaScriptKeyEvent:
 # HID keycodes source: https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
 
 _JS_TO_HID_KEYCODES = {
-  3: 'break',
+  3: 0x48, # Pause / Break
   8: 0x2a, # Backspace / Delete
   9: 0x2b, # Tab
   12: 0x53, # Clear
@@ -23,7 +23,7 @@ _JS_TO_HID_KEYCODES = {
   16: 0xe1, # Shift (Left)
   17: 0xe0, # Ctrl (left)
   18: 0xe1, # Alt (left)
-  19: 0x48, # Pause/Break
+  19: 0x48, # Pause / Break
   20: 0x39, # Caps Lock
   21: 0x90, # Hangeul
   25: 0x91, # Hanja
@@ -40,7 +40,7 @@ _JS_TO_HID_KEYCODES = {
   41: 0x77, # Select
   43: 0x74, # Execute
   44: 0x46, # Print Screen
-  45: 'insert',
+  45: 0x49, # Insert
   46: 0x4c, # Delete
   47: 0x75, # Help
   48: 0x27, # 0
@@ -53,12 +53,9 @@ _JS_TO_HID_KEYCODES = {
   55: 0x24, # 7
   56: 0x25, # 8
   57: 0x26, # 9
-  58: ':',
   59: 0x53, # TODO: 'semicolon (firefox), equals',
   60: 0xc5, # <
-  61: 'equals (firefox)',
-  63: 'ß',
-  64: '@ (firefox)',
+  61: 0x67, # Equal sign
   65: 0x04, # a
   66: 0x05, # b
   67: 0x06, # c
@@ -85,26 +82,16 @@ _JS_TO_HID_KEYCODES = {
   88: 0x1b, # x
   89: 0x1c, # y
   90: 0x1d, # z
-  91: 'Windows Key / Left ⌘ / Chromebook Search key',
-  92: 'right window key',
-  93: 'Windows Menu / Right ⌘',
-  95: 'sleep',
-  96: 'numpad 0',
-  97: 'numpad 1',
-  98: 'numpad 2',
-  99: 'numpad 3',
-  100: 'numpad 4',
-  101: 'numpad 5',
-  102: 'numpad 6',
-  103: 'numpad 7',
-  104: 'numpad 8',
-  105: 'numpad 9',
-  106: 'multiply',
-  107: 'add',
-  108: 'numpad period (firefox)',
-  109: 'subtract',
-  110: 'decimal point',
-  111: 'divide',
+  96: 0x62, # Numpad 0
+  97: 0x59, # Numpad 1
+  98: 0x5a, # Numpad 2
+  99: 0x5b, # Numpad 3
+  100: 0x5c, # Numpad 4
+  101: 0x5d, # Numpad 5
+  102: 0x5e, # Numpad 6
+  103: 0x5f, # Numpad 7
+  104: 0x60, # Numpad 8
+  105: 0x61, # Numpad 9
   112: 0x3b, # F1
   113: 0x3c, # F2
   114: 0x3d, # F3
@@ -128,61 +115,21 @@ _JS_TO_HID_KEYCODES = {
   132: 0x70, # F21
   133: 0x71, # F22
   134: 0x72, # F23
-  144: 'num lock',
-  145: 'scroll lock',
-  151: 'airplane mode',
-  160: '^',
+  144: 0x53, # Num Lock
+  145: 0x47, # Scroll Lock
   161: 0x1e, # !
-  162: '؛ (arabic semicolon)',
-  163: '#',
-  164: '$',
-  165: 'ù',
-  166: 'page backward',
-  167: 'page forward',
-  168: 'refresh',
-  169: 'closing paren (AZERTY)',
-  170: '*',
-  171: '~ + * key',
-  172: 'home key',
-  173: 'minus (firefox), mute/unmute',
-  174: 'decrease volume level',
-  175: 'increase volume level',
-  176: 'next',
-  177: 'previous',
-  178: 'stop',
-  179: 'play/pause',
-  180: 'e-mail',
-  181: 'mute/unmute (firefox)',
-  182: 'decrease volume level (firefox)',
-  183: 'increase volume level (firefox)',
-  186: 'semi-colon / ñ',
-  187: 'equal sign',
-  188: 'comma',
-  189: 'dash',
-  190: 'period',
-  191: 'forward slash / ç',
-  192: 'grave accent / ñ / æ / ö',
-  193: '?, / or °',
-  194: 'numpad period (chrome)',
-  219: 'open bracket',
-  220: 'back slash',
-  221: 'close bracket / å',
-  222: 'single quote / ø / ä',
-  223: '`',
-  224: 'left or right ⌘ key (firefox)',
-  225: 'altgr',
-  226: '< /git >, left back slash',
-  230: 'GNOME Compose Key',
-  231: 'ç',
-  233: 'XF86Forward',
-  234: 'XF86Back',
-  235: 'non-conversion',
-  240: 'alphanumeric',
-  242: 'hiragana/katakana',
-  243: 'half-width/full-width',
-  244: 'kanji',
-  251: 'unlock trackpad (Chrome/Edge)',
-  255: 'toggle touchpad',
+  163: 0x32, # Hash
+  168: 0xfa, # Refresh
+  186: 0x33, # Semicolon
+  187: 0x67, # Equal sign
+  188: 0x36, # Comma
+  190: 0x37, # Period
+  191: 0x38, # Forward slash
+  219: 0x2f, # Left bracket ([, {])
+  220: 0x31, # Back slash
+  221: 0x30, # Right bracket (], })
+  222: 0x34, # Single quote
+  223: 0x35, # Accent grave (`)
 }
 
 def convert(js_key_event):
