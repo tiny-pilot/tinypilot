@@ -1,0 +1,8 @@
+coverage==5.1
+isort[requirements]==4.3.21
+pyflakes==2.2.0
+# DocStringChecker currently only works with pylint 1.6.5. Upgrading causes it
+# to stop producing errors on bad docstrings.
+pylint==1.9.4
+pylint-quotes==0.2.1
+yapf==0.30.0

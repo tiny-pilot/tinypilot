@@ -1,0 +1,10 @@
+version: 1
+update_configs:
+  - package_manager: "python"
+    directory: "/"
+    update_schedule: "daily"
+    ignored_updates:
+      - match:
+          # We need to use a specific pylint version that's compatible with
+          # DocStringChecker.
+          dependency_name: "pylint"

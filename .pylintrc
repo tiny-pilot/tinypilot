@@ -1,0 +1,11 @@
+[MASTER]
+
+# Load the DocStringChecker plugin.
+load-plugins=lint
+
+# We actually want to disable all standard pylint checkers, enable
+# DocStringChecker, then disable specific checks in DocStringChecker, but there
+# does not seem to be a way of doing that. Instead, we disable everything aside
+# from the whitelist of DocStringChecker checks that we want.
+disable=all
+enable=docstring-trailing-whitespace,docstring-leading-whitespace,docstring-cuddled-quotes,docstring-section-newline,docstring-section-name,docstring-section-order,docstring-first-line,docstring-missing-args,docstring-misnamed-args,docstring-arg-spacing,docstring-too-many-newlines,docstring-second-line-blank,docstring-section-indent
