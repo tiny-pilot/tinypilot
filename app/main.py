@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 logger.info('Starting app')
 
 
+# TODO: Make CORS based on command-line
+
 @app.route('/virtual-keyboard', methods=['OPTIONS'])
 def virtual_keyboard_options():
     response = flask.jsonify({})
