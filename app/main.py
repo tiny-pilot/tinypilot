@@ -33,5 +33,5 @@ def virtual_keyboard_post():
     key_event = _parse_key_event(flask.request.json)
     control_keys, hid_keycode = js_to_hid.convert(key_event)
     hid.send(control_keys, hid_keycode)
-    response = flask.jsonify(payload)
+    response = flask.jsonify({'ok': True})
     return response
