@@ -23,7 +23,7 @@ def _parse_key_event(payload):
     return js_to_hid.JavaScriptKeyEvent(
         alt_key=payload['altKey'],
         shift_key=payload['shiftKey'],
-        ctrl_key=payload['ctrl_key'],
+        ctrl_key=payload['ctrlKey'],
         key=payload['key'],
         key_code=payload['keyCode']
     )
