@@ -125,6 +125,7 @@ _JS_TO_HID_KEYCODES = {
   188: 0x36, # Comma
   190: 0x37, # Period
   191: 0x38, # Forward slash
+  192: 0x35, # Accent grave
   219: 0x2f, # Left bracket ([, {])
   220: 0x31, # Back slash
   221: 0x30, # Right bracket (], })
