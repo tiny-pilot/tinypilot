@@ -54,7 +54,7 @@ _JS_TO_HID_KEYCODES = {
     55: 0x24,  # 7
     56: 0x25,  # 8
     57: 0x26,  # 9
-    59: 0x53,  # TODO: 'semicolon (firefox), equals',
+    59: 0x33,  # Semicolon
     60: 0xc5,  # <
     61: 0x67,  # Equal sign
     65: 0x04,  # a
@@ -122,8 +122,9 @@ _JS_TO_HID_KEYCODES = {
     163: 0x32,  # Hash
     168: 0xfa,  # Refresh
     186: 0x33,  # Semicolon
-    187: 0x67,  # Equal sign
+    187: 0x2e,  # Equal sign
     188: 0x36,  # Comma
+    188: 0x2d,  # Minus sign
     190: 0x37,  # Period
     191: 0x38,  # Forward slash
     192: 0x35,  # Accent grave
