@@ -18,7 +18,7 @@ _JS_TO_HID_KEYCODES = {
     8: 0x2a,  # Backspace / Delete
     9: 0x2b,  # Tab
     12: 0x53,  # Clear
-    13: 0x29,  # Enter
+    13: 0x28,  # Enter
     # HID has support for left and right control keys, but JS does not, so we
     # map all JS control keys to left versions of HID key codes.
     16: 0xe1,  # Shift (Left)
