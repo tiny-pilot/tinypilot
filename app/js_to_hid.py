@@ -56,7 +56,7 @@ _JS_TO_HID_KEYCODES = {
     57: 0x26,  # 9
     59: 0x33,  # Semicolon
     60: 0xc5,  # <
-    61: 0x67,  # Equal sign
+    61: 0x2e,  # Equal sign
     65: 0x04,  # a
     66: 0x05,  # b
     67: 0x06,  # c
@@ -125,7 +125,7 @@ _JS_TO_HID_KEYCODES = {
     186: 0x33,  # Semicolon
     187: 0x2e,  # Equal sign
     188: 0x36,  # Comma
-    188: 0x2d,  # Minus sign
+    189: 0x2d,  # Minus sign
     190: 0x37,  # Period
     191: 0x38,  # Forward slash
     192: 0x35,  # Accent grave
