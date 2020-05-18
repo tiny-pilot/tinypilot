@@ -33,7 +33,7 @@ _JS_TO_HID_KEYCODES = {
     33: 0x4b,  # Page Up
     34: 0x4e,  # Page Down
     35: 0x4d,  # End
-    36: 0x41,  # Home
+    36: 0x4a,  # Home
     37: 0x50,  # Left Arrow
     38: 0x52,  # Up Arrow
     39: 0x4f,  # Right Arrow
