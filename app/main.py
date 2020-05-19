@@ -33,7 +33,7 @@ def virtual_keyboard_post():
     sequence_number = int(flask.request.json['sequenceNumber'])
     try:
         control_keys, hid_keycode = js_to_hid.convert(key_event)
-    except UnrecognizedKeyCodeError:
+    except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', key_event.key,
                        key_event.key_code)
         return flask.jsonify({
