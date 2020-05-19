@@ -31,7 +31,17 @@ def _parse_key_event(payload):
 def virtual_keyboard_post():
     key_event = _parse_key_event(flask.request.json['keyEvent'])
     sequence_number = int(flask.request.json['sequenceNumber'])
-    control_keys, hid_keycode = js_to_hid.convert(key_event)
+    try:
+        control_keys, hid_keycode = js_to_hid.convert(key_event)
+    except UnrecognizedKeyCodeError:
+        logger.warning('Unrecognized key: %s (keycode=%d)', key_event.key,
+                       key_event.key_code)
+        return flask.jsonify({
+            'processed': True,
+            'queued': False,
+            'ignored': True,
+            'lastSequenceNumberProcessed': sequence_number
+        })
     ignored = False
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', key_event.key,
@@ -40,10 +50,9 @@ def virtual_keyboard_post():
     else:
         hid.send(control_keys, hid_keycode)
 
-    response = flask.jsonify({
+    return flask.jsonify({
         'processed': True,
         'queued': False,
         'ignored': ignored,
         'lastSequenceNumberProcessed': sequence_number
     })
-    return response
