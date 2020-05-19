@@ -32,10 +32,16 @@ def virtual_keyboard_post():
     key_event = _parse_key_event(flask.request.json['keyEvent'])
     sequence_number = int(flask.request.json['sequenceNumber'])
     control_keys, hid_keycode = js_to_hid.convert(key_event)
-    hid.send(control_keys, hid_keycode)
+    ignored = False
+    if hid_keycode is None:
+        ignored = True
+    else:
+        hid.send(control_keys, hid_keycode)
+    
     response = flask.jsonify({
         'processed': True,
         'queued': False,
+        'ignored': ignored,
         'lastSequenceNumberProcessed': sequence_number
     })
     return response
