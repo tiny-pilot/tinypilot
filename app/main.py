@@ -34,10 +34,12 @@ def virtual_keyboard_post():
     control_keys, hid_keycode = js_to_hid.convert(key_event)
     ignored = False
     if hid_keycode is None:
+        logger.info('Ignoring %s key (keycode=%d)', key_event.key,
+                    key_event.key_code)
         ignored = True
     else:
         hid.send(control_keys, hid_keycode)
-    
+
     response = flask.jsonify({
         'processed': True,
         'queued': False,

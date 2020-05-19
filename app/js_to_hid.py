@@ -1,10 +1,12 @@
 import dataclasses
 
+
 class Error(Exception):
-  pass
+    pass
+
 
 class UnrecognizedKeyCodeError(Error):
-  pass
+    pass
 
 
 @dataclasses.dataclass
@@ -89,7 +91,7 @@ _JS_TO_HID_KEYCODES = {
     88: 0x1b,  # x
     89: 0x1c,  # y
     90: 0x1d,  # z
-    91: None, # Windows key (ignored)
+    91: None,  # Windows key (ignored)
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
     98: 0x5a,  # Numpad 2
@@ -152,6 +154,8 @@ def convert(js_key_event):
             control_chars |= 1 << i
     # TODO: Handle missing keys
     try:
-      return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
+        return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
     except KeyError:
-      raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' % (js_key_event.key, js_key_event.key_code))
+        raise UnrecognizedKeyCodeError(
+            'Unrecognized key code %s (%d)' %
+            (js_key_event.key, js_key_event.key_code))
