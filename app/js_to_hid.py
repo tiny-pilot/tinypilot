@@ -130,6 +130,7 @@ _JS_TO_HID_KEYCODES = {
     161: 0x1e,  # !
     163: 0x32,  # Hash
     173: 0x2d,  # Minus
+    179: 0xe8,  # Media play/pause
     168: 0xfa,  # Refresh
     186: 0x33,  # Semicolon
     187: 0x2e,  # Equal sign
