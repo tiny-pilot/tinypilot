@@ -48,7 +48,3 @@ isort \
 
 # Run static analysis for Python bugs/cruft.
 pyflakes "${SOURCE_DIR}/"
-
-# Check docstrings for style consistency.
-PYTHONPATH="$(pwd)/third_party/docstringchecker" \
-  pylint --reports=n --rcfile=.pylintrc "$SOURCE_DIR"
