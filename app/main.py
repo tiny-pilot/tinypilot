@@ -31,7 +31,7 @@ def _parse_key_event(payload):
                                         key_code=payload['keyCode'])
 
 
-@socketio.on('keystroke', namespace='/test')
+@socketio.on('keystroke')
 def socket_keystroke(message):
     key_event = _parse_key_event(message)
     try:
@@ -49,12 +49,12 @@ def socket_keystroke(message):
         pass
 
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect')
 def test_connect():
     logger.info('Client connected')
 
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect')
 def test_disconnect():
     logger.info('Client disconnected')
 

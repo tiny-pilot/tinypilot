@@ -1,6 +1,6 @@
 "use strict";
 
-const socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+const socket = io.connect('http://' + document.domain + ':' + location.port);
 
 function onKeyDown(evt) {
   evt.preventDefault();
