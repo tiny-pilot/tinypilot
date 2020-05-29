@@ -153,7 +153,6 @@ def convert(js_key_event):
         [js_key_event.ctrl_key, js_key_event.shift_key, js_key_event.alt_key]):
         if pressed:
             control_chars |= 1 << i
-    # TODO: Handle missing keys
     try:
         return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
     except KeyError:
