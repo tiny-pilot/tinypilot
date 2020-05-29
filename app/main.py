@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 import logging
 
 import flask
+import flask_socketio
 
 import hid
 import js_to_hid
@@ -13,7 +16,8 @@ handler.setFormatter(formatter)
 root_logger.addHandler(flask.logging.default_handler)
 root_logger.setLevel(logging.INFO)
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path='')
+socketio = flask_socketio.SocketIO(app)
 
 logger = logging.getLogger(__name__)
 logger.info('Starting app')
@@ -27,32 +31,38 @@ def _parse_key_event(payload):
                                         key_code=payload['keyCode'])
 
 
-@app.route('/virtual-keyboard', methods=['POST'])
-def virtual_keyboard_post():
-    key_event = _parse_key_event(flask.request.json['keyEvent'])
-    sequence_number = int(flask.request.json['sequenceNumber'])
+@socketio.on('keystroke', namespace='/test')
+def socket_keystroke(message):
+    key_event = _parse_key_event(message)
     try:
         control_keys, hid_keycode = js_to_hid.convert(key_event)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', key_event.key,
                        key_event.key_code)
-        return flask.jsonify({
-            'processed': True,
-            'queued': False,
-            'ignored': True,
-            'lastSequenceNumberProcessed': sequence_number
-        })
-    ignored = False
+        return
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', key_event.key,
                     key_event.key_code)
-        ignored = True
     else:
-        hid.send(control_keys, hid_keycode)
+        # TODO: Re-enable
+        #hid.send(control_keys, hid_keycode)
+        pass
 
-    return flask.jsonify({
-        'processed': True,
-        'queued': False,
-        'ignored': ignored,
-        'lastSequenceNumberProcessed': sequence_number
-    })
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    logger.info('Client connected')
+
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    logger.info('Client disconnected')
+
+
+@app.route('/', methods=['GET'])
+def index_get():
+    return flask.render_template('index.html')
+
+
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=8001)
