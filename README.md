@@ -1,10 +1,14 @@
-# Pi Virtual Keyboard
+# Key Mime Pi
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 
 ## Overview
 
 Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes through a web browser.
+
+## Work in Progress
+
+This is still a work in progress. I'll be improving the installation scripts and documentation in the next few weeks. ETA for a completed project is mid-June 2020.
 
 ## Compatibility
 
