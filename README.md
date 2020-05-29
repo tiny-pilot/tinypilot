@@ -11,7 +11,21 @@ Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes th
 * Raspberry Pi 4
 * Raspberry Pi Zero W
 
-## Installation
+## Pre-requisites
+
+* Python 3.7+
+* python3-venv
+
+## Quick Start
+
+```bash
+python3.7 -m venv venv
+. venv/bin/activate
+pip install --requirement requirements.txt
+PORT=8888 ./app/main.py
+```
+
+## Development Installation
 
 ```bash
 python3.7 -m venv venv
@@ -19,10 +33,4 @@ python3.7 -m venv venv
 pip install --requirement requirements.txt
 pip install --requirement dev_requirements.txt
 hooks/enable_hooks
-```
-
-## Run
-
-```bash
-./serve
 ```
