@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+import os
 
 import flask
 import flask_socketio
@@ -21,6 +22,12 @@ socketio = flask_socketio.SocketIO(app)
 
 logger = logging.getLogger(__name__)
 logger.info('Starting app')
+
+host = os.environ.get('HOST', '0.0.0.0')
+port = int(os.environ.get('PORT', 8000))
+debug = 'DEBUG' in os.environ
+# Location of HID file handle in which to write keyboard HID input.
+hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
 
 
 def _parse_key_event(payload):
@@ -44,9 +51,7 @@ def socket_keystroke(message):
         logger.info('Ignoring %s key (keycode=%d)', key_event.key,
                     key_event.key_code)
     else:
-        # TODO: Re-enable
-        #hid.send(control_keys, hid_keycode)
-        pass
+        hid.send(hid_path, control_keys, hid_keycode)
 
 
 @socketio.on('connect')
@@ -65,4 +70,4 @@ def index_get():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8001)
+    socketio.run(app, host=host, port=port, debug=debug, use_reloader=True)

@@ -1,8 +1,5 @@
-_HID_DEVICE = '/dev/hidg0'
-
-
-def send(control_keys, hid_keycode):
-    with open(_HID_DEVICE, 'wb+') as hid_handle:
+def send(hid_path, control_keys, hid_keycode):
+    with open(hid_path, 'wb+') as hid_handle:
         buf = [0] * 8
         buf[0] = control_keys
         buf[2] = hid_keycode
