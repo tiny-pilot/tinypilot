@@ -1,3 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.status {
+  font-size: 1.4em;
+}
+
 #status-connected {
   display: none;
   color: green;
@@ -10,5 +21,9 @@
 
 #disconnect-reason {
   color: red;
+  visibility: hidden;
+}
+
+#instructions {
   visibility: hidden;
 }

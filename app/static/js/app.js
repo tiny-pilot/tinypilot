@@ -7,21 +7,23 @@ function onSocketConnect() {
   connected = true;
   document.getElementById('status-connected').style.display = 'inline-block';
   document.getElementById('status-disconnected').style.display = 'none';
-  document.getElementById('disconnect-reason').visibility = 'hidden';
-  document.getElementById("virtual-console").disabled = false;
+  document.getElementById('instructions').style.visibility = 'visible';
+  document.getElementById('disconnect-reason').style.visibility = 'hidden';
 }
 
 function onSocketDisconnect(reason) {
   connected = false;
   document.getElementById('status-connected').style.display = 'none';
   document.getElementById('status-disconnected').style.display = 'inline-block';
-  document.getElementById('disconnect-reason').visibility = 'visible';
+  document.getElementById('disconnect-reason').style.visibility = 'visible';
   document.getElementById('disconnect-reason').innerText = 'Error: ' + reason;
-  document.getElementById("virtual-console").disabled = true;
+  document.getElementById('instructions').style.visibility = 'hidden';
 }
 
 function onKeyDown(evt) {
-  evt.preventDefault();
+  if (!evt.metaKey) {
+    evt.preventDefault();
+  }
   if (!connected) {
     return;
   }
@@ -35,6 +37,6 @@ function onKeyDown(evt) {
   });
 }
 
-document.getElementById("virtual-console").addEventListener("keydown", onKeyDown);
+document.querySelector('body').addEventListener("keydown", onKeyDown);
 socket.on('connect', onSocketConnect);
 socket.on('disconnect', onSocketDisconnect);

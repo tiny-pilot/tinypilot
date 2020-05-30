@@ -9,14 +9,13 @@
     <body>
       <div class="container">
         <h1>Pi Virtual Keyboard</h1>
+        <div>
+          <p class="status">Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
+          <p id="disconnect-reason"></p>
+        </div>
+        <p id="instructions">Begin typing to send keystrokes to your Raspberry Pi</p>
       </div>
 
-      <div>
-        <p>Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
-        <p id="disconnect-reason"></p>
-      </div>
-      <input type="text" id="virtual-console" />
-        
       <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
       <script src="/js/app.js"></script>
     </body>

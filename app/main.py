@@ -75,4 +75,7 @@ if __name__ == '__main__':
                  port=port,
                  debug=debug,
                  use_reloader=True,
-                 extra_files=['./app/static/js/app.js'])
+                 extra_files=[
+                     './app/templates/index.html', './app/static/js/app.js',
+                     './app/static/css/style.css'
+                 ])
