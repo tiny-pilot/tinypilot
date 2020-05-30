@@ -7,6 +7,14 @@
   margin: 0 auto;
 }
 
+p {
+  font-family: Lora;
+}
+
+h1, h2, h3, h4 {
+  font-family: Nunito;
+}
+
 h1 {
   margin-bottom: 1rem;
 }
@@ -18,6 +26,12 @@ h1 {
 
 .status {
   font-size: 1.4em;
+}
+
+#instructions {
+  margin: 2rem;
+  padding: 1rem;
+  background-color: rgb(213, 213, 223);
 }
 
 #status-connected {
