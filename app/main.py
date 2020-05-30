@@ -70,4 +70,9 @@ def index_get():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host=host, port=port, debug=debug, use_reloader=True)
+    socketio.run(app,
+                 host=host,
+                 port=port,
+                 debug=debug,
+                 use_reloader=True,
+                 extra_files=['./app/static/js/app.js'])

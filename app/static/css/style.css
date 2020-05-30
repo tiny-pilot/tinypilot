@@ -1,0 +1,14 @@
+#status-connected {
+  display: none;
+  color: green;
+}
+
+#status-disconnected {
+  display: none;
+  color: red;
+}
+
+#disconnect-reason {
+  color: red;
+  visibility: hidden;
+}
