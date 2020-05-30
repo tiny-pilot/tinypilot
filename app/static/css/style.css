@@ -3,6 +3,17 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 1.3em;
 }
 
 .status {
@@ -26,4 +37,34 @@
 
 #instructions {
   visibility: hidden;
+}
+
+.keystroke-history {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: rgb(252, 236, 223);
+  border: 1px solid rgb(139, 97, 62);
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+#recent-keys {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 800px;
+}
+
+.key-card {
+  margin: 1rem;
+  padding: 1rem;
+  display: block;
+  background-color: aliceblue;
+  font-family: 'Courier New', Courier, monospace;
+  border: 1px solid gray;
+}
+
+.history-form {
+  margin-top: 1rem;
 }
