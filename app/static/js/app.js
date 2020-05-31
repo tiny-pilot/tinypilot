@@ -22,6 +22,13 @@ function onSocketDisconnect(reason) {
   document.getElementById('instructions').style.visibility = 'hidden';
 }
 
+function limitRecentKeys(limit) {
+  const recentKeysDiv = document.getElementById('recent-keys');
+  while (recentKeysDiv.childElementCount > limit) {
+    recentKeysDiv.removeChild(recentKeysDiv.lastChild);
+  }
+}
+
 function addKeyCard(key, keystrokeId) {
   const card = document.createElement('div');
   card.classList.add('key-card');
@@ -31,11 +38,8 @@ function addKeyCard(key, keystrokeId) {
     card.innerText = key;
   }
   card.setAttribute('keystroke-id', keystrokeId);
-  const recentKeysDiv = document.getElementById('recent-keys');
-  recentKeysDiv.appendChild(card);
-  while (recentKeysDiv.childElementCount >= 10) {
-    recentKeysDiv.removeChild(recentKeysDiv.firstChild);
-  }
+  document.getElementById('recent-keys').appendChild(card);
+  limitRecentKeys(10);
 }
 
 function updateKeyStatus(keystrokeId, success) {
@@ -79,6 +83,7 @@ function onDisplayHistoryChanged(evt) {
     document.getElementById('recent-keys').style.visibility = 'visible';
   } else {
     document.getElementById('recent-keys').style.visibility = 'hidden';
+    limitRecentKeys(0);
   }
 }
 
