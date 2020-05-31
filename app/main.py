@@ -41,17 +41,21 @@ def _parse_key_event(payload):
 @socketio.on('keystroke')
 def socket_keystroke(message):
     key_event = _parse_key_event(message)
+    hid_keycode = None
+    success = False
     try:
         control_keys, hid_keycode = js_to_hid.convert(key_event)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', key_event.key,
                        key_event.key_code)
-        return
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', key_event.key,
                     key_event.key_code)
     else:
         hid.send(hid_path, control_keys, hid_keycode)
+        success = True
+
+    socketio.emit('keystroke-received', {'success': success})
 
 
 @socketio.on('connect')

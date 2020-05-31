@@ -79,6 +79,14 @@ h1 {
   border: 1px solid gray;
 }
 
+.processed-key-card {
+  background-color: rgb(168, 255, 168);
+}
+
+.unsupported-key-card {
+  background-color: red;
+}
+
 .history-form {
   margin-top: 1rem;
 }

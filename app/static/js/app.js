@@ -2,6 +2,8 @@
 
 const socket = io();
 let connected = false;
+let keystrokeId = 0;
+const processingQueue = [];
 
 function onSocketConnect() {
   connected = true;
@@ -20,7 +22,7 @@ function onSocketDisconnect(reason) {
   document.getElementById('instructions').style.visibility = 'hidden';
 }
 
-function addKeyCard(key) {
+function addKeyCard(key, keystrokeId) {
   const card = document.createElement('div');
   card.classList.add('key-card');
   if (key === ' ') {
@@ -28,10 +30,27 @@ function addKeyCard(key) {
   } else {
     card.innerText = key;
   }
+  card.setAttribute('keystroke-id', keystrokeId);
   const recentKeysDiv = document.getElementById('recent-keys');
   recentKeysDiv.appendChild(card);
   while (recentKeysDiv.childElementCount >= 10) {
     recentKeysDiv.removeChild(recentKeysDiv.firstChild);
+  }
+}
+
+function updateKeyStatus(keystrokeId, success) {
+  const recentKeysDiv = document.getElementById('recent-keys');
+  const cards = recentKeysDiv.children;
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    if (parseInt(card.getAttribute('keystroke-id')) === keystrokeId) {
+      if (success) {
+        card.classList.add('processed-key-card');
+      } else {
+        card.classList.add('unsupported-key-card');
+      }
+      return;
+    }
   }
 }
 
@@ -41,7 +60,9 @@ function onKeyDown(evt) {
   }
   if (!evt.metaKey) {
     evt.preventDefault();
-    addKeyCard(evt.key);
+    addKeyCard(evt.key, keystrokeId);
+    processingQueue.push(keystrokeId);
+    keystrokeId++;
   }
   
   socket.emit('keystroke', {
@@ -65,3 +86,6 @@ document.querySelector('body').addEventListener("keydown", onKeyDown);
 document.getElementById('display-history-checkbox').addEventListener("change", onDisplayHistoryChanged);
 socket.on('connect', onSocketConnect);
 socket.on('disconnect', onSocketDisconnect);
+socket.on('keystroke-received', (data) => {
+  updateKeyStatus(processingQueue.shift(), data.success);
+});
