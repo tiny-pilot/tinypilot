@@ -25,7 +25,7 @@ function onSocketDisconnect(reason) {
 function limitRecentKeys(limit) {
   const recentKeysDiv = document.getElementById('recent-keys');
   while (recentKeysDiv.childElementCount > limit) {
-    recentKeysDiv.removeChild(recentKeysDiv.lastChild);
+    recentKeysDiv.removeChild(recentKeysDiv.firstChild);
   }
 }
 
