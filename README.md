@@ -1,6 +1,6 @@
 # Key Mime Pi
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
+[![CircleCI](https://circleci.com/gh/mtlynch/key-mime-pi.svg?style=svg)](https://circleci.com/gh/mtlynch/key-mime-pi) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 
 ## Overview
 
@@ -26,7 +26,7 @@ This is still a work in progress. I'll be improving the installation scripts and
 ## Quick Start
 
 ```bash
-python3.7 -m venv venv
+python3 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
 PORT=8888 ./app/main.py
@@ -35,7 +35,7 @@ PORT=8888 ./app/main.py
 ## Development Installation
 
 ```bash
-python3.7 -m venv venv
+python3 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
 pip install --requirement dev_requirements.txt
