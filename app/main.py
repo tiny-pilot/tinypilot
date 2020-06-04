@@ -31,11 +31,19 @@ hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
 
 
 def _parse_key_event(payload):
-    return js_to_hid.JavaScriptKeyEvent(alt_key=payload['altKey'],
-                                        shift_key=payload['shiftKey'],
-                                        ctrl_key=payload['ctrlKey'],
-                                        key=payload['key'],
-                                        key_code=payload['keyCode'])
+    right = payload['location'] == 'right'
+    left = payload['location'] == 'left'
+    return js_to_hid.JavaScriptKeyEvent(
+        right_meta_modifier=payload['metaKey'] and right,
+        right_alt_modifier=payload['altKey'] and right,
+        right_shift_modifier=payload['shiftKey'] and right,
+        right_ctrl_modifier=payload['ctrlKey'] and right,
+        left_meta_modifier=payload['metaKey'] and left,
+        left_alt_modifier=payload['altKey'] and left,
+        left_shift_modifier=payload['shiftKey'] and left,
+        left_ctrl_modifier=payload['ctrlKey'] and left,
+        key=payload['key'],
+        key_code=payload['keyCode'])
 
 
 @socketio.on('keystroke')

@@ -11,9 +11,14 @@ class UnrecognizedKeyCodeError(Error):
 
 @dataclasses.dataclass
 class JavaScriptKeyEvent:
-    alt_key: bool
-    shift_key: bool
-    ctrl_key: bool
+    right_meta_modifier: bool
+    right_alt_modifier: bool
+    right_shift_modifier: bool
+    right_ctrl_modifier: bool
+    left_meta_modifier: bool
+    left_alt_modifier: bool
+    left_shift_modifier: bool
+    left_ctrl_modifier: bool
     key: str
     key_code: int
 
@@ -21,14 +26,15 @@ class JavaScriptKeyEvent:
 # JS keycodes source: https://github.com/wesbos/keycodes
 # HID keycodes source: https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
 
+# TODO: For simplicity, we map all modifiers keys to the left key, but we could
+# support distinct keys for left and right if we check the location parameter
+# from the JavaScript message.
 _JS_TO_HID_KEYCODES = {
     3: 0x48,  # Pause / Break
     8: 0x2a,  # Backspace / Delete
     9: 0x2b,  # Tab
     12: 0x53,  # Clear
     13: 0x28,  # Enter
-    # HID has support for left and right control keys, but JS does not, so we
-    # map all JS control keys to left versions of HID key codes.
     16: 0xe1,  # Shift (Left)
     17: 0xe0,  # Ctrl (left)
     18: 0xe1,  # Alt (left)
@@ -91,7 +97,7 @@ _JS_TO_HID_KEYCODES = {
     88: 0x1b,  # x
     89: 0x1c,  # y
     90: 0x1d,  # z
-    91: None,  # Windows key (ignored)
+    91: 0xe3,  # Windows key / Meta Key (Left)
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
     98: 0x5a,  # Numpad 2
@@ -149,8 +155,12 @@ _JS_TO_HID_KEYCODES = {
 
 def convert(js_key_event):
     control_chars = 0
-    for i, pressed in enumerate(
-        [js_key_event.ctrl_key, js_key_event.shift_key, js_key_event.alt_key]):
+    for i, pressed in enumerate([
+            js_key_event.left_ctrl_modifier, js_key_event.left_shift_modifier,
+            js_key_event.left_alt_modifier, js_key_event.left_meta_modifier,
+            js_key_event.right_ctrl_modifier, js_key_event.right_shift_modifier,
+            js_key_event.right_alt_modifier, js_key_event.right_meta_modifier
+    ]):
         if pressed:
             control_chars |= 1 << i
     try:

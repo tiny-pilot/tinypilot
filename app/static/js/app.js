@@ -68,13 +68,22 @@ function onKeyDown(evt) {
     processingQueue.push(keystrokeId);
     keystrokeId++;
   }
+
+  let location = null;
+  if (evt.location === 1) {
+    location = 'left';
+  } else if (evt.location === 2) {
+    location = 'right';
+  }
   
   socket.emit('keystroke', {
+    metaKey: evt.metaKey,
     altKey: evt.altKey,
     shiftKey: evt.shiftKey,
     ctrlKey: evt.ctrlKey,
     key: evt.key,
     keyCode: evt.keyCode,
+    location: location,
   });
 }
 
