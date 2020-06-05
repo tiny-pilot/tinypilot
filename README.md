@@ -6,10 +6,6 @@
 
 Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes through a web browser.
 
-## Work in Progress
-
-This is still a work in progress. I'll be improving the installation scripts and documentation in the next few weeks. ETA for a completed project is mid-June 2020.
-
 ## Compatibility
 
 * Raspberry Pi 4
@@ -18,9 +14,6 @@ This is still a work in progress. I'll be improving the installation scripts and
 ## Pre-requisites
 
 * Raspbian OS 10 (Buster)
-* USB Gadget Mode enabled on Raspberry Pi
-  * Ansible users can configure everything through [ansible-role-key-mime-pi](https://github.com/mtlynch/ansible-role-key-mime-pi)
-  * Instructions for non-Ansible users coming soon.
 
 ## Quick Start
 
@@ -29,8 +22,12 @@ sudo ./enable-usb-hid
 python3 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
-PORT=8888 ./app/main.py
+PORT=8000 ./app/main.py
 ```
+
+Key Mime Pi will be running in your browser at:
+
+* [http://raspberrypi:8000/](http://raspberrypi:8000/)
 
 ## Ansible installation
 
@@ -50,7 +47,13 @@ echo "- hosts: $PI_HOSTNAME
 ansible-playbook --inventory "$PI_HOSTNAME", install.yml
 ```
 
+You should be able to access Key Mime Pi through a web browser at:
+
+* [http://raspberrypi:8000/](http://raspberrypi:8000/)
+
 ## Development Installation
+
+If you're interesting in contributing to Key Mime Pi, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
 python3 -m venv venv
@@ -58,4 +61,16 @@ python3 -m venv venv
 pip install --requirement requirements.txt
 pip install --requirement dev_requirements.txt
 hooks/enable_hooks
+```
+
+To run Key Mime Pi's build scripts, run:
+
+```bash
+./build
+```
+
+To enable Key Mime Pi's Git hooks, run:
+
+```bash
+./hooks/enable_hooks
 ```
