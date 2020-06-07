@@ -11,14 +11,10 @@ class UnrecognizedKeyCodeError(Error):
 
 @dataclasses.dataclass
 class JavaScriptKeyEvent:
-    right_meta_modifier: bool
-    right_alt_modifier: bool
-    right_shift_modifier: bool
-    right_ctrl_modifier: bool
-    left_meta_modifier: bool
-    left_alt_modifier: bool
-    left_shift_modifier: bool
-    left_ctrl_modifier: bool
+    meta_modifier: bool
+    alt_modifier: bool
+    shift_modifier: bool
+    ctrl_modifier: bool
     key: str
     key_code: int
 
