@@ -46,6 +46,7 @@ From your Ansible control node, run the following commands:
 
 ```bash
 PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
+PI_SSH_USERNAME="pi"      # Change to your Pi username
 
 # Install the Key Mime Pi Ansible role
 ansible-galaxy install mtlynch.keymimepi
@@ -55,7 +56,23 @@ echo "- hosts: $PI_HOSTNAME
   roles:
     - role: mtlynch.keymimepi" > install.yml
 
-ansible-playbook --inventory "$PI_HOSTNAME", install.yml
+ansible-playbook \
+  --inventory "$PI_HOSTNAME", \
+  --user "$PI_SSH_USERNAME" \
+  --ask-pass \
+  --become \
+  --become-method sudo \
+  --ask-become-pass \
+  install.yml
+
+ansible \
+  "$PI_HOSTNAME" \
+  -m reboot \
+  --inventory "$PI_HOSTNAME", \
+  --user "$PI_SSH_USERNAME" \
+  --ask-pass \
+  --become \
+  --become-method sudo
 ```
 
 You should be able to access Key Mime Pi through a web browser at:
