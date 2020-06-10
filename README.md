@@ -62,7 +62,6 @@ ansible-playbook \
   --ask-pass \
   --become \
   --become-method sudo \
-  --ask-become-pass \
   install.yml
 
 ansible \
