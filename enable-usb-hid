@@ -29,6 +29,3 @@ cd $(mktemp -d)
 wget https://raw.githubusercontent.com/mtlynch/ansible-role-key-mime-pi/master/templates/usb-gadget.systemd.j2
 sed -e "s@{{ key_mime_pi_initialize_hid_script_path }}@${ENABLE_RPI_HID_PATH}@g" \
   usb-gadget.systemd.j2 > /lib/systemd/system/usb-gadget.service
-
-systemctl daemon-reload
-systemctl restart usb-gadget
