@@ -20,8 +20,16 @@ Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes th
 
 ## Quick Start
 
+To begin, enable USB gadget support on the Pi by running the following commands:
+
 ```bash
 sudo ./enable-usb-hid
+sudo reboot
+```
+
+When the Pi reboots, run Key Mime Pi with the following commands:
+
+```
 python3 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
