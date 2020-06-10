@@ -77,3 +77,13 @@ To enable Key Mime Pi's Git hooks, run:
 ```bash
 ./hooks/enable_hooks
 ```
+
+## Options
+
+Key Mime Pi accepts various options through environment variables:
+
+| Environment Variable | Default      | Description |
+|----------------------|--------------|-------------|
+| `HOST`               | `0.0.0.0`    | Network interface to listen for incoming connections. |
+| `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
+| `HID_PATH`           | `/dev/hidg0` | Path to keyboard HID interface. |
