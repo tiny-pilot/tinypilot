@@ -10,11 +10,11 @@ set -e
 set -u
 
 if ! grep 'dtoverlay=dwc2' /boot/config; then
-  echo "dtoverlay=dwc2" > /boot/config.txt
+  echo "dtoverlay=dwc2" >> /boot/config.txt
 fi
 
 if ! grep dwc2 /etc/modules; then
-  echo "dwc2" > /etc/modules
+  echo "dwc2" >> /etc/modules
 fi
 
 ENABLE_RPI_HID_PATH=/opt/enable-rpi-hid
