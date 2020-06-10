@@ -6,6 +6,8 @@
 
 Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes through a web browser.
 
+[![Key Mime Pi screenshot](https://raw.githubusercontent.com/mtlynch/key-mime-pi/master/screenshot.png)](https://raw.githubusercontent.com/mtlynch/key-mime-pi/master/screenshot.png)
+
 ## Compatibility
 
 * Raspberry Pi 4
