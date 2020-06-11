@@ -15,7 +15,7 @@ Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes th
 
 ## Pre-requisites
 
-* Raspbian OS 10 (Buster)
+* Raspberry Pi OS Stretch or later
 * git
 * pip
 * python3-venv
