@@ -3,16 +3,16 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-        <title>Key Mime Pi</title>
+        <title>KVM Pi</title>
         <link rel="stylesheet" type="text/css" href="/css/style.css">
         <link href="https://fonts.googleapis.com/css2?family=Lora&family=Nunito&display=swap" rel="stylesheet">
     </head>
     <body>
       <div class="container">
-        <h1>Key Mime Pi</h1>
-        <p class="subtitle">The Raspberry Pi Keyboard Mimic</p>
+        <h1>KVM Pi</h1>
+        <iframe src="/stream" width="1280" height="720"></iframe>
         <div>
-          <p class="status">Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
+          <p class="status">Keyboard Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
           <p id="disconnect-reason"></p>
         </div>
         <p id="instructions">Begin typing to send keystrokes to your Raspberry Pi</p>
@@ -25,8 +25,8 @@
           </form>
         </div>
         <p>
-          Key Mime Pi is released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
-          <a href="https://github.com/mtlynch/key-mime-pi">Source code</a> is available.</p>
+          KVM Pi is released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
+          <a href="https://github.com/mtlynch/kvmpi">Source code</a> is available.</p>
       </div>
 
       <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>

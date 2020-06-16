@@ -1,12 +1,12 @@
-# Key Mime Pi
+# KVM Pi
 
-[![CircleCI](https://circleci.com/gh/mtlynch/key-mime-pi.svg?style=svg)](https://circleci.com/gh/mtlynch/key-mime-pi) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
+[![CircleCI](https://circleci.com/gh/mtlynch/kvmpi.svg?style=svg)](https://circleci.com/gh/mtlynch/kvmpi) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 
 ## Overview
 
-Use your Raspberry Pi as a remote-controlled keyboard that accepts keystrokes through a web browser.
+Use your Raspberry Pi as a browser-based KVM.
 
-[![Key Mime Pi screenshot](https://raw.githubusercontent.com/mtlynch/key-mime-pi/master/screenshot.png)](https://raw.githubusercontent.com/mtlynch/key-mime-pi/master/screenshot.png)
+[![KVM Pi screenshot](https://raw.githubusercontent.com/mtlynch/kvmpi/master/screenshot.png)](https://raw.githubusercontent.com/mtlynch/kvmpi/master/screenshot.png)
 
 ## Compatibility
 
@@ -29,7 +29,7 @@ sudo ./enable-usb-hid
 sudo reboot
 ```
 
-When the Pi reboots, run Key Mime Pi with the following commands:
+When the Pi reboots, run KVM Pi with the following commands:
 
 ```
 python3 -m venv venv
@@ -38,7 +38,7 @@ pip install --requirement requirements.txt
 PORT=8000 ./app/main.py
 ```
 
-Key Mime Pi will be running in your browser at:
+KVM Pi will be running in your browser at:
 
 * [http://raspberrypi:8000/](http://raspberrypi:8000/)
 
@@ -50,7 +50,7 @@ From your Ansible control node, run the following commands:
 PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
 PI_SSH_USERNAME="pi"      # Change to your Pi username
 
-# Install the Key Mime Pi Ansible role
+# Install the KVM Pi Ansible role
 ansible-galaxy install mtlynch.keymimepi
 
 # Create a minimal Ansible playbook to configure your Pi
@@ -76,13 +76,13 @@ ansible \
   --become-method sudo
 ```
 
-You should be able to access Key Mime Pi through a web browser at:
+You should be able to access KVM Pi through a web browser at:
 
 * [http://raspberrypi:8000/](http://raspberrypi:8000/)
 
 ## Development Installation
 
-If you're interesting in contributing to Key Mime Pi, follow these instructions to install the required developer packages in your development environment:
+If you're interesting in contributing to KVM Pi, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
 python3 -m venv venv
@@ -92,13 +92,13 @@ pip install --requirement dev_requirements.txt
 hooks/enable_hooks
 ```
 
-To run Key Mime Pi's build scripts, run:
+To run KVM Pi's build scripts, run:
 
 ```bash
 ./build
 ```
 
-To enable Key Mime Pi's Git hooks, run:
+To enable KVM Pi's Git hooks, run:
 
 ```bash
 ./hooks/enable_hooks
@@ -106,7 +106,7 @@ To enable Key Mime Pi's Git hooks, run:
 
 ## Options
 
-Key Mime Pi accepts various options through environment variables:
+KVM Pi accepts various options through environment variables:
 
 | Environment Variable | Default      | Description |
 |----------------------|--------------|-------------|
