@@ -3,7 +3,6 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  max-width: 80%;
   margin: 0 auto;
 }
 
@@ -29,6 +28,8 @@ h1 {
   max-height: 720px;
   margin-left: auto;
   margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 #remote-screen img {
