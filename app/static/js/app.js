@@ -30,11 +30,12 @@ function limitRecentKeys(limit) {
 function addKeyCard(key, keystrokeId) {
   const card = document.createElement('div');
   card.classList.add('key-card');
+  let keyLabel = key;
   if (key === ' ') {
-    card.innerHTML = '&nbsp;';
-  } else {
-    card.innerText = key;
+    keyLabel = 'Space';
   }
+  card.style.fontSize = `${1.1 - (0.08 * keyLabel.length)}em`;
+  card.innerText = keyLabel;
   card.setAttribute('keystroke-id', keystrokeId);
   document.getElementById('recent-keys').appendChild(card);
   limitRecentKeys(10);
