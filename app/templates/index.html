@@ -10,12 +10,13 @@
     <body>
       <div class="container">
         <h1>KVM Pi</h1>
-        <iframe src="/stream" width="1280" height="720"></iframe>
+        <div id="remote-screen">
+          <iframe src="/stream"></iframe>
+        </div>
         <div>
           <p class="status">Keyboard Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
           <p id="disconnect-reason"></p>
         </div>
-        <p id="instructions">Begin typing to send keystrokes to your Raspberry Pi</p>
         <div class="container keystroke-history">
           <h2>Keystroke history</h2>
           <div id="recent-keys"></div>
