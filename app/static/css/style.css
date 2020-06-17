@@ -25,19 +25,14 @@ h1 {
 }
 
 #remote-screen {
-  padding-top: calc(100% * (16 / 9)); /* 16:9 aspect ratio */
-  position: relative;
   max-width: 1280px;
   max-height: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #remote-screen img {
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
 }
 
 #status-connected {
