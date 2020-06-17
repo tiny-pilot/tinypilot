@@ -24,14 +24,17 @@ h1 {
   font-size: 1.3em;
 }
 
-.status {
-  font-size: 1.4em;
+#remote-screen {
+  width: 1280px;
+  height: 720px;
 }
 
-#instructions {
-  margin: 2rem;
-  padding: 1rem;
-  background-color: rgb(213, 213, 223);
+#remote-screen iframe {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: -1;
+  border: 0;
 }
 
 #status-connected {
@@ -46,10 +49,6 @@ h1 {
 
 #disconnect-reason {
   color: red;
-  visibility: hidden;
-}
-
-#instructions {
   visibility: hidden;
 }
 

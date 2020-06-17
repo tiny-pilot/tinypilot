@@ -9,7 +9,6 @@ function onSocketConnect() {
   connected = true;
   document.getElementById('status-connected').style.display = 'inline-block';
   document.getElementById('status-disconnected').style.display = 'none';
-  document.getElementById('instructions').style.visibility = 'visible';
   document.getElementById('disconnect-reason').style.visibility = 'hidden';
 }
 
@@ -19,7 +18,6 @@ function onSocketDisconnect(reason) {
   document.getElementById('status-disconnected').style.display = 'inline-block';
   document.getElementById('disconnect-reason').style.visibility = 'visible';
   document.getElementById('disconnect-reason').innerText = 'Error: ' + reason;
-  document.getElementById('instructions').style.visibility = 'hidden';
 }
 
 function limitRecentKeys(limit) {
