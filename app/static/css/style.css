@@ -28,7 +28,7 @@ a {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 5%;
+  padding: 0 2rem;
   margin: 0;
   color: white;
   background-color: rgb(42, 42, 143);
