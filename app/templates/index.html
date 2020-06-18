@@ -8,14 +8,24 @@
         <link href="https://fonts.googleapis.com/css2?family=Lora&family=Nunito&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div class="container">
-        <h1>KVM Pi</h1>
-        <div id="remote-screen">
-          <img src="/stream?advance_headers=1">
+      <div class="navbar">
+        <p class="brand">KVM Pi</p>
+        <div class="nav-items">
+          <div class="nav-item status">
+            <p>Keyboard</p>
+            <div id="status-connected" class="status-indicator">
+              <span class="status-dot"></span>
+            </div>
+            <a id="status-disconnected" class="status-indicator" href="#disconnect-reason">
+              <span class="status-dot"></span>
+            </a>
+          </div>
+          <p class="nav-item source-link"><a href="https://github.com/mtlynch/kvmpi"><img src="/img/GitHub-Mark-Light-120px-plus.png"></a></p>
         </div>
-        <div>
-          <p class="status">Keyboard Status: <span id="status-connected">Connected</span><span id="status-disconnected">Disconnected</span></p>
-          <p id="disconnect-reason"></p>
+      </div>
+      <div class="container">
+        <div id="remote-screen">
+          <img src="http://kvmpi:8001/stream?advance_headers=1">
         </div>
         <div class="container keystroke-history">
           <h2>Keystroke history</h2>
@@ -25,9 +35,7 @@
             <label for="display-history-checkbox">Show history</label>
           </form>
         </div>
-        <p>
-          KVM Pi is released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
-          <a href="https://github.com/mtlynch/kvmpi">Source code</a> is available.</p>
+        <p id="disconnect-reason"></p>
       </div>
 
       <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
