@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  background: rgb(114, 114, 114);
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -10,17 +15,53 @@ p {
   font-family: Lora;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, .brand {
   font-family: Nunito;
 }
 
-h1 {
-  margin-bottom: 1rem;
+a {
+  color: rgb(192, 255, 110);
+  text-decoration: none;
 }
 
-.subtitle {
-  font-style: italic;
-  font-size: 1.3em;
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 5%;
+  margin: 0;
+  color: white;
+  background-color: rgb(42, 42, 143);
+  border-bottom: 1px solid black;
+  margin-bottom: 1rem;;
+}
+
+.navbar .brand {
+  font-size: 1.5em;
+}
+
+.navbar .nav-items {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar .nav-items {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar .nav-items .nav-item {
+  margin-left: 3rem;
+}
+
+.source-link img {
+  max-height: 35px;
 }
 
 #remote-screen {
@@ -36,14 +77,32 @@ h1 {
   width: 100%;
 }
 
-#status-connected {
-  display: none;
-  color: green;
+.status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-#status-disconnected {
+.status-indicator {
   display: none;
-  color: red;
+  margin-left: 0.5rem;
+}
+
+.status-dot {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+#status-connected .status-dot {
+  border: 1px solid rgb(190, 255, 170);
+  background-color: rgb(116, 238, 116);
+}
+
+#status-disconnected .status-dot {
+  border: 1px solid rgb(255, 82, 82);
+  background-color: red;
 }
 
 #disconnect-reason {
@@ -59,13 +118,14 @@ h1 {
   border: 1px solid rgb(139, 97, 62);
   margin: 2rem auto;
   padding: 1rem;
+  color: black;
 }
 
 #recent-keys {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 800px;
+  min-width: 800px;
 }
 
 .key-card {
@@ -75,6 +135,7 @@ h1 {
   background-color: aliceblue;
   font-family: 'Courier New', Courier, monospace;
   border: 1px solid gray;
+  width: 40px;
 }
 
 .processed-key-card {
