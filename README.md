@@ -113,3 +113,9 @@ KVM Pi accepts various options through environment variables:
 | `HOST`               | `0.0.0.0`    | Network interface to listen for incoming connections. |
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
 | `HID_PATH`           | `/dev/hidg0` | Path to keyboard HID interface. |
+
+## Security considerations
+
+KVM Pi does not support authentication. You should only use KVM Pi on networks that you trust. Anyone who accesses the KVM Pi URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
+
+If you need authentication, the easiest option is to place KVM Pi behind an Nginx instance and require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
