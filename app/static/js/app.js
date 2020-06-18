@@ -95,8 +95,24 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
+function onPowerButtonClick() {
+  fetch("/shutdown", {
+    method: 'POST',
+    mode: 'same-origin',
+    cache: 'no-cache',
+    redirect: 'error',
+  })
+    .then(response => {
+      console.log(response.json())
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
 document.querySelector('body').addEventListener("keydown", onKeyDown);
 document.getElementById('display-history-checkbox').addEventListener("change", onDisplayHistoryChanged);
+document.getElementById('power-btn').addEventListener("click", onPowerButtonClick);
 socket.on('connect', onSocketConnect);
 socket.on('disconnect', onSocketDisconnect);
 socket.on('keystroke-received', (data) => {
