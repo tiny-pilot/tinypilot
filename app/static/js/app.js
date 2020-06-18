@@ -7,7 +7,7 @@ const processingQueue = [];
 
 function onSocketConnect() {
   connected = true;
-  document.getElementById('status-connected').style.display = 'inline-block';
+  document.getElementById('status-connected').style.display = 'flex';
   document.getElementById('status-disconnected').style.display = 'none';
   document.getElementById('disconnect-reason').style.visibility = 'hidden';
 }
@@ -15,7 +15,7 @@ function onSocketConnect() {
 function onSocketDisconnect(reason) {
   connected = false;
   document.getElementById('status-connected').style.display = 'none';
-  document.getElementById('status-disconnected').style.display = 'inline-block';
+  document.getElementById('status-disconnected').style.display = 'flex';
   document.getElementById('disconnect-reason').style.visibility = 'visible';
   document.getElementById('disconnect-reason').innerText = 'Error: ' + reason;
 }
