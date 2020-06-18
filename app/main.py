@@ -8,6 +8,7 @@ import flask_socketio
 
 import hid
 import js_to_hid
+import local_system
 
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -72,6 +73,22 @@ def test_disconnect():
 @app.route('/', methods=['GET'])
 def index_get():
     return flask.render_template('index.html')
+
+
+@app.route('/shutdown', methods=['POST'])
+def shutdown_post():
+    # TODO: Check CSRF Token
+    try:
+        local_system.shutdown()
+        return flask.jsonify({
+            'success': True,
+            'error': None,
+        })
+    except local_system.Error as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
 
 
 if __name__ == '__main__':
