@@ -64,6 +64,10 @@ a {
   max-height: 35px;
 }
 
+.power img {
+  max-height: 30px;
+}
+
 #remote-screen {
   max-width: 1280px;
   max-height: 720px;
