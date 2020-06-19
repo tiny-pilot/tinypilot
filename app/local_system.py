@@ -1,8 +1,6 @@
 import logging
 import subprocess
 
-_SHUTDOWN_DELAY_SECONDS = 5
-
 logger = logging.getLogger(__name__)
 
 
@@ -16,11 +14,14 @@ class ShutdownError(Error):
 
 def shutdown():
     logger.info('Shutting down system')
-    result = subprocess.run(
-        ["/sbin/shutdown", "--poweroff",
-         str(_SHUTDOWN_DELAY_SECONDS)],
-        capture_output=True,
-        text=True)
+    result = subprocess.run(['sudo', '/sbin/shutdown', '--poweroff', 'now'],
+                            capture_output=True,
+                            text=True)
     if 'failed' in result.stderr.lower():
         raise ShutdownError(result.stdout + result.stderr)
+    else:
+        if result.stdout:
+            logger.info(result.stdout)
+        if result.stderr:
+            logger.info(result.stderr)
     return True
