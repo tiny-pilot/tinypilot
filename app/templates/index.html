@@ -11,7 +11,7 @@
       <div class="navbar">
         <p class="brand">KVM Pi</p>
         <div class="nav-items">
-          <div class="nav-item status">
+          <div class="nav-item keyboard-status">
             <p>Keyboard</p>
             <div id="status-connected" class="status-indicator">
               <span class="status-dot"></span>
@@ -20,12 +20,12 @@
               <span class="status-dot"></span>
             </a>
           </div>
-          <p class="nav-item source-link">
+          <div class="nav-item nav-icon source-link">
             <a href="https://github.com/mtlynch/kvmpi">
               <img src="/img/GitHub-Mark-Light-120px-plus.png">
             </a>
-          </p>
-          <div class="nav-item power">
+          </div>
+          <div class="nav-item nav-icon power">
             <a id="power-btn" href="#">
               <img src="/img/power-icon.png">
             </a>
@@ -33,6 +33,11 @@
         </div>
       </div>
       <div class="container">
+        <div id="error-panel">
+          <h3 id="error-type">Error Type</h3>
+          <p id="error-message">Error message</p>
+          <button id="hide-error-btn" type="button">Close</button>
+        </div>
         <div id="remote-screen">
           <img src="/stream?advance_headers=1">
         </div>

@@ -57,6 +57,12 @@ function updateKeyStatus(keystrokeId, success) {
   }
 }
 
+function showError(errorType, errorMessage) {
+  document.getElementById('error-type').innerText = errorType;
+  document.getElementById('error-message').innerText = errorMessage;
+  document.getElementById('error-panel').style.display = 'block';
+}
+
 function onKeyDown(evt) {
   if (!connected) {
     return;
@@ -96,6 +102,7 @@ function onDisplayHistoryChanged(evt) {
 }
 
 function onPowerButtonClick() {
+  const errorType = "Failed to Shut Down KVM Pi Device";
   fetch("/shutdown", {
     method: 'POST',
     mode: 'same-origin',
@@ -103,16 +110,24 @@ function onPowerButtonClick() {
     redirect: 'error',
   })
     .then(response => {
-      console.log(response.json())
+      return response.json();
+    })
+    .then(result => {
+      if (result.error) {
+        showError(errorType, result.error)
+      }
     })
     .catch(error => {
-      console.log(error);
+      showError(errorType, error)
     });
 }
 
 document.querySelector('body').addEventListener("keydown", onKeyDown);
 document.getElementById('display-history-checkbox').addEventListener("change", onDisplayHistoryChanged);
 document.getElementById('power-btn').addEventListener("click", onPowerButtonClick);
+document.getElementById('hide-error-btn').addEventListener("click", () => {
+  document.getElementById('error-panel').style.display = 'none';
+});
 socket.on('connect', onSocketConnect);
 socket.on('disconnect', onSocketDisconnect);
 socket.on('keystroke-received', (data) => {
