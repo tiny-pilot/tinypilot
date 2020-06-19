@@ -51,12 +51,12 @@ PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
 PI_SSH_USERNAME="pi"      # Change to your Pi username
 
 # Install the KVM Pi Ansible role
-ansible-galaxy install mtlynch.keymimepi
+ansible-galaxy install mtlynch.kvmpi
 
 # Create a minimal Ansible playbook to configure your Pi
 echo "- hosts: $PI_HOSTNAME
   roles:
-    - role: mtlynch.keymimepi" > install.yml
+    - role: mtlynch.kvmpi" > install.yml
 
 ansible-playbook \
   --inventory "$PI_HOSTNAME", \
@@ -78,7 +78,7 @@ ansible \
 
 You should be able to access KVM Pi through a web browser at:
 
-* [http://raspberrypi:8000/](http://raspberrypi:8000/)
+* [http://raspberrypi/](http://raspberrypi/)
 
 ## Development Installation
 
