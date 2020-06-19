@@ -15,7 +15,11 @@ p {
   font-family: Lora;
 }
 
-h1, h2, h3, h4, .brand {
+h1,
+h2,
+h3,
+h4,
+.brand {
   font-family: Nunito;
 }
 
@@ -33,7 +37,7 @@ a {
   color: white;
   background-color: rgb(42, 42, 143);
   border-bottom: 1px solid black;
-  margin-bottom: 1rem;;
+  margin-bottom: 1rem;
 }
 
 .navbar .brand {
@@ -133,7 +137,7 @@ a {
   padding: 1rem;
   display: block;
   background-color: aliceblue;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   border: 1px solid gray;
   width: 40px;
 }
