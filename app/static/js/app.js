@@ -1,24 +1,10 @@
 "use strict";
 
 const socket = io();
-let connected = false;
+let poweringDown = false;
+let connectedToKeyboardService = false;
 let keystrokeId = 0;
 const processingQueue = [];
-
-function onSocketConnect() {
-  connected = true;
-  document.getElementById("status-connected").style.display = "flex";
-  document.getElementById("status-disconnected").style.display = "none";
-  document.getElementById("disconnect-reason").style.visibility = "hidden";
-}
-
-function onSocketDisconnect(reason) {
-  connected = false;
-  document.getElementById("status-connected").style.display = "none";
-  document.getElementById("status-disconnected").style.display = "flex";
-  document.getElementById("disconnect-reason").style.visibility = "visible";
-  document.getElementById("disconnect-reason").innerText = "Error: " + reason;
-}
 
 function limitRecentKeys(limit) {
   const recentKeysDiv = document.getElementById("recent-keys");
@@ -63,8 +49,42 @@ function showError(errorType, errorMessage) {
   document.getElementById("error-panel").style.display = "block";
 }
 
+function displayPoweringDownUI() {
+  for (const elementId of [
+    "error-panel",
+    "remote-screen",
+    "keystroke-history",
+  ]) {
+    document.getElementById(elementId).style.display = "none";
+  }
+  const shutdownMessage = document.createElement("h2");
+  shutdownMessage.innerText = "Shutting down KVM Pi Device...";
+  document.querySelector(".page-content").appendChild(shutdownMessage);
+}
+
+function onSocketConnect() {
+  connectedToKeyboardService = true;
+  document.getElementById("status-connected").style.display = "flex";
+  document.getElementById("status-disconnected").style.display = "none";
+  document.getElementById("disconnect-reason").style.visibility = "hidden";
+}
+
+function onSocketDisconnect(reason) {
+  connectedToKeyboardService = false;
+  document.getElementById("status-connected").style.display = "none";
+  document.getElementById("status-disconnected").style.display = "flex";
+
+  // If user powered down the device, don't display an error message about
+  // disconnecting from the keyboard service.
+  if (poweringDown) {
+    return;
+  }
+  document.getElementById("disconnect-reason").style.visibility = "visible";
+  document.getElementById("disconnect-reason").innerText = "Error: " + reason;
+}
+
 function onKeyDown(evt) {
-  if (!connected) {
+  if (!connectedToKeyboardService) {
     return;
   }
   if (!evt.metaKey) {
@@ -115,6 +135,9 @@ function onPowerButtonClick() {
     .then((result) => {
       if (result.error) {
         showError(errorType, result.error);
+      } else {
+        poweringDown = true;
+        displayPoweringDownUI();
       }
     })
     .catch((error) => {
