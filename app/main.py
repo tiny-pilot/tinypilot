@@ -5,6 +5,7 @@ import os
 
 import flask
 import flask_socketio
+import flask_wtf
 
 import hid
 import js_to_hid
@@ -20,6 +21,7 @@ root_logger.setLevel(logging.INFO)
 
 app = flask.Flask(__name__, static_url_path='')
 socketio = flask_socketio.SocketIO(app)
+csrf = flask_wtf.csrf.CSRFProtect(app)
 
 logger = logging.getLogger(__name__)
 logger.info('Starting app')
@@ -29,6 +31,7 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 # Location of HID file handle in which to write keyboard HID input.
 hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(32))
 
 
 def _parse_key_event(payload):
@@ -77,7 +80,6 @@ def index_get():
 
 @app.route('/shutdown', methods=['POST'])
 def shutdown_post():
-    # TODO: Check CSRF Token
     try:
         local_system.shutdown()
         return flask.jsonify({
@@ -89,6 +91,14 @@ def shutdown_post():
             'success': False,
             'error': str(e),
         }), 500
+
+
+@app.errorhandler(flask_wtf.csrf.CSRFError)
+def handle_csrf_error(e):
+    return flask.jsonify({
+        'success': False,
+        'error': e.description,
+    }), 400
 
 
 if __name__ == '__main__':

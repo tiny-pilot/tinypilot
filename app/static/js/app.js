@@ -62,6 +62,12 @@ function displayPoweringDownUI() {
   document.querySelector(".page-content").appendChild(shutdownMessage);
 }
 
+function getCsrfToken() {
+  return document
+    .querySelector("meta[name='csrf-token']")
+    .getAttribute("content");
+}
+
 function onSocketConnect() {
   connectedToKeyboardService = true;
   document.getElementById("status-connected").style.display = "flex";
@@ -122,27 +128,34 @@ function onDisplayHistoryChanged(evt) {
 }
 
 function onPowerButtonClick() {
-  const errorType = "Failed to Shut Down KVM Pi Device";
   fetch("/shutdown", {
     method: "POST",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+    },
     mode: "same-origin",
     cache: "no-cache",
     redirect: "error",
   })
     .then((response) => {
-      console.log(response.status);
       if (response.status !== 200) {
+        // See if the error response is JSON.
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          return response.json().then((data) => {
+            return Promise.reject(new Error(data.error));
+          });
+        }
         return Promise.reject(new Error(response.statusText));
       }
       return response.json();
     })
     .then((result) => {
       if (result.error) {
-        showError(errorType, result.error);
-      } else {
-        poweringDown = true;
-        displayPoweringDownUI();
+        return Promise.reject(new Error(result.error));
       }
+      poweringDown = true;
+      displayPoweringDownUI();
     })
     .catch((error) => {
       // Depending on timing, the server may not respond to the shutdown request
@@ -151,9 +164,9 @@ function onPowerButtonClick() {
       if (error.message.indexOf("NetworkError") >= 0) {
         poweringDown = true;
         displayPoweringDownUI();
-      } else {
-        showError(errorType, error);
+        return;
       }
+      showError("Failed to Shut Down KVM Pi Device", error);
     });
 }
 
