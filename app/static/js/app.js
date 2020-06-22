@@ -130,6 +130,10 @@ function onPowerButtonClick() {
     redirect: "error",
   })
     .then((response) => {
+      console.log(response.status);
+      if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText));
+      }
       return response.json();
     })
     .then((result) => {
@@ -141,7 +145,15 @@ function onPowerButtonClick() {
       }
     })
     .catch((error) => {
-      showError(errorType, error);
+      // Depending on timing, the server may not respond to the shutdown request
+      // because it's shutting down. If we get a NetworkError, assume the
+      // shutdown succeeded.
+      if (error.message.indexOf("NetworkError") >= 0) {
+        poweringDown = true;
+        displayPoweringDownUI();
+      } else {
+        showError(errorType, error);
+      }
     });
 }
 
