@@ -188,8 +188,10 @@ a {
   background-color: red;
 }
 
-.history-form {
+.keystroke-controls {
   margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
 }
 
 #error-panel {
