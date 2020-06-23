@@ -67,6 +67,44 @@ a {
   max-height: 22px;
 }
 
+.btn {
+  display: inline-block;
+  border: none;
+  padding: 1rem 2rem;
+  margin: 1rem;
+  text-decoration: none;
+  background: #0069ed;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 250ms ease-in-out, transform 150ms ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.btn:hover,
+.btn:focus {
+  background: #0053ba;
+}
+
+.btn:focus {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
+
+.btn:active {
+  transform: scale(0.99);
+}
+
+.btn-danger {
+  background-color: rgb(153, 8, 8);
+}
+
+.btn-danger:hover {
+  background-color: rgb(223, 48, 48);
+}
+
 #remote-screen {
   max-width: 1280px;
   max-height: 720px;
@@ -165,4 +203,13 @@ a {
 
 #error-panel #error-type {
   margin-top: 0;
+}
+
+#shutdown-confirmation-panel {
+  display: none;
+  background-color: rgb(252, 236, 223);
+  border: 1px solid rgb(139, 97, 62);
+  max-width: 800px;
+  margin: 0 auto 1rem auto;
+  padding: 2rem;
 }
