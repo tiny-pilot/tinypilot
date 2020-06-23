@@ -142,6 +142,10 @@ function clearManualModifiers() {
   for (var modifier in manualModifiers) {
     manualModifiers[modifier] = false;
   }
+  for (const button of document.getElementsByClassName("manual-modifier-btn")) {
+    button.classList.remove("pressed");
+    button.blur();
+  }
 }
 
 function onKeyboardSocketConnect() {
@@ -197,6 +201,11 @@ function onKeyDown(evt) {
 
 function onManualModifierButtonClicked(evt) {
   toggleManualModifier(evt.target.getAttribute("modifier"));
+  if (evt.target.classList.contains("pressed")) {
+    evt.target.classList.remove("pressed");
+  } else {
+    evt.target.classList.add("pressed");
+  }
 }
 
 function onDisplayHistoryChanged(evt) {
@@ -224,8 +233,8 @@ document
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
-for (const elt of document.getElementsByClassName("manual-modifier-btn")) {
-  elt.addEventListener("click", onManualModifierButtonClicked);
+for (const button of document.getElementsByClassName("manual-modifier-btn")) {
+  button.addEventListener("click", onManualModifierButtonClicked);
 }
 keyboardSocket.on("connect", onKeyboardSocketConnect);
 keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);

@@ -28,6 +28,10 @@ a {
   text-decoration: none;
 }
 
+img {
+  object-fit: contain;
+}
+
 .navbar {
   display: flex;
   flex-direction: row;
@@ -63,11 +67,12 @@ a {
 .navbar .nav-item {
   margin-left: 1.5rem;
 }
+
 .nav-icon img {
   max-height: 22px;
 }
 
-.btn {
+button {
   display: inline-block;
   border: none;
   padding: 1rem 2rem;
@@ -83,17 +88,17 @@ a {
   -moz-appearance: none;
 }
 
-.btn:hover,
-.btn:focus {
+button:hover,
+button:focus {
   background: #0053ba;
 }
 
-.btn:focus {
+button:focus {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.btn:active {
+button:active {
   transform: scale(0.99);
 }
 
@@ -103,6 +108,30 @@ a {
 
 .btn-danger:hover {
   background-color: rgb(223, 48, 48);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 400px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -200px;
+  background-color: rgba(65, 65, 65, 0.952);
+  color: #fff;
+  text-align: center;
+  padding: 0.25rem 1rem;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
 }
 
 #remote-screen {
@@ -192,6 +221,43 @@ a {
   margin-top: 1rem;
   display: flex;
   flex-direction: row;
+}
+
+.manual-modifiers-panel {
+  border: 1px dotted rgba(0, 0, 0, 0.705);
+}
+
+.header-icon {
+  display: flex;
+  flex-direction: row;
+}
+
+.question-icon {
+  max-width: 27px;
+}
+
+.manual-modifier-btn {
+  background-color: rgb(45, 153, 144);
+  font-size: 0.9em;
+}
+
+.manual-modifier-btn:hover {
+  background-color: rgb(0, 141, 129);
+}
+
+.manual-modifier-btn:focus {
+  outline: 1px solid rgb(184, 255, 170);
+  outline-offset: -4px;
+  background-color: rgb(0, 92, 84);
+}
+
+.manual-modifier-btn:active {
+  background-color: rgb(0, 92, 84);
+}
+
+.pressed {
+  background-color: rgb(0, 92, 84);
+  box-shadow: 0 0 2px #245a00;
 }
 
 #error-panel {
