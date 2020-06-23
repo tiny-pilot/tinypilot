@@ -1,6 +1,6 @@
 "use strict";
 
-const socket = io();
+const keyboardSocket = io();
 let poweringDown = false;
 let connectedToKeyboardService = false;
 let keystrokeId = 0;
@@ -49,6 +49,12 @@ function showError(errorType, errorMessage) {
   document.getElementById("error-panel").style.display = "block";
 }
 
+function hideErrorIfType(errorType) {
+  if (document.getElementById("error-type").innerText === errorType) {
+    document.getElementById("error-panel").style.display = "none";
+  }
+}
+
 function displayPoweringDownUI() {
   for (const elementId of [
     "error-panel",
@@ -68,14 +74,15 @@ function getCsrfToken() {
     .getAttribute("content");
 }
 
-function onSocketConnect() {
+function onKeyboardSocketConnect() {
   connectedToKeyboardService = true;
   document.getElementById("status-connected").style.display = "flex";
   document.getElementById("status-disconnected").style.display = "none";
-  document.getElementById("disconnect-reason").style.visibility = "hidden";
+
+  hideErrorIfType("Keyboard Connection Error");
 }
 
-function onSocketDisconnect(reason) {
+function onKeyboardSocketDisconnect(reason) {
   connectedToKeyboardService = false;
   document.getElementById("status-connected").style.display = "none";
   document.getElementById("status-disconnected").style.display = "flex";
@@ -85,8 +92,7 @@ function onSocketDisconnect(reason) {
   if (poweringDown) {
     return;
   }
-  document.getElementById("disconnect-reason").style.visibility = "visible";
-  document.getElementById("disconnect-reason").innerText = "Error: " + reason;
+  showError("Keyboard Connection Error", reason);
 }
 
 function onKeyDown(evt) {
@@ -107,7 +113,7 @@ function onKeyDown(evt) {
     location = "right";
   }
 
-  socket.emit("keystroke", {
+  keyboardSocket.emit("keystroke", {
     metaKey: evt.metaKey,
     altKey: evt.altKey,
     shiftKey: evt.shiftKey,
@@ -180,8 +186,8 @@ document
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   document.getElementById("error-panel").style.display = "none";
 });
-socket.on("connect", onSocketConnect);
-socket.on("disconnect", onSocketDisconnect);
-socket.on("keystroke-received", (data) => {
+keyboardSocket.on("connect", onKeyboardSocketConnect);
+keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);
+keyboardSocket.on("keystroke-received", (data) => {
   updateKeyStatus(processingQueue.shift(), data.success);
 });
