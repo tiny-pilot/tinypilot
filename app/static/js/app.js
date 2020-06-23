@@ -3,6 +3,14 @@
 const keyboardSocket = io();
 let poweringDown = false;
 let connectedToKeyboardService = false;
+// The OS and browser capture some key combinations that involve modifier keys
+// before they can reach JavaScript, so allow the user to set them manually.
+let manualModifiers = {
+  meta: false,
+  alt: false,
+  shift: false,
+  ctrl: false,
+};
 let keystrokeId = 0;
 const processingQueue = [];
 
@@ -126,6 +134,20 @@ function shutdownDevice() {
     });
 }
 
+function toggleManualModifier(modifier) {
+  manualModifiers[modifier] = !manualModifiers[modifier];
+}
+
+function clearManualModifiers() {
+  for (var modifier in manualModifiers) {
+    manualModifiers[modifier] = false;
+  }
+  for (const button of document.getElementsByClassName("manual-modifier-btn")) {
+    button.classList.remove("pressed");
+    button.blur();
+  }
+}
+
 function onKeyboardSocketConnect() {
   connectedToKeyboardService = true;
   showElementById("status-connected", "flex");
@@ -166,14 +188,24 @@ function onKeyDown(evt) {
   }
 
   keyboardSocket.emit("keystroke", {
-    metaKey: evt.metaKey,
-    altKey: evt.altKey,
-    shiftKey: evt.shiftKey,
-    ctrlKey: evt.ctrlKey,
+    metaKey: evt.metaKey || manualModifiers.meta,
+    altKey: evt.altKey || manualModifiers.alt,
+    shiftKey: evt.shiftKey || manualModifiers.shift,
+    ctrlKey: evt.ctrlKey || manualModifiers.ctrl,
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
   });
+  clearManualModifiers();
+}
+
+function onManualModifierButtonClicked(evt) {
+  toggleManualModifier(evt.target.getAttribute("modifier"));
+  if (evt.target.classList.contains("pressed")) {
+    evt.target.classList.remove("pressed");
+  } else {
+    evt.target.classList.add("pressed");
+  }
 }
 
 function onDisplayHistoryChanged(evt) {
@@ -201,6 +233,9 @@ document
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
+for (const button of document.getElementsByClassName("manual-modifier-btn")) {
+  button.addEventListener("click", onManualModifierButtonClicked);
+}
 keyboardSocket.on("connect", onKeyboardSocketConnect);
 keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);
 keyboardSocket.on("keystroke-received", (data) => {
