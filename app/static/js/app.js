@@ -6,6 +6,14 @@ let connectedToKeyboardService = false;
 let keystrokeId = 0;
 const processingQueue = [];
 
+function hideElementById(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+function showElementById(id, display = "block") {
+  document.getElementById(id).style.display = display;
+}
+
 function limitRecentKeys(limit) {
   const recentKeysDiv = document.getElementById("recent-keys");
   while (recentKeysDiv.childElementCount > limit) {
@@ -46,12 +54,12 @@ function updateKeyStatus(keystrokeId, success) {
 function showError(errorType, errorMessage) {
   document.getElementById("error-type").innerText = errorType;
   document.getElementById("error-message").innerText = errorMessage;
-  document.getElementById("error-panel").style.display = "block";
+  showElementById("error-panel");
 }
 
 function hideErrorIfType(errorType) {
   if (document.getElementById("error-type").innerText === errorType) {
-    document.getElementById("error-panel").style.display = "none";
+    hideElementById("error-panel");
   }
 }
 
@@ -60,8 +68,9 @@ function displayPoweringDownUI() {
     "error-panel",
     "remote-screen",
     "keystroke-history",
+    "shutdown-confirmation-panel",
   ]) {
-    document.getElementById(elementId).style.display = "none";
+    hideElementById(elementId);
   }
   const shutdownMessage = document.createElement("h2");
   shutdownMessage.innerText = "Shutting down KVM Pi Device...";
@@ -74,18 +83,61 @@ function getCsrfToken() {
     .getAttribute("content");
 }
 
+function shutdownDevice() {
+  fetch("/shutdown", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+    },
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then((response) => {
+      if (response.status !== 200) {
+        // See if the error response is JSON.
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          return response.json().then((data) => {
+            return Promise.reject(new Error(data.error));
+          });
+        }
+        return Promise.reject(new Error(response.statusText));
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.error) {
+        return Promise.reject(new Error(result.error));
+      }
+      poweringDown = true;
+      displayPoweringDownUI();
+    })
+    .catch((error) => {
+      // Depending on timing, the server may not respond to the shutdown request
+      // because it's shutting down. If we get a NetworkError, assume the
+      // shutdown succeeded.
+      if (error.message.indexOf("NetworkError") >= 0) {
+        poweringDown = true;
+        displayPoweringDownUI();
+        return;
+      }
+      showError("Failed to Shut Down KVM Pi Device", error);
+    });
+}
+
 function onKeyboardSocketConnect() {
   connectedToKeyboardService = true;
-  document.getElementById("status-connected").style.display = "flex";
-  document.getElementById("status-disconnected").style.display = "none";
+  showElementById("status-connected", "flex");
+  hideElementById("status-disconnected");
 
   hideErrorIfType("Keyboard Connection Error");
 }
 
 function onKeyboardSocketDisconnect(reason) {
   connectedToKeyboardService = false;
-  document.getElementById("status-connected").style.display = "none";
-  document.getElementById("status-disconnected").style.display = "flex";
+  hideElementById("status-connected");
+  showElementById("status-disconnected", "flex");
 
   // If user powered down the device, don't display an error message about
   // disconnecting from the keyboard service.
@@ -133,58 +185,21 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-function onPowerButtonClick() {
-  fetch("/shutdown", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": getCsrfToken(),
-    },
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-  })
-    .then((response) => {
-      if (response.status !== 200) {
-        // See if the error response is JSON.
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-          return response.json().then((data) => {
-            return Promise.reject(new Error(data.error));
-          });
-        }
-        return Promise.reject(new Error(response.statusText));
-      }
-      return response.json();
-    })
-    .then((result) => {
-      if (result.error) {
-        return Promise.reject(new Error(result.error));
-      }
-      poweringDown = true;
-      displayPoweringDownUI();
-    })
-    .catch((error) => {
-      // Depending on timing, the server may not respond to the shutdown request
-      // because it's shutting down. If we get a NetworkError, assume the
-      // shutdown succeeded.
-      if (error.message.indexOf("NetworkError") >= 0) {
-        poweringDown = true;
-        displayPoweringDownUI();
-        return;
-      }
-      showError("Failed to Shut Down KVM Pi Device", error);
-    });
-}
-
 document.querySelector("body").addEventListener("keydown", onKeyDown);
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
-document
-  .getElementById("power-btn")
-  .addEventListener("click", onPowerButtonClick);
+document.getElementById("power-btn").addEventListener("click", () => {
+  showElementById("shutdown-confirmation-panel");
+});
 document.getElementById("hide-error-btn").addEventListener("click", () => {
-  document.getElementById("error-panel").style.display = "none";
+  hideElementById("error-panel");
+});
+document
+  .getElementById("confirm-shutdown")
+  .addEventListener("click", shutdownDevice);
+document.getElementById("cancel-shutdown").addEventListener("click", () => {
+  hideElementById("shutdown-confirmation-panel");
 });
 keyboardSocket.on("connect", onKeyboardSocketConnect);
 keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);

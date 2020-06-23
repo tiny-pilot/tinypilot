@@ -39,7 +39,22 @@
       <div id="error-panel">
         <h3 id="error-type">Error Type</h3>
         <p id="error-message">Error message</p>
-        <button id="hide-error-btn" type="button">Close</button>
+        <button id="hide-error-btn" class="btn" type="button">
+          Close
+        </button>
+      </div>
+      <div id="shutdown-confirmation-panel">
+        <h3>Shut Down KVM Pi Device?</h3>
+        <p>
+          Note that this will shut down <strong>KVM Pi</strong>, not the machine
+          to which it is attached.
+        </p>
+        <button id="confirm-shutdown" class="btn-danger btn" type="button">
+          Shut Down
+        </button>
+        <button id="cancel-shutdown" class="btn" type="button">
+          Cancel
+        </button>
       </div>
       <div id="remote-screen">
         <img src="/stream?advance_headers=1" />
