@@ -114,6 +114,12 @@ To enable KVM Pi's Git hooks, run:
 ./hooks/enable_hooks
 ```
 
+To run KVM Pi on a non-Pi machine, run:
+
+```bash
+PORT=8000 HID_PATH=/dev/null ./app/main.py
+```
+
 ## Options
 
 KVM Pi accepts various options through environment variables:
