@@ -136,6 +136,12 @@ KVM Pi does not support authentication. You should only use KVM Pi on networks t
 
 If you need authentication, the easiest option is to place KVM Pi behind an Nginx instance and require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
 
+## Support
+
+If this project is useful to you, consider making a financial contribution to support its development:
+
+* [paypal.me/mtlynchio](https://paypal.me/mtlynchio)
+
 ## See also
 
 * [KVM Pi Ansible Role](https://github.com/mtlynch/ansible-role-kvmpi): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install KVM Pi and all dependencies as a systemd service.
