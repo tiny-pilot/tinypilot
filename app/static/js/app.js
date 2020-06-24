@@ -102,6 +102,11 @@ function shutdownDevice() {
     redirect: "error",
   })
     .then((response) => {
+      // A 502 usually means that nginx shutdown before it could process the
+      // response. Treat this as success.
+      if (response.status === 502) {
+        return Promise.resolve({});
+      }
       if (response.status !== 200) {
         // See if the error response is JSON.
         const contentType = response.headers.get("content-type");
