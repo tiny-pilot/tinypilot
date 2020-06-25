@@ -6,7 +6,7 @@
 
 Use your Raspberry Pi as a browser-based KVM.
 
-[![KVM Pi screenshot](https://raw.githubusercontent.com/mtlynch/kvmpi/master/screenshot.png)](https://raw.githubusercontent.com/mtlynch/kvmpi/master/screenshot.png)
+![KVM Pi demo](https://raw.githubusercontent.com/mtlynch/kvmpi/master/demo.gif)
 
 ## Compatibility
 
