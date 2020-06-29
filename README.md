@@ -39,9 +39,7 @@ When your Pi reboots, you should be able to access KVM Pi by visiting your Pi ho
 
 ## Remote installation
 
-If you'd prefer to run Ansible from a remote machine, you 
-
-To install the [KVM Pi Ansible role](https://github.com/mtlynch/ansible-role-kvmpi), run the following commands from your Ansible control node:
+If you have Ansible installed on your local machine, you can configure KVM Pi on a Raspberry Pi device using the [KVM Pi Ansible role](https://github.com/mtlynch/ansible-role-kvmpi). To configure KVM Pi remotely, run the following commands from your Ansible control node:
 
 ```bash
 PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
@@ -73,7 +71,7 @@ ansible \
   --become-method sudo
 ```
 
-You should be able to access KVM Pi through a web browser at:
+After running these commands, you should be able to access KVM Pi through a web browser at:
 
 * [http://raspberrypi/](http://raspberrypi/)
 
