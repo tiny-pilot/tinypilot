@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Echo commands to stdout.
+set -x
+
+# Exit on first error.
+set -e
+
+# Treat undefined environment variables as errors.
+set -u
+
+pushd $(mktemp -d)
+sudo apt-get install -y python3-venv
+python3 -m venv venv
+. venv/bin/activate
+pip install ansible==2.9.10
+echo "[defaults]
+roles_path = /tmp/ansible
+" > ansible.cfg
+ansible-galaxy install mtlynch.kvmpi
+echo "- hosts: localhost
+  connection: local
+  become: true
+  become_method: sudo
+  roles:
+    - role: mtlynch.kvmpi" > install.yml
+ansible-playbook -i localhost, install.yml

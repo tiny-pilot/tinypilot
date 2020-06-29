@@ -8,51 +8,38 @@ Use your Raspberry Pi as a browser-based KVM.
 
 ![KVM Pi demo](https://raw.githubusercontent.com/mtlynch/kvmpi/master/demo.gif)
 
-## Compatibility
-
-* Raspberry Pi 4
-* Raspberry Pi Zero W
-
 ## Pre-requisites
 
 * Raspberry Pi OS Stretch or later
-* git
-* pip
 * python3-venv
 
 ## Hardware requirements
 
-TODO
+* Raspberry Pi 4
+* TODO: List remaining hardware
 
-## Quick Start
+## Installation
 
-To begin, enable USB gadget support on the Pi by running the following commands:
+The following installation steps:
+
+* Create a service account for KVM Pi with limited priviliges.
+* Install KVM Pi as a systemd service so it runs automatically on every boot.
+* Install KVM Pi's dependencies.
+
+From your Raspberry Pi device, run the following commands:
 
 ```bash
-sudo ./enable-usb-hid
+curl -sSL https://raw.githubusercontent.com/mtlynch/kvmpi/master/quick-install | bash -
 sudo reboot
 ```
 
-When the Pi reboots, run KVM Pi with the following commands:
+When your Pi reboots, you should be able to access KVM Pi by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
 
-```
-python3 -m venv venv
-. venv/bin/activate
-pip install --requirement requirements.txt
-PORT=8000 ./app/main.py
-```
+* [http://raspberrypi/](http://raspberrypi/)
 
-KVM Pi will be running in your browser at:
+## Remote installation
 
-* [http://raspberrypi:8000/](http://raspberrypi:8000/)
-
-## Ansible installation
-
-The Ansible installation is a more thorough install, as it does the following:
-
-* Creates a service account for KVM Pi with limited priviliges.
-* Installs KVM Pi as a systemd service so it runs automatically on every boot.
-* Installs KVM Pi's dependencies.
+If you'd prefer to run Ansible from a remote machine, you 
 
 To install the [KVM Pi Ansible role](https://github.com/mtlynch/ansible-role-kvmpi), run the following commands from your Ansible control node:
 
