@@ -18,7 +18,7 @@ Use your Raspberry Pi as a browser-based KVM.
 * Raspberry Pi 4
 * TODO: List remaining hardware
 
-## Installation
+## Simple installation
 
 The following installation steps:
 
@@ -75,7 +75,7 @@ After running these commands, you should be able to access KVM Pi through a web 
 
 * [http://raspberrypi/](http://raspberrypi/)
 
-## Development Installation
+## Developer installation
 
 If you're interesting in contributing to KVM Pi, follow these instructions to install the required developer packages in your development environment:
 
@@ -119,7 +119,7 @@ KVM Pi accepts various options through environment variables:
 
 KVM Pi does not support authentication. You should only use KVM Pi on networks that you trust. Anyone who accesses the KVM Pi URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
 
-If you need authentication, the easiest option is to place KVM Pi behind an Nginx instance and require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
+If you need authentication, the simplest solution would be to adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
 
 ## Support
 
