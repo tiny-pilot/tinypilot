@@ -80,7 +80,7 @@ After running these commands, you should be able to access KVM Pi through a web 
 If you're interesting in contributing to KVM Pi, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
-python3 -m venv venv
+python3.7 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
 pip install --requirement dev_requirements.txt
