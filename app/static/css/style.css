@@ -117,10 +117,6 @@ button:active {
 
 .tooltip .tooltip-text {
   visibility: hidden;
-  width: 400px;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -200px;
   background-color: rgba(65, 65, 65, 0.952);
   color: #fff;
   text-align: center;
@@ -128,6 +124,19 @@ button:active {
   border-radius: 6px;
   position: absolute;
   z-index: 1;
+}
+
+.tooltip-top .tooltip-text {
+  width: 400px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -200px;
+}
+
+.tooltip-bottom .tooltip-text {
+  top: 100%;
+  left: 50%;
+  margin-left: -200px;
 }
 
 .tooltip:hover .tooltip-text {
