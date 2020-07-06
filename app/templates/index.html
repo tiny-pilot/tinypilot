@@ -16,12 +16,28 @@
       <div class="nav-items">
         <div class="nav-item keyboard-status">
           <p>Keyboard</p>
-          <div id="status-connected" class="status-indicator">
-            <span class="status-dot"></span>
+          <div class="tooltip tooltip-bottom">
+            <div id="status-connected" class="status-indicator">
+              <span class="status-dot"></span>
+            </div>
+            <div class="tooltip-text">
+              <p>
+                Your keyboard is connected to KVM Pi.
+              </p>
+            </div>
           </div>
-          <a id="status-disconnected" class="status-indicator">
-            <span class="status-dot"></span>
-          </a>
+
+          <div class="tooltip tooltip-bottom">
+            <div id="status-disconnected" class="status-indicator">
+              <span class="status-dot"></span>
+            </div>
+            <div class="tooltip-text">
+              <p>
+                Your keyboard is not connected to KVM Pi. Try reloading the
+                page.
+              </p>
+            </div>
+          </div>
         </div>
         <div class="nav-item nav-icon source-link">
           <a href="https://github.com/mtlynch/kvmpi">
@@ -79,7 +95,7 @@
             Meta/OS
           </button>
 
-          <div class="tooltip">
+          <div class="tooltip tooltip-top">
             <img class="question-icon" src="/img/question-icon.svg" />
             <div class="tooltip-text">
               <p>
