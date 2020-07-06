@@ -223,15 +223,6 @@ button:active {
   flex-direction: row;
 }
 
-.manual-modifiers-panel {
-  border: 1px dotted rgba(0, 0, 0, 0.705);
-}
-
-.header-icon {
-  display: flex;
-  flex-direction: row;
-}
-
 .question-icon {
   max-width: 27px;
 }
@@ -242,21 +233,21 @@ button:active {
 }
 
 .manual-modifier-btn:hover {
-  background-color: rgb(0, 141, 129);
+  background-color: rgb(26, 107, 100);
 }
 
 .manual-modifier-btn:focus {
   outline: 1px solid rgb(184, 255, 170);
   outline-offset: -4px;
-  background-color: rgb(0, 92, 84);
+  background-color: rgb(7, 153, 141);
 }
 
 .manual-modifier-btn:active {
-  background-color: rgb(0, 92, 84);
+  background-color: rgb(7, 153, 141);
 }
 
 .pressed {
-  background-color: rgb(0, 92, 84);
+  background-color: rgb(0, 92, 84) !important;
   box-shadow: 0 0 2px #245a00;
 }
 
