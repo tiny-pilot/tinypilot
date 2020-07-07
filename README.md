@@ -1,12 +1,12 @@
-# KVM Pi
+# Tiny Pilot
 
-[![CircleCI](https://circleci.com/gh/mtlynch/kvmpi.svg?style=svg)](https://circleci.com/gh/mtlynch/kvmpi) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
+[![CircleCI](https://circleci.com/gh/mtlynch/tinypilot.svg?style=svg)](https://circleci.com/gh/mtlynch/tinypilot) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 
 ## Overview
 
-Use your Raspberry Pi as a browser-based KVM.
+Turn your Raspberry Pi into a browser-based KVM.
 
-![KVM Pi demo](https://raw.githubusercontent.com/mtlynch/kvmpi/master/demo.gif)
+![Tiny Pilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/demo.gif)
 
 ## Pre-requisites
 
@@ -22,36 +22,36 @@ Use your Raspberry Pi as a browser-based KVM.
 
 The following installation steps:
 
-* Create a service account for KVM Pi with limited priviliges.
-* Install KVM Pi as a systemd service so it runs automatically on every boot.
-* Install KVM Pi's dependencies.
+* Create a service account for Tiny Pilot with limited priviliges.
+* Install Tiny Pilot as a systemd service so it runs automatically on every boot.
+* Install Tiny Pilot's dependencies.
 
 From your Raspberry Pi device, run the following commands:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/mtlynch/kvmpi/master/quick-install | bash -
+curl -sSL https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | bash -
 sudo reboot
 ```
 
-When your Pi reboots, you should be able to access KVM Pi by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
+When your Pi reboots, you should be able to access Tiny Pilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
 
 * [http://raspberrypi/](http://raspberrypi/)
 
 ## Remote installation
 
-If you have Ansible installed on your local machine, you can configure KVM Pi on a Raspberry Pi device using the [KVM Pi Ansible role](https://github.com/mtlynch/ansible-role-kvmpi). To configure KVM Pi remotely, run the following commands from your Ansible control node:
+If you have Ansible installed on your local machine, you can configure Tiny Pilot on a Raspberry Pi device using the [Tiny Pilot Ansible role](https://github.com/mtlynch/ansible-role-tinypilot). To configure Tiny Pilot remotely, run the following commands from your Ansible control node:
 
 ```bash
 PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
 PI_SSH_USERNAME="pi"      # Change to your Pi username
 
-# Install the KVM Pi Ansible role
-ansible-galaxy install mtlynch.kvmpi
+# Install the Tiny Pilot Ansible role
+ansible-galaxy install mtlynch.tinypilot
 
 # Create a minimal Ansible playbook to configure your Pi
 echo "- hosts: $PI_HOSTNAME
   roles:
-    - role: mtlynch.kvmpi" > install.yml
+    - role: mtlynch.tinypilot" > install.yml
 
 ansible-playbook \
   --inventory "$PI_HOSTNAME", \
@@ -71,13 +71,13 @@ ansible \
   --become-method sudo
 ```
 
-After running these commands, you should be able to access KVM Pi through a web browser at:
+After running these commands, you should be able to access Tiny Pilot through a web browser at:
 
 * [http://raspberrypi/](http://raspberrypi/)
 
 ## Developer installation
 
-If you're interesting in contributing to KVM Pi, follow these instructions to install the required developer packages in your development environment:
+If you're interesting in contributing to Tiny Pilot, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
 python3.7 -m venv venv
@@ -87,19 +87,19 @@ pip install --requirement dev_requirements.txt
 hooks/enable_hooks
 ```
 
-To run KVM Pi's build scripts, run:
+To run Tiny Pilot's build scripts, run:
 
 ```bash
 ./build
 ```
 
-To enable KVM Pi's Git hooks, run:
+To enable Tiny Pilot's Git hooks, run:
 
 ```bash
 ./hooks/enable_hooks
 ```
 
-To run KVM Pi on a non-Pi machine, run:
+To run Tiny Pilot on a non-Pi machine, run:
 
 ```bash
 PORT=8000 HID_PATH=/dev/null ./app/main.py
@@ -107,7 +107,7 @@ PORT=8000 HID_PATH=/dev/null ./app/main.py
 
 ## Options
 
-KVM Pi accepts various options through environment variables:
+Tiny Pilot accepts various options through environment variables:
 
 | Environment Variable | Default      | Description |
 |----------------------|--------------|-------------|
@@ -117,7 +117,7 @@ KVM Pi accepts various options through environment variables:
 
 ## Security considerations
 
-KVM Pi does not support authentication. You should only use KVM Pi on networks that you trust. Anyone who accesses the KVM Pi URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
+Tiny Pilot does not support authentication. You should only use Tiny Pilot on networks that you trust. Anyone who accesses the Tiny Pilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
 
 If you need authentication, the simplest solution would be to adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
 
@@ -129,4 +129,4 @@ If this project is useful to you, consider making a financial contribution to su
 
 ## See also
 
-* [KVM Pi Ansible Role](https://github.com/mtlynch/ansible-role-kvmpi): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install KVM Pi and all dependencies as a systemd service.
+* [Tiny Pilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install Tiny Pilot and all dependencies as a systemd service.

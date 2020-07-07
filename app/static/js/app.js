@@ -81,7 +81,7 @@ function displayPoweringDownUI() {
     hideElementById(elementId);
   }
   const shutdownMessage = document.createElement("h2");
-  shutdownMessage.innerText = "Shutting down KVM Pi Device...";
+  shutdownMessage.innerText = "Shutting down Tiny Pilot Device...";
   document.querySelector(".page-content").appendChild(shutdownMessage);
 }
 
@@ -135,7 +135,7 @@ function shutdownDevice() {
         displayPoweringDownUI();
         return;
       }
-      showError("Failed to Shut Down KVM Pi Device", error);
+      showError("Failed to Shut Down Tiny Pilot Device", error);
     });
 }
 
