@@ -15,8 +15,15 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 ## Hardware requirements
 
-* Raspberry Pi 4
-* TODO: List remaining hardware
+* [Raspberry Pi 4](https://amzn.to/3fdarLM) (all variants work)
+* Video to USB capture device
+  * [This HDMI to USB dongle](https://amzn.to/2YHEvJN) works great and costs only $10-15 on eBay.
+* [USB-C to USB-A](https://www.amazon.com/AmazonBasics-Type-C-USB-Male-Cable/dp/B01GGKYN0A/) cable (Male/Male)
+* [USB to TTL serial cable](https://amzn.to/3cVkuTT)
+* [3 Amp USB wall charger](https://amzn.to/3hal8Ax)
+* [microSD card](https://amzn.to/2VH0RcL) (Class 10, 8 GB or larger)
+* [HDMI to HDMI cable](https://amzn.to/3gnlZwj)
+  * Or \[other\] to HDMI, depending on how your target machine displays output.
 
 ## Simple installation
 
