@@ -81,7 +81,7 @@ function displayPoweringDownUI() {
     hideElementById(elementId);
   }
   const shutdownMessage = document.createElement("h2");
-  shutdownMessage.innerText = "Shutting down Tiny Pilot Device...";
+  shutdownMessage.innerText = "Shutting down TinyPilot Device...";
   document.querySelector(".page-content").appendChild(shutdownMessage);
 }
 
@@ -135,7 +135,7 @@ function shutdownDevice() {
         displayPoweringDownUI();
         return;
       }
-      showError("Failed to Shut Down Tiny Pilot Device", error);
+      showError("Failed to Shut Down TinyPilot Device", error);
     });
 }
 

@@ -1,4 +1,4 @@
-# Tiny Pilot
+# TinyPilot
 
 [![CircleCI](https://circleci.com/gh/mtlynch/tinypilot.svg?style=svg)](https://circleci.com/gh/mtlynch/tinypilot) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 
@@ -6,7 +6,7 @@
 
 Turn your Raspberry Pi into a browser-based KVM.
 
-![Tiny Pilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/demo.gif)
+![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/demo.gif)
 
 ## Pre-requisites
 
@@ -22,9 +22,9 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 The following installation steps:
 
-* Create a service account for Tiny Pilot with limited priviliges.
-* Install Tiny Pilot as a systemd service so it runs automatically on every boot.
-* Install Tiny Pilot's dependencies.
+* Create a service account for TinyPilot with limited priviliges.
+* Install TinyPilot as a systemd service so it runs automatically on every boot.
+* Install TinyPilot's dependencies.
 
 From your Raspberry Pi device, run the following commands:
 
@@ -33,19 +33,19 @@ curl -sSL https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-insta
 sudo reboot
 ```
 
-When your Pi reboots, you should be able to access Tiny Pilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
+When your Pi reboots, you should be able to access TinyPilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
 
 * [http://raspberrypi/](http://raspberrypi/)
 
 ## Remote installation
 
-If you have Ansible installed on your local machine, you can configure Tiny Pilot on a Raspberry Pi device using the [Tiny Pilot Ansible role](https://github.com/mtlynch/ansible-role-tinypilot). To configure Tiny Pilot remotely, run the following commands from your Ansible control node:
+If you have Ansible installed on your local machine, you can configure TinyPilot on a Raspberry Pi device using the [TinyPilot Ansible role](https://github.com/mtlynch/ansible-role-tinypilot). To configure TinyPilot remotely, run the following commands from your Ansible control node:
 
 ```bash
 PI_HOSTNAME="raspberrypi" # Change to your pi's hostname
 PI_SSH_USERNAME="pi"      # Change to your Pi username
 
-# Install the Tiny Pilot Ansible role
+# Install the TinyPilot Ansible role
 ansible-galaxy install mtlynch.tinypilot
 
 # Create a minimal Ansible playbook to configure your Pi
@@ -71,13 +71,13 @@ ansible \
   --become-method sudo
 ```
 
-After running these commands, you should be able to access Tiny Pilot through a web browser at:
+After running these commands, you should be able to access TinyPilot through a web browser at:
 
 * [http://raspberrypi/](http://raspberrypi/)
 
 ## Developer installation
 
-If you're interesting in contributing to Tiny Pilot, follow these instructions to install the required developer packages in your development environment:
+If you're interesting in contributing to TinyPilot, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
 python3.7 -m venv venv
@@ -87,19 +87,19 @@ pip install --requirement dev_requirements.txt
 hooks/enable_hooks
 ```
 
-To run Tiny Pilot's build scripts, run:
+To run TinyPilot's build scripts, run:
 
 ```bash
 ./build
 ```
 
-To enable Tiny Pilot's Git hooks, run:
+To enable TinyPilot's Git hooks, run:
 
 ```bash
 ./hooks/enable_hooks
 ```
 
-To run Tiny Pilot on a non-Pi machine, run:
+To run TinyPilot on a non-Pi machine, run:
 
 ```bash
 PORT=8000 HID_PATH=/dev/null ./app/main.py
@@ -107,7 +107,7 @@ PORT=8000 HID_PATH=/dev/null ./app/main.py
 
 ## Options
 
-Tiny Pilot accepts various options through environment variables:
+TinyPilot accepts various options through environment variables:
 
 | Environment Variable | Default      | Description |
 |----------------------|--------------|-------------|
@@ -117,7 +117,7 @@ Tiny Pilot accepts various options through environment variables:
 
 ## Security considerations
 
-Tiny Pilot does not support authentication. You should only use Tiny Pilot on networks that you trust. Anyone who accesses the Tiny Pilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
+TinyPilot does not support authentication. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
 
 If you need authentication, the simplest solution would be to adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/).
 
@@ -129,4 +129,4 @@ If this project is useful to you, consider making a financial contribution to su
 
 ## See also
 
-* [Tiny Pilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install Tiny Pilot and all dependencies as a systemd service.
+* [TinyPilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
