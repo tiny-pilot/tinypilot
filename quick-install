@@ -17,11 +17,11 @@ pip install ansible==2.9.10
 echo "[defaults]
 roles_path = /tmp/ansible
 " > ansible.cfg
-ansible-galaxy install mtlynch.kvmpi
+ansible-galaxy install mtlynch.tinypilot
 echo "- hosts: localhost
   connection: local
   become: true
   become_method: sudo
   roles:
-    - role: mtlynch.kvmpi" > install.yml
+    - role: mtlynch.tinypilot" > install.yml
 ansible-playbook -i localhost, install.yml
