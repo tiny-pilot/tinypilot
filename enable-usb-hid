@@ -21,12 +21,12 @@ ENABLE_RPI_HID_PATH=/opt/enable-rpi-hid
 ENABLE_RPI_HID_DIR=$(dirname $ENABLE_RPI_HID_PATH)
 
 mkdir -p "$ENABLE_RPI_HID_DIR"
-wget https://raw.githubusercontent.com/mtlynch/ansible-role-kvmpi/master/files/enable-rpi-hid \
+wget https://raw.githubusercontent.com/mtlynch/ansible-role-tinypilot/master/files/enable-rpi-hid \
   -O "$ENABLE_RPI_HID_PATH"
 chmod +x "$ENABLE_RPI_HID_PATH"
 
 cd $(mktemp -d)
-wget https://raw.githubusercontent.com/mtlynch/ansible-role-kvmpi/master/templates/usb-gadget.systemd.j2
+wget https://raw.githubusercontent.com/mtlynch/ansible-role-tinypilot/master/templates/usb-gadget.systemd.j2
 sed -e "s@{{ key_mime_pi_initialize_hid_script_path }}@${ENABLE_RPI_HID_PATH}@g" \
   usb-gadget.systemd.j2 > /lib/systemd/system/usb-gadget.service
 
