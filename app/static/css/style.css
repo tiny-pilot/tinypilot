@@ -117,10 +117,11 @@ button:active {
 
 .tooltip .tooltip-text {
   visibility: hidden;
-  background-color: rgba(65, 65, 65, 0.952);
+  background-color: rgba(65, 65, 65, 0.85);
   color: #fff;
   text-align: center;
   padding: 0.25rem 1rem;
+  border: 1px solid black;
   border-radius: 6px;
   position: absolute;
   z-index: 1;
@@ -206,6 +207,7 @@ button:active {
   flex-direction: row;
   flex-wrap: wrap;
   min-width: 800px;
+  min-height: 90px;
 }
 
 .key-card {
@@ -226,14 +228,15 @@ button:active {
   background-color: red;
 }
 
-.keystroke-controls {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: row;
+.question-icon {
+  max-width: 20px;
 }
 
-.question-icon {
-  max-width: 27px;
+.manual-modifiers {
+  border: 1px dotted rgba(0, 0, 0, 0.226);
+  margin-top: 1rem;
+  display: inline-flex;
+  padding: 0.5rem;
 }
 
 .manual-modifier-btn {
