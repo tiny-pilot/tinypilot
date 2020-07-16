@@ -14,6 +14,9 @@ let manualModifiers = {
 let keystrokeId = 0;
 const processingQueue = [];
 
+// A map of keycodes to booleans indicating whether the key is currently pressed.
+let keyState = {};
+
 function hideElementById(id) {
   document.getElementById(id).style.display = "none";
 }
@@ -153,6 +156,21 @@ function clearManualModifiers() {
   }
 }
 
+function isModifierKeyCode(keyCode) {
+  const modifierKeyCodes = [16, 17, 18, 91];
+  return modifierKeyCodes.indexOf(keyCode) >= 0;
+}
+
+function isKeycodeAlreadyPressed(keyCode) {
+  return keyCode in keyState && keyState[keyCode];
+}
+
+function isIgnoredKeystroke(keyCode) {
+  // Ignore the keystroke if this is a modifier keycode and the modifier was
+  // already pressed.
+  return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
+}
+
 function onKeyboardSocketConnect() {
   connectedToKeyboardService = true;
   showElementById("status-connected", "flex");
@@ -178,6 +196,10 @@ function onKeyDown(evt) {
   if (!connectedToKeyboardService) {
     return;
   }
+  if (isIgnoredKeystroke(evt.keyCode)) {
+    return;
+  }
+  keyState[evt.keyCode] = true;
   if (!evt.metaKey) {
     evt.preventDefault();
     addKeyCard(evt.key, keystrokeId);
@@ -204,6 +226,10 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
+function onKeyUp(evt) {
+  keyState[evt.keyCode] = false;
+}
+
 function onManualModifierButtonClicked(evt) {
   toggleManualModifier(evt.target.getAttribute("modifier"));
   if (evt.target.classList.contains("pressed")) {
@@ -223,6 +249,7 @@ function onDisplayHistoryChanged(evt) {
 }
 
 document.querySelector("body").addEventListener("keydown", onKeyDown);
+document.querySelector("body").addEventListener("keyup", onKeyUp);
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);

@@ -1,5 +1,7 @@
 import dataclasses
 
+import hid
+
 
 class Error(Exception):
     pass
@@ -31,9 +33,9 @@ _JS_TO_HID_KEYCODES = {
     9: 0x2b,  # Tab
     12: 0x53,  # Clear
     13: 0x28,  # Enter
-    16: 0xe1,  # Shift (Left)
-    17: 0xe0,  # Ctrl (left)
-    18: 0xe1,  # Alt (left)
+    16: hid.KEYCODE_LEFT_SHIFT,
+    17: hid.KEYCODE_LEFT_CTRL,
+    18: hid.KEYCODE_LEFT_ALT,
     19: 0x48,  # Pause / Break
     20: 0x39,  # Caps Lock
     21: 0x90,  # Hangeul
@@ -93,7 +95,7 @@ _JS_TO_HID_KEYCODES = {
     88: 0x1b,  # x
     89: 0x1c,  # y
     90: 0x1d,  # z
-    91: 0xe3,  # Windows key / Meta Key (Left)
+    91: hid.KEYCODE_LEFT_META,
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
     98: 0x5a,  # Numpad 2
