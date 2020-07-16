@@ -228,6 +228,12 @@ function onKeyDown(evt) {
 
 function onKeyUp(evt) {
   keyState[evt.keyCode] = false;
+  if (!connectedToKeyboardService) {
+    return;
+  }
+  if (isModifierKeyCode(evt.keyCode)) {
+    keyboardSocket.emit("keyRelease");
+  }
 }
 
 function onManualModifierButtonClicked(evt) {

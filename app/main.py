@@ -71,6 +71,14 @@ def socket_keystroke(message):
     socketio.emit('keystroke-received', {'success': True})
 
 
+@socketio.on('keyRelease')
+def socket_key_release():
+    try:
+        hid.clear(hid_path)
+    except hid.WriteError as e:
+        logger.error('Failed to release keys: %s', e)
+
+
 @socketio.on('connect')
 def test_connect():
     logger.info('Client connected')

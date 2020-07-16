@@ -23,25 +23,32 @@ def _write_to_hid_interface(hid_path, buffer):
         hid_handle.write(bytearray(buffer))
 
 
-def send(hid_path, control_keys, hid_keycode):
-    # First 8 bytes are for the first keystorke. Second 8 bytes are
-    # all zeroes to indicate release of keys.
-    buf = [0] * 8
-    buf[0] = control_keys
-    buf[2] = hid_keycode
-
-    # If it's not a modifier keycode, add a message indicating that the key
-    # should be released after it is sent.
-    if hid_keycode not in _MODIFIER_KEYCODES:
-        buf += [0] * 8
-
+def _write_to_hid_interface_with_timeout(hid_path, buffer):
     # Writes can time out, so attempt the write in a separate thread to avoid
     # hanging.
     write_thread = threading.Thread(target=_write_to_hid_interface,
-                                    args=(hid_path, buf))
+                                    args=(hid_path, buffer))
     write_thread.start()
     write_thread.join(timeout=0.5)
     if write_thread.is_alive():
         # If the thread is still alive, it means the join timed out.
         raise WriteError(
             'Failed to write to HID interface. Is USB cable connected?')
+
+
+def send(hid_path, control_keys, hid_keycode):
+    # First 8 bytes are for the first keystorke. Second 8 bytes are
+    # all zeroes to indicate release of keys.
+    buf = [0] * 8
+    buf[0] = control_keys
+    buf[2] = hid_keycode
+    _write_to_hid_interface_with_timeout(hid_path, buf)
+
+    # If it's not a modifier keycode, add a message indicating that the key
+    # should be released after it is sent.
+    if hid_keycode not in _MODIFIER_KEYCODES:
+        clear(hid_path)
+
+
+def clear(hid_path):
+    _write_to_hid_interface_with_timeout(hid_path, [0] * 8)
