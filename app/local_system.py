@@ -14,7 +14,21 @@ class ShutdownError(Error):
 
 def shutdown():
     logger.info('Shutting down system')
-    result = subprocess.run(['sudo', '/sbin/shutdown', '--poweroff', 'now'],
+    return _exec_shutdown(restart=True)
+
+
+def restart():
+    logger.info('Rebooting system')
+    return _exec_shutdown(restart=True)
+
+
+def _exec_shutdown(restart):
+    if restart:
+        param = '--restart'
+    else:
+        param = '--poweroff'
+
+    result = subprocess.run(['sudo', '/sbin/shutdown', param, 'now'],
                             capture_output=True,
                             text=True)
     if 'failed' in result.stderr.lower():

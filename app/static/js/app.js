@@ -74,7 +74,7 @@ function hideErrorIfType(errorType) {
   }
 }
 
-function displayPoweringDownUI() {
+function displayPoweringDownUI(restart) {
   for (const elementId of [
     "error-panel",
     "remote-screen",
@@ -84,7 +84,12 @@ function displayPoweringDownUI() {
     hideElementById(elementId);
   }
   const shutdownMessage = document.createElement("h2");
-  shutdownMessage.innerText = "Shutting down TinyPilot Device...";
+  if (restart) {
+    shutdownMessage.innerText = "Restarting TinyPilot Device...";
+  } else {
+    shutdownMessage.innerText = "Shutting down TinyPilot Device...";
+  }
+
   document.querySelector(".page-content").appendChild(shutdownMessage);
 }
 
@@ -94,8 +99,12 @@ function getCsrfToken() {
     .getAttribute("content");
 }
 
-function shutdownDevice() {
-  fetch("/shutdown", {
+function sendShutdownRequest(restart) {
+  let route = "/shutdown";
+  if (restart) {
+    route = "/restart";
+  }
+  fetch(route, {
     method: "POST",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -127,7 +136,7 @@ function shutdownDevice() {
         return Promise.reject(new Error(result.error));
       }
       poweringDown = true;
-      displayPoweringDownUI();
+      displayPoweringDownUI(restart);
     })
     .catch((error) => {
       // Depending on timing, the server may not respond to the shutdown request
@@ -135,10 +144,14 @@ function shutdownDevice() {
       // shutdown succeeded.
       if (error.message.indexOf("NetworkError") >= 0) {
         poweringDown = true;
-        displayPoweringDownUI();
+        displayPoweringDownUI(restart);
         return;
       }
-      showError("Failed to Shut Down TinyPilot Device", error);
+      if (restart) {
+        showError("Failed to restart TinyPilot device", error);
+      } else {
+        showError("Failed to shut down TinyPilot device", error);
+      }
     });
 }
 
@@ -267,7 +280,14 @@ document.getElementById("hide-error-btn").addEventListener("click", () => {
 });
 document
   .getElementById("confirm-shutdown")
-  .addEventListener("click", shutdownDevice);
+  .addEventListener("click", function () {
+    sendShutdownRequest(/*restart=*/ false);
+  });
+document
+  .getElementById("confirm-restart")
+  .addEventListener("click", function () {
+    sendShutdownRequest(/*restart=*/ true);
+  });
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
