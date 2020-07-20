@@ -110,7 +110,7 @@ To enable TinyPilot's Git hooks, run:
 To run TinyPilot on a non-Pi machine, run:
 
 ```bash
-PORT=8000 HID_PATH=/dev/null ./app/main.py
+PORT=8000 HID_PATH=/dev/null CORS_ORIGIN="http://$(hostname)" ./app/main.py
 ```
 
 ## Options
