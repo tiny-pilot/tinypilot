@@ -19,13 +19,6 @@ handler.setFormatter(formatter)
 root_logger.addHandler(flask.logging.default_handler)
 root_logger.setLevel(logging.INFO)
 
-app = flask.Flask(__name__, static_url_path='')
-socketio = flask_socketio.SocketIO(app)
-
-# Configure CSRF protection.
-csrf = flask_wtf.csrf.CSRFProtect(app)
-app.config['SECRET_KEY'] = os.urandom(32)
-
 logger = logging.getLogger(__name__)
 logger.info('Starting app')
 
@@ -34,6 +27,14 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 # Location of HID file handle in which to write keyboard HID input.
 hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
+cors_origin = os.environ.get('CORS_ORIGIN', 'http://tinypilot')
+
+app = flask.Flask(__name__, static_url_path='')
+socketio = flask_socketio.SocketIO(app, cors_allowed_origins=[cors_origin])
+
+# Configure CSRF protection.
+csrf = flask_wtf.csrf.CSRFProtect(app)
+app.config['SECRET_KEY'] = os.urandom(32)
 
 
 def _parse_key_event(payload):
