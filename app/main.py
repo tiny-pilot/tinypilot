@@ -110,6 +110,21 @@ def shutdown_post():
         }), 500
 
 
+@app.route('/restart', methods=['POST'])
+def restart_post():
+    try:
+        local_system.restart()
+        return flask.jsonify({
+            'success': True,
+            'error': None,
+        })
+    except local_system.Error as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
+
+
 @app.errorhandler(flask_wtf.csrf.CSRFError)
 def handle_csrf_error(e):
     return flask.jsonify({
