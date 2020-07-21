@@ -12,7 +12,7 @@ set -u
 # Remove the legacy nginx config, as it will conflict with tinypilot.conf if
 # both are present.
 if [ -f /etc/nginx/sites-enabled/KVMPi.conf ]; then
-    rm /etc/nginx/sites-enabled/KVMPi.conf
+  sudo rm /etc/nginx/sites-enabled/KVMPi.conf
 fi
 
 pushd $(mktemp -d)
