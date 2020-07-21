@@ -9,6 +9,12 @@ set -e
 # Treat undefined environment variables as errors.
 set -u
 
+# Remove the legacy nginx config, as it will conflict with tinypilot.conf if
+# both are present.
+if [ -f /etc/nginx/sites-enabled/KVMPi.conf ]; then
+    rm /etc/nginx/sites-enabled/KVMPi.conf
+fi
+
 pushd $(mktemp -d)
 sudo apt-get install -y python3-venv
 python3 -m venv venv
