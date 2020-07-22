@@ -66,7 +66,7 @@ def socket_keystroke(message):
         hid.send(hid_path, control_keys, hid_keycode)
     except hid.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', key_event.key,
-                     key_event, e)
+                     key_event.key_code, e)
         socketio.emit('keystroke-received', {'success': False})
         return
     socketio.emit('keystroke-received', {'success': True})
