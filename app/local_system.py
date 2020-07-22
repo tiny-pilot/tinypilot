@@ -24,7 +24,7 @@ def restart():
 
 def _exec_shutdown(restart):
     if restart:
-        param = '--restart'
+        param = '--reboot'
     else:
         param = '--poweroff'
 
