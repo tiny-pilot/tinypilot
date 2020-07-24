@@ -124,6 +124,10 @@ TinyPilot accepts various options through environment variables:
 | `HID_PATH`           | `/dev/hidg0`         | Path to keyboard HID interface. |
 | `CORS_ORIGIN`        | `http://${HOSTNAME}` | Origin from which TinyPilot should allow CORS requests. |
 
+## Upgrades
+
+The installation script is idempotent, so you can upgrade to the latest stable release of TinyPilot and its dependencies by just re-running [the quick install script](#simple-installation).
+
 ## Security considerations
 
 TinyPilot does not support authentication. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
