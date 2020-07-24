@@ -1,4 +1,5 @@
 import logging
+import platform
 import subprocess
 
 logger = logging.getLogger(__name__)
@@ -10,6 +11,10 @@ class Error(Exception):
 
 class ShutdownError(Error):
     pass
+
+
+def hostname():
+    return platform.node()
 
 
 def shutdown():

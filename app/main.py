@@ -27,7 +27,7 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 # Location of HID file handle in which to write keyboard HID input.
 hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
-cors_origin = os.environ.get('CORS_ORIGIN', 'http://tinypilot')
+cors_origin = os.environ.get('CORS_ORIGIN', 'http://' + local_system.hostname())
 
 app = flask.Flask(__name__, static_url_path='')
 socketio = flask_socketio.SocketIO(app, cors_allowed_origins=[cors_origin])
