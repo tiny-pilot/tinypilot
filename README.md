@@ -26,6 +26,8 @@ Turn your Raspberry Pi into a browser-based KVM.
 * [HDMI to HDMI cable](https://amzn.to/3gnlZwj)
   * Or \[other\] to HDMI, depending on how your target machine displays output.
 
+See ["TinyPilot: Build a KVM Over IP for Under $100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
+
 ## Simple installation
 
 The following installation steps:
