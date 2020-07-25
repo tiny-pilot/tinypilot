@@ -17,9 +17,15 @@ jobs:
             ./build
   e2e:
     machine:
+      # A Debian image would be better, as it matches Raspberry Pi OS more
+      # closely, but install fails with a Docker image because systemctl
+      # behaves differently under docker.
       image: ubuntu-1604:202007-01
     steps:
       - checkout
+      - run:
+          name: Update apt cache
+          command: sudo apt update
       - run:
           name: Install TinyPilot
           command: ./quick-install
