@@ -16,8 +16,8 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./build
   e2e:
-    docker:
-      - image: debian:buster-20200720-slim
+    machine:
+      - image: ubuntu-1604:202007-01
     steps:
       - checkout
       - run:
