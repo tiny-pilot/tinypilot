@@ -15,7 +15,23 @@ jobs:
             pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
             ./build
+  e2e:
+    machine:
+      # A Debian image would be better, as it matches Raspberry Pi OS more
+      # closely, but install fails with a Docker image because systemctl
+      # behaves differently under docker.
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - run:
+          name: Update apt cache
+          command: sudo apt update
+      - run:
+          name: Install TinyPilot
+          command: ./quick-install
+      # TODO: Check that TinyPilot's web interface is up and running.
 workflows:
   test:
     jobs:
       - build
+      - e2e
