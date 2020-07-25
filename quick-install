@@ -19,6 +19,8 @@ pushd $(mktemp -d)
 sudo apt-get install -y python3-venv
 python3 -m venv venv
 . venv/bin/activate
+# Ansible depends on wheel.
+pip install wheel==0.34.2
 pip install ansible==2.9.10
 echo "[defaults]
 roles_path = $PWD
