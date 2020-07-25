@@ -17,7 +17,7 @@ jobs:
             ./build
   e2e:
     machine:
-      - image: ubuntu-1604:202007-01
+      image: ubuntu-1604:202007-01
     steps:
       - checkout
       - run:
