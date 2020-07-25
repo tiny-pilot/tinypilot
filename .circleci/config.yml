@@ -17,7 +17,7 @@ jobs:
             ./build
   e2e:
     docker:
-      - image: circleci/python:3.7.3
+      - image: debian:buster-20200720-slim
     steps:
       - checkout
       - run:
