@@ -25,6 +25,7 @@ logger.info('Starting app')
 host = os.environ.get('HOST', '0.0.0.0')
 port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
+use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
 # Location of HID file handle in which to write keyboard HID input.
 hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
 cors_origin = os.environ.get('CORS_ORIGIN', 'http://' + local_system.hostname())
@@ -133,13 +134,17 @@ def handle_csrf_error(e):
     }), 400
 
 
-if __name__ == '__main__':
+def main():
     socketio.run(app,
                  host=host,
                  port=port,
                  debug=debug,
-                 use_reloader=True,
+                 use_reloader=use_reloader,
                  extra_files=[
                      './app/templates/index.html', './app/static/js/app.js',
                      './app/static/css/style.css'
                  ])
+
+
+if __name__ == '__main__':
+    main()
