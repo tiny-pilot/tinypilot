@@ -100,7 +100,7 @@ hooks/enable_hooks
 To run TinyPilot's build scripts, run:
 
 ```bash
-./build
+./run_build
 ```
 
 To enable TinyPilot's Git hooks, run:
