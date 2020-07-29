@@ -121,12 +121,11 @@ PORT=8000 HID_PATH=/dev/null ./app/main.py
 
 TinyPilot accepts various options through environment variables:
 
-| Environment Variable | Default              | Description |
-|----------------------|----------------------|-------------|
-| `HOST`               | `0.0.0.0`            | Network interface to listen for incoming connections. |
-| `PORT`               | `8000`               | HTTP port to listen for incoming connections. |
-| `HID_PATH`           | `/dev/hidg0`         | Path to keyboard HID interface. |
-| `CORS_ORIGIN`        | `http://${HOSTNAME}` | Origin from which TinyPilot should allow CORS requests. |
+| Environment Variable | Default      | Description |
+|----------------------|--------------|-------------|
+| `HOST`               | `0.0.0.0`    | Network interface to listen for incoming connections. |
+| `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
+| `HID_PATH`           | `/dev/hidg0` | Path to keyboard HID interface. |
 
 ## Upgrades
 
