@@ -145,7 +145,7 @@ button:active {
 }
 
 #remote-screen {
-  max-width: 1920px;
+  max-width: 85%;
   max-height: 1080px;
   margin-left: auto;
   margin-right: auto;
