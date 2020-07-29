@@ -27,10 +27,15 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 # Location of HID file handle in which to write keyboard HID input.
 hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
-cors_origin = os.environ.get('CORS_ORIGIN', 'http://' + local_system.hostname())
 
 app = flask.Flask(__name__, static_url_path='')
-socketio = flask_socketio.SocketIO(app, cors_allowed_origins=[cors_origin])
+# TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
+# risk of a CSRF attack for this app is very low. Additionally, CORS doesn't
+# protect us from the dangerous part of a CSRF attack. Even without same-origin
+# enforcement, third-party pages can still *send* requests (i.e. inject
+# keystrokes into the target machine) - it doesn't matter much if they can't
+# read responses.
+socketio = flask_socketio.SocketIO(app, cors_allowed_origins='*')
 
 # Configure CSRF protection.
 csrf = flask_wtf.csrf.CSRFProtect(app)
