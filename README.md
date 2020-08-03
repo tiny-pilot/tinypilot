@@ -41,8 +41,12 @@ The following installation steps:
 From your Raspberry Pi device, run the following commands:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | bash -
-sudo reboot
+curl \
+  --silent \
+  --show-error \
+  https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | \
+    bash - && \
+  sudo reboot
 ```
 
 When your Pi reboots, you should be able to access TinyPilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
