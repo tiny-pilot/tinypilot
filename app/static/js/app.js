@@ -25,6 +25,11 @@ function showElementById(id, display = "block") {
   document.getElementById(id).style.display = display;
 }
 
+function shouldDisplayKeyHistory() {
+  return document.getElementById("recent-keys").style.visibility !== "hidden";
+}
+
+// Limit display of recent keys to the last N keys, where limit = N.
 function limitRecentKeys(limit) {
   const recentKeysDiv = document.getElementById("recent-keys");
   while (recentKeysDiv.childElementCount > limit) {
@@ -33,6 +38,9 @@ function limitRecentKeys(limit) {
 }
 
 function addKeyCard(key, keystrokeId) {
+  if (!shouldDisplayKeyHistory()) {
+    return;
+  }
   const card = document.createElement("div");
   card.classList.add("key-card");
   let keyLabel = key;
@@ -47,6 +55,9 @@ function addKeyCard(key, keystrokeId) {
 }
 
 function updateKeyStatus(keystrokeId, success) {
+  if (!shouldDisplayKeyHistory()) {
+    return;
+  }
   const recentKeysDiv = document.getElementById("recent-keys");
   const cards = recentKeysDiv.children;
   for (let i = 0; i < cards.length; i++) {
