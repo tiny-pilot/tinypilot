@@ -304,6 +304,50 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
+function pasteTextContents() {
+  let pastedText = document.getElementById("paste-input").value;
+  sendPastedText(pastedText, true);
+}
+
+function pastePasswordContents() {
+  let pastedText = document.getElementById("paste-password").value;
+  sendPastedText(pastedText, false);
+}
+
+function sendPastedText(pastedText, updateCards) {
+  for (let i = 0; i < pastedText.length; i++) {
+    // We need to identify keys which are typed with modifiers and send Shift +
+    // the lowercase key.
+    let isUpperCase = /^[A-Z]/;
+    let modifiedSymbols = "¬!\"£$%^&*()_+{}|<>?:@~"
+    if (isUpperCase.test(pastedText[i]) || modifiedSymbols.indexOf(pastedText[i]) >= 0) {
+      toggleManualModifier("shift");
+      if (updateCards) {
+        addKeyCard("Shift", keystrokeId);
+        processingQueue.push(keystrokeId);
+        keystrokeId++;
+      }
+    }
+    keyboardSocket.emit("keystroke", {
+      metaKey: manualModifiers.meta,
+      altKey: manualModifiers.alt,
+      shiftKey: manualModifiers.shift,
+      ctrlKey: manualModifiers.ctrl,
+      key: pastedText[i],
+      keyCode: keyCodeLookup[pastedText[i].toLowerCase()],
+      location: null,
+    });
+    if (updateCards) {
+      addKeyCard(pastedText[i], keystrokeId);
+      processingQueue.push(keystrokeId);
+      keystrokeId++;
+    }
+    if (isUpperCase.test(pastedText[i]) || modifiedSymbols.indexOf(pastedText[i]) >= 0) {
+      clearManualModifiers();
+    }
+  }
+}
+
 document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
 

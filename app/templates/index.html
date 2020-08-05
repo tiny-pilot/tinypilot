@@ -137,9 +137,72 @@
           </div>
         </div>
       </div>
+      <div id="paste-container" class="container">
+        <div id="paste-content"></div>
+        <div>
+          <div class="tooltip tooltip-top">
+            <label for="name">Paste content</label>
+            <img class="question-icon" src="/img/question-icon.svg" />
+            <div class="tooltip-text">
+              <p>
+                Your OS and browser capture certain key combinations before
+                they reach TinyPilot (e.g., Ctrl + V).
+              </p>
+              <p>
+                Right click in the text input area and select paste before
+                clicking the Paste button to submit the content.
+              </p>
+            </div>
+          </div>
+          <div>
+            <div class="paste-box">
+              <textarea rows=8 cols=100 id="paste-input" name="paste-input"></textarea>
+            </div>
+            <button
+              class="btn paste-btn"
+              type="button"
+              onclick="pasteTextContents()"
+            >
+              Paste
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="paste-container" class="container">
+        <div>
+          <div class="tooltip tooltip-top">
+            <label for="name">Paste password</label>
+            <img class="question-icon" src="/img/question-icon.svg" />
+            <div class="tooltip-text">
+              <p>
+                To protect passwords from view, the field below masks
+                characters. Use this for passwords or other sensitive
+                information.
+              </p>
+              <p>
+                Right click in the text input area and select paste before
+                clicking the Paste password button to submit the content.
+              </p>
+            </div>
+          </div>
+          <div>
+            <div class="paste-box">
+              <input type="password" id="paste-password" name="paste-password" size=60></input>
+            </div>
+            <button
+              class="btn paste-btn"
+              type="button"
+              onclick="pastePasswordContents()"
+            >
+              Paste password
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
+    <script src="/js/keycodes.js"></script>
     <script src="/js/app.js"></script>
   </body>
 </html>

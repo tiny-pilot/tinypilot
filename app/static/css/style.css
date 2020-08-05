@@ -203,6 +203,17 @@ button:active {
   color: black;
 }
 
+#paste-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: rgb(252, 236, 223);
+  border: 1px solid rgb(139, 97, 62);
+  margin: 2rem auto;
+  padding: 1rem;
+  color: black;
+}
+
 #recent-keys {
   display: flex;
   flex-direction: row;
@@ -262,6 +273,34 @@ button:active {
 .pressed {
   background-color: rgb(0, 92, 84) !important;
   box-shadow: 0 0 2px #245a00;
+}
+
+.paste-btn {
+  background: rgb(45, 153, 144);
+  font-size: 0.9em;
+}
+
+.paste-btn:hover {
+  background-color: rgb(26, 107, 100);
+}
+
+.paste-btn:focus {
+  outline: 1px solid rgb(184, 255, 170);
+  outline-offset: -4px;
+  background-color: rgb(7, 153, 141);
+}
+
+.paste-btn:active {
+  background-color: rgb(7, 153, 141);
+}
+
+.pressed {
+  background-color: rgb(0, 92, 84) !important;
+  box-shadow: 0 0 2px #245a00;
+}
+
+.paste-box {
+  margin: 1rem;
 }
 
 #error-panel {
