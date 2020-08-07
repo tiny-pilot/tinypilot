@@ -319,8 +319,11 @@ function sendPastedText(pastedText, updateCards) {
     // We need to identify keys which are typed with modifiers and send Shift +
     // the lowercase key.
     let isUpperCase = /^[A-Z]/;
-    let modifiedSymbols = "¬!\"£$%^&*()_+{}|<>?:@~"
-    if (isUpperCase.test(pastedText[i]) || modifiedSymbols.indexOf(pastedText[i]) >= 0) {
+    let modifiedSymbols = '¬!"£$%^&*()_+{}|<>?:@~';
+    if (
+      isUpperCase.test(pastedText[i]) ||
+      modifiedSymbols.indexOf(pastedText[i]) >= 0
+    ) {
       toggleManualModifier("shift");
       if (updateCards) {
         addKeyCard("Shift", keystrokeId);
@@ -386,6 +389,24 @@ document
   });
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
+});
+document.getElementById("paste-btn").addEventListener("click", () => {
+  console.log("click from paste-btn");
+  showElementById("paste-overlay", "flex");
+});
+document.getElementById("paste-overlay").addEventListener("paste", (e) => {
+  console.log("pasted from paste-overlay");
+  var clipboardData, pastedData;
+
+  // Stop data actually being pasted into div
+  e.stopPropagation();
+  e.preventDefault();
+
+  // Get pasted data via clipboard API
+  clipboardData = e.clipboardData || window.clipboardData;
+  pastedData = clipboardData.getData("Text");
+  sendPastedText(pastedData, /*updateCards =*/ true);
+  hideElementById("paste-overlay");
 });
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
