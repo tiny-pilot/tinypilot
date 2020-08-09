@@ -19,7 +19,7 @@ def hostname():
 
 def shutdown():
     logger.info('Shutting down system')
-    return _exec_shutdown(restart=True)
+    return _exec_shutdown(restart=False)
 
 
 def restart():
