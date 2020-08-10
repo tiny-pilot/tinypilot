@@ -315,6 +315,7 @@ function closeOverlay(e) {
   // Reset the text in the overlay to the default (otherwise we get each letter
   // we've hit being added to the text, which is unsightly).
   document.getElementById("paste-entry").innerHTML = "Press Ctrl+V / Cmd+V to paste or any other key to cancel";
+  placeCaretAtEnd(document.getElementById("paste-entry"));
 }
 
 function placeCaretAtEnd(el) {
