@@ -304,33 +304,34 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-function closeOverlay(e) {
-  // Only close if we hit anything other than control. This is mainly a
-  // perception thing - Ctrl + V works fine even if the overlay closes
-  // immediately, but it doesn't look quite as slick. I couldn't get e.ctrlKey
-  // to work - it always evaluates to false for me :/
-  if (e.keyCode != 17) {
-    hideElementById("paste-overlay");
+function onKeyDownInPasteMode(e) {
+  // Return false on Ctrl by itself or Ctrl+V because otherwise we capture the
+  // event before the paste event can occur.
+  if (e.ctrlKey && (e.keyCode === 17 || e.keyCode === 86)) {
+    return false;
   }
-  // Reset the text in the overlay to the default (otherwise we get each letter
-  // we've hit being added to the text, which is unsightly).
-  document.getElementById("paste-entry").innerHTML = "Press Ctrl+V / Cmd+V to paste or any other key to cancel";
-  placeCaretAtEnd(document.getElementById("paste-entry"));
+  // Treat any other key as cancellation of the paste.
+  hideElementById("paste-overlay");
 }
 
-function placeCaretAtEnd(el) {
+// Place the caret (cursor) in the paste div so that we can listen for paste
+// events.
+function placeCaretInPasteOverlay() {
+  const pasteOverlay = document.getElementById("paste-overlay");
   // This is largely copy-pasted from
   // https://stackoverflow.com/questions/4233265
-  el.focus();
-  var range = document.createRange();
-  range.selectNodeContents(el);
+  pasteOverlay.focus();
+
+  // Move cursor to the end of the text.
+  const range = document.createRange();
+  range.selectNodeContents(pasteOverlay);
   range.collapse(false);
-  var sel = window.getSelection();
+  const sel = window.getSelection();
   sel.removeAllRanges();
   sel.addRange(range);
 }
 
-function pasteTextContents(e) {
+function onPaste(e) {
   var clipboardData, pastedData;
 
   // Stop data actually being pasted into div
@@ -434,10 +435,12 @@ document.getElementById("cancel-shutdown").addEventListener("click", () => {
 });
 document.getElementById("paste-btn").addEventListener("click", () => {
   showElementById("paste-overlay", "flex");
-  placeCaretAtEnd(document.getElementById("paste-entry"));
+  placeCaretInPasteOverlay();
 });
-document.getElementById("paste-overlay").addEventListener("paste", pasteTextContents)
-document.getElementById("paste-overlay").addEventListener("keydown", closeOverlay)
+document.getElementById("paste-overlay").addEventListener("paste", onPaste);
+document
+  .getElementById("paste-overlay")
+  .addEventListener("keydown", onKeyDownInPasteMode);
 
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
