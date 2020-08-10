@@ -387,6 +387,8 @@ function sendPastedText(pastedText, updateCards) {
       clearManualModifiers();
     }
   }
+  // Give the app focus again so we can continue typing after pasting.
+  document.onload = document.getElementById("app").focus();
 }
 
 document.onload = document.getElementById("app").focus();
