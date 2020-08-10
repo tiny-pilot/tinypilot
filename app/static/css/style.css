@@ -329,12 +329,12 @@ button:active {
   display: none;
   z-index: 1;
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  left: 5%;
+  top: 5%;
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.7);
   justify-content: center;
-  align-items: center;
   font-size: 24pt;
 }
