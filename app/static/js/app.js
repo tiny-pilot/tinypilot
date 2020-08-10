@@ -380,14 +380,19 @@ function sendPastedText(pastedText, updateCards) {
       processingQueue.push(keystrokeId);
       keystrokeId++;
     }
-    if (isUpperCase.test(pastedText[i]) || modifiedSymbols.indexOf(pastedText[i]) >= 0) {
+    if (
+      isUpperCase.test(pastedText[i]) ||
+      modifiedSymbols.indexOf(pastedText[i]) >= 0
+    ) {
       clearManualModifiers();
     }
   }
 }
 
-document.querySelector("body").addEventListener("keydown", onKeyDown);
-document.querySelector("body").addEventListener("keyup", onKeyUp);
+document.onload = document.getElementById("app").focus();
+
+document.getElementById("app").addEventListener("keydown", onKeyDown);
+document.getElementById("app").addEventListener("keyup", onKeyUp);
 
 // Forward all mouse activity that occurs over the image of the remote screen.
 const screenImg = document.getElementById("remote-screen-img");
