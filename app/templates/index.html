@@ -116,6 +116,14 @@
                 Meta/OS
               </button>
 
+              <button
+                id="paste-btn"
+                class="btn paste-btn"
+                type="button"
+              >
+                Paste
+              </button>
+
               <div class="tooltip tooltip-top">
                 <img class="question-icon" src="/img/question-icon.svg" />
                 <div class="tooltip-text">
@@ -125,21 +133,18 @@
                   </p>
                   <p>
                     Press these buttons to send the corresponding modifier keys
-                    on your next keystroke.
+                    on your next keystroke. Use the Paste button to send blocks of
+                    text from your clipboard.
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <button id="paste-btn" class="btn paste-btn" type="button">
-          Paste
-        </button>
       </div>
     </div>
     <div id="paste-overlay" contenteditable="true">
-      <p>Press Ctrl+V / Cmd+V to paste or any other key to cancel</p>
+      <p id="paste-entry">Press Ctrl+V / Cmd+V to paste or any other key to cancel</p>
     </div>
 
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>

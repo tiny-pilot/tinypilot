@@ -304,9 +304,43 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-function pasteTextContents() {
-  let pastedText = document.getElementById("paste-input").value;
-  sendPastedText(pastedText, true);
+function closeOverlay(e) {
+  // Only close if we hit anything other than control. This is mainly a
+  // perception thing - Ctrl + V works fine even if the overlay closes
+  // immediately, but it doesn't look quite as slick. I couldn't get e.ctrlKey
+  // to work - it always evaluates to false for me :/
+  if (e.keyCode != 17) {
+    hideElementById("paste-overlay");
+  }
+  // Reset the text in the overlay to the default (otherwise we get each letter
+  // we've hit being added to the text, which is unsightly).
+  document.getElementById("paste-entry").innerHTML = "Press Ctrl+V / Cmd+V to paste or any other key to cancel";
+}
+
+function placeCaretAtEnd(el) {
+  // This is largely copy-pasted from
+  // https://stackoverflow.com/questions/4233265
+  el.focus();
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function pasteTextContents(e) {
+  var clipboardData, pastedData;
+
+  // Stop data actually being pasted into div
+  e.stopPropagation();
+  e.preventDefault();
+
+  // Get pasted data via clipboard API
+  clipboardData = e.clipboardData || window.clipboardData;
+  pastedData = clipboardData.getData("Text");
+  sendPastedText(pastedData, /*updateCards =*/ true);
+  hideElementById("paste-overlay");
 }
 
 function pastePasswordContents() {
@@ -391,23 +425,12 @@ document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
 document.getElementById("paste-btn").addEventListener("click", () => {
-  console.log("click from paste-btn");
   showElementById("paste-overlay", "flex");
+  placeCaretAtEnd(document.getElementById("paste-entry"));
 });
-document.getElementById("paste-overlay").addEventListener("paste", (e) => {
-  console.log("pasted from paste-overlay");
-  var clipboardData, pastedData;
+document.getElementById("paste-overlay").addEventListener("paste", pasteTextContents)
+document.getElementById("paste-overlay").addEventListener("keydown", closeOverlay)
 
-  // Stop data actually being pasted into div
-  e.stopPropagation();
-  e.preventDefault();
-
-  // Get pasted data via clipboard API
-  clipboardData = e.clipboardData || window.clipboardData;
-  pastedData = clipboardData.getData("Text");
-  sendPastedText(pastedData, /*updateCards =*/ true);
-  hideElementById("paste-overlay");
-});
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
