@@ -33,4 +33,4 @@ echo "- hosts: localhost
   become_method: sudo
   roles:
     - role: mtlynch.tinypilot" > install.yml
-ansible-playbook -i localhost, install.yml
+ansible-playbook -i localhost, install.yml -vvv
