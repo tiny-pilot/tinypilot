@@ -93,20 +93,21 @@ After running these commands, you should be able to access TinyPilot through a w
 
 ## Developer installation
 
-If you're interesting in contributing to TinyPilot, follow these instructions to install the required developer packages in your development environment:
+If you're interested in contributing to TinyPilot, follow these instructions to install the required developer packages in your development environment:
 
 ```bash
 python3.7 -m venv venv
 . venv/bin/activate
 pip install --requirement requirements.txt
 pip install --requirement dev_requirements.txt
-hooks/enable_hooks
+
+npm install prettier@2.0.5
 ```
 
 To run TinyPilot's build scripts, run:
 
 ```bash
-./run_build
+./dev-scripts/build
 ```
 
 To enable TinyPilot's Git hooks, run:

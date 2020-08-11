@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  build_python:
     docker:
       - image: circleci/python:3.7.3
     steps:
@@ -14,7 +14,18 @@ jobs:
             . venv/bin/activate
             pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
-            ./run_build
+            ./dev-scripts/build-python
+  format_frontend:
+    docker:
+      - image: circleci/node:13.2.0-stretch
+    steps:
+      - checkout
+      - run:
+          name: Install prettier globally
+          command: npm install prettier@2.0.5
+      - run:
+          name: Check frontend formatting
+          command: ./dev-scripts/check-frontend-format
   e2e:
     machine:
       # A Debian image would be better, as it matches Raspberry Pi OS more
@@ -30,5 +41,6 @@ jobs:
 workflows:
   test:
     jobs:
-      - build
+      - build_python
+      - format_frontend
       - e2e
