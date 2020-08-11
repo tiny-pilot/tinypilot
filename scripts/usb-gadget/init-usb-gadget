@@ -13,8 +13,6 @@ set -u
 
 modprobe libcomposite
 
-### Configure keyboard
-
 # Adapted from https://github.com/girst/hardpass-sendHID/blob/master/README.md
 
 cd /sys/kernel/config/usb_gadget/
