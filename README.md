@@ -118,7 +118,7 @@ To enable TinyPilot's Git hooks, run:
 To run TinyPilot on a non-Pi machine, run:
 
 ```bash
-PORT=8000 HID_PATH=/dev/null ./app/main.py
+PORT=8000 KEYBOARD_INTERFACE=/dev/null ./app/main.py
 ```
 
 ## Options
@@ -129,7 +129,7 @@ TinyPilot accepts various options through environment variables:
 |----------------------|--------------|-------------|
 | `HOST`               | `0.0.0.0`    | Network interface to listen for incoming connections. |
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
-| `HID_PATH`           | `/dev/hidg0` | Path to keyboard HID interface. |
+| `KEYBOARD_INTERFACE` | `/dev/hidg0` | Path to keyboard HID interface. |
 
 ## Upgrades
 
