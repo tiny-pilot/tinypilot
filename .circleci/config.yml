@@ -21,11 +21,11 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Install prettier globally
-        command: npm install prettier@2.0.5
+          name: Install prettier globally
+          command: npm install prettier@2.0.5
       - run:
-        name: Check frontend formatting
-        command: ./dev-scripts/check-frontend-format
+          name: Check frontend formatting
+          command: ./dev-scripts/check-frontend-format
   e2e:
     machine:
       # A Debian image would be better, as it matches Raspberry Pi OS more
