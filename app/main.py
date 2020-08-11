@@ -26,8 +26,8 @@ host = os.environ.get('HOST', '0.0.0.0')
 port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
-# Location of HID file handle in which to write keyboard HID input.
-hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
+# Location of file path at which to write keyboard HID input.
+keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 
 app = flask.Flask(__name__, static_url_path='')
 # TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
@@ -69,7 +69,7 @@ def socket_keystroke(message):
         socketio.emit('keystroke-received', {'success': False})
         return
     try:
-        hid.send(hid_path, control_keys, hid_keycode)
+        hid.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', key_event.key,
                      key_event.key_code, e)
@@ -81,7 +81,7 @@ def socket_keystroke(message):
 @socketio.on('keyRelease')
 def socket_key_release():
     try:
-        hid.clear(hid_path)
+        hid.release_keys(keyboard_path)
     except hid.WriteError as e:
         logger.error('Failed to release keys: %s', e)
 
