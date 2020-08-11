@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Adapted from https://github.com/girst/hardpass-sendHID/blob/master/README.md
+# Configures USB gadgets per: https://www.kernel.org/doc/Documentation/usb/gadget_configfs.txt
 
 # Exit on first error.
 set -e
@@ -12,6 +12,10 @@ set -x
 set -u
 
 modprobe libcomposite
+
+### Configure keyboard
+
+# Adapted from https://github.com/girst/hardpass-sendHID/blob/master/README.md
 
 cd /sys/kernel/config/usb_gadget/
 mkdir -p g1
@@ -26,9 +30,10 @@ STRINGS_DIR="strings/0x409"
 mkdir -p "$STRINGS_DIR"
 echo "6b65796d696d6570690" > "${STRINGS_DIR}/serialnumber"
 echo "tinypilot" > "${STRINGS_DIR}/manufacturer"
-echo "Generic USB Keyboard" > "${STRINGS_DIR}/product"
+echo "Multifunction USB Device" > "${STRINGS_DIR}/product"
 
-KEYBOARD_FUNCTIONS_DIR="functions/hid.usb0"
+# Keyboard
+KEYBOARD_FUNCTIONS_DIR="functions/hid.keyboard"
 mkdir -p "$KEYBOARD_FUNCTIONS_DIR"
 echo 1 > "${KEYBOARD_FUNCTIONS_DIR}/protocol" # Keyboard
 echo 1 > "${KEYBOARD_FUNCTIONS_DIR}/subclass" # Boot interface subclass
@@ -70,6 +75,20 @@ echo -ne \\x81\\x00 >> "$D" #   INPUT (Data,Ary,Abs)
 echo -ne \\xc0 >> "$D"      # END_COLLECTION
 cp "$D" "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
 
+# Mouse
+MOUSE_FUNCTIONS_DIR="functions/hid.mouse"
+mkdir -p "$MOUSE_FUNCTIONS_DIR"
+echo 2 > "${MOUSE_FUNCTIONS_DIR}/protocol" # Mouse
+echo 0 > "${MOUSE_FUNCTIONS_DIR}/subclass" # No subclass
+echo 4 > "${MOUSE_FUNCTIONS_DIR}/report_length"
+# Write the report descriptor
+MOUSE_DESCRIPTOR="\
+\\x05\\x01\\x09\\x02\\xA1\\x01\\x09\\x01\\xA1\\x00\\x05\\x09\\x19\\x01\\x29\
+\\x05\\x15\\x00\\x25\\x01\\x95\\x05\\x75\\x01\\x81\\x02\\x95\\x01\\x75\\x03\
+\\x81\\x01\\x05\\x01\\x09\\x30\\x09\\x31\\x09\\x38\\x15\\x81\\x25\\x7F\\x75\
+\\x08\\x95\\x03\\x81\\x6\\xC0\\xC0"
+echo -ne "$MOUSE_DESCRIPTOR" > "${MOUSE_FUNCTIONS_DIR}/report_desc"
+
 CONFIG_INDEX=1
 CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
 mkdir -p "$CONFIGS_DIR"
@@ -80,6 +99,8 @@ mkdir -p "$CONFIGS_STRINGS_DIR"
 echo "Config ${CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configuration"
 
 ln -s "$KEYBOARD_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
+ln -s "$MOUSE_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
 ls /sys/class/udc > UDC
 
 chmod 777 /dev/hidg0
+chmod 777 /dev/hidg1
