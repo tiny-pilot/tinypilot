@@ -24,9 +24,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update apt cache
-          command: sudo apt update
-      - run:
           name: Install TinyPilot
           command: ./quick-install
       # TODO: Check that TinyPilot's web interface is up and running.
