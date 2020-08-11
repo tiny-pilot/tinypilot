@@ -36,19 +36,19 @@ def _write_to_hid_interface_with_timeout(hid_path, buffer):
             'Failed to write to HID interface. Is USB cable connected?')
 
 
-def send(hid_path, control_keys, hid_keycode):
-    # First 8 bytes are for the first keystorke. Second 8 bytes are
+def send_keystroke(keyboard_path, control_keys, hid_keycode):
+    # First 8 bytes are for the first keystroke. Second 8 bytes are
     # all zeroes to indicate release of keys.
     buf = [0] * 8
     buf[0] = control_keys
     buf[2] = hid_keycode
-    _write_to_hid_interface_with_timeout(hid_path, buf)
+    _write_to_hid_interface_with_timeout(keyboard_path, buf)
 
     # If it's not a modifier keycode, add a message indicating that the key
     # should be released after it is sent.
     if hid_keycode not in _MODIFIER_KEYCODES:
-        clear(hid_path)
+        release_keys(keyboard_path)
 
 
-def clear(hid_path):
-    _write_to_hid_interface_with_timeout(hid_path, [0] * 8)
+def release_keys(keyboard_path):
+    _write_to_hid_interface_with_timeout(keyboard_path, [0] * 8)
