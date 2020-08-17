@@ -15,16 +15,20 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 ## Hardware requirements
 
+All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/order).
+
 * [Raspberry Pi 4](https://amzn.to/3fdarLM) (all variants work)
 * [HDMI to USB dongle](https://amzn.to/2YHEvJN)
   * It has no brand name, but you can identify them by sight.
   * They're available for $10-15 on eBay.
-* [USB-C to USB-A](https://www.amazon.com/AmazonBasics-Type-C-USB-Male-Cable/dp/B01GGKYN0A/) cable (Male/Male)
-* [USB to TTL serial cable](https://amzn.to/3cVkuTT)
+* [USB-C OTG Y cable](https://amzn.to/3aurSX1)
+  * Alternatively: [USB-C to USB-A](https://www.amazon.com/AmazonBasics-Type-C-USB-Male-Cable/dp/B01GGKYN0A/) cable (Male/Male), which will work, but it will not sufficiently power your Pi for stable operation.
 * [3 Amp USB wall charger](https://amzn.to/3hal8Ax)
 * [microSD card](https://amzn.to/2VH0RcL) (Class 10, 8 GB or larger)
 * [HDMI to HDMI cable](https://amzn.to/3gnlZwj)
   * Or \[other\] to HDMI, depending on how your target machine displays output.
+* (Optional) [USB-A to USB-A extension cable](https://amzn.to/3kZXg4D)
+  * If you use the OTG Y cable above, it's very short, so you'll likely need at least one extension cable.
 * (Optional) [VGA to HDMI Adapter](https://amzn.to/30SZWYh)
   * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
