@@ -152,6 +152,18 @@ If this project is useful to you, consider making a financial contribution to su
 
 * [paypal.me/mtlynchio](https://paypal.me/mtlynchio)
 
+## Detailed project updates
+
+If you're interested in seeing what's happening with the project at a granular level, weekly updates appear every Friday on What Got Done:
+
+* [What Got Done: TinyPilot](https://whatgotdone.com/michael/project/tinypilot)
+
 ## See also
 
 * [TinyPilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
+
+## Mailing list
+
+For news about major TinyPilot releases and other updates about the project, sign up for the TinyPilot mailing list:
+
+* [TinyPilot Mailing List](https://tinypilotkvm.com/about)
