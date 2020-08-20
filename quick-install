@@ -6,15 +6,15 @@ set -x
 # Exit on first error.
 set -e
 
-# Treat undefined environment variables as errors.
-set -u
-
-if [ -z ${1+x} ] && ["$1" = "--vars"] && [ -z ${2+x} ] && [ -z "$2 "];
+if ["$1" = "--vars"] && [ -z "$2"];
 then
   EXTRA_VARS="$2"
 else
   EXTRA_VARS=""
 fi
+
+# Treat undefined environment variables as errors.
+set -u
 
 # Remove the legacy nginx config, as it will conflict with tinypilot.conf if
 # both are present.
