@@ -9,7 +9,7 @@ set -e
 # Treat undefined environment variables as errors.
 set -u
 
-if ["$1" = "--vars"] && [ -z "$2 "];
+if [ -z ${1+x} ] && ["$1" = "--vars"] && [ -z ${2+x} ] && [ -z "$2 "];
 then
   EXTRA_VARS="$2"
 else
