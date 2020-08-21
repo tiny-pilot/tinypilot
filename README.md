@@ -140,6 +140,8 @@ The installation script is idempotent, so you can upgrade to the latest stable r
 
 You can increase the lifetime of your microSD card and reduce the risk of filesystem corruption from unplanned shutdowns by enabling read-only mode on your Pi.
 
+As the name implies, the read-only filesystem makes it so that no writes to the filesystem persist across reboots. To perform system updates or make permanent changes to your TinyPilot, you'll need to disable the read-only filesystem.
+
 To enable read-only mode / overlay filesystem:
 
 1. `sudo raspi-config`
@@ -152,7 +154,7 @@ To enable read-only mode / overlay filesystem:
 
 Read-only mode slows down the boot process, so don't worry if your reboot takes 2-3x as long as normal.
 
-To disable read-only mode, follow the same steps as above, but when prompted, "Would you like the overlay file system to be enabled?" choose "No."
+To disable read-only mode, follow the same steps as above, but when prompted, "Would you like the overlay file system to be enabled?" choose **"No"**.
 
 Alternatively, you can use the [overlayfs](https://github.com/ghollingworth/overlayfs) script to control this behavior without leaving the command-line.
 
