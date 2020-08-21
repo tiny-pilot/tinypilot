@@ -6,14 +6,23 @@ set -x
 # Exit on first error.
 set -e
 
-# Treat undefined environment variables as errors.
-set -u
-
 # Remove the legacy nginx config, as it will conflict with tinypilot.conf if
 # both are present.
-if [ -f /etc/nginx/sites-enabled/KVMPi.conf ]; then
+if [ -f /etc/nginx/sites-enabled/KVMPi.conf ]
+then
   sudo rm /etc/nginx/sites-enabled/KVMPi.conf
 fi
+
+if [ -z "$TINYPILOT_INSTALL_VARS" ]
+then
+  TINYPILOT_INSTALL_VARS=""
+  echo "Using default install vars"
+else
+  echo "Install vars: $TINYPILOT_INSTALL_VARS"
+fi
+
+# Treat undefined environment variables as errors.
+set -u
 
 pushd $(mktemp -d)
 sudo apt-get update
@@ -34,4 +43,4 @@ echo "- hosts: localhost
   become_method: sudo
   roles:
     - role: mtlynch.tinypilot" > install.yml
-ansible-playbook -i localhost, install.yml
+ansible-playbook -i localhost, install.yml --extra-vars "$TINYPILOT_INSTALL_VARS"

@@ -53,6 +53,35 @@ When your Pi reboots, you should be able to access TinyPilot by visiting your Pi
 
 * [http://raspberrypi/](http://raspberrypi/)
 
+## Advanced installation
+
+To choose configuration options for the install, specify them in the `TINYPILOT_INSTALL_VARS` environment variable.
+
+Possible variables are available in:
+
+* [TinyPilot settings](https://github.com/mtlynch/ansible-role-tinypilot/blob/master/defaults/main.yml)
+* [uStreamer settings](https://github.com/mtlynch/ansible-role-ustreamer/blob/master/defaults/main.yml)
+* [nginx settings](https://github.com/geerlingguy/ansible-role-nginx/blob/master/defaults/main.yml)
+
+Here's an example that installs TinyPilot with a desired capture resolution of 1280x720 and chooses the 1.0.2 version of TinyPilot.
+
+```bash
+export TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2"
+curl \
+  --silent \
+  --show-error \
+  https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | \
+    bash - && \
+  sudo reboot
+```
+
+To apply these installation options on every update, add them to your `.bashrc` file:
+
+```bash
+echo 'export TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2"' >> ~/.bashrc
+. ~/.bashrc
+```
+
 ## Remote installation
 
 If you have Ansible installed on your local machine, you can configure TinyPilot on a Raspberry Pi device using the [TinyPilot Ansible role](https://github.com/mtlynch/ansible-role-tinypilot). To configure TinyPilot remotely, run the following commands from your Ansible control node:
