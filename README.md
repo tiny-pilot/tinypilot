@@ -136,6 +136,26 @@ TinyPilot accepts various options through environment variables:
 
 The installation script is idempotent, so you can upgrade to the latest stable release of TinyPilot and its dependencies by just re-running [the quick install script](#simple-installation).
 
+## Enable read-only filesystem
+
+You can increase the lifetime of your microSD card and reduce the risk of filesystem corruption from unplanned shutdowns by enabling read-only mode on your Pi.
+
+To enable read-only mode / overlay filesystem:
+
+1. `sudo raspi-config`
+1. Choose `7 - Advanced options`
+1. Choose `AB - Overlay FS`
+1. When prompted, "Would you like the overlay file system to be enabled?" choose **"Yes"**
+1. When prompted "Would you like the boot partition to be write-protected?" choose **"No"**
+1. Choose "Finish"
+1. When prompted "Would you like to reboot now?" choose "Yes"
+
+Read-only mode slows down the boot process, so don't worry if your reboot takes 2-3x as long as normal.
+
+To disable read-only mode, follow the same steps as above, but when prompted, "Would you like the overlay file system to be enabled?" choose "No."
+
+Alternatively, you can use the [overlayfs](https://github.com/ghollingworth/overlayfs) script to control this behavior without leaving the command-line.
+
 ## Security considerations
 
 TinyPilot does not support authentication. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
