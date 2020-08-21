@@ -66,7 +66,7 @@ Possible variables are available in:
 Here's an example that installs TinyPilot with a desired capture resolution of 1280px x 720px and chooses the 1.0.2 version of TinyPilot.
 
 ```bash
-TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2" \
+export TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2"
 curl \
   --silent \
   --show-error \
