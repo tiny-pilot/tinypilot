@@ -63,7 +63,7 @@ Possible variables are available in:
 * [uStreamer settings](https://github.com/mtlynch/ansible-role-ustreamer/blob/master/defaults/main.yml)
 * [nginx settings](https://github.com/geerlingguy/ansible-role-nginx/blob/master/defaults/main.yml)
 
-Here's an example that installs TinyPilot with a desired capture resolution of 1280px x 720px and chooses the 1.0.2 version of TinyPilot.
+Here's an example that installs TinyPilot with a desired capture resolution of 1280x720 and chooses the 1.0.2 version of TinyPilot.
 
 ```bash
 export TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2"
@@ -73,6 +73,13 @@ curl \
   https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | \
     bash - && \
   sudo reboot
+```
+
+To apply these installation options on every update, add them to your `.bashrc` file:
+
+```bash
+echo 'export TINYPILOT_INSTALL_VARS="ustreamer_resolution=1280x720 tinypilot_repo_branch=1.0.2"' >> ~/.bashrc
+. ~/.bashrc
 ```
 
 ## Remote installation
