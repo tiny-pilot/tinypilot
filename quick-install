@@ -13,7 +13,7 @@ then
   sudo rm /etc/nginx/sites-enabled/KVMPi.conf
 fi
 
-if [ -z "TINYPILOT_INSTALL_VARS" ]
+if [ -z "$TINYPILOT_INSTALL_VARS" ]
 then
   TINYPILOT_INSTALL_VARS=""
   echo "Using default install vars"
