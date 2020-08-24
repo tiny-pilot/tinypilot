@@ -10,6 +10,7 @@ let manualModifiers = {
   alt: false,
   shift: false,
   ctrl: false,
+  sysrq: false,
 };
 let keystrokeId = 0;
 const processingQueue = [];
@@ -181,7 +182,7 @@ function clearManualModifiers() {
 }
 
 function isModifierKeyCode(keyCode) {
-  const modifierKeyCodes = [16, 17, 18, 91];
+  const modifierKeyCodes = [16, 17, 18, 91, 84];
   return modifierKeyCodes.indexOf(keyCode) >= 0;
 }
 
@@ -243,6 +244,7 @@ function onKeyDown(evt) {
     altKey: evt.altKey || manualModifiers.alt,
     shiftKey: evt.shiftKey || manualModifiers.shift,
     ctrlKey: evt.ctrlKey || manualModifiers.ctrl,
+    sysrqKey: manualModifiers.sysrq,
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
