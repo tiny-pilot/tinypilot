@@ -96,15 +96,14 @@ def socket_keystroke(message):
     socketio.emit('keystroke-received', processing_result)
 
 
-@socketio.on('mouse-movement')
+@socketio.on('mouseMovement')
 def socket_mouse_movement(message):
     mouse_move_event = _parse_mouse_move_event(message)
     try:
         hid.send_mouse_position(mouse_path, mouse_move_event.x,
                                 mouse_move_event.y)
-    except hid.WriteError:
-        # TODO
-        pass
+    except hid.WriteError as e:
+        logger.error('Failed to forward mouse movement: %s', e)
     socketio.emit('mouse-movement-received', {'success': True})
 
 
