@@ -155,7 +155,7 @@ button:active {
 
 #remote-screen img {
   width: 100%;
-  cursor: not-allowed;
+  cursor: none;
 }
 
 .keyboard-status {
