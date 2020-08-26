@@ -35,12 +35,40 @@ echo 1 > "${KEYBOARD_FUNCTIONS_DIR}/subclass" # Boot interface subclass
 echo 8 > "${KEYBOARD_FUNCTIONS_DIR}/report_length"
 # Write the report descriptor
 # Source: https://www.kernel.org/doc/html/latest/usb/gadget_hid.html
-KEYBOARD_DESCRIPTOR="\
-\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\
-\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\
-\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\
-\x00\x29\x65\x81\x00\xc0"
-echo -ne "$KEYBOARD_DESCRIPTOR" > "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
+D=$(mktemp)
+echo -ne \\x05\\x01 >> "$D" # USAGE_PAGE (Generic Desktop)
+echo -ne \\x09\\x06 >> "$D" # USAGE (Keyboard)
+echo -ne \\xa1\\x01 >> "$D" # COLLECTION (Application)
+echo -ne \\x05\\x07 >> "$D" #   USAGE_PAGE (Keyboard)
+echo -ne \\x19\\xe0 >> "$D" #   USAGE_MINIMUM (Keyboard LeftControl)
+echo -ne \\x29\\xe7 >> "$D" #   USAGE_MAXIMUM (Keyboard Right GUI)
+echo -ne \\x15\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
+echo -ne \\x25\\x01 >> "$D" #   LOGICAL_MAXIMUM (1)
+echo -ne \\x75\\x01 >> "$D" #   REPORT_SIZE (1)
+echo -ne \\x95\\x08 >> "$D" #   REPORT_COUNT (8)
+echo -ne \\x81\\x02 >> "$D" #   INPUT (Data,Var,Abs)
+echo -ne \\x95\\x01 >> "$D" #   REPORT_COUNT (1)
+echo -ne \\x75\\x08 >> "$D" #   REPORT_SIZE (8)
+echo -ne \\x81\\x03 >> "$D" #   INPUT (Cnst,Var,Abs)
+echo -ne \\x95\\x05 >> "$D" #   REPORT_COUNT (5)
+echo -ne \\x75\\x01 >> "$D" #   REPORT_SIZE (1)
+echo -ne \\x05\\x08 >> "$D" #   USAGE_PAGE (LEDs)
+echo -ne \\x19\\x01 >> "$D" #   USAGE_MINIMUM (Num Lock)
+echo -ne \\x29\\x05 >> "$D" #   USAGE_MAXIMUM (Kana)
+echo -ne \\x91\\x02 >> "$D" #   OUTPUT (Data,Var,Abs)
+echo -ne \\x95\\x01 >> "$D" #   REPORT_COUNT (1)
+echo -ne \\x75\\x03 >> "$D" #   REPORT_SIZE (3)
+echo -ne \\x91\\x03 >> "$D" #   OUTPUT (Cnst,Var,Abs)
+echo -ne \\x95\\x06 >> "$D" #   REPORT_COUNT (6)
+echo -ne \\x75\\x08 >> "$D" #   REPORT_SIZE (8)
+echo -ne \\x15\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
+echo -ne \\x25\\x65 >> "$D" #   LOGICAL_MAXIMUM (101)
+echo -ne \\x05\\x07 >> "$D" #   USAGE_PAGE (Keyboard)
+echo -ne \\x19\\x00 >> "$D" #   USAGE_MINIMUM (Reserved)
+echo -ne \\x29\\x65 >> "$D" #   USAGE_MAXIMUM (Keyboard Application)
+echo -ne \\x81\\x00 >> "$D" #   INPUT (Data,Ary,Abs)
+echo -ne \\xc0 >> "$D"      # END_COLLECTION
+cp "$D" "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
 
 CONFIG_INDEX=1
 CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
