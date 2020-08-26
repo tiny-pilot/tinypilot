@@ -390,6 +390,21 @@ function sendPastedText(pastedText, updateCards) {
     ) {
       clearManualModifiers();
     }
+
+    // Make sure all key cards are formatted correctly. For some reason,
+    // pasting a lot of content makes the "processed-key-card" class not
+    // get set on some pasted key-presses. So, as a workaround, we'll find
+    // all those that don't have that class and add it.
+    const recentKeysDiv = document.getElementById("recent-keys");
+    const cards = recentKeysDiv.children;
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      if (!card.classList.contains("processed-key-card")) {
+        // Not ideal here as we're essentially forcing a successful status for
+        // the receipt of the pasted key press.
+        card.classList.add("processed-key-card");
+      }
+    }
   }
   // Give focus back to the app for normal text input.
   document.getElementById("app").focus();
