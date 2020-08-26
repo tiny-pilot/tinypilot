@@ -19,6 +19,7 @@ class JavaScriptKeyEvent:
     ctrl_modifier: bool
     key: str
     key_code: int
+    keystroke_id: int
 
 
 # JS keycodes source: https://github.com/wesbos/keycodes
