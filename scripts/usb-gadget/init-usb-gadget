@@ -76,15 +76,34 @@ cp "$D" "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
 # Mouse
 MOUSE_FUNCTIONS_DIR="functions/hid.mouse"
 mkdir -p "$MOUSE_FUNCTIONS_DIR"
-echo 2 > "${MOUSE_FUNCTIONS_DIR}/protocol" # Mouse
-echo 0 > "${MOUSE_FUNCTIONS_DIR}/subclass" # No subclass
-echo 4 > "${MOUSE_FUNCTIONS_DIR}/report_length"
+echo 0 > "${MOUSE_FUNCTIONS_DIR}/protocol"
+echo 0 > "${MOUSE_FUNCTIONS_DIR}/subclass"
+echo 5 > "${MOUSE_FUNCTIONS_DIR}/report_length"
 # Write the report descriptor
-MOUSE_DESCRIPTOR="\
-\x05\x01\x09\x02\xA1\x01\x09\x01\xA1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\
-\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\
-\x09\x38\x15\x81\x25\x7F\x75\x08\x95\x03\x81\x6\xC0\xC0"
-echo -ne "$MOUSE_DESCRIPTOR" > "${MOUSE_FUNCTIONS_DIR}/report_desc"
+D=$(mktemp)
+echo -ne \\x05\\x01 >> "$D"      # USAGE_PAGE (Generic Desktop)
+echo -ne \\x09\\x02 >> "$D"      # USAGE (Mouse)
+echo -ne \\xA1\\x01 >> "$D"      # COLLECTION (Application)
+                                 #   8-buttons
+echo -ne \\x05\\x09 >> "$D"      #   USAGE_PAGE (Button)
+echo -ne \\x19\\x01 >> "$D"      #   USAGE_MINIMUM (Button 1)
+echo -ne \\x29\\x08 >> "$D"      #   USAGE_MAXIMUM (Button 8)
+echo -ne \\x15\\x00 >> "$D"      #   LOGICAL_MINIMUM (0)
+echo -ne \\x25\\x01 >> "$D"      #   LOGICAL_MAXIMUM (1)
+echo -ne \\x95\\x08 >> "$D"      #   REPORT_COUNT (8)
+echo -ne \\x75\\x01 >> "$D"      #   REPORT_SIZE (1)
+                                 #   x,y absolute coordinates
+echo -ne \\x81\\x02 >> "$D"      #   INPUT (Data,Var,Abs)
+echo -ne \\x05\\x01 >> "$D"      #   USAGE_PAGE (Generic Desktop)
+echo -ne \\x09\\x30 >> "$D"      #   USAGE (X)
+echo -ne \\x09\\x31 >> "$D"      #   USAGE (Y)
+echo -ne \\x16\\x00\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
+echo -ne \\x26\\xFF\\x7F >> "$D" #   LOGICAL_MAXIMUM (32767)
+echo -ne \\x75\\x10 >> "$D"      #   REPORT_SIZE (16)
+echo -ne \\x95\\x02 >> "$D"      #   REPORT_COUNT (2)
+echo -ne \\x81\\x02 >> "$D"      #   INPUT (Data,Var,Abs)
+echo -ne \\xC0 >> "$D"           # END_COLLECTION
+cp "$D" "${MOUSE_FUNCTIONS_DIR}/report_desc"
 
 CONFIG_INDEX=1
 CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
