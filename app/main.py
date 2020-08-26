@@ -10,6 +10,7 @@ import flask_wtf
 import js_to_hid
 import local_system
 from hid import keyboard as fake_keyboard
+from hid import mouse as fake_mouse
 from hid import write as hid_write
 
 root_logger = logging.getLogger()
@@ -102,9 +103,10 @@ def socket_keystroke(message):
 def socket_mouse_movement(message):
     mouse_move_event = _parse_mouse_move_event(message)
     try:
-        hid.send_mouse_position(mouse_path, mouse_move_event.x,
-                                mouse_move_event.y, mouse_move_event.mouse_down)
-    except hid.WriteError as e:
+        fake_mouse.send_mouse_position(mouse_path, mouse_move_event.x,
+                                       mouse_move_event.y,
+                                       mouse_move_event.mouse_down)
+    except hid_write.WriteError as e:
         logger.error('Failed to forward mouse movement: %s', e)
     socketio.emit('mouse-movement-received', {'success': True})
 
