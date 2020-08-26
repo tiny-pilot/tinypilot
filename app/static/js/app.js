@@ -195,6 +195,18 @@ function isIgnoredKeystroke(keyCode) {
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
+// Send a keystroke message to the backend, and add a key card to the web UI.
+function sendKeystroke(keystroke) {
+  if (!keystroke.metaKey) {
+    addKeyCard(keystroke.key, keystroke.keystrokeId);
+  }
+  keyboardSocket.emit("keystroke", keystroke);
+  if (!keystroke.metaKey) {
+    // Increment the global keystroke ID.
+    keystrokeId++;
+  }
+}
+
 function onKeyboardSocketConnect() {
   connectedToKeyboardService = true;
   showElementById("status-connected", "flex");
@@ -226,7 +238,6 @@ function onKeyDown(evt) {
   keyState[evt.keyCode] = true;
   if (!evt.metaKey) {
     evt.preventDefault();
-    addKeyCard(evt.key, keystrokeId);
   }
 
   let location = null;
@@ -236,7 +247,7 @@ function onKeyDown(evt) {
     location = "right";
   }
 
-  keyboardSocket.emit("keystroke", {
+  sendKeystroke({
     metaKey: evt.metaKey || manualModifiers.meta,
     altKey: evt.altKey || manualModifiers.alt,
     shiftKey: evt.shiftKey || manualModifiers.shift,
@@ -248,7 +259,6 @@ function onKeyDown(evt) {
     location: location,
   });
   clearManualModifiers();
-  keystrokeId++;
 }
 
 function onKeyUp(evt) {
