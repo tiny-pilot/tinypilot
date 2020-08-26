@@ -62,7 +62,8 @@ def _parse_key_event(payload):
 
 
 def _parse_mouse_move_event(payload):
-    return js_to_hid.JavaScriptMouseMoveEvent(x=payload['x'], y=payload['y'])
+    return js_to_hid.JavaScriptMouseMoveEvent(x=max(0, int(payload['x'])),
+                                              y=max(0, int(payload['y'])))
 
 
 @socketio.on('keystroke')
