@@ -273,14 +273,11 @@ function onKeyUp(evt) {
 }
 
 function onRemoteScreenMouseMove(evt) {
-  //console.log(evt);
   const boundingRect = evt.target.getBoundingClientRect();
   const x = Math.max(0, evt.clientX - boundingRect.left);
   const y = Math.max(0, evt.clientY - boundingRect.top);
   const width = boundingRect.right - boundingRect.left;
   const height = boundingRect.bottom - boundingRect.top;
-  console.log(x / width);
-  console.log(y / height);
   keyboardSocket.emit("mouseMovement", {
     mouseDown: mouseDown,
     x: x / width,
