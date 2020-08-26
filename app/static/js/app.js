@@ -13,7 +13,6 @@ let manualModifiers = {
   sysrq: false,
 };
 let keystrokeId = 0;
-const processingQueue = [];
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -228,8 +227,6 @@ function onKeyDown(evt) {
   if (!evt.metaKey) {
     evt.preventDefault();
     addKeyCard(evt.key, keystrokeId);
-    processingQueue.push(keystrokeId);
-    keystrokeId++;
   }
 
   let location = null;
@@ -247,9 +244,11 @@ function onKeyDown(evt) {
     sysrqKey: manualModifiers.sysrq,
     key: evt.key,
     keyCode: evt.keyCode,
+    keystrokeId: keystrokeId,
     location: location,
   });
   clearManualModifiers();
+  keystrokeId++;
 }
 
 function onKeyUp(evt) {
@@ -310,5 +309,5 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
 keyboardSocket.on("connect", onKeyboardSocketConnect);
 keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);
 keyboardSocket.on("keystroke-received", (data) => {
-  updateKeyStatus(processingQueue.shift(), data.success);
+  updateKeyStatus(data.keystrokeId, data.success);
 });
