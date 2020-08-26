@@ -29,6 +29,11 @@ use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
 # Location of file path at which to write keyboard HID input.
 keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 
+# Socket.io logs are too chatty at INFO level.
+if not debug:
+    logging.getLogger('socketio').setLevel(logging.ERROR)
+    logging.getLogger('engineio').setLevel(logging.ERROR)
+
 app = flask.Flask(__name__, static_url_path='')
 # TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
 # risk of a CSRF attack for this app is very low. Additionally, CORS doesn't
