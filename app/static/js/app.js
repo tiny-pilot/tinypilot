@@ -12,6 +12,7 @@ let manualModifiers = {
   ctrl: false,
   sysrq: false,
 };
+let mouseDown = false;
 let keystrokeId = 0;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
@@ -272,11 +273,18 @@ function onKeyUp(evt) {
 }
 
 function onRemoteScreenMouseMove(evt) {
-  console.log(evt);
+  //console.log(evt);
   const boundingRect = evt.target.getBoundingClientRect();
+  const x = Math.max(0, evt.clientX - boundingRect.left);
+  const y = Math.max(0, evt.clientY - boundingRect.top);
+  const width = boundingRect.right - boundingRect.left;
+  const height = boundingRect.bottom - boundingRect.top;
+  console.log(x / width);
+  console.log(y / height);
   keyboardSocket.emit("mouseMovement", {
-    x: Math.max(0, evt.clientX - boundingRect.left),
-    y: Math.max(0, evt.clientY - boundingRect.top),
+    mouseDown: mouseDown,
+    x: x / width,
+    y: y / height,
   });
 }
 
@@ -303,6 +311,17 @@ document.querySelector("body").addEventListener("keyup", onKeyUp);
 document
   .getElementById("remote-screen-img")
   .addEventListener("mousemove", onRemoteScreenMouseMove);
+document
+  .getElementById("remote-screen-img")
+  .addEventListener("mousedown", function (evt) {
+    mouseDown = true;
+    onRemoteScreenMouseMove(evt);
+  });
+document
+  .getElementById("remote-screen-img")
+  .addEventListener("mouseup", function () {
+    mouseDown = false;
+  });
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
