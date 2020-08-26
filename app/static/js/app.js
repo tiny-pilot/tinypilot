@@ -306,9 +306,9 @@ function onDisplayHistoryChanged(evt) {
 }
 
 function onKeyDownInPasteMode(e) {
-  // Return false on Ctrl by itself or Ctrl+V because otherwise we capture the
+  // Return false on Ctrl by itself because otherwise we capture the
   // event before the paste event can occur.
-  if (e.ctrlKey && (e.keyCode === 17 || e.keyCode === 86)) {
+  if (e.keyCode === 17 || e.keyCode === 86) {
     return false;
   }
   // Treat any other key as cancellation of the paste.
