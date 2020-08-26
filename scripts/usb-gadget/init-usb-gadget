@@ -68,7 +68,7 @@ echo -ne \\x19\\x00 >> "$D" #   USAGE_MINIMUM (Reserved)
 echo -ne \\x29\\x65 >> "$D" #   USAGE_MAXIMUM (Keyboard Application)
 echo -ne \\x81\\x00 >> "$D" #   INPUT (Data,Ary,Abs)
 echo -ne \\xc0 >> "$D"      # END_COLLECTION
-cp "$D" > "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
+cp "$D" "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
 
 CONFIG_INDEX=1
 CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
