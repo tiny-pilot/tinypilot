@@ -443,6 +443,9 @@ document.getElementById("paste-btn").addEventListener("click", () => {
 document.getElementById("paste-overlay").addEventListener("paste", onPaste);
 document
   .getElementById("paste-overlay")
+  .addEventListener("click", () => hideElementById("paste-overlay"));
+document
+  .getElementById("paste-overlay")
   .addEventListener("keydown", onKeyDownInPasteMode);
 
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
