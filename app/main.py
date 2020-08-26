@@ -7,9 +7,10 @@ import flask
 import flask_socketio
 import flask_wtf
 
-import hid
 import js_to_hid
 import local_system
+from hid import keyboard as fake_keyboard
+from hid import write as hid_write
 
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -74,8 +75,8 @@ def socket_keystroke(message):
         socketio.emit('keystroke-received', {'success': False})
         return
     try:
-        hid.send_keystroke(keyboard_path, control_keys, hid_keycode)
-    except hid.WriteError as e:
+        fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
+    except hid_write.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', key_event.key,
                      key_event.key_code, e)
         socketio.emit('keystroke-received', {'success': False})
@@ -86,8 +87,8 @@ def socket_keystroke(message):
 @socketio.on('keyRelease')
 def socket_key_release():
     try:
-        hid.release_keys(keyboard_path)
-    except hid.WriteError as e:
+        fake_keyboard.release_keys(keyboard_path)
+    except hid_write.WriteError as e:
         logger.error('Failed to release keys: %s', e)
 
 
