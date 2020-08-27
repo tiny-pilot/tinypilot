@@ -66,8 +66,7 @@ def _parse_mouse_move_event(payload):
     return js_to_hid.JavaScriptMouseMoveEvent(
         x=max(0, payload['x']),
         y=max(0, payload['y']),
-        mouse_down=payload['mouseDown'],
-        mouse_button=payload['mouseButton'])
+        mouse_buttons=payload['mouseButtons'])
 
 
 @socketio.on('keystroke')
@@ -107,8 +106,7 @@ def socket_mouse_movement(message):
     try:
         fake_mouse.send_mouse_position(mouse_path, mouse_move_event.x,
                                        mouse_move_event.y,
-                                       mouse_move_event.mouse_down,
-                                       mouse_move_event.mouse_button)
+                                       mouse_move_event.mouse_buttons)
     except hid_write.WriteError as e:
         logger.error('Failed to forward mouse movement: %s', e)
     socketio.emit('mouse-movement-received', {'success': True})

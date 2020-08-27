@@ -12,7 +12,6 @@ let manualModifiers = {
   ctrl: false,
   sysrq: false,
 };
-let mouseDown = false;
 let mouseButton = 0;
 let keystrokeId = 0;
 
@@ -282,8 +281,7 @@ function handleMouseEvent(evt) {
   const width = boundingRect.right - boundingRect.left;
   const height = boundingRect.bottom - boundingRect.top;
   socket.emit("mouseMovement", {
-    mouseDown: mouseDown,
-    mouseButton: mouseButton,
+    mouseButtons: evt.buttons,
     x: x / width,
     y: y / height,
   });
@@ -314,18 +312,10 @@ document
   .addEventListener("mousemove", handleMouseEvent);
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mousedown", function (evt) {
-    mouseDown = true;
-    mouseButton = evt.button;
-    handleMouseEvent(evt);
-  });
+  .addEventListener("mousedown", handleMouseEvent);
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mouseup", function (evt) {
-    mouseDown = false;
-    mouseButton = 0;
-    handleMouseEvent(evt);
-  });
+  .addEventListener("mouseup", handleMouseEvent);
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
