@@ -53,12 +53,8 @@ def _parse_relative_position(relative_position):
         raise InvalidRelativePosition(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
-    if not _validate_relative_position(relative_position):
+    if not (0.0 <= relative_position <= 1.0):
         raise InvalidRelativePosition(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
     return relative_position
-
-
-def _validate_relative_position(relative_position):
-    return 0.0 <= relative_position <= 1.0

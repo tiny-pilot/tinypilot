@@ -109,7 +109,6 @@ def socket_mouse_event(message):
     except hid_write.WriteError as e:
         logger.error('Failed to forward mouse event: %s', e)
         return
-    socketio.emit('mouse-event-received', {'success': True})
 
 
 @socketio.on('keyRelease')
