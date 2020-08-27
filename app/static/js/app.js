@@ -198,7 +198,7 @@ function isIgnoredKeystroke(keyCode) {
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
   if (!keystroke.metaKey) {
-    addKeyCard(keystroke.key, keystroke.keystrokeId);
+    addKeyCard(keystroke.key, keystroke.id);
   }
   socket.emit("keystroke", keystroke);
   if (!keystroke.metaKey) {
@@ -248,6 +248,7 @@ function onKeyDown(evt) {
   }
 
   sendKeystroke({
+    id: keystrokeId,
     metaKey: evt.metaKey || manualModifiers.meta,
     altKey: evt.altKey || manualModifiers.alt,
     shiftKey: evt.shiftKey || manualModifiers.shift,
@@ -255,7 +256,6 @@ function onKeyDown(evt) {
     sysrqKey: manualModifiers.sysrq,
     key: evt.key,
     keyCode: evt.keyCode,
-    keystrokeId: keystrokeId,
     location: location,
   });
   clearManualModifiers();
@@ -348,6 +348,6 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
 }
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
-socket.on("keystroke-received", (data) => {
-  updateKeyStatus(data.keystrokeId, data.success);
+socket.on("keystroke-received", (keystrokeResult) => {
+  updateKeyStatus(keystrokeResult.keystrokeId, keystrokeResult.success);
 });
