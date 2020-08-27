@@ -317,6 +317,11 @@ document
   .getElementById("remote-screen-img")
   .addEventListener("mouseup", handleMouseEvent);
 document
+  .getElementById("remote-screen-img")
+  .addEventListener("contextmenu", function (evt) {
+    evt.preventDefault();
+  });
+document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
 document.getElementById("power-btn").addEventListener("click", () => {
