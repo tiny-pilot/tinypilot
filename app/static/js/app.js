@@ -307,6 +307,7 @@ function onDisplayHistoryChanged(evt) {
 
 document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
+// TODO(mtlynch): Change the handler to on* for consistency with the other handlers.
 document
   .getElementById("remote-screen-img")
   .addEventListener("mousemove", handleMouseEvent);
