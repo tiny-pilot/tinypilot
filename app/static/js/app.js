@@ -1,8 +1,8 @@
 "use strict";
 
-const keyboardSocket = io();
+const socket = io();
 let poweringDown = false;
-let connectedToKeyboardService = false;
+let connectedToServer = false;
 // The OS and browser capture some key combinations that involve modifier keys
 // before they can reach JavaScript, so allow the user to set them manually.
 let manualModifiers = {
@@ -200,23 +200,23 @@ function sendKeystroke(keystroke) {
   if (!keystroke.metaKey) {
     addKeyCard(keystroke.key, keystroke.keystrokeId);
   }
-  keyboardSocket.emit("keystroke", keystroke);
+  socket.emit("keystroke", keystroke);
   if (!keystroke.metaKey) {
     // Increment the global keystroke ID.
     keystrokeId++;
   }
 }
 
-function onKeyboardSocketConnect() {
-  connectedToKeyboardService = true;
+function onSocketConnect() {
+  connectedToServer = true;
   showElementById("status-connected", "flex");
   hideElementById("status-disconnected");
 
-  hideErrorIfType("Keyboard Connection Error");
+  hideErrorIfType("Server Connection Error");
 }
 
-function onKeyboardSocketDisconnect(reason) {
-  connectedToKeyboardService = false;
+function onSocketDisconnect(reason) {
+  connectedToServer = false;
   hideElementById("status-connected");
   showElementById("status-disconnected", "flex");
 
@@ -225,11 +225,11 @@ function onKeyboardSocketDisconnect(reason) {
   if (poweringDown) {
     return;
   }
-  showError("Keyboard Connection Error", reason);
+  showError("Server Connection Error", reason);
 }
 
 function onKeyDown(evt) {
-  if (!connectedToKeyboardService) {
+  if (!connectedToServer) {
     return;
   }
   if (isIgnoredKeystroke(evt.keyCode)) {
@@ -263,11 +263,11 @@ function onKeyDown(evt) {
 
 function onKeyUp(evt) {
   keyState[evt.keyCode] = false;
-  if (!connectedToKeyboardService) {
+  if (!connectedToServer) {
     return;
   }
   if (isModifierKeyCode(evt.keyCode)) {
-    keyboardSocket.emit("keyRelease");
+    socket.emit("keyRelease");
   }
 }
 
@@ -316,8 +316,8 @@ document.getElementById("cancel-shutdown").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-keyboardSocket.on("connect", onKeyboardSocketConnect);
-keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);
-keyboardSocket.on("keystroke-received", (data) => {
+socket.on("connect", onSocketConnect);
+socket.on("disconnect", onSocketDisconnect);
+socket.on("keystroke-received", (data) => {
   updateKeyStatus(data.keystrokeId, data.success);
 });
