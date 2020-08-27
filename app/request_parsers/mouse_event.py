@@ -31,25 +31,33 @@ class MouseEvent:
 
 
 def parse_mouse_event(message):
-    buttons = message['buttons']
+    return MouseEvent(
+        buttons=_parse_button_state(message['buttons']),
+        relative_x=_parse_relative_position(message['relativeX']),
+        relative_y=_parse_relative_position(message['relativeY']),
+    )
+
+
+def _parse_button_state(buttons):
+    if type(buttons) is not int:
+        raise InvalidButtonState('Button state must be an integer value: %s' %
+                                 buttons)
     if not (0 <= buttons <= _MAX_BUTTON_STATE):
         raise InvalidButtonState('Button state must be <= 0x%x: %s' %
                                  (_MAX_BUTTON_STATE, buttons))
+    return buttons
 
-    relative_x = message['relativeX']
-    if not _validate_relative_position(relative_x):
-        raise InvalidRelativePosition(
-            'Relative x-position must be between 0.0 and 1.0: %s' % relative_x)
-    relative_y = message['relativeY']
-    if not _validate_relative_position(relative_y):
-        raise InvalidRelativePosition(
-            'Relative y-position must be between 0.0 and 1.0: %s' % relative_y)
 
-    return MouseEvent(
-        buttons=buttons,
-        relative_x=relative_x,
-        relative_y=relative_y,
-    )
+def _parse_relative_position(relative_position):
+    if type(relative_position) is not float:
+        raise InvalidRelativePosition(
+            'Relative position must be a float between 0.0 and 1.0: %s' %
+            relative_position)
+    if not _validate_relative_position(relative_position):
+        raise InvalidRelativePosition(
+            'Relative position must be a float between 0.0 and 1.0: %s' %
+            relative_position)
+    return relative_position
 
 
 def _validate_relative_position(relative_position):

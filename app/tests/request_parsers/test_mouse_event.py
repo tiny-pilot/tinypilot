@@ -39,6 +39,14 @@ class MouseEventTest(unittest.TestCase):
                 'relativeY': 0.75,
             })
 
+    def test_rejects_non_numeric_buttons_value(self):
+        with self.assertRaises(mouse_event.InvalidButtonState):
+            mouse_event.parse_mouse_event({
+                'buttons': 'a',
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+            })
+
     def test_rejects_negative_relative_x_value(self):
         with self.assertRaises(mouse_event.InvalidRelativePosition):
             mouse_event.parse_mouse_event({
@@ -71,4 +79,18 @@ class MouseEventTest(unittest.TestCase):
                 'relativeY': 1.001,
             })
 
-    # TODO(mtlynch): Add tests for non-numeric values.
+    def test_rejects_non_float_relative_x_value(self):
+        with self.assertRaises(mouse_event.InvalidRelativePosition):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 'a',
+                'relativeY': 0.75,
+            })
+
+    def test_rejects_non_float_relative_y_value(self):
+        with self.assertRaises(mouse_event.InvalidRelativePosition):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 'b',
+            })
