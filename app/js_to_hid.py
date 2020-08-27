@@ -1,5 +1,3 @@
-import dataclasses
-
 from hid import keyboard
 
 
@@ -9,17 +7,6 @@ class Error(Exception):
 
 class UnrecognizedKeyCodeError(Error):
     pass
-
-
-@dataclasses.dataclass
-class JavaScriptKeyEvent:
-    meta_modifier: bool
-    alt_modifier: bool
-    shift_modifier: bool
-    ctrl_modifier: bool
-    key: str
-    key_code: int
-    keystroke_id: int
 
 
 # JS keycodes source: https://github.com/wesbos/keycodes
@@ -152,17 +139,16 @@ _JS_TO_HID_KEYCODES = {
 }
 
 
-def convert(js_key_event):
+def convert(keystroke):
     control_chars = 0
     for i, pressed in enumerate([
-            js_key_event.ctrl_modifier, js_key_event.shift_modifier,
-            js_key_event.alt_modifier, js_key_event.meta_modifier
+            keystroke.ctrl_modifier, keystroke.shift_modifier,
+            keystroke.alt_modifier, keystroke.meta_modifier
     ]):
         if pressed:
             control_chars |= 1 << i
     try:
-        return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
+        return control_chars, _JS_TO_HID_KEYCODES[keystroke.key_code]
     except KeyError:
-        raise UnrecognizedKeyCodeError(
-            'Unrecognized key code %s (%d)' %
-            (js_key_event.key, js_key_event.key_code))
+        raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' %
+                                       (keystroke.key, keystroke.key_code))

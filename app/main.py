@@ -12,6 +12,7 @@ import local_system
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
 from hid import write as hid_write
+from request_parsers import keystroke as keystroke_request
 from request_parsers import mouse_event as mouse_event_request
 
 root_logger = logging.getLogger()
@@ -53,42 +54,32 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 app.config['SECRET_KEY'] = os.urandom(32)
 
 
-# TODO(mtlynch): Move this to request_parsers module.
-def _parse_key_event(payload):
-    return js_to_hid.JavaScriptKeyEvent(meta_modifier=payload['metaKey'],
-                                        alt_modifier=payload['altKey'],
-                                        shift_modifier=payload['shiftKey'],
-                                        ctrl_modifier=payload['ctrlKey'],
-                                        key=payload['key'],
-                                        key_code=payload['keyCode'],
-                                        keystroke_id=payload['keystrokeId'])
-
-
 @socketio.on('keystroke')
 def socket_keystroke(message):
-    key_event = _parse_key_event(message)
-    hid_keycode = None
-    processing_result = {
-        'keystrokeId': key_event.keystroke_id,
-        'success': False
-    }
     try:
-        control_keys, hid_keycode = js_to_hid.convert(key_event)
+        keystroke = keystroke_request.parse_keystroke(message)
+    except keystroke_request.Error as e:
+        logger.error('Failed to parse keystroke request: %s', e)
+        return
+    hid_keycode = None
+    processing_result = {'keystrokeId': keystroke.id, 'success': False}
+    try:
+        control_keys, hid_keycode = js_to_hid.convert(keystroke)
     except js_to_hid.UnrecognizedKeyCodeError:
-        logger.warning('Unrecognized key: %s (keycode=%d)', key_event.key,
-                       key_event.key_code)
+        logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
+                       keystroke.key_code)
         socketio.emit('keystroke-received', processing_result)
         return
     if hid_keycode is None:
-        logger.info('Ignoring %s key (keycode=%d)', key_event.key,
-                    key_event.key_code)
+        logger.info('Ignoring %s key (keycode=%d)', keystroke.key,
+                    keystroke.key_code)
         socketio.emit('keystroke-received', processing_result)
         return
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
-        logger.error('Failed to write key: %s (keycode=%d). %s', key_event.key,
-                     key_event.key_code, e)
+        logger.error('Failed to write key: %s (keycode=%d). %s', keystroke.key,
+                     keystroke.key_code, e)
         socketio.emit('keystroke-received', processing_result)
         return
     processing_result['success'] = True
