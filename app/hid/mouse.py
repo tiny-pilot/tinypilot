@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 
 def send_mouse_position(mouse_path, x, y, mouse_down, mouse_button):
     x_scaled, y_scaled = _scale_mouse_coordinates(x, y)
-    logger.info('sending %d, %d, %s to %s (button: %s)', x, y, mouse_path, mouse_down, mouse_button)
+    logger.info('sending %d, %d, %s to %s (button: %s)', x, y, mouse_path,
+                mouse_down, mouse_button)
     buf = [0] * 5
     if mouse_down:
         if mouse_button == 2:
