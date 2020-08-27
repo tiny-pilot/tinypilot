@@ -15,123 +15,125 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
   </head>
   <body>
-    <div class="navbar">
-      <p class="brand">TinyPilot</p>
-      <div class="nav-items">
-        <div class="nav-item keyboard-status">
-          <p>Connection</p>
-          <div class="tooltip tooltip-bottom">
-            <div id="status-connected" class="status-indicator">
-              <span class="status-dot"></span>
-            </div>
-            <div class="tooltip-text">
-              <p>
-                You are connected to TinyPilot.
-              </p>
-            </div>
-          </div>
-
-          <div class="tooltip tooltip-bottom">
-            <div id="status-disconnected" class="status-indicator">
-              <span class="status-dot"></span>
-            </div>
-            <div class="tooltip-text">
-              <p>
-                Could not connect to TinyPilot. Try reloading the page.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="nav-item nav-icon source-link">
-          <a href="https://github.com/mtlynch/tinypilot">
-            <img src="/img/GitHub-Mark-Light-120px-plus.png" />
-          </a>
-        </div>
-        <div class="nav-item nav-icon power">
-          <a id="power-btn" href="#">
-            <img src="/img/power-icon.png" />
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="page-content container">
-      <div id="error-panel">
-        <h3 id="error-type">Error Type</h3>
-        <p id="error-message">Error message</p>
-        <button id="hide-error-btn" class="btn" type="button">Close</button>
-      </div>
-      <div id="shutdown-confirmation-panel">
-        <h3>Shut Down TinyPilot Device?</h3>
-        <p>
-          Note that this will shut down <strong>TinyPilot</strong>, not the
-          machine to which it is attached.
-        </p>
-        <button id="confirm-shutdown" class="btn-danger btn" type="button">
-          Shut Down
-        </button>
-        <button id="confirm-restart" class="btn-danger btn" type="button">
-          Restart
-        </button>
-        <button id="cancel-shutdown" class="btn" type="button">Cancel</button>
-      </div>
-      <div id="remote-screen">
-        <img id="remote-screen-img" src="/stream?advance_headers=1" />
-      </div>
-      <div id="keystroke-history" class="container">
-        <div id="recent-keys"></div>
-        <div>
-          <input type="checkbox" id="display-history-checkbox" checked />
-          <label for="display-history-checkbox">Show history</label>
-        </div>
-        <div>
-          <div class="manual-modifiers">
-            <button
-              modifier="ctrl"
-              class="btn manual-modifier-btn"
-              type="button"
-            >
-              Ctrl
-            </button>
-            <button
-              modifier="alt"
-              class="btn manual-modifier-btn"
-              type="button"
-            >
-              Alt
-            </button>
-            <button
-              modifier="shift"
-              class="btn manual-modifier-btn"
-              type="button"
-            >
-              Shift
-            </button>
-            <button
-              modifier="sysrq"
-              class="btn manual-modifier-btn"
-              type="button"
-            >
-              SysRq
-            </button>
-            <button
-              modifier="meta"
-              class="btn manual-modifier-btn"
-              type="button"
-            >
-              Meta/OS
-            </button>
-
-            <div class="tooltip tooltip-top">
-              <img class="question-icon" src="/img/question-icon.svg" />
+    <div id="app">
+      <div class="navbar">
+        <p class="brand">TinyPilot</p>
+        <div class="nav-items">
+          <div class="nav-item keyboard-status">
+            <p>Connection</p>
+            <div class="tooltip tooltip-bottom">
+              <div id="status-connected" class="status-indicator">
+                <span class="status-dot"></span>
+              </div>
               <div class="tooltip-text">
                 <p>
-                  Your OS and browser capture certain key combinations before
-                  they reach TinyPilot (e.g., Ctrl + Alt + Del).
+                  You are connected to TinyPilot.
                 </p>
+              </div>
+            </div>
+
+            <div class="tooltip tooltip-bottom">
+              <div id="status-disconnected" class="status-indicator">
+                <span class="status-dot"></span>
+              </div>
+              <div class="tooltip-text">
                 <p>
-                  Press these buttons to send the corresponding modifier keys on
-                  your next keystroke.
+                  Could not connect to TinyPilot. Try reloading the page.
                 </p>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item nav-icon source-link">
+            <a href="https://github.com/mtlynch/tinypilot">
+              <img src="/img/GitHub-Mark-Light-120px-plus.png" />
+            </a>
+          </div>
+          <div class="nav-item nav-icon power">
+            <a id="power-btn" href="#">
+              <img src="/img/power-icon.png" />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="page-content container">
+        <div id="error-panel">
+          <h3 id="error-type">Error Type</h3>
+          <p id="error-message">Error message</p>
+          <button id="hide-error-btn" class="btn" type="button">Close</button>
+        </div>
+        <div id="shutdown-confirmation-panel">
+          <h3>Shut Down TinyPilot Device?</h3>
+          <p>
+            Note that this will shut down <strong>TinyPilot</strong>, not the
+            machine to which it is attached.
+          </p>
+          <button id="confirm-shutdown" class="btn-danger btn" type="button">
+            Shut Down
+          </button>
+          <button id="confirm-restart" class="btn-danger btn" type="button">
+            Restart
+          </button>
+          <button id="cancel-shutdown" class="btn" type="button">Cancel</button>
+        </div>
+        <div id="remote-screen">
+          <img id="remote-screen-img" src="/stream?advance_headers=1" />
+        </div>
+        <div id="keystroke-history" class="container">
+          <div id="recent-keys"></div>
+          <div>
+            <input type="checkbox" id="display-history-checkbox" checked />
+            <label for="display-history-checkbox">Show history</label>
+          </div>
+          <div>
+            <div class="manual-modifiers">
+              <button
+                modifier="ctrl"
+                class="btn manual-modifier-btn"
+                type="button"
+              >
+                Ctrl
+              </button>
+              <button
+                modifier="alt"
+                class="btn manual-modifier-btn"
+                type="button"
+              >
+                Alt
+              </button>
+              <button
+                modifier="shift"
+                class="btn manual-modifier-btn"
+                type="button"
+              >
+                Shift
+              </button>
+              <button
+                modifier="sysrq"
+                class="btn manual-modifier-btn"
+                type="button"
+              >
+                SysRq
+              </button>
+              <button
+                modifier="meta"
+                class="btn manual-modifier-btn"
+                type="button"
+              >
+                Meta/OS
+              </button>
+
+              <div class="tooltip tooltip-top">
+                <img class="question-icon" src="/img/question-icon.svg" />
+                <div class="tooltip-text">
+                  <p>
+                    Your OS and browser capture certain key combinations before
+                    they reach TinyPilot (e.g., Ctrl + Alt + Del).
+                  </p>
+                  <p>
+                    Press these buttons to send the corresponding modifier keys
+                    on your next keystroke.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
