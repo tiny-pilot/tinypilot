@@ -5,12 +5,20 @@ from hid import write as hid_write
 logger = logging.getLogger(__name__)
 
 
-def send_mouse_position(mouse_path, x, y, mouse_down):
+def send_mouse_position(mouse_path, x, y, mouse_down, mouse_button):
     x_scaled, y_scaled = _scale_mouse_coordinates(x, y)
-    logger.info('sending %d, %d, %s to %s', x, y, mouse_path, mouse_down)
+    logger.info('sending %d, %d, %s to %s (button: %s)', x, y, mouse_path, mouse_down, mouse_button)
     buf = [0] * 5
     if mouse_down:
-        buf[0] = 0x01
+        if mouse_button == 2:
+            # Right button (set bit 2)
+            buf[0] = 0x02
+        elif mouse_button == 1:
+            # Middle button (set bit 3)
+            buf[0] = 0x04
+        else:
+            # Assume left button (set bit 1)
+            buf[0] = 0x01
     else:
         buf[0] = 0
     buf[1] = x_scaled & 0xff

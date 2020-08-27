@@ -1,6 +1,6 @@
 "use strict";
 
-const keyboardSocket = io();
+const socket = io();
 let poweringDown = false;
 let connectedToKeyboardService = false;
 // The OS and browser capture some key combinations that involve modifier keys
@@ -13,6 +13,7 @@ let manualModifiers = {
   sysrq: false,
 };
 let mouseDown = false;
+let mouseButton = 0;
 let keystrokeId = 0;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
@@ -196,7 +197,7 @@ function isIgnoredKeystroke(keyCode) {
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
-function onKeyboardSocketConnect() {
+function onSocketConnect() {
   connectedToKeyboardService = true;
   showElementById("status-connected", "flex");
   hideElementById("status-disconnected");
@@ -204,7 +205,7 @@ function onKeyboardSocketConnect() {
   hideErrorIfType("Keyboard Connection Error");
 }
 
-function onKeyboardSocketDisconnect(reason) {
+function onSocketDisconnect(reason) {
   connectedToKeyboardService = false;
   hideElementById("status-connected");
   showElementById("status-disconnected", "flex");
@@ -237,7 +238,7 @@ function onKeyDown(evt) {
     location = "right";
   }
 
-  keyboardSocket.emit("keystroke", {
+  socket.emit("keystroke", {
     metaKey: evt.metaKey || manualModifiers.meta,
     altKey: evt.altKey || manualModifiers.alt,
     shiftKey: evt.shiftKey || manualModifiers.shift,
@@ -258,18 +259,21 @@ function onKeyUp(evt) {
     return;
   }
   if (isModifierKeyCode(evt.keyCode)) {
-    keyboardSocket.emit("keyRelease");
+    socket.emit("keyRelease");
   }
 }
 
-function onRemoteScreenMouseMove(evt) {
+function handleMouseEvent(evt) {
+  // Ensure e.g. mouse drags of the image don't happen
+  evt.preventDefault();
   const boundingRect = evt.target.getBoundingClientRect();
   const x = Math.max(0, evt.clientX - boundingRect.left);
   const y = Math.max(0, evt.clientY - boundingRect.top);
   const width = boundingRect.right - boundingRect.left;
   const height = boundingRect.bottom - boundingRect.top;
-  keyboardSocket.emit("mouseMovement", {
+  socket.emit("mouseMovement", {
     mouseDown: mouseDown,
+    mouseButton: mouseButton,
     x: x / width,
     y: y / height,
   });
@@ -297,17 +301,20 @@ document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mousemove", onRemoteScreenMouseMove);
+  .addEventListener("mousemove", handleMouseEvent);
 document
   .getElementById("remote-screen-img")
   .addEventListener("mousedown", function (evt) {
     mouseDown = true;
-    onRemoteScreenMouseMove(evt);
+    mouseButton = evt.button;
+    handleMouseEvent(evt);
   });
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mouseup", function () {
+  .addEventListener("mouseup", function (evt) {
     mouseDown = false;
+    mouseButton = 0;
+    handleMouseEvent(evt);
   });
 document
   .getElementById("display-history-checkbox")
@@ -334,8 +341,8 @@ document.getElementById("cancel-shutdown").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-keyboardSocket.on("connect", onKeyboardSocketConnect);
-keyboardSocket.on("disconnect", onKeyboardSocketDisconnect);
-keyboardSocket.on("keystroke-received", (data) => {
+socket.on("connect", onSocketConnect);
+socket.on("disconnect", onSocketDisconnect);
+socket.on("keystroke-received", (data) => {
   updateKeyStatus(data.keystrokeId, data.success);
 });
