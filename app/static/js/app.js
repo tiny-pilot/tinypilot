@@ -12,7 +12,6 @@ let manualModifiers = {
   ctrl: false,
   sysrq: false,
 };
-let mouseButton = 0;
 let keystrokeId = 0;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
