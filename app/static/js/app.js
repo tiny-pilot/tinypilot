@@ -13,6 +13,7 @@ let manualModifiers = {
   sysrq: false,
 };
 let mouseDown = false;
+let mouseButton = 0;
 let keystrokeId = 0;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
@@ -272,14 +273,17 @@ function onKeyUp(evt) {
   }
 }
 
-function onRemoteScreenMouseMove(evt) {
+function handleMouseEvent(evt) {
+  // Ensure e.g. mouse drags of the image don't happen
+  evt.preventDefault();
   const boundingRect = evt.target.getBoundingClientRect();
   const x = Math.max(0, evt.clientX - boundingRect.left);
   const y = Math.max(0, evt.clientY - boundingRect.top);
   const width = boundingRect.right - boundingRect.left;
   const height = boundingRect.bottom - boundingRect.top;
-  keyboardSocket.emit("mouseMovement", {
+  socket.emit("mouseMovement", {
     mouseDown: mouseDown,
+    mouseButton: mouseButton,
     x: x / width,
     y: y / height,
   });
@@ -307,17 +311,20 @@ document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mousemove", onRemoteScreenMouseMove);
+  .addEventListener("mousemove", handleMouseEvent);
 document
   .getElementById("remote-screen-img")
   .addEventListener("mousedown", function (evt) {
     mouseDown = true;
-    onRemoteScreenMouseMove(evt);
+    mouseButton = evt.button;
+    handleMouseEvent(evt);
   });
 document
   .getElementById("remote-screen-img")
-  .addEventListener("mouseup", function () {
+  .addEventListener("mouseup", function (evt) {
     mouseDown = false;
+    mouseButton = 0;
+    handleMouseEvent(evt);
   });
 document
   .getElementById("display-history-checkbox")

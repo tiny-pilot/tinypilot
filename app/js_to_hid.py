@@ -27,6 +27,7 @@ class JavaScriptMouseMoveEvent:
     x: int
     y: int
     mouse_down: bool
+    mouse_button: int
 
 
 # JS keycodes source: https://github.com/wesbos/keycodes
