@@ -12,6 +12,7 @@ import local_system
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
 from hid import write as hid_write
+from request_parsers import mouse_event as mouse_event_request
 
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -52,6 +53,7 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 app.config['SECRET_KEY'] = os.urandom(32)
 
 
+# TODO(mtlynch): Move this to request_parsers module.
 def _parse_key_event(payload):
     return js_to_hid.JavaScriptKeyEvent(meta_modifier=payload['metaKey'],
                                         alt_modifier=payload['altKey'],
@@ -60,13 +62,6 @@ def _parse_key_event(payload):
                                         key=payload['key'],
                                         key_code=payload['keyCode'],
                                         keystroke_id=payload['keystrokeId'])
-
-
-def _parse_mouse_move_event(payload):
-    return js_to_hid.JavaScriptMouseMoveEvent(
-        x=max(0, payload['x']),
-        y=max(0, payload['y']),
-        mouse_buttons=payload['mouseButtons'])
 
 
 @socketio.on('keystroke')
@@ -100,16 +95,20 @@ def socket_keystroke(message):
     socketio.emit('keystroke-received', processing_result)
 
 
-@socketio.on('mouseMovement')
-def socket_mouse_movement(message):
-    mouse_move_event = _parse_mouse_move_event(message)
+@socketio.on('mouse-event')
+def socket_mouse_event(message):
     try:
-        fake_mouse.send_mouse_position(mouse_path, mouse_move_event.x,
-                                       mouse_move_event.y,
-                                       mouse_move_event.mouse_buttons)
+        mouse_move_event = mouse_event_request.parse_mouse_event(message)
+    except mouse_event_request.Error as e:
+        logger.error('Failed to parse mouse event request: %s', e)
+        return
+    try:
+        fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
+                                    mouse_move_event.x, mouse_move_event.y)
     except hid_write.WriteError as e:
-        logger.error('Failed to forward mouse movement: %s', e)
-    socketio.emit('mouse-movement-received', {'success': True})
+        logger.error('Failed to forward mouse event: %s', e)
+        return
+    socketio.emit('mouse-event-received', {'success': True})
 
 
 @socketio.on('keyRelease')

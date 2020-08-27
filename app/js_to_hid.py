@@ -22,13 +22,6 @@ class JavaScriptKeyEvent:
     keystroke_id: int
 
 
-@dataclasses.dataclass
-class JavaScriptMouseMoveEvent:
-    x: int
-    y: int
-    mouse_buttons: int
-
-
 # JS keycodes source: https://github.com/wesbos/keycodes
 # HID keycodes source: https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
 
