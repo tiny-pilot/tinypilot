@@ -10,7 +10,9 @@ import flask_wtf
 import js_to_hid
 import local_system
 from hid import keyboard as fake_keyboard
+from hid import mouse as fake_mouse
 from hid import write as hid_write
+from request_parsers import mouse_event as mouse_event_request
 
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -29,6 +31,8 @@ debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
 # Location of file path at which to write keyboard HID input.
 keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
+# Location of file path at which to write mouse HID input.
+mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 
 # Socket.io logs are too chatty at INFO level.
 if not debug:
@@ -49,6 +53,7 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 app.config['SECRET_KEY'] = os.urandom(32)
 
 
+# TODO(mtlynch): Move this to request_parsers module.
 def _parse_key_event(payload):
     return js_to_hid.JavaScriptKeyEvent(meta_modifier=payload['metaKey'],
                                         alt_modifier=payload['altKey'],
@@ -88,6 +93,22 @@ def socket_keystroke(message):
         return
     processing_result['success'] = True
     socketio.emit('keystroke-received', processing_result)
+
+
+@socketio.on('mouse-event')
+def socket_mouse_event(message):
+    try:
+        mouse_move_event = mouse_event_request.parse_mouse_event(message)
+    except mouse_event_request.Error as e:
+        logger.error('Failed to parse mouse event request: %s', e)
+        return
+    try:
+        fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
+                                    mouse_move_event.relative_x,
+                                    mouse_move_event.relative_y)
+    except hid_write.WriteError as e:
+        logger.error('Failed to forward mouse event: %s', e)
+        return
 
 
 @socketio.on('keyRelease')

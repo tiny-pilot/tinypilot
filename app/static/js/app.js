@@ -261,6 +261,21 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
+function sendMouseEvent(evt) {
+  const boundingRect = evt.target.getBoundingClientRect();
+  const cursorX = Math.max(0, evt.clientX - boundingRect.left);
+  const cursorY = Math.max(0, evt.clientY - boundingRect.top);
+  const width = boundingRect.right - boundingRect.left;
+  const height = boundingRect.bottom - boundingRect.top;
+  const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
+  const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
+  socket.emit("mouse-event", {
+    buttons: evt.buttons,
+    relativeX: relativeX,
+    relativeY: relativeY,
+  });
+}
+
 function onKeyUp(evt) {
   keyState[evt.keyCode] = false;
   if (!connectedToServer) {
@@ -291,6 +306,21 @@ function onDisplayHistoryChanged(evt) {
 
 document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
+
+// Forward all mouse activity that occurs over the image of the remote screen.
+const screenImg = document.getElementById("remote-screen-img");
+screenImg.addEventListener("mousemove", function (evt) {
+  // Ensure that mouse drags don't attempt to drag the image on the screen.
+  evt.preventDefault();
+  sendMouseEvent(evt);
+});
+screenImg.addEventListener("mousedown", sendMouseEvent);
+screenImg.addEventListener("mouseup", sendMouseEvent);
+// Ignore the context menu so that it doesn't block the screen when the user
+// right-clicks.
+screenImg.addEventListener("contextmenu", function (evt) {
+  evt.preventDefault();
+});
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
