@@ -32,7 +32,7 @@ class MouseEvent:
 
 def parse_mouse_event(message):
     buttons = message['buttons']
-    if buttons > _MAX_BUTTON_STATE:
+    if not (0 <= buttons <= _MAX_BUTTON_STATE):
         raise InvalidButtonState('Button state must be <= 0x%x: %s' %
                                  (_MAX_BUTTON_STATE, buttons))
 
