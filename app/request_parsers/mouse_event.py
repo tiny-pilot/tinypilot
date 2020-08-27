@@ -5,11 +5,11 @@ class Error(Exception):
     pass
 
 
-class InvalidButtonState(Exception):
+class InvalidButtonState(Error):
     pass
 
 
-class InvalidRelativePosition(Exception):
+class InvalidRelativePosition(Error):
     pass
 
 
