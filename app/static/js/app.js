@@ -348,11 +348,6 @@ function onPaste(e) {
   hideElementById("paste-overlay");
 }
 
-function pastePasswordContents() {
-  let pastedText = document.getElementById("paste-password").value;
-  sendPastedText(pastedText, false);
-}
-
 function sendPastedText(pastedText, updateCards) {
   for (let i = 0; i < pastedText.length; i++) {
     // We need to identify keys which are typed with modifiers and send Shift +
