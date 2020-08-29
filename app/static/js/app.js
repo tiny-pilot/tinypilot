@@ -261,7 +261,10 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(evt) {
+function sendMouseEvent(evt) {  
+  // Ensure that mouse drags don't attempt to drag the image on the screen.
+  evt.preventDefault();
+
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
@@ -309,11 +312,7 @@ document.querySelector("body").addEventListener("keyup", onKeyUp);
 
 // Forward all mouse activity that occurs over the image of the remote screen.
 const screenImg = document.getElementById("remote-screen-img");
-screenImg.addEventListener("mousemove", function (evt) {
-  // Ensure that mouse drags don't attempt to drag the image on the screen.
-  evt.preventDefault();
-  sendMouseEvent(evt);
-});
+screenImg.addEventListener("mousemove", sendMouseEvent);
 screenImg.addEventListener("mousedown", sendMouseEvent);
 screenImg.addEventListener("mouseup", sendMouseEvent);
 // Ignore the context menu so that it doesn't block the screen when the user
