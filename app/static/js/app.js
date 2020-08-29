@@ -13,6 +13,9 @@ let manualModifiers = {
   sysrq: false,
 };
 let keystrokeId = 0;
+// To handle e.g. touch release events we need to know the last position sent
+// to the server. Shape: { x: int, y: int }
+let lastPosition = undefined;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -265,15 +268,42 @@ function sendMouseEvent(evt) {
   // Ensure that mouse drags don't attempt to drag the image on the screen.
   evt.preventDefault();
 
-  const boundingRect = evt.target.getBoundingClientRect();
-  const cursorX = Math.max(0, evt.clientX - boundingRect.left);
-  const cursorY = Math.max(0, evt.clientY - boundingRect.top);
+  emitMouseEvent(evt.target, evt, evt.buttons);
+}
+
+function sendTouchEvent(evt) {  
+  // Ensure that mouse drags don't attempt to drag the image on the screen.
+  evt.preventDefault();
+
+  const touches = evt.touches;
+
+  if (touches.length == 0 && lastPosition !== undefined) {
+    // Release all mouse buttons
+    socket.emit("mouse-event", {
+      buttons: 0,
+      relativeX: lastPosition.x,
+      relativeY: lastPosition.y,
+    });
+    return;
+  }
+
+  const firstTouch = evt.touches[0];
+
+  // Simulate a left mouse button event
+  emitMouseEvent(evt.target, firstTouch, 1);
+}
+
+function emitMouseEvent(domTarget, position, buttons) {
+  const boundingRect = domTarget.getBoundingClientRect();
+  const cursorX = Math.max(0, position.clientX - boundingRect.left);
+  const cursorY = Math.max(0, position.clientY - boundingRect.top);
   const width = boundingRect.right - boundingRect.left;
   const height = boundingRect.bottom - boundingRect.top;
   const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
   const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
+  lastPosition = { x: relativeX, y: relativeY };
   socket.emit("mouse-event", {
-    buttons: evt.buttons,
+    buttons: buttons,
     relativeX: relativeX,
     relativeY: relativeY,
   });
@@ -315,6 +345,9 @@ const screenImg = document.getElementById("remote-screen-img");
 screenImg.addEventListener("mousemove", sendMouseEvent);
 screenImg.addEventListener("mousedown", sendMouseEvent);
 screenImg.addEventListener("mouseup", sendMouseEvent);
+screenImg.addEventListener("touchmove", sendTouchEvent);
+screenImg.addEventListener("touchstart", sendTouchEvent);
+screenImg.addEventListener("touchend", sendTouchEvent);
 // Ignore the context menu so that it doesn't block the screen when the user
 // right-clicks.
 screenImg.addEventListener("contextmenu", function (evt) {
