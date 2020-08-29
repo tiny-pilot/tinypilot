@@ -49,7 +49,8 @@ def _parse_button_state(buttons):
 
 
 def _parse_relative_position(relative_position):
-    if type(relative_position) is not float and type(relative_position) is not int:
+    if type(relative_position) is not float and type(
+            relative_position) is not int:
         raise InvalidRelativePosition(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)

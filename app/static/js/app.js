@@ -264,14 +264,14 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(evt) {  
+function sendMouseEvent(evt) {
   // Ensure that mouse drags don't attempt to drag the image on the screen.
   evt.preventDefault();
 
   emitMouseEvent(evt.target, evt, evt.buttons);
 }
 
-function sendTouchEvent(evt) {  
+function sendTouchEvent(evt) {
   // Ensure that mouse drags don't attempt to drag the image on the screen.
   evt.preventDefault();
 
