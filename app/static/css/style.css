@@ -158,40 +158,6 @@ button:active {
   cursor: crosshair;
 }
 
-.keyboard-status {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-right: 1rem;
-}
-
-.keyboard-status .status-indicator {
-  display: none;
-  margin-left: 0.8rem;
-}
-
-.keyboard-status .status-dot {
-  height: 14px;
-  width: 14px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-#status-connected .status-dot {
-  border: 1px solid rgb(190, 255, 170);
-  background-color: rgb(116, 238, 116);
-}
-
-#status-disconnected .status-dot {
-  border: 1px solid rgb(255, 82, 82);
-  background-color: red;
-}
-
-#disconnect-reason {
-  color: red;
-  visibility: hidden;
-}
-
 #keystroke-history {
   display: flex;
   flex-direction: column;
