@@ -1,0 +1,82 @@
+<template id="content-tooltip-template">
+  <style>
+    :host {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      background-color: rgba(65, 65, 65, 0.85);
+      color: #fff;
+      text-align: center;
+      padding: 0.25rem 1rem;
+      border: 1px solid black;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+    }
+
+    :host([position="top"]) .tooltip-text {
+      width: 400px;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -200px;
+    }
+
+    :host([position="bottom"]) .tooltip-text {
+      top: 100%;
+      left: 50%;
+      margin-left: -200px;
+    }
+
+    :host(:hover) .tooltip-text {
+      visibility: visible;
+    }
+  </style>
+  <slot></slot>
+  <div class="tooltip-text">
+    <slot name="text"></slot>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#content-tooltip-template");
+
+    customElements.define(
+      "content-tooltip",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        get connected() {
+          return this.getAttribute("connected");
+        }
+
+        set connected(newValue) {
+          this.setAttribute("connected", newValue);
+        }
+
+        get disconnectReason() {
+          return this.shadowRoot.querySelector("#disconnect-reason")
+            .textContent;
+        }
+
+        set disconnectReason(newValue) {
+          this.shadowRoot.querySelector(
+            "#disconnect-reason"
+          ).innerText = newValue;
+        }
+      }
+    );
+  })();
+</script>
