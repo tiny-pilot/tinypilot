@@ -1,0 +1,127 @@
+<template id="connection-indicator-template">
+  <style>
+    .status {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-right: 1rem;
+    }
+
+    .status-dot {
+      height: 1rem;
+      width: 1rem;
+      margin-left: 0.8rem;
+      border-radius: 50%;
+      display: inline-block;
+      /* Disconnected state */
+      border: 1px solid rgb(255, 82, 82);
+      background-color: red;
+    }
+
+    :host([connected="true"]) .status-dot {
+      border: 1px solid rgb(190, 255, 170);
+      background-color: rgb(116, 238, 116);
+    }
+
+    .connected-text {
+      display: none;
+    }
+
+    :host([connected="true"]) .connected-text {
+      display: block;
+    }
+
+    .disconnected-text {
+      display: block;
+    }
+
+    :host([connected="true"]) .disconnected-text {
+      display: none;
+    }
+
+    /* TODO(mtlynch): Refactor this so we're not duplicating the CSS class from
+        the light DOM. */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      background-color: rgba(65, 65, 65, 0.85);
+      color: #fff;
+      text-align: center;
+      padding: 0.25rem 1rem;
+      border: 1px solid black;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .tooltip-bottom .tooltip-text {
+      top: 100%;
+      left: 50%;
+      margin-left: -200px;
+    }
+
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+    }
+  </style>
+  <div class="status">
+    <p>Connection</p>
+    <div class="tooltip tooltip-bottom">
+      <span class="status-dot"></span>
+      <div class="tooltip-text">
+        <p class="connected-text">
+          You are connected to TinyPilot.
+        </p>
+        <p class="disconnected-text">
+          Could not connect to TinyPilot:
+          <span id="disconnect-reason"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#connection-indicator-template");
+
+    customElements.define(
+      "connection-indicator",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        get connected() {
+          return this.getAttribute("connected");
+        }
+
+        set connected(newValue) {
+          this.setAttribute("connected", newValue);
+        }
+
+        get disconnectReason() {
+          return this.shadowRoot.querySelector("#disconnect-reason")
+            .textContent;
+        }
+
+        set disconnectReason(newValue) {
+          this.shadowRoot.querySelector(
+            "#disconnect-reason"
+          ).innerText = newValue;
+        }
+      }
+    );
+  })();
+</script>

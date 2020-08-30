@@ -41,6 +41,7 @@ if not debug:
     logging.getLogger('engineio').setLevel(logging.ERROR)
 
 app = flask.Flask(__name__, static_url_path='')
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 # TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
 # risk of a CSRF attack for this app is very low. Additionally, CORS doesn't
 # protect us from the dangerous part of a CSRF attack. Even without same-origin
