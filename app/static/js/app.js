@@ -79,12 +79,6 @@ function showError(errorType, errorMessage) {
   showElementById("error-panel");
 }
 
-function hideErrorIfType(errorType) {
-  if (document.getElementById("error-type").innerText === errorType) {
-    hideElementById("error-panel");
-  }
-}
-
 function displayPoweringDownUI(restart) {
   for (const elementId of [
     "error-panel",
@@ -209,23 +203,14 @@ function sendKeystroke(keystroke) {
 
 function onSocketConnect() {
   connectedToServer = true;
-  showElementById("status-connected", "flex");
-  hideElementById("status-disconnected");
-
-  hideErrorIfType("Server Connection Error");
+  document.getElementById("connection-indicator").connected = true;
 }
 
 function onSocketDisconnect(reason) {
   connectedToServer = false;
-  hideElementById("status-connected");
-  showElementById("status-disconnected", "flex");
-
-  // If user powered down the device, don't display an error message about
-  // disconnecting from the keyboard service.
-  if (poweringDown) {
-    return;
-  }
-  showError("Server Connection Error", reason);
+  const connectionIndicator = document.getElementById("connection-indicator");
+  connectionIndicator.connected = false;
+  connectionIndicator.disconnectReason = reason;
 }
 
 function onKeyDown(evt) {
