@@ -68,6 +68,10 @@ img {
   margin-left: 1.5rem;
 }
 
+.navbar .connection-indicator {
+  margin-right: 0.5rem;
+}
+
 .nav-icon img {
   max-height: 22px;
 }
@@ -108,40 +112,6 @@ button:active {
 
 .btn-danger:hover {
   background-color: rgb(223, 48, 48);
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltip-text {
-  visibility: hidden;
-  background-color: rgba(65, 65, 65, 0.85);
-  color: #fff;
-  text-align: center;
-  padding: 0.25rem 1rem;
-  border: 1px solid black;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-}
-
-.tooltip-top .tooltip-text {
-  width: 400px;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -200px;
-}
-
-.tooltip-bottom .tooltip-text {
-  top: 100%;
-  left: 50%;
-  margin-left: -200px;
-}
-
-.tooltip:hover .tooltip-text {
-  visibility: visible;
 }
 
 #remote-screen {
