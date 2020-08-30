@@ -15,12 +15,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
   </head>
   <body>
+    <!-- prettier-ignore -->
     {% include "components/connection-indicator.html" %}
+    {% include "components/content-tooltip.html" %}
+
     <div id="app">
       <div class="navbar">
         <p class="brand">TinyPilot</p>
         <div class="nav-items">
-          <div class="nav-item">
+          <div class="nav-item connection-indicator">
             <connection-indicator
               id="connection-indicator"
             ></connection-indicator>
@@ -38,6 +41,7 @@
           </div>
         </div>
       </div>
+
       <div class="page-content container">
         <div id="error-panel">
           <h3 id="error-type">Error Type</h3>
@@ -105,9 +109,9 @@
                 Meta/OS
               </button>
 
-              <div class="tooltip tooltip-top">
+              <content-tooltip position="top">
                 <img class="question-icon" src="/img/question-icon.svg" />
-                <div class="tooltip-text">
+                <div slot="text">
                   <p>
                     Your OS and browser capture certain key combinations before
                     they reach TinyPilot (e.g., Ctrl + Alt + Del).
@@ -117,7 +121,7 @@
                     on your next keystroke.
                   </p>
                 </div>
-              </div>
+              </content-tooltip>
             </div>
           </div>
         </div>
