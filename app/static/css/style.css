@@ -45,7 +45,11 @@ img {
 }
 
 .navbar .brand {
-  font-size: 1.5em;
+  margin: 0.7rem 0;
+}
+
+.navbar .brand img {
+  max-width: 200px;
 }
 
 .navbar .nav-items {
