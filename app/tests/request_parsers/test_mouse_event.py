@@ -14,6 +14,15 @@ class MouseEventTest(unittest.TestCase):
                 'relativeY': 0.75,
             }))
 
+    def test_parses_valid_mouse_event_with_int_position(self):
+        self.assertEqual(
+            mouse_event.MouseEvent(buttons=1, relative_x=0.0, relative_y=0.75),
+            mouse_event.parse_mouse_event({
+                'buttons': 1,
+                'relativeX': 0,
+                'relativeY': 0.75,
+            }))
+
     def test_parses_valid_mouse_event_with_all_buttons_pressed(self):
         self.assertEqual(
             mouse_event.MouseEvent(buttons=31, relative_x=0.5, relative_y=0.75),
