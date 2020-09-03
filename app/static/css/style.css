@@ -115,17 +115,6 @@ img {
   color: black;
 }
 
-#paste-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: rgb(252, 236, 223);
-  border: 1px solid rgb(139, 97, 62);
-  margin: 2rem auto;
-  padding: 1rem;
-  color: black;
-}
-
 #recent-keys {
   display: flex;
   flex-direction: row;
