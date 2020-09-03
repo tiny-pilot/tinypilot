@@ -381,12 +381,13 @@ function sendPastedText(pastedText, updateCards) {
     }
     let key = pastedText[i];
     let keyCode = keyCodeLookup[pastedText[i].toLowerCase()];
-    // Newlines become "Enter". Tabs get the label Tab (keycode remains the same).
+    // Newlines become "Enter". Tabs get the label Tab and the right keycode.
     if (key === "\n") {
       key = "Enter";
       keyCode = 13;
     } else if (key === "\t") {
       key = "Tab";
+      keyCode = 9;
     }
     sendKeystroke({
       metaKey: manualModifiers.meta,
