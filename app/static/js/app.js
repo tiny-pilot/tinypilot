@@ -70,18 +70,6 @@ function showError(errorType, errorMessage) {
   showElementById("error-panel");
 }
 
-function showWarning(warningMessage) {
-  document.getElementById("warning-message").innerText = warningMessage;
-  showElementById("warning-panel");
-  setTimeout(() => hideElementById("warning-panel"), 3000);
-}
-
-function hideWarningIfType(warningType) {
-  if (document.getElementById("warning-message").innerText === warningType) {
-    hideElementById("warning-panel");
-  }
-}
-
 function displayPoweringDownUI(restart) {
   for (const elementId of [
     "error-panel",
@@ -199,7 +187,6 @@ function sendKeystroke(keystroke) {
 function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("connection-indicator").connected = true;
-  hideWarningIfType("Warning message");
 }
 
 function onSocketDisconnect(reason) {
@@ -316,12 +303,6 @@ function onPaste(e) {
   // Get pasted data via clipboard API
   clipboardData = e.clipboardData || window.clipboardData;
   pastedData = clipboardData.getData("Text");
-  // Strip trailing newlines from the pasted input and show a warning we've
-  // stripped the trailing newline.
-  if (pastedData.slice(-1) === "\n") {
-    pastedData = pastedData.trim();
-    showWarning("Stripped trailing newline");
-  }
   sendPastedText(pastedData, /*updateCards =*/ true);
   hideElementById("paste-overlay");
 }
