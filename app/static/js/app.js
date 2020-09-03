@@ -309,16 +309,6 @@ function onPaste(e) {
 
 function sendPastedText(pastedText, updateCards) {
   for (let i = 0; i < pastedText.length; i++) {
-    // We need to identify keys which are typed with modifiers and send Shift +
-    // the lowercase key.
-    let isUpperCase = /^[A-Z]/;
-    let modifiedSymbols = '¬!"£$%^&*()_+{}|<>?:@~';
-    if (
-      isUpperCase.test(pastedText[i]) ||
-      modifiedSymbols.indexOf(pastedText[i]) >= 0
-    ) {
-      toggleManualModifier("shift");
-    }
     let key = pastedText[i];
     let keyCode = keyCodeLookup[pastedText[i].toLowerCase()];
     // Newlines become "Enter". Tabs get the label Tab and the right keycode.
@@ -329,23 +319,20 @@ function sendPastedText(pastedText, updateCards) {
       key = "Tab";
       keyCode = 9;
     }
+    // We need to identify keys which are typed with modifiers and send Shift +
+    // the lowercase key.
+    const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
     sendKeystroke({
       id: keystrokeId,
-      metaKey: manualModifiers.meta,
-      altKey: manualModifiers.alt,
-      shiftKey: manualModifiers.shift,
-      ctrlKey: manualModifiers.ctrl,
+      metaKey: false,
+      altKey: false,
+      shiftKey: requiresShiftKey.test(pastedText[i]),
+      ctrlKey: false,
       key: key,
       keyCode: keyCode,
       keystrokeId: keystrokeId,
       location: null,
     });
-    if (
-      isUpperCase.test(pastedText[i]) ||
-      modifiedSymbols.indexOf(pastedText[i]) >= 0
-    ) {
-      clearManualModifiers();
-    }
   }
   // Give focus back to the app for normal text input.
   document.getElementById("app").focus();
