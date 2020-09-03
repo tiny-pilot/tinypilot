@@ -84,6 +84,7 @@ _JS_TO_HID_KEYCODES = {
     89: 0x1c,  # y
     90: 0x1d,  # z
     91: keyboard.KEYCODE_LEFT_META,
+    94: 0x5c,  # \ (UK)
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
     98: 0x5a,  # Numpad 2
@@ -131,7 +132,7 @@ _JS_TO_HID_KEYCODES = {
     190: 0x37,  # Period
     191: 0x38,  # Forward slash
     192: 0x35,  # Accent grave
-    219: 0x2f,  # Left bracket ([, {])
+    219: 0x2f,  # Left bracket ([, {)
     220: 0x31,  # Back slash
     221: 0x30,  # Right bracket (], })
     222: 0x34,  # Single quote

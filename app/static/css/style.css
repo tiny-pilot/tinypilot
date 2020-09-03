@@ -115,6 +115,17 @@ img {
   color: black;
 }
 
+#paste-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: rgb(252, 236, 223);
+  border: 1px solid rgb(139, 97, 62);
+  margin: 2rem auto;
+  padding: 1rem;
+  color: black;
+}
+
 #recent-keys {
   display: flex;
   flex-direction: row;
@@ -165,6 +176,28 @@ img {
   margin-top: 0;
 }
 
+#warning-panel {
+  display: none;
+  background-color: rgb(255, 232, 102);
+  border: 2px solid rgb(180, 105, 0);
+  max-width: 1200px;
+  max-height: 200px;
+  padding: 1rem 3rem;
+  margin: 0 auto 1rem auto;
+}
+
+#warning-panel {
+  margin-top: 0;
+}
+
+.warning-btn {
+  background: rgb(34, 134, 180);
+}
+
+.warning-btn:hover {
+  background: rgb(23, 67, 117);
+}
+
 #shutdown-confirmation-panel {
   display: none;
   background-color: rgb(252, 236, 223);
@@ -172,4 +205,19 @@ img {
   max-width: 800px;
   margin: 0 auto 1rem auto;
   padding: 2rem;
+}
+
+#paste-overlay {
+  display: none;
+  z-index: 1;
+  position: fixed;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  justify-content: center;
+  align-items: center;
+  font-size: 24pt;
 }
