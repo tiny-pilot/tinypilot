@@ -78,15 +78,28 @@ function showError(errorType, errorMessage) {
   showElementById("error-panel");
 }
 
+function showWarning(warningMessage) {
+  document.getElementById("warning-message").innerText = warningMessage;
+  showElementById("warning-panel");
+  setTimeout(() => hideElementById("warning-panel"), 3000);
+}
+
 function hideErrorIfType(errorType) {
   if (document.getElementById("error-type").innerText === errorType) {
     hideElementById("error-panel");
   }
 }
 
+function hideWarningIfType(warningType) {
+  if (document.getElementById("warning-message").innerText === warningType) {
+    hideElementById("warning-panel");
+  }
+}
+
 function displayPoweringDownUI(restart) {
   for (const elementId of [
     "error-panel",
+    "warning-panel",
     "remote-screen",
     "keystroke-history",
     "shutdown-confirmation-panel",
@@ -212,6 +225,7 @@ function onSocketConnect() {
   hideElementById("status-disconnected");
 
   hideErrorIfType("Server Connection Error");
+  hideWarningIfType("Warning message");
 }
 
 function onSocketDisconnect(reason) {
@@ -343,6 +357,12 @@ function onPaste(e) {
   // Get pasted data via clipboard API
   clipboardData = e.clipboardData || window.clipboardData;
   pastedData = clipboardData.getData("Text");
+  // Strip trailing newlines from the pasted input and show a warning we've
+  // stripped the trailing newline.
+  if (pastedData.slice(-1) === "\n") {
+    pastedData = pastedData.trim();
+    showWarning("Stripped trailing newline");
+  }
   sendPastedText(pastedData, /*updateCards =*/ true);
   hideElementById("paste-overlay");
 }
@@ -359,13 +379,23 @@ function sendPastedText(pastedText, updateCards) {
     ) {
       toggleManualModifier("shift");
     }
+    let key = pastedText[i];
+    let keyCode = keyCodeLookup[pastedText[i].toLowerCase()];
+    // Newlines become "Enter". Tabs get the label Tab (keycode remains the same).
+    if (key === "\n") {
+      key = "Enter";
+      keyCode = 13;
+    } else if (key === "\t") {
+      key = "Tab";
+    }
     sendKeystroke({
       metaKey: manualModifiers.meta,
       altKey: manualModifiers.alt,
       shiftKey: manualModifiers.shift,
       ctrlKey: manualModifiers.ctrl,
-      key: pastedText[i],
-      keyCode: keyCodeLookup[pastedText[i].toLowerCase()],
+      key: key,
+      keyCode: keyCode,
+      keystrokeId: keystrokeId,
       location: null,
     });
     if (

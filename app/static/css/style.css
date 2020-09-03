@@ -316,6 +316,28 @@ button:active {
   margin-top: 0;
 }
 
+#warning-panel {
+  display: none;
+  background-color: rgb(255, 232, 102);
+  border: 2px solid rgb(180, 105, 0);
+  max-width: 1200px;
+  max-height: 200px;
+  padding: 1rem 3rem;
+  margin: 0 auto 1rem auto;
+}
+
+#warning-panel {
+  margin-top: 0;
+}
+
+.warning-btn {
+  background: rgb(34, 134, 180);
+}
+
+.warning-btn:hover {
+  background: rgb(23, 67, 117);
+}
+
 #shutdown-confirmation-panel {
   display: none;
   background-color: rgb(252, 236, 223);
