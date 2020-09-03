@@ -1,6 +1,6 @@
 import dataclasses
 
-import hid
+from hid import keyboard
 
 
 class Error(Exception):
@@ -19,6 +19,7 @@ class JavaScriptKeyEvent:
     ctrl_modifier: bool
     key: str
     key_code: int
+    keystroke_id: int
 
 
 # JS keycodes source: https://github.com/wesbos/keycodes
@@ -33,9 +34,9 @@ _JS_TO_HID_KEYCODES = {
     9: 0x2b,  # Tab
     12: 0x53,  # Clear
     13: 0x28,  # Enter
-    16: hid.KEYCODE_LEFT_SHIFT,
-    17: hid.KEYCODE_LEFT_CTRL,
-    18: hid.KEYCODE_LEFT_ALT,
+    16: keyboard.KEYCODE_LEFT_SHIFT,
+    17: keyboard.KEYCODE_LEFT_CTRL,
+    18: keyboard.KEYCODE_LEFT_ALT,
     19: 0x48,  # Pause / Break
     20: 0x39,  # Caps Lock
     21: 0x90,  # Hangeul
@@ -95,7 +96,7 @@ _JS_TO_HID_KEYCODES = {
     88: 0x1b,  # x
     89: 0x1c,  # y
     90: 0x1d,  # z
-    91: hid.KEYCODE_LEFT_META,
+    91: keyboard.KEYCODE_LEFT_META,
     94: 0x5c,  # \ (UK)
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
