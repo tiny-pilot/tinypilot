@@ -310,14 +310,16 @@ function onPaste(e) {
 function sendPastedText(pastedText, updateCards) {
   for (let i = 0; i < pastedText.length; i++) {
     let key = pastedText[i];
+    // Ignore carriage returns.
+    if (key === "\r") {
+      continue;
+    }
     let keyCode = keyCodeLookup[pastedText[i].toLowerCase()];
-    // Newlines become "Enter". Tabs get the label Tab and the right keycode.
+    // Give cleaner names to keys so that they render nicely in the history.
     if (key === "\n") {
       key = "Enter";
-      keyCode = 13;
     } else if (key === "\t") {
       key = "Tab";
-      keyCode = 9;
     }
     // We need to identify keys which are typed with modifiers and send Shift +
     // the lowercase key.
