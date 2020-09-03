@@ -317,7 +317,7 @@ function browserLanguage() {
 function sendPastedText(pastedText, updateCards) {
   const language = browserLanguage();
   for (let i = 0; i < pastedText.length; i++) {
-    const key = pastedText[i];
+    let key = pastedText[i];
     // Ignore carriage returns.
     if (key === "\r") {
       continue;
