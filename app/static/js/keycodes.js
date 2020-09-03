@@ -1,4 +1,6 @@
-var keyCodeLookup = {
+"use strict";
+
+const commonKeyCodes = {
   "\t": 9,
   "\n": 13,
   " ": 32,
@@ -6,9 +8,7 @@ var keyCodeLookup = {
   ")": 48,
   1: 49,
   2: 50,
-  '"': 50,
   3: 51,
-  "£": 51,
   4: 52,
   $: 52,
   5: 53,
@@ -23,10 +23,6 @@ var keyCodeLookup = {
   "(": 57,
   ":": 59,
   ";": 59,
-  "<": 60,
-  "=": 61,
-  "+": 61,
-  "@": 64,
   a: 65,
   b: 66,
   c: 67,
@@ -53,30 +49,69 @@ var keyCodeLookup = {
   x: 88,
   y: 89,
   z: 90,
-  meta: 91,
-  "\\": 94,
-  "!": 161,
-  "#": 163,
-  "~": 163,
-  "-": 173,
-  _: 173,
   ",": 188,
   "<": 188,
-  "-": 189,
   ".": 190,
   ">": 190,
   "/": 191,
   "?": 191,
-  "`": 192,
-  "¬": 192, // UK-specific?
   "[": 219,
   "{": 219,
-  "\\": 220,
   "|": 220,
   "]": 221,
   "}": 221,
   "'": 222,
-  "@": 222, // UK-specific?
-  "`": 223,
-  ç: 231,
 };
+
+function findKeyCode(character, browserLanguage) {
+  if (browserLanguage === "en-GB") {
+    return findKeyCodeEnGb(character);
+  }
+  // Default to en-US if no other language matches.
+  return findKeyCodeEnUs(character);
+}
+
+function joinDictionaries(a, b) {
+  return Object.assign({}, a, b);
+}
+
+function findKeyCodeEnUs(character) {
+  const usSpecificKeys = {
+    "!": 49,
+    "@": 50,
+    "#": 51,
+    "+": 187,
+    "=": 187,
+    "<": 188,
+    "-": 189,
+    _: 189,
+    "~": 192,
+    "`": 192,
+    "\\": 220,
+    '"': 222,
+  };
+  const lookup = joinDictionaries(commonKeyCodes, usSpecificKeys);
+  return lookup[character];
+}
+
+function findKeyCodeEnGb(character) {
+  const gbSpecificKeys = {
+    '"': 50,
+    "£": 51,
+    "<": 60,
+    "+": 61,
+    "=": 61,
+    "\\": 94,
+    "!": 161,
+    "~": 163,
+    "#": 163,
+    "-": 173,
+    _: 173,
+    "¬": 192,
+    "@": 222,
+    "`": 223,
+    ç: 231,
+  };
+  const lookup = joinDictionaries(commonKeyCodes, gbSpecificKeys);
+  return lookup[character];
+}

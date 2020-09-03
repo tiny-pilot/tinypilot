@@ -307,14 +307,22 @@ function onPaste(e) {
   hideElementById("paste-overlay");
 }
 
+function browserLanguage() {
+  if (navigator.languages) {
+    return navigator.languages[0];
+  }
+  return navigator.language || navigator.userLanguage;
+}
+
 function sendPastedText(pastedText, updateCards) {
+  const language = browserLanguage();
   for (let i = 0; i < pastedText.length; i++) {
-    let key = pastedText[i];
+    const key = pastedText[i];
     // Ignore carriage returns.
     if (key === "\r") {
       continue;
     }
-    let keyCode = keyCodeLookup[pastedText[i].toLowerCase()];
+    const keyCode = findKeyCode([pastedText[i].toLowerCase()], language);
     // Give cleaner names to keys so that they render nicely in the history.
     if (key === "\n") {
       key = "Enter";
