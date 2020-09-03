@@ -13,7 +13,6 @@ let manualModifiers = {
   sysrq: false,
 };
 let keystrokeId = 0;
-
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
 
@@ -359,13 +358,8 @@ function sendPastedText(pastedText, updateCards) {
       modifiedSymbols.indexOf(pastedText[i]) >= 0
     ) {
       toggleManualModifier("shift");
-      if (updateCards) {
-        addKeyCard("Shift", keystrokeId);
-        processingQueue.push(keystrokeId);
-        keystrokeId++;
-      }
     }
-    keyboardSocket.emit("keystroke", {
+    sendKeystroke({
       metaKey: manualModifiers.meta,
       altKey: manualModifiers.alt,
       shiftKey: manualModifiers.shift,
@@ -374,31 +368,11 @@ function sendPastedText(pastedText, updateCards) {
       keyCode: keyCodeLookup[pastedText[i].toLowerCase()],
       location: null,
     });
-    if (updateCards) {
-      addKeyCard(pastedText[i], keystrokeId);
-      processingQueue.push(keystrokeId);
-      keystrokeId++;
-    }
     if (
       isUpperCase.test(pastedText[i]) ||
       modifiedSymbols.indexOf(pastedText[i]) >= 0
     ) {
       clearManualModifiers();
-    }
-
-    // Make sure all key cards are formatted correctly. For some reason,
-    // pasting a lot of content makes the "processed-key-card" class not
-    // get set on some pasted key-presses. So, as a workaround, we'll find
-    // all those that don't have that class and add it.
-    const recentKeysDiv = document.getElementById("recent-keys");
-    const cards = recentKeysDiv.children;
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      if (!card.classList.contains("processed-key-card")) {
-        // Not ideal here as we're essentially forcing a successful status for
-        // the receipt of the pasted key press.
-        card.classList.add("processed-key-card");
-      }
     }
   }
   // Give focus back to the app for normal text input.
