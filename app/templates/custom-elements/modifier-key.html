@@ -2,31 +2,31 @@
   <style>
     @import "css/button.css";
 
-    .manual-modifier-btn {
+    button {
       background-color: rgb(45, 153, 144);
       font-size: 0.9em;
     }
 
-    .manual-modifier-btn:hover {
+    button:hover {
       background-color: rgb(26, 107, 100);
     }
 
-    .manual-modifier-btn:focus {
+    button:focus {
       outline: 1px solid rgb(184, 255, 170);
       outline-offset: -4px;
       background-color: rgb(7, 153, 141);
     }
 
-    .manual-modifier-btn:active {
+    button:active {
       background-color: rgb(7, 153, 141);
     }
 
-    :host([pressed="true"]) .manual-modifier-btn {
+    :host([pressed="true"]) button {
       background-color: rgb(0, 92, 84) !important;
       box-shadow: 0 0 2px #245a00;
     }
   </style>
-  <button class="btn manual-modifier-btn" type="button"><slot></slot></button>
+  <button type="button"><slot></slot></button>
 </template>
 
 <script>
