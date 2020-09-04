@@ -2,13 +2,13 @@
   <style>
     .overlay {
       display: none;
+      font-size: 24pt;
     }
 
     :host([show="true"]) .overlay {
       display: flex;
-    }
-
-    .overlay {
+      justify-content: center;
+      align-items: center;
       z-index: 1;
       position: fixed;
       left: 0%;
@@ -17,9 +17,6 @@
       height: 100%;
       margin: auto;
       background-color: rgba(255, 255, 255, 0.9);
-      justify-content: center;
-      align-items: center;
-      font-size: 24pt;
     }
   </style>
   <div class="overlay" contenteditable="true">
