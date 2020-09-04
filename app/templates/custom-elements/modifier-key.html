@@ -79,7 +79,7 @@
         }
 
         get pressed() {
-          return this.getAttribute("pressed");
+          return this.getAttribute("pressed") === "true";
         }
 
         set pressed(newValue) {
@@ -87,7 +87,7 @@
         }
 
         togglePressedState() {
-          this.pressed = !(this.pressed === "true");
+          this.pressed = !this.pressed;
         }
       }
     );
