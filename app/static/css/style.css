@@ -1,3 +1,5 @@
+@import "button.css";
+
 body {
   margin: 0;
   background: rgb(114, 114, 114);
@@ -80,36 +82,6 @@ img {
   max-height: 22px;
 }
 
-button {
-  display: inline-block;
-  border: none;
-  padding: 1rem 2rem;
-  margin: 1rem;
-  text-decoration: none;
-  background: #0069ed;
-  color: #ffffff;
-  font-size: 1rem;
-  cursor: pointer;
-  text-align: center;
-  transition: background 250ms ease-in-out, transform 150ms ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-button:hover,
-button:focus {
-  background: #0053ba;
-}
-
-button:focus {
-  outline: 1px solid #fff;
-  outline-offset: -4px;
-}
-
-button:active {
-  transform: scale(0.99);
-}
-
 .btn-danger {
   background-color: rgb(153, 8, 8);
 }
@@ -178,30 +150,6 @@ button:active {
   margin-top: 1rem;
   display: inline-flex;
   padding: 0.5rem;
-}
-
-.manual-modifier-btn {
-  background-color: rgb(45, 153, 144);
-  font-size: 0.9em;
-}
-
-.manual-modifier-btn:hover {
-  background-color: rgb(26, 107, 100);
-}
-
-.manual-modifier-btn:focus {
-  outline: 1px solid rgb(184, 255, 170);
-  outline-offset: -4px;
-  background-color: rgb(7, 153, 141);
-}
-
-.manual-modifier-btn:active {
-  background-color: rgb(7, 153, 141);
-}
-
-.pressed {
-  background-color: rgb(0, 92, 84) !important;
-  box-shadow: 0 0 2px #245a00;
 }
 
 #error-panel {
