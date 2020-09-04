@@ -3,15 +3,6 @@
 const socket = io();
 let poweringDown = false;
 let connectedToServer = false;
-// The OS and browser capture some key combinations that involve modifier keys
-// before they can reach JavaScript, so allow the user to set them manually.
-let manualModifiers = {
-  meta: false,
-  alt: false,
-  shift: false,
-  ctrl: false,
-  sysrq: false,
-};
 let keystrokeId = 0;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
@@ -160,17 +151,9 @@ function sendShutdownRequest(restart) {
     });
 }
 
-function toggleManualModifier(modifier) {
-  manualModifiers[modifier] = !manualModifiers[modifier];
-}
-
 function clearManualModifiers() {
-  for (var modifier in manualModifiers) {
-    manualModifiers[modifier] = false;
-  }
-  for (const button of document.getElementsByClassName("manual-modifier-btn")) {
-    button.classList.remove("pressed");
-    button.blur();
+  for (const modifierKey of document.getElementsByTagName("modifier-key")) {
+    modifierKey.pressed = false;
   }
 }
 
@@ -234,11 +217,11 @@ function onKeyDown(evt) {
 
   sendKeystroke({
     id: keystrokeId,
-    metaKey: evt.metaKey || manualModifiers.meta,
-    altKey: evt.altKey || manualModifiers.alt,
-    shiftKey: evt.shiftKey || manualModifiers.shift,
-    ctrlKey: evt.ctrlKey || manualModifiers.ctrl,
-    sysrqKey: manualModifiers.sysrq,
+    metaKey: evt.metaKey || document.getElementById("meta-modifier").pressed,
+    altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
+    shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
+    ctrlKey: evt.ctrlKey || document.getElementById("ctrl-modifier").pressed,
+    sysrqKey: document.getElementById("sysrq-modifier").pressed,
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
@@ -268,15 +251,6 @@ function onKeyUp(evt) {
   }
   if (isModifierKeyCode(evt.keyCode)) {
     socket.emit("keyRelease");
-  }
-}
-
-function onManualModifierButtonClicked(evt) {
-  toggleManualModifier(evt.target.getAttribute("modifier"));
-  if (evt.target.classList.contains("pressed")) {
-    evt.target.classList.remove("pressed");
-  } else {
-    evt.target.classList.add("pressed");
   }
 }
 
