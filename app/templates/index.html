@@ -19,6 +19,7 @@
     {% include "custom-elements/connection-indicator.html" %}
     {% include "custom-elements/content-tooltip.html" %}
     {% include "custom-elements/modifier-key.html" %}
+    {% include "custom-elements/paste-overlay.html" %}
 
     <div id="app" tabindex="0">
       {% include "components/navbar.html" %}
@@ -78,11 +79,7 @@
         </div>
       </div>
     </div>
-    <div id="paste-overlay" contenteditable="true">
-      <p>
-        Press Ctrl+V / Cmd+V to paste or any other key to cancel&nbsp;
-      </p>
-    </div>
+    <paste-overlay id="paste-overlay"></paste-overlay>
 
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
     <script src="/js/keycodes.js"></script>

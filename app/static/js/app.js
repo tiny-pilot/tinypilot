@@ -263,50 +263,6 @@ function onDisplayHistoryChanged(evt) {
     limitRecentKeys(0);
   }
 }
-
-function onKeyDownInPasteMode(e) {
-  // Return false on Ctrl by itself because otherwise we capture the
-  // event before the paste event can occur.
-  if (e.keyCode === 17 || e.keyCode === 86) {
-    return false;
-  }
-  // Treat any other key as cancellation of the paste.
-  hideElementById("paste-overlay");
-  // Return control to normal input.
-  document.getElementById("app").focus();
-}
-
-// Place the caret (cursor) in the paste div so that we can listen for paste
-// events.
-function placeCaretInPasteOverlay() {
-  const pasteOverlay = document.getElementById("paste-overlay");
-  // This is largely copy-pasted from
-  // https://stackoverflow.com/questions/4233265
-  pasteOverlay.focus();
-
-  // Move cursor to the end of the text.
-  const range = document.createRange();
-  range.selectNodeContents(pasteOverlay);
-  range.collapse(false);
-  const sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-}
-
-function onPaste(e) {
-  var clipboardData, pastedData;
-
-  // Stop data actually being pasted into div
-  e.stopPropagation();
-  e.preventDefault();
-
-  // Get pasted data via clipboard API
-  clipboardData = e.clipboardData || window.clipboardData;
-  pastedData = clipboardData.getData("Text");
-  sendPastedText(pastedData, /*updateCards =*/ true);
-  hideElementById("paste-overlay");
-}
-
 function browserLanguage() {
   if (navigator.languages) {
     return navigator.languages[0];
@@ -314,7 +270,7 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-function sendPastedText(pastedText, updateCards) {
+function sendPastedText(pastedText) {
   const language = browserLanguage();
   for (let i = 0; i < pastedText.length; i++) {
     let key = pastedText[i];
@@ -394,16 +350,13 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
 }
 
 document.getElementById("paste-btn").addEventListener("click", () => {
-  showElementById("paste-overlay", "flex");
-  placeCaretInPasteOverlay();
+  document.getElementById("paste-overlay").show = true;
 });
-document.getElementById("paste-overlay").addEventListener("paste", onPaste);
 document
   .getElementById("paste-overlay")
-  .addEventListener("click", () => hideElementById("paste-overlay"));
-document
-  .getElementById("paste-overlay")
-  .addEventListener("keydown", onKeyDownInPasteMode);
+  .addEventListener("paste-text", (evt) => {
+    sendPastedText(evt.detail);
+  });
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
