@@ -30,20 +30,22 @@
           <button id="hide-error-btn" class="btn" type="button">Close</button>
         </div>
         <div id="shutdown-confirmation-panel">
-          <h3>Shut Down TinyPilot Device?</h3>
-          <p>
-            Note that this will shut down <strong>TinyPilot</strong>, not the
-            machine to which it is attached.
-          </p>
-          <button id="confirm-shutdown" class="btn-danger btn" type="button">
-            Shut Down
-          </button>
-          <button id="confirm-restart" class="btn-danger btn" type="button">
-            Restart
-          </button>
-          <button id="cancel-shutdown" class="btn" type="button">Cancel</button>
+          <div>
+            <h3>Shut Down TinyPilot Device?</h3>
+            <p>
+              Note that this will shut down <strong>TinyPilot</strong>, not the
+              machine to which it is attached.
+            </p>
+            <button id="confirm-shutdown" class="btn-danger btn" type="button">
+              Shut Down
+            </button>
+            <button id="confirm-restart" class="btn-danger btn" type="button">
+              Restart
+            </button>
+            <button id="cancel-shutdown" class="btn" type="button">Cancel</button>
+          </div>
         </div>
-        <div id="remote-screen">
+        <div id="remote-screen" class="preview">
           <img id="remote-screen-img" src="/stream?advance_headers=1" />
         </div>
         <div id="keystroke-history" class="container">
@@ -60,7 +62,7 @@
               <modifier-key id="sysrq-modifier">SysRq</modifier-key>
               <modifier-key id="meta-modifier">Meta/OS</modifier-key>
 
-              <content-tooltip position="top">
+              <content-tooltip position="top_left">
                 <img class="question-icon" src="/img/question-icon.svg" />
                 <div slot="text">
                   <p>
