@@ -1,7 +1,9 @@
 @import "button.css";
 
 body {
+  height: 100%;
   margin: 0;
+  padding: 0;
   background: rgb(114, 114, 114);
 }
 
@@ -11,6 +13,20 @@ body {
   justify-content: center;
   text-align: center;
   margin: 0 auto;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 2;
+    cursor: pointer;
 }
 
 * {
@@ -90,20 +106,6 @@ img {
   background-color: rgb(223, 48, 48);
 }
 
-#remote-screen {
-  max-width: 85%;
-  max-height: 1080px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-#remote-screen img {
-  width: 100%;
-  cursor: crosshair;
-}
-
 #keystroke-history {
   display: flex;
   flex-direction: column;
@@ -167,9 +169,12 @@ img {
 
 #shutdown-confirmation-panel {
   display: none;
-  background-color: rgb(252, 236, 223);
-  border: 1px solid rgb(139, 97, 62);
-  max-width: 800px;
-  margin: 0 auto 1rem auto;
-  padding: 2rem;
+}
+
+#shutdown-confirmation-panel > div {
+    background-color: rgb(252, 236, 223);
+    border: 1px solid rgb(139, 97, 62);
+    max-width: 800px;
+    margin: 100px auto 0rem auto;
+    padding: 2rem;
 }
