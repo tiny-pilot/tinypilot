@@ -172,7 +172,7 @@ def main():
                  use_reloader=use_reloader,
                  extra_files=[
                      './app/templates/index.html', './app/static/js/app.js',
-                     './app/static/css/style.css', './app/static/css/cursors.css', './app/static/css/remote-screens.css'
+                     './app/static/css/style.css', './app/static/css/cursors.css', './app/static/css/remote-screen.css'
                  ])
 
 
