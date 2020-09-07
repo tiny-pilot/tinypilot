@@ -1,4 +1,6 @@
 @import "button.css";
+@import "cursors.css";
+@import "remote-screen.css";
 
 html, body {
   height: 100%;

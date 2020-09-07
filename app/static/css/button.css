@@ -27,3 +27,46 @@ button:focus {
 button:active {
   transform: scale(0.99);
 }
+
+.dropdown {
+}
+
+.dropbtn {
+  background: #0069ed;
+  color: #ffffff;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: #0069ed;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background: #0069ed;
+  color: #ffffff;
+}
+
+.dropdown-content a:hover {
+  color: #0053ba;
+  background: #f1f1f1
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  background: #0053ba;
+}
+
+.dropdown:hover .dropbtn {
+  background: #0053ba;
+}
