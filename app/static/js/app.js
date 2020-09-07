@@ -286,6 +286,9 @@ document
 document.getElementById("power-btn").addEventListener("click", () => {
   showElementById("shutdown-confirmation-panel");
 });
+document.getElementById("fullscreen-btn").addEventListener("click", () => {
+  document.getElementById("remote-screen").requestFullscreen();
+});
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   hideElementById("error-panel");
 });
