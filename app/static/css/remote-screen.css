@@ -1,3 +1,7 @@
+#remote-screen {
+  background: rgb(114, 114, 114);
+}
+
 #remote-screen.preview {
   max-width: 85%;
   max-height: 1080px;
@@ -17,6 +21,7 @@
 }
 
 #remote-screen.full img {
+    width: 100%;
     max-width: 100%;
     max-height: 100vh;
     margin: auto;

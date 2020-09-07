@@ -287,7 +287,19 @@ document.getElementById("power-btn").addEventListener("click", () => {
   showElementById("shutdown-confirmation-panel");
 });
 document.getElementById("fullscreen-btn").addEventListener("click", () => {
-  document.getElementById("remote-screen").requestFullscreen();
+  let el=document.getElementById("remote-screen");
+  el.onfullscreenchange = (event) => {
+      let el = event.target;
+      if (document.fullscreenElement !== el) {
+          let el2=document.getElementById("remote-screen");
+          el2.removeAttribute("class");
+          el2.classList.add("preview");
+      }
+  };
+  el.removeAttribute("class");
+  el.classList.add("full");
+  el.requestFullscreen();
+  console.log(el);
 });
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   hideElementById("error-panel");
