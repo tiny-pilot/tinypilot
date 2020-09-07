@@ -4,16 +4,23 @@
     <div class="nav-item connection-indicator">
       <connection-indicator id="connection-indicator"></connection-indicator>
     </div>
-    <div class="dropdown">
+    <div class="nav-item dropdown">
       <button class="dropbtn">Cursor</button>
       <div class="dropdown-content">
-        <a href="#" class="cursor_none">None</a>
-        <a href="#" class="cursor_default">Default</a>
-        <a href="#" class="cursor_crosshair">Crosshair</a>
-        <a href="#" class="cursor_dot">Dot</a>
-        <a href="#" class="cursor_Pointer">Pointer</a>
-        <a href="#" class="cursor_cell">Cell</a>
-        <a href="#" class="cursor_disabled">Disabled</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_default">Default</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_none">None</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_crosshair">Crosshair</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_dot">Dot</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_pointer">Pointer</a>
+        <a href="#" onclick="return setCursor(this);" class="cursor_cell">Cell</a>
+      </div>
+    </div>
+    <div class="nav-item dropdown">
+      <button class="dropbtn">Screen</button>
+      <div class="dropdown-content">
+        <a href="#" onclick="return setScreen(this);" class="screen_preview">Preview</a>
+        <a href="#" onclick="return setScreen(this);" class="screen_fill">Fill</a>
+        <a href="#" onclick="return setScreen(this);" class="screen_full">Fullscreen</a>
       </div>
     </div>
     <div class="nav-item fullscreen">

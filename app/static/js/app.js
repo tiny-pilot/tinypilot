@@ -263,6 +263,70 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
+var streamState=[false];
+function getstreamState(callback) {
+  fetch("/state", {
+    method: "GET",
+    headers: {},
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+  .then((response) => {
+    if (response.status !== 200) {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        return response.json().then((data) => {
+          return Promise.reject(new Error(data.error));
+        });
+      }
+      return Promise.reject(new Error(response.statusText));
+    }
+    return response.json();
+  })
+  .then((result) => {
+    window.streamState=[result.result.source.online,result.result.source.resolution.width,result.result.source.resolution.height];
+    callback(window.streamState);
+  })
+}
+
+function setCursor(e) {
+  if (["cursor_default","cursor_none","cursor_crosshair","cursor_dot","cursor_pointer","cursor_cell","cursor_disabled"].includes(e.className)>=0) {
+    let el = document.getElementById("remote-screen-img");
+    el.removeAttribute("class");
+    el.classList.add(e.className);
+  }
+  return false;
+}
+
+var lastScreen=null;
+function setScreen(e) {
+  if (["screen_preview","screen_fill","screen_full"].includes(e.className)>=0) {
+    let el=document.getElementById("remote-screen"),
+      c=e.className.slice(6);
+    el.removeAttribute("class");
+    el.classList.add(c);
+    if (c == "full") {
+      getstreamState(setFullScreen);
+    }
+    else {
+      let el=document.getElementById("remote-screen-img");
+      el.style.width = null;
+      el.style.height = null;
+    }
+  }
+  return false;
+}
+
+function setFullScreen(streamState) {
+  if (Array.isArray(streamState) && streamState.length1==3) {
+    let el=document.getElementById("remote-screen-img");
+    el.style.width = streamState[1];
+    el.style.height = streamState[2];
+    console.log('Full Screen',streamState);
+  }
+}
+
 document.querySelector("body").addEventListener("keydown", onKeyDown);
 document.querySelector("body").addEventListener("keyup", onKeyUp);
 
@@ -280,8 +344,7 @@ screenImg.addEventListener("mouseup", sendMouseEvent);
 screenImg.addEventListener("contextmenu", function (evt) {
   evt.preventDefault();
 });
-document
-  .getElementById("display-history-checkbox")
+document.getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
 document.getElementById("power-btn").addEventListener("click", () => {
   showElementById("shutdown-confirmation-panel");
@@ -297,9 +360,8 @@ document.getElementById("fullscreen-btn").addEventListener("click", () => {
       }
   };
   el.removeAttribute("class");
-  el.classList.add("full");
+  el.classList.add("fill");
   el.requestFullscreen();
-  console.log(el);
 });
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   hideElementById("error-panel");
