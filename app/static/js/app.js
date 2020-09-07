@@ -303,7 +303,7 @@ var lastScreen=null;
 function setScreen(e) {
   if (["screen_preview","screen_fill","screen_full"].includes(e.className)>=0) {
     let el=document.getElementById("remote-screen"),
-      c=e.className.slice(6);
+      c=e.className.slice(7);
     el.removeAttribute("class");
     el.classList.add(c);
     if (c == "full") {
