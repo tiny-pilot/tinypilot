@@ -308,9 +308,20 @@ function setScreen(e) {
     el.classList.add(c);
     if (c == "full") {
       getstreamState(setFullScreen);
+      el.onfullscreenchange = (event) => {
+          let el = event.target;
+          if (document.fullscreenElement !== el) {
+              let el2=document.getElementById("remote-screen");
+              el2.removeAttribute("class");
+              el2.classList.add("preview");
+          }
+      };
+      el.removeAttribute("class");
+      el.classList.add("fill");
+      el.requestFullscreen();
     }
     else {
-      let el=document.getElementById("remote-screen-img");
+      el=document.getElementById("remote-screen-img");
       el.style.width = null;
       el.style.height = null;
     }
@@ -319,7 +330,7 @@ function setScreen(e) {
 }
 
 function setFullScreen(streamState) {
-  if (Array.isArray(streamState) && streamState.length1==3) {
+  if (Array.isArray(streamState) && streamState.length==3) {
     let el=document.getElementById("remote-screen-img");
     el.style.width = streamState[1];
     el.style.height = streamState[2];
