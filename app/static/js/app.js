@@ -320,6 +320,8 @@ function resetFullScreen() {
   el=document.getElementById("remote-screen-img");
   el.style.width = null;
   el.style.height = null;
+  el.style["max-width"] = null;
+  el.style["max-height"] = null;
 }
 
 function setFullScreen(streamState) {
