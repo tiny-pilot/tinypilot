@@ -306,7 +306,7 @@ function setScreen(e) {
     let  c=e.className.slice(7);
     el.removeAttribute("class");
     el.classList.add(c);
-    if (c == "full") {
+    if (["fillfull","full"].includes(c)>=0) {
       getstreamState(setFullScreen);
     }
   }
