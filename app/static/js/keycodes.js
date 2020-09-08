@@ -1,5 +1,7 @@
 "use strict";
 
+// Mappings of characters to keycodes that are shared among different keyboard
+// layouts.
 const commonKeyCodes = {
   "\t": 9,
   "\n": 13,
@@ -63,6 +65,7 @@ const commonKeyCodes = {
   "'": 222,
 };
 
+// Given a character and a browser language, finds the matching keycode
 function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {
     return findKeyCodeEnGb(character);

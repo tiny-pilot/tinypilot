@@ -263,6 +263,7 @@ function onDisplayHistoryChanged(evt) {
     limitRecentKeys(0);
   }
 }
+
 function browserLanguage() {
   if (navigator.languages) {
     return navigator.languages[0];
