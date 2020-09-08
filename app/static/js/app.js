@@ -306,10 +306,10 @@ function setScreen(e) {
     let  c=e.className.slice(7);
     el.removeAttribute("class");
     el.classList.add(c);
-    if (c == "fillfull") {
+    if (c === "fillfull") {
       setFullScreen();
     }
-    if (c == "full") {
+    else if (c === "full") {
       setImgSize(streamState);
       setFullScreen();
     }
@@ -321,8 +321,8 @@ var setImgSizeTimer=null;
 function clearImgSizeTimer() {
   if (window.setImgSizeTimer != null) {
     clearInterval(setImgSizeTimer);
+    window.setImgSizeTimer=null;
   }
-  setImgSizeTimer=null;
 }
 
 function setImgSize(streamState) {
