@@ -264,7 +264,7 @@ function onDisplayHistoryChanged(evt) {
 }
 
 var streamState=[false];
-function getstreamState(callback) {
+function getstreamState(callback=null) {
   fetch("/state", {
     method: "GET",
     headers: {},
@@ -286,7 +286,9 @@ function getstreamState(callback) {
   })
   .then((result) => {
     window.streamState=[result.result.source.online,result.result.source.resolution.width,result.result.source.resolution.height];
-    callback(window.streamState);
+    if (callback) {
+      callback(window.streamState);
+    }
   })
 }
 
