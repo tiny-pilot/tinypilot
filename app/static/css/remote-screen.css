@@ -32,12 +32,10 @@
 }
 
 #remote-screen.fillfull {
-    display: grid;
-    height: 100%;
 }
 
 #remote-screen.fillfull img {
-    margin: auto;
+    width: 100%;
 }
 
 #remote-screen.full {

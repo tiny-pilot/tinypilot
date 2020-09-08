@@ -306,8 +306,12 @@ function setScreen(e) {
     let  c=e.className.slice(7);
     el.removeAttribute("class");
     el.classList.add(c);
-    if (["fillfull","full"].includes(c)>=0) {
-      getstreamState(setFullScreen);
+    if (c == "fillfull") {
+      setFullScreen();
+    }
+    if (c == "full") {
+      setImgSize(streamState);
+      setFullScreen();
     }
   }
   return false;
@@ -315,12 +319,14 @@ function setScreen(e) {
 
 var setImgSizeTimer=null;
 function clearImgSizeTimer() {
-  clearInterval(setImgSizeTimer);
+  if (window.setImgSizeTimer != null) {
+    clearInterval(setImgSizeTimer);
+  }
   setImgSizeTimer=null;
 }
 
 function setImgSize(streamState) {
-  if (!window.setImgSizeTimer) {
+  if (window.setImgSizeTimer == null) {
     window.setImgSizeTimer = setInterval(()=>{getstreamState(setImgSize)}, 5000);
   }
   if (Array.isArray(streamState) && streamState.length==3) {
@@ -339,8 +345,7 @@ function resetFullScreen() {
   el.classList.add("preview");
 }
 
-function setFullScreen(streamState) {
-  setImgSize(streamState);
+function setFullScreen() {
   let el=document.getElementById("remote-screen");
   if (!el.getAttribute('data-onfullscreenchange')) {
     el.setAttribute('data-onfullscreenchange', true);
