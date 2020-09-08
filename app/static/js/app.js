@@ -300,6 +300,7 @@ function setCursor(e) {
 }
 
 function setScreen(e) {
+  clearImgSizeTimer();
   if (["screen_default","screen_fill","screen_fillfull","screen_full"].includes(e.className)>=0) {
     resetFullScreen();
     let el=document.getElementById("remote-screen");

@@ -10,13 +10,11 @@
   max-width: 85%;
   max-height: 1080px;
   margin: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
 #remote-screen.default img {
   width: 100%;
-  padding: 0 12px;
+  padding: 0 1rem;
 }
 
 #remote-screen.fill {
@@ -47,11 +45,11 @@
     margin: auto;
 }
 
-#remote-screen.fullfill {
+#remote-screen.full {
     display: grid;
     height: 100%;
 }
 
-#remote-screen.fullfill img {
+#remote-screen.full img {
     margin: auto;
 }
