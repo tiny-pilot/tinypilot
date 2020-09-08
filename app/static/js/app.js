@@ -332,7 +332,7 @@ function setImgSize(streamState) {
   if (Array.isArray(streamState) && streamState.length==3) {
     let el=document.getElementById("remote-screen-img");
     el.style.width = streamState[1]+"px";
-    el.style.height = streamState[2]+"px";
+    //el.style.height = streamState[2]+"px";
     el.style["max-width"] = streamState[1]+"px";
     el.style["max-height"] = streamState[2]+"px";
   }

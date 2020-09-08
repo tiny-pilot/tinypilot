@@ -39,8 +39,7 @@
 }
 
 #remote-screen.full {
-    display: grid;
-    height: 100%;
+    overflow: auto;
 }
 
 #remote-screen.full img {
