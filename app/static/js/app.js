@@ -300,7 +300,7 @@ function setCursor(e) {
 }
 
 function setScreen(e) {
-  if (["screen_default","screen_fill","screen_full"].includes(e.className)>=0) {
+  if (["screen_default","screen_fill","screen_fillfull","screen_full"].includes(e.className)>=0) {
     resetFullScreen();
     let el=document.getElementById("remote-screen");
     let  c=e.className.slice(7);
@@ -314,6 +314,11 @@ function setScreen(e) {
 }
 
 var setImgSizeTimer=null;
+function clearImgSizeTimer() {
+  clearInterval(setImgSizeTimer);
+  setImgSizeTimer=null;
+}
+
 function setImgSize(streamState) {
   if (!window.setImgSizeTimer) {
     window.setImgSizeTimer = setInterval(()=>{getstreamState(setImgSize)}, 5000);

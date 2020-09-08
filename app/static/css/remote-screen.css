@@ -16,6 +16,7 @@
 
 #remote-screen.default img {
   width: 100%;
+  padding: 0 12px;
 }
 
 #remote-screen.fill {
@@ -30,11 +31,27 @@
     margin: auto;
 }
 
-#remote-screen.full {
+#remote-screen.fill2 {
+  margin: 0 auto;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+#remote-screen.fillfull {
     display: grid;
     height: 100%;
 }
 
-#remote-screen.full img {
+#remote-screen.fillfull img {
+    margin: auto;
+}
+
+#remote-screen.fullfill {
+    display: grid;
+    height: 100%;
+}
+
+#remote-screen.fullfill img {
     margin: auto;
 }
