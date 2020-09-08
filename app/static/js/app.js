@@ -299,42 +299,46 @@ function setCursor(e) {
   return false;
 }
 
-var lastScreen=null;
 function setScreen(e) {
   if (["screen_preview","screen_fill","screen_full"].includes(e.className)>=0) {
-    let el=document.getElementById("remote-screen"),
-      c=e.className.slice(7);
+    resetFullScreen();
+    let el=document.getElementById("remote-screen");
+    let  c=e.className.slice(7);
     el.removeAttribute("class");
     el.classList.add(c);
     if (c == "full") {
       getstreamState(setFullScreen);
-      el.onfullscreenchange = (event) => {
-          let el = event.target;
-          if (document.fullscreenElement !== el) {
-              let el2=document.getElementById("remote-screen");
-              el2.removeAttribute("class");
-              el2.classList.add("preview");
-          }
-      };
-      el.removeAttribute("class");
-      el.classList.add("fill");
-      el.requestFullscreen();
-    }
-    else {
-      el=document.getElementById("remote-screen-img");
-      el.style.width = null;
-      el.style.height = null;
     }
   }
   return false;
 }
 
+function resetFullScreen() {
+  let el=document.getElementById("remote-screen");
+  el.removeAttribute("class");
+  el.classList.add("preview");
+  el=document.getElementById("remote-screen-img");
+  el.style.width = null;
+  el.style.height = null;
+}
+
 function setFullScreen(streamState) {
   if (Array.isArray(streamState) && streamState.length==3) {
     let el=document.getElementById("remote-screen-img");
-    el.style.width = streamState[1];
-    el.style.height = streamState[2];
-    console.log('Full Screen',streamState);
+    el.style.width = streamState[1]+"px";
+    el.style.height = streamState[2]+"px";
+    el.style["max-width"] = streamState[1]+"px";
+    el.style["max-height"] = streamState[2]+"px";
+    if (!el.getAttribute('data-onfullscreenchange')) {
+      el.setAttribute('data-onfullscreenchange', true);
+      el.onfullscreenchange = (event) => {
+        let el = event.target;
+        if (document.fullscreenElement !== el) {
+            resetFullScreen();
+        }
+      }
+    }
+    el.requestFullscreen();
   }
 }
 
