@@ -1,0 +1,1354 @@
+[33mcommit d3808d18f8710a3fbb686d353842a9e75862df48[m[33m ([m[1;36mHEAD -> [m[1;32mshutdown-modal[m[33m, [m[1;31morigin/shutdown-modal[m[33m)[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:43:18 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit fd6d71587f39a6c97bb37c73eda92bbd1ce47c1b[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:33:23 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit a09327316ed272d01a395e1d8589ddbe20569eea[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:23:33 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit 120799cddcbccce674e2261787fce83993b7f111[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:19:00 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit 9ed760b7fe083ebbd56bf0be3de6af6279ff29e9[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:14:29 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit ef7df622b7a65d1020c577f01ae053265a634aa7[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Sep 8 18:08:13 2020 -0400
+
+    Remove unused tooltip rule (#200)
+
+[33mcommit 1a9aa03964235ad31941bc2b836683c29265e0d9[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 18:05:25 2020 -0400
+
+    Modify Shutdown Dialog Modal
+
+[33mcommit 3e0aa616a9de554222721019c6af294688c3c6cc[m[33m ([m[1;31morigin/tooltip-top-left[m[33m, [m[1;32mtooltip-top-left[m[33m)[m
+Author: DJ Ruiz <mrdjruiz@gmail.com>
+Date:   Tue Sep 8 17:17:37 2020 -0400
+
+    Fixed Modifier keys tooltip
+
+[33mcommit 08d553b237941e8f9ad644eb495ae3f692902615[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Sep 8 15:36:46 2020 -0400
+
+    Create list of commands in navbar (#198)
+
+[33mcommit abd995f71c58e42e5e53e313f708daa88c5228af[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Sep 8 14:21:49 2020 -0400
+
+    Find all frontend files by glob pattern (#197)
+    
+    Ensure that the web server reloads when any of the frontend HTML/JS/CSS files change.
+
+[33mcommit 84e4fe57858c643765f2e66944f8353b442a59dd[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Sep 8 14:10:45 2020 -0400
+
+    Add support for pasting text (#194)
+    
+    * Add support for pasting text
+    
+    * Remove newline stripping from paste
+    
+    It adds a lot of extra code and users might not expect it.
+    
+    * Refactor logic of when shift key is necessary
+    
+    * Only handle single character keycode lookups
+    
+    * Switch to dynamic keycode lookup based on browser language
+    
+    * Change key back to let since we change it
+    
+    * Move paste button to navbar
+    
+    * Remove unused CSS
+    
+    * Remove unused paste-entry id
+    
+    * Refactor paste-overlay into custom HTML element
+    
+    * Reorgnize CSS rules
+    
+    * Fix formatting and UI text
+    
+    Co-authored-by: Pierre Cazenave <pwcazenave@gmail.com>
+
+[33mcommit 78ecb3c341297f0f75aa8a2eaf5f642c54e64983[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Sep 4 15:27:04 2020 -0400
+
+    Refactor manual modifier keys (#195)
+    
+    * Refactor manual modifier keys
+    
+    * Force pressed to be a boolean
+    
+    * Refactor button CSS code
+    
+    * Drop unnecessary class
+
+[33mcommit b16598d7f0630e7ced0261168dc8f90c2516a6c8[m
+Author: Sander Kromwijk <s.kromwijk@gmail.com>
+Date:   Wed Sep 2 09:17:53 2020 -0400
+
+    Fix edge-case where numbers get parsed as integer (#190)
+    
+    * Fix int handling
+    
+    * Add int test
+
+[33mcommit 3b5a2b3a9d84b8610b8eb0acdd048cbecf8b07c9[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 31 22:17:34 2020 -0400
+
+    Fix vertical alignment on TinyPilot logo (#188)
+
+[33mcommit 1a7afd0b2ee625f972f879e9ed149eb06a14a770[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 31 18:41:05 2020 -0400
+
+    Change navbar brand to an image (#186)
+
+[33mcommit 9ad19840300c63ae42693ea4058ffe4b468b5f2c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 31 18:13:01 2020 -0400
+
+    Refactor navbar into a separate file (#185)
+
+[33mcommit 100dbcf2c04bde477c1e7cd12d8dd30ed9f143f0[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 31 17:49:52 2020 -0400
+
+    Renaming components directory to custom-elements (#184)
+
+[33mcommit d3983d0a4205a10608c30453bf5b90db243183c9[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 31 17:13:38 2020 -0400
+
+    Migrating some README content to the TinyPilot wiki (#183)
+
+[33mcommit 3685ff2a3894163771666a9f73d9339a250e847c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 30 12:14:43 2020 -0400
+
+    Remove cruft from content-tooltip (#182)
+    
+    I accidentally left it in when copy/pasting the starting code from connection-indicator.
+
+[33mcommit a0b928dc408303c163cd85064f7250f68635a5ec[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 30 12:06:12 2020 -0400
+
+    Create a custom HTML element for tooltips (#181)
+
+[33mcommit c42f5139d5484a3132d5589ec6ed3e8bf6d4dfb8[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 30 10:31:10 2020 -0400
+
+    Refactor connection indicator into custom element (#178)
+    
+    * Refactor connection indicator into custom element
+    
+    * Go back to shadow DOM
+    
+    Apparently CSS scoped doesn't really exist anymore.
+
+[33mcommit 987afa1757947131dc0d7ee9ff331d0348c84b30[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 30 10:17:58 2020 -0400
+
+    Change Lora to the default font everywhere (#179)
+    
+    Lora should be the default non-header font.
+
+[33mcommit 3459d55980d12a1513e5ea7aee9d0a2edc5714c1[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Aug 28 16:42:32 2020 -0400
+
+    Add unit test for sending input to mouse HID interface (#175)
+
+[33mcommit 52941f713547e2cb093607a16dc4b93895f95a5a[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 16:28:14 2020 -0400
+
+    Add a div to contain the entire app (#167)
+    
+    This is basically just to make the merge of #113 a little easier
+
+[33mcommit f3d38a0092139b0e9211e04fee60c107e43c5ae1[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 16:25:56 2020 -0400
+
+    Mouse event parse errors should inherit from Error (#166)
+
+[33mcommit 21a9d4e05227819b34987327d7ae20fd606d0756[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 15:53:36 2020 -0400
+
+    Make keystroke processing more robust (#165)
+    
+    Moves the keystroke message parsing to a new module, adds unit tests, changes some property names. This ensures that incoming data is validated before further processing.
+
+[33mcommit ea853b54fa56ce275b6f776caa5a839451013e84[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 14:48:23 2020 -0400
+
+    Add support for mouse input (#125)
+    
+    * Add support for mouse input
+    
+    Fixes #40
+    
+    * Delete redundant comment
+    
+    * Adding MOUSE_PATH to README
+    
+    * Adding more implementation pieces to support mouse movement
+    
+    * Adding more of mouse implementation
+    
+    * Reduce slashes
+    
+    * Update cursor and usb gadget init
+    
+    * Add more mouse implementation
+    
+    * Movement and clicking work, but need cleanup
+    
+    * Move mouse HID code
+    
+    * Delete debug code
+    
+    * Mouse tweaks (#162)
+    
+    * Mouse tweaks
+    
+    * Address formatter feedback
+    
+    * Off-by-one comments...
+    
+    * Fix bad merge
+    
+    * Switching to mouse buttons property
+    
+    * Disable context menu on remote screen
+    
+    * Add TODO
+    
+    * Delete unused global variable
+    
+    * Clean up mouse code
+    
+    * Fix mouse event send
+    
+    * Fix variable names
+    
+    * Add unit tests
+    
+    * Add more tests
+    
+    * Trim unneeded code
+    
+    Co-authored-by: Sander Kromwijk <s.kromwijk@gmail.com>
+
+[33mcommit 94991607a6344a218ac7f55c4a01a66c746251d5[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 14:24:12 2020 -0400
+
+    Reformat whitespace in index.html to match prettier rules (#164)
+
+[33mcommit b364d5233ce8040b661dd5abce1e164de20fcd36[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 27 09:00:08 2020 -0400
+
+    Remove assumption that socket is for keyboard messages (#163)
+    
+    * Remove assumption that socket is for keyboard messages
+    
+    * Changing UI to match
+
+[33mcommit 7d40be395ff26822d4b70af6cde8a60422eb18b5[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Aug 26 18:35:12 2020 -0400
+
+    Refactor JS keystroke processing (#161)
+    
+    Refactoring the keystroke processing for better code sharing with the incoming paste functionality (#113).
+
+[33mcommit 135cd51eeffff895c28c39046907ef0786352db0[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Aug 26 18:06:39 2020 -0400
+
+    Switch to a more robust system for tracking keystroke success (#160)
+    
+    The previous mechanism assumed that the server always processed keystrokes in order, and it could go out of state when many keystrokes were sent in quick succession.
+    
+    This switches to a more robust method where the client includes a unique identifier with each keystroke it sends to the server, and the server sends the ID back so that the client knows which response corresponds to which keystroke.
+
+[33mcommit b507583da686ad95d6df383273ab0e03fde9530c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Aug 26 16:43:37 2020 -0400
+
+    Refactor hid module (#159)
+    
+    Move hid module into separate files in preparation of mouse support.
+
+[33mcommit b7724594a3fb48c027e89813b2848c597fa11f46[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Aug 26 16:08:01 2020 -0400
+
+    Refactor keyboard HID descriptor (#158)
+    
+    * Refactor keyboard HID descriptor
+    
+    Reformats the keyboard HID descriptor generation so that it's more self-documenting.
+    
+    * Fix cp command
+
+[33mcommit fdf99b657cdc36d40b2794422609181907d33d13[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Aug 26 11:23:06 2020 -0400
+
+    Reduce socket.io log chatter (#157)
+
+[33mcommit d3b250b35eccf7c6044f63c8b1abac6e2a9222e3[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 25 09:10:30 2020 -0400
+
+    Remove excess slashes in keyboard descriptor string (#155)
+
+[33mcommit 62db791355374f10314ac5a5fd3499de23dd9f34[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 25 08:40:18 2020 -0400
+
+    Rename FUNCTIONS_DIR to KEYBOARD_FUNCTIONS_DIR (#153)
+    
+    The init script will eventually support more than one USB gadget function, so this makes the keyboard function explicit as its own function.
+    
+    Related: #125
+
+[33mcommit a1c4a862b8b38ef4dbb08cd2b0fb71dcabf1d0d4[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 25 08:34:50 2020 -0400
+
+    Reformat keyboard descriptor (#152)
+
+[33mcommit 50f6db01d32300c5922b762591ed36459e0a2ec5[m
+Author: Doug Rathbone <dougrathbone@gmail.com>
+Date:   Mon Aug 24 14:56:37 2020 -0700
+
+    Added SysRq key for working with hung Linux machines remotely. (#150)
+
+[33mcommit 16b3d9dde45cd07e74d83abcf5e9ccf21ef11848[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Aug 21 16:37:20 2020 -0400
+
+    Accept environment variables in quick-install script (#145)
+    
+    * Allow command-line flags to quick-install script
+    
+    * Checking for undefined variable
+    
+    * Move down unbound variable check
+    
+    * Switch to environment variable
+    
+    * Adjust handling of environment variable
+    
+    * Fix variable check
+    
+    * Add bashrc instructions
+
+[33mcommit 1e161957199abdb8a41ee33b39ea9cb83ad7dbf3[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Aug 21 16:03:51 2020 -0400
+
+    Add instructions to enable read-only filesystem (#147)
+    
+    * Add instructions to enable read-only filesystem
+    
+    Fixes #17
+    
+    * Updating instructions
+
+[33mcommit b2970e2c8af81002e18c2c771320134936ec166c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 20 12:34:19 2020 -0400
+
+    Echo commands in init-usb-gadget to stdout (#144)
+
+[33mcommit 60f989d92303ae6d242ab4136800b474ec179e31[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Aug 20 09:59:56 2020 -0400
+
+    Updating hardware requirements (#143)
+
+[33mcommit 4587f989b6d479034a64b2411c1c9964cdad7261[m[33m ([m[1;33mtag: 1.0.3[m[33m)[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 18 17:54:06 2020 -0400
+
+    Fix name of KEYBOARD_PATH env variable in README (#141)
+
+[33mcommit db633d87f34f653fe82fdc446d6bbb1586412647[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 18 13:42:48 2020 -0400
+
+    Update README with links to mailing list and What Got Done (#140)
+
+[33mcommit ff906d92142f417c9c0c1b96fa68cc240a5fe813[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 17 22:06:36 2020 -0400
+
+    Adding libffi-dev to list of ansible requirements (#138)
+
+[33mcommit 1ae3783bbcc8ea3566f053e5eeca0431f12cae97[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 17 10:39:50 2020 -0400
+
+    Update hardware requirements (#134)
+
+[33mcommit ebf22575721ca984bbcf0ca1f27dac035dbda682[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 19:26:36 2020 -0400
+
+    Adding frontend checks to build and CI (#127)
+    
+    * Adding frontend checks to build and CI
+    
+    * Fix CircleCI config
+
+[33mcommit e790de0c7d417bf916043fa4efd08966765070c7[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 19:26:28 2020 -0400
+
+    Remove apt update from CI (#128)
+    
+    The quick-install script handles this internally as of #124
+
+[33mcommit 89ea743d1b783e0b26038dd186f7862867758493[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 17:52:18 2020 -0400
+
+    Add recommended VS extensions to project (#126)
+
+[33mcommit 3fe402f8e0e72648a77e392abf240e7096f96cbc[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 15:27:26 2020 -0400
+
+    Updating apt cache at start of quick-install script (#124)
+
+[33mcommit 38ad89bb2fc8c0cdf49ba289af26fcfd6ac848ab[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 15:12:02 2020 -0400
+
+    Relax assumption that keyboard == HID (#122)
+    
+    * Relaxing assumption that keyboard == HID
+    
+    Refactoring the code to get away from the language of HID as synonymous with keyboard. Mice are also HIDs but operate differently, so we should separate the concept of an HID from the concept of a keyboard.
+    
+    * Update README
+
+[33mcommit 07e2174115298d5795eac9c137be1b02971f2678[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 14:56:37 2020 -0400
+
+    Mark init-usb-gadget script as executable (#123)
+
+[33mcommit 7df18e7e6fccc1f15cb9ceab3f9e16bc0aa514e4[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Aug 11 14:44:54 2020 -0400
+
+    Add init-usb-gadget script (#121)
+    
+    Moving it from its original location at https://github.com/mtlynch/ansible-role-tinypilot/blob/a087dbdab33d2f8c2c8e0ed45fa6da063988f9d2/files/enable-rpi-hid because it's tightly bound with the application and should live with the app code.
+
+[33mcommit 2a4636475d974bcd47182f0b96b740731e3786bd[m[33m ([m[1;33mtag: 1.0.2[m[33m)[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 9 20:32:46 2020 -0400
+
+    Delete unused enable-usb-hid file (#120)
+    
+    It's an artifact from key-mime-pi. In TinyPilot, ansible-role-tinypilot creates this file:
+    
+    https://github.com/mtlynch/ansible-role-tinypilot/blob/21514df253b1fa9e6e6d390ef907f5544b2135eb/tasks/install_usb_gadget.yml#L22-L28
+    
+    Fixes #119
+
+[33mcommit 8b41bb08f6b0312f8e500f562a35bbe1621183df[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun Aug 9 09:21:23 2020 -0400
+
+    Fix restart parameter on shutdown command (#118)
+    
+    Fixes #117
+
+[33mcommit 4ac2a1ab8c362f910d7172293e86c4eb41482311[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Aug 7 17:51:37 2020 -0400
+
+    Ensure all apt packages are installed for Ansible (#109)
+    
+    On non-Raspbian Debian systems like DietPi, we should check that all the apt packages are available to run the Ansible environment.
+
+[33mcommit e9a3fd103ac057f83d7918a220916ec8b3da957e[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Aug 7 17:16:28 2020 -0400
+
+    Adding favicon (#115)
+
+[33mcommit 7e67d9092d7f6e9e49b6520c85b448470ba8b82b[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 3 17:02:48 2020 -0400
+
+    Prevent history area from expanding when history is disabled (#110)
+    
+    This fixes an issue where the key history area would expand as the user types keys even if they had disabled key history. The keys wouldn't display, but the empty space expanding was distracting/confusing.
+    
+    Fixes #103
+
+[33mcommit 2d9bf9170c6c30fb1554c494f1ad17a4678aaff4[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Aug 3 16:32:50 2020 -0400
+
+    Use verbose flags in quick-install example (#108)
+
+[33mcommit a518226919c7e38d6257efbdc4cbf91331dd8359[m
+Author: Enno Lohmeier <elo-gthb@nerd-works.de>
+Date:   Thu Jul 30 21:29:51 2020 +0200
+
+    add setup.py for Python packaging (#94)
+    
+    * add setup.py
+    
+    * rename ./build to ./run_build to not interfere with Python build dir
+
+[33mcommit 367f74dc272ca2de0a4935af9766acd880149d82[m[33m ([m[1;33mtag: 1.0.1[m[33m)[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 29 19:47:26 2020 -0400
+
+    Limit the remote screen view to 85% of the browser's width (#102)
+
+[33mcommit 832a7f362c3408dd2ac76675ef71fc5ba1597d8a[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 29 19:18:03 2020 -0400
+
+    Adjusting style to allow a 1080p image height (#101)
+
+[33mcommit 2d7f94381151a6bb40c82732204d0a957488e7d8[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 29 19:04:14 2020 -0400
+
+    Allow wildcard origin for CORS requests to socket.io routes (re-try) (#100)
+    
+    Retrying this change. The first time (#98), I incorrectly applied the cors_allowed_origins parameter.
+
+[33mcommit f3ec501a4794dfaac479fbe8665cf9998a6f1675[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Wed Jul 29 18:09:07 2020 -0400
+
+    Revert "Allow wildcard origin for CORS requests to socket.io routes (#98)"
+    
+    This reverts commit 660b6f36d1d97045cf31ce5333f3a944ac06eac0.
+
+[33mcommit 660b6f36d1d97045cf31ce5333f3a944ac06eac0[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 29 17:51:12 2020 -0400
+
+    Allow wildcard origin for CORS requests to socket.io routes (#98)
+
+[33mcommit e175e83676f7d71a5a4471366be1a79816e2bf25[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 28 13:07:10 2020 -0400
+
+    Document supported VGA to HDMI adapter (#95)
+    
+    Fixes #76
+
+[33mcommit b402bacd1cb069f111cc3107dcae6d9a8a277f20[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sat Jul 25 19:42:10 2020 -0400
+
+    Adding a partial end-to-end test (#89)
+    
+    * Adding a partial end-to-end test
+    
+    * Changing image for e2e test
+    
+    * Switching to machine image
+    
+    * Fixing machine image
+    
+    * Adding apt update
+
+[33mcommit df12eccf11ffb9acec5ccba42093ef1758219cd1[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sat Jul 25 17:30:09 2020 -0400
+
+    Adding wheel install to the quick-install script (#88)
+    
+    Ansible spews error messages if wheel isn't installed. They're benign, but it's cleaner if we just pre-install wheel.
+
+[33mcommit efe90ab0c83bf5af245112be27228715e256dc61[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jul 24 17:20:59 2020 -0400
+
+    Linking to blog post (#87)
+
+[33mcommit 8751995b947bbab1e6a20c78ca569c1440652d45[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jul 24 17:05:34 2020 -0400
+
+    Adding upgrade instructions (#86)
+
+[33mcommit 9cefc9aacd1aac7503cdbdf167c12bfb36253c68[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jul 24 16:50:23 2020 -0400
+
+    Eliminate assumption that hostname is tinypilot (#84)
+    
+    Change CORS_ORIGIN to default to the local machine's hostname rather than assume that the machine is called 'tinypilot'.
+
+[33mcommit f7509e7cefc83601d5f8543b780975b543dd8d12[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 22 15:02:07 2020 -0400
+
+    Fix log event to log key code (#73)
+
+[33mcommit 9fa4e1346b534af003634774096ed73e1a0c6592[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 22 15:01:36 2020 -0400
+
+    Fixing --reboot flag for /sbin/shutdown (#72)
+
+[33mcommit 5a150bdf659a09d9001b2b9560ddf49d3480b7f7[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 21 13:24:00 2020 -0400
+
+    Adding sudo to remove command (#71)
+
+[33mcommit 0df06aa4fcc91e27be5d8ae06b0b769aeb4c7a58[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 21 13:21:42 2020 -0400
+
+    Removing legacy nginx config file in quick-install (#70)
+
+[33mcommit 8ce4abd66a864b404c8e304770b0b99b20c3ac7f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 20 17:59:51 2020 -0400
+
+    Adding support for reboot (#69)
+    
+    Fixes #21
+
+[33mcommit fcacb1eab040e4f6ee7f9612df4ffd422cf1e95b[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 20 17:24:48 2020 -0400
+
+    Updating instructions for running in dev mode (#68)
+
+[33mcommit 5db3bcb5acfb602dbe4a91b935dd09ded2e3b182[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 20 16:41:34 2020 -0400
+
+    Adding explicit support for socket.io CORS requests (#67)
+
+[33mcommit 8dd3a275c26819b791effeec9e19233cbd421b83[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 20 16:41:20 2020 -0400
+
+    Adding source map for socket.io (#66)
+
+[33mcommit 0bfbc47880d08a0444e44c0859c696af0c41f56b[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jul 17 16:04:54 2020 -0400
+
+    Updating demo gif to have correct title (#63)
+
+[33mcommit b769daa63f20b94b6be3e9f8ab3829648021ad3f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jul 16 17:17:55 2020 -0400
+
+    Don't treat a hold of modifier key as multiple keystrokes (#62)
+    
+    * Don't treat a hold of modifier key as multiple keystrokes
+    
+    By default, JavaScript continuously generates onKeyDown events as long as the user holds down a key. This is fine for most keys, as holding down a key should be the same as repeatedly pushing a key. For modifier keys like Shift + Ctrl + Alt + Meta/OS, it yields unexpected behavior, like Windows triggering StickyKeys.
+    
+    This fix adds special casing for modifier keys so that they don't trigger multiple key presses when held down.
+    
+    * Handling release of modifier keys
+
+[33mcommit f1bdac8c0b15ee63727e9790646caeac36c6691e[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 8 13:06:19 2020 -0400
+
+    Changing quick-install roles path to PWD (#59)
+
+[33mcommit 111348c6917bac0cb0bed47828aa527b877deb59[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 8 11:06:58 2020 -0400
+
+    Updating hardware requirements (#58)
+
+[33mcommit dfee9821e9c3f45705eeb2c5d1d846603ffa5782[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 8 10:26:37 2020 -0400
+
+    Setting cursor to not-allowed on remote screen (#57)
+
+[33mcommit 9887c5bdb87bb85c91dcaa746fcfdcfde1c6893e[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 7 16:57:23 2020 -0400
+
+    Adding hardware requirements (#56)
+    
+    Fixes #41
+
+[33mcommit 96b38a911a254475ff6234c79bff23f8492eef23[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 7 16:18:03 2020 -0400
+
+    Rearranging modifier keys (#55)
+    
+    Fixes #45
+
+[33mcommit 8a6501ae09002e62a52831f4862fe948ca57ba5f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 7 15:51:35 2020 -0400
+
+    Tiny Pilot -> TinyPilot (#54)
+
+[33mcommit 9c555897db480a2ee11db89325b03854979d6454[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jul 7 10:15:32 2020 -0400
+
+    Renaming KVM Pi to Tiny Pilot (#53)
+
+[33mcommit 98adc97ebf148a58b780cfeeb1ad3b4e662f9fbf[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 6 12:08:23 2020 -0400
+
+    Adding tooltip for keyboard status icon (#51)
+
+[33mcommit ac38c476103e22ee7732257139833e639b988ca3[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 6 12:08:14 2020 -0400
+
+    Updating readme to specify Python3.7 venv (#52)
+
+[33mcommit 7c8bda210b736e34dc825f6d332fa6d63f6ec200[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jul 6 11:08:08 2020 -0400
+
+    Tweaking UI for modifier keys (#50)
+
+[33mcommit ee4c3db0752091752ab6f86d79d1489b78d996ab[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jul 1 18:32:51 2020 -0400
+
+    Write to HID interface asynchronously (#49)
+    
+    Writes to HID can fail if the USB cable is disconnected, so doing it in a separate thread avoids locking up the entire app.
+    
+    Fixes #47
+
+[33mcommit 8d4c4cc2acb225a90b965563cffe7972ff5a3c50[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 30 17:51:43 2020 -0400
+
+    Further tweaks to README (#48)
+    
+    Clarify security considerations and install options
+
+[33mcommit 4bca49e4f061cd7b5967abcc9882daa794d0bba0[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 29 10:24:01 2020 -0400
+
+    Fixing remote install instructions (#44)
+
+[33mcommit 337992de9ca3e5dd31cdbcc95b0db1c7405ba994[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 29 10:08:08 2020 -0400
+
+    Setting exec bit on quick-install script (#43)
+
+[33mcommit 66ed55fd29aa74cc8ef36dc4954f3bc60c7fd95f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 29 10:07:11 2020 -0400
+
+    Adding installation instructions to README (#42)
+    
+    Fixes #25
+
+[33mcommit 9182ba575de4525427e1fe9997bffa0d01f42390[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 25 17:28:28 2020 -0400
+
+    Adding demo GIF (#38)
+    
+    Fixes #12
+
+[33mcommit 78b726f7a4f0a7eaaed4d55e00bddb00a4c1afa8[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 21:26:45 2020 -0400
+
+    Ignore bad gateway on shutdown (#36)
+
+[33mcommit 6ca022590d00d63a096a56e0d640c526de53de13[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 20:59:37 2020 -0400
+
+    Adding donation options (#35)
+
+[33mcommit 6d11499e2ab87d199f89d00ae2221a7938fbe09b[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 17:37:07 2020 -0400
+
+    Adding support for manual modifier keys (#34)
+    
+    * Adding support for manual modifier keys
+    
+    Fixes #7
+    
+    * Finish manual modifier support
+
+[33mcommit 5b86cf6457ff93d24e88806e680fbc1d7a25ec45[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 11:03:00 2020 -0400
+
+    Adding shutdown confirmation (#33)
+    
+    * Adding shutdown confirmation
+    
+    * Removing old onPowerButtonClick handler
+
+[33mcommit 18f32072cbdc24b0a4aeaaa6ecb7d3158d320886[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 10:03:12 2020 -0400
+
+    Integrating keyboard disconnect errors with other error handling (#32)
+
+[33mcommit 8d748d37af1d28e948a479b48bb2e76457a147b9[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 23 09:54:06 2020 -0400
+
+    Adding better documentation for Ansible role (#31)
+
+[33mcommit c654b90fda5588fc775ab5feecf2f981fbb98922[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 22 13:23:52 2020 -0400
+
+    Removing SECRET_KEY as an environment variable (#30)
+
+[33mcommit e52b1190affd42ccca416290e43d1a3cf3b4adec[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 22 09:14:01 2020 -0400
+
+    Adding CSRF protection for /shutdown endpoint (#29)
+    
+    * Adding CSRF protection for /shutdown endpoint
+    
+    * Adding newline to requirements.txt
+
+[33mcommit 6b0f9809bd7c0ae81c88edc1989ab9607cd13cec[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Mon Jun 22 07:51:17 2020 -0400
+
+    Assume shutdown when server fails to respond (#27)
+
+[33mcommit 21391839954c092e4d0435868d54ae5b67d8aaf1[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jun 19 17:45:40 2020 -0400
+
+    Updating install instructions (#26)
+
+[33mcommit ddb9c3b15e94f6e82d4f00c87aa3badd0dbbd75a[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jun 19 11:54:04 2020 -0400
+
+    Adding sudo to shutdown command (#24)
+    
+    * Adding sudo to shutdown command
+    
+    * Fixing whitespace on local_system
+
+[33mcommit 0e20e5e8f665184c0e875e4cfcb88341f4b0ae13[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jun 19 10:54:06 2020 -0400
+
+    Adding VSCode settings for ESLint + Prettier and reformatting (#20)
+
+[33mcommit fcd02f2f91ad11655bd5c95274828a5295305c8f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jun 19 10:50:16 2020 -0400
+
+    Added error handling for shutdown failure (#19)
+
+[33mcommit 7c0132bad1acb5817b4fe7d414b9ecc6a940f93d[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 18 11:00:18 2020 -0400
+
+    Adding support for shutdown button (#14)
+
+[33mcommit 104a9d6c732da9d7233b205db3c81fafc18db1bf[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 18 11:00:08 2020 -0400
+
+    Removing hardcoded URL (#15)
+
+[33mcommit 90dd3e9117289561638a724e5f20e87aafc67afa[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 18 10:59:26 2020 -0400
+
+    Adjusting navbar padding (#13)
+
+[33mcommit aa16ac7411b6527f4d9a2d671f2b004a3e2dd294[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 18 10:05:11 2020 -0400
+
+    Adding security considerations to README (#11)
+
+[33mcommit 109d53c3922450ba5283a83d50cdb8834c5b2600[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 18 09:37:58 2020 -0400
+
+    Adding a navbar (#10)
+    
+    Fixes #6
+    Fixes #9
+
+[33mcommit 700702afc4407d619fff835959a9fae6abcd2efb[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 17 12:03:55 2020 -0400
+
+    Adjusting container CSS (#5)
+
+[33mcommit ef98645a92b788a6fe177760fd30a5b47acdec82[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 17 11:23:25 2020 -0400
+
+    Fixing CSS for streaming image (#4)
+
+[33mcommit db1cbb1a03955475963d70bf69a9046a13c4ca9c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 17 11:10:41 2020 -0400
+
+    Changing image stream to responsive image (#3)
+
+[33mcommit 9831ebd84a41d913fb38661b59bcefa3a1dd45d7[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 17 08:32:39 2020 -0400
+
+    Scale key text based on key label length (#2)
+
+[33mcommit d4f7ae10a9ef0060904d0db43818be00298dc268[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 17 08:17:47 2020 -0400
+
+    Adjusting layout and catching clicks on console (#1)
+
+[33mcommit b4f040c642664c0f5b83713a9aeb90769423d45a[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Tue Jun 16 16:47:51 2020 -0400
+
+    Renaming to KVM Pi
+
+[33mcommit 9955bed11de4dc49398519621ad59685fe5d7fc8[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 11 17:51:45 2020 -0400
+
+    Fixing HID codes for F1-F12 (#19)
+
+[33mcommit 3336b72bd4ceb8e44dc418ac4b159ea97cf94311[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Thu Jun 11 17:50:38 2020 -0400
+
+    Updating OS requirements (#20)
+
+[33mcommit 6d790bff1bed3aa07c74289ea52376d15fd062ca[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 15:43:41 2020 -0400
+
+    Adding screenshot to README (#18)
+
+[33mcommit cd35af134ec30f79c6b87bacef8837da61bd5fe9[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 15:07:47 2020 -0400
+
+    Removing ask-become-pass flag (#17)
+
+[33mcommit da0fb5e7e8293aee42b0a862c93d72d910ff6f3d[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 10:14:50 2020 -0400
+
+    Adding a reboot command and proper auth to instructions (#16)
+
+[33mcommit cd8d624bf21428c22d5f917ca8a7d80b1547cdd4[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 09:44:33 2020 -0400
+
+    Adding reboot instructions (#15)
+
+[33mcommit 4a2ed0e6d79019e2ba7789cd137919b5fcde6a81[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 09:19:42 2020 -0400
+
+    Enabling usb-gadget service from install script (#14)
+
+[33mcommit d09de51ccd967e897c5abe77c264b3bdd203815a[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 08:58:57 2020 -0400
+
+    Documenting environment variable options (#13)
+    
+    Fixes #10
+
+[33mcommit 85d795ee71085527651758d29306081b59c47209[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 08:58:44 2020 -0400
+
+    Skipping daemon reload in enable-usb-hid (#11)
+    
+    The Pi needs to reboot anyway, so this is unnecessary and will fail.
+
+[33mcommit a3b54e4139676ab8c868f1ff74f814a85bb61efd[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 10 08:54:50 2020 -0400
+
+    Changing writes to config.txt and modules to appends (#12)
+
+[33mcommit 47f38363deb5e678f426d50aa7691f150f794d26[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Tue Jun 9 09:44:22 2020 -0400
+
+    Updating pre-requisites to define required packages (#9)
+
+[33mcommit d0ff40667da7144d636fc69e88a0df4345aced69[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sat Jun 6 21:02:59 2020 -0400
+
+    Fixing convert to use no-sided control characters (#7)
+
+[33mcommit ef9cab9ca09f919b0f96d2de94f8a4cf8056d63f[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sat Jun 6 20:57:37 2020 -0400
+
+    Fixing dataclass to match parser (#6)
+
+[33mcommit 7f8918f0b1cfb05ac4658f943c50de401bd9be5c[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sat Jun 6 20:48:31 2020 -0400
+
+    Ignoring left/right when processing modifier keys (#5)
+
+[33mcommit 904e56b6bf1f76da1abb85f654637da0e3c35fa3[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Fri Jun 5 10:02:45 2020 -0400
+
+    Adding more documentation (#4)
+
+[33mcommit aeacd150dcb01b6b292f3a7b5cfad5effb929d48[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 3 21:28:41 2020 -0400
+
+    Adding enable USB script (#3)
+    
+    * Adding enable USB script
+    
+    * Small tweaks
+
+[33mcommit 2468437f2da460eac35957d6fb2ab1f0ec811c71[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 3 20:36:42 2020 -0400
+
+    Adding support for left and right keys and meta key (#1)
+
+[33mcommit 87249cd11b39cdc433a97ee825aef79ea8ef86c0[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Wed Jun 3 20:34:24 2020 -0400
+
+    Adding CircleCI badge and config (#2)
+    
+    * Adding CircleCI badge and config
+    
+    * Splittin venv step
+
+[33mcommit 3674691a10be3d5963f84f8b867fa841c5f84713[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon Jun 1 13:23:37 2020 -0400
+
+    Updating pre-requisites in README
+
+[33mcommit 3743bd917cc0b6b9a447e5a1869a1c2d1df6e6bb[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon Jun 1 13:09:58 2020 -0400
+
+    Fixing key removal order
+
+[33mcommit 139adfafc621173c50789a931bb0a9ce86305616[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 31 10:21:23 2020 -0400
+
+    Hiding history deletes history
+
+[33mcommit a390444fc9a3ed5bb88dd697691507210db2f3f8[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 20:43:09 2020 -0400
+
+    Color coding key cards
+
+[33mcommit 348d88dfb1ac3128cf89f0113228e98cdf5f6d3a[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 20:11:01 2020 -0400
+
+    Updating title and footer
+
+[33mcommit cbcc435b5243a2bf2cbdb667d8436fa93dadcf69[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 18:43:28 2020 -0400
+
+    Adding eventlet dependency
+
+[33mcommit 4616e74a1d23da03724e5788436bebf8dbeaa491[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 17:18:00 2020 -0400
+
+    Adding Google Fonts
+
+[33mcommit 7a21676fa3aa9a3f9b076d6a57b48f4041747f3b[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 16:59:51 2020 -0400
+
+    Switching to a local copy of socket.io instead of CDN
+
+[33mcommit 6fafcceaea7e43bb34e39ed6f0c52205ff10eb98[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 16:54:53 2020 -0400
+
+    Adding keystroke history
+
+[33mcommit 72f922c46b20eee441bee61b15262219a20bdc3e[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 12:20:25 2020 -0400
+
+    Getting rid of input field
+
+[33mcommit 1ef7082ab4538acc7a6a2a5ff67d1f5e98313038[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sat May 30 12:03:37 2020 -0400
+
+    Improving error handling for connect/disconnect
+
+[33mcommit 252aa7fed0b12f6451fd68920402ac5b56e0c9c0[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Fri May 29 07:57:15 2020 -0400
+
+    Updating README with name change and WIP note
+
+[33mcommit e43ad935366af6da97525fa37cb75e00654bfec9[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 22:04:17 2020 -0400
+
+    Getting rid of stale TODO
+
+[33mcommit 073fd730ac545cafaee26a6a764de15181761e4c[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 21:57:50 2020 -0400
+
+    Updating README
+
+[33mcommit 259e729f095ea9a7f38b8c19e39f8f8e59830905[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 21:44:44 2020 -0400
+
+    Removing gunicorn requirement
+
+[33mcommit 6b064deeb84a8b3365d35358fc33f1a2de257e31[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 21:21:15 2020 -0400
+
+    Switching to parameterized settings via env vars
+
+[33mcommit 4f5aeb512a7288d17d0de9888dece16d8254461d[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 20:52:07 2020 -0400
+
+    Getting rid of namespaces
+
+[33mcommit b45c7ccf3437aafc10b19d6e5874911e5ccc00f1[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 20:46:35 2020 -0400
+
+    Working with websockets
+
+[33mcommit 4cf29724a6129d5e9c07ec3225dc194f7c77aa22[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 18:55:31 2020 -0400
+
+    Getting rid of DocStringChecker
+
+[33mcommit 945da3d927a01d6280502545cb978d124fde18b1[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Thu May 28 18:50:10 2020 -0400
+
+    Updating project details
+
+[33mcommit dcaf3175b5fcf77159212d0f406f4b758bc487c4[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:11:05 2020 -0400
+
+    Fixing hooks
+
+[33mcommit 5fda275b2a1f17b02ea1466d40abf96d76b660e0[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:08:51 2020 -0400
+
+    Fixing reference to error
+
+[33mcommit 9ea21416c70a292ec901ca78f032f84fcb53d6de[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:07:45 2020 -0400
+
+    More graceful handling for unrecognized keys
+
+[33mcommit e67bc9aeadc1902531069fbfb3cb757d4d661ea3[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:05:20 2020 -0400
+
+    Adding media play/pause handling
+
+[33mcommit 1108a6c6185a21b5ae6400b6b50c1c78bdca3cd7[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:02:01 2020 -0400
+
+    Adding logging for ignored keys
+
+[33mcommit 1d94e222484401502922b0f7a2c6537f0bf50f1a[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 22:00:05 2020 -0400
+
+    Add handling for unrecognized or ignored key codes
+
+[33mcommit 5cd0b6019cc7ab209a5a74c20fa7635bf31227aa[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 18:28:06 2020 -0400
+
+    Fixing minus and equal
+
+[33mcommit be8369bc51528785384920c5fd05db6b26b7c578[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 18:26:59 2020 -0400
+
+    Fixing minus
+
+[33mcommit 647a1b982cd7a60a1dae37f73962de644c5a1241[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 18:26:00 2020 -0400
+
+    Fixing more keys
+
+[33mcommit aaa5bf30c8b1757d7fbfff92cea9729cf3894d64[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 18:20:40 2020 -0400
+
+    Fixing home key
+
+[33mcommit 11a5034a7ee6a17ae549e6734d34bafb8ce906f6[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 18:18:30 2020 -0400
+
+    Fixing enter key code
+
+[33mcommit 8b5584a14b80d962a7d32c7fa62c17332c59816d[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Mon May 18 17:44:41 2020 -0400
+
+    Updating to add sequence number support
+
+[33mcommit a03544ede6a020129078050de5249e28a7155b5d[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:42:01 2020 -0400
+
+    Updating key codes
+
+[33mcommit e71bdd5a4d00d3c30fa3926eede23ff80ef2a255[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:36:46 2020 -0400
+
+    Adding more keycodes
+
+[33mcommit 8eb373cbda95058ac17af4f511923084dfbb9d3a[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:16:44 2020 -0400
+
+    Adding more keycodes
+
+[33mcommit f799e2fa93c95fc96dba7e0e6c2fd651f20b0fe1[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:04:42 2020 -0400
+
+    Fixing pressed check
+
+[33mcommit 648f7a56357800109726876a8f23904a88a780cb[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:02:50 2020 -0400
+
+    Fixing response
+
+[33mcommit c96bfd244d399b029a1d9c61c0ce70976d90c620[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:02:01 2020 -0400
+
+    Fixing payload name
+
+[33mcommit 5b3fcb806b49a10cf29a14a6129c7f312348abcf[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 18:00:31 2020 -0400
+
+    Updating and integrating control keys
+
+[33mcommit b17e564bd5403ffd69b69c36d0a0cec92c827020[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 14:52:16 2020 -0400
+
+    Adding HID interface
+
+[33mcommit 34e5be185e499ae8a7b9381ce9a0d67d3fa9f352[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 13:03:26 2020 -0400
+
+    Adding TODO
+
+[33mcommit 35e697d858df0936cc81e9f96abf63bc34bbc617[m
+Author: Michael Lynch <git@mtlynch.io>
+Date:   Sun May 17 12:58:42 2020 -0400
+
+    Initial commit
+
+[33mcommit 563cc88cdfebbbd603bff1fab99a42ceac5a641d[m
+Author: Michael Lynch <mtlynch@users.noreply.github.com>
+Date:   Sun May 17 12:21:03 2020 -0400
+
+    Initial commit
