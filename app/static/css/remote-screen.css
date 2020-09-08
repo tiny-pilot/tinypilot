@@ -18,15 +18,10 @@
 }
 
 #remote-screen.fill {
-    display: grid;
-    height: 100%;
 }
 
 #remote-screen.fill img {
     width: 100%;
-    max-width: 100%;
-    max-height: 100vh;
-    margin: auto;
 }
 
 #remote-screen.fill2 {
