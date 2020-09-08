@@ -8,7 +8,7 @@
 
 #remote-screen.default {
   display: grid;
-  max-width: 90%%;
+  max-width: 90%;
   max-height: 1080px;
   margin: auto;
 }
