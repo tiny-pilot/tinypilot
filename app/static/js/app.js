@@ -343,6 +343,11 @@ function resetFullScreen() {
   let el=document.getElementById("remote-screen");
   el.removeAttribute("class");
   el.classList.add("preview");
+  el=document.getElementById("remote-screen-img");
+  el.style.width = null;
+  el.style.height = null;
+  el.style["max-width"] = null;
+  el.style["max-height"] = null;
 }
 
 function setFullScreen() {
