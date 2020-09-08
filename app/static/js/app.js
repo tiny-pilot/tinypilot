@@ -194,6 +194,7 @@ function onSocketDisconnect(reason) {
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
   connectionIndicator.disconnectReason = reason;
+  document.getElementById("app").focus();
 }
 
 function onKeyDown(evt) {
@@ -263,8 +264,51 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-document.querySelector("body").addEventListener("keydown", onKeyDown);
-document.querySelector("body").addEventListener("keyup", onKeyUp);
+function browserLanguage() {
+  if (navigator.languages) {
+    return navigator.languages[0];
+  }
+  return navigator.language || navigator.userLanguage;
+}
+
+function sendPastedText(pastedText) {
+  const language = browserLanguage();
+  for (let i = 0; i < pastedText.length; i++) {
+    let key = pastedText[i];
+    // Ignore carriage returns.
+    if (key === "\r") {
+      continue;
+    }
+    const keyCode = findKeyCode([pastedText[i].toLowerCase()], language);
+    // Give cleaner names to keys so that they render nicely in the history.
+    if (key === "\n") {
+      key = "Enter";
+    } else if (key === "\t") {
+      key = "Tab";
+    }
+    // We need to identify keys which are typed with modifiers and send Shift +
+    // the lowercase key.
+    const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
+    sendKeystroke({
+      id: keystrokeId,
+      metaKey: false,
+      altKey: false,
+      shiftKey: requiresShiftKey.test(pastedText[i]),
+      ctrlKey: false,
+      key: key,
+      keyCode: keyCode,
+      keystrokeId: keystrokeId,
+      location: null,
+    });
+  }
+  // Give focus back to the app for normal text input.
+  document.getElementById("app").focus();
+}
+
+document.onload = document.getElementById("app").focus();
+
+document.getElementById("app").addEventListener("keydown", onKeyDown);
+document.getElementById("app").addEventListener("keyup", onKeyUp);
 
 // Forward all mouse activity that occurs over the image of the remote screen.
 const screenImg = document.getElementById("remote-screen-img");
@@ -305,6 +349,16 @@ document.getElementById("cancel-shutdown").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
+
+document.getElementById("paste-btn").addEventListener("click", () => {
+  document.getElementById("paste-overlay").show = true;
+});
+document
+  .getElementById("paste-overlay")
+  .addEventListener("paste-text", (evt) => {
+    sendPastedText(evt.detail);
+  });
+
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
 socket.on("keystroke-received", (keystrokeResult) => {
