@@ -335,7 +335,7 @@ function resetFullScreen() {
 
 function setFullScreen(streamState) {
   setImgSize(streamState);
-  let el=document.getElementById("remote-screen-img");
+  let el=document.getElementById("remote-screen");
   if (!el.getAttribute('data-onfullscreenchange')) {
     el.setAttribute('data-onfullscreenchange', true);
     el.onfullscreenchange = (event) => {
