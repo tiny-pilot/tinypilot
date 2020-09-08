@@ -345,7 +345,7 @@ function resetFullScreen() {
   clearImgSizeTimer();
   let el=document.getElementById("remote-screen");
   el.removeAttribute("class");
-  el.classList.add("preview");
+  el.classList.add("default");
   el=document.getElementById("remote-screen-img");
   el.style.width = null;
   el.style.height = null;
