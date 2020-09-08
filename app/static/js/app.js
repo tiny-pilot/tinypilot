@@ -264,6 +264,7 @@ function onDisplayHistoryChanged(evt) {
 }
 
 var streamState=[false];
+getstreamState();
 function getstreamState(callback=null) {
   fetch("/state", {
     method: "GET",
