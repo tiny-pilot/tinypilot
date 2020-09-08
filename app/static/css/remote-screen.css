@@ -6,16 +6,15 @@
   object-fit: contain;
 }
 
-#remote-screen.preview {
+#remote-screen.default {
   max-width: 85%;
   max-height: 1080px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
-#remote-screen.preview img {
+#remote-screen.default img {
   width: 100%;
 }
 

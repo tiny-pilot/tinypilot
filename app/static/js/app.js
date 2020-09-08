@@ -300,7 +300,7 @@ function setCursor(e) {
 }
 
 function setScreen(e) {
-  if (["screen_preview","screen_fill","screen_full"].includes(e.className)>=0) {
+  if (["screen_default","screen_fill","screen_full"].includes(e.className)>=0) {
     resetFullScreen();
     let el=document.getElementById("remote-screen");
     let  c=e.className.slice(7);
@@ -313,35 +313,39 @@ function setScreen(e) {
   return false;
 }
 
-function resetFullScreen() {
-  let el=document.getElementById("remote-screen");
-  el.removeAttribute("class");
-  el.classList.add("preview");
-  el=document.getElementById("remote-screen-img");
-  el.style.width = null;
-  el.style.height = null;
-  el.style["max-width"] = null;
-  el.style["max-height"] = null;
-}
-
-function setFullScreen(streamState) {
+var setImgSizeTimer=null;
+function setImgSize(streamState) {
+  if (!window.setImgSizeTimer) {
+    window.setImgSizeTimer = setInterval(()=>{getstreamState(setImgSize)}, 5000);
+  }
   if (Array.isArray(streamState) && streamState.length==3) {
     let el=document.getElementById("remote-screen-img");
     el.style.width = streamState[1]+"px";
     el.style.height = streamState[2]+"px";
     el.style["max-width"] = streamState[1]+"px";
     el.style["max-height"] = streamState[2]+"px";
-    if (!el.getAttribute('data-onfullscreenchange')) {
-      el.setAttribute('data-onfullscreenchange', true);
-      el.onfullscreenchange = (event) => {
-        let el = event.target;
-        if (document.fullscreenElement !== el) {
-            resetFullScreen();
-        }
+  }
+}
+
+function resetFullScreen() {
+  let el=document.getElementById("remote-screen");
+  el.removeAttribute("class");
+  el.classList.add("preview");
+}
+
+function setFullScreen(streamState) {
+  setImgSize(streamState);
+  let el=document.getElementById("remote-screen-img");
+  if (!el.getAttribute('data-onfullscreenchange')) {
+    el.setAttribute('data-onfullscreenchange', true);
+    el.onfullscreenchange = (event) => {
+      let el = event.target;
+      if (document.fullscreenElement !== el) {
+          resetFullScreen();
       }
     }
-    el.requestFullscreen();
   }
+  el.requestFullscreen();
 }
 
 document.querySelector("body").addEventListener("keydown", onKeyDown);
