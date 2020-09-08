@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import glob
 import logging
 import os
 
@@ -164,16 +165,29 @@ def handle_csrf_error(e):
     }), 400
 
 
+def find_frontend_files():
+    frontend_files = []
+    patterns = [
+        ('./app/templates', '*.html'),
+        ('./app/static/css', '*.css'),
+        ('./app/static/js', '*.js'),
+    ]
+    for pattern in patterns:
+        path_root, glob_pattern = pattern
+        frontend_files.extend([
+            y for x in os.walk(path_root)
+            for y in glob.glob(os.path.join(x[0], glob_pattern))
+        ])
+    return frontend_files
+
+
 def main():
     socketio.run(app,
                  host=host,
                  port=port,
                  debug=debug,
                  use_reloader=use_reloader,
-                 extra_files=[
-                     './app/templates/index.html', './app/static/js/app.js',
-                     './app/static/css/style.css'
-                 ])
+                 extra_files=find_frontend_files())
 
 
 if __name__ == '__main__':
