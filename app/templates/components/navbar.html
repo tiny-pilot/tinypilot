@@ -1,23 +1,28 @@
 <div class="navbar">
   <div class="brand"><img src="/img/slim-logo-white.png" /></div>
-  <div class="nav-items">
-    <div class="nav-item">
-      <button id="paste-btn">Paste</button>
-    </div>
+  <ul class="nav-items">
+    <li class="dropdown">
+      <a>Commands</a>
+      <ul>
+        <li>
+          <a id="paste-btn">Paste</a>
+        </li>
+      </ul>
+    </li>
 
-    <div class="nav-item connection-indicator">
+    <li class="connection-indicator">
       <connection-indicator id="connection-indicator"></connection-indicator>
-    </div>
+    </li>
 
-    <div class="nav-item nav-icon source-link">
+    <li class="nav-icon source-link">
       <a href="https://github.com/mtlynch/tinypilot">
         <img src="/img/GitHub-Mark-Light-120px-plus.png" />
       </a>
-    </div>
-    <div class="nav-item nav-icon power">
+    </li>
+    <li class="nav-icon power">
       <a id="power-btn" href="#">
         <img src="/img/power-icon.png" />
       </a>
-    </div>
-  </div>
+    </li>
+  </ul>
 </div>

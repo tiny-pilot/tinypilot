@@ -1,0 +1,91 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 2rem;
+  margin: 0;
+  color: white;
+  background-color: rgb(42, 42, 143);
+  border-bottom: 1px solid black;
+  margin-bottom: 1rem;
+}
+
+.navbar .brand {
+  margin: 1rem 0 0.6rem 0;
+}
+
+.navbar .brand img {
+  max-width: 200px;
+}
+
+.navbar .nav-items {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar ul {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.navbar li {
+  display: inline;
+  position: relative;
+  margin-left: 1.5rem;
+  list-style: none;
+}
+
+.navbar li:hover ul {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: 0.7s;
+  transition: 0.7s;
+}
+
+.navbar li a {
+  display: block;
+  text-decoration: none;
+  padding: 5px 15px;
+  color: #000;
+}
+
+.navbar li a:hover {
+  cursor: pointer;
+}
+
+.navbar ul ul {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.navbar ul ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar .dropdown a {
+  color: white;
+  background-color: rgb(25, 7, 126);
+  min-width: 90px;
+  padding: 0.7rem 1.3rem;
+  border: 1px solid rgb(72, 61, 131);
+}
+
+.navbar .dropdown ul a {
+  background-color: rgb(65, 50, 146);
+}
+
+.navbar .connection-indicator {
+  margin-right: 0.5rem;
+}
+
+.nav-icon img {
+  max-height: 22px;
+}
