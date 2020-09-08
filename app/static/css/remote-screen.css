@@ -21,7 +21,7 @@
 }
 
 #remote-screen.fill img {
-    width: 100%;
+  width: 100%;
 }
 
 #remote-screen.fill2 {
@@ -32,16 +32,19 @@
 }
 
 #remote-screen.fillfull {
+  display: grid;
 }
 
 #remote-screen.fillfull img {
-    height: 100%;
+  margin: auto;
+  width: 100%;
 }
 
 #remote-screen.full {
-    overflow: auto;
+  display: grid;
+  overflow: auto;
 }
 
 #remote-screen.full img {
-    margin: auto;
+  margin: auto;
 }
