@@ -37,7 +37,7 @@
 
 #remote-screen.fillfull img {
   margin: auto;
-  width: 100%;
+  height: 100%;
 }
 
 #remote-screen.full {
