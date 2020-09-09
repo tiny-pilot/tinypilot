@@ -356,7 +356,6 @@ document.getElementById("shutdown-confirmation-panel").addEventListener("click",
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-
 document.getElementById("paste-btn").addEventListener("click", () => {
   document.getElementById("paste-overlay").show = true;
 });
