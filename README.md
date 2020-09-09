@@ -25,6 +25,9 @@ All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/o
 * [microSD card](https://amzn.to/2VH0RcL) (Class 10, 8 GB or larger)
 * [HDMI to HDMI cable](https://amzn.to/3gnlZwj)
   * Or \[other\] to HDMI, depending on how your target machine displays output.
+* (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/product/tinypilot-power-connector)
+  * Requires two additional [USB-A to microUSB cables](https://amzn.to/2Z5eJiF).
+  * If you're using the power connector, choose a USB-C to USB-A cable that's [12" or shorter](https://amzn.to/3hayLOJ) to minimize voltage drop along the cable.
 * (Optional) [VGA to HDMI Adapter](https://amzn.to/30SZWYh)
   * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
