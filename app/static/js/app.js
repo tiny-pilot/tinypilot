@@ -149,7 +149,7 @@ function sendShutdownRequest(restart) {
         showError("Failed to shut down TinyPilot device", error);
       }
     });
-    hideElementById("shutdown-confirmation-panel");
+  hideElementById("shutdown-confirmation-panel");
 }
 
 function clearManualModifiers() {
@@ -347,12 +347,14 @@ document
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
-document.getElementById("shutdown-confirmation-panel").addEventListener("click", (evt) => {
-  evt = window.event || evt;
-  if (evt.target.className === "overlay") {
-    hideElementById("shutdown-confirmation-panel");
-  }
-});
+document
+  .getElementById("shutdown-confirmation-panel")
+  .addEventListener("click", (evt) => {
+    evt = window.event || evt;
+    if (evt.target.className === "overlay") {
+      hideElementById("shutdown-confirmation-panel");
+    }
+  });
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
