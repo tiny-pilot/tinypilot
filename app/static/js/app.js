@@ -353,6 +353,7 @@ document.getElementById("shutdown-confirmation-panel").addEventListener("click",
     hideElementById("shutdown-confirmation-panel");
   }
 });
+>>>>>>> e1ce975... Modify Shutdown Dialog Modal
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
