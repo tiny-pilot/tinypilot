@@ -347,9 +347,9 @@ document
 document.getElementById("cancel-shutdown").addEventListener("click", () => {
   hideElementById("shutdown-confirmation-panel");
 });
-document.getElementById("shutdown-confirmation-panel").addEventListener("click", (e) => {
-  e = window.event || e;
-  if(e.target.className === "overlay") {
+document.getElementById("shutdown-confirmation-panel").addEventListener("click", (evt) => {
+  evt = window.event || evt;
+  if (evt.target.className === "overlay") {
     hideElementById("shutdown-confirmation-panel");
   }
 });
