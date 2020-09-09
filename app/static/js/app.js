@@ -1,7 +1,6 @@
 "use strict";
 
 const socket = io();
-let poweringDown = false;
 let connectedToServer = false;
 let keystrokeId = 0;
 
@@ -75,7 +74,7 @@ function displayPoweringDownUI(restart) {
     "error-panel",
     "remote-screen",
     "keystroke-history",
-    "shutdown-confirmation-panel",
+    "shutdown-dialog",
   ]) {
     hideElementById(elementId);
   }
@@ -87,69 +86,6 @@ function displayPoweringDownUI(restart) {
   }
 
   document.querySelector(".page-content").appendChild(shutdownMessage);
-}
-
-function getCsrfToken() {
-  return document
-    .querySelector("meta[name='csrf-token']")
-    .getAttribute("content");
-}
-
-function sendShutdownRequest(restart) {
-  let route = "/shutdown";
-  if (restart) {
-    route = "/restart";
-  }
-  fetch(route, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": getCsrfToken(),
-    },
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-  })
-    .then((response) => {
-      // A 502 usually means that nginx shutdown before it could process the
-      // response. Treat this as success.
-      if (response.status === 502) {
-        return Promise.resolve({});
-      }
-      if (response.status !== 200) {
-        // See if the error response is JSON.
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-          return response.json().then((data) => {
-            return Promise.reject(new Error(data.error));
-          });
-        }
-        return Promise.reject(new Error(response.statusText));
-      }
-      return response.json();
-    })
-    .then((result) => {
-      if (result.error) {
-        return Promise.reject(new Error(result.error));
-      }
-      poweringDown = true;
-      displayPoweringDownUI(restart);
-    })
-    .catch((error) => {
-      // Depending on timing, the server may not respond to the shutdown request
-      // because it's shutting down. If we get a NetworkError, assume the
-      // shutdown succeeded.
-      if (error.message.indexOf("NetworkError") >= 0) {
-        poweringDown = true;
-        displayPoweringDownUI(restart);
-        return;
-      }
-      if (restart) {
-        showError("Failed to restart TinyPilot device", error);
-      } else {
-        showError("Failed to shut down TinyPilot device", error);
-      }
-    });
-  hideElementById("shutdown-confirmation-panel");
 }
 
 function clearManualModifiers() {
@@ -329,32 +265,11 @@ document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
 document.getElementById("power-btn").addEventListener("click", () => {
-  showElementById("shutdown-confirmation-panel");
+  document.getElementById("shutdown-dialog").show = true;
 });
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   hideElementById("error-panel");
 });
-document
-  .getElementById("confirm-shutdown")
-  .addEventListener("click", function () {
-    sendShutdownRequest(/*restart=*/ false);
-  });
-document
-  .getElementById("confirm-restart")
-  .addEventListener("click", function () {
-    sendShutdownRequest(/*restart=*/ true);
-  });
-document.getElementById("cancel-shutdown").addEventListener("click", () => {
-  hideElementById("shutdown-confirmation-panel");
-});
-document
-  .getElementById("shutdown-confirmation-panel")
-  .addEventListener("click", (evt) => {
-    evt = window.event || evt;
-    if (evt.target.className === "overlay") {
-      hideElementById("shutdown-confirmation-panel");
-    }
-  });
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
@@ -365,6 +280,16 @@ document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
     sendPastedText(evt.detail);
+  });
+document
+  .getElementById("shutdown-dialog")
+  .addEventListener("shutdown-started", (evt) => {
+    displayPoweringDownUI(evt.detail.restart);
+  });
+document
+  .getElementById("shutdown-dialog")
+  .addEventListener("shutdown-failure", (evt) => {
+    showError(evt.detail.summary, evt.detail.detail);
   });
 
 socket.on("connect", onSocketConnect);

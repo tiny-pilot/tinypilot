@@ -1,0 +1,201 @@
+<template id="shutdown-dialog-template">
+  <style>
+    @import "css/button.css";
+
+    .btn-danger {
+      background-color: rgb(153, 8, 8);
+    }
+
+    .btn-danger:hover {
+      background-color: rgb(223, 48, 48);
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    #shutdown-confirmation-panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    :host([show="true"]) .overlay {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2;
+    }
+  </style>
+  <div id="shutdown-confirmation-panel" class="overlay">
+    <div>
+      <h3>Shut Down TinyPilot Device?</h3>
+      <p>
+        Note that this will shut down <strong>TinyPilot</strong>, not the
+        machine to which it is attached.
+      </p>
+      <button id="confirm-shutdown" class="btn-danger" type="button">
+        Shut Down
+      </button>
+      <button id="confirm-restart" class="btn-danger" type="button">
+        Restart
+      </button>
+      <button id="cancel-shutdown" type="button">Cancel</button>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#shutdown-dialog-template");
+
+    customElements.define(
+      "shutdown-dialog",
+      class extends HTMLElement {
+        constructor() {
+          super();
+
+          this.addEventListener("click", (evt) => {
+            evt = window.event || evt;
+            if (evt.target.className === "overlay") {
+              this.show = false;
+            }
+          });
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this.shadowRoot
+            .getElementById("confirm-shutdown")
+            .addEventListener("click", () => {
+              this.sendShutdownRequest(/*restart=*/ false);
+            });
+          this.shadowRoot
+            .getElementById("confirm-restart")
+            .addEventListener("click", () => {
+              this.sendShutdownRequest(/*restart=*/ true);
+            });
+          this.shadowRoot
+            .getElementById("cancel-shutdown")
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+        }
+
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          this.setAttribute("show", newValue);
+        }
+
+        static get observedAttributes() {
+          return ["show"];
+        }
+
+        emitShutdownEvent(restart) {
+          this.dispatchEvent(
+            new CustomEvent("shutdown-started", {
+              detail: { restart },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        emitShutdownFailureEvent(summary, detail) {
+          this.dispatchEvent(
+            new CustomEvent("shutdown-failure", {
+              detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        getCsrfToken() {
+          return document
+            .querySelector("meta[name='csrf-token']")
+            .getAttribute("content");
+        }
+
+        sendShutdownRequest(restart) {
+          let route = "/shutdown";
+          if (restart) {
+            route = "/restart";
+          }
+          fetch(route, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": this.getCsrfToken(),
+            },
+            mode: "same-origin",
+            cache: "no-cache",
+            redirect: "error",
+          })
+            .then((response) => {
+              // A 502 usually means that nginx shutdown before it could process the
+              // response. Treat this as success.
+              if (response.status === 502) {
+                return Promise.resolve({});
+              }
+              if (response.status !== 200) {
+                // See if the error response is JSON.
+                const contentType = response.headers.get("content-type");
+                if (
+                  contentType &&
+                  contentType.indexOf("application/json") !== -1
+                ) {
+                  return response.json().then((data) => {
+                    return Promise.reject(new Error(data.error));
+                  });
+                }
+                return Promise.reject(new Error(response.statusText));
+              }
+              return response.json();
+            })
+            .then((result) => {
+              if (result.error) {
+                return Promise.reject(new Error(result.error));
+              }
+              this.emitShutdownEvent(restart);
+            })
+            .catch((error) => {
+              // Depending on timing, the server may not respond to the shutdown request
+              // because it's shutting down. If we get a NetworkError, assume the
+              // shutdown succeeded.
+              if (error.message.indexOf("NetworkError") >= 0) {
+                this.emitShutdownEvent(restart);
+                return;
+              }
+              if (restart) {
+                this.emitShutdownFailureEvent(
+                  "Failed to restart TinyPilot device",
+                  error
+                );
+              } else {
+                this.emitShutdownFailureEvent(
+                  "Failed to shut down TinyPilot device",
+                  error
+                );
+              }
+            });
+          this.show = false;
+        }
+      }
+    );
+  })();
+</script>
