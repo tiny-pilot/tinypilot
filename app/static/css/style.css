@@ -18,6 +18,10 @@ body {
   font-family: Lora;
 }
 
+*:focus {
+  outline: none;
+}
+
 h1,
 h2,
 h3,
