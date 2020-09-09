@@ -2,24 +2,8 @@
   <style>
     @import "css/button.css";
 
-    .btn-danger {
-      background-color: rgb(153, 8, 8);
-    }
-
-    .btn-danger:hover {
-      background-color: rgb(223, 48, 48);
-    }
-
     .overlay {
       display: none;
-    }
-
-    #shutdown-confirmation-panel > div {
-      background-color: rgb(252, 236, 223);
-      border: 1px solid rgb(139, 97, 62);
-      max-width: 800px;
-      margin: 100px auto 0rem auto;
-      padding: 2rem;
     }
 
     :host([show="true"]) .overlay {
@@ -33,6 +17,22 @@
       bottom: 0;
       background-color: rgba(0, 0, 0, 0.8);
       z-index: 2;
+    }
+
+    #shutdown-confirmation-panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    .btn-danger {
+      background-color: rgb(153, 8, 8);
+    }
+
+    .btn-danger:hover {
+      background-color: rgb(223, 48, 48);
     }
   </style>
   <div id="shutdown-confirmation-panel" class="overlay">
