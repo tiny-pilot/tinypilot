@@ -109,10 +109,6 @@
           this.setAttribute("show", newValue);
         }
 
-        static get observedAttributes() {
-          return ["show"];
-        }
-
         emitShutdownEvent(restart) {
           this.dispatchEvent(
             new CustomEvent("shutdown-started", {
