@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Serve TinyPilot in dev mode.
+PORT=8000 KEYBOARD_PATH=/dev/null MOUSE_PATH=/dev/null ./app/main.py
