@@ -77,13 +77,11 @@ function displayPoweringDownUI(restart) {
   ]) {
     hideElementById(elementId);
   }
-  const shadowroot = document.getElementById("shutdown-wait").shadowRoot;
+  const shutdownWait = document.getElementById("shutdown-wait");
   if (restart) {
-    shadowroot.querySelector("#shutdown-wait-message").innerText =
-      "Restarting TinyPilot Device...";
+    shutdownWait.message = "Restarting TinyPilot Device...";
   } else {
-    shadowroot.querySelector("#shutdown-wait-message").innerText =
-      "Shutting down TinyPilot Device...";
+    shutdownWait.message = "Shutting down TinyPilot Device...";
   }
   document.getElementById("shutdown-dialog").show = false;
   document.getElementById("shutdown-wait").show = true;
