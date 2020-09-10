@@ -266,6 +266,15 @@ screenImg.addEventListener("mouseup", sendMouseEvent);
 screenImg.addEventListener("contextmenu", function (evt) {
   evt.preventDefault();
 });
+const remoteScreenDiv = document.getElementById("remote-screen");
+remoteScreenDiv.addEventListener("dragstart", function (evt) {
+  // Prevent drag on screen for Firefox.
+  evt.preventDefault();
+});
+remoteScreenDiv.addEventListener("drop", function (evt) {
+  // Prevent drop on screen for Firefox.
+  evt.preventDefault();
+});
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
