@@ -4,6 +4,12 @@
 
     .overlay {
       display: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     :host([show="true"]) .overlay {
@@ -64,13 +70,6 @@
       class extends HTMLElement {
         constructor() {
           super();
-
-          this.addEventListener("click", (evt) => {
-            evt = window.event || evt;
-            if (evt.target.className === "overlay") {
-              this.show = false;
-            }
-          });
         }
 
         connectedCallback() {
@@ -91,6 +90,14 @@
             .getElementById("cancel-shutdown")
             .addEventListener("click", () => {
               this.show = false;
+            });
+          this.shadowRoot
+            .getElementById("shutdown-confirmation-panel")
+            .addEventListener("click", (evt) => {
+              evt = window.event || evt;
+              if (evt.target.className === "overlay") {
+                this.show = false;
+              }
             });
         }
 
