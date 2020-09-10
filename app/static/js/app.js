@@ -168,6 +168,9 @@ function onKeyDown(evt) {
 }
 
 function sendMouseEvent(evt) {
+  if (!connectedToServer) {
+    return;
+  }
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
