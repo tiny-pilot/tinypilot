@@ -34,39 +34,12 @@
         </div>
 
         <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
+
         <div id="remote-screen">
           <img id="remote-screen-img" src="/stream?advance_headers=1" />
         </div>
-        <div id="keystroke-history" class="container">
-          <div id="recent-keys"></div>
-          <div>
-            <input type="checkbox" id="display-history-checkbox" checked />
-            <label for="display-history-checkbox">Show history</label>
-          </div>
-          <div>
-            <div class="manual-modifiers">
-              <modifier-key id="ctrl-modifier">Ctrl</modifier-key>
-              <modifier-key id="alt-modifier">Alt</modifier-key>
-              <modifier-key id="shift-modifier">Shift</modifier-key>
-              <modifier-key id="sysrq-modifier">SysRq</modifier-key>
-              <modifier-key id="meta-modifier">Meta/OS</modifier-key>
 
-              <content-tooltip position="top-left">
-                <img class="question-icon" src="/img/question-icon.svg" />
-                <div slot="text">
-                  <p>
-                    Your OS and browser capture certain key combinations before
-                    they reach TinyPilot (e.g., Ctrl + Alt + Del).
-                  </p>
-                  <p>
-                    Press these buttons to send the corresponding modifier keys
-                    on your next keystroke.
-                  </p>
-                </div>
-              </content-tooltip>
-            </div>
-          </div>
-        </div>
+        {% include "components/keyboard-panel.html" %}
       </div>
     </div>
     <paste-overlay id="paste-overlay"></paste-overlay>

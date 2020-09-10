@@ -1,4 +1,5 @@
 @import "button.css";
+@import "keyboard-panel.css";
 @import "navbar.css";
 
 body {
@@ -53,52 +54,8 @@ img {
   cursor: crosshair;
 }
 
-#keystroke-history {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: rgb(252, 236, 223);
-  border: 1px solid rgb(139, 97, 62);
-  margin: 2rem auto;
-  padding: 1rem;
-  color: black;
-}
-
-#recent-keys {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  min-width: 800px;
-  min-height: 90px;
-}
-
-.key-card {
-  margin: 1rem;
-  padding: 1rem;
-  display: block;
-  background-color: aliceblue;
-  font-family: "Courier New", Courier, monospace;
-  border: 1px solid gray;
-  width: 40px;
-}
-
-.processed-key-card {
-  background-color: rgb(168, 255, 168);
-}
-
-.unsupported-key-card {
-  background-color: red;
-}
-
 .question-icon {
   max-width: 20px;
-}
-
-.manual-modifiers {
-  border: 1px dotted rgba(0, 0, 0, 0.226);
-  margin-top: 1rem;
-  display: inline-flex;
-  padding: 0.5rem;
 }
 
 #error-panel {
