@@ -124,7 +124,6 @@ function sendKeystroke(keystroke) {
 function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("connection-indicator").connected = true;
-  //hideElementById("shutdown-dialog");
 }
 
 function onSocketDisconnect(reason) {
@@ -288,7 +287,7 @@ document
 document
   .getElementById("shutdown-dialog")
   .addEventListener("shutdown-started", (evt) => {
-    isplayPoweringDownUI(evt.detail.restart);
+    displayPoweringDownUI(evt.detail.restart);
   });
 document
   .getElementById("shutdown-dialog")
