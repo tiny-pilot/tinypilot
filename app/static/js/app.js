@@ -124,6 +124,7 @@ function sendKeystroke(keystroke) {
 function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("connection-indicator").connected = true;
+  //hideElementById("shutdown-dialog");
 }
 
 function onSocketDisconnect(reason) {
@@ -168,6 +169,9 @@ function onKeyDown(evt) {
 }
 
 function sendMouseEvent(evt) {
+  if (!connectedToServer) {
+    return;
+  }
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
@@ -284,7 +288,7 @@ document
 document
   .getElementById("shutdown-dialog")
   .addEventListener("shutdown-started", (evt) => {
-    displayPoweringDownUI(evt.detail.restart);
+    isplayPoweringDownUI(evt.detail.restart);
   });
 document
   .getElementById("shutdown-dialog")
