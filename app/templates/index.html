@@ -21,6 +21,7 @@
     {% include "custom-elements/modifier-key.html" %}
     {% include "custom-elements/paste-overlay.html" %}
     {% include "custom-elements/shutdown-dialog.html" %}
+    {% include "custom-elements/shutdown-wait.html" %}
 
     <div id="app" tabindex="0">
       {% include "components/navbar.html" %}
@@ -69,7 +70,7 @@
       </div>
     </div>
     <paste-overlay id="paste-overlay"></paste-overlay>
-
+    <shutdown-wait id="shutdown-wait"></shutdown-wait>
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
     <script src="/js/keycodes.js"></script>
     <script src="/js/app.js"></script>

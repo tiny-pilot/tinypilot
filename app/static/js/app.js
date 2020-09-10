@@ -74,18 +74,17 @@ function displayPoweringDownUI(restart) {
     "error-panel",
     "remote-screen",
     "keystroke-history",
-    "shutdown-dialog",
   ]) {
     hideElementById(elementId);
   }
-  const shutdownMessage = document.createElement("h2");
+  const shutdownWait = document.getElementById("shutdown-wait");
   if (restart) {
-    shutdownMessage.innerText = "Restarting TinyPilot Device...";
+    shutdownWait.message = "Restarting TinyPilot Device...";
   } else {
-    shutdownMessage.innerText = "Shutting down TinyPilot Device...";
+    shutdownWait.message = "Shutting down TinyPilot Device...";
   }
-
-  document.querySelector(".page-content").appendChild(shutdownMessage);
+  document.getElementById("shutdown-dialog").show = false;
+  document.getElementById("shutdown-wait").show = true;
 }
 
 function clearManualModifiers() {
@@ -124,6 +123,9 @@ function sendKeystroke(keystroke) {
 function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("connection-indicator").connected = true;
+  if (document.getElementById("shutdown-wait").show) {
+    location.reload();
+  }
 }
 
 function onSocketDisconnect(reason) {

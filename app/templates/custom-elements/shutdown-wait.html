@@ -1,0 +1,101 @@
+<template id="shutdown-wait-template">
+  <style>
+    @import "css/spinner.css";
+
+    .overlay {
+      display: none;
+      text-align: center;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    :host([show="true"]) .overlay {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2;
+    }
+
+    #shutdown-wait-panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    .spinner {
+      margin: auto;
+      border: 10px solid #e6d4c8;
+      border-top: 10px solid #664bd2;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <div id="shutdown-wait-panel" class="overlay">
+    <div>
+      <h3 id="shutdown-wait-message"></h3>
+      <div class="spinner"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#shutdown-wait-template");
+
+    customElements.define(
+      "shutdown-wait",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          this.setAttribute("show", newValue);
+        }
+
+        get message() {
+          return this.shadowRoot.querySelector("#shutdown-wait-message")
+            .innerText;
+        }
+
+        set message(newValue) {
+          this.shadowRoot.querySelector(
+            "#shutdown-wait-message"
+          ).innerText = newValue;
+        }
+      }
+    );
+  })();
+</script>
