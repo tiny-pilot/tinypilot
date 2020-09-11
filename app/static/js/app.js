@@ -3,6 +3,7 @@
 const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
+var settings = {};
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -74,17 +75,18 @@ function displayPoweringDownUI(restart) {
     "error-panel",
     "remote-screen",
     "keystroke-history",
+    "shutdown-dialog",
   ]) {
     hideElementById(elementId);
   }
-  const shutdownWait = document.getElementById("shutdown-wait");
+  const shutdownMessage = document.createElement("h2");
   if (restart) {
-    shutdownWait.message = "Restarting TinyPilot Device...";
+    shutdownMessage.innerText = "Restarting TinyPilot Device...";
   } else {
-    shutdownWait.message = "Shutting down TinyPilot Device...";
+    shutdownMessage.innerText = "Shutting down TinyPilot Device...";
   }
-  document.getElementById("shutdown-dialog").show = false;
-  document.getElementById("shutdown-wait").show = true;
+
+  document.querySelector(".page-content").appendChild(shutdownMessage);
 }
 
 function clearManualModifiers() {
@@ -123,12 +125,11 @@ function sendKeystroke(keystroke) {
 function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("connection-indicator").connected = true;
-  if (document.getElementById("shutdown-wait").show) {
-    location.reload();
-  }
+  restoreCursor();
 }
 
 function onSocketDisconnect(reason) {
+  setCursor("disabled", false);
   connectedToServer = false;
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
@@ -170,9 +171,6 @@ function onKeyDown(evt) {
 }
 
 function sendMouseEvent(evt) {
-  if (!connectedToServer) {
-    return;
-  }
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
@@ -247,6 +245,45 @@ function sendPastedText(pastedText) {
   document.getElementById("app").focus();
 }
 
+function restoreCursor() {
+  if (
+    "settings" in window &&
+    "cursor" in window.settings &&
+    window.settings.cursor != null
+  ) {
+    setCursor(window.settings.cursor);
+  } else {
+    setCursor("crosshair");
+  }
+}
+
+function setCursor(e, save = true) {
+  if (typeof e === "object") {
+    e = e.dataset.cursor;
+  }
+  if (
+    [
+      "default",
+      "none",
+      "crosshair",
+      "dot",
+      "pointer",
+      "cell",
+      "disabled",
+    ].includes(e)
+  ) {
+    const el = document.getElementById("remote-screen-img");
+    if (save) {
+      window.settings.cursor = e;
+    }
+    if (connectedToServer) {
+      el.removeAttribute("class");
+      el.classList.add("cursor-" + e);
+    }
+  }
+  return false;
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.getElementById("app").addEventListener("keydown", onKeyDown);
@@ -264,15 +301,6 @@ screenImg.addEventListener("mouseup", sendMouseEvent);
 // Ignore the context menu so that it doesn't block the screen when the user
 // right-clicks.
 screenImg.addEventListener("contextmenu", function (evt) {
-  evt.preventDefault();
-});
-const remoteScreenDiv = document.getElementById("remote-screen");
-remoteScreenDiv.addEventListener("dragstart", function (evt) {
-  // Prevent drag on screen for Firefox.
-  evt.preventDefault();
-});
-remoteScreenDiv.addEventListener("drop", function (evt) {
-  // Prevent drop on screen for Firefox.
   evt.preventDefault();
 });
 document
