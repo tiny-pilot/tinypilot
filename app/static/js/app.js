@@ -3,7 +3,7 @@
 const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
-var settings = {cursor:3};
+var settings = { cursor: 3 };
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
