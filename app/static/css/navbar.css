@@ -115,17 +115,14 @@
   border-left: 8px solid rgb(179 169 232);
 }
 
-.narvbar .dropdown-divider {
-  height: 0;
-  margin: 0.5rem 0;
-  overflow: hidden;
-  border-top: 1px solid #e9ecef;
-}
-
 .navbar .connection-indicator {
   margin-right: 0.5rem;
 }
 
 .nav-icon img {
   max-height: 22px;
+}
+
+.navbar .nav-selected {
+  background: #241e7f !important;
 }

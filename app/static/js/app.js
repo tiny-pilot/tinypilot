@@ -259,6 +259,14 @@ function restoreCursor() {
 
 function setCursor(e, save = true) {
   if (typeof e === "object") {
+    let cursoroptions=e.parentNode.parentNode.firstChild;
+    while(cursoroptions) {
+      if (cursoroptions.nodeType === 1) {
+        cursoroptions.firstChild.removeAttribute("class");
+      }
+      cursoroptions=cursoroptions.nextSibling;
+    }
+    e.classList.add("nav-selected");
     e = e.dataset.cursor;
   }
   if (
