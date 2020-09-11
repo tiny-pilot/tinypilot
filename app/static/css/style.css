@@ -70,31 +70,27 @@ img {
   margin-top: 0;
 }
 
-.cursor-disabled {
-  cursor: not-allowed;
+*[cursor="default"] > * {
+  cursor: default !important;
 }
 
-.cursor-none {
-  cursor: none;
+*[cursor="none"] > * {
+  cursor: none !important;
 }
 
-.cursor-default {
-  cursor: default;
+*[cursor="crosshair"] > * {
+  cursor: crosshair !important;
 }
 
-.cursor-crosshair {
-  cursor: crosshair;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.cursor-cell {
-  cursor: cell;
-}
-
-.cursor-dot {
+*[cursor="dot"] > * {
   cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAb0lEQVQ4T9WSQQ4AMQRFuZfju5cJKcG0adNduyOer3yE/5NJTlOY8yUAABGZc4hWGvUZDIiZiygRWZxhBw3qQB9ZGzis4FLpCNypeRNXDcWHQP3Dbty+VWWuzuELuzJAwEO+nHAcfWm5XNwN2z0NHyeAUAvGKOgOAAAAAElFTkSuQmCC"),
-    auto;
+    auto !important;
+}
+
+*[cursor="pointer"] > * {
+  cursor: pointer !important;
+}
+
+*[cursor="cell"] > * {
+  cursor: cell !important;
 }

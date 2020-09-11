@@ -115,6 +115,10 @@
   border-left: 8px solid rgb(179 169 232);
 }
 
+#cursor-list a {
+  text-transform: capitalize;
+}
+
 .navbar .connection-indicator {
   margin-right: 0.5rem;
 }
@@ -123,6 +127,6 @@
   max-height: 22px;
 }
 
-.navbar .nav-selected {
+.navbar .nav-selected a {
   background: #241e7f !important;
 }

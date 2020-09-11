@@ -3,7 +3,19 @@
 const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
-var settings = { cursor: 3 };
+
+const screenCursorOptions = [
+  "default", // Note that this is the browser default, not TinyPilot's default.
+  "none",
+  "crosshair",
+  "dot",
+  "pointer",
+  "cell",
+];
+const initialScreenCursor = "crosshair";
+var settings = {
+  cursor: initialScreenCursor,
+};
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -253,43 +265,25 @@ function restoreCursor() {
   ) {
     setCursor(window.settings.cursor);
   } else {
-    setCursor(3);
+    setCursor(initialScreenCursor);
   }
 }
 
-function setCursor(e, save = true) {
-  let i = 0,
-    cursorlist = document.getElementById("cursor-list").firstChild;
-  while (save && cursorlist) {
-    if (cursorlist.nodeType === 1) {
-      i++;
-      cursorlist.firstChild.removeAttribute("class");
-      if (i === e) {
-        cursorlist.firstChild.classList.add("nav-selected");
-      }
-    }
-    cursorlist = cursorlist.nextSibling;
-  }
-  let cursors = [
-    "disabled",
-    "default",
-    "none",
-    "crosshair",
-    "dot",
-    "pointer",
-    "cell",
-  ];
-  if (cursors.length > e) {
-    const el = document.getElementById("remote-screen-img");
-    if (save) {
-      window.settings.cursor = e;
-    }
-    if (connectedToServer) {
-      el.removeAttribute("class");
-      el.classList.add("cursor-" + cursors[e]);
+function setCursor(cursor, save = true) {
+  // Ensure the correct cursor option displays as active in the navbar.
+  for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
+    if (cursor === cursorListItem.getAttribute("cursor")) {
+      cursorListItem.classList.add("nav-selected");
+    } else {
+      cursorListItem.classList.remove("nav-selected");
     }
   }
-  return false;
+
+  document.getElementById("remote-screen").setAttribute("cursor", cursor);
+
+  if (save) {
+    window.settings.cursor = cursor;
+  }
 }
 
 document.onload = document.getElementById("app").focus();
@@ -341,6 +335,25 @@ document
   .addEventListener("shutdown-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
+
+// Add cursor options to navbar.
+const cursorList = document.getElementById("cursor-list");
+for (const cursorOption of screenCursorOptions) {
+  const cursorLink = document.createElement("a");
+  cursorLink.setAttribute("href", "#");
+  cursorLink.innerText = cursorOption;
+  cursorLink.addEventListener("click", () => {
+    setCursor(cursorOption);
+  });
+  const listItem = document.createElement("li");
+  listItem.appendChild(cursorLink);
+  listItem.classList.add("cursor-option");
+  listItem.setAttribute("cursor", cursorOption);
+  if (cursorOption === initialScreenCursor) {
+    listItem.classList.add("nav-selected");
+  }
+  cursorList.appendChild(listItem);
+}
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
