@@ -3,7 +3,7 @@
 const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
-var settings = {};
+var settings = {cursor:3};
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -129,7 +129,7 @@ function onSocketConnect() {
 }
 
 function onSocketDisconnect(reason) {
-  setCursor("disabled", false);
+  setCursor(0, false);
   connectedToServer = false;
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
@@ -253,40 +253,40 @@ function restoreCursor() {
   ) {
     setCursor(window.settings.cursor);
   } else {
-    setCursor("crosshair");
+    setCursor(3);
   }
 }
 
 function setCursor(e, save = true) {
-  if (typeof e === "object") {
-    let cursoroptions=e.parentNode.parentNode.firstChild;
-    while(cursoroptions) {
-      if (cursoroptions.nodeType === 1) {
-        cursoroptions.firstChild.removeAttribute("class");
+  let i = 0,
+    cursorlist = document.getElementById("cursor-list").firstChild;
+  while (save && cursorlist) {
+    if (cursorlist.nodeType === 1) {
+      i++;
+      cursorlist.firstChild.removeAttribute("class");
+      if (i === e) {
+        cursorlist.firstChild.classList.add("nav-selected");
       }
-      cursoroptions=cursoroptions.nextSibling;
     }
-    e.classList.add("nav-selected");
-    e = e.dataset.cursor;
+    cursorlist = cursorlist.nextSibling;
   }
-  if (
-    [
-      "default",
-      "none",
-      "crosshair",
-      "dot",
-      "pointer",
-      "cell",
-      "disabled",
-    ].includes(e)
-  ) {
+  let cursors = [
+    "disabled",
+    "default",
+    "none",
+    "crosshair",
+    "dot",
+    "pointer",
+    "cell",
+  ];
+  if (cursors.length > e) {
     const el = document.getElementById("remote-screen-img");
     if (save) {
       window.settings.cursor = e;
     }
     if (connectedToServer) {
       el.removeAttribute("class");
-      el.classList.add("cursor-" + e);
+      el.classList.add("cursor-" + cursors[e]);
     }
   }
   return false;
