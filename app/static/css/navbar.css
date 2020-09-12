@@ -8,6 +8,12 @@
   background-color: rgb(42, 42, 143);
   border-bottom: 1px solid black;
   margin-bottom: 1rem;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .navbar .brand {
@@ -39,7 +45,7 @@
   list-style: none;
 }
 
-.navbar li:hover ul {
+.navbar li:hover > ul {
   visibility: visible;
   opacity: 1;
   -webkit-transition: 0.7s;
@@ -65,7 +71,20 @@
   opacity: 0;
 }
 
+.navbar ul ul ul {
+  position: absolute;
+  left: 67px;
+  top: 100%;
+  visibility: hidden;
+  opacity: 0;
+}
+
 .navbar ul ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul ul ul li {
   margin: 0;
   padding: 0;
 }
@@ -78,8 +97,26 @@
   border: 1px solid rgb(72, 61, 131);
 }
 
+.navbar .dropdown ul a:hover {
+  background: rgb(148 134 226);
+}
+
 .navbar .dropdown ul a {
   background-color: rgb(65, 50, 146);
+}
+
+.navbar .caret {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 3px auto 0px 30px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid rgb(179 169 232);
+}
+
+#cursor-list a {
+  text-transform: capitalize;
 }
 
 .navbar .connection-indicator {
@@ -88,4 +125,8 @@
 
 .nav-icon img {
   max-height: 22px;
+}
+
+.navbar .nav-selected a {
+  background: #241e7f !important;
 }
