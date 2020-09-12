@@ -14,11 +14,8 @@ const screenCursorOptions = [
   "cell",
 ];
 const initialScreenCursor = "crosshair";
-const screenViewOptions = ["default", "fill", "full"];
-const initialScreenView = "default";
 var settings = {
   cursor: initialScreenCursor,
-  screen: initialScreenView,
 };
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
@@ -296,38 +293,19 @@ function setCursor(cursor, save = true) {
   }
 }
 
-function setScreen(option) {
-  // Ensure the correct screen option displays as active in the navbar.
-  for (const screenListItem of document.querySelectorAll("#screen-list li")) {
-    if (option === screenListItem.getAttribute("screen")) {
-      screenListItem.classList.add("nav-selected");
-    } else {
-      screenListItem.classList.remove("nav-selected");
-    }
-    window.settings.screen = option;
-  }
-  document.getElementById("remote-screen").setAttribute("screen", option);
-  setFullScreen();
-}
-
 function setFullScreen() {
-  if (
-    "settings" in window &&
-    "screen" in window.settings &&
-    window.settings.screen == "full"
-  ) {
-    let el = document.getElementById("remote-screen");
-    if (!el.dataset.onfullscreenchange) {
-      el.dataset.onfullscreenchange = true;
-      el.onfullscreenchange = (event) => {
-        let el = event.target;
-        if (document.fullscreenElement !== el) {
-          setScreen(initialScreenView);
-        }
-      };
-    }
-    el.requestFullscreen();
+  let el = document.getElementById("remote-screen");
+  if (!el.dataset.onfullscreenchange) {
+    el.dataset.onfullscreenchange = true;
+    el.onfullscreenchange = (event) => {
+      let el = event.target;
+      if (document.fullscreenElement !== el) {
+        el.setAttribute("fullscreen", false);
+      }
+    };
   }
+  el.setAttribute("fullscreen", true);
+  el.requestFullscreen();
 }
 
 document.onload = document.getElementById("app").focus();
@@ -370,6 +348,10 @@ document.getElementById("hide-error-btn").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
+document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
+  setFullScreen();
+  evt.preventDefault();
+});
 document.getElementById("paste-btn").addEventListener("click", () => {
   document.getElementById("paste-overlay").show = true;
 });
@@ -408,24 +390,6 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
-
-// Add screen view options to navbar.
-const screenList = document.getElementById("screen-list");
-for (const screenOption of screenViewOptions) {
-  const screenLink = document.createElement("a");
-  screenLink.setAttribute("href", "#");
-  screenLink.innerText = screenOption;
-  screenLink.addEventListener("click", (evt) => {
-    setScreen(screenOption);
-    evt.preventDefault();
-  });
-  const listItem = document.createElement("li");
-  listItem.appendChild(screenLink);
-  listItem.classList.add("screen-option");
-  listItem.setAttribute("screen", screenOption);
-  screenList.appendChild(listItem);
-}
-setScreen(initialScreenView);
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
