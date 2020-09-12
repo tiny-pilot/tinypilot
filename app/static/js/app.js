@@ -5,6 +5,7 @@ let connectedToServer = false;
 let keystrokeId = 0;
 
 const screenCursorOptions = [
+  "disabled", //to show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
   "none",
   "crosshair",
@@ -87,18 +88,17 @@ function displayPoweringDownUI(restart) {
     "error-panel",
     "remote-screen",
     "keystroke-history",
-    "shutdown-dialog",
   ]) {
     hideElementById(elementId);
   }
-  const shutdownMessage = document.createElement("h2");
+  const shutdownWait = document.getElementById("shutdown-wait");
   if (restart) {
-    shutdownMessage.innerText = "Restarting TinyPilot Device...";
+    shutdownWait.message = "Restarting TinyPilot Device...";
   } else {
-    shutdownMessage.innerText = "Shutting down TinyPilot Device...";
+    shutdownWait.message = "Shutting down TinyPilot Device...";
   }
-
-  document.querySelector(".page-content").appendChild(shutdownMessage);
+  document.getElementById("shutdown-dialog").show = false;
+  document.getElementById("shutdown-wait").show = true;
 }
 
 function clearManualModifiers() {
@@ -135,13 +135,17 @@ function sendKeystroke(keystroke) {
 }
 
 function onSocketConnect() {
-  connectedToServer = true;
-  document.getElementById("connection-indicator").connected = true;
-  restoreCursor();
+  if (document.getElementById("shutdown-wait").show) {
+    location.reload();
+  } else {
+    connectedToServer = true;
+    document.getElementById("connection-indicator").connected = true;
+    restoreCursor();
+  }
 }
 
 function onSocketDisconnect(reason) {
-  setCursor(0, false);
+  setCursor("disabled", false);
   connectedToServer = false;
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
@@ -183,6 +187,9 @@ function onKeyDown(evt) {
 }
 
 function sendMouseEvent(evt) {
+  if (!connectedToServer) {
+    return;
+  }
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
@@ -271,18 +278,18 @@ function restoreCursor() {
 
 function setCursor(cursor, save = true) {
   // Ensure the correct cursor option displays as active in the navbar.
-  for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
-    if (cursor === cursorListItem.getAttribute("cursor")) {
-      cursorListItem.classList.add("nav-selected");
-    } else {
-      cursorListItem.classList.remove("nav-selected");
-    }
-  }
-
-  document.getElementById("remote-screen").setAttribute("cursor", cursor);
-
   if (save) {
+    for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
+      if (cursor === cursorListItem.getAttribute("cursor")) {
+        cursorListItem.classList.add("nav-selected");
+      } else {
+        cursorListItem.classList.remove("nav-selected");
+      }
+    }
     window.settings.cursor = cursor;
+  }
+  if (connectedToServer) {
+    document.getElementById("remote-screen").setAttribute("cursor", cursor);
   }
 }
 
@@ -303,6 +310,15 @@ screenImg.addEventListener("mouseup", sendMouseEvent);
 // Ignore the context menu so that it doesn't block the screen when the user
 // right-clicks.
 screenImg.addEventListener("contextmenu", function (evt) {
+  evt.preventDefault();
+});
+const remoteScreenDiv = document.getElementById("remote-screen");
+remoteScreenDiv.addEventListener("dragstart", function (evt) {
+  // Prevent drag on screen for Firefox.
+  evt.preventDefault();
+});
+remoteScreenDiv.addEventListener("drop", function (evt) {
+  // Prevent drop on screen for Firefox.
   evt.preventDefault();
 });
 document
@@ -338,7 +354,7 @@ document
 
 // Add cursor options to navbar.
 const cursorList = document.getElementById("cursor-list");
-for (const cursorOption of screenCursorOptions) {
+for (const cursorOption of screenCursorOptions.splice(1)) {
   const cursorLink = document.createElement("a");
   cursorLink.setAttribute("href", "#");
   cursorLink.innerText = cursorOption;
