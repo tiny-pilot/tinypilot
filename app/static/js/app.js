@@ -387,7 +387,7 @@ document
   .addEventListener("fullscreenchange", (evt) => {
     // Detect when the user leaves full-screen mode.
     if (document.fullscreenElement !== evt.target) {
-      remoteScreen.setAttribute("fullscreen", false);
+      evt.target.setAttribute("fullscreen", false);
     }
   });
 
