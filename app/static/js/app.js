@@ -295,18 +295,6 @@ function setCursor(cursor, save = true) {
 
 function setFullScreen() {
   const remoteScreen = document.getElementById("remote-screen");
-  const remoteScreenImg = document.getElementById("remote-screen-img");
-  if (!remoteScreen.dataset.onfullscreenchange) {
-    remoteScreen.dataset.onfullscreenchange = true;
-    remoteScreen.onfullscreenchange = (evt) => {
-      const remoteScreen = evt.target;
-      const remoteScreenImg = document.getElementById("remote-screen-img");
-      console.log(document.fullscreenElement, remoteScreen);
-      if (document.fullscreenElement !== remoteScreen) {
-        remoteScreen.setAttribute("fullscreen", false);
-      }
-    };
-  }
   remoteScreen.setAttribute("fullscreen", true);
   remoteScreen.requestFullscreen();
 }
@@ -393,6 +381,15 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
+
+document
+  .getElementById("remote-screen")
+  .addEventListener("fullscreenchange", (evt) => {
+    // Detect when the user leaves full-screen mode.
+    if (document.fullscreenElement !== evt.target) {
+      remoteScreen.setAttribute("fullscreen", false);
+    }
+  });
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
