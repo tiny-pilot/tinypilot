@@ -358,8 +358,9 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   const cursorLink = document.createElement("a");
   cursorLink.setAttribute("href", "#");
   cursorLink.innerText = cursorOption;
-  cursorLink.addEventListener("click", () => {
+  cursorLink.addEventListener("click", (evt) => {
     setCursor(cursorOption);
+    evt.preventDefault();
   });
   const listItem = document.createElement("li");
   listItem.appendChild(cursorLink);
