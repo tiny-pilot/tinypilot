@@ -41,12 +41,7 @@ img {
 }
 
 #remote-screen {
-  max-width: 85%;
-  max-height: 1080px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  background: rgb(114, 114, 114);
 }
 
 #remote-screen img {
@@ -93,4 +88,23 @@ img {
 
 *[cursor="cell"] > * {
   cursor: cell !important;
+}
+
+#remote-screen[screen="default"] > img {
+  max-height: 50vh;
+}
+
+#remote-screen[screen="fill"] {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#remote-screen[screen="fill"] > img,
+#remote-screen[screen="full"] > img {
+  object-fit: fill;
+  height: 100%;
+  width: 100%;
 }

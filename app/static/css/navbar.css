@@ -89,6 +89,10 @@
   padding: 0;
 }
 
+.navbar .dropdown {
+  z-index: 9999;
+}
+
 .navbar .dropdown a {
   color: white;
   background-color: rgb(25, 7, 126);
@@ -115,7 +119,8 @@
   border-left: 8px solid rgb(179 169 232);
 }
 
-#cursor-list a {
+#cursor-list,
+#screen-list a {
   text-transform: capitalize;
 }
 
