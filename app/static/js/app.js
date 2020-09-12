@@ -293,19 +293,84 @@ function setCursor(cursor, save = true) {
   }
 }
 
+var streamState = [false];
+getstreamState();
+function getstreamState(callback = null) {
+  fetch("/state", {
+    method: "GET",
+    headers: {},
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then((response) => {
+      if (response.status !== 200) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          return response.json().then((data) => {
+            return Promise.reject(new Error(data.error));
+          });
+        }
+        return Promise.reject(new Error(response.statusText));
+      }
+      return response.json();
+    })
+    .then((result) => {
+      window.streamState = [
+        result.result.source.online,
+        result.result.source.resolution.width,
+        result.result.source.resolution.height,
+      ];
+      if (callback) {
+        callback(window.streamState);
+      }
+    });
+}
+
+var setImgSizeTimer = null;
+function clearImgSizeTimer() {
+  if (window.setImgSizeTimer != null) {
+    clearInterval(setImgSizeTimer);
+    window.setImgSizeTimer = null;
+  }
+}
+
+function setImgSize(streamState) {
+  if (window.setImgSizeTimer == null) {
+    window.setImgSizeTimer = setInterval(() => {
+      getstreamState(setImgSize);
+    }, 5000);
+  }
+  if (Array.isArray(streamState) && streamState.length == 3) {
+    const remoteScreenImg = document.getElementById("remote-screen-img");
+    remoteScreenImg.style.width = streamState[1] + "px";
+    remoteScreenImg.style["max-width"] = streamState[1] + "px";
+    remoteScreenImg.style["max-height"] = streamState[2] + "px";
+  }
+}
+
 function setFullScreen() {
-  let el = document.getElementById("remote-screen");
-  if (!el.dataset.onfullscreenchange) {
-    el.dataset.onfullscreenchange = true;
-    el.onfullscreenchange = (event) => {
-      let el = event.target;
-      if (document.fullscreenElement !== el) {
-        el.setAttribute("fullscreen", false);
+  const remoteScreen = document.getElementById("remote-screen");
+  const remoteScreenImg = document.getElementById("remote-screen-img");
+  if (!remoteScreen.dataset.onfullscreenchange) {
+    remoteScreen.dataset.onfullscreenchange = true;
+    remoteScreen.onfullscreenchange = (evt) => {
+      const remoteScreen = evt.target;
+      const remoteScreenImg = document.getElementById("remote-screen-img");
+      if (document.fullscreenElement !== remoteScreen) {
+        clearImgSizeTimer();
+        remoteScreen.setAttribute("fullscreen", false);
+        remoteScreenImg.style.width = null;
+        remoteScreenImg.style["max-width"] = null;
+        remoteScreenImg.style["max-height"] = null;
       }
     };
   }
-  el.setAttribute("fullscreen", true);
-  el.requestFullscreen();
+  remoteScreen.setAttribute("fullscreen", true);
+  remoteScreenImg.style.width = streamState[1] + "px";
+  remoteScreenImg.style["max-width"] = streamState[1] + "px";
+  remoteScreenImg.style["max-height"] = streamState[2] + "px";
+  remoteScreen.requestFullscreen();
 }
 
 document.onload = document.getElementById("app").focus();
