@@ -119,8 +119,7 @@
   border-left: 8px solid rgb(179 169 232);
 }
 
-#cursor-list,
-#screen-list a {
+#cursor-list a {
   text-transform: capitalize;
 }
 
