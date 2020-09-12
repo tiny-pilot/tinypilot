@@ -4,6 +4,20 @@ const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
 
+const screenCursorOptions = [
+  "disabled", //to show on disconnect
+  "default", // Note that this is the browser default, not TinyPilot's default.
+  "none",
+  "crosshair",
+  "dot",
+  "pointer",
+  "cell",
+];
+const initialScreenCursor = "crosshair";
+var settings = {
+  cursor: initialScreenCursor,
+};
+
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
 
@@ -121,14 +135,17 @@ function sendKeystroke(keystroke) {
 }
 
 function onSocketConnect() {
-  connectedToServer = true;
-  document.getElementById("connection-indicator").connected = true;
   if (document.getElementById("shutdown-wait").show) {
     location.reload();
+  } else {
+    connectedToServer = true;
+    document.getElementById("connection-indicator").connected = true;
+    restoreCursor();
   }
 }
 
 function onSocketDisconnect(reason) {
+  setCursor("disabled", false);
   connectedToServer = false;
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
@@ -247,6 +264,35 @@ function sendPastedText(pastedText) {
   document.getElementById("app").focus();
 }
 
+function restoreCursor() {
+  if (
+    "settings" in window &&
+    "cursor" in window.settings &&
+    window.settings.cursor != null
+  ) {
+    setCursor(window.settings.cursor);
+  } else {
+    setCursor(initialScreenCursor);
+  }
+}
+
+function setCursor(cursor, save = true) {
+  // Ensure the correct cursor option displays as active in the navbar.
+  if (save) {
+    for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
+      if (cursor === cursorListItem.getAttribute("cursor")) {
+        cursorListItem.classList.add("nav-selected");
+      } else {
+        cursorListItem.classList.remove("nav-selected");
+      }
+    }
+    window.settings.cursor = cursor;
+  }
+  if (connectedToServer) {
+    document.getElementById("remote-screen").setAttribute("cursor", cursor);
+  }
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.getElementById("app").addEventListener("keydown", onKeyDown);
@@ -305,6 +351,26 @@ document
   .addEventListener("shutdown-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
+
+// Add cursor options to navbar.
+const cursorList = document.getElementById("cursor-list");
+for (const cursorOption of screenCursorOptions.splice(1)) {
+  const cursorLink = document.createElement("a");
+  cursorLink.setAttribute("href", "#");
+  cursorLink.innerText = cursorOption;
+  cursorLink.addEventListener("click", (evt) => {
+    setCursor(cursorOption);
+    evt.preventDefault();
+  });
+  const listItem = document.createElement("li");
+  listItem.appendChild(cursorLink);
+  listItem.classList.add("cursor-option");
+  listItem.setAttribute("cursor", cursorOption);
+  if (cursorOption === initialScreenCursor) {
+    listItem.classList.add("nav-selected");
+  }
+  cursorList.appendChild(listItem);
+}
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
