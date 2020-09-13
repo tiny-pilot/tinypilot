@@ -305,7 +305,7 @@ function setFullScreen() {
   remoteScreen.requestFullscreen();
 }
 
-document.getElementById("app").focus();
+document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
