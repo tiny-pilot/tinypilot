@@ -97,8 +97,10 @@
             evt.preventDefault();
           });
           remoteScreen.addEventListener("fullscreenchange", (evt) => {
-            remoteScreen.setAttribute("fullscreen", false);
-            this.fullscreen = "false";
+            if (evt.target !== remoteScreen) {
+              remoteScreen.setAttribute("fullscreen", false);
+              this.fullscreen = "false";
+            }
           });
 
           // Forward all mouse activity that occurs over the image of the remote screen.
