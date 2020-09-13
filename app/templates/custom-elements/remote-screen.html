@@ -110,8 +110,7 @@
             if (screenRatio > windowRatio) {
               screenImg.classList.add("full-height");
               screenImg.classList.remove("full-width");
-            }
-            if (windowRatio >= screenRatio) {
+            } else {
               screenImg.classList.add("full-width");
               screenImg.classList.remove("full-height");
             }
