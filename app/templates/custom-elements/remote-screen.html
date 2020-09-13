@@ -10,6 +10,7 @@
     #remote-screen-img {
       max-width: 85%;
       max-height: 1080px;
+      object-fit: contain;
     }
 
     :host([fullscreen="true"]) div {
@@ -19,8 +20,10 @@
 
     :host([fullscreen="true"]) #remote-screen-img {
       margin: auto;
-      max-height: 100vh;
       max-width: 100vw;
+      max-height: 100vh;
+      width: 100%;
+      height: 100%;
     }
   </style>
   <div>
@@ -121,11 +124,6 @@
 
         onFullScreenChange(evt) {
           if (document.fullscreenElement !== evt.target) {
-            const remoteScreenImg = this.shadowRoot.getElementById(
-              "remote-screen-img"
-            );
-            remoteScreenImg.style.removeProperty("width");
-            remoteScreenImg.style.removeProperty("height");
             this.fullscreen = false;
           }
         }
