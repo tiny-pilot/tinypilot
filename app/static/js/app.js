@@ -352,6 +352,9 @@ remoteScreenDiv.addEventListener("drop", function (evt) {
 remoteScreenDiv.onfullscreenchange = (evt) => {
   const remoteScreen = evt.target;
   if (document.fullscreenElement !== remoteScreen) {
+    const remoteScreenImg = document.getElementById("remote-screen-img");
+    remoteScreenImg.style.removeProperty("width");
+    remoteScreenImg.style.removeProperty("height");
     remoteScreen.setAttribute("fullscreen", false);
   }
 };
