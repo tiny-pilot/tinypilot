@@ -1,0 +1,157 @@
+<template id="remote-screen-template">
+  <style>
+    @import "css/cursors.css";
+
+    .screen-wrapper {
+      background: rgb(114, 114, 114);
+    }
+
+    #remote-screen-img {
+      max-width: 85%;
+      max-height: 1080px;
+      object-fit: contain;
+    }
+
+    :host([fullscreen="true"]) .screen-wrapper {
+      display: grid;
+      overflow: auto;
+    }
+
+    :host([fullscreen="true"]) #remote-screen-img {
+      margin: auto;
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+
+    :host([fullscreen="true"]) #remote-screen-img.full-width {
+      width: 100%;
+    }
+
+    :host([fullscreen="true"]) #remote-screen-img.full-height {
+      height: 100%;
+    }
+  </style>
+  <div class="screen-wrapper">
+    <img id="remote-screen-img" src="/stream?advance_headers=1" />
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#remote-screen-template");
+
+    customElements.define(
+      "remote-screen",
+      class extends HTMLElement {
+        constructor() {
+          super();
+
+          // Prevent drag on screen for Firefox.
+          this.addEventListener("dragstart", function (evt) {
+            evt.preventDefault();
+          });
+          // Prevent drop on screen for Firefox.
+          this.addEventListener("drop", function (evt) {
+            evt.preventDefault();
+          });
+          this.addEventListener("fullscreenchange", this.onFullScreenChange);
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          // Forward all mouse activity that occurs over the image of the remote screen.
+          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
+          screenImg.addEventListener("mousemove", (evt) => {
+            // Ensure that mouse drags don't attempt to drag the image on the screen.
+            evt.preventDefault();
+            this.sendMouseEvent(evt);
+          });
+          screenImg.addEventListener("mousedown", this.sendMouseEvent);
+          screenImg.addEventListener("mouseup", this.sendMouseEvent);
+          // Ignore the context menu so that it doesn't block the screen when the user
+          // right-clicks.
+          screenImg.addEventListener("contextmenu", (evt) => {
+            evt.preventDefault();
+          });
+        }
+
+        get fullscreen() {
+          return this.getAttribute("fullscreen") === "true";
+        }
+
+        set fullscreen(newValue) {
+          this.setAttribute("fullscreen", newValue);
+        }
+
+        get cursor() {
+          return this.shadowRoot
+            .querySelector(".screen-wrapper")
+            .getAttribute("cursor");
+        }
+
+        set cursor(newValue) {
+          this.shadowRoot
+            .querySelector(".screen-wrapper")
+            .setAttribute("cursor", newValue);
+        }
+
+        static get observedAttributes() {
+          return ["fullscreen"];
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "fullscreen" && newValue === "true") {
+            this.shadowRoot
+              .querySelector(".screen-wrapper")
+              .requestFullscreen();
+          }
+        }
+
+        sendMouseEvent(evt) {
+          const boundingRect = evt.target.getBoundingClientRect();
+          const cursorX = Math.max(0, evt.clientX - boundingRect.left);
+          const cursorY = Math.max(0, evt.clientY - boundingRect.top);
+          const width = boundingRect.right - boundingRect.left;
+          const height = boundingRect.bottom - boundingRect.top;
+          const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
+          const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
+
+          this.dispatchEvent(
+            new CustomEvent("mouse-event", {
+              detail: {
+                buttons: evt.buttons,
+                relativeX,
+                relativeY,
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        onFullScreenChange(evt) {
+          if (!document.fullscreenElement) {
+            this.fullscreen = false;
+          } else {
+            const screenImg = this.shadowRoot.getElementById(
+              "remote-screen-img"
+            );
+            const windowRatio = window.innerWidth / window.innerHeight;
+            const screenRatio = screenImg.width / screenImg.height;
+            if (screenRatio > windowRatio) {
+              screenImg.classList.add("full-width");
+              screenImg.classList.remove("full-height");
+            } else {
+              screenImg.classList.add("full-height");
+              screenImg.classList.remove("full-width");
+            }
+          }
+        }
+      }
+    );
+  })();
+</script>
