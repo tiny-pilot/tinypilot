@@ -2,7 +2,7 @@
   <style>
     @import "css/cursors.css";
 
-    .screen-container {
+    div {
       background: rgb(114, 114, 114);
       padding: 0 1rem;
     }
@@ -13,7 +13,7 @@
       object-fit: contain;
     }
 
-    :host([fullscreen="true"]) .screen-container {
+    :host([fullscreen="true"]) div {
       display: grid;
       overflow: auto;
     }
@@ -32,7 +32,7 @@
       height: 100%;
     }
   </style>
-  <div class="screen-container">
+  <div>
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
 </template>
@@ -89,15 +89,11 @@
         }
 
         get cursor() {
-          return this.shadowRoot
-            .querySelector(".screen-container")
-            .getAttribute("cursor");
+          return this.shadowRoot.querySelector("div").getAttribute("cursor");
         }
 
         set cursor(newValue) {
-          this.shadowRoot
-            .querySelector(".screen-container")
-            .setAttribute("cursor", newValue);
+          this.shadowRoot.querySelector("div").setAttribute("cursor", newValue);
         }
 
         static get observedAttributes() {
@@ -118,9 +114,7 @@
               screenImg.classList.add("full-height");
             }
 
-            this.shadowRoot
-              .querySelector(".screen-container")
-              .requestFullscreen();
+            this.shadowRoot.querySelector("div").requestFullscreen();
           }
         }
 
@@ -147,10 +141,7 @@
         }
 
         onFullScreenChange(evt) {
-          if (
-            document.fullscreenElement !==
-            this.shadowRoot.querySelector(".screen-container")
-          ) {
+          if (document.fullscreenElement !== evt.target) {
             this.fullscreen = false;
           }
         }
