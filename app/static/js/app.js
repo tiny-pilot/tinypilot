@@ -189,21 +189,14 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(evt) {
+function sendMouseEvent(buttons, relativeX, relativeY) {
   if (!connectedToServer) {
     return;
   }
-  const boundingRect = evt.target.getBoundingClientRect();
-  const cursorX = Math.max(0, evt.clientX - boundingRect.left);
-  const cursorY = Math.max(0, evt.clientY - boundingRect.top);
-  const width = boundingRect.right - boundingRect.left;
-  const height = boundingRect.bottom - boundingRect.top;
-  const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
-  const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
   socket.emit("mouse-event", {
-    buttons: evt.buttons,
-    relativeX: relativeX,
-    relativeY: relativeY,
+    buttons,
+    relativeX,
+    relativeY,
   });
 }
 
@@ -295,28 +288,7 @@ function setCursor(cursor, save = true) {
     window.settings.cursor = cursor;
   }
   if (connectedToServer) {
-    document.getElementById("remote-screen").setAttribute("cursor", cursor);
-  }
-}
-
-function setFullScreen() {
-  const remoteScreen = document.getElementById("remote-screen");
-  remoteScreen.setAttribute("fullscreen", true);
-  remoteScreen.requestFullscreen();
-  setTimeout(setScreenImgSize, 100);
-}
-
-function setScreenImgSize() {
-  const remoteScreenImg = document.getElementById("remote-screen-img");
-  remoteScreenImg.style.removeProperty("width");
-  remoteScreenImg.style.removeProperty("height");
-  const windowRatio = window.innerWidth / window.innerHeight;
-  const screenRatio = remoteScreenImg.width / remoteScreenImg.height;
-  if (screenRatio > windowRatio) {
-    remoteScreenImg.style.width = "100%";
-  }
-  if (windowRatio >= screenRatio) {
-    remoteScreenImg.style.height = "100%";
+    document.getElementById("remote-screen").cursor = cursor;
   }
 }
 
@@ -325,39 +297,15 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
-// Forward all mouse activity that occurs over the image of the remote screen.
-const screenImg = document.getElementById("remote-screen-img");
-screenImg.addEventListener("mousemove", function (evt) {
-  // Ensure that mouse drags don't attempt to drag the image on the screen.
-  evt.preventDefault();
-  sendMouseEvent(evt);
-});
-screenImg.addEventListener("mousedown", sendMouseEvent);
-screenImg.addEventListener("mouseup", sendMouseEvent);
-// Ignore the context menu so that it doesn't block the screen when the user
-// right-clicks.
-screenImg.addEventListener("contextmenu", function (evt) {
-  evt.preventDefault();
-});
-const remoteScreenDiv = document.getElementById("remote-screen");
-remoteScreenDiv.addEventListener("dragstart", function (evt) {
-  // Prevent drag on screen for Firefox.
-  evt.preventDefault();
-});
-remoteScreenDiv.addEventListener("drop", function (evt) {
-  // Prevent drop on screen for Firefox.
-  evt.preventDefault();
-});
-//fullscreen event
-remoteScreenDiv.onfullscreenchange = (evt) => {
-  const remoteScreen = evt.target;
-  if (document.fullscreenElement !== remoteScreen) {
-    const remoteScreenImg = document.getElementById("remote-screen-img");
-    remoteScreenImg.style.removeProperty("width");
-    remoteScreenImg.style.removeProperty("height");
-    remoteScreen.setAttribute("fullscreen", false);
-  }
-};
+document
+  .getElementById("remote-screen")
+  .addEventListener("mouse-event", (evt) => {
+    sendMouseEvent(
+      evt.detail.buttons,
+      evt.detail.relativeX,
+      evt.detail.relativeY
+    );
+  });
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
@@ -371,7 +319,7 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
 document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
-  setFullScreen();
+  document.getElementById("remote-screen").fullscreen = true;
   evt.preventDefault();
 });
 document.getElementById("paste-btn").addEventListener("click", () => {

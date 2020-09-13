@@ -1,4 +1,5 @@
 @import "button.css";
+@import "cursors.css";
 @import "keyboard-panel.css";
 @import "navbar.css";
 
@@ -40,30 +41,6 @@ img {
   object-fit: contain;
 }
 
-#remote-screen {
-  background: rgb(114, 114, 114);
-}
-
-#remote-screen[fullscreen="false"] {
-  padding: 0 1rem;
-}
-
-#remote-screen[fullscreen="false"] #remote-screen-img {
-  max-width: 85%;
-  max-height: 1080px;
-}
-
-#remote-screen[fullscreen="true"] {
-  display: grid;
-  overflow: auto;
-}
-
-#remote-screen[fullscreen="true"] #remote-screen-img {
-  margin: auto;
-  max-height: 100vh;
-  max-width: 100vw;
-}
-
 .question-icon {
   max-width: 20px;
 }
@@ -79,29 +56,4 @@ img {
 
 #error-panel #error-type {
   margin-top: 0;
-}
-
-*[cursor="default"] > * {
-  cursor: default !important;
-}
-
-*[cursor="none"] > * {
-  cursor: none !important;
-}
-
-*[cursor="crosshair"] > * {
-  cursor: crosshair !important;
-}
-
-*[cursor="dot"] > * {
-  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAb0lEQVQ4T9WSQQ4AMQRFuZfju5cJKcG0adNduyOer3yE/5NJTlOY8yUAABGZc4hWGvUZDIiZiygRWZxhBw3qQB9ZGzis4FLpCNypeRNXDcWHQP3Dbty+VWWuzuELuzJAwEO+nHAcfWm5XNwN2z0NHyeAUAvGKOgOAAAAAElFTkSuQmCC"),
-    auto !important;
-}
-
-*[cursor="pointer"] > * {
-  cursor: pointer !important;
-}
-
-*[cursor="cell"] > * {
-  cursor: cell !important;
 }

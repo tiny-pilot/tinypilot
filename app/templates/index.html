@@ -20,6 +20,7 @@
     {% include "custom-elements/content-tooltip.html" %}
     {% include "custom-elements/modifier-key.html" %}
     {% include "custom-elements/paste-overlay.html" %}
+    {% include "custom-elements/remote-screen.html" %}
     {% include "custom-elements/shutdown-dialog.html" %}
     {% include "custom-elements/shutdown-wait.html" %}
 
@@ -35,9 +36,7 @@
 
         <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
 
-        <div id="remote-screen" fullscreen="false">
-          <img id="remote-screen-img" src="/stream?advance_headers=1" />
-        </div>
+        <remote-screen id="remote-screen"></remote-screen>
 
         {% include "components/keyboard-panel.html" %}
       </div>
