@@ -139,7 +139,7 @@ function onSocketConnect() {
 }
 
 function onSocketDisconnect(reason) {
-  setCursor("disabled", false);
+  document.getElementById("remote-screen-container").disabled = true;
   connectedToServer = false;
   const connectionIndicator = document.getElementById("connection-indicator");
   connectionIndicator.connected = false;
@@ -256,16 +256,14 @@ function restoreCursor() {
   }
 }
 
-function setCursor(cursor, save = true) {
+function setCursor(cursor) {
   const currentcursor = document.getElementById("remote-screen-container");
   // Ensure the correct cursor option displays as active in the navbar.
-  if (save) {
-    for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
-      if (cursor === cursorListItem.getAttribute("cursor")) {
-        cursorListItem.classList.add("nav-selected");
-      } else {
-        cursorListItem.classList.remove("nav-selected");
-      }
+  for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
+    if (cursor === cursorListItem.getAttribute("cursor")) {
+      cursorListItem.classList.add("nav-selected");
+    } else {
+      cursorListItem.classList.remove("nav-selected");
     }
   }
   currentcursor.cursor = cursor;
