@@ -1,4 +1,5 @@
 @import "button.css";
+@import "cursors.css";
 @import "keyboard-panel.css";
 @import "navbar.css";
 
@@ -55,6 +56,10 @@ img {
 
 #error-panel #error-type {
   margin-top: 0;
+}
+
+*[cursor="default"] > * {
+  cursor: default !important;
 }
 
 *[cursor="none"] > * {
