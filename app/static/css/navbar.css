@@ -89,6 +89,10 @@
   padding: 0;
 }
 
+.navbar .dropdown {
+  z-index: 1;
+}
+
 .navbar .dropdown a {
   color: white;
   background-color: rgb(25, 7, 126);
