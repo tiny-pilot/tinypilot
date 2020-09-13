@@ -108,10 +108,12 @@
             const windowRatio = window.innerWidth / window.innerHeight;
             const screenRatio = screenImg.width / screenImg.height;
             if (screenRatio > windowRatio) {
-              screenImg.classList.add("full-width");
+              screenImg.classList.add("full-height");
+              screenImg.classList.remove("full-width");
             }
             if (windowRatio >= screenRatio) {
-              screenImg.classList.add("full-height");
+              screenImg.classList.add("full-width");
+              screenImg.classList.remove("full-height");
             }
 
             this.shadowRoot.querySelector("div").requestFullscreen();
