@@ -288,7 +288,7 @@ function setCursor(cursor, save = true) {
     window.settings.cursor = cursor;
   }
   if (connectedToServer) {
-    document.getElementById("remote-screen").setAttribute("cursor", cursor);
+    document.getElementById("remote-screen").cursor = cursor;
   }
 }
 
@@ -297,9 +297,16 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
-document.getElementById("remote-screen").addEventListener("mouse-event", () => {
-  sendMouseEvent(evt.buttons, evt.relativeX, evt.relativeY);
-});
+document
+  .getElementById("remote-screen")
+  .addEventListener("mouse-event", (evt) => {
+    console.log("heard mouse-event", evt);
+    sendMouseEvent(
+      evt.detail.buttons,
+      evt.detail.relativeX,
+      evt.detail.relativeY
+    );
+  });
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);

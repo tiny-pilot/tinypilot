@@ -1,5 +1,7 @@
 <template id="remote-screen-template">
   <style>
+    @import "css/cursors.css";
+
     * {
       background: rgb(114, 114, 114);
     }
@@ -24,7 +26,7 @@
       max-width: 100vw;
     }
   </style>
-  <div id="remote-screen">
+  <div>
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
 </template>
@@ -65,20 +67,16 @@
 
           // The parent "this" context is not available in the event handler
           // context, so save it here.
-          const mouseEventHandler = this.sendMouseEvent;
-          const dispatchCallback = this.dispatchEvent;
+          const onMouseEvent = (evt) => {
+            this.sendMouseEvent(evt, this.dispatchEvent);
+          };
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            mouseEventHandler(evt, dispatchCallback);
+            //onMouseEvent(evt);
           });
-
-          screenImg.addEventListener("mousedown", (evt) => {
-            mouseEventHandler(evt, dispatchCallback);
-          });
-          screenImg.addEventListener("mouseup", (evt) => {
-            mouseEventHandler(evt, dispatchCallback);
-          });
+          screenImg.addEventListener("mousedown", onMouseEvent);
+          screenImg.addEventListener("mouseup", onMouseEvent);
           // Ignore the context menu so that it doesn't block the screen when the user
           // right-clicks.
           screenImg.addEventListener("contextmenu", (evt) => {
@@ -95,6 +93,8 @@
           const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
           const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
 
+          debugger;
+          console.log("sending mouse event", evt.buttons, relativeX, relativeY);
           dispatchCallback(
             new CustomEvent("mouse-event", {
               detail: {
@@ -116,13 +116,21 @@
           this.setAttribute("fullscreen", newValue);
         }
 
+        get cursor() {
+          return this.shadowRoot.querySelector("div").getAttribute("cursor");
+        }
+
+        set cursor(newValue) {
+          this.shadowRoot.querySelector("div").setAttribute("cursor", newValue);
+        }
+
         static get observedAttributes() {
-          return ["fullscreen"];
+          return ["fullscreen", "cursor"];
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            this.shadowRoot.getElementById("remote-screen").requestFullscreen();
+            this.shadowRoot.querySelector("div").requestFullscreen();
           }
         }
 
