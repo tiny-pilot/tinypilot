@@ -1,0 +1,109 @@
+<template id="remote-screen-template">
+  <style>
+    #remote-screen {
+      background: rgb(114, 114, 114);
+    }
+
+    #remote-screen[fullscreen="false"] {
+      padding: 0 1rem;
+    }
+
+    #remote-screen[fullscreen="false"] #remote-screen-img {
+      max-width: 85%;
+      max-height: 1080px;
+    }
+
+    #remote-screen[fullscreen="true"] {
+      display: grid;
+      overflow: auto;
+    }
+
+    #remote-screen[fullscreen="true"] #remote-screen-img {
+      margin: auto;
+      max-height: 100vh;
+      max-width: 100vw;
+    }
+  </style>
+  <div id="remote-screen">
+    <img id="remote-screen-img" src="/stream?advance_headers=1" />
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#remote-screen-template");
+
+    customElements.define(
+      "remote-screen",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this.addEventListener("keydown", this.onKeyDown);
+          this.addEventListener("paste", this.onPaste);
+          this.addEventListener("click", () => {
+            this.fullscreen = false;
+          });
+          this.addEventListener("dragstart", function (evt) {
+            // Prevent drag on screen for Firefox.
+            evt.preventDefault();
+          });
+          this.addEventListener("drop", function (evt) {
+            // Prevent drop on screen for Firefox.
+            evt.preventDefault();
+          });
+          this.addEventListener("fullscreenchange", (evt) => {
+            const remoteScreen = evt.target;
+            if (document.fullscreenElement !== remoteScreen) {
+              const remoteScreenImg = document.getElementById(
+                "remote-screen-img"
+              );
+              remoteScreenImg.style.removeProperty("width");
+              remoteScreenImg.style.removeProperty("height");
+              remoteScreen.setAttribute("fullscreen", false);
+            }
+          });
+
+          // Forward all mouse activity that occurs over the image of the remote screen.
+          const screenImg = this.getElementById("remote-screen-img");
+          screenImg.addEventListener("mousemove", function (evt) {
+            // Ensure that mouse drags don't attempt to drag the image on the screen.
+            evt.preventDefault();
+            sendMouseEvent(evt);
+          });
+          screenImg.addEventListener("mousedown", sendMouseEvent);
+          screenImg.addEventListener("mouseup", sendMouseEvent);
+          // Ignore the context menu so that it doesn't block the screen when the user
+          // right-clicks.
+          screenImg.addEventListener("contextmenu", function (evt) {
+            evt.preventDefault();
+          });
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        get fullscreen() {
+          return this.getAttribute("fullscreen") === "true";
+        }
+
+        set fullscreen(newValue) {
+          this.setAttribute("fullscreen", newValue);
+        }
+
+        static get observedAttributes() {
+          return ["fullscreen"];
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "fullscreen" && newValue === "true") {
+            remoteScreen.requestFullscreen();
+          }
+        }
+      }
+    );
+  })();
+</script>

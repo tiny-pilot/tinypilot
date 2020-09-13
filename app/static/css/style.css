@@ -40,30 +40,6 @@ img {
   object-fit: contain;
 }
 
-#remote-screen {
-  background: rgb(114, 114, 114);
-}
-
-#remote-screen[fullscreen="false"] {
-  padding: 0 1rem;
-}
-
-#remote-screen[fullscreen="false"] #remote-screen-img {
-  max-width: 85%;
-  max-height: 1080px;
-}
-
-#remote-screen[fullscreen="true"] {
-  display: grid;
-  overflow: auto;
-}
-
-#remote-screen[fullscreen="true"] #remote-screen-img {
-  margin: auto;
-  max-height: 100vh;
-  max-width: 100vw;
-}
-
 .question-icon {
   max-width: 20px;
 }
