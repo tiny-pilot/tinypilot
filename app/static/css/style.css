@@ -57,10 +57,6 @@ img {
   margin-top: 0;
 }
 
-*[cursor="default"] > * {
-  cursor: default !important;
-}
-
 *[cursor="none"] > * {
   cursor: none !important;
 }
