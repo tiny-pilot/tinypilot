@@ -303,6 +303,21 @@ function setFullScreen() {
   const remoteScreen = document.getElementById("remote-screen");
   remoteScreen.setAttribute("fullscreen", true);
   remoteScreen.requestFullscreen();
+  setTimeout(setScreenImgSize, 100);
+}
+
+function setScreenImgSize() {
+  const remoteScreenImg = document.getElementById("remote-screen-img");
+  remoteScreenImg.style.removeProperty("width");
+  remoteScreenImg.style.removeProperty("height");
+  const windowRatio = window.innerWidth / window.innerHeight;
+  const screenRatio = remoteScreenImg.width / remoteScreenImg.height;
+  if (screenRatio > windowRatio) {
+    remoteScreenImg.style.width = "100%";
+  }
+  if (windowRatio >= screenRatio) {
+    remoteScreenImg.style.height = "100%";
+  }
 }
 
 document.onload = document.getElementById("app").focus();
