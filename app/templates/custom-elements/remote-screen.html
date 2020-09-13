@@ -24,12 +24,12 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"]) #remote-screen-img.max-width {
-      max-width: 100%;
+    :host([fullscreen="true"]) #remote-screen-img.full-width {
+      width: 100%;
     }
 
-    :host([fullscreen="true"]) #remote-screen-img.max-height {
-      max-width: 100%;
+    :host([fullscreen="true"]) #remote-screen-img.full-height {
+      height: 100%;
     }
   </style>
   <div>
@@ -108,10 +108,10 @@
             const windowRatio = window.innerWidth / window.innerHeight;
             const screenRatio = screenImg.width / screenImg.height;
             if (screenRatio > windowRatio) {
-              screenImg.classList.add("max-width");
+              screenImg.classList.add("full-width");
             }
             if (windowRatio >= screenRatio) {
-              screenImg.classList.add("max-height");
+              screenImg.classList.add("full-height");
             }
 
             this.shadowRoot.querySelector("div").requestFullscreen();
