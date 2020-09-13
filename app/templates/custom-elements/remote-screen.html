@@ -2,7 +2,7 @@
   <style>
     @import "css/cursors.css";
 
-    div {
+    .screen-wrapper {
       background: rgb(114, 114, 114);
     }
 
@@ -12,7 +12,7 @@
       object-fit: contain;
     }
 
-    :host([fullscreen="true"]) div {
+    :host([fullscreen="true"]) .screen-wrapper {
       display: grid;
       overflow: auto;
     }
@@ -31,7 +31,7 @@
       height: 100%;
     }
   </style>
-  <div>
+  <div class="screen-wrapper">
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
 </template>
@@ -88,11 +88,15 @@
         }
 
         get cursor() {
-          return this.shadowRoot.querySelector("div").getAttribute("cursor");
+          return this.shadowRoot
+            .querySelector(".screen-wrapper")
+            .getAttribute("cursor");
         }
 
         set cursor(newValue) {
-          this.shadowRoot.querySelector("div").setAttribute("cursor", newValue);
+          this.shadowRoot
+            .querySelector(".screen-wrapper")
+            .setAttribute("cursor", newValue);
         }
 
         static get observedAttributes() {
@@ -101,7 +105,9 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            this.shadowRoot.querySelector("div").requestFullscreen();
+            this.shadowRoot
+              .querySelector(".screen-wrapper")
+              .requestFullscreen();
           }
         }
 
