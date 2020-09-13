@@ -102,19 +102,6 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            const screenImg = this.shadowRoot.getElementById(
-              "remote-screen-img"
-            );
-            const windowRatio = window.innerWidth / window.innerHeight;
-            const screenRatio = screenImg.width / screenImg.height;
-            if (screenRatio > windowRatio) {
-              screenImg.classList.add("full-height");
-              screenImg.classList.remove("full-width");
-            } else {
-              screenImg.classList.add("full-width");
-              screenImg.classList.remove("full-height");
-            }
-
             this.shadowRoot.querySelector("div").requestFullscreen();
           }
         }
@@ -142,8 +129,21 @@
         }
 
         onFullScreenChange(evt) {
-          if (document.fullscreenElement !== evt.target) {
+          if (!document.fullscreenElement) {
             this.fullscreen = false;
+          } else {
+            const screenImg = this.shadowRoot.getElementById(
+              "remote-screen-img"
+            );
+            const windowRatio = window.innerWidth / window.innerHeight;
+            const screenRatio = screenImg.width / screenImg.height;
+            if (screenRatio > windowRatio) {
+              screenImg.classList.add("full-width");
+              screenImg.classList.remove("full-height");
+            } else {
+              screenImg.classList.add("full-height");
+              screenImg.classList.remove("full-width");
+            }
           }
         }
       }
