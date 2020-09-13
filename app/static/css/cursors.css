@@ -1,3 +1,7 @@
+*[cursor="disabled"] > * {
+  cursor: not-allowed !important;
+}
+
 *[cursor="default"] > * {
   cursor: default !important;
 }
