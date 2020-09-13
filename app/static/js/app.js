@@ -327,6 +327,12 @@ remoteScreenDiv.addEventListener("drop", function (evt) {
   // Prevent drop on screen for Firefox.
   evt.preventDefault();
 });
+remoteScreenDiv.addEventListener("fullscreenchange", () => {
+  // Detect when the user leaves full-screen mode.
+  if (document.fullscreenElement !== remoteScreenDiv) {
+    remoteScreenDiv.setAttribute("fullscreen", false);
+  }
+});
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
@@ -381,15 +387,6 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
-
-document
-  .getElementById("remote-screen")
-  .addEventListener("fullscreenchange", (evt) => {
-    // Detect when the user leaves full-screen mode.
-    if (document.fullscreenElement !== evt.target) {
-      evt.target.setAttribute("fullscreen", false);
-    }
-  });
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
