@@ -1,24 +1,24 @@
 <template id="remote-screen-template">
   <style>
-    #remote-screen {
+    * {
       background: rgb(114, 114, 114);
     }
 
-    #remote-screen[fullscreen="false"] {
+    :host([fullscreen="false"]) {
       padding: 0 1rem;
     }
 
-    #remote-screen[fullscreen="false"] #remote-screen-img {
+    :host([fullscreen="false"]) #remote-screen-img {
       max-width: 85%;
       max-height: 1080px;
     }
 
-    #remote-screen[fullscreen="true"] {
+    :host([fullscreen="true"]) {
       display: grid;
       overflow: auto;
     }
 
-    #remote-screen[fullscreen="true"] #remote-screen-img {
+    :host([fullscreen="true"]) #remote-screen-img {
       margin: auto;
       max-height: 100vh;
       max-width: 100vw;
@@ -53,37 +53,59 @@
             // Prevent drop on screen for Firefox.
             evt.preventDefault();
           });
-          this.addEventListener("fullscreenchange", (evt) => {
-            const remoteScreen = evt.target;
-            if (document.fullscreenElement !== remoteScreen) {
-              const remoteScreenImg = document.getElementById(
-                "remote-screen-img"
-              );
-              remoteScreenImg.style.removeProperty("width");
-              remoteScreenImg.style.removeProperty("height");
-              remoteScreen.setAttribute("fullscreen", false);
-            }
-          });
-
-          // Forward all mouse activity that occurs over the image of the remote screen.
-          const screenImg = this.getElementById("remote-screen-img");
-          screenImg.addEventListener("mousemove", function (evt) {
-            // Ensure that mouse drags don't attempt to drag the image on the screen.
-            evt.preventDefault();
-            sendMouseEvent(evt);
-          });
-          screenImg.addEventListener("mousedown", sendMouseEvent);
-          screenImg.addEventListener("mouseup", sendMouseEvent);
-          // Ignore the context menu so that it doesn't block the screen when the user
-          // right-clicks.
-          screenImg.addEventListener("contextmenu", function (evt) {
-            evt.preventDefault();
-          });
+          this.addEventListener("fullscreenchange", this.onFullScreenChange);
         }
 
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          // Forward all mouse activity that occurs over the image of the remote screen.
+          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
+
+          // The parent "this" context is not available in the event handler
+          // context, so save it here.
+          const mouseEventHandler = this.sendMouseEvent;
+          const dispatchCallback = this.dispatchEvent;
+          screenImg.addEventListener("mousemove", (evt) => {
+            // Ensure that mouse drags don't attempt to drag the image on the screen.
+            evt.preventDefault();
+            mouseEventHandler(evt, dispatchCallback);
+          });
+
+          screenImg.addEventListener("mousedown", (evt) => {
+            mouseEventHandler(evt, dispatchCallback);
+          });
+          screenImg.addEventListener("mouseup", (evt) => {
+            mouseEventHandler(evt, dispatchCallback);
+          });
+          // Ignore the context menu so that it doesn't block the screen when the user
+          // right-clicks.
+          screenImg.addEventListener("contextmenu", (evt) => {
+            evt.preventDefault();
+          });
+        }
+
+        sendMouseEvent(evt, dispatchCallback) {
+          const boundingRect = evt.target.getBoundingClientRect();
+          const cursorX = Math.max(0, evt.clientX - boundingRect.left);
+          const cursorY = Math.max(0, evt.clientY - boundingRect.top);
+          const width = boundingRect.right - boundingRect.left;
+          const height = boundingRect.bottom - boundingRect.top;
+          const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
+          const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
+
+          dispatchCallback(
+            new CustomEvent("mouse-event", {
+              detail: {
+                buttons: evt.buttons,
+                relativeX,
+                relativeY,
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
 
         get fullscreen() {
@@ -100,7 +122,18 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            remoteScreen.requestFullscreen();
+            this.shadowRoot.getElementById("remote-screen").requestFullscreen();
+          }
+        }
+
+        onFullScreenChange(evt) {
+          if (document.fullscreenElement !== evt.target) {
+            const remoteScreenImg = document.getElementById(
+              "remote-screen-img"
+            );
+            remoteScreenImg.style.removeProperty("width");
+            remoteScreenImg.style.removeProperty("height");
+            remoteScreen.setAttribute("fullscreen", false);
           }
         }
       }

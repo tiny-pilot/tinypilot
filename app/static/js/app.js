@@ -189,21 +189,14 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(evt) {
+function sendMouseEvent(buttons, relativeX, relativeY) {
   if (!connectedToServer) {
     return;
   }
-  const boundingRect = evt.target.getBoundingClientRect();
-  const cursorX = Math.max(0, evt.clientX - boundingRect.left);
-  const cursorY = Math.max(0, evt.clientY - boundingRect.top);
-  const width = boundingRect.right - boundingRect.left;
-  const height = boundingRect.bottom - boundingRect.top;
-  const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
-  const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
   socket.emit("mouse-event", {
-    buttons: evt.buttons,
-    relativeX: relativeX,
-    relativeY: relativeY,
+    buttons,
+    relativeX,
+    relativeY,
   });
 }
 
@@ -304,6 +297,9 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
+document.getElementById("remote-screen").addEventListener("mouse-event", () => {
+  sendMouseEvent(evt.buttons, evt.relativeX, evt.relativeY);
+});
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
