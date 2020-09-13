@@ -47,16 +47,14 @@ img {
 #remote-screen-img {
   object-fit: contain;
 }
-
 #remote-screen[fullscreen="false"] {
-  max-width: 85%;
-  max-height: 1080px;
-  margin: 0 auto;
   padding: 0 1rem;
 }
 
 #remote-screen[fullscreen="false"] > img {
-  width: 100%;
+  margin: 0 auto;
+  max-width: 85%;
+  max-height: 1080px;
 }
 
 #remote-screen[fullscreen="true"] {

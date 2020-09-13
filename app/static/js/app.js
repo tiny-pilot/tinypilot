@@ -154,6 +154,9 @@ function onSocketDisconnect(reason) {
 }
 
 function onKeyDown(evt) {
+  if (document.getElementById("paste-overlay").show) {
+    return;
+  }
   if (!connectedToServer) {
     return;
   }
@@ -205,6 +208,9 @@ function sendMouseEvent(evt) {
 }
 
 function onKeyUp(evt) {
+  if (document.getElementById("paste-overlay").show) {
+    return;
+  }
   keyState[evt.keyCode] = false;
   if (!connectedToServer) {
     return;
@@ -295,26 +301,14 @@ function setCursor(cursor, save = true) {
 
 function setFullScreen() {
   const remoteScreen = document.getElementById("remote-screen");
-  const remoteScreenImg = document.getElementById("remote-screen-img");
-  if (!remoteScreen.dataset.onfullscreenchange) {
-    remoteScreen.dataset.onfullscreenchange = true;
-    remoteScreen.onfullscreenchange = (evt) => {
-      const remoteScreen = evt.target;
-      const remoteScreenImg = document.getElementById("remote-screen-img");
-      console.log(document.fullscreenElement, remoteScreen);
-      if (document.fullscreenElement !== remoteScreen) {
-        remoteScreen.setAttribute("fullscreen", false);
-      }
-    };
-  }
   remoteScreen.setAttribute("fullscreen", true);
   remoteScreen.requestFullscreen();
 }
 
-document.onload = document.getElementById("app").focus();
+document.getElementById("app").focus();
 
-document.getElementById("app").addEventListener("keydown", onKeyDown);
-document.getElementById("app").addEventListener("keyup", onKeyUp);
+document.addEventListener("keydown", onKeyDown);
+document.addEventListener("keyup", onKeyUp);
 
 // Forward all mouse activity that occurs over the image of the remote screen.
 const screenImg = document.getElementById("remote-screen-img");
@@ -339,6 +333,13 @@ remoteScreenDiv.addEventListener("drop", function (evt) {
   // Prevent drop on screen for Firefox.
   evt.preventDefault();
 });
+//fullscreen event
+remoteScreenDiv.onfullscreenchange = (evt) => {
+  const remoteScreen = evt.target;
+  if (document.fullscreenElement !== remoteScreen) {
+    remoteScreen.setAttribute("fullscreen", false);
+  }
+};
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
@@ -393,7 +394,6 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
-
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
 socket.on("keystroke-received", (keystrokeResult) => {
