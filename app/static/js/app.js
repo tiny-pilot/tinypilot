@@ -300,7 +300,6 @@ document.addEventListener("keyup", onKeyUp);
 document
   .getElementById("remote-screen")
   .addEventListener("mouse-event", (evt) => {
-    console.log("heard mouse-event", evt);
     sendMouseEvent(
       evt.detail.buttons,
       evt.detail.relativeX,

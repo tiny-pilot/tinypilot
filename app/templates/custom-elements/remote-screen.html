@@ -2,20 +2,20 @@
   <style>
     @import "css/cursors.css";
 
-    * {
+    div {
       background: rgb(114, 114, 114);
     }
 
-    :host([fullscreen="false"]) {
+    div {
       padding: 0 1rem;
     }
 
-    :host([fullscreen="false"]) #remote-screen-img {
+    #remote-screen-img {
       max-width: 85%;
       max-height: 1080px;
     }
 
-    :host([fullscreen="true"]) {
+    :host([fullscreen="true"]) div {
       display: grid;
       overflow: auto;
     }
@@ -42,11 +42,6 @@
       class extends HTMLElement {
         constructor() {
           super();
-          this.addEventListener("keydown", this.onKeyDown);
-          this.addEventListener("paste", this.onPaste);
-          this.addEventListener("click", () => {
-            this.fullscreen = false;
-          });
           this.addEventListener("dragstart", function (evt) {
             // Prevent drag on screen for Firefox.
             evt.preventDefault();
@@ -73,7 +68,7 @@
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            //onMouseEvent(evt);
+            onMouseEvent(evt);
           });
           screenImg.addEventListener("mousedown", onMouseEvent);
           screenImg.addEventListener("mouseup", onMouseEvent);
@@ -93,7 +88,6 @@
           const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
           const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
 
-          debugger;
           console.log("sending mouse event", evt.buttons, relativeX, relativeY);
           dispatchCallback(
             new CustomEvent("mouse-event", {
