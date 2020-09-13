@@ -41,16 +41,27 @@ img {
 }
 
 #remote-screen {
-  max-width: 85%;
-  max-height: 1080px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  background: rgb(114, 114, 114);
 }
 
-#remote-screen img {
-  width: 100%;
+#remote-screen[fullscreen="false"] {
+  padding: 0 1rem;
+}
+
+#remote-screen[fullscreen="false"] #remote-screen-img {
+  max-width: 85%;
+  max-height: 1080px;
+}
+
+#remote-screen[fullscreen="true"] {
+  display: grid;
+  overflow: auto;
+}
+
+#remote-screen[fullscreen="true"] #remote-screen-img {
+  margin: auto;
+  max-height: 100vh;
+  max-width: 100vw;
 }
 
 .question-icon {

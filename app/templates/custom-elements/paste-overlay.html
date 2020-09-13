@@ -69,6 +69,7 @@
         }
 
         onKeyDown(evt) {
+          evt.stopPropagation();
           const ctrlKeyCode = 17;
           const vKeyCode = 86;
           // Return false on Ctrl or V because otherwise we capture the
@@ -100,13 +101,13 @@
           sel.addRange(range);
         }
 
-        onPaste(e) {
+        onPaste(evt) {
           // Stop data actually being pasted into div
-          e.stopPropagation();
-          e.preventDefault();
+          evt.stopPropagation();
+          evt.preventDefault();
 
           // Get pasted data via clipboard API
-          const clipboardData = e.clipboardData || window.clipboardData;
+          const clipboardData = evt.clipboardData || window.clipboardData;
           this.dispatchEvent(
             new CustomEvent("paste-text", {
               detail: clipboardData.getData("Text"),

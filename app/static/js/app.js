@@ -154,6 +154,9 @@ function onSocketDisconnect(reason) {
 }
 
 function onKeyDown(evt) {
+  if (document.getElementById("paste-overlay").show) {
+    return;
+  }
   if (!connectedToServer) {
     return;
   }
@@ -205,6 +208,9 @@ function sendMouseEvent(evt) {
 }
 
 function onKeyUp(evt) {
+  if (document.getElementById("paste-overlay").show) {
+    return;
+  }
   keyState[evt.keyCode] = false;
   if (!connectedToServer) {
     return;
@@ -293,10 +299,31 @@ function setCursor(cursor, save = true) {
   }
 }
 
+function setFullScreen() {
+  const remoteScreen = document.getElementById("remote-screen");
+  remoteScreen.setAttribute("fullscreen", true);
+  remoteScreen.requestFullscreen();
+  setTimeout(setScreenImgSize, 100);
+}
+
+function setScreenImgSize() {
+  const remoteScreenImg = document.getElementById("remote-screen-img");
+  remoteScreenImg.style.removeProperty("width");
+  remoteScreenImg.style.removeProperty("height");
+  const windowRatio = window.innerWidth / window.innerHeight;
+  const screenRatio = remoteScreenImg.width / remoteScreenImg.height;
+  if (screenRatio > windowRatio) {
+    remoteScreenImg.style.width = "100%";
+  }
+  if (windowRatio >= screenRatio) {
+    remoteScreenImg.style.height = "100%";
+  }
+}
+
 document.onload = document.getElementById("app").focus();
 
-document.getElementById("app").addEventListener("keydown", onKeyDown);
-document.getElementById("app").addEventListener("keyup", onKeyUp);
+document.addEventListener("keydown", onKeyDown);
+document.addEventListener("keyup", onKeyUp);
 
 // Forward all mouse activity that occurs over the image of the remote screen.
 const screenImg = document.getElementById("remote-screen-img");
@@ -321,6 +348,16 @@ remoteScreenDiv.addEventListener("drop", function (evt) {
   // Prevent drop on screen for Firefox.
   evt.preventDefault();
 });
+//fullscreen event
+remoteScreenDiv.onfullscreenchange = (evt) => {
+  const remoteScreen = evt.target;
+  if (document.fullscreenElement !== remoteScreen) {
+    const remoteScreenImg = document.getElementById("remote-screen-img");
+    remoteScreenImg.style.removeProperty("width");
+    remoteScreenImg.style.removeProperty("height");
+    remoteScreen.setAttribute("fullscreen", false);
+  }
+};
 document
   .getElementById("display-history-checkbox")
   .addEventListener("change", onDisplayHistoryChanged);
@@ -333,6 +370,10 @@ document.getElementById("hide-error-btn").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
+document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
+  setFullScreen();
+  evt.preventDefault();
+});
 document.getElementById("paste-btn").addEventListener("click", () => {
   document.getElementById("paste-overlay").show = true;
 });
@@ -371,7 +412,6 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
-
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
 socket.on("keystroke-received", (keystrokeResult) => {
