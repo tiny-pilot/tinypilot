@@ -334,10 +334,6 @@ document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
 
-document.getElementById("remote-screen").addEventListener("click", () => {
-  document.getElementById("remote-screen").mobileKeyboard;
-});
-
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {

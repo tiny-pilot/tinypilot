@@ -30,9 +30,15 @@
     :host([fullscreen="true"]) #remote-screen-img.full-height {
       height: 100%;
     }
+
+    #mobile-keyboard-input {
+      position: fixed;
+      bottom: -1000px;
+    }
   </style>
   <div class="screen-wrapper">
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
+    <input type="text" id="mobile-keyboard-input">
   </div>
   <script
     id="underscore-library"
@@ -108,7 +114,6 @@
           screenImg.addEventListener("contextmenu", (evt) => {
             evt.preventDefault();
           });
-
           window.addEventListener("resize", this.onWindowResize);
         }
 
@@ -129,6 +134,11 @@
               .appendChild(element);
           }
           element.focus();
+=======
+          document.getElementById("remote-screen").addEventListener("click", () => {
+            this.shadowRoot.getElementById("mobile-keyboard-input").focus();
+          });
+>>>>>>> Modifications
         }
 
         get fullscreen() {
