@@ -124,7 +124,9 @@
             element.id = "mobile-keyboard-input";
             element.style.position = "fixed";
             element.style.bottom = "-1000px";
-            this.shadowRoot.querySelector(".screen-wrapper").appendChild(element);
+            this.shadowRoot
+              .querySelector(".screen-wrapper")
+              .appendChild(element);
           }
           element.focus();
         }
