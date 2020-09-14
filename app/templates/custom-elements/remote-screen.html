@@ -117,6 +117,18 @@
           super.disconnectedCallback && super.disconnectedCallback();
         }
 
+        get mobileKeyboard() {
+          var element = this.shadowRoot.getElementById("mobile-keyboard-input");
+          if (!element) {
+            element = document.createElement("input");
+            element.id = "mobile-keyboard-input";
+            element.style.position = "fixed";
+            element.style.bottom = "-1000px";
+            this.shadowRoot.querySelector(".screen-wrapper").appendChild(element);
+          }
+          element.focus();
+        }
+
         get fullscreen() {
           return this.getAttribute("fullscreen") === "true";
         }
