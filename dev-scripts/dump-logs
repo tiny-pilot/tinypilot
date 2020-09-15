@@ -46,5 +46,5 @@ if [ "$answer" != "${answer#[Yy]}" ] ;then
 else
     echo "Log file not uploaded."
     echo "If you decide to share it, run:"
-    echo 'cat "$LOG_FILE" | curl -F \'sprunge=<-\' http://sprunge.us)'
+    echo "cat $LOG_FILE | curl -F 'sprunge=<-' http://sprunge.us)"
 fi
