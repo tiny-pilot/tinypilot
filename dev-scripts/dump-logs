@@ -42,9 +42,9 @@ read answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
     URL=$(cat "$LOG_FILE" | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us)
     printf "Copy the following URL into your bug report:\n\n\t"
-    printf "${URL}\n"
+    printf "${URL}\n\n"
 else
     echo "Log file not uploaded."
-    echo "If you decide to share it, run:"
-    echo "cat $LOG_FILE | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us"
+    printf "If you decide to share it, run:\n\n"
+    printf "  cat $LOG_FILE | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us\n\n"
 fi
