@@ -229,15 +229,15 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-function sendPastedText(pastedText) {
+function sendTextInput(textInput) {
   const language = browserLanguage();
-  for (let i = 0; i < pastedText.length; i++) {
-    let key = pastedText[i];
+  for (let i = 0; i < textInput.length; i++) {
+    let key = textInput[i];
     // Ignore carriage returns.
     if (key === "\r") {
       continue;
     }
-    const keyCode = findKeyCode([pastedText[i].toLowerCase()], language);
+    const keyCode = findKeyCode([textInput[i].toLowerCase()], language);
     // Give cleaner names to keys so that they render nicely in the history.
     if (key === "\n") {
       key = "Enter";
@@ -251,7 +251,7 @@ function sendPastedText(pastedText) {
       id: keystrokeId,
       metaKey: false,
       altKey: false,
-      shiftKey: requiresShiftKey.test(pastedText[i]),
+      shiftKey: requiresShiftKey.test(textInput[i]),
       ctrlKey: false,
       key: key,
       keyCode: keyCode,
@@ -259,8 +259,6 @@ function sendPastedText(pastedText) {
       location: null,
     });
   }
-  // Give focus back to the app for normal text input.
-  document.getElementById("app").focus();
 }
 
 function restoreCursor() {
@@ -328,7 +326,10 @@ document.getElementById("paste-btn").addEventListener("click", () => {
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
-    sendPastedText(evt.detail);
+    sendTextInput(evt.detail);
+
+    // Give focus back to the app for normal text input.
+    document.getElementById("app").focus();
   });
 document
   .getElementById("shutdown-dialog")
