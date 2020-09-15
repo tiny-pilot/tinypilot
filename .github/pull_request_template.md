@@ -2,7 +2,7 @@
 
 Explanation of the changes, what they achieve, and any design decisions that are worth mentioning.
 
-Fixes #XX (if there's no associated bug, delete this line)
+Fixes #XX (if there's no associated Github issue, delete this line)
 
 **Delete this line and everything after before submitting your PR**
 
@@ -11,6 +11,10 @@ Fixes #XX (if there's no associated bug, delete this line)
 * Give a clear, one-line title to your PR.
   * Good: `Fix dropped keystrokes on Firefox`
   * Bad: `Fix issue`
+* Title your PRs in the present tense
+  * Good: `Change the background color to hot pink`
+  * Bad: `Changing the background color to hot pink`
+  * Bad: `Changed the background color to hot pink`
 * If your PR is not ready for review, mark it as "draft."
 * Rebase your changes onto the latest `master` commit so that there are no merge conflicts.
 * Your PR must pass build checks in CI before it will be considered for merge.
