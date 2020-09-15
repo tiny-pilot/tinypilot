@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Echo commands to stdout.
-set -x
-
 # Exit on unset variable.
 set -u
 
