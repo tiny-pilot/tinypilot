@@ -6,6 +6,10 @@ set -u
 LOG_FILE=$(mktemp)
 echo "Writing diagnostic logs to $LOG_FILE"
 
+echo "TinyPilot log dump" >> "$LOG_FILE"
+echo "https://tinypilotkvm.com" >> "$LOG_FILE"
+printf "Timestamp: %s\n\n" $(date --iso-8601=seconds)
+
 echo "Software versions" >> "$LOG_FILE"
 
 echo "Checking TinyPilot version..."
@@ -15,6 +19,10 @@ printf "TinyPilot version: %s %s\n" $(git describe --tags) $(git rev-parse --sho
 echo "Checking uStreamer version..."
 cd /opt/ustreamer
 printf "uStreamer version: %s %s\n" $(git describe --tags) $(git rev-parse --short HEAD) >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
+echo "Checking OS version..."
+printf "OS version: %s\n" $(uname -a) >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
