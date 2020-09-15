@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+LOG_FILE=$(mktemp)
+
+# Get current version of TinyPilot.
+cd /opt/tinypilot
+git status > "$LOG_FILE"
+
+# Get current version of uStreamer
+cd /opt/ustreamer
+git status > "$LOG_FILE"
+
+sudo journalctl -u tinypilot > "$LOG_FILE"
+sudo journalctl -u ustreamer > "$LOG_FILE"
+sudo journalctl -u nginx > "$LOG_FILE"
+sudo tail -n 100 /var/log/nginx/error.log > "$LOG_FILE"
+
+echo -n "Upload your log file (y/n)? "
+read answer
+if [ "$answer" != "${answer#[Yy]}" ] ;then
+    cat "$LOG_FILE" | curl -F 'sprunge=<-' http://sprunge.us
+else
+    echo No
+fi
