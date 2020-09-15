@@ -38,7 +38,7 @@ printf "\n" >> "$LOG_FILE"
 echo "Checking nginx logs..."
 echo "nginx logs" >> "$LOG_FILE"
 sudo journalctl -u nginx >> "$LOG_FILE"
-printf "\n"
+printf "\n\n"
 sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
 printf "Your log:\n\n"
