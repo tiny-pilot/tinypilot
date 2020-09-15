@@ -29,7 +29,9 @@ echo "nginx logs" >> "$LOG_FILE"
 sudo journalctl -u nginx >> "$LOG_FILE"
 sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
-printf "Your log:\n\n%s\n\n\n" $(cat "$LOG_FILE")
+printf "Your log:\n\n"
+cat "$LOG_FILE"
+printf "-------------------------------------\n"
 
 echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
 read answer
