@@ -11,7 +11,7 @@ Fixes #XX (if there's no associated Github issue, delete this line)
 * Give a clear, one-line title to your PR.
   * Good: `Fix dropped keystrokes on Firefox`
   * Bad: `Fix issue`
-* Title your PRs in the present tense
+* Title your PR in the present tense.
   * Good: `Change the background color to hot pink`
   * Bad: `Changing the background color to hot pink`
   * Bad: `Changed the background color to hot pink`
