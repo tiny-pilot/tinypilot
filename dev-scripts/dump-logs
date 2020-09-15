@@ -4,6 +4,7 @@
 set -u
 
 LOG_FILE=$(mktemp)
+echo "Writing diagnostic logs to $LOG_FILE"
 
 echo "Checking TinyPilot version..."
 cd /opt/tinypilot
@@ -29,6 +30,10 @@ echo "Checking nginx logs..."
 echo "nginx logs" > "$LOG_FILE"
 sudo journalctl -u nginx > "$LOG_FILE"
 sudo tail -n 100 /var/log/nginx/error.log > "$LOG_FILE"
+
+echo "Full logs"
+cat "$LOG_FILE"
+echo "\n\n"
 
 echo -n "Upload your log file (y/n)? "
 read answer
