@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Exit on unset variable.
+set -u
+
+LOG_FILE=$(mktemp)
+echo "Writing diagnostic logs to $LOG_FILE"
+
+echo "TinyPilot log dump" >> "$LOG_FILE"
+echo "https://tinypilotkvm.com" >> "$LOG_FILE"
+printf "Timestamp: %s" "$(date --iso-8601=seconds)" >> "$LOG_FILE"
+printf "\n\n" >> "$LOG_FILE"
+
+echo "Software versions" >> "$LOG_FILE"
+
+echo "Checking TinyPilot version..."
+cd /opt/tinypilot
+printf "TinyPilot version: %s %s\n" "$(git describe --tags)" "$(git rev-parse --short HEAD)" >> "$LOG_FILE"
+
+echo "Checking uStreamer version..."
+cd /opt/ustreamer
+printf "uStreamer version: %s %s\n" "$(git describe --tags)" "$(git rev-parse --short HEAD)" >> "$LOG_FILE"
+
+echo "Checking OS version..."
+printf "OS version: %s\n" "$(uname -a)" >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
+echo "Checking TinyPilot logs..."
+printf "TinyPilot logs\n" >> "$LOG_FILE"
+sudo journalctl -u tinypilot | tail -n 80 >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
+echo "Checking uStreamer logs..."
+printf "uStreamer logs\n" >> "$LOG_FILE"
+sudo journalctl -u ustreamer | tail -n 80 >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
+echo "Checking nginx logs..."
+echo "nginx logs" >> "$LOG_FILE"
+sudo journalctl -u nginx >> "$LOG_FILE"
+printf "\n\n"
+sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
+
+printf "Your log:\n\n"
+cat "$LOG_FILE"
+echo "-------------------------------------"
+printf "\n\n"
+
+echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
+read answer
+printf "\n"
+if [ "$answer" != "${answer#[Yy]}" ] ;then
+    URL=$(cat "$LOG_FILE" | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us)
+    printf "Copy the following URL into your bug report:\n\n\t"
+    printf "${URL}\n\n"
+else
+    echo "Log file not uploaded."
+    printf "If you decide to share it, run:\n\n"
+    printf "  cat $LOG_FILE | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us\n\n"
+fi
