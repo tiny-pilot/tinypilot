@@ -47,6 +47,7 @@
       class extends HTMLElement {
         constructor() {
           super();
+          this.onWindowResize = this.onWindowResize.bind(this);
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -61,25 +62,10 @@
               this.fullscreen = false;
             }
           });
-          window.addEventListener("resize", (evt) => {
-            if (this.fullscreen == true) {
-              const screenImg = this.shadowRoot.getElementById(
-                "remote-screen-img"
-              );
-              screenImg.classList.remove("full-width");
-              screenImg.classList.remove("full-height");
-              const windowRatio = window.innerWidth / window.innerHeight;
-              const screenRatio = screenImg.width / screenImg.height;
-              if (screenRatio > windowRatio) {
-                screenImg.classList.add("full-width");
-              } else {
-                screenImg.classList.add("full-height");
-              }
-            }
-          });
         }
 
         connectedCallback() {
+          super.connectedCallback && super.connectedCallback();
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
@@ -97,6 +83,13 @@
           screenImg.addEventListener("contextmenu", (evt) => {
             evt.preventDefault();
           });
+
+          window.addEventListener("resize", this.onWindowResize);
+        }
+
+        disconnectedCallback() {
+          window.removeEventListener("resize", this.onWindowResize);
+          super.disconnectedCallback && super.disconnectedCallback();
         }
 
         get fullscreen() {
@@ -128,6 +121,28 @@
             this.shadowRoot
               .querySelector(".screen-wrapper")
               .requestFullscreen();
+          }
+        }
+
+        onWindowResize() {
+          if (this.fullscreen) {
+            this.fillSpace();
+          }
+        }
+
+        // Adjust style so that the screen is either full-width or full-height,
+        // depending on which better maximizes space for the remote screen's
+        // aspect ratio.
+        fillSpace() {
+          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
+          screenImg.classList.remove("full-width");
+          screenImg.classList.remove("full-height");
+          const windowRatio = window.innerWidth / window.innerHeight;
+          const screenRatio = screenImg.width / screenImg.height;
+          if (screenRatio > windowRatio) {
+            screenImg.classList.add("full-width");
+          } else {
+            screenImg.classList.add("full-height");
           }
         }
 
