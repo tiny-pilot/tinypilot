@@ -8,28 +8,28 @@ echo "Writing diagnostic logs to $LOG_FILE"
 
 echo "Checking TinyPilot version..."
 cd /opt/tinypilot
-echo "TinyPilot version" > "$LOG_FILE"
-git status > "$LOG_FILE"
-echo "\n" > "$LOG_FILE"
+echo "TinyPilot version" >> "$LOG_FILE"
+git rev-parse HEAD >> "$LOG_FILE"
+echo "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer version..."
 cd /opt/ustreamer
-echo "uStreamer version" > "$LOG_FILE"
-git status > "$LOG_FILE"
-echo "\n" > "$LOG_FILE"
+echo "uStreamer version" >> "$LOG_FILE"
+git rev-parse HEAD >> "$LOG_FILE"
+echo "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
-echo "TinyPilot logs" > "$LOG_FILE"
-sudo journalctl -u tinypilot > "$LOG_FILE"
+echo "TinyPilot logs" >> "$LOG_FILE"
+sudo journalctl -u tinypilot >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
-echo "uStreamer logs" > "$LOG_FILE"
-sudo journalctl -u ustreamer > "$LOG_FILE"
+echo "uStreamer logs" >> "$LOG_FILE"
+sudo journalctl -u ustreamer >> "$LOG_FILE"
 
 echo "Checking nginx logs..."
-echo "nginx logs" > "$LOG_FILE"
-sudo journalctl -u nginx > "$LOG_FILE"
-sudo tail -n 100 /var/log/nginx/error.log > "$LOG_FILE"
+echo "nginx logs" >> "$LOG_FILE"
+sudo journalctl -u nginx >> "$LOG_FILE"
+sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
 echo "Full logs"
 cat "$LOG_FILE"
