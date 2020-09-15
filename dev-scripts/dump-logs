@@ -26,18 +26,19 @@ printf "OS version: %s\n" "$(uname -a)" >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
-printf "TinyPilot logs\n\n" >> "$LOG_FILE"
+printf "TinyPilot logs\n" >> "$LOG_FILE"
 sudo journalctl -u tinypilot | tail -n 80 >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
-echo "uStreamer logs" >> "$LOG_FILE"
+printf "uStreamer logs\n" >> "$LOG_FILE"
 sudo journalctl -u ustreamer | tail -n 80 >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking nginx logs..."
 echo "nginx logs" >> "$LOG_FILE"
 sudo journalctl -u nginx >> "$LOG_FILE"
+printf "\n"
 sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
 printf "Your log:\n\n"
@@ -47,6 +48,7 @@ printf "\n\n"
 
 echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
 read answer
+printf "\n"
 if [ "$answer" != "${answer#[Yy]}" ] ;then
     URL=$(cat "$LOG_FILE" | curl --silent --show-error --form 'sprunge=<-' http://sprunge.us)
     printf "Copy the following URL into your bug report:\n\n\t"
