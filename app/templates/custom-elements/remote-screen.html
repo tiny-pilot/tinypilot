@@ -57,7 +57,9 @@
             evt.preventDefault();
           });
           this.addEventListener("fullscreenchange", () => {
-            this.fullscreen = document.fullscreenElement ? true : false;
+            if (!document.fullscreenElement) {
+              this.fullscreen = false;
+            }
           });
           window.addEventListener("resize", (evt) => {
             if (this.fullscreen == true) {
