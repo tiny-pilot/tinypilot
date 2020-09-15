@@ -8,24 +8,20 @@ echo "Writing diagnostic logs to $LOG_FILE"
 
 echo "Checking TinyPilot version..."
 cd /opt/tinypilot
-echo "TinyPilot version" >> "$LOG_FILE"
-git rev-parse HEAD >> "$LOG_FILE"
-printf "\n" >> "$LOG_FILE"
+printf "TinyPilot version: %s\n" $(git rev-parse HEAD) >> "$LOG_FILE"
 
 echo "Checking uStreamer version..."
 cd /opt/ustreamer
-echo "uStreamer version" >> "$LOG_FILE"
-git rev-parse HEAD >> "$LOG_FILE"
-printf "\n" >> "$LOG_FILE"
+printf "uStreamer version: %s\n" $(git rev-parse HEAD) >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
-echo "TinyPilot logs" >> "$LOG_FILE"
-sudo journalctl -u tinypilot | tail -n 100 >> "$LOG_FILE"
+printf "TinyPilot logs\n\n" >> "$LOG_FILE"
+sudo journalctl -u tinypilot | tail -n 80 >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
 echo "uStreamer logs" >> "$LOG_FILE"
-sudo journalctl -u ustreamer | tail -n 100 >> "$LOG_FILE"
+sudo journalctl -u ustreamer | tail -n 80 >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking nginx logs..."
@@ -33,14 +29,16 @@ echo "nginx logs" >> "$LOG_FILE"
 sudo journalctl -u nginx >> "$LOG_FILE"
 sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
-echo "Full logs"
-cat "$LOG_FILE"
-printf "\n\n"
+printf "Your log:\n\n%s\n\n\n" $(cat "$LOG_FILE")
 
-echo -n "Upload your log file (y/n)? "
+echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
 read answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
-    cat "$LOG_FILE" | curl -F 'sprunge=<-' http://sprunge.us
+    URL=$(cat "$LOG_FILE" | curl -F 'sprunge=<-' http://sprunge.us)
+    printf "Copy the following URL into your bug report:\n\n\t"
+    printf "${URL}\n"
 else
-    echo No
+    echo "Log file not uploaded."
+    echo "If you decide to share it, run:"
+    echo 'cat "$LOG_FILE" | curl -F \'sprunge=<-\' http://sprunge.us)'
 fi
