@@ -6,6 +6,8 @@ set -u
 LOG_FILE=$(mktemp)
 echo "Writing diagnostic logs to $LOG_FILE"
 
+echo "Software versions" >> "$LOG_FILE"
+
 echo "Checking TinyPilot version..."
 cd /opt/tinypilot
 printf "TinyPilot version: %s\n" $(git rev-parse HEAD) >> "$LOG_FILE"
@@ -13,6 +15,7 @@ printf "TinyPilot version: %s\n" $(git rev-parse HEAD) >> "$LOG_FILE"
 echo "Checking uStreamer version..."
 cd /opt/ustreamer
 printf "uStreamer version: %s\n" $(git rev-parse HEAD) >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
 printf "TinyPilot logs\n\n" >> "$LOG_FILE"
@@ -31,7 +34,8 @@ sudo tail -n 100 /var/log/nginx/error.log >> "$LOG_FILE"
 
 printf "Your log:\n\n"
 cat "$LOG_FILE"
-printf "-------------------------------------\n"
+echo "-------------------------------------"
+printf "\n\n"
 
 echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
 read answer
