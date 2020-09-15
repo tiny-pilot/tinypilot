@@ -196,15 +196,24 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
+var mouseEventLast = [0, 0];
 function sendMouseEvent(buttons, relativeX, relativeY) {
   if (!connectedToServer) {
     return;
   }
-  socket.emit("mouse-event", {
-    buttons,
-    relativeX,
-    relativeY,
-  });
+  if (
+    !buttons &&
+    relativeX != mouseEventLast[0] &&
+    relativeY != mouseEventLast[1]
+  ) {
+    mouseEventLast = [relativeX, relativeY];
+  } else {
+    socket.emit("mouse-event", {
+      buttons,
+      relativeX,
+      relativeY,
+    });
+  }
 }
 
 function onKeyUp(evt) {
