@@ -126,11 +126,10 @@
           this.shadowRoot
             .getElementById("mobile-keyboard-input")
             .addEventListener("input", (evt) => {
-              sendTextInput(evt.target.value.slice(1));
-              evt.target.value = " ";
+              sendTextInput(evt.target.value);
               evt.target.focus();
+              evt.target.value = "";
             });
-          window.addEventListener("resize", this.onWindowResize);
         }
 
         disconnectedCallback() {

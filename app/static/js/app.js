@@ -138,6 +138,10 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
+  //Ignore if keyCode is 229 (mobile)
+  if (keystroke.keyCode === 229) {
+    return;
+  }
   if (!keystroke.metaKey) {
     addKeyCard(keystroke.key, keystroke.id);
   }
