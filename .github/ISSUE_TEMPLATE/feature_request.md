@@ -2,7 +2,7 @@
 name: Bug report
 about: Report a problem in TinyPilot
 title: ''
-labels: 'bug'
+labels: ''
 assignees: ''
 
 ---

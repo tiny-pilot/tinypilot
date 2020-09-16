@@ -77,6 +77,12 @@ TinyPilot accepts various options through environment variables:
 
 The installation script is idempotent, so you can upgrade to the latest stable release of TinyPilot and its dependencies by just re-running [the quick install script](#simple-installation).
 
+## Diagnostics
+
+If you're having trouble with TinyPilot, you can run `/opt/tinypilot/dev-scripts/dump-logs` to print logs for all the software components related to TinyPilot. This log is useful if you [file a bug report](https://github.com/mtlynch/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
+
+You can read more details about the logs [in the wiki](https://github.com/mtlynch/tinypilot/wiki/Troubleshooting-and-Diagnostics).
+
 ## Security considerations
 
 TinyPilot does not support authentication. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
@@ -97,6 +103,7 @@ If you're interested in seeing what's happening with the project at a granular l
 
 ## See also
 
+* [TinyPilot Wiki](https://github.com/mtlynch/tinypilot/wiki): Guides for tasks related to TinyPilot.
 * [TinyPilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
 
 ## Mailing list
