@@ -38,7 +38,7 @@
   </style>
   <div class="screen-wrapper">
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
-    <input type="text" id="mobile-keyboard-input">
+    <input type="text" id="mobile-keyboard-input" autocapitalize="off" />
   </div>
   <script
     id="underscore-library"
@@ -114,31 +114,28 @@
           screenImg.addEventListener("contextmenu", (evt) => {
             evt.preventDefault();
           });
+          let isTouchScreen = false;
+          this.shadowRoot.addEventListener("touchend", () => {
+            isTouchScreen = true;
+          });
+          this.shadowRoot.addEventListener("click", () => {
+            if (isTouchScreen) {
+              this.shadowRoot.getElementById("mobile-keyboard-input").focus();
+            }
+          });
+          this.shadowRoot
+            .getElementById("mobile-keyboard-input")
+            .addEventListener("input", (evt) => {
+              sendTextInput(evt.target.value.slice(1));
+              evt.target.value = " ";
+              evt.target.focus();
+            });
           window.addEventListener("resize", this.onWindowResize);
         }
 
         disconnectedCallback() {
           window.removeEventListener("resize", this.onWindowResize);
           super.disconnectedCallback && super.disconnectedCallback();
-        }
-
-        get mobileKeyboard() {
-          var element = this.shadowRoot.getElementById("mobile-keyboard-input");
-          if (!element) {
-            element = document.createElement("input");
-            element.id = "mobile-keyboard-input";
-            element.style.position = "fixed";
-            element.style.bottom = "-1000px";
-            this.shadowRoot
-              .querySelector(".screen-wrapper")
-              .appendChild(element);
-          }
-          element.focus();
-=======
-          document.getElementById("remote-screen").addEventListener("click", () => {
-            this.shadowRoot.getElementById("mobile-keyboard-input").focus();
-          });
->>>>>>> Modifications
         }
 
         get fullscreen() {
