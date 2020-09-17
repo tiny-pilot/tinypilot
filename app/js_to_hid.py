@@ -22,8 +22,9 @@ def convert(keystroke, keyboard_layout_string):
     ]):
         if pressed:
             control_chars |= 1 << i
+    keycode_mapping = _get_keycode_mapping(keyboard_layout_string)
     try:
-        return control_chars, _JS_TO_HID_KEYCODES[keystroke.key_code]
+        return control_chars, keycode_mapping[keystroke.key_code]
     except KeyError:
         raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' %
                                        (keystroke.key, keystroke.key_code))
@@ -37,7 +38,7 @@ def _get_keycode_mapping(keyboard_layout_string):
     # TODO: For simplicity, we map all modifiers keys to the left key, but we
     # could support distinct keys for left and right if we check the location
     # parameter from the JavaScript message.
-    js_to_hid_keycodes = {
+    return {
         3: layout.KEYCODE_PAUSE_BREAK,
         8: layout.KEYCODE_BACKSPACE_DELETE,
         9: layout.KEYCODE_TAB,
