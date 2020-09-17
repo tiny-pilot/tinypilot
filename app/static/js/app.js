@@ -202,8 +202,8 @@ function sendMouseEvent(buttons, relativeX, relativeY, govenor = false) {
   if (!connectedToServer) {
     return;
   }
+  clearTimeout(mouseTimer);
   if (!buttons && !mouseEventLast.buttons && !govenor) {
-    clearTimeout(mouseTimer);
     mouseTimer = setTimeout(() => {
       sendMouseEvent(
         mouseEventLast.buttons,
