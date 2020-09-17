@@ -1,6 +1,8 @@
+from hid.keycodes import azerty
 from hid.keycodes import qwerty
 
-_LAYOUT = qwerty
+# TODO: Choose layout based on settings.
+_LAYOUT = azerty
 
 
 class Error(Exception):
