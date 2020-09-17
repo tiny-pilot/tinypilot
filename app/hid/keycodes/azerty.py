@@ -121,3 +121,4 @@ KEYCODE_REFRESH = 0xfa
 
 # Keycodes that have no mapping in AZERTY
 KEYCODE_FORWARD_SLASH = 0x0
+KEYCODE_MINUS = 0x0
