@@ -36,7 +36,7 @@ keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 # Location of file path at which to write mouse HID input.
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 # Keyboard layout on target computer.
-keyboard_layout = os.environ.get('KEYBOARD_LAYOUT', 'QWERTY')
+keyboard_layout = os.environ.get('KEYBOARD_LAYOUT', 'AZERTY')
 
 # Socket.io logs are too chatty at INFO level.
 if not debug:
