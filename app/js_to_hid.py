@@ -180,7 +180,7 @@ def _get_target_keyboard_layout(keyboard_layout_string):
         'AZERTY': azerty,
     }
     try:
-        return mappings[keyboard_layout_string.toupper()]
+        return mappings[keyboard_layout_string.upper()]
     except KeyError:
         raise InvalidKeyboardLayout('Unrecognized keyboard layout: %s' %
                                     keyboard_layout_string)
