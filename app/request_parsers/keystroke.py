@@ -25,13 +25,27 @@ class Keystroke:
 
 
 def parse_keystroke(message):
-    return Keystroke(id=message['id'],
-                     meta_modifier=_parse_modifier_key(message['metaKey']),
-                     alt_modifier=_parse_modifier_key(message['altKey']),
-                     shift_modifier=_parse_modifier_key(message['shiftKey']),
-                     ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
-                     key=message['key'],
-                     key_code=_parse_key_code(message['keyCode']))
+    if not isinstance(message, dict):
+        raise InvalidKeyCode(
+            'Keystroke parameter is invalid, expecting a dictionary data type')
+    missing_fields = [
+        key for key in ('id', 'key', 'keyCode') if key not in message
+    ]
+    if len(missing_fields):
+        raise InvalidKeyCode('Keystroke fields missing: %s' %
+                             ', '.join(missing_fields))
+    return Keystroke(
+        id=message['id'],
+        meta_modifier=_parse_modifier_key(message['metaKey'] if 'metaKey' in
+                                          message else None),
+        alt_modifier=_parse_modifier_key(message['altKey'] if 'altKey' in
+                                         message else None),
+        shift_modifier=_parse_modifier_key(message['shiftKey'] if 'shiftKey' in
+                                           message else None),
+        ctrl_modifier=_parse_modifier_key(message['ctrlKey'] if 'ctrlKey' in
+                                          message else None),
+        key=message['key'],
+        key_code=_parse_key_code(message['keyCode']))
 
 
 def _parse_modifier_key(modifier_key):
