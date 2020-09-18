@@ -161,7 +161,7 @@ function onSocketDisconnect(reason) {
 }
 
 function onKeyDown(evt) {
-  if (document.getElementById("paste-overlay").show) {
+  if (isPasteOverlayShowing()) {
     return;
   }
   if (!connectedToServer) {
@@ -208,7 +208,7 @@ function sendMouseEvent(buttons, relativeX, relativeY) {
 }
 
 function onKeyUp(evt) {
-  if (document.getElementById("paste-overlay").show) {
+  if (isPasteOverlayShowing()) {
     return;
   }
   keyState[evt.keyCode] = false;
@@ -328,7 +328,7 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
   evt.preventDefault();
 });
 document.getElementById("paste-btn").addEventListener("click", () => {
-  document.getElementById("paste-overlay").show = true;
+  showPasteOverlay();
 });
 document
   .getElementById("paste-overlay")

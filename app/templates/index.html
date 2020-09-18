@@ -19,7 +19,6 @@
     {% include "custom-elements/connection-indicator.html" %}
     {% include "custom-elements/content-tooltip.html" %}
     {% include "custom-elements/modifier-key.html" %}
-    {% include "custom-elements/paste-overlay.html" %}
     {% include "custom-elements/remote-screen.html" %}
     {% include "custom-elements/shutdown-dialog.html" %}
     {% include "custom-elements/shutdown-wait.html" %}
@@ -41,10 +40,11 @@
         {% include "components/keyboard-panel.html" %}
       </div>
     </div>
-    <paste-overlay id="paste-overlay"></paste-overlay>
+    {% include "components/paste-overlay.html" %}
     <shutdown-wait id="shutdown-wait"></shutdown-wait>
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
     <script src="/js/keycodes.js"></script>
+    <script src="/js/paste.js"></script>
     <script src="/js/app.js"></script>
   </body>
 </html>
