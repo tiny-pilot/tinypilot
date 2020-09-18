@@ -16,8 +16,8 @@
   </head>
   <body>
     <!-- prettier-ignore -->
-    {% for file in custom_elements_files %}
-      {% include file.replace('./app/templates/', '') %}
+    {% for child_template in custom_elements_files %}
+      {% include child_template.replace('./app/templates/', '') %}
     {% endfor %}
 
     <div id="app" tabindex="0">
