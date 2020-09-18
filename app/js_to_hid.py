@@ -17,8 +17,13 @@ class InvalidKeyboardLayout(Error):
 def convert(keystroke, keyboard_layout_string):
     control_chars = 0
     for i, pressed in enumerate([
-            keystroke.ctrl_modifier, keystroke.shift_modifier,
-            keystroke.alt_modifier, keystroke.meta_modifier
+            keystroke.left_ctrl_modifier,
+            keystroke.left_shift_modifier,
+            keystroke.left_alt_modifier,
+            keystroke.left_meta_modifier,
+            False,  # Right Ctrl, but we don't support it.
+            False,  # Right Shift, but we don't support it.
+            keystroke.right_alt_modifier,
     ]):
         if pressed:
             control_chars |= 1 << i

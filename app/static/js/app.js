@@ -129,6 +129,13 @@ function isIgnoredKeystroke(keyCode) {
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
+function browserLanguage() {
+  if (navigator.languages) {
+    return navigator.languages[0];
+  }
+  return navigator.language || navigator.userLanguage;
+}
+
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
   if (!keystroke.metaKey) {
@@ -189,7 +196,7 @@ function onKeyDown(evt) {
     altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
     shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
     ctrlKey: evt.ctrlKey || document.getElementById("ctrl-modifier").pressed,
-    altGraphKey: false, // Not implemented
+    altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
     sysrqKey: document.getElementById("sysrq-modifier").pressed,
     key: evt.key,
     keyCode: evt.keyCode,
@@ -229,13 +236,6 @@ function onDisplayHistoryChanged(evt) {
     document.getElementById("recent-keys").style.visibility = "hidden";
     limitRecentKeys(0);
   }
-}
-
-function browserLanguage() {
-  if (navigator.languages) {
-    return navigator.languages[0];
-  }
-  return navigator.language || navigator.userLanguage;
 }
 
 function sendTextInput(textInput) {
