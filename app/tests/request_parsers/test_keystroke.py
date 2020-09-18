@@ -150,7 +150,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_id_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -161,7 +161,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_meta_key_value(self):
-        with self.assertRaises(keystroke.InvalidModifierKey):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'altKey': False,
@@ -172,7 +172,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_alt_key_value(self):
-        with self.assertRaises(keystroke.InvalidModifierKey):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'metaKey': False,
@@ -183,7 +183,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_shift_key_value(self):
-        with self.assertRaises(keystroke.InvalidModifierKey):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'metaKey': False,
@@ -194,7 +194,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_ctrl_key_value(self):
-        with self.assertRaises(keystroke.InvalidModifierKey):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'metaKey': False,
@@ -205,7 +205,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_key_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'metaKey': False,
@@ -216,7 +216,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_key_code_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
+        with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
                 'metaKey': False,
