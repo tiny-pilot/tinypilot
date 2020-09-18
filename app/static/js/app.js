@@ -102,7 +102,7 @@ function displayPoweringDownUI(restart) {
         shutdownWait.message = "Shutdown complete.";
         shutdownWait.spinner = "none";
       }
-    }, 3000);
+    }, 30 * 1000);
   }
   document.getElementById("shutdown-dialog").show = false;
   document.getElementById("shutdown-wait").show = true;
