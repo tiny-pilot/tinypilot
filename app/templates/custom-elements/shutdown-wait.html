@@ -94,9 +94,8 @@
           ).innerText = newValue;
         }
 
-        set spinner(newValue) {
-          return this.shadowRoot.getElementById("shutdown-wait-message")
-            .nextElementSibling.style.display = newValue;
+        hideSpinner() {
+          this.shadowRoot.querySelector(".spinner").style.display = "none";
         }
       }
     );
