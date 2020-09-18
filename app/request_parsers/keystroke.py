@@ -32,10 +32,10 @@ def parse_keystroke(message):
     if not isinstance(message, dict):
         raise MissingField(
             'Keystroke parameter is invalid, expecting a dictionary data type')
-    expected_fields = [
+    required_fields = [
         'id', 'key', 'keyCode', 'metaKey', 'altKey', 'shiftKey', 'ctrlKey'
     ]
-    for field in expected_fields:
+    for field in required_fields:
         if field not in message:
             raise MissingField(
                 'Keystroke request is missing required field: %s' % field)
