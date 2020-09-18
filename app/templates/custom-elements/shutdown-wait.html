@@ -84,14 +84,19 @@
         }
 
         get message() {
-          return this.shadowRoot.querySelector("#shutdown-wait-message")
+          return this.shadowRoot.getElementById("shutdown-wait-message")
             .innerText;
         }
 
         set message(newValue) {
-          this.shadowRoot.querySelector(
-            "#shutdown-wait-message"
+          this.shadowRoot.getElementById(
+            "shutdown-wait-message"
           ).innerText = newValue;
+        }
+
+        set spinner(newValue) {
+          return this.shadowRoot.getElementById("shutdown-wait-message")
+            .nextElementSibling.style.display = newValue;
         }
       }
     );
