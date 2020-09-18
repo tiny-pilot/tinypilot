@@ -150,7 +150,7 @@ def _get_keycode_mapping(keyboard_layout_string):
         134: layout.KEYCODE_F23,
         144: layout.KEYCODE_NUM_LOCK,
         145: layout.KEYCODE_SCROLL_LOCK,
-        161: layout.KEYCODE_NUMBER_1,
+        161: layout.KEYCODE_LESS_THAN,
         163: layout.KEYCODE_HASH,
         164: layout.KEYCODE_DOLLAR_SIGN,
         165: layout.KEYCODE_U_ACCENT,
