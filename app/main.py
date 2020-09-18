@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import glob
 import logging
 import os
 
@@ -10,6 +9,7 @@ import flask_wtf
 
 import js_to_hid
 import local_system
+from find_files import find as find_files
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
 from hid import write as hid_write
@@ -124,7 +124,8 @@ def test_disconnect():
 
 @app.route('/', methods=['GET'])
 def index_get():
-    return flask.render_template('index.html')
+    return flask.render_template(
+        'index.html', custom_elements_files=find_files.custom_elements_files())
 
 
 @app.route('/shutdown', methods=['POST'])
@@ -165,29 +166,13 @@ def handle_csrf_error(e):
     }), 400
 
 
-def find_frontend_files():
-    frontend_files = []
-    patterns = [
-        ('./app/templates', '*.html'),
-        ('./app/static/css', '*.css'),
-        ('./app/static/js', '*.js'),
-    ]
-    for pattern in patterns:
-        path_root, glob_pattern = pattern
-        frontend_files.extend([
-            y for x in os.walk(path_root)
-            for y in glob.glob(os.path.join(x[0], glob_pattern))
-        ])
-    return frontend_files
-
-
 def main():
     socketio.run(app,
                  host=host,
                  port=port,
                  debug=debug,
                  use_reloader=use_reloader,
-                 extra_files=find_frontend_files())
+                 extra_files=find_files.all_frontend_files())
 
 
 if __name__ == '__main__':

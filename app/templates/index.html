@@ -16,12 +16,9 @@
   </head>
   <body>
     <!-- prettier-ignore -->
-    {% include "custom-elements/connection-indicator.html" %}
-    {% include "custom-elements/content-tooltip.html" %}
-    {% include "custom-elements/modifier-key.html" %}
-    {% include "custom-elements/remote-screen.html" %}
-    {% include "custom-elements/shutdown-dialog.html" %}
-    {% include "custom-elements/shutdown-wait.html" %}
+    {% for child_template in custom_elements_files %}
+      {% include child_template.replace('./app/templates/', '') %}
+    {% endfor %}
 
     <div id="app" tabindex="0">
       {% include "components/navbar.html" %}
