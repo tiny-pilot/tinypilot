@@ -148,3 +148,80 @@ class KeystrokeTest(unittest.TestCase):
                 'key': 'A',
                 'keyCode': 1.25,
             })
+
+    def test_rejects_missing_id_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCode):
+            keystroke.parse_keystroke({
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_meta_key_value(self):
+        with self.assertRaises(keystroke.InvalidModifierKey):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_alt_key_value(self):
+        with self.assertRaises(keystroke.InvalidModifierKey):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_shift_key_value(self):
+        with self.assertRaises(keystroke.InvalidModifierKey):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'altKey': False,
+                'ctrlKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_ctrl_key_value(self):
+        with self.assertRaises(keystroke.InvalidModifierKey):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_key_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCode):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_key_code_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCode):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'key': 'A',
+            })
