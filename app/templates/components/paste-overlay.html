@@ -1,0 +1,26 @@
+<style>
+  #paste-overlay {
+    display: none;
+  }
+
+  #paste-overlay[show="true"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24pt;
+    z-index: 1;
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+</style>
+<div id="paste-overlay" contenteditable="true">
+  <p>
+    Press Ctrl+V / Cmd+V to paste text from clipboard or any other key to
+    cancel&nbsp;
+  </p>
+</div>
