@@ -43,7 +43,7 @@ def parse_mouse_event(message):
     for field in required_fields:
         if field not in message:
             raise MissingField(
-                'Keystroke request is missing required field: %s' % field)
+                'Mouse event request is missing required field: %s' % field)
     return MouseEvent(
         buttons=_parse_button_state(message['buttons']),
         relative_x=_parse_relative_position(message['relativeX']),
