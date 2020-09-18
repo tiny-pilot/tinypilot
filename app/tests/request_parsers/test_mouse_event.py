@@ -105,21 +105,21 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_buttons_field(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.MissingField):
             mouse_event.parse_mouse_event({
                 'relativeX': 0,
                 'relativeY': 0,
             })
 
     def test_rejects_missing_relative_x_field(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.MissingField):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeY': 0,
             })
 
     def test_rejects_missing_relative_y_field(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.MissingField):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
