@@ -155,6 +155,7 @@ def _get_keycode_mapping(keyboard_layout_string):
         164: layout.KEYCODE_DOLLAR_SIGN,
         165: layout.KEYCODE_U_ACCENT,
         169: layout.KEYCODE_RIGHT_PARENTHESIS,
+        170: layout.KEYCODE_BACKSLASH,
         173: layout.KEYCODE_EQUAL_SIGN,
         179: layout.KEYCODE_MEDIA_PLAY_PAUSE,
         168: layout.KEYCODE_REFRESH,

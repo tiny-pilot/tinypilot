@@ -167,6 +167,7 @@ function onKeyDown(evt) {
   if (!connectedToServer) {
     return;
   }
+  console.log(evt); // TODO: Remove before checkin
   if (isIgnoredKeystroke(evt.keyCode)) {
     return;
   }
