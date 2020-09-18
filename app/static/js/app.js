@@ -96,6 +96,13 @@ function displayPoweringDownUI(restart) {
     shutdownWait.message = "Restarting TinyPilot Device...";
   } else {
     shutdownWait.message = "Shutting down TinyPilot Device...";
+    setTimeout(() => {
+      const shutdownWait = document.getElementById("shutdown-wait");
+      if (shutdownWait.show) {
+        shutdownWait.message = "Shutdown complete.";
+        shutdownWait.spinner = "none";
+      }
+    }, 30 * 1000);
   }
   document.getElementById("shutdown-dialog").show = false;
   document.getElementById("shutdown-wait").show = true;
