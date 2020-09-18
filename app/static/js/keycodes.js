@@ -131,7 +131,7 @@ function isAltGraphPressed(browserLanguage, keyCode, key) {
   // Only French AZERTY is supported now.
   // This is not robust, as a user's browser language doesn't necessarily match
   // their keyboard layout.
-  if (browserLanguage.startsWith("fr")) {
+  if (!browserLanguage.startsWith("fr")) {
     return false;
   }
   return (
