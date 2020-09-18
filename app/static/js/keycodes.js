@@ -129,7 +129,9 @@ function findKeyCodeEnGb(character) {
 // changes when Alt Graph is pushed, so we detect it that way.
 function isAltGraphPressed(browserLanguage, keyCode, key) {
   // Only French AZERTY is supported now.
-  if (browserLanguage != "fr-FR") {
+  // This is not robust, as a user's browser language doesn't necessarily match
+  // their keyboard layout.
+  if (browserLanguage.startsWith("fr")) {
     return false;
   }
   return (
