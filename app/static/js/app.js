@@ -188,6 +188,7 @@ function onKeyDown(evt) {
     altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
     shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
     ctrlKey: evt.ctrlKey || document.getElementById("ctrl-modifier").pressed,
+    altGraphKey: false, // Not implemented
     sysrqKey: document.getElementById("sysrq-modifier").pressed,
     key: evt.key,
     keyCode: evt.keyCode,
