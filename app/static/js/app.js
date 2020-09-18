@@ -99,8 +99,8 @@ function displayPoweringDownUI(restart) {
     setTimeout(() => {
       const shutdownWait = document.getElementById("shutdown-wait");
       if (shutdownWait.show) {
-        shutdownWait.message = "Shutdown complete.";
-        shutdownWait.spinner = "none";
+        shutdownWait.message = "Shutdown complete";
+        shutdownWait.hideSpinner();
       }
     }, 30 * 1000);
   }
