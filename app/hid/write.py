@@ -8,7 +8,7 @@ class WriteError(Error):
 
 def write_to_hid_interface(hid_path, buffer):
     try:
-        with open(hid_path, 'rb+') as hid_interface:
+        with open(hid_path, 'wb+') as hid_interface:
             hid_interface.write(bytearray(buffer))
     except BlockingIOError:
         raise WriteError(
