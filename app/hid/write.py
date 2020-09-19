@@ -1,5 +1,7 @@
+import logging
 import multiprocessing
 
+logger = logging.getLogger(__name__)
 
 class Error(Exception):
     pass
@@ -10,8 +12,11 @@ class WriteError(Error):
 
 
 def _write_to_hid_interface_immediately(hid_path, buffer):
-    with open(hid_path, 'wb+') as hid_handle:
-        hid_handle.write(bytearray(buffer))
+    try:
+        with open(hid_path, 'wb+') as hid_handle:
+            hid_handle.write(bytearray(buffer))
+    except BlockingIOError:
+        logger.error('Failed to write to HID interface. Is USB cable connected?')
 
 
 def write_to_hid_interface(hid_path, buffer):
