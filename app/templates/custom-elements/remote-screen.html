@@ -80,11 +80,12 @@
             .addEventListener("load", () => {
               // To avoid overwhelming the connection to the backend or its
               // fake HID interface, throttle mouse move events.
+              const eventsPerSecond = 20;
               this.throttledSendMouseEvent = _.throttle(
                 function (evt) {
                   this.sendMouseEvent(evt);
                 },
-                /*wait=*/ 50,
+                /*wait=*/ 1000 / eventsPerSecond,
                 { trailing: false }
               );
             });
