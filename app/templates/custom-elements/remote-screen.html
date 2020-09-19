@@ -1,4 +1,5 @@
 <template id="remote-screen-template">
+  <script src="/third-party/underscore.js/1.11.0/underscore-min.js"></script>
   <style>
     @import "css/cursors.css";
 
@@ -48,7 +49,13 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-
+          this.throttledFn = undefined;
+          setTimeout(() => {
+            this.throttledFn = _.throttle(function (evt) {
+              console.log("sending mouse event: ", evt);
+              this.sendMouseEvent(evt);
+            }, 50);
+          }, 500);
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
             evt.preventDefault();
@@ -74,7 +81,7 @@
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            this.sendMouseEvent(evt);
+            this.throttledFn(evt);
           });
           screenImg.addEventListener("mousedown", this.sendMouseEvent);
           screenImg.addEventListener("mouseup", this.sendMouseEvent);
