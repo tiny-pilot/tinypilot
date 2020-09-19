@@ -30,7 +30,7 @@ function showElementById(id, display = "block") {
 }
 
 function shouldDisplayKeyHistory() {
-  return document.getElementById("recent-keys").style.visibility !== "hidden";
+  return document.getElementById("recent-keys").style.display !== "none";
 }
 
 // Limit display of recent keys to the last N keys, where limit = N.
@@ -222,9 +222,9 @@ function onKeyUp(evt) {
 
 function onDisplayHistoryChanged(evt) {
   if (evt.target.checked) {
-    document.getElementById("recent-keys").style.visibility = "visible";
+    document.getElementById("recent-keys").style.removeProperty("display");
   } else {
-    document.getElementById("recent-keys").style.visibility = "hidden";
+    document.getElementById("recent-keys").style.display = "none";
     limitRecentKeys(0);
   }
 }
