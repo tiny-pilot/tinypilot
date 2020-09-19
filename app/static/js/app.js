@@ -196,34 +196,15 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-var mouseTimer = null,
-  mouseEventLast = { buttons: -1, relativeX: -1, relativeY: -1 };
 function sendMouseEvent(buttons, relativeX, relativeY, govenor = false) {
   if (!connectedToServer) {
     return;
   }
-  clearTimeout(mouseTimer);
-  if (!buttons && !mouseEventLast.buttons && !govenor) {
-    mouseTimer = setTimeout(() => {
-      sendMouseEvent(
-        mouseEventLast.buttons,
-        mouseEventLast.relativeX,
-        mouseEventLast.relativeY,
-        true
-      );
-    }, 10);
-  } else {
-    socket.emit("mouse-event", {
-      buttons,
-      relativeX,
-      relativeY,
-    });
-  }
-  mouseEventLast = {
-    buttons: buttons,
-    relativeX: relativeX,
-    relativeY: relativeY,
-  };
+  socket.emit("mouse-event", {
+    buttons,
+    relativeX,
+    relativeY,
+  });
 }
 
 function onKeyUp(evt) {

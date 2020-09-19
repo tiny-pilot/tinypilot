@@ -41,7 +41,8 @@
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#remote-screen-template");
-
+    var mouseEventButtonsCurrent = -1,
+      mouseEventButtonsLast = -1;
     customElements.define(
       "remote-screen",
       class extends HTMLElement {
@@ -74,10 +75,12 @@
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            this.sendMouseEvent(evt);
+            mouseEventButtonsCurrent = evt.buttons;
+            this.sendMouseEventDebounce(evt);
+            mouseEventButtonsLast = evt.buttons;
           });
-          screenImg.addEventListener("mousedown", this.sendMouseEvent);
-          screenImg.addEventListener("mouseup", this.sendMouseEvent);
+          screenImg.addEventListener("mousedown", this.sendMouseEventDebounce);
+          screenImg.addEventListener("mouseup", this.sendMouseEventDebounce);
           // Ignore the context menu so that it doesn't block the screen when the user
           // right-clicks.
           screenImg.addEventListener("contextmenu", (evt) => {
@@ -145,6 +148,33 @@
             screenImg.classList.add("full-height");
           }
         }
+
+        debounce(func, wait, immediate) {
+          var timeout;
+          return function () {
+            var context = this,
+              args = arguments;
+            var later = function () {
+              timeout = null;
+              if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+          };
+        }
+
+        sendMouseEventDebounce = this.debounce(
+          this.sendMouseEvent,
+          // Send one event every 25ms, timer resets / extends every new event
+          25,
+          // Process event immediately if the buttons pressed state has changed or a button is currently pressed
+          !mouseEventButtonsCurrent &&
+            mouseEventButtonsCurrent == mouseEventButtonsLast
+            ? false
+            : true
+        );
 
         sendMouseEvent(evt) {
           const boundingRect = evt.target.getBoundingClientRect();
