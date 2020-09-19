@@ -12,4 +12,5 @@ def write_to_hid_interface(hid_path, buffer):
             hid_interface.write(bytearray(buffer))
     except BlockingIOError:
         raise WriteError(
-            'Failed to write to HID interface. Is USB cable connected?')
+            'Failed to write to HID interface: %s. Is USB cable connected?' %
+            hid_path)
