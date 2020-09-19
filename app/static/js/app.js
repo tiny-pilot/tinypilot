@@ -196,7 +196,7 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(buttons, relativeX, relativeY, govenor = false) {
+function sendMouseEvent(buttons, relativeX, relativeY) {
   if (!connectedToServer) {
     return;
   }
