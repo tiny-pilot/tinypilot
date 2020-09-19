@@ -14,12 +14,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   min-width: 800px;
-  min-height: 90px;
-  transition: min-height 0.25s ease-in;
-}
-
-#recent-keys[style*="visibility: hidden;"] {
-  min-height: 0px;
 }
 
 .key-card {
