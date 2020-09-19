@@ -1,5 +1,4 @@
 <template id="remote-screen-template">
-  <script src="/third-party/underscore.js/1.11.0/underscore-min.js"></script>
   <style>
     @import "css/cursors.css";
 
@@ -35,6 +34,10 @@
   <div class="screen-wrapper">
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
+  <script
+    id="underscore-library"
+    src="/third-party/underscore.js/1.11.0/underscore-min.js"
+  ></script>
 </template>
 
 <script>
@@ -49,13 +52,9 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          this.throttledFn = undefined;
-          setTimeout(() => {
-            this.throttledFn = _.throttle(function (evt) {
-              console.log("sending mouse event: ", evt);
-              this.sendMouseEvent(evt);
-            }, 50);
-          }, 500);
+          // Define this when the _.throttle function is loaded.
+          this.throttledSendMouseEvent = undefined;
+
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
             evt.preventDefault();
@@ -76,12 +75,30 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
+          this.shadowRoot
+            .getElementById("underscore-library")
+            .addEventListener("load", () => {
+              // To avoid overwhelming the connection to the backend or its
+              // fake HID interface, throttle mouse move events.
+              this.throttledSendMouseEvent = _.throttle(
+                function (evt) {
+                  this.sendMouseEvent(evt);
+                },
+                /*wait=*/ 50,
+                { trailing: false }
+              );
+            });
+
           // Forward all mouse activity that occurs over the image of the remote screen.
           const screenImg = this.shadowRoot.getElementById("remote-screen-img");
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            this.throttledFn(evt);
+            if (this.throttledSendMouseEvent) {
+              this.throttledSendMouseEvent(evt);
+            } else {
+              this.sendMouseEvent(evt);
+            }
           });
           screenImg.addEventListener("mousedown", this.sendMouseEvent);
           screenImg.addEventListener("mouseup", this.sendMouseEvent);
