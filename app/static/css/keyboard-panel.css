@@ -13,8 +13,13 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  min-height: 90px;
   min-width: 800px;
+  min-height: 90px;
+  transition: min-height 0.25s ease-in;
+}
+
+#recent-keys.hide-keys {
+  min-height: 0px;
 }
 
 .key-card {
