@@ -37,8 +37,12 @@
     }
   </style>
   <div class="screen-wrapper">
+    <span
+      id="mobile-keyboard-input"
+      contenteditable="true"
+      autocapitalize="off"
+    ></span>
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
-    <input type="text" id="mobile-keyboard-input" autocapitalize="off" />
   </div>
   <script
     id="underscore-library"
@@ -126,20 +130,27 @@
           this.shadowRoot
             .getElementById("mobile-keyboard-input")
             .addEventListener("keyup", (evt) => {
-              if (evt.target.value == "") {
-                onKeyDown({
-                  key: "Backspace",
-                  keyCode: 8,
-                  metaKey: false,
-                  altKey: false,
-                  ctrlKey: false,
-                  shiftKey: false,
-                  location: 0,
-                });
-              } else {
-                sendTextInput(evt.target.value);
+              if (evt.keyCode == 229) {
+                if (evt.target.innerHTML == "") {
+                  onKeyDown({
+                    id: keystrokeId,
+                    key: "Backspace",
+                    keyCode: 8,
+                    metaKey: false,
+                    altKey: false,
+                    ctrlKey: false,
+                    shiftKey: false,
+                    location: 0,
+                  });
+                } else {
+                  if (evt.target.innerHTML == "&nbsp;") {
+                    evt.target.innerHTML = " ";
+                  }
+                  sendTextInput(evt.target.innerHTML);
+                }
               }
-              evt.target.value = "";
+              evt.target.blur();
+              evt.target.innerHTML = "";
               evt.target.focus();
             });
         }
