@@ -125,10 +125,22 @@
           });
           this.shadowRoot
             .getElementById("mobile-keyboard-input")
-            .addEventListener("input", (evt) => {
-              sendTextInput(evt.target.value);
-              evt.target.focus();
+            .addEventListener("keyup", (evt) => {
+              if (evt.target.value == "") {
+                onKeyDown({
+                  key: "Backspace",
+                  keyCode: 8,
+                  metaKey: false,
+                  altKey: false,
+                  ctrlKey: false,
+                  shiftKey: false,
+                  location: 0,
+                });
+              } else {
+                sendTextInput(evt.target.value);
+              }
               evt.target.value = "";
+              evt.target.focus();
             });
         }
 

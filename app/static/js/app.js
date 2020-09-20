@@ -138,10 +138,6 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
-  //Ignore if keyCode is 229 (mobile)
-  if (keystroke.keyCode === 229) {
-    return;
-  }
   if (!keystroke.metaKey) {
     addKeyCard(keystroke.key, keystroke.id);
   }
@@ -176,6 +172,10 @@ function onKeyDown(evt) {
     return;
   }
   if (!connectedToServer) {
+    return;
+  }
+  //Ignore if keyCode is 229 (mobile)
+  if (evt.keyCode === 229) {
     return;
   }
   if (isIgnoredKeystroke(evt.keyCode)) {
