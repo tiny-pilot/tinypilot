@@ -18,10 +18,11 @@ class KeystrokeTest(unittest.TestCase):
     def test_parses_valid_keystroke_message(self):
         self.assertEqual(
             keystroke.Keystroke(id=123,
-                                meta_modifier=False,
-                                alt_modifier=False,
-                                shift_modifier=False,
-                                ctrl_modifier=False,
+                                left_meta_modifier=False,
+                                left_alt_modifier=False,
+                                left_shift_modifier=False,
+                                left_ctrl_modifier=False,
+                                right_alt_modifier=False,
                                 key='A',
                                 key_code=65),
             keystroke.parse_keystroke({
@@ -30,6 +31,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 65,
             }))
@@ -37,10 +39,11 @@ class KeystrokeTest(unittest.TestCase):
     def test_parses_valid_keystroke_message_with_all_modifiers_pushed(self):
         self.assertEqual(
             keystroke.Keystroke(id=456,
-                                meta_modifier=True,
-                                alt_modifier=True,
-                                shift_modifier=True,
-                                ctrl_modifier=True,
+                                left_meta_modifier=True,
+                                left_alt_modifier=True,
+                                left_shift_modifier=True,
+                                left_ctrl_modifier=True,
+                                right_alt_modifier=True,
                                 key='A',
                                 key_code=65),
             keystroke.parse_keystroke({
@@ -49,6 +52,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': True,
                 'shiftKey': True,
                 'ctrlKey': True,
+                'altGraphKey': True,
                 'key': 'A',
                 'keyCode': 65,
             }))
@@ -61,6 +65,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 65,
             })
@@ -73,6 +78,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': 'banana',
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 65,
             })
@@ -85,6 +91,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': 'banana',
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 65,
             })
@@ -97,6 +104,20 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': 'banana',
+                'altGraphKey': False,
+                'key': 'A',
+                'keyCode': 65,
+            })
+
+    def test_rejects_invalid_alt_graph_modifier(self):
+        with self.assertRaises(keystroke.InvalidModifierKey):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'altGraphKey': 'banana',
                 'key': 'A',
                 'keyCode': 65,
             })
@@ -109,6 +130,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': -1,
             })
@@ -121,6 +143,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 0xff + 1,
             })
@@ -133,6 +156,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 'banana',
             })
@@ -145,6 +169,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 1.25,
             })
@@ -156,6 +181,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 1,
             })
@@ -167,6 +193,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 1,
             })
@@ -175,6 +202,19 @@ class KeystrokeTest(unittest.TestCase):
         with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'id': 123,
+                'metaKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'altGraphKey': False,
+                'key': 'A',
+                'keyCode': 1,
+            })
+
+    def test_rejects_missing_alt_graph_key_value(self):
+        with self.assertRaises(keystroke.MissingField):
+            keystroke.parse_keystroke({
+                'id': 123,
+                'altKey': False,
                 'metaKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
@@ -189,6 +229,7 @@ class KeystrokeTest(unittest.TestCase):
                 'metaKey': False,
                 'altKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 1,
             })
@@ -200,6 +241,7 @@ class KeystrokeTest(unittest.TestCase):
                 'metaKey': False,
                 'altKey': False,
                 'shiftKey': False,
+                'altGraphKey': False,
                 'key': 'A',
                 'keyCode': 1,
             })
@@ -212,6 +254,7 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'keyCode': 1,
             })
 
@@ -223,5 +266,6 @@ class KeystrokeTest(unittest.TestCase):
                 'altKey': False,
                 'shiftKey': False,
                 'ctrlKey': False,
+                'altGraphKey': False,
                 'key': 'A',
             })

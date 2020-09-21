@@ -35,6 +35,8 @@ use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
 keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 # Location of file path at which to write mouse HID input.
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
+# Keyboard layout on target computer.
+keyboard_layout = os.environ.get('KEYBOARD_LAYOUT', 'QWERTY')
 
 # Socket.io logs are too chatty at INFO level.
 if not debug:
@@ -66,7 +68,8 @@ def socket_keystroke(message):
     hid_keycode = None
     processing_result = {'keystrokeId': keystroke.id, 'success': False}
     try:
-        control_keys, hid_keycode = js_to_hid.convert(keystroke)
+        control_keys, hid_keycode = js_to_hid.convert(keystroke,
+                                                      keyboard_layout)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
                        keystroke.key_code)

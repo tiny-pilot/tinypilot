@@ -20,10 +20,11 @@ class InvalidKeyCode(Error):
 @dataclasses.dataclass
 class Keystroke:
     id: int
-    meta_modifier: bool
-    alt_modifier: bool
-    shift_modifier: bool
-    ctrl_modifier: bool
+    left_ctrl_modifier: bool
+    left_shift_modifier: bool
+    left_alt_modifier: bool
+    left_meta_modifier: bool
+    right_alt_modifier: bool
     key: str
     key_code: int
 
@@ -32,20 +33,29 @@ def parse_keystroke(message):
     if not isinstance(message, dict):
         raise MissingField(
             'Keystroke parameter is invalid, expecting a dictionary data type')
-    required_fields = [
-        'id', 'key', 'keyCode', 'metaKey', 'altKey', 'shiftKey', 'ctrlKey'
-    ]
+    required_fields = (
+        'id',
+        'key',
+        'keyCode',
+        'ctrlKey',
+        'shiftKey',
+        'altKey',
+        'metaKey',
+        'altGraphKey',
+    )
     for field in required_fields:
         if field not in message:
             raise MissingField(
                 'Keystroke request is missing required field: %s' % field)
-    return Keystroke(id=message['id'],
-                     meta_modifier=_parse_modifier_key(message['metaKey']),
-                     alt_modifier=_parse_modifier_key(message['altKey']),
-                     shift_modifier=_parse_modifier_key(message['shiftKey']),
-                     ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
-                     key=message['key'],
-                     key_code=_parse_key_code(message['keyCode']))
+    return Keystroke(
+        id=message['id'],
+        left_ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
+        left_shift_modifier=_parse_modifier_key(message['shiftKey']),
+        left_alt_modifier=_parse_modifier_key(message['altKey']),
+        left_meta_modifier=_parse_modifier_key(message['metaKey']),
+        right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
+        key=message['key'],
+        key_code=_parse_key_code(message['keyCode']))
 
 
 def _parse_modifier_key(modifier_key):
