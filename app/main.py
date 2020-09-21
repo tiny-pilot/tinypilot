@@ -37,7 +37,7 @@ keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 # Keyboard layout on target computer.
 keyboard_layout = os.environ.get('KEYBOARD_LAYOUT',
-                                 'AZERTY')  # TODO: Change before commit
+                                 'QWERTY')
 
 # Socket.io logs are too chatty at INFO level.
 if not debug:
