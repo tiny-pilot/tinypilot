@@ -8,6 +8,15 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 ![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/demo.gif)
 
+## Features
+
+* Video capture (HDMI/DVI/VGA)
+* Keyboard forwarding
+* Mouse forwarding
+* Fullscreen mode
+* Paste text from clipboard
+* Support for QWERTY and AZERTY keyboard layouts
+
 ## Pre-requisites
 
 * Raspberry Pi OS Stretch or later
