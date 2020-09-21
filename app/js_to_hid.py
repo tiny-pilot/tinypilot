@@ -1,6 +1,5 @@
+from hid.keycodes import azerty
 from hid.keycodes import qwerty
-
-_LAYOUT = qwerty
 
 
 class Error(Exception):
@@ -11,146 +10,183 @@ class UnrecognizedKeyCodeError(Error):
     pass
 
 
-# JS keycodes source: https://github.com/wesbos/keycodes
-
-# TODO: For simplicity, we map all modifiers keys to the left key, but we could
-# support distinct keys for left and right if we check the location parameter
-# from the JavaScript message.
-_JS_TO_HID_KEYCODES = {
-    3: _LAYOUT.KEYCODE_PAUSE_BREAK,
-    8: _LAYOUT.KEYCODE_BACKSPACE_DELETE,
-    9: _LAYOUT.KEYCODE_TAB,
-    12: _LAYOUT.KEYCODE_CLEAR,
-    13: _LAYOUT.KEYCODE_ENTER,
-    16: _LAYOUT.KEYCODE_LEFT_SHIFT,
-    17: _LAYOUT.KEYCODE_LEFT_CTRL,
-    18: _LAYOUT.KEYCODE_LEFT_ALT,
-    19: _LAYOUT.KEYCODE_PAUSE_BREAK,
-    20: _LAYOUT.KEYCODE_CAPS_LOCK,
-    21: _LAYOUT.KEYCODE_HANGEUL,
-    25: _LAYOUT.KEYCODE_HANJA,
-    27: _LAYOUT.KEYCODE_ESCAPE,
-    32: _LAYOUT.KEYCODE_SPACEBAR,
-    33: _LAYOUT.KEYCODE_PAGE_UP,
-    34: _LAYOUT.KEYCODE_PAGE_DOWN,
-    35: _LAYOUT.KEYCODE_END,
-    36: _LAYOUT.KEYCODE_HOME,
-    37: _LAYOUT.KEYCODE_LEFT_ARROW,
-    38: _LAYOUT.KEYCODE_UP_ARROW,
-    39: _LAYOUT.KEYCODE_RIGHT_ARROW,
-    40: _LAYOUT.KEYCODE_DOWN_ARROW,
-    41: _LAYOUT.KEYCODE_SELECT,
-    43: _LAYOUT.KEYCODE_EXECUTE,
-    44: _LAYOUT.KEYCODE_PRINT_SCREEN,
-    45: _LAYOUT.KEYCODE_INSERT,
-    46: _LAYOUT.KEYCODE_DELETE,
-    47: _LAYOUT.KEYCODE_HELP,
-    48: _LAYOUT.KEYCODE_NUMBER_0,
-    49: _LAYOUT.KEYCODE_NUMBER_1,
-    50: _LAYOUT.KEYCODE_NUMBER_2,
-    51: _LAYOUT.KEYCODE_NUMBER_3,
-    52: _LAYOUT.KEYCODE_NUMBER_4,
-    53: _LAYOUT.KEYCODE_NUMBER_5,
-    54: _LAYOUT.KEYCODE_NUMBER_6,
-    55: _LAYOUT.KEYCODE_NUMBER_7,
-    56: _LAYOUT.KEYCODE_NUMBER_8,
-    57: _LAYOUT.KEYCODE_NUMBER_9,
-    59: _LAYOUT.KEYCODE_SEMICOLON,
-    60: _LAYOUT.KEYCODE_LESS_THAN,
-    61: _LAYOUT.KEYCODE_EQUAL_SIGN,
-    65: _LAYOUT.KEYCODE_A,
-    66: _LAYOUT.KEYCODE_B,
-    67: _LAYOUT.KEYCODE_C,
-    68: _LAYOUT.KEYCODE_D,
-    69: _LAYOUT.KEYCODE_E,
-    70: _LAYOUT.KEYCODE_F,
-    71: _LAYOUT.KEYCODE_G,
-    72: _LAYOUT.KEYCODE_H,
-    73: _LAYOUT.KEYCODE_I,
-    74: _LAYOUT.KEYCODE_J,
-    75: _LAYOUT.KEYCODE_K,
-    76: _LAYOUT.KEYCODE_L,
-    77: _LAYOUT.KEYCODE_M,
-    78: _LAYOUT.KEYCODE_N,
-    79: _LAYOUT.KEYCODE_O,
-    80: _LAYOUT.KEYCODE_P,
-    81: _LAYOUT.KEYCODE_Q,
-    82: _LAYOUT.KEYCODE_R,
-    83: _LAYOUT.KEYCODE_S,
-    84: _LAYOUT.KEYCODE_T,
-    85: _LAYOUT.KEYCODE_U,
-    86: _LAYOUT.KEYCODE_V,
-    87: _LAYOUT.KEYCODE_W,
-    88: _LAYOUT.KEYCODE_X,
-    89: _LAYOUT.KEYCODE_Y,
-    90: _LAYOUT.KEYCODE_Z,
-    91: _LAYOUT.KEYCODE_LEFT_META,
-    94: _LAYOUT.KEYCODE_NUMPAD_4,  # / (UK)
-    96: _LAYOUT.KEYCODE_NUMPAD_0,
-    97: _LAYOUT.KEYCODE_NUMPAD_1,
-    98: _LAYOUT.KEYCODE_NUMPAD_2,
-    99: _LAYOUT.KEYCODE_NUMPAD_3,
-    100: _LAYOUT.KEYCODE_NUMPAD_4,
-    101: _LAYOUT.KEYCODE_NUMPAD_5,
-    102: _LAYOUT.KEYCODE_NUMPAD_6,
-    103: _LAYOUT.KEYCODE_NUMPAD_7,
-    104: _LAYOUT.KEYCODE_NUMPAD_8,
-    105: _LAYOUT.KEYCODE_NUMPAD_9,
-    112: _LAYOUT.KEYCODE_F1,
-    113: _LAYOUT.KEYCODE_F2,
-    114: _LAYOUT.KEYCODE_F3,
-    115: _LAYOUT.KEYCODE_F4,
-    116: _LAYOUT.KEYCODE_F5,
-    117: _LAYOUT.KEYCODE_F6,
-    118: _LAYOUT.KEYCODE_F7,
-    119: _LAYOUT.KEYCODE_F8,
-    120: _LAYOUT.KEYCODE_F9,
-    121: _LAYOUT.KEYCODE_F10,
-    122: _LAYOUT.KEYCODE_F11,
-    123: _LAYOUT.KEYCODE_F12,
-    124: _LAYOUT.KEYCODE_F13,
-    125: _LAYOUT.KEYCODE_F14,
-    126: _LAYOUT.KEYCODE_F15,
-    127: _LAYOUT.KEYCODE_F16,
-    128: _LAYOUT.KEYCODE_F17,
-    129: _LAYOUT.KEYCODE_F18,
-    130: _LAYOUT.KEYCODE_F19,
-    131: _LAYOUT.KEYCODE_F20,
-    132: _LAYOUT.KEYCODE_F21,
-    133: _LAYOUT.KEYCODE_F22,
-    134: _LAYOUT.KEYCODE_F23,
-    144: _LAYOUT.KEYCODE_NUM_LOCK,
-    145: _LAYOUT.KEYCODE_SCROLL_LOCK,
-    161: _LAYOUT.KEYCODE_NUMBER_1,
-    163: _LAYOUT.KEYCODE_HASH,
-    173: _LAYOUT.KEYCODE_MINUS,
-    179: _LAYOUT.KEYCODE_MEDIA_PLAY_PAUSE,
-    168: _LAYOUT.KEYCODE_REFRESH,
-    186: _LAYOUT.KEYCODE_SEMICOLON,
-    187: _LAYOUT.KEYCODE_EQUAL_SIGN,
-    188: _LAYOUT.KEYCODE_COMMA,
-    189: _LAYOUT.KEYCODE_MINUS,
-    190: _LAYOUT.KEYCODE_PERIOD,
-    191: _LAYOUT.KEYCODE_FORWARD_SLASH,
-    192: _LAYOUT.KEYCODE_ACCENT_GRAVE,
-    219: _LAYOUT.KEYCODE_LEFT_BRACKET,
-    220: _LAYOUT.KEYCODE_BACKSLASH,
-    221: _LAYOUT.KEYCODE_RIGHT_BRACKET,
-    222: _LAYOUT.KEYCODE_SINGLE_QUOTE,
-    223: _LAYOUT.KEYCODE_ACCENT_GRAVE,
-}
+class InvalidKeyboardLayout(Error):
+    pass
 
 
-def convert(keystroke):
+def convert(keystroke, keyboard_layout_string):
     control_chars = 0
     for i, pressed in enumerate([
-            keystroke.ctrl_modifier, keystroke.shift_modifier,
-            keystroke.alt_modifier, keystroke.meta_modifier
+            keystroke.left_ctrl_modifier,
+            keystroke.left_shift_modifier,
+            keystroke.left_alt_modifier,
+            keystroke.left_meta_modifier,
+            False,  # Right Ctrl, but we don't support it.
+            False,  # Right Shift, but we don't support it.
+            keystroke.right_alt_modifier,
     ]):
         if pressed:
             control_chars |= 1 << i
+    keycode_mapping = _get_keycode_mapping(keyboard_layout_string)
     try:
-        return control_chars, _JS_TO_HID_KEYCODES[keystroke.key_code]
+        return control_chars, keycode_mapping[keystroke.key_code]
     except KeyError:
         raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' %
                                        (keystroke.key, keystroke.key_code))
+
+
+def _get_keycode_mapping(keyboard_layout_string):
+    layout = _get_target_keyboard_layout(keyboard_layout_string)
+
+    # JS keycodes source: https://github.com/wesbos/keycodes
+
+    # TODO: For simplicity, we map all modifiers keys to the left key, but we
+    # could support distinct keys for left and right if we check the location
+    # parameter from the JavaScript message.
+    return {
+        3: layout.KEYCODE_PAUSE_BREAK,
+        8: layout.KEYCODE_BACKSPACE_DELETE,
+        9: layout.KEYCODE_TAB,
+        12: layout.KEYCODE_CLEAR,
+        13: layout.KEYCODE_ENTER,
+        16: layout.KEYCODE_LEFT_SHIFT,
+        17: layout.KEYCODE_LEFT_CTRL,
+        18: layout.KEYCODE_LEFT_ALT,
+        19: layout.KEYCODE_PAUSE_BREAK,
+        20: layout.KEYCODE_CAPS_LOCK,
+        21: layout.KEYCODE_HANGEUL,
+        25: layout.KEYCODE_HANJA,
+        27: layout.KEYCODE_ESCAPE,
+        32: layout.KEYCODE_SPACEBAR,
+        33: layout.KEYCODE_PAGE_UP,
+        34: layout.KEYCODE_PAGE_DOWN,
+        35: layout.KEYCODE_END,
+        36: layout.KEYCODE_HOME,
+        37: layout.KEYCODE_LEFT_ARROW,
+        38: layout.KEYCODE_UP_ARROW,
+        39: layout.KEYCODE_RIGHT_ARROW,
+        40: layout.KEYCODE_DOWN_ARROW,
+        41: layout.KEYCODE_SELECT,
+        43: layout.KEYCODE_EXECUTE,
+        44: layout.KEYCODE_PRINT_SCREEN,
+        45: layout.KEYCODE_INSERT,
+        46: layout.KEYCODE_DELETE,
+        47: layout.KEYCODE_HELP,
+        48: layout.KEYCODE_NUMBER_0,
+        49: layout.KEYCODE_NUMBER_1,
+        50: layout.KEYCODE_NUMBER_2,
+        51: layout.KEYCODE_NUMBER_3,
+        52: layout.KEYCODE_NUMBER_4,
+        53: layout.KEYCODE_NUMBER_5,
+        54: layout.KEYCODE_NUMBER_6,
+        55: layout.KEYCODE_NUMBER_7,
+        56: layout.KEYCODE_NUMBER_8,
+        57: layout.KEYCODE_NUMBER_9,
+        58: layout.KEYCODE_COLON,
+        59: layout.KEYCODE_SEMICOLON,
+        60: layout.KEYCODE_LESS_THAN,
+        61: layout.KEYCODE_EQUAL_SIGN,
+        65: layout.KEYCODE_A,
+        66: layout.KEYCODE_B,
+        67: layout.KEYCODE_C,
+        68: layout.KEYCODE_D,
+        69: layout.KEYCODE_E,
+        70: layout.KEYCODE_F,
+        71: layout.KEYCODE_G,
+        72: layout.KEYCODE_H,
+        73: layout.KEYCODE_I,
+        74: layout.KEYCODE_J,
+        75: layout.KEYCODE_K,
+        76: layout.KEYCODE_L,
+        77: layout.KEYCODE_M,
+        78: layout.KEYCODE_N,
+        79: layout.KEYCODE_O,
+        80: layout.KEYCODE_P,
+        81: layout.KEYCODE_Q,
+        82: layout.KEYCODE_R,
+        83: layout.KEYCODE_S,
+        84: layout.KEYCODE_T,
+        85: layout.KEYCODE_U,
+        86: layout.KEYCODE_V,
+        87: layout.KEYCODE_W,
+        88: layout.KEYCODE_X,
+        89: layout.KEYCODE_Y,
+        90: layout.KEYCODE_Z,
+        91: layout.KEYCODE_LEFT_META,
+        93: layout.KEYCODE_CONTEXT_MENU,
+        94: layout.KEYCODE_NUMPAD_4,  # / (UK)
+        96: layout.KEYCODE_NUMPAD_0,
+        97: layout.KEYCODE_NUMPAD_1,
+        98: layout.KEYCODE_NUMPAD_2,
+        99: layout.KEYCODE_NUMPAD_3,
+        100: layout.KEYCODE_NUMPAD_4,
+        101: layout.KEYCODE_NUMPAD_5,
+        102: layout.KEYCODE_NUMPAD_6,
+        103: layout.KEYCODE_NUMPAD_7,
+        104: layout.KEYCODE_NUMPAD_8,
+        105: layout.KEYCODE_NUMPAD_9,
+        106: layout.KEYCODE_NUMPAD_MULTIPLY,
+        107: layout.KEYCODE_NUMPAD_PLUS,
+        109: layout.KEYCODE_NUMPAD_MINUS,
+        110: layout.KEYCODE_NUMPAD_DOT,
+        111: layout.KEYCODE_NUMPAD_DIVIDE,
+        112: layout.KEYCODE_F1,
+        113: layout.KEYCODE_F2,
+        114: layout.KEYCODE_F3,
+        115: layout.KEYCODE_F4,
+        116: layout.KEYCODE_F5,
+        117: layout.KEYCODE_F6,
+        118: layout.KEYCODE_F7,
+        119: layout.KEYCODE_F8,
+        120: layout.KEYCODE_F9,
+        121: layout.KEYCODE_F10,
+        122: layout.KEYCODE_F11,
+        123: layout.KEYCODE_F12,
+        124: layout.KEYCODE_F13,
+        125: layout.KEYCODE_F14,
+        126: layout.KEYCODE_F15,
+        127: layout.KEYCODE_F16,
+        128: layout.KEYCODE_F17,
+        129: layout.KEYCODE_F18,
+        130: layout.KEYCODE_F19,
+        131: layout.KEYCODE_F20,
+        132: layout.KEYCODE_F21,
+        133: layout.KEYCODE_F22,
+        134: layout.KEYCODE_F23,
+        144: layout.KEYCODE_NUM_LOCK,
+        145: layout.KEYCODE_SCROLL_LOCK,
+        161: layout.KEYCODE_LESS_THAN,
+        163: layout.KEYCODE_HASH,
+        164: layout.KEYCODE_DOLLAR_SIGN,
+        165: layout.KEYCODE_U_ACCENT,
+        169: layout.KEYCODE_RIGHT_PARENTHESIS,
+        170: layout.KEYCODE_BACKSLASH,
+        173: layout.KEYCODE_EQUAL_SIGN,
+        179: layout.KEYCODE_MEDIA_PLAY_PAUSE,
+        168: layout.KEYCODE_REFRESH,
+        186: layout.KEYCODE_SEMICOLON,
+        187: layout.KEYCODE_EQUAL_SIGN,
+        188: layout.KEYCODE_COMMA,
+        189: layout.KEYCODE_MINUS,
+        190: layout.KEYCODE_PERIOD,
+        191: layout.KEYCODE_FORWARD_SLASH,
+        192: layout.KEYCODE_ACCENT_GRAVE,
+        219: layout.KEYCODE_LEFT_BRACKET,
+        220: layout.KEYCODE_BACKSLASH,
+        221: layout.KEYCODE_RIGHT_BRACKET,
+        222: layout.KEYCODE_SINGLE_QUOTE,
+        223: layout.KEYCODE_ACCENT_GRAVE,
+        225: layout.KEYCODE_RIGHT_ALT,
+    }
+
+
+def _get_target_keyboard_layout(keyboard_layout_string):
+    mappings = {
+        'QWERTY': qwerty,
+        'AZERTY': azerty,
+    }
+    try:
+        return mappings[keyboard_layout_string.upper()]
+    except KeyError:
+        raise InvalidKeyboardLayout('Unrecognized keyboard layout: %s' %
+                                    keyboard_layout_string)

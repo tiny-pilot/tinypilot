@@ -81,6 +81,7 @@ TinyPilot accepts various options through environment variables:
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
 | `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
 | `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
+| `KEYBOARD_LAYOUT`    | `QWERTY`     | Keyboard layout on target computer. Options are: `QWERTY`, `AZERTY`. |
 
 ## Upgrades
 
