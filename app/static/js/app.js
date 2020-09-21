@@ -261,6 +261,8 @@ function sendTextInput(textInput) {
       altKey: false,
       shiftKey: requiresShiftKey.test(textInput[i]),
       ctrlKey: false,
+      altGraphKey: false,
+      sysrqKey: false,
       key: key,
       keyCode: keyCode,
       keystrokeId: keystrokeId,
