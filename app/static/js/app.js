@@ -2,6 +2,7 @@
 
 const socket = io();
 let connectedToServer = false;
+
 const screenCursorOptions = [
   "disabled", //to show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
@@ -312,7 +313,6 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
 document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
-
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
