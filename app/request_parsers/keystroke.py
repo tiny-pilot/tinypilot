@@ -19,7 +19,6 @@ class InvalidKeyCode(Error):
 
 @dataclasses.dataclass
 class Keystroke:
-    id: int
     left_ctrl_modifier: bool
     left_shift_modifier: bool
     left_alt_modifier: bool
@@ -34,7 +33,6 @@ def parse_keystroke(message):
         raise MissingField(
             'Keystroke parameter is invalid, expecting a dictionary data type')
     required_fields = (
-        'id',
         'key',
         'keyCode',
         'ctrlKey',
@@ -48,7 +46,6 @@ def parse_keystroke(message):
             raise MissingField(
                 'Keystroke request is missing required field: %s' % field)
     return Keystroke(
-        id=message['id'],
         left_ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
         left_shift_modifier=_parse_modifier_key(message['shiftKey']),
         left_alt_modifier=_parse_modifier_key(message['altKey']),

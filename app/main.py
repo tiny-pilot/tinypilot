@@ -66,26 +66,24 @@ def socket_keystroke(message):
         logger.error('Failed to parse keystroke request: %s', e)
         return
     hid_keycode = None
-    processing_result = {'keystrokeId': keystroke.id, 'success': False}
     try:
         control_keys, hid_keycode = js_to_hid.convert(keystroke,
                                                       keyboard_layout)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
                        keystroke.key_code)
-        return processing_result
+        return {'success': False}
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', keystroke.key,
                     keystroke.key_code)
-        return processing_result
+        return {'success': False}
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', keystroke.key,
                      keystroke.key_code, e)
-        return processing_result
-    processing_result['success'] = True
-    return processing_result
+        return {'success': False}
+    return {'success': True}
 
 
 @socketio.on('mouse-event')
