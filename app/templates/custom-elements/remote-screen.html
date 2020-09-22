@@ -37,11 +37,7 @@
     }
   </style>
   <div class="screen-wrapper">
-    <span
-      id="mobile-keyboard-input"
-      contenteditable="true"
-      autocapitalize="off"
-    ></span>
+    <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
   <script
@@ -127,21 +123,26 @@
               this.shadowRoot.getElementById("mobile-keyboard-input").focus();
             }
           });
-          this.shadowRoot
-            .getElementById("mobile-keyboard-input")
-            .addEventListener("keyup", (evt) => {
-              // we will only process keycode 229 events, all others processed normally.
-              if (evt.keyCode == inputTextKeycode) {
-                if (evt.target.innerHTML == "&nbsp;") {
-                  sendTextInput(" ");
-                } else {
-                  sendTextInput(evt.target.innerText);
-                }
-              }
-              evt.target.blur();
-              evt.target.innerText = "";
-              evt.target.focus();
-            });
+
+          // On mobile, the keydown events function differently due to the OS
+          // attempting to autocomplete text. Instead of listening for keydown
+          // events, we listen for input events.
+          const mobileKeyboard = this.shadowRoot.getElementById(
+            "mobile-keyboard-input"
+          );
+          mobileKeyboard.addEventListener("input", (evt) => {
+            // Handle insertCompositionText, which mean typing in autocomplete
+            // mode. The global keydown event handler processes all other key
+            // input events.
+            if (evt.inputType === "insertCompositionText") {
+              sendTextInput(evt.data);
+            }
+
+            // Force the autocomplete sequence to restart.
+            mobileKeyboard.blur();
+            mobileKeyboard.value = "";
+            mobileKeyboard.focus();
+          });
         }
 
         disconnectedCallback() {
