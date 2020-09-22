@@ -3,9 +3,6 @@
 const socket = io();
 let connectedToServer = false;
 let keystrokeId = 0;
-// keyCode 229 is a placeholder for a combined character, used by autocomplete.
-// this will determine how to process the input /keyup events
-const inputTextKeycode = 229;
 const screenCursorOptions = [
   "disabled", //to show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
@@ -140,8 +137,10 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
-  // Keycode 229 to be processed as an input
-  if (keystroke.keyCode === inputTextKeycode) {
+  // On Android, when the user is typing with autocomplete enabled, the browser
+  // sends dummy keydown events with a keycode of 229. Ignore these events, as
+  // there's no way to map it to a real key.
+  if (keystroke.keyCode === 229) {
     return;
   }
   if (!keystroke.metaKey) {
