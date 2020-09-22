@@ -118,6 +118,12 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
+  // On Android, when the user is typing with autocomplete enabled, the browser
+  // sends dummy keydown events with a keycode of 229. Ignore these events, as
+  // there's no way to map it to a real key.
+  if (keystroke.keyCode === 229) {
+    return;
+  }
   let keyCard = undefined;
   if (!keystroke.metaKey) {
     keyCard = addKeyCard(keystroke.key);
