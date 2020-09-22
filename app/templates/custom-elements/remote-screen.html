@@ -130,14 +130,16 @@
           this.shadowRoot
             .getElementById("mobile-keyboard-input")
             .addEventListener("keyup", (evt) => {
-              if (evt.keyCode == 229) {
+              // we will only process keycode 229 events, all others processed normally.
+              if (evt.keyCode == inputTextKeycode) {
                 if (evt.target.innerHTML == "&nbsp;") {
-                  evt.target.innerHTML = " ";
+                  sendTextInput(" ");
+                } else {
+                  sendTextInput(evt.target.innerText);
                 }
-                sendTextInput(evt.target.innerHTML);
               }
               evt.target.blur();
-              evt.target.innerHTML = "";
+              evt.target.innerText = "";
               evt.target.focus();
             });
         }
