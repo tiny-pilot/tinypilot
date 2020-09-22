@@ -2,7 +2,6 @@
 
 const socket = io();
 let connectedToServer = false;
-let keystrokeId = 0;
 const screenCursorOptions = [
   "disabled", //to show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
@@ -40,9 +39,9 @@ function limitRecentKeys(limit) {
   }
 }
 
-function addKeyCard(key, keystrokeId) {
+function addKeyCard(key) {
   if (!shouldDisplayKeyHistory()) {
-    return;
+    return null;
   }
   const card = document.createElement("div");
   card.classList.add("key-card");
@@ -52,28 +51,9 @@ function addKeyCard(key, keystrokeId) {
   }
   card.style.fontSize = `${1.1 - 0.08 * keyLabel.length}em`;
   card.innerText = keyLabel;
-  card.setAttribute("keystroke-id", keystrokeId);
   document.getElementById("recent-keys").appendChild(card);
   limitRecentKeys(10);
-}
-
-function updateKeyStatus(keystrokeId, success) {
-  if (!shouldDisplayKeyHistory()) {
-    return;
-  }
-  const recentKeysDiv = document.getElementById("recent-keys");
-  const cards = recentKeysDiv.children;
-  for (let i = 0; i < cards.length; i++) {
-    const card = cards[i];
-    if (parseInt(card.getAttribute("keystroke-id")) === keystrokeId) {
-      if (success) {
-        card.classList.add("processed-key-card");
-      } else {
-        card.classList.add("unsupported-key-card");
-      }
-      return;
-    }
-  }
+  return card;
 }
 
 function showError(errorType, errorMessage) {
@@ -137,20 +117,17 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
-  // On Android, when the user is typing with autocomplete enabled, the browser
-  // sends dummy keydown events with a keycode of 229. Ignore these events, as
-  // there's no way to map it to a real key.
-  if (keystroke.keyCode === 229) {
-    return;
-  }
+  let keyCard = undefined;
   if (!keystroke.metaKey) {
-    addKeyCard(keystroke.key, keystroke.id);
+    keyCard = addKeyCard(keystroke.key);
   }
-  socket.emit("keystroke", keystroke);
-  if (!keystroke.metaKey) {
-    // Increment the global keystroke ID.
-    keystrokeId++;
-  }
+  socket.emit("keystroke", keystroke, (result) => {
+    if (keyCard && result.success) {
+      keyCard.classList.add("processed-key-card");
+    } else {
+      keyCard.classList.add("unsupported-key-card");
+    }
+  });
 }
 
 function onSocketConnect() {
@@ -195,7 +172,6 @@ function onKeyDown(evt) {
   }
 
   sendKeystroke({
-    id: keystrokeId,
     metaKey: evt.metaKey || document.getElementById("meta-modifier").pressed,
     altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
     shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
@@ -261,7 +237,6 @@ function sendTextInput(textInput) {
     // the lowercase key.
     const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
     sendKeystroke({
-      id: keystrokeId,
       metaKey: false,
       altKey: false,
       shiftKey: requiresShiftKey.test(textInput[i]),
@@ -270,7 +245,6 @@ function sendTextInput(textInput) {
       sysrqKey: false,
       key: key,
       keyCode: keyCode,
-      keystrokeId: keystrokeId,
       location: null,
     });
   }
@@ -379,6 +353,3 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
 }
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
-socket.on("keystroke-received", (keystrokeResult) => {
-  updateKeyStatus(keystrokeResult.keystrokeId, keystrokeResult.success);
-});
