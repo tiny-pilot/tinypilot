@@ -73,22 +73,19 @@ def socket_keystroke(message):
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
                        keystroke.key_code)
-        socketio.emit('keystroke-received', processing_result)
-        return
+        return processing_result
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', keystroke.key,
                     keystroke.key_code)
-        socketio.emit('keystroke-received', processing_result)
-        return
+        return processing_result
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', keystroke.key,
                      keystroke.key_code, e)
-        socketio.emit('keystroke-received', processing_result)
-        return
+        return processing_result
     processing_result['success'] = True
-    socketio.emit('keystroke-received', processing_result)
+    return processing_result
 
 
 @socketio.on('mouse-event')
