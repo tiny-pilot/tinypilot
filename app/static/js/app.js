@@ -141,7 +141,9 @@ function sendKeystroke(keystroke) {
   if (!keystroke.metaKey) {
     addKeyCard(keystroke.key, keystroke.id);
   }
-  socket.emit("keystroke", keystroke);
+  socket.emit("keystroke", keystroke, (result) => {
+    updateKeyStatus(result.keystrokeId, result.success);
+  });
   if (!keystroke.metaKey) {
     // Increment the global keystroke ID.
     keystrokeId++;
@@ -373,6 +375,3 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
 }
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
-socket.on("keystroke-received", (keystrokeResult) => {
-  updateKeyStatus(keystrokeResult.keystrokeId, keystrokeResult.success);
-});
