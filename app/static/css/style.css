@@ -8,10 +8,6 @@ body {
   background: rgb(114, 114, 114);
 }
 
-#app {
-  display: grid;
-}
-
 .container {
   display: flex;
   flex-direction: column;
