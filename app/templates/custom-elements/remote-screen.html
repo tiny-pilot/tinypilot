@@ -138,11 +138,11 @@
             // Handle insertCompositionText, which mean typing in autocomplete
             // mode. The global keydown event handler processes all other key
             // input events.
-            if (evt.inputType === "insertCompositionText") {
+            if (
+              evt.inputType === "insertText" ||
+              evt.inputType === "insertCompositionText"
+            ) {
               sendTextInput(evt.data);
-            } else if (evt.inputType === "insertText") {
-              // TODO(mtlynch): Handle insertText to forward special characters
-              // without double-sending alphanumeric characters.
             }
 
             // Force the autocomplete sequence to restart.
