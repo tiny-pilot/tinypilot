@@ -2,7 +2,6 @@
 
 const socket = io();
 let connectedToServer = false;
-
 const screenCursorOptions = [
   "disabled", //to show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
@@ -118,6 +117,12 @@ function browserLanguage() {
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function sendKeystroke(keystroke) {
+  // On Android, when the user is typing with autocomplete enabled, the browser
+  // sends dummy keydown events with a keycode of 229. Ignore these events, as
+  // there's no way to map it to a real key.
+  if (keystroke.keyCode === 229) {
+    return;
+  }
   let keyCard = undefined;
   if (!keystroke.metaKey) {
     keyCard = addKeyCard(keystroke.key);
@@ -313,6 +318,7 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
 document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
+
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
