@@ -92,14 +92,15 @@ def socket_mouse_event(message):
         mouse_move_event = mouse_event_request.parse_mouse_event(message)
     except mouse_event_request.Error as e:
         logger.error('Failed to parse mouse event request: %s', e)
-        return
+        return {'success': False}
     try:
         fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
                                     mouse_move_event.relative_x,
                                     mouse_move_event.relative_y)
     except hid_write.WriteError as e:
         logger.error('Failed to forward mouse event: %s', e)
-        return
+        return {'success': False}
+    return {'success': True}
 
 
 @socketio.on('keyRelease')

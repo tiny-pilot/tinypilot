@@ -109,6 +109,30 @@ function isIgnoredKeystroke(keyCode) {
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
+function recalculateMouseEventThrottle(
+  currentThrottle,
+  lastRtt,
+  lastWriteSucceeded
+) {
+  const maxThrottleInMilliseconds = 2000;
+  if (!lastWriteSucceeded) {
+    // Apply a 500 ms penalty to the throttle every time an event fails.
+    return Math.min(currentThrottle + 500, maxThrottleInMilliseconds);
+  }
+  // Assume that the server can process messages in roughly half the round trip
+  // time between an event message and its response.
+  const roughSendTime = lastRtt / 2;
+
+  // Set the new throttle to a weighted average between the last throttle time
+  // and the last send time, with a 2/3 bias toward the last send time.
+  const newThrottle = (roughSendTime * 2 + currentThrottle) / 3;
+  return Math.min(newThrottle, maxThrottleInMilliseconds);
+}
+
+function unixTime() {
+  return new Date().getTime();
+}
+
 function browserLanguage() {
   if (navigator.languages) {
     return navigator.languages[0];
@@ -190,11 +214,25 @@ function sendMouseEvent(buttons, relativeX, relativeY) {
   if (!connectedToServer) {
     return;
   }
-  socket.emit("mouse-event", {
-    buttons,
-    relativeX,
-    relativeY,
-  });
+  const remoteScreen = document.getElementById("remote-screen");
+  const requestStartTime = unixTime();
+  socket.emit(
+    "mouse-event",
+    {
+      buttons,
+      relativeX,
+      relativeY,
+    },
+    (response) => {
+      const requestEndTime = unixTime();
+      const requestRtt = requestEndTime - requestStartTime;
+      remoteScreen.millisecondsBetweenMouseEvents = recalculateMouseEventThrottle(
+        remoteScreen.millisecondsBetweenMouseEvents,
+        requestRtt,
+        response.success
+      );
+    }
+  );
 }
 
 function onKeyUp(evt) {

@@ -52,7 +52,7 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          // Define this when the _.throttle function is loaded.
+          this.isUnderscoreLibraryLoaded = false;
           this.throttledSendMouseEvent = undefined;
 
           // Prevent drag on screen for Firefox.
@@ -78,15 +78,9 @@
           this.shadowRoot
             .getElementById("underscore-library")
             .addEventListener("load", () => {
-              // To avoid overwhelming the connection to the backend or its
-              // fake HID interface, throttle mouse move events.
-              const eventsPerSecond = 20;
-              this.throttledSendMouseEvent = _.throttle(
-                function (evt) {
-                  this.sendMouseEvent(evt);
-                },
-                /*wait=*/ 1000 / eventsPerSecond,
-                { trailing: false }
+              this.isUnderscoreLibraryLoaded = true;
+              this.throttledSendMouseEvent = this.makeThrottledSendMouseEvent(
+                this.millisecondsBetweenMouseEvents
               );
             });
 
@@ -95,11 +89,8 @@
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
-            if (this.throttledSendMouseEvent) {
-              this.throttledSendMouseEvent(evt);
-            } else {
-              this.sendMouseEvent(evt);
-            }
+
+            this.throttledSendMouseEvent(evt);
           });
           screenImg.addEventListener("mousedown", this.sendMouseEvent);
           screenImg.addEventListener("mouseup", this.sendMouseEvent);
@@ -125,6 +116,16 @@
           this.setAttribute("fullscreen", newValue);
         }
 
+        get millisecondsBetweenMouseEvents() {
+          return parseInt(
+            this.getAttribute("milliseconds-between-mouse-events")
+          );
+        }
+
+        set millisecondsBetweenMouseEvents(newValue) {
+          this.setAttribute("milliseconds-between-mouse-events", newValue);
+        }
+
         get cursor() {
           return this.shadowRoot
             .querySelector(".screen-wrapper")
@@ -138,7 +139,7 @@
         }
 
         static get observedAttributes() {
-          return ["fullscreen"];
+          return ["fullscreen", "milliseconds-between-mouse-events"];
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
@@ -146,6 +147,21 @@
             this.shadowRoot
               .querySelector(".screen-wrapper")
               .requestFullscreen();
+          } else if (
+            name === "milliseconds-between-mouse-events" &&
+            oldValue !== newValue
+          ) {
+            // Note: This is a bit of a hack. When we replace the throttled
+            // event, it resets the throttle. To *sort of* preserve the
+            // throttle, wait to replace it until 90% of the last throttle time
+            // elapsed.
+            const newThrottle = parseInt(newValue);
+            const oldThrottle = parseInt(oldValue) || newThrottle;
+            setTimeout(() => {
+              this.throttledSendMouseEvent = this.makeThrottledSendMouseEvent(
+                newThrottle
+              );
+            }, Math.min(oldThrottle, newThrottle) * 0.9);
           }
         }
 
@@ -169,6 +185,19 @@
           } else {
             screenImg.classList.add("full-height");
           }
+        }
+
+        makeThrottledSendMouseEvent(waitInMilliseconds) {
+          if (!this.isUnderscoreLibraryLoaded) {
+            return this.sendMouseEvent;
+          }
+          return _.throttle(
+            function (evt) {
+              this.sendMouseEvent(evt);
+            },
+            waitInMilliseconds,
+            { trailing: false }
+          );
         }
 
         sendMouseEvent(evt) {
