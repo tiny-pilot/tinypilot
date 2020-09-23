@@ -29,7 +29,9 @@ function showElementById(id, display = "block") {
 }
 
 function shouldDisplayKeyHistory() {
-  return document.getElementById("recent-keys").style.visibility !== "hidden";
+  return !document
+    .getElementById("recent-keys")
+    .classList.contains("hide-keys");
 }
 
 // Limit display of recent keys to the last N keys, where limit = N.
@@ -256,9 +258,9 @@ function onKeyUp(evt) {
 
 function onDisplayHistoryChanged(evt) {
   if (evt.target.checked) {
-    document.getElementById("recent-keys").style.visibility = "visible";
+    document.getElementById("recent-keys").classList.remove("hide-keys");
   } else {
-    document.getElementById("recent-keys").style.visibility = "hidden";
+    document.getElementById("recent-keys").classList.add("hide-keys");
     limitRecentKeys(0);
   }
 }
