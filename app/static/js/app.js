@@ -155,10 +155,12 @@ function sendKeystroke(keystroke) {
     keyCard = addKeyCard(keystroke.key);
   }
   socket.emit("keystroke", keystroke, (result) => {
-    if (keyCard && result.success) {
-      keyCard.classList.add("processed-key-card");
-    } else {
-      keyCard.classList.add("unsupported-key-card");
+    if (keyCard) {
+      if (result.success) {
+        keyCard.classList.add("processed-key-card");
+      } else {
+        keyCard.classList.add("unsupported-key-card");
+      }
     }
   });
 }
