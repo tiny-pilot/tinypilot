@@ -7,9 +7,39 @@
     }
 
     #remote-screen-img {
-      max-width: 85%;
+      max-width: 100%;
       max-height: 1080px;
       object-fit: contain;
+    }
+
+    @media screen and (min-width: 800px) {
+      #remote-screen-img {
+        max-width: 99%;
+      }
+    }
+
+    @media screen and (min-width: 1000px) {
+      #remote-screen-img {
+        max-width: 97%;
+      }
+    }
+
+    @media screen and (min-width: 1200px) {
+      #remote-screen-img {
+        max-width: 96%;
+      }
+    }
+
+    @media screen and (min-width: 1300px) {
+      #remote-screen-img {
+        max-width: 93%;
+      }
+    }
+
+    @media screen and (min-width: 1400px) {
+      #remote-screen-img {
+        max-width: 90%;
+      }
     }
 
     :host([fullscreen="true"]) .screen-wrapper {
