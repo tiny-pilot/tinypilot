@@ -1,12 +1,13 @@
 "use strict";
 
 import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+import * as settings from "./settings.js";
 
 const socket = io();
 let connectedToServer = false;
 
 const screenCursorOptions = [
-  "disabled", //to show on disconnect
+  "disabled", // To show on disconnect
   "default", // Note that this is the browser default, not TinyPilot's default.
   "none",
   "crosshair",
@@ -14,10 +15,6 @@ const screenCursorOptions = [
   "pointer",
   "cell",
 ];
-const initialScreenCursor = "crosshair";
-var settings = {
-  cursor: initialScreenCursor,
-};
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
@@ -30,12 +27,6 @@ function showElementById(id, display = "block") {
   document.getElementById(id).style.display = display;
 }
 
-function shouldDisplayKeyHistory() {
-  return !document
-    .getElementById("recent-keys")
-    .classList.contains("hide-keys");
-}
-
 // Limit display of recent keys to the last N keys, where limit = N.
 function limitRecentKeys(limit) {
   const recentKeysDiv = document.getElementById("recent-keys");
@@ -45,7 +36,7 @@ function limitRecentKeys(limit) {
 }
 
 function addKeyCard(key) {
-  if (!shouldDisplayKeyHistory()) {
+  if (!settings.isKeyHistoryEnabled()) {
     return null;
   }
   const card = document.createElement("div");
@@ -173,7 +164,7 @@ function onSocketConnect() {
   } else {
     connectedToServer = true;
     document.getElementById("connection-indicator").connected = true;
-    restoreCursor();
+    setCursor(settings.getScreenCursor());
   }
 }
 
@@ -263,9 +254,11 @@ function onKeyUp(evt) {
 function onDisplayHistoryChanged(evt) {
   if (evt.target.checked) {
     document.getElementById("recent-keys").classList.remove("hide-keys");
+    settings.enableKeyHistory();
   } else {
     document.getElementById("recent-keys").classList.add("hide-keys");
     limitRecentKeys(0);
+    settings.disableKeyHistory();
   }
 }
 
@@ -301,18 +294,6 @@ function sendTextInput(textInput) {
   }
 }
 
-function restoreCursor() {
-  if (
-    "settings" in window &&
-    "cursor" in window.settings &&
-    window.settings.cursor != null
-  ) {
-    setCursor(window.settings.cursor);
-  } else {
-    setCursor(initialScreenCursor);
-  }
-}
-
 function setCursor(cursor, save = true) {
   // Ensure the correct cursor option displays as active in the navbar.
   if (save) {
@@ -323,7 +304,7 @@ function setCursor(cursor, save = true) {
         cursorListItem.classList.remove("nav-selected");
       }
     }
-    window.settings.cursor = cursor;
+    settings.setScreenCursor(cursor);
   }
   if (connectedToServer) {
     document.getElementById("remote-screen").cursor = cursor;
@@ -344,9 +325,14 @@ document
       evt.detail.relativeY
     );
   });
-document
-  .getElementById("display-history-checkbox")
-  .addEventListener("change", onDisplayHistoryChanged);
+const displayHistoryCheckbox = document.getElementById(
+  "display-history-checkbox"
+);
+displayHistoryCheckbox.addEventListener("change", onDisplayHistoryChanged);
+displayHistoryCheckbox.checked = settings.isKeyHistoryEnabled();
+if (!settings.isKeyHistoryEnabled()) {
+  document.getElementById("recent-keys").classList.add("hide-keys");
+}
 document.getElementById("power-btn").addEventListener("click", () => {
   document.getElementById("shutdown-dialog").show = true;
 });
@@ -396,7 +382,7 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   listItem.appendChild(cursorLink);
   listItem.classList.add("cursor-option");
   listItem.setAttribute("cursor", cursorOption);
-  if (cursorOption === initialScreenCursor) {
+  if (cursorOption === settings.getScreenCursor()) {
     listItem.classList.add("nav-selected");
   }
   cursorList.appendChild(listItem);
