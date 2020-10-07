@@ -1,5 +1,7 @@
 "use strict";
 
+import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+
 const socket = io();
 let connectedToServer = false;
 
