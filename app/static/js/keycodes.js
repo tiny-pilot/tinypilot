@@ -66,7 +66,7 @@ const commonKeyCodes = {
 };
 
 // Given a character and a browser language, finds the matching keycode
-function findKeyCode(character, browserLanguage) {
+export function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {
     return findKeyCodeEnGb(character);
   }
@@ -127,7 +127,7 @@ function findKeyCodeEnGb(character) {
 // But in my tests, I see all modifiers as false when Alt Graph is pushed.
 // The only difference in the onKeyDown event I see is that the key property
 // changes when Alt Graph is pushed, so we detect it that way.
-function isAltGraphPressed(browserLanguage, keyCode, key) {
+export function isAltGraphPressed(browserLanguage, keyCode, key) {
   // Only French AZERTY is supported now.
   // This is not robust, as a user's browser language doesn't necessarily match
   // their keyboard layout.
