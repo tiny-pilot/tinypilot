@@ -25,6 +25,11 @@ echo "Checking OS version..."
 printf "OS version: %s\n" "$(uname -a)" >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
+echo "Checking for voltage issues..."
+echo "voltage logs" >> "$LOG_FILE"
+sudo journalctl -xe | grep -i "voltage"  >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
 echo "Checking TinyPilot logs..."
 printf "TinyPilot logs\n" >> "$LOG_FILE"
 sudo journalctl -u tinypilot | tail -n 80 >> "$LOG_FILE"
