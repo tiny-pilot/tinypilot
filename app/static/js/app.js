@@ -251,6 +251,59 @@ function onKeyUp(evt) {
   }
 }
 
+function onModifierKeyButtonDoubleClick(evt) {
+  const keyMappings = {
+    "ctrl-modifier": {
+      key: "Control",
+      keyCode: 17,
+    },
+    "alt-modifier": {
+      key: "Alt",
+      keyCode: 18,
+    },
+    "shift-modifier": {
+      key: "Shift",
+      keyCode: 16,
+    },
+    "meta-modifier": {
+      key: "Meta",
+      keyCode: 91,
+    },
+    "sysrq-modifier": {
+      key: "SysRq",
+      keyCode: 44,
+    },
+  };
+
+  if (!(evt.target.id in keyMappings)) {
+    return;
+  }
+  const mapping = keyMappings[evt.target.id];
+
+  sendKeystroke({
+    metaKey:
+      mapping.key === "Meta" ||
+      document.getElementById("meta-modifier").pressed,
+    altKey:
+      mapping.key === "Alt" || document.getElementById("alt-modifier").pressed,
+    shiftKey:
+      mapping.key === "Shift" ||
+      document.getElementById("shift-modifier").pressed,
+    ctrlKey:
+      mapping.key === "Control" ||
+      document.getElementById("ctrl-modifier").pressed,
+    altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
+    sysrqKey:
+      mapping.key === "SysRq" ||
+      document.getElementById("sysrq-modifier").pressed,
+    key: mapping.key,
+    keyCode: mapping.keyCode,
+    location: "left", // For now, simulate all forced modifier key presses as left keyboard keys.
+  });
+  socket.emit("keyRelease");
+  clearManualModifiers();
+}
+
 function onDisplayHistoryChanged(evt) {
   if (evt.target.checked) {
     document.getElementById("recent-keys").classList.remove("hide-keys");
@@ -367,6 +420,10 @@ document
   .addEventListener("shutdown-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
+
+for (const modifierKey of document.getElementsByTagName("modifier-key")) {
+  modifierKey.addEventListener("dblclick", onModifierKeyButtonDoubleClick);
+}
 
 // Add cursor options to navbar.
 const cursorList = document.getElementById("cursor-list");
