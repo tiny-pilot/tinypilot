@@ -32,7 +32,7 @@ printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
 printf "TinyPilot logs\n" >> "$LOG_FILE"
-sudo journalctl -u tinypilot | tail -n 80 >> "$LOG_FILE"
+sudo journalctl -u tinypilot | tail -n 200 >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
