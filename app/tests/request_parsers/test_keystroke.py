@@ -3,16 +3,6 @@ import unittest
 from request_parsers import keystroke
 
 
-class Keystroke:
-    id: int
-    meta_modifier: bool
-    alt_modifier: bool
-    shift_modifier: bool
-    ctrl_modifier: bool
-    key: str
-    key_code: int
-
-
 class KeystrokeTest(unittest.TestCase):
 
     def test_parses_valid_keystroke_message(self):
