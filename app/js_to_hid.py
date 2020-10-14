@@ -16,7 +16,8 @@ class InvalidKeyboardLayout(Error):
 
 
 def convert(keystroke, keyboard_layout_string):
-    keycode_mapping = _get_keycode_mapping(keyboard_layout_string)
+    keycode_mapping = _get_keycode_mapping(keyboard_layout_string,
+                                           keystroke.is_left_modifier)
     try:
         return _map_modifier_keys(keystroke), keycode_mapping[
             keystroke.key_code]
