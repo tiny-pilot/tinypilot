@@ -186,6 +186,21 @@ def _get_target_keyboard_layout(keyboard_layout_string):
 def _map_modifier_keys(keystroke):
     modifier_bitmask = 0
 
+    # HACK: Because JavaScript's keydown event doesn't indicate left or right
+    # modifier unless it's the only key pressed, we special case it so that if
+    # we see is_right_modifier set to true, we assume it's not a key
+    # combination, but rather a modifier key in isolation, so we set only that
+    # one modifier key.
+    if keystroke.is_right_modifier:
+        if keystroke.left_ctrl_modifier:
+            return modifiers.RIGHT_CTRL
+        elif keystroke.left_shift_modifier:
+            return modifiers.RIGHT_SHIFT
+        elif keystroke.left_alt_modifier:
+            return modifiers.RIGHT_ALT
+        elif keystroke.left_meta_modifier:
+            return modifiers.RIGHT_META
+
     if keystroke.left_ctrl_modifier:
         modifier_bitmask |= modifiers.LEFT_CTRL
     if keystroke.left_shift_modifier:
@@ -196,6 +211,5 @@ def _map_modifier_keys(keystroke):
         modifier_bitmask |= modifiers.LEFT_META
     if keystroke.right_alt_modifier:
         modifier_bitmask |= modifiers.RIGHT_ALT
-    # We currently don't support right ctrl, right shift, or right meta.
 
     return modifier_bitmask

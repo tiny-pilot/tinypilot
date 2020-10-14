@@ -31,7 +31,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='A',
                                 key_code=65,
-                                is_right_modifier=True), 'qwerty')
+                                is_right_modifier=False), 'qwerty')
         self.assertEqual(modifiers.LEFT_SHIFT, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_A, hid_keycode)
 
@@ -73,7 +73,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 key='Control',
                                 key_code=17,
                                 is_right_modifier=True), 'qwerty')
-        self.assertEqual(modifiers.LEFT_CTRL, modifier_bitmask)
+        self.assertEqual(modifiers.RIGHT_CTRL, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_RIGHT_CTRL, hid_keycode)
 
     def test_converts_simple_azerty_keystroke(self):
