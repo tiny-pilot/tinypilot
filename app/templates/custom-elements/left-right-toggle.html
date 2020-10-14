@@ -1,0 +1,127 @@
+<template id="left-right-toggle-template">
+  <style>
+    .outer {
+      display: flex;
+      justify-content: center;
+    }
+
+    .inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin: 0 0.4rem;
+    }
+
+    /* Hide default checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgb(119, 201, 144);
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #56a1df;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #56a1df;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    :host([modifier-location="left"]) .left {
+      font-weight: bold;
+    }
+
+    :host([modifier-location="right"]) .right {
+      font-weight: bold;
+    }
+  </style>
+  <div class="outer">
+    <div class="inner">
+      <p class="left">Left</p>
+      <label class="switch">
+        <input type="checkbox" />
+        <span class="slider"></span>
+      </label>
+      <p class="right">Right</p>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#left-right-toggle-template");
+
+    customElements.define(
+      "left-right-toggle",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.modifierLocation = "left";
+          this.shadowRoot
+            .querySelector("input")
+            .addEventListener("input", (evt) => {
+              if (evt.target.checked) {
+                this.modifierLocation = "right";
+              } else {
+                this.modifierLocation = "left";
+              }
+            });
+        }
+
+        get modifierLocation() {
+          return this.getAttribute("modifier-location");
+        }
+
+        set modifierLocation(newValue) {
+          this.setAttribute("modifier-location", newValue);
+        }
+      }
+    );
+  })();
+</script>

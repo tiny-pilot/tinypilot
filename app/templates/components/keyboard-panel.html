@@ -6,11 +6,16 @@
   </div>
   <div>
     <div class="manual-modifiers">
-      <modifier-key id="ctrl-modifier">Ctrl</modifier-key>
-      <modifier-key id="alt-modifier">Alt</modifier-key>
-      <modifier-key id="shift-modifier">Shift</modifier-key>
-      <modifier-key id="sysrq-modifier">SysRq</modifier-key>
-      <modifier-key id="meta-modifier">Meta/OS</modifier-key>
+      <div class="inner">
+        <div class="modifier-keys">
+          <modifier-key id="ctrl-modifier">Ctrl</modifier-key>
+          <modifier-key id="alt-modifier">Alt</modifier-key>
+          <modifier-key id="shift-modifier">Shift</modifier-key>
+          <modifier-key id="sysrq-modifier">SysRq</modifier-key>
+          <modifier-key id="meta-modifier">Meta/OS</modifier-key>
+        </div>
+        <left-right-toggle id="left-right-toggle"></left-right-toggle>
+      </div>
 
       <content-tooltip position="top-left">
         <img class="question-icon" src="/img/question-icon.svg" />
@@ -23,6 +28,12 @@
             Press these buttons to send the corresponding modifier keys on your
             next keystroke. Double click them to send the modifier key
             immediately.
+          </p>
+
+          <p>
+            To simulate a modifier key from the right side of the keyboard
+            (e.g., right Shift), set the toggle to "Right" before double
+            clicking a modifier key.
           </p>
         </div>
       </content-tooltip>
