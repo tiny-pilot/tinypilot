@@ -298,7 +298,7 @@ function onModifierKeyButtonDoubleClick(evt) {
       document.getElementById("sysrq-modifier").pressed,
     key: mapping.key,
     keyCode: mapping.keyCode,
-    location: "left", // For now, simulate all forced modifier key presses as left keyboard keys.
+    location: document.getElementById("left-right-toggle").modifierLocation,
   });
   socket.emit("keyRelease");
   clearManualModifiers();

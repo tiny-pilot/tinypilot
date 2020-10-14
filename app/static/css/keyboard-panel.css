@@ -46,3 +46,8 @@
   display: inline-flex;
   padding: 0.5rem;
 }
+
+.manual-modifiers .inner {
+  display: flex;
+  flex-direction: column;
+}
