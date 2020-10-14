@@ -16,7 +16,8 @@ class InvalidKeyboardLayout(Error):
 
 
 def convert(keystroke, keyboard_layout_string):
-    keycode_mapping = _get_keycode_mapping(keyboard_layout_string)
+    keycode_mapping = _get_keycode_mapping(keyboard_layout_string,
+                                           keystroke.is_right_modifier)
     try:
         return _map_modifier_keys(keystroke), keycode_mapping[
             keystroke.key_code]
@@ -25,23 +26,23 @@ def convert(keystroke, keyboard_layout_string):
                                        (keystroke.key, keystroke.key_code))
 
 
-def _get_keycode_mapping(keyboard_layout_string):
+def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
     layout = _get_target_keyboard_layout(keyboard_layout_string)
 
-    # JS keycodes source: https://github.com/wesbos/keycodes
+    # Use a shorter variable name to avoid screwing up the nice dict format
+    # below.
+    right = is_right_modifier
 
-    # TODO: For simplicity, we map all modifiers keys to the left key, but we
-    # could support distinct keys for left and right if we check the location
-    # parameter from the JavaScript message.
+    # JS keycodes source: https://github.com/wesbos/keycodes
     return {
         3: layout.KEYCODE_PAUSE_BREAK,
         8: layout.KEYCODE_BACKSPACE_DELETE,
         9: layout.KEYCODE_TAB,
         12: layout.KEYCODE_CLEAR,
         13: layout.KEYCODE_ENTER,
-        16: layout.KEYCODE_LEFT_SHIFT,
-        17: layout.KEYCODE_LEFT_CTRL,
-        18: layout.KEYCODE_LEFT_ALT,
+        16: layout.KEYCODE_RIGHT_SHIFT if right else layout.KEYCODE_LEFT_SHIFT,
+        17: layout.KEYCODE_RIGHT_CTRL if right else layout.KEYCODE_LEFT_CTRL,
+        18: layout.KEYCODE_RIGHT_ALT if right else layout.KEYCODE_LEFT_ALT,
         19: layout.KEYCODE_PAUSE_BREAK,
         20: layout.KEYCODE_CAPS_LOCK,
         21: layout.KEYCODE_HANGEUL,
@@ -102,7 +103,7 @@ def _get_keycode_mapping(keyboard_layout_string):
         88: layout.KEYCODE_X,
         89: layout.KEYCODE_Y,
         90: layout.KEYCODE_Z,
-        91: layout.KEYCODE_LEFT_META,
+        91: layout.KEYCODE_RIGHT_META if right else layout.KEYCODE_LEFT_META,
         93: layout.KEYCODE_CONTEXT_MENU,
         94: layout.KEYCODE_NUMPAD_4,  # / (UK)
         96: layout.KEYCODE_NUMPAD_0,
@@ -185,6 +186,21 @@ def _get_target_keyboard_layout(keyboard_layout_string):
 def _map_modifier_keys(keystroke):
     modifier_bitmask = 0
 
+    # HACK: Because JavaScript's keydown event doesn't indicate left or right
+    # modifier unless it's the only key pressed, we special case it so that if
+    # we see is_right_modifier set to true, we assume it's not a key
+    # combination, but rather a modifier key in isolation, so we set only that
+    # one modifier key.
+    if keystroke.is_right_modifier:
+        if keystroke.left_ctrl_modifier:
+            return modifiers.RIGHT_CTRL
+        elif keystroke.left_shift_modifier:
+            return modifiers.RIGHT_SHIFT
+        elif keystroke.left_alt_modifier:
+            return modifiers.RIGHT_ALT
+        elif keystroke.left_meta_modifier:
+            return modifiers.RIGHT_META
+
     if keystroke.left_ctrl_modifier:
         modifier_bitmask |= modifiers.LEFT_CTRL
     if keystroke.left_shift_modifier:
@@ -195,6 +211,5 @@ def _map_modifier_keys(keystroke):
         modifier_bitmask |= modifiers.LEFT_META
     if keystroke.right_alt_modifier:
         modifier_bitmask |= modifiers.RIGHT_ALT
-    # We currently don't support right ctrl, right shift, or right meta.
 
     return modifier_bitmask

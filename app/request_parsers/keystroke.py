@@ -17,6 +17,10 @@ class InvalidKeyCode(Error):
     pass
 
 
+class InvalidLocation(Error):
+    pass
+
+
 @dataclasses.dataclass
 class Keystroke:
     left_ctrl_modifier: bool
@@ -26,6 +30,7 @@ class Keystroke:
     right_alt_modifier: bool
     key: str
     key_code: int
+    is_right_modifier: bool
 
 
 def parse_keystroke(message):
@@ -35,6 +40,7 @@ def parse_keystroke(message):
     required_fields = (
         'key',
         'keyCode',
+        'location',
         'ctrlKey',
         'shiftKey',
         'altKey',
@@ -52,7 +58,8 @@ def parse_keystroke(message):
         left_meta_modifier=_parse_modifier_key(message['metaKey']),
         right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
         key=message['key'],
-        key_code=_parse_key_code(message['keyCode']))
+        key_code=_parse_key_code(message['keyCode']),
+        is_right_modifier=_parse_is_right_key_location(message['location']))
 
 
 def _parse_modifier_key(modifier_key):
@@ -69,3 +76,15 @@ def _parse_key_code(key_code):
         raise InvalidKeyCode('Key code must be between 0x00 and 0xff: %d',
                              key_code)
     return key_code
+
+
+def _parse_is_right_key_location(location):
+    if location is None:
+        return False
+    if type(location) is not str:
+        raise InvalidLocation('Location must be "left", "right", or null.')
+    elif location.lower() == 'left':
+        return False
+    elif location.lower() == 'right':
+        return True
+    raise InvalidLocation('Location must be "left", "right", or null.')
