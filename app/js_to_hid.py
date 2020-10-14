@@ -42,7 +42,7 @@ def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
         13: layout.KEYCODE_ENTER,
         16: layout.KEYCODE_RIGHT_SHIFT if right else layout.KEYCODE_LEFT_SHIFT,
         17: layout.KEYCODE_RIGHT_CTRL if right else layout.KEYCODE_LEFT_CTRL,
-        18: layout.KEYCODE_RIGHT_ALT if right else layout.KEYCODE_LEFT_CTRL,
+        18: layout.KEYCODE_RIGHT_ALT if right else layout.KEYCODE_LEFT_ALT,
         19: layout.KEYCODE_PAUSE_BREAK,
         20: layout.KEYCODE_CAPS_LOCK,
         21: layout.KEYCODE_HANGEUL,
