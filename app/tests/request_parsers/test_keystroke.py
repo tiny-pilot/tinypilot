@@ -18,7 +18,7 @@ class KeystrokeTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='A',
                                 key_code=65,
-                                is_left_modifier=False),
+                                is_right_modifier=False),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -39,7 +39,7 @@ class KeystrokeTest(unittest.TestCase):
                                 right_alt_modifier=True,
                                 key='A',
                                 key_code=65,
-                                is_left_modifier=False),
+                                is_right_modifier=False),
             keystroke.parse_keystroke({
                 'metaKey': True,
                 'altKey': True,
@@ -60,7 +60,7 @@ class KeystrokeTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='Control',
                                 key_code=17,
-                                is_left_modifier=True),
+                                is_right_modifier=False),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -84,7 +84,7 @@ class KeystrokeTest(unittest.TestCase):
                 right_alt_modifier=False,
                 key='Control',
                 key_code=17,
-                is_left_modifier=False),
+                is_right_modifier=True),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,

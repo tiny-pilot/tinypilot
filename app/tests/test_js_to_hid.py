@@ -18,7 +18,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='a',
                                 key_code=65,
-                                is_left_modifier=False), 'qwerty')
+                                is_right_modifier=False), 'qwerty')
         self.assertEqual(0, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_A, hid_keycode)
 
@@ -31,7 +31,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='A',
                                 key_code=65,
-                                is_left_modifier=True), 'qwerty')
+                                is_right_modifier=True), 'qwerty')
         self.assertEqual(modifiers.LEFT_SHIFT, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_A, hid_keycode)
 
@@ -44,7 +44,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=True,
                                 key='A',
                                 key_code=65,
-                                is_left_modifier=False), 'qwerty')
+                                is_right_modifier=False), 'qwerty')
         self.assertEqual(
             modifiers.LEFT_META | modifiers.LEFT_ALT | modifiers.LEFT_SHIFT |
             modifiers.LEFT_CTRL | modifiers.RIGHT_ALT, modifier_bitmask)
@@ -59,7 +59,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='Control',
                                 key_code=17,
-                                is_left_modifier=True), 'qwerty')
+                                is_right_modifier=False), 'qwerty')
         self.assertEqual(modifiers.LEFT_CTRL, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_LEFT_CTRL, hid_keycode)
 
@@ -72,7 +72,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='Control',
                                 key_code=17,
-                                is_left_modifier=False), 'qwerty')
+                                is_right_modifier=True), 'qwerty')
         self.assertEqual(modifiers.LEFT_CTRL, modifier_bitmask)
         self.assertEqual(qwerty.KEYCODE_RIGHT_CTRL, hid_keycode)
 
@@ -85,6 +85,6 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='a',
                                 key_code=65,
-                                is_left_modifier=False), 'azerty')
+                                is_right_modifier=False), 'azerty')
         self.assertEqual(0, modifier_bitmask)
         self.assertEqual(azerty.KEYCODE_A, hid_keycode)

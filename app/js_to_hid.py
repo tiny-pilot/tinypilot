@@ -17,7 +17,7 @@ class InvalidKeyboardLayout(Error):
 
 def convert(keystroke, keyboard_layout_string):
     keycode_mapping = _get_keycode_mapping(keyboard_layout_string,
-                                           keystroke.is_left_modifier)
+                                           keystroke.is_right_modifier)
     try:
         return _map_modifier_keys(keystroke), keycode_mapping[
             keystroke.key_code]
@@ -26,12 +26,12 @@ def convert(keystroke, keyboard_layout_string):
                                        (keystroke.key, keystroke.key_code))
 
 
-def _get_keycode_mapping(keyboard_layout_string, is_left_modifier):
+def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
     layout = _get_target_keyboard_layout(keyboard_layout_string)
 
     # Use a shorter variable name to avoid screwing up the nice dict format
     # below.
-    left = is_left_modifier
+    right = is_right_modifier
 
     # JS keycodes source: https://github.com/wesbos/keycodes
     return {
@@ -40,9 +40,9 @@ def _get_keycode_mapping(keyboard_layout_string, is_left_modifier):
         9: layout.KEYCODE_TAB,
         12: layout.KEYCODE_CLEAR,
         13: layout.KEYCODE_ENTER,
-        16: layout.KEYCODE_LEFT_SHIFT if left else layout.KEYCODE_RIGHT_SHIFT,
-        17: layout.KEYCODE_LEFT_CTRL if left else layout.KEYCODE_RIGHT_CTRL,
-        18: layout.KEYCODE_LEFT_ALT if left else layout.KEYCODE_RIGHT_CTRL,
+        16: layout.KEYCODE_RIGHT_SHIFT if right else layout.KEYCODE_LEFT_SHIFT,
+        17: layout.KEYCODE_RIGHT_CTRL if right else layout.KEYCODE_LEFT_CTRL,
+        18: layout.KEYCODE_RIGHT_ALT if right else layout.KEYCODE_LEFT_CTRL,
         19: layout.KEYCODE_PAUSE_BREAK,
         20: layout.KEYCODE_CAPS_LOCK,
         21: layout.KEYCODE_HANGEUL,
@@ -103,7 +103,7 @@ def _get_keycode_mapping(keyboard_layout_string, is_left_modifier):
         88: layout.KEYCODE_X,
         89: layout.KEYCODE_Y,
         90: layout.KEYCODE_Z,
-        91: layout.KEYCODE_LEFT_META if left else layout.KEYCODE_RIGHT_META,
+        91: layout.KEYCODE_RIGHT_META if right else layout.KEYCODE_LEFT_META,
         93: layout.KEYCODE_CONTEXT_MENU,
         94: layout.KEYCODE_NUMPAD_4,  # / (UK)
         96: layout.KEYCODE_NUMPAD_0,

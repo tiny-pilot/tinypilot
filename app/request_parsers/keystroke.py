@@ -30,7 +30,7 @@ class Keystroke:
     right_alt_modifier: bool
     key: str
     key_code: int
-    is_left_modifier: bool
+    is_right_modifier: bool
 
 
 def parse_keystroke(message):
@@ -59,7 +59,7 @@ def parse_keystroke(message):
         right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
         key=message['key'],
         key_code=_parse_key_code(message['keyCode']),
-        is_left_modifier=_parse_is_left_key_location(message['location']))
+        is_right_modifier=_parse_is_right_key_location(message['location']))
 
 
 def _parse_modifier_key(modifier_key):
@@ -78,13 +78,13 @@ def _parse_key_code(key_code):
     return key_code
 
 
-def _parse_is_left_key_location(location):
+def _parse_is_right_key_location(location):
     if location is None:
         return False
     if type(location) is not str:
         raise InvalidLocation('Location must be "left", "right", or null.')
     elif location.lower() == 'left':
-        return True
-    elif location.lower() == 'right':
         return False
+    elif location.lower() == 'right':
+        return True
     raise InvalidLocation('Location must be "left", "right", or null.')
