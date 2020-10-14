@@ -25,23 +25,23 @@ def convert(keystroke, keyboard_layout_string):
                                        (keystroke.key, keystroke.key_code))
 
 
-def _get_keycode_mapping(keyboard_layout_string):
+def _get_keycode_mapping(keyboard_layout_string, is_left_modifier):
     layout = _get_target_keyboard_layout(keyboard_layout_string)
 
-    # JS keycodes source: https://github.com/wesbos/keycodes
+    # Use a shorter variable name to avoid screwing up the nice dict format
+    # below.
+    left = is_left_modifier
 
-    # TODO: For simplicity, we map all modifiers keys to the left key, but we
-    # could support distinct keys for left and right if we check the location
-    # parameter from the JavaScript message.
+    # JS keycodes source: https://github.com/wesbos/keycodes
     return {
         3: layout.KEYCODE_PAUSE_BREAK,
         8: layout.KEYCODE_BACKSPACE_DELETE,
         9: layout.KEYCODE_TAB,
         12: layout.KEYCODE_CLEAR,
         13: layout.KEYCODE_ENTER,
-        16: layout.KEYCODE_LEFT_SHIFT,
-        17: layout.KEYCODE_LEFT_CTRL,
-        18: layout.KEYCODE_LEFT_ALT,
+        16: layout.KEYCODE_LEFT_SHIFT if left else layout.KEYCODE_RIGHT_SHIFT,
+        17: layout.KEYCODE_LEFT_CTRL if left else layout.KEYCODE_RIGHT_CTRL,
+        18: layout.KEYCODE_LEFT_ALT if left else layout.KEYCODE_RIGHT_CTRL,
         19: layout.KEYCODE_PAUSE_BREAK,
         20: layout.KEYCODE_CAPS_LOCK,
         21: layout.KEYCODE_HANGEUL,
@@ -102,7 +102,7 @@ def _get_keycode_mapping(keyboard_layout_string):
         88: layout.KEYCODE_X,
         89: layout.KEYCODE_Y,
         90: layout.KEYCODE_Z,
-        91: layout.KEYCODE_LEFT_META,
+        91: layout.KEYCODE_LEFT_META if left else layout.KEYCODE_RIGHT_META,
         93: layout.KEYCODE_CONTEXT_MENU,
         94: layout.KEYCODE_NUMPAD_4,  # / (UK)
         96: layout.KEYCODE_NUMPAD_0,
