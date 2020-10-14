@@ -78,8 +78,9 @@ class KeystrokeTest(unittest.TestCase):
                 left_meta_modifier=False,
                 left_alt_modifier=False,
                 left_shift_modifier=False,
-                # For simplicity, we turn on the left modifier for right ctrl by
-                # itself, as it shouldn't make a difference.
+                # For simplicity, we store right Ctrl modifier in
+                # left_ctrl_modifier since there's no right version in
+                # keystroke.Keystroke.
                 left_ctrl_modifier=True,
                 right_alt_modifier=False,
                 key='Control',
