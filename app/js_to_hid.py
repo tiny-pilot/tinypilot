@@ -1,4 +1,5 @@
 from hid.keycodes import azerty
+from hid.keycodes import modifiers
 from hid.keycodes import qwerty
 
 
@@ -15,21 +16,10 @@ class InvalidKeyboardLayout(Error):
 
 
 def convert(keystroke, keyboard_layout_string):
-    control_chars = 0
-    for i, pressed in enumerate([
-            keystroke.left_ctrl_modifier,
-            keystroke.left_shift_modifier,
-            keystroke.left_alt_modifier,
-            keystroke.left_meta_modifier,
-            False,  # Right Ctrl, but we don't support it.
-            False,  # Right Shift, but we don't support it.
-            keystroke.right_alt_modifier,
-    ]):
-        if pressed:
-            control_chars |= 1 << i
     keycode_mapping = _get_keycode_mapping(keyboard_layout_string)
     try:
-        return control_chars, keycode_mapping[keystroke.key_code]
+        return _map_modifier_keys(keystroke), keycode_mapping[
+            keystroke.key_code]
     except KeyError:
         raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' %
                                        (keystroke.key, keystroke.key_code))
@@ -190,3 +180,21 @@ def _get_target_keyboard_layout(keyboard_layout_string):
     except KeyError:
         raise InvalidKeyboardLayout('Unrecognized keyboard layout: %s' %
                                     keyboard_layout_string)
+
+
+def _map_modifier_keys(keystroke):
+    modifier_bitmask = 0
+
+    if keystroke.left_ctrl_modifier:
+        modifier_bitmask |= modifiers.LEFT_CTRL
+    if keystroke.left_shift_modifier:
+        modifier_bitmask |= modifiers.LEFT_SHIFT
+    if keystroke.left_alt_modifier:
+        modifier_bitmask |= modifiers.LEFT_ALT
+    if keystroke.left_meta_modifier:
+        modifier_bitmask |= modifiers.LEFT_META
+    if keystroke.right_alt_modifier:
+        modifier_bitmask |= modifiers.RIGHT_ALT
+    # We currently don't support right ctrl, right shift, or right meta.
+
+    return modifier_bitmask
