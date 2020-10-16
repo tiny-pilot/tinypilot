@@ -116,7 +116,27 @@ echo "Config ${CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configurati
 
 ln -s "$KEYBOARD_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
 ln -s "$MOUSE_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
-ls /sys/class/udc > UDC
 
+
+
+#Mass Storage
+#CONFIG_INDEX=1
+#CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
+
+MASS_FUNCTIONS_DIR="functions/mass_storage.usb0"
+mkdir -p "$MASS_FUNCTIONS_DIR/lun.0"
+echo 1 > "${MASS_FUNCTIONS_DIR}/stall"
+echo 0 > "${MASS_FUNCTIONS_DIR}/lun.0/cdrom"
+echo 0 > "${MASS_FUNCTIONS_DIR}/lun.0/ro"
+echo 0 > "${MASS_FUNCTIONS_DIR}/lun.0/nofua"
+#echo "/usbdisk.img" "${MASS_FUNCTIONS_DIR}/lun.0/file"
+
+ln -s "$MASS_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
+
+
+ls /sys/class/udc > UDC
 chmod 777 /dev/hidg0
 chmod 777 /dev/hidg1
+chmod 777 "${MASS_FUNCTIONS_DIR}/lun.0/cdrom"
+chmod 777 "${MASS_FUNCTIONS_DIR}/lun.0/file"
+chmod 777 /sys/kernel/config/usb_gadget/g1/UDC

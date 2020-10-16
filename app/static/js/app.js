@@ -181,6 +181,9 @@ function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
+  if (isRemoteFsShowing()) {
+    return;
+  }
   if (!connectedToServer) {
     return;
   }
@@ -240,6 +243,9 @@ function sendMouseEvent(buttons, relativeX, relativeY) {
 
 function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {
+    return;
+  }
+  if (isRemoteFsShowing()) {
     return;
   }
   keyState[evt.keyCode] = false;
@@ -401,6 +407,10 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
 });
 document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
+});
+document.getElementById("mnt-remote-fs-btn").addEventListener("click", () => {
+  // HIER CODE
+  showRemoteFsOverlay();
 });
 document
   .getElementById("paste-overlay")

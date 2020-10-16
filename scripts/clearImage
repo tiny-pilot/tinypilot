@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+gadgetPath="/sys/kernel/config/usb_gadget/g1"
+msdPath="${gadgetPath}/functions/mass_storage.usb0/lun.0"
+filePath="${msdPath}/file"
+cdromPath="${msdPath}/cdrom"
+UDCPath="${gadgetPath}/UDC"
+
+echo "" > $filePath

@@ -1,0 +1,31 @@
+#!/bin/bash
+if [ $# -le 1 ]; then
+	echo "Wrong Parameters"
+	exit -1
+fi
+
+gadgetPath="/sys/kernel/config/usb_gadget/g1"
+msdPath="${gadgetPath}/functions/mass_storage.usb0/lun.0"
+filePath="${msdPath}/file"
+cdromPath="${msdPath}/cdrom"
+UDCPath="${gadgetPath}/UDC"
+
+imagePath="/tmp/remoteFs/$2"
+
+valInCdRom=`cat ${cdromPath}`
+targetValueInCdRom=0
+echo "" > $filePath
+if [ $1 == "cdrom" ]; then
+	targetValueInCdRom=1
+fi
+
+if [ $targetValueInCdRom -ne $valInCdRom ]; then
+	
+	echo "" > $UDCPath
+	echo $targetValueInCdRom > $cdromPath
+	ls /sys/class/udc > $UDCPath
+	chmod 777 /dev/hidg0
+	chmod 777 /dev/hidg1
+fi
+
+echo $imagePath > $filePath

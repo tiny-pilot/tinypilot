@@ -1,0 +1,61 @@
+<style>
+  #msd-file-selector {
+    display: none;
+  }
+  #msd-file-selector[show="true"] {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  #file-browser-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  .ul-table {
+    list-style-type: none;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    cursor: pointer;
+    height: 18px;
+  }
+  .ul-table li {
+    display: table-cell;
+    width: 50%;
+  }
+  .ul-table li.img {
+    display: table-cell;
+    width: 18px;
+  }
+  .ul-table li a {
+    color: black;
+  }
+</style>
+<div class="file-selector" id="msd-file-selector">
+  <h2 style="float: none">Please select a File:</h2>
+
+  <p>Current Path:<span id="file-selector-path"></span></p>
+  <div id="file-browser-container">
+    <ul class="ul-table">
+      <li class="img">
+        <img src="img/folder-icon.png" width="16" height="16" />
+      </li>
+      <li>Folder</li>
+    </ul>
+    <ul class="ul-table">
+      <li class="img">
+        <img src="img/file-icon.png" width="16" height="16" />
+      </li>
+      <li>File</li>
+    </ul>
+  </div>
+  <button id="msd-file-selector-cancel">Cancel</button>
+</div>

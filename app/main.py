@@ -15,6 +15,7 @@ from hid import mouse as fake_mouse
 from hid import write as hid_write
 from request_parsers import keystroke as keystroke_request
 from request_parsers import mouse_event as mouse_event_request
+from flask import request
 
 host = os.environ.get('HOST', '0.0.0.0')
 port = int(os.environ.get('PORT', 8000))
@@ -142,6 +143,116 @@ def shutdown_post():
             'error': str(e),
         }), 500
 
+@app.route("/mountRemoteFs", methods=['POST'])
+def mountRemoteFs():
+    try:
+        shareType = request.form.get("shareType")
+        sharePath = request.form.get("sharePath")
+        userName = request.form.get("shareUser")
+        password = request.form.get("sharePassword")
+        cmd = "sudo /opt/tinypilot/scripts/mountShare " + str(shareType) + " \"" +str(sharePath) + "\""
+        if userName != "":
+            cmd = cmd + " " + str(userName) + " \"" + str(password) + "\""
+        exitCode = os.system(cmd)
+        retValue = True
+        if exitCode != 0:
+            retValue = False  
+        return flask.jsonify({
+            'success': retValue,
+            'error': None,
+            'command': cmd,
+        })
+    except Exception as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
+
+@app.route("/getRemoteFsContent", methods=['GET'])
+def getRemoteFsContent():
+    try:
+        retValue = os.system("mount | grep /tmp/remoteFs")
+        if retValue != 0:
+            return flask.jsonify({
+                'success': False,
+                'error': "File not mounted",
+            }), 500
+        f = []
+        d = []
+        path = "/tmp/remoteFs/"
+        subDir = request.args.get("subPath")
+        if subDir is None:
+            pass
+        else:
+            if subDir.find("../") != -1 or subDir.endswith(".."):
+                return flask.jsonify({
+                'success': False,
+                'error': ".. not allowed",
+                'path': None,
+                'data': None 
+            })
+            path = path + subDir
+            
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            return flask.jsonify({
+                'success': True,
+                'error': None,
+                'path': path,
+                'data': [dirnames, filenames] 
+            })
+        return flask.jsonify({
+                'success': True,
+                'error': None,
+                'data': {},
+                'path': path 
+            })
+    except Exception as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
+
+@app.route('/MountImage')
+def MountImage():
+    try:
+        imageFile = request.args.get("Path")
+        if imageFile.find("../") != -1 or imageFile.endswith(".."):
+                return flask.jsonify({
+                'success': False,
+                'error': ".. not allowed",
+            })
+        msdType = request.args.get("type")
+
+        cmd = "sudo /opt/tinypilot/scripts/mountImage " + msdType + " \"" + imageFile + "\""
+        os.system(cmd)
+        return flask.jsonify({
+            'success': True,
+            'cmd': cmd,
+            'error': None,
+        })
+        pass
+    except Exception as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
+
+@app.route("/ClearImage")
+def ClearImage():
+    try:
+        cmd = "/opt/tinypilot/scripts/clearImage"
+        os.system(cmd)
+        return flask.jsonify({
+            'success': True,
+            'cmd': cmd,
+            'error': None,
+        })
+        pass
+    except Exception as e:
+        return flask.jsonify({
+            'success': False,
+            'error': str(e),
+        }), 500
 
 @app.route('/restart', methods=['POST'])
 def restart_post():
@@ -158,12 +269,12 @@ def restart_post():
         }), 500
 
 
-@app.errorhandler(flask_wtf.csrf.CSRFError)
-def handle_csrf_error(e):
-    return flask.jsonify({
-        'success': False,
-        'error': e.description,
-    }), 400
+#@app.errorhandler(flask_wtf.csrf.CSRFError)
+#def handle_csrf_error(e):
+#    return flask.jsonify({
+#        'success': False,
+#        'error': e.description,
+#    }), 400
 
 
 def main():

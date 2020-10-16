@@ -41,10 +41,13 @@
         {% include "components/keyboard-panel.html" %}
       </div>
     </div>
-    {% include "components/paste-overlay.html" %}
+    {% include "components/remote-share-selector.html" %} {% include
+    "components/file-selector.html" %} {% include
+    "components/paste-overlay.html" %}
     <shutdown-wait id="shutdown-wait"></shutdown-wait>
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>
     <script src="/js/paste.js"></script>
+    <script src="/js/remote-fs.js"></script>
     <script type="module" src="/js/app.js"></script>
   </body>
 </html>

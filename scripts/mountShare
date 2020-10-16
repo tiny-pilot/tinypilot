@@ -1,0 +1,34 @@
+#!/bin/bash
+if [ $# -le 1 ]; then
+	echo "Wrong Parameters"
+	exit -1
+fi
+gadgetPath="/sys/kernel/config/usb_gadget/g1"
+msdPath="${gadgetPath}/functions/mass_storage.usb0/lun.0"
+filePath="${msdPath}/file"
+
+valueInFile=`cat $filePath`
+if [ $valueInFile != "" ]; then
+	exit -1
+fi
+
+mkdir -p /tmp/remoteFs
+
+umount /tmp/remoteFs
+
+if [ "$1" == "smb" ]; then
+	echo "mount samba"
+	if [ $# -gt 2 ]; then
+		mount -t cifs -o username=$3,password=$4 $2 /tmp/remoteFs
+		exit $?
+	else
+		mount -t cifs $2 /tmp/remoteFs
+		exit $?
+	fi
+fi
+
+if [ "$1" == "nfs" ]; then
+	echo "mount nfs"
+	mount -t nfs $2 /tmp/remoteFs
+	exit $?
+fi
