@@ -269,12 +269,12 @@ def restart_post():
         }), 500
 
 
-#@app.errorhandler(flask_wtf.csrf.CSRFError)
-#def handle_csrf_error(e):
-#    return flask.jsonify({
-#        'success': False,
-#        'error': e.description,
-#    }), 400
+@app.errorhandler(flask_wtf.csrf.CSRFError)
+def handle_csrf_error(e):
+    return flask.jsonify({
+        'success': False,
+        'error': e.description,
+    }), 400
 
 
 def main():

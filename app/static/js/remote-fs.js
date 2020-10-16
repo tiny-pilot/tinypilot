@@ -84,7 +84,7 @@ function createFileSelectorElement(type, Name, currentPath, msdType) {
   if (type == "folder") Name = Name + "/";
   var ulObject = document.createElement("UL");
   ulObject.className = "ul-table";
-  var liImgObject = document.createElement("LI");
+  /*var liImgObject = document.createElement("LI");
   liImgObject.className = "img";
   var img = document.createElement("IMG");
   if (type == "folder") img.setAttribute("src", "img/folder-icon.png");
@@ -92,7 +92,7 @@ function createFileSelectorElement(type, Name, currentPath, msdType) {
   img.setAttribute("width", "16");
   img.setAttribute("height", "16");
   liImgObject.appendChild(img);
-  ulObject.appendChild(liImgObject);
+  ulObject.appendChild(liImgObject);*/
   var liTextObject = document.createElement("LI");
   liTextObject.innerText = Name;
   ulObject.appendChild(liTextObject);

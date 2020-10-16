@@ -184,6 +184,9 @@ function onKeyDown(evt) {
   if (isRemoteFsShowing()) {
     return;
   }
+  if (isFileSelectorShowing()) {
+    return;
+  }
   if (!connectedToServer) {
     return;
   }
@@ -246,6 +249,9 @@ function onKeyUp(evt) {
     return;
   }
   if (isRemoteFsShowing()) {
+    return;
+  }
+  if (isFileSelectorShowing()) {
     return;
   }
   keyState[evt.keyCode] = false;
@@ -409,7 +415,6 @@ document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
 document.getElementById("mnt-remote-fs-btn").addEventListener("click", () => {
-  // HIER CODE
   showRemoteFsOverlay();
 });
 document
