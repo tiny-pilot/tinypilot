@@ -33,13 +33,16 @@ class MouseEvent:
     relative_x: int
     relative_y: int
 
+    vwheel: int
+    hwheel: int
+
 
 def parse_mouse_event(message):
     if not isinstance(message, dict):
         raise MissingField(
             'Mouse event parameter is invalid, expecting a dictionary data type'
         )
-    required_fields = ('buttons', 'relativeX', 'relativeY')
+    required_fields = ('buttons', 'relativeX', 'relativeY', 'vwheel', 'hwheel')
     for field in required_fields:
         if field not in message:
             raise MissingField(
@@ -48,6 +51,8 @@ def parse_mouse_event(message):
         buttons=_parse_button_state(message['buttons']),
         relative_x=_parse_relative_position(message['relativeX']),
         relative_y=_parse_relative_position(message['relativeY']),
+        vwheel=message['vwheel'],
+        hwheel=message['hwheel'],
     )
 
 
