@@ -33,8 +33,8 @@ class MouseEvent:
     relative_x: int
     relative_y: int
 
-    vwheel: int
-    hwheel: int
+    vertical_wheel_delta: int
+    horizontal_wheel_delta: int
 
 
 def parse_mouse_event(message):
@@ -51,8 +51,8 @@ def parse_mouse_event(message):
         buttons=_parse_button_state(message['buttons']),
         relative_x=_parse_relative_position(message['relativeX']),
         relative_y=_parse_relative_position(message['relativeY']),
-        vwheel=message['vwheel'],
-        hwheel=message['hwheel'],
+        vertical_wheel_delta=message['vwheel'],
+        horizontal_wheel_delta=message['hwheel'],
     )
 
 

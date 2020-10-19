@@ -102,7 +102,7 @@ echo -ne \\x26\\xFF\\x7F >> "$D" #   LOGICAL_MAXIMUM (32767)
 echo -ne \\x75\\x10 >> "$D"      #   REPORT_SIZE (16)
 echo -ne \\x95\\x02 >> "$D"      #   REPORT_COUNT (2)
 echo -ne \\x81\\x02 >> "$D"      #   INPUT (Data,Var,Abs)
-                                 #    vertical wheel
+                                 #   vertical wheel
 echo -ne \\x09\\x38 >> "$D"      #   USAGE (wheel)
 echo -ne \\x15\\x81 >> "$D"      #   LOGICAL_MINIMUM (-127)
 echo -ne \\x25\\x7F >> "$D"      #   LOGICAL_MAXIMUM (127)
