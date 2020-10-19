@@ -1,7 +1,8 @@
 from hid import write as hid_write
 
 
-def send_mouse_event(mouse_path, buttons, relative_x, relative_y, vwheel, hwheel):
+def send_mouse_event(mouse_path, buttons, relative_x, relative_y, vwheel,
+                     hwheel):
     x, y = _scale_mouse_coordinates(relative_x, relative_y)
 
     buf = [0] * 7

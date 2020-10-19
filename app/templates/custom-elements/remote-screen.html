@@ -130,7 +130,10 @@
           });
           screenImg.addEventListener("mousedown", this.sendMouseEvent);
           screenImg.addEventListener("mouseup", this.sendMouseEvent);
-          screenImg.addEventListener("wheel", this.sendMouseEvent);
+          screenImg.addEventListener("wheel", (evt) => {
+            evt.preventDefault();
+            this.sendMouseEvent(evt);
+          });
 
           // Ignore the context menu so that it doesn't block the screen when the user
           // right-clicks.
@@ -280,11 +283,8 @@
           const height = boundingRect.bottom - boundingRect.top;
           const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
           const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
-          const vwheel = evt.deltaY || 0;
-          const hwheel = evt.deltaX || 0;
-          if (vwheel || hwheel) {
-            evt.preventDefault();
-          }
+          const vwheel = Math.sign(evt.deltaY) * -1 || 0;
+          const hwheel = Math.sign(evt.deltaX) || 0;
           this.dispatchEvent(
             new CustomEvent("mouse-event", {
               detail: {

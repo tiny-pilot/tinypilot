@@ -98,8 +98,8 @@ def socket_mouse_event(message):
         fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
                                     mouse_move_event.relative_x,
                                     mouse_move_event.relative_y,
-                                    mouse_move_event.vwheel,
-                                    mouse_move_event.hwheel)
+                                    mouse_move_event.vertical_wheel_delta,
+                                    mouse_move_event.horizontal_wheel_delta)
     except hid_write.WriteError as e:
         logger.error('Failed to forward mouse event: %s', e)
         return {'success': False}
