@@ -136,9 +136,9 @@
         }
 
         sendShutdownRequest(restart) {
-          let route = "/shutdown";
+          let route = "/api/shutdown";
           if (restart) {
-            route = "/restart";
+            route = "/api/restart";
           }
           fetch(route, {
             method: "POST",
