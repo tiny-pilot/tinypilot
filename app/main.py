@@ -7,8 +7,8 @@ import flask
 import flask_socketio
 import flask_wtf
 
+import api
 import js_to_hid
-import local_system
 from find_files import find as find_files
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
@@ -57,6 +57,9 @@ socketio = flask_socketio.SocketIO(app, cors_allowed_origins='*')
 # Configure CSRF protection.
 csrf = flask_wtf.csrf.CSRFProtect(app)
 app.config['SECRET_KEY'] = os.urandom(32)
+
+# Register /api route handlers.
+app.register_blueprint(api.api_blueprint)
 
 
 @socketio.on('keystroke')
@@ -126,36 +129,6 @@ def test_disconnect():
 def index_get():
     return flask.render_template(
         'index.html', custom_elements_files=find_files.custom_elements_files())
-
-
-@app.route('/shutdown', methods=['POST'])
-def shutdown_post():
-    try:
-        local_system.shutdown()
-        return flask.jsonify({
-            'success': True,
-            'error': None,
-        })
-    except local_system.Error as e:
-        return flask.jsonify({
-            'success': False,
-            'error': str(e),
-        }), 500
-
-
-@app.route('/restart', methods=['POST'])
-def restart_post():
-    try:
-        local_system.restart()
-        return flask.jsonify({
-            'success': True,
-            'error': None,
-        })
-    except local_system.Error as e:
-        return flask.jsonify({
-            'success': False,
-            'error': str(e),
-        }), 500
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
