@@ -7,7 +7,11 @@ class MouseEventTest(unittest.TestCase):
 
     def test_parses_valid_mouse_event(self):
         self.assertEqual(
-            mouse_event.MouseEvent(buttons=1, relative_x=0.5, relative_y=0.75),
+            mouse_event.MouseEvent(buttons=1,
+                                   relative_x=0.5,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=0),
             mouse_event.parse_mouse_event({
                 'buttons': 1,
                 'relativeX': 0.5,
@@ -18,7 +22,11 @@ class MouseEventTest(unittest.TestCase):
 
     def test_parses_valid_mouse_event_with_int_position(self):
         self.assertEqual(
-            mouse_event.MouseEvent(buttons=1, relative_x=0.0, relative_y=0.75),
+            mouse_event.MouseEvent(buttons=1,
+                                   relative_x=0.0,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=0),
             mouse_event.parse_mouse_event({
                 'buttons': 1,
                 'relativeX': 0,
@@ -29,7 +37,11 @@ class MouseEventTest(unittest.TestCase):
 
     def test_parses_valid_mouse_event_with_all_buttons_pressed(self):
         self.assertEqual(
-            mouse_event.MouseEvent(buttons=31, relative_x=0.5, relative_y=0.75),
+            mouse_event.MouseEvent(buttons=31,
+                                   relative_x=0.5,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=0),
             mouse_event.parse_mouse_event({
                 'buttons': 31,
                 'relativeX': 0.5,
@@ -172,7 +184,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_non_int_v_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -182,7 +194,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_non_int_h_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
