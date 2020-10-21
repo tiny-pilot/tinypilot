@@ -17,6 +17,10 @@ class InvalidRelativePosition(Error):
     pass
 
 
+class InvalidWheelValue(Error):
+    pass
+
+
 # JavaScript only supports 5 mouse buttons.
 # https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
 _MAX_BUTTONS = 5
@@ -51,8 +55,8 @@ def parse_mouse_event(message):
         buttons=_parse_button_state(message['buttons']),
         relative_x=_parse_relative_position(message['relativeX']),
         relative_y=_parse_relative_position(message['relativeY']),
-        vertical_wheel_delta=message['vwheel'],
-        horizontal_wheel_delta=message['hwheel'],
+        vertical_wheel_delta=_parse_wheel_value(message['vwheel']),
+        horizontal_wheel_delta=_parse_wheel_value(message['hwheel']),
     )
 
 
@@ -77,3 +81,12 @@ def _parse_relative_position(relative_position):
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
     return relative_position
+
+
+def _parse_wheel_value(wheel_value):
+    if type(wheel_value) is not int:
+        raise InvalidWheelValue('Wheel value must be a int: %s' % wheel_value)
+    if not (-1 <= wheel_value <= 1):
+        raise InvalidWheelValue('Wheel value must be between -1 and 1: %s' %
+                                wheel_value)
+    return wheel_value
