@@ -8,6 +8,7 @@ import flask_wtf
 
 import api
 import socket_api
+import views
 from find_files import find as find_files
 
 host = os.environ.get('HOST', '0.0.0.0')
@@ -39,14 +40,8 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 csrf = flask_wtf.csrf.CSRFProtect(app)
 app.config['SECRET_KEY'] = os.urandom(32)
 
-# Register /api route handlers.
 app.register_blueprint(api.api_blueprint)
-
-
-@app.route('/', methods=['GET'])
-def index_get():
-    return flask.render_template(
-        'index.html', custom_elements_files=find_files.custom_elements_files())
+app.register_blueprint(views.views_blueprint)
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
