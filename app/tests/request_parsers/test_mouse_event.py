@@ -16,8 +16,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 1,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             }))
 
     def test_parses_valid_mouse_event_with_int_position(self):
@@ -31,8 +31,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 1,
                 'relativeX': 0,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             }))
 
     def test_parses_valid_negative_vertical_scroll(self):
@@ -46,8 +46,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': -1,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': -1,
+                'horizontalWheelDelta': 0,
             }))
 
     def test_parses_valid_positive_vertical_scroll(self):
@@ -61,8 +61,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 1,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 1,
+                'horizontalWheelDelta': 0,
             }))
 
     def test_parses_valid_negative_horizontal_scroll(self):
@@ -76,8 +76,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': -1,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': -1,
             }))
 
     def test_parses_valid_positive_horizontal_scroll(self):
@@ -91,8 +91,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 1,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 1,
             }))
 
     def test_parses_valid_mouse_event_with_all_buttons_pressed(self):
@@ -106,8 +106,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 31,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             }))
 
     def test_rejects_negative_buttons_value(self):
@@ -116,8 +116,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': -1,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_too_high_buttons_value(self):
@@ -126,8 +126,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 32,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_non_numeric_buttons_value(self):
@@ -136,8 +136,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 'a',
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_negative_relative_x_value(self):
@@ -146,8 +146,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': -0.001,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_negative_relative_y_value(self):
@@ -156,8 +156,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': -0.001,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_too_high_relative_x_value(self):
@@ -166,8 +166,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 1.001,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_too_high_relative_y_value(self):
@@ -176,8 +176,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 1.001,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_non_float_relative_x_value(self):
@@ -186,8 +186,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 'a',
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_non_float_relative_y_value(self):
@@ -196,8 +196,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 'b',
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_missing_buttons_field(self):
@@ -205,8 +205,8 @@ class MouseEventTest(unittest.TestCase):
             mouse_event.parse_mouse_event({
                 'relativeX': 0,
                 'relativeY': 0,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_missing_relative_x_field(self):
@@ -214,8 +214,8 @@ class MouseEventTest(unittest.TestCase):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeY': 0,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_missing_relative_y_field(self):
@@ -223,8 +223,8 @@ class MouseEventTest(unittest.TestCase):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_missing_vertical_wheel_field(self):
@@ -232,7 +232,7 @@ class MouseEventTest(unittest.TestCase):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
-                'horizontal_wheel_delta': 0,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_missing_horizontal_wheel_field(self):
@@ -240,7 +240,7 @@ class MouseEventTest(unittest.TestCase):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
-                'vertical_wheel_delta': 0,
+                'verticalWheelDelta': 0,
             })
 
     def test_rejects_string_vertical_wheel_value(self):
@@ -249,8 +249,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 'a',
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 'a',
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_float_vertical_wheel_value(self):
@@ -259,8 +259,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0.5,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 0.5,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_too_high_vertical_wheel_value(self):
@@ -269,8 +269,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 2,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': 2,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_too_low_vertical_wheel_value(self):
@@ -279,8 +279,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': -2,
-                'horizontal_wheel_delta': 0,
+                'verticalWheelDelta': -2,
+                'horizontalWheelDelta': 0,
             })
 
     def test_rejects_string_horizontal_wheel_value(self):
@@ -289,8 +289,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 'a',
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 'a',
             })
 
     def test_rejects_float_horizontal_wheel_value(self):
@@ -299,8 +299,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 0.5,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 0.5,
             })
 
     def test_rejects_too_high_horizontal_wheel_value(self):
@@ -309,8 +309,8 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': 2,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': 2,
             })
 
     def test_rejects_too_low_horizontal_wheel_value(self):
@@ -319,6 +319,6 @@ class MouseEventTest(unittest.TestCase):
                 'buttons': 0,
                 'relativeX': 0.5,
                 'relativeY': 0.75,
-                'vertical_wheel_delta': 0,
-                'horizontal_wheel_delta': -2,
+                'verticalWheelDelta': 0,
+                'horizontalWheelDelta': -2,
             })
