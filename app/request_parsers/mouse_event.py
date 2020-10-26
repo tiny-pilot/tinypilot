@@ -92,7 +92,7 @@ def _parse_relative_position(relative_position):
 def _parse_wheel_value(wheel_value):
     if type(wheel_value) is not int:
         raise InvalidWheelValue('Wheel value must be a int: %s' % wheel_value)
-    if not (-1 <= wheel_value <= 1):
-        raise InvalidWheelValue('Wheel value must be between -1 and 1: %s' %
+    if wheel_value not in (-1, 0, 1):
+        raise InvalidWheelValue('Wheel value must be -1, 0, or 1: %s' %
                                 wheel_value)
     return wheel_value
