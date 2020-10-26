@@ -11,8 +11,8 @@ def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
     buf[2] = (x >> 8) & 0xff
     buf[3] = y & 0xff
     buf[4] = (y >> 8) & 0xff
-    buf[5] = _limit_scroll(vertical_wheel_delta) & 0xff
-    buf[6] = _limit_scroll(horizontal_wheel_delta) & 0xff
+    buf[5] = vertical_wheel_delta & 0xff
+    buf[6] = horizontal_wheel_delta & 0xff
     hid_write.write_to_hid_interface(mouse_path, buf)
 
 
@@ -22,7 +22,3 @@ def _scale_mouse_coordinates(relative_x, relative_y):
     x = int(relative_x * max_hid_value)
     y = int(relative_y * max_hid_value)
     return x, y
-
-
-def _limit_scroll(wheel):
-    return min(127, max(-127, wheel))
