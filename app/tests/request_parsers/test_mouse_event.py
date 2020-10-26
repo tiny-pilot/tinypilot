@@ -35,6 +35,66 @@ class MouseEventTest(unittest.TestCase):
                 'horizontal_wheel_delta': 0,
             }))
 
+    def test_parses_valid_negative_vertical_scroll(self):
+        self.assertEqual(
+            mouse_event.MouseEvent(buttons=0,
+                                   relative_x=0.0,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=-1,
+                                   horizontal_wheel_delta=0),
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': -1,
+                'horizontal_wheel_delta': 0,
+            }))
+
+    def test_parses_valid_positive_vertical_scroll(self):
+        self.assertEqual(
+            mouse_event.MouseEvent(buttons=0,
+                                   relative_x=0.0,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=1,
+                                   horizontal_wheel_delta=0),
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 1,
+                'horizontal_wheel_delta': 0,
+            }))
+
+    def test_parses_valid_negative_horizontal_scroll(self):
+        self.assertEqual(
+            mouse_event.MouseEvent(buttons=0,
+                                   relative_x=0.0,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=-1),
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0,
+                'horizontal_wheel_delta': -1,
+            }))
+
+    def test_parses_valid_positive_horizontal_scroll(self):
+        self.assertEqual(
+            mouse_event.MouseEvent(buttons=0,
+                                   relative_x=0.0,
+                                   relative_y=0.75,
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=1),
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0,
+                'horizontal_wheel_delta': 1,
+            }))
+
     def test_parses_valid_mouse_event_with_all_buttons_pressed(self):
         self.assertEqual(
             mouse_event.MouseEvent(buttons=31,
@@ -167,7 +227,7 @@ class MouseEventTest(unittest.TestCase):
                 'horizontal_wheel_delta': 0,
             })
 
-    def test_rejects_missing_v_wheel_field(self):
+    def test_rejects_missing_vertical_wheel_field(self):
         with self.assertRaises(mouse_event.MissingField):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
@@ -175,7 +235,7 @@ class MouseEventTest(unittest.TestCase):
                 'horizontal_wheel_delta': 0,
             })
 
-    def test_rejects_missing_h_wheel_field(self):
+    def test_rejects_missing_horizontal_wheel_field(self):
         with self.assertRaises(mouse_event.MissingField):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
@@ -183,7 +243,7 @@ class MouseEventTest(unittest.TestCase):
                 'vertical_wheel_delta': 0,
             })
 
-    def test_rejects_non_int_v_wheel_value(self):
+    def test_rejects_string_vertical_wheel_value(self):
         with self.assertRaises(mouse_event.InvalidWheelValue):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
@@ -193,7 +253,37 @@ class MouseEventTest(unittest.TestCase):
                 'horizontal_wheel_delta': 0,
             })
 
-    def test_rejects_non_int_h_wheel_value(self):
+    def test_rejects_float_vertical_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0.5,
+                'horizontal_wheel_delta': 0,
+            })
+
+    def test_rejects_too_high_vertical_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 2,
+                'horizontal_wheel_delta': 0,
+            })
+
+    def test_rejects_too_low_vertical_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': -2,
+                'horizontal_wheel_delta': 0,
+            })
+
+    def test_rejects_string_horizontal_wheel_value(self):
         with self.assertRaises(mouse_event.InvalidWheelValue):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
@@ -201,4 +291,34 @@ class MouseEventTest(unittest.TestCase):
                 'relativeY': 0.75,
                 'vertical_wheel_delta': 0,
                 'horizontal_wheel_delta': 'a',
+            })
+
+    def test_rejects_float_horizontal_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0,
+                'horizontal_wheel_delta': 0.5,
+            })
+
+    def test_rejects_too_high_horizontal_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0,
+                'horizontal_wheel_delta': 2,
+            })
+
+    def test_rejects_too_low_horizontal_wheel_value(self):
+        with self.assertRaises(mouse_event.InvalidWheelValue):
+            mouse_event.parse_mouse_event({
+                'buttons': 0,
+                'relativeX': 0.5,
+                'relativeY': 0.75,
+                'vertical_wheel_delta': 0,
+                'horizontal_wheel_delta': -2,
             })

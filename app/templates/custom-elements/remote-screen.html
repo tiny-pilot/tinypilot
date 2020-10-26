@@ -275,6 +275,15 @@
           );
         }
 
+        // Different browsers produce wildly different values for wheel scroll
+        // delta, so just reduce it to -1, 0, or 1.
+        normalizeWheelDelta(delta) {
+          if (!delta) {
+            return 0;
+          }
+          return Math.sign(delta);
+        }
+
         sendMouseEvent(evt) {
           const boundingRect = evt.target.getBoundingClientRect();
           const cursorX = Math.max(0, evt.clientX - boundingRect.left);
@@ -283,8 +292,8 @@
           const height = boundingRect.bottom - boundingRect.top;
           const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
           const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
-          const verticalWheelDelta = Math.sign(evt.deltaY) * -1 || 0;
-          const horizontalWheelDelta = Math.sign(evt.deltaX) || 0;
+          const verticalWheelDelta = this.normalizeWheelDelta(evt.deltaY) * -1;
+          const horizontalWheelDelta = this.normalizeWheelDelta(evt.deltaX);
           this.dispatchEvent(
             new CustomEvent("mouse-event", {
               detail: {
