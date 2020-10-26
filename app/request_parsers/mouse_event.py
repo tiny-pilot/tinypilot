@@ -37,6 +37,10 @@ class MouseEvent:
     relative_x: int
     relative_y: int
 
+    # Wheel deltas can either be:
+    # -1 - Scroll up.
+    #  0 - Don't change scroll position.
+    #  1 - Scroll down.
     vertical_wheel_delta: int
     horizontal_wheel_delta: int
 
