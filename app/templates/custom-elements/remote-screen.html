@@ -283,16 +283,16 @@
           const height = boundingRect.bottom - boundingRect.top;
           const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
           const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
-          const vwheel = Math.sign(evt.deltaY) * -1 || 0;
-          const hwheel = Math.sign(evt.deltaX) || 0;
+          const verticalWheelDelta = Math.sign(evt.deltaY) * -1 || 0;
+          const horizontalWheelDelta = Math.sign(evt.deltaX) || 0;
           this.dispatchEvent(
             new CustomEvent("mouse-event", {
               detail: {
                 buttons: evt.buttons,
                 relativeX,
                 relativeY,
-                vwheel,
-                hwheel,
+                verticalWheelDelta,
+                horizontalWheelDelta,
               },
               bubbles: true,
               composed: true,

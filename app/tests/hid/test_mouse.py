@@ -12,8 +12,8 @@ class MouseTest(unittest.TestCase):
                                    buttons=0x01,
                                    relative_x=0.5,
                                    relative_y=0.75,
-                                   vwheel=0,
-                                   hwheel=0),
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=0),
             input_file.seek(0)
             # Byte 0   = Button 1 pressed
             # Byte 1-2 = 32767 * 0.5 = 16383.5 = 0x3fff (little-endian)
@@ -26,8 +26,8 @@ class MouseTest(unittest.TestCase):
                                    buttons=0,
                                    relative_x=0.0,
                                    relative_y=1.0,
-                                   vwheel=0,
-                                   hwheel=0),
+                                   vertical_wheel_delta=0,
+                                   horizontal_wheel_delta=0),
             input_file.seek(0)
             # Byte 0   = No buttons pressed
             # Byte 1-2 = 32767 * 0.0 = 0 = 0x0000

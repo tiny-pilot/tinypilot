@@ -213,7 +213,13 @@ function onKeyDown(evt) {
   clearManualModifiers();
 }
 
-function sendMouseEvent(buttons, relativeX, relativeY, vwheel, hwheel) {
+function sendMouseEvent(
+  buttons,
+  relativeX,
+  relativeY,
+  verticalWheelDelta,
+  horizontalWheelDelta
+) {
   if (!connectedToServer) {
     return;
   }
@@ -225,8 +231,8 @@ function sendMouseEvent(buttons, relativeX, relativeY, vwheel, hwheel) {
       buttons,
       relativeX,
       relativeY,
-      vwheel,
-      hwheel,
+      verticalWheelDelta,
+      horizontalWheelDelta,
     },
     (response) => {
       const requestEndTime = unixTime();
@@ -378,8 +384,8 @@ document
       evt.detail.buttons,
       evt.detail.relativeX,
       evt.detail.relativeY,
-      evt.detail.vwheel,
-      evt.detail.hwheel
+      evt.detail.verticalWheelDelta,
+      evt.detail.horizontalWheelDelta
     );
   });
 const displayHistoryCheckbox = document.getElementById(
