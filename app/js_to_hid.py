@@ -152,7 +152,7 @@ def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
         165: layout.KEYCODE_U_ACCENT,
         169: layout.KEYCODE_RIGHT_PARENTHESIS,
         170: layout.KEYCODE_BACKSLASH,
-        173: layout.KEYCODE_EQUAL_SIGN,
+        173: layout.KEYCODE_MINUS,
         179: layout.KEYCODE_MEDIA_PLAY_PAUSE,
         168: layout.KEYCODE_REFRESH,
         186: layout.KEYCODE_SEMICOLON,
