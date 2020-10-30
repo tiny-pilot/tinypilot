@@ -167,6 +167,7 @@ def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
         221: layout.KEYCODE_RIGHT_BRACKET,
         222: layout.KEYCODE_SINGLE_QUOTE,
         223: layout.KEYCODE_ACCENT_GRAVE,
+        224: layout.KEYCODE_RIGHT_META if right else layout.KEYCODE_LEFT_META,
         225: layout.KEYCODE_RIGHT_ALT,
     }
 
