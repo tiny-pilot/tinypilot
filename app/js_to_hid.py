@@ -1,6 +1,7 @@
 from hid.keycodes import azerty
 from hid.keycodes import modifiers
 from hid.keycodes import qwerty
+from hid.keycodes import norwegian
 
 
 class Error(Exception):
@@ -169,6 +170,7 @@ def _get_keycode_mapping(keyboard_layout_string, is_right_modifier):
         223: layout.KEYCODE_ACCENT_GRAVE,
         224: layout.KEYCODE_RIGHT_META if right else layout.KEYCODE_LEFT_META,
         225: layout.KEYCODE_RIGHT_ALT,
+        226: layout.KEYCODE_LESS_THAN,
     }
 
 
@@ -176,6 +178,7 @@ def _get_target_keyboard_layout(keyboard_layout_string):
     mappings = {
         'QWERTY': qwerty,
         'AZERTY': azerty,
+        'NORWEGIAN': norwegian,
     }
     try:
         return mappings[keyboard_layout_string.upper()]
