@@ -13,10 +13,13 @@ fi
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
 USE_TC358743_DEFAULTS=''
-if [ -f /home/ustreamer/config.yml ] && grep --silent 'capture_device: "tc358743"' /home/ustreamer/config.yml; then
-  USE_TC358743_DEFAULTS='y'
-fi
-if [[ "$TINYPILOT_INSTALL_VARS" =~ 'ustreamer_capture_device=tc358743' ]]; then
+if [[ "$TINYPILOT_INSTALL_VARS" =~ 'ustreamer_capture_device=' ]]; then
+  if [[ "$TINYPILOT_INSTALL_VARS" =~ 'ustreamer_capture_device=tc358743' ]]; then
+    USE_TC358743_DEFAULTS='y'
+  fi
+# Only check the existing config file if user has not set
+# ustreamer_capture_device install variable.
+elif [ -f /home/ustreamer/config.yml ] && grep --silent 'capture_device: "tc358743"' /home/ustreamer/config.yml; then
   USE_TC358743_DEFAULTS='y'
 fi
 
