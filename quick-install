@@ -6,13 +6,6 @@ set -x
 # Exit on first error.
 set -e
 
-# Remove the legacy nginx config, as it will conflict with tinypilot.conf if
-# both are present.
-if [ -f /etc/nginx/sites-enabled/KVMPi.conf ]
-then
-  sudo rm /etc/nginx/sites-enabled/KVMPi.conf
-fi
-
 if [ -z "$TINYPILOT_INSTALL_VARS" ]
 then
   TINYPILOT_INSTALL_VARS=""
