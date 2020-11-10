@@ -372,6 +372,15 @@ function setCursor(cursor, save = true) {
   }
 }
 
+function screenShot() {
+  var link = document.createElement("a");
+  link.href = "/snapshot";
+  link.download = "TinyPilot-" + new Date().getTime() + ".jpg";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
@@ -405,6 +414,10 @@ document.getElementById("hide-error-btn").addEventListener("click", () => {
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
+document.getElementById("screenshot-btn").addEventListener("click", (evt) => {
+  screenShot();
+  evt.preventDefault();
+});
 document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
   document.getElementById("remote-screen").fullscreen = true;
   evt.preventDefault();
