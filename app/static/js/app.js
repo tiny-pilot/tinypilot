@@ -144,10 +144,7 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  let keyCard = undefined;
-  if (!keystroke.metaKey) {
-    keyCard = addKeyCard(keystroke.key);
-  }
+  let keyCard = addKeyCard(keystroke.key);
   sendKeystroke(socket, keystroke)
     .then(() => {
       keyCard.classList.add("processed-key-card");
