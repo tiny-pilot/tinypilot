@@ -1,7 +1,7 @@
 from hid.keycodes import azerty
 from hid.keycodes import modifiers
-from hid.keycodes import qwerty
 from hid.keycodes import norwegian
+from hid.keycodes import qwerty
 
 
 class Error(Exception):
