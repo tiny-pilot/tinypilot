@@ -152,7 +152,7 @@ function sendKeystroke(keystroke) {
       if (result.success) {
         keyCard.classList.add("processed-key-card");
       } else {
-        keyCard.classList.add("unsupported-key-card");
+        keyCard.classList.add("failed-key-card");
       }
     }
   });
