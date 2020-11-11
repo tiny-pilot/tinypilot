@@ -1,5 +1,3 @@
-# Source: https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
-
 KEYCODE_A = 0x04
 KEYCODE_B = 0x05
 KEYCODE_C = 0x06
@@ -125,7 +123,7 @@ KEYCODE_RIGHT_META = 0xe7
 KEYCODE_MEDIA_PLAY_PAUSE = 0xe8
 KEYCODE_REFRESH = 0xfa
 
-# Keycodes that have no mapping in QWERTY
+# Keycodes that have no mapping in Norwegian keyboard layout.
 KEYCODE_CARET = 0x0
 KEYCODE_COLON = 0x0
 KEYCODE_DOLLAR_SIGN = 0x0
