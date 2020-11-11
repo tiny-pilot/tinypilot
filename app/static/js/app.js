@@ -40,14 +40,8 @@ function addKeyCard(key) {
   if (!settings.isKeyHistoryEnabled()) {
     return null;
   }
-  const card = document.createElement("div");
-  card.classList.add("key-card");
-  let keyLabel = key;
-  if (key === " ") {
-    keyLabel = "Space";
-  }
-  card.style.fontSize = `${1.1 - 0.08 * keyLabel.length}em`;
-  card.innerText = keyLabel;
+  const card = document.createElement("key-history-card");
+  card.key = key;
   document.getElementById("recent-keys").appendChild(card);
   limitRecentKeys(10);
   return card;
@@ -147,10 +141,10 @@ function processKeystroke(keystroke) {
   let keyCard = addKeyCard(keystroke.key);
   sendKeystroke(socket, keystroke)
     .then(() => {
-      keyCard.classList.add("processed-key-card");
+      keyCard.succeeded = true;
     })
     .catch(() => {
-      keyCard.classList.add("failed-key-card");
+      keyCard.failed = true;
     });
 }
 

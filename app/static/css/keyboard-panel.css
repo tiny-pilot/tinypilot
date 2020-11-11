@@ -22,24 +22,6 @@
   min-height: 0px;
 }
 
-.key-card {
-  margin: 1rem;
-  padding: 1rem;
-  display: block;
-  background-color: aliceblue;
-  font-family: "Courier New", Courier, monospace;
-  border: 1px solid gray;
-  width: 40px;
-}
-
-.processed-key-card {
-  background-color: rgb(168, 255, 168);
-}
-
-.failed-key-card {
-  background-color: red;
-}
-
 .manual-modifiers {
   border: 1px dotted rgba(0, 0, 0, 0.226);
   margin-top: 1rem;
