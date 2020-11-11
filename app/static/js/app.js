@@ -1,6 +1,7 @@
 "use strict";
 
 import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
 const socket = io();
@@ -136,26 +137,24 @@ function browserLanguage() {
 }
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
-function sendKeystroke(keystroke) {
+function processKeystroke(keystroke) {
   // On Android, when the user is typing with autocomplete enabled, the browser
   // sends dummy keydown events with a keycode of 229. Ignore these events, as
   // there's no way to map it to a real key.
   if (keystroke.keyCode === 229) {
-    return;
+    resolve({});
   }
   let keyCard = undefined;
   if (!keystroke.metaKey) {
     keyCard = addKeyCard(keystroke.key);
   }
-  socket.emit("keystroke", keystroke, (result) => {
-    if (keyCard) {
-      if (result.success) {
-        keyCard.classList.add("processed-key-card");
-      } else {
-        keyCard.classList.add("failed-key-card");
-      }
-    }
-  });
+  sendKeystroke(socket, keystroke)
+    .then(() => {
+      keyCard.classList.add("processed-key-card");
+    })
+    .catch(() => {
+      keyCard.classList.add("failed-key-card");
+    });
 }
 
 function onSocketConnect() {
@@ -199,7 +198,7 @@ function onKeyDown(evt) {
     location = "right";
   }
 
-  sendKeystroke({
+  processKeystroke({
     metaKey: evt.metaKey || document.getElementById("meta-modifier").pressed,
     altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
     shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
@@ -288,7 +287,7 @@ function onModifierKeyButtonDoubleClick(evt) {
   }
   const mapping = keyMappings[evt.target.id];
 
-  sendKeystroke({
+  processKeystroke({
     metaKey:
       mapping.key === "Meta" ||
       document.getElementById("meta-modifier").pressed,
@@ -341,7 +340,7 @@ function sendTextInput(textInput) {
     // We need to identify keys which are typed with modifiers and send Shift +
     // the lowercase key.
     const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
-    sendKeystroke({
+    processKeystroke({
       metaKey: false,
       altKey: false,
       shiftKey: requiresShiftKey.test(textInput[i]),
