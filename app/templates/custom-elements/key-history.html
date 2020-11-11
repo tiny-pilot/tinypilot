@@ -1,0 +1,99 @@
+<template id="key-history-template">
+  <style>
+    .key-history {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      min-width: 800px;
+      min-height: 90px;
+      transition: min-height 0.25s ease-in;
+    }
+
+    :host([show="false"]) .key-history {
+      min-height: 0px;
+    }
+  </style>
+  <div class="key-history"></div>
+  <div>
+    <input type="checkbox" id="display-history-checkbox" checked />
+    <label for="display-history-checkbox">Show history</label>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#key-history-template");
+    // Hacky workaround for the fact that when onDisplayHistoryChanged fires,
+    // the "this" variable has a value that's different than the rest of the
+    // class, and I don't understand why.
+    let instance = null;
+
+    customElements.define(
+      "key-history",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          instance = this;
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this.shadowRoot
+            .getElementById("display-history-checkbox")
+            .addEventListener("change", this.onDisplayHistoryChanged);
+        }
+
+        disconnectedCallback() {
+          this.shadowRoot
+            .getElementById("display-history-checkbox")
+            .removeEventListener("change", this.onDisplayHistoryChanged);
+        }
+
+        // Limit display of recent keys to the last N keys, where limit = N.
+        limitRecentKeys(limit) {
+          const keyHistoryDiv = this.shadowRoot.querySelector(".key-history");
+          while (keyHistoryDiv.childElementCount > limit) {
+            keyHistoryDiv.removeChild(keyHistoryDiv.firstChild);
+          }
+        }
+
+        addKeyCard(key) {
+          if (!this.show) {
+            return null;
+          }
+          const card = document.createElement("key-history-card");
+          card.key = key;
+          this.shadowRoot.querySelector(".key-history").appendChild(card);
+          this.limitRecentKeys(10);
+          return card;
+        }
+
+        onDisplayHistoryChanged(evt) {
+          if (evt.target.checked) {
+            instance.show = true;
+            instance.dispatchEvent(new Event("history-enabled"));
+          } else {
+            instance.show = false;
+            instance.limitRecentKeys(0);
+            instance.dispatchEvent(new Event("history-disabled"));
+          }
+        }
+
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          this.setAttribute("show", newValue);
+          this.shadowRoot.getElementById(
+            "display-history-checkbox"
+          ).checked = newValue;
+        }
+      }
+    );
+  })();
+</script>
