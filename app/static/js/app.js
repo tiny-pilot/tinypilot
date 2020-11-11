@@ -319,35 +319,44 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-function sendTextInput(textInput) {
+// Translates a single character into a keystroke and sends it to the backend.
+function processTextCharacter(textCharacter, language) {
+  // Ignore carriage returns.
+  if (textCharacter === "\r") {
+    return;
+  }
+
+  const keyCode = findKeyCode([textCharacter.toLowerCase()], language);
+  let friendlyName = textCharacter;
+  // Give cleaner names to keys so that they render nicely in the history.
+  if (textCharacter === "\n") {
+    friendlyName = "Enter";
+  } else if (textCharacter === "\t") {
+    friendlyName = "Tab";
+  }
+
+  // We need to identify keys which are typed with modifiers and send Shift +
+  // the lowercase key.
+  const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
+  processKeystroke({
+    metaKey: false,
+    altKey: false,
+    shiftKey: requiresShiftKey.test(textCharacter),
+    ctrlKey: false,
+    altGraphKey: false,
+    sysrqKey: false,
+    key: friendlyName,
+    keyCode: keyCode,
+    location: null,
+  });
+}
+
+// Translates a string of text into individual keystrokes and sends them to the
+// backend.
+function processTextInput(textInput) {
   const language = browserLanguage();
-  for (let i = 0; i < textInput.length; i++) {
-    let key = textInput[i];
-    // Ignore carriage returns.
-    if (key === "\r") {
-      continue;
-    }
-    const keyCode = findKeyCode([textInput[i].toLowerCase()], language);
-    // Give cleaner names to keys so that they render nicely in the history.
-    if (key === "\n") {
-      key = "Enter";
-    } else if (key === "\t") {
-      key = "Tab";
-    }
-    // We need to identify keys which are typed with modifiers and send Shift +
-    // the lowercase key.
-    const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
-    processKeystroke({
-      metaKey: false,
-      altKey: false,
-      shiftKey: requiresShiftKey.test(textInput[i]),
-      ctrlKey: false,
-      altGraphKey: false,
-      sysrqKey: false,
-      key: key,
-      keyCode: keyCode,
-      location: null,
-    });
+  for (const textCharacter of textInput) {
+    processTextCharacter(textCharacter, language);
   }
 }
 
@@ -414,7 +423,7 @@ document.getElementById("paste-btn").addEventListener("click", () => {
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
-    sendTextInput(evt.detail);
+    processTextInput(evt.detail);
 
     // Give focus back to the app for normal text input.
     document.getElementById("app").focus();
