@@ -83,6 +83,7 @@ TinyPilot accepts various options through environment variables:
 | `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
 | `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
 | `KEYBOARD_LAYOUT`    | `QWERTY`     | Keyboard layout on target computer. Options are: `QWERTY`, `AZERTY`, `NORWEGIAN`. |
+| `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
 
 ## Upgrades
 
