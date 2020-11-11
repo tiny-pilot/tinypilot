@@ -319,7 +319,7 @@ function onDisplayHistoryChanged(evt) {
   }
 }
 
-// Translates a single character into a keystroke and sends it to the backend.
+// Translate a single character into a keystroke and sends it to the backend.
 function processTextCharacter(textCharacter, language) {
   // Ignore carriage returns.
   if (textCharacter === "\r") {
@@ -351,7 +351,7 @@ function processTextCharacter(textCharacter, language) {
   });
 }
 
-// Translates a string of text into individual keystrokes and sends them to the
+// Translate a string of text into individual keystrokes and sends them to the
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
