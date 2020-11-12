@@ -28,25 +28,6 @@ function showElementById(id, display = "block") {
   document.getElementById(id).style.display = display;
 }
 
-// Limit display of recent keys to the last N keys, where limit = N.
-function limitRecentKeys(limit) {
-  const recentKeysDiv = document.getElementById("recent-keys");
-  while (recentKeysDiv.childElementCount > limit) {
-    recentKeysDiv.removeChild(recentKeysDiv.firstChild);
-  }
-}
-
-function addKeyCard(key) {
-  if (!settings.isKeyHistoryEnabled()) {
-    return null;
-  }
-  const card = document.createElement("key-history-card");
-  card.key = key;
-  document.getElementById("recent-keys").appendChild(card);
-  limitRecentKeys(10);
-  return card;
-}
-
 function showError(errorType, errorMessage) {
   document.getElementById("error-type").innerText = errorType;
   document.getElementById("error-message").innerText = errorMessage;
@@ -134,8 +115,14 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  let keyCard = addKeyCard(keystroke.key);
-  sendKeystroke(socket, keystroke)
+  const keyCard = document
+    .querySelector("key-history")
+    .addKeyCard(keystroke.key);
+  const result = sendKeystroke(socket, keystroke);
+  if (!keyCard) {
+    return;
+  }
+  result
     .then(() => {
       keyCard.succeeded = true;
     })
@@ -298,17 +285,6 @@ function onModifierKeyButtonDoubleClick(evt) {
   clearManualModifiers();
 }
 
-function onDisplayHistoryChanged(evt) {
-  if (evt.target.checked) {
-    document.getElementById("recent-keys").classList.remove("hide-keys");
-    settings.enableKeyHistory();
-  } else {
-    document.getElementById("recent-keys").classList.add("hide-keys");
-    limitRecentKeys(0);
-    settings.disableKeyHistory();
-  }
-}
-
 // Translate a single character into a keystroke and sends it to the backend.
 function processTextCharacter(textCharacter, language) {
   // Ignore carriage returns.
@@ -383,14 +359,6 @@ document
       evt.detail.horizontalWheelDelta
     );
   });
-const displayHistoryCheckbox = document.getElementById(
-  "display-history-checkbox"
-);
-displayHistoryCheckbox.addEventListener("change", onDisplayHistoryChanged);
-displayHistoryCheckbox.checked = settings.isKeyHistoryEnabled();
-if (!settings.isKeyHistoryEnabled()) {
-  document.getElementById("recent-keys").classList.add("hide-keys");
-}
 document.getElementById("power-btn").addEventListener("click", () => {
   document.getElementById("shutdown-dialog").show = true;
 });
@@ -432,6 +400,15 @@ document
 for (const modifierKey of document.getElementsByTagName("modifier-key")) {
   modifierKey.addEventListener("dblclick", onModifierKeyButtonDoubleClick);
 }
+
+const keyHistory = document.querySelector("key-history");
+keyHistory.show = settings.isKeyHistoryEnabled();
+keyHistory.addEventListener("history-enabled", () => {
+  settings.enableKeyHistory();
+});
+keyHistory.addEventListener("history-disabled", () => {
+  settings.disableKeyHistory();
+});
 
 // Add cursor options to navbar.
 const cursorList = document.getElementById("cursor-list");
