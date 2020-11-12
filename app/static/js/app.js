@@ -54,11 +54,7 @@ function showError(errorType, errorMessage) {
 }
 
 function displayPoweringDownUI(restart) {
-  for (const elementId of [
-    "error-panel",
-    "remote-screen",
-    "keystroke-history",
-  ]) {
+  for (const elementId of ["error-panel", "remote-screen", "keystroke-panel"]) {
     hideElementById(elementId);
   }
   const shutdownWait = document.getElementById("shutdown-wait");
