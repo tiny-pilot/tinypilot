@@ -1,13 +1,11 @@
-<template id="modifier-key-template">
+<template id="key-dual-template">
   <style>
-    /* @import "css/button.css"; */
 
     .key{
       position: relative;;
       display:block;
       float:left;
-      width: 40px;
-      height:40px;
+      width: 40px; height:40px;
       font-size: 14px;
       background-color:#fff;
       line-height: 14px;
@@ -18,24 +16,25 @@
       border: 0 solid black;
     }
 
-    .key .content {
+    .key .content-top {
       position: absolute;
       top: 5px;
       left: 5px;
     }
 
-    .key-extend-half {
-      width: 60px;
-    }
-
-    .key-extend-double {
-      width: 80px;
+    .key .content-bottom {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
     }
 
   </style>
-  <button type="button" class="key key-extend-half">
-    <span id="key-content" class="content">
-      <slot></slot>
+  <button type="button" class="key">
+    <span id="key-content-top" class="content-top">
+      <slot name="top"></slot>
+    </span>
+    <span id="key-content-bottom" class="content-bottom">
+      <slot name="bottom"></slot>
     </span>
   </button>
 </template>
@@ -44,10 +43,10 @@
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
-    const template = doc.querySelector("#modifier-key-template");
+    const template = doc.querySelector("#key-dual-template");
 
     customElements.define(
-      "modifier-key",
+      "tp-key-dual",
       class extends HTMLElement {
         constructor() {
           super();
