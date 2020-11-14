@@ -2,6 +2,8 @@
 @import "cursors.css";
 @import "keyboard-panel.css";
 @import "navbar.css";
+@import "on-screen-keyboard.css";
+
 
 body {
   margin: 0;

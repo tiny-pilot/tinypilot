@@ -1,0 +1,48 @@
+::selection{background-color:none; color:inherit;}
+
+
+.keyboard{
+  width:800px; height: 320px;
+  background-color: #f7f7f7;
+  margin: 0px auto;
+  padding: 30px;
+  color: #333;
+}
+
+.keyboard-row {
+  width: 650px;
+  float: left;
+}
+
+.keyboard-row-bump {
+  padding-bottom: 32px;
+}
+
+.backspace {width:84px; font-size: 12px;}
+.tab {width: 50px; line-height: 40px; font-size:13px;}
+.letter{width:30px;}
+.slash{width:64px;}
+.caps{width:70px; font-size:12px; line-height:18px;}
+.enter{width:92px; line-height:40px; text-align: center; padding-left:0;}
+.shift.left{width: 90px;line-height: 40px; font-size:13px;}
+.shift.right{width: 104px;line-height: 40px; font-size:13px;}
+.ctrl .key{width: 50px; line-height: 40px; font-size:13px;}
+.space{width:234px;}
+.function{font-size: 12px; width:30px; height:30px; margin-bottom:15px;}
+.small{font-size:10px; line-height:13px; text-align: center; padding:0 5px; padding-top:2px; height:28px !important;}
+.space1{margin-right: 43px !important;}
+.space2{margin-right: 25px !important;}
+
+.key{
+  width: 40px; height:40px;
+  display:block;
+  background-color:#333;
+  text-align: left;
+  padding-left: 8px;
+  line-height: 29px;
+  border-radius:2px;
+  float:left; margin-left: 2px;
+  margin-bottom:2px;
+  cursor: pointer;
+  transition: box-shadow 0.7s ease;
+}
