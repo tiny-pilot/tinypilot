@@ -4,27 +4,62 @@
       position: relative;
       display: block;
       float: left;
-      width: 40px;
-      height: 40px;
-      font-size: 14px;
+      width: 50px;
+      height: 50px;
+      font-size: 12px;
       background-color: #fff;
-      line-height: 14px;
+      line-height: 16px;
       border-radius: 2px;
-      margin-left: 2px;
-      margin-bottom: 2px;
+      margin: 1px;
       cursor: pointer;
-      border: 0 solid black;
+      border: 0 solid #fff;
+      text-align: left;
     }
 
-    .key .content {
+    .key .content-top {
       position: absolute;
       top: 5px;
       left: 5px;
     }
+
+    .key .content-bottom {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+
+    .key.key-collapse-half {
+      width: 24px;
+    }
+
+    .key.key-extend-half {
+      width: 77px;
+    }
+
+    .key.key-extend-full {
+      width: 102px;
+    }
+
+    .key.key-extend-full-half {
+      width: 128px;
+    }
+
+    .key.key-space {
+      width: 229px;
+    }
+
+
   </style>
-  <button type="button" class="key">
-    <span id="key-content" class="content">
+  <button id="key-button" type="button" class="key">
+    <span id="key-content-top" class="content-top">
       <slot></slot>
+    </span>
+    <span id="key-content-bottom" class="content-bottom">
+      <slot name="bottom"></slot>
     </span>
   </button>
 </template>
@@ -47,7 +82,17 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          const instance = template.content.cloneNode(true);
+
+          // if special css classes passed for button, add them
+          if (this.getAttribute('button-class')){
+            const childClasses = this.getAttribute('button-class')
+            const button = instance.querySelector('#key-button')
+            childClasses.split(' ').forEach(cls => {
+              button.classList.add(cls);
+            })
+          }
+          this.shadowRoot.appendChild(instance);
         }
 
         get pressed() {

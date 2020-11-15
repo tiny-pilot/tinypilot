@@ -2,172 +2,217 @@
   <key-history></key-history>
   <div>
     <div class="keyboard">
-      <div class="keyboard-row keyboard-row-bump">
-        <tp-key>Esc</tp-key>
-        <tp-key>F1</tp-key>
-        <tp-key>F2</tp-key>
-        <tp-key>F3</tp-key>
-        <tp-key>F4</tp-key>
-        <tp-key>F5</tp-key>
-        <tp-key>F6</tp-key>
-        <tp-key>F7</tp-key>
-        <tp-key>F8</tp-key>
-        <tp-key>F9</tp-key>
-        <tp-key>F10</tp-key>
-        <tp-key>F11</tp-key>
-        <tp-key>F12</tp-key>
+      <div id="keyboard-block-left" class="keyboard-block">
+
+        <div class="keyboard-row keyboard-row-bump">
+          <tp-key>Esc</tp-key>
+          <tp-key button-class="hidden"></tp-key>
+          <tp-key>F1</tp-key>
+          <tp-key>F2</tp-key>
+          <tp-key>F3</tp-key>
+          <tp-key>F4</tp-key>
+          <tp-key button-class="hidden key-collapse-half"></tp-key>
+
+          <tp-key>F5</tp-key>
+          <tp-key>F6</tp-key>
+          <tp-key>F7</tp-key>
+          <tp-key>F8</tp-key>
+          <tp-key button-class="hidden key-collapse-half"></tp-key>
+
+          <tp-key>F9</tp-key>
+          <tp-key>F10</tp-key>
+          <tp-key>F11</tp-key>
+          <tp-key>F12</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+
+        <div class="keyboard-row">
+          <tp-key>
+            <slot>~</slot>
+            <span slot="bottom">`</span>
+          </tp-key>
+          <tp-key>
+            <slot>!</slot>
+            <span slot="bottom">1</span>
+          </tp-key>
+          <tp-key>
+            <slot>@</slot>
+            <span slot="bottom">2</span>
+          </tp-key>
+          <tp-key>
+            <slot>#</slot>
+            <span slot="bottom">3</span>
+          </tp-key>
+          <tp-key>
+            <slot>$</slot>
+            <span slot="bottom">4</span>
+          </tp-key>
+          <tp-key>
+            <slot>%</slot>
+            <span slot="bottom">5</span>
+          </tp-key>
+          <tp-key>
+            <slot>^</slot>
+            <span slot="bottom">6</span>
+          </tp-key>
+          <tp-key>
+            <slot>&</slot>
+            <span slot="bottom">7</span>
+          </tp-key>
+          <tp-key>
+            <slot>*</slot>
+            <span slot="bottom">8</span>
+          </tp-key>
+          <tp-key>
+            <slot>(</slot>
+            <span slot="bottom">9</span>
+          </tp-key>
+          <tp-key>
+            <slot>)</slot>
+            <span slot="bottom">0</span>
+          </tp-key>
+          <tp-key>
+            <slot>_</slot>
+            <span slot="bottom">-</span>
+          </tp-key>
+          <tp-key>
+            <slot>+</slot>
+            <span slot="bottom">=</span>
+          </tp-key>
+
+          <tp-key button-class="key-extend-full">Backspace</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+
+        <div class="keyboard-row">
+          <tp-key button-class="key-extend-full">Tab</tp-key>
+          <tp-key>Q</tp-key>
+          <tp-key>W</tp-key>
+          <tp-key>E</tp-key>
+          <tp-key>R</tp-key>
+          <tp-key>T</tp-key>
+          <tp-key>Y</tp-key>
+          <tp-key>U</tp-key>
+          <tp-key>I</tp-key>
+          <tp-key>O</tp-key>
+          <tp-key>P</tp-key>
+          <tp-key>
+            <slot>{</slot>
+            <span slot="bottom">[</span>
+          </tp-key>
+          <tp-key>
+            <slot>}</slot>
+            <span slot="bottom">]</span>
+          </tp-key>
+          <tp-key>
+            <slot>|</slot>
+            <span slot="bottom">\</span>
+          </tp-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row">
+          <tp-key button-class="key-extend-full">Caps Lock</tp-key>
+          <tp-key>A</tp-key>
+          <tp-key>S</tp-key>
+          <tp-key>D</tp-key>
+          <tp-key>F</tp-key>
+          <tp-key>G</tp-key>
+          <tp-key>H</tp-key>
+          <tp-key>J</tp-key>
+          <tp-key>K</tp-key>
+          <tp-key>L</tp-key>
+          <tp-key>
+            <slot>:</slot>
+            <span slot="bottom">;</span>
+          </tp-key>
+          <tp-key>
+            <slot>"</slot>
+            <span slot="bottom">'</span>
+          </tp-key>
+
+          <tp-key button-class="key-extend-full">Enter</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+
+        <div class="keyboard-row">
+          <tp-key button-class="key-extend-full-half" >Shift</tp-key>
+
+          <tp-key>Z</tp-key>
+          <tp-key>X</tp-key>
+          <tp-key>C</tp-key>
+          <tp-key>V</tp-key>
+          <tp-key>B</tp-key>
+          <tp-key>N</tp-key>
+          <tp-key>M</tp-key>
+          <tp-key>
+            <slot><</slot>
+            <span slot="bottom">,</span>
+          </tp-key>
+          <tp-key>
+            <slot>></slot>
+            <span slot="bottom">.</span>
+          </tp-key>
+          <tp-key>
+            <slot>?</slot>
+            <span slot="bottom">/</span>
+          </tp-key>
+          <tp-key button-class="key-extend-full-half" >Shift</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+
+        <div class="keyboard-row">
+          <tp-key button-class="key-extend-full">Ctrl</tp-key>
+          <tp-key button-class="key-extend-half">Super</tp-key>
+          <tp-key >Alt</tp-key>
+          <tp-key button-class="key-space">Space</tp-key>
+          <tp-key >Alt</tp-key>
+          <tp-key button-class="key-extend-half">Super</tp-key>
+          <tp-key button-class="key-extend-half">Menu</tp-key>
+          <tp-key button-class="key-extend-full">Ctrl</tp-key>
+        </div>
+        <!-- end keyboard-row -->
       </div>
-      <!-- end keyboard-row -->
+      <div id="keyboard-block-right" class="keyboard-block">
+        <div class="keyboard-row keyboard-row-bump">
+          <tp-key>Print</tp-key>
+          <tp-key>Scroll Lock</tp-key>
+          <tp-key>Pause</tp-key>
 
-      <div class="keyboard-row">
-        <tp-key-dual>
-          <span slot="top">~</span>
-          <span slot="bottom">`</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">!</span>
-          <span slot="bottom">1</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">@</span>
-          <span slot="bottom">2</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">#</span>
-          <span slot="bottom">3</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">$</span>
-          <span slot="bottom">4</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">%</span>
-          <span slot="bottom">5</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">^</span>
-          <span slot="bottom">6</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">&</span>
-          <span slot="bottom">7</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">*</span>
-          <span slot="bottom">8</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">(</span>
-          <span slot="bottom">9</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">)</span>
-          <span slot="bottom">0</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">_</span>
-          <span slot="bottom">-</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">+</span>
-          <span slot="bottom">=</span>
-        </tp-key-dual>
-
-        <modifier-key>Backspace</modifier-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row ">
+          <tp-key>Insert</tp-key>
+          <tp-key>Home</tp-key>
+          <tp-key>Page Up</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row ">
+          <tp-key>Delete</tp-key>
+          <tp-key>End</tp-key>
+          <tp-key>Page Down</tp-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row ">
+          <tp-key button-class="hidden"></tp-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row ">
+          <tp-key button-class="hidden"></tp-key>
+          <tp-key>Up</tp-key>
+          <tp-key button-class="hidden"></tp-key>
+        </div>
+        <!-- end keyboard-row -->
+        <div class="keyboard-row ">
+          <tp-key>Left</tp-key>
+          <tp-key>Down</tp-key>
+          <tp-key>Right</tp-key>
+        </div>
+        <!-- end keyboard-row -->
       </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <modifier-key>Tab</modifier-key>
-        <tp-key>Q</tp-key>
-        <tp-key>W</tp-key>
-        <tp-key>E</tp-key>
-        <tp-key>R</tp-key>
-        <tp-key>T</tp-key>
-        <tp-key>Y</tp-key>
-        <tp-key>U</tp-key>
-        <tp-key>I</tp-key>
-        <tp-key>O</tp-key>
-        <tp-key>P</tp-key>
-        <tp-key-dual>
-          <span slot="top">{</span>
-          <span slot="bottom">[</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">}</span>
-          <span slot="bottom">]</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">|</span>
-          <span slot="bottom">\</span>
-        </tp-key-dual>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <modifier-key>Caps Lock</modifier-key>
-        <tp-key>A</tp-key>
-        <tp-key>S</tp-key>
-        <tp-key>D</tp-key>
-        <tp-key>F</tp-key>
-        <tp-key>G</tp-key>
-        <tp-key>H</tp-key>
-        <tp-key>J</tp-key>
-        <tp-key>K</tp-key>
-        <tp-key>L</tp-key>
-        <tp-key-dual>
-          <span slot="top">:</span>
-          <span slot="bottom">;</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">"</span>
-          <span slot="bottom">'</span>
-        </tp-key-dual>
-
-        <modifier-key>Enter</modifier-key>
-      </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <modifier-key>Shift</modifier-key>
-
-        <tp-key>Z</tp-key>
-        <tp-key>X</tp-key>
-        <tp-key>C</tp-key>
-        <tp-key>V</tp-key>
-        <tp-key>B</tp-key>
-        <tp-key>N</tp-key>
-        <tp-key>M</tp-key>
-        <tp-key-dual>
-          <span slot="top"><</span>
-          <span slot="bottom">,</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">></span>
-          <span slot="bottom">.</span>
-        </tp-key-dual>
-        <tp-key-dual>
-          <span slot="top">?</span>
-          <span slot="bottom">/</span>
-        </tp-key-dual>
-        <modifier-key>Shift</modifier-key>
-      </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <modifier-key>Ctrl</modifier-key>
-        <modifier-key>Super</modifier-key>
-        <modifier-key>Alt</modifier-key>
-        <modifier-key>space</modifier-key>
-        <modifier-key>Alt</modifier-key>
-        <modifier-key>Super</modifier-key>
-        <modifier-key>Menu</modifier-key>
-        <modifier-key>Ctrl</modifier-key>
-      </div>
-      <!-- end keyboard-row -->
     </div>
 
     <div class="manual-modifiers">
-      <!-- <div class="inner">
+      <div class="inner">
         <div class="modifier-keys">
           <modifier-key id="ctrl-modifier">Ctrl</modifier-key>
           <modifier-key id="alt-modifier">Alt</modifier-key>
@@ -176,7 +221,7 @@
           <modifier-key id="meta-modifier">Meta/OS</modifier-key>
         </div>
         <left-right-toggle id="left-right-toggle"></left-right-toggle>
-      </div> -->
+      </div>
 
       <content-tooltip position="top-left">
         <img class="question-icon" src="/img/question-icon.svg" />
@@ -187,13 +232,13 @@
           </p>
           <p>
             Press these buttons to send the corresponding modifier keys on your
-            next keystroke. Double click them to send the modifier key
+            next keystroke. full click them to send the modifier key
             immediately.
           </p>
 
           <p>
             To simulate a modifier key from the right side of the keyboard
-            (e.g., right Shift), set the toggle to "Right" before double
+            (e.g., right Shift), set the toggle to "Right" before full
             clicking a modifier key.
           </p>
         </div>
