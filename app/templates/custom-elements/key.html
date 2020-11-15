@@ -14,6 +14,19 @@
       cursor: pointer;
       border: 0 solid #fff;
       text-align: left;
+      transition: background-color 0.25s;
+    }
+
+    .key:hover {
+      background-color: #e3e3e3;
+    }
+
+    .key:active {
+      background-color: #8f8f8f;
+    }
+
+    .key.key-pressed {
+      outline: 1px solid #333333;
     }
 
     .key .content-top {
@@ -56,6 +69,7 @@
   </style>
   <button id="key-button" type="button" class="key">
     <span id="key-content-top" class="content-top">
+      <!-- default slot -->
       <slot></slot>
     </span>
     <span id="key-content-bottom" class="content-bottom">
@@ -104,6 +118,14 @@
         }
 
         togglePressedState() {
+          // add or remove css class to indicate whether key is pressed
+          const buttonCls = this.shadowRoot.querySelector('#key-button').classList;
+          if(buttonCls.contains('key-pressed')){
+            buttonCls.remove('key-pressed');
+          } else {
+            buttonCls.add('key-pressed');
+          }
+
           this.pressed = !this.pressed;
         }
       }
