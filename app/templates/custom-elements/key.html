@@ -116,7 +116,7 @@
         }
 
         get pressed() {
-            return this.getAttribute("pressed") === "true";
+          return this.getAttribute("pressed") === "true";
         }
 
         set pressed(newValue) {
@@ -155,8 +155,11 @@
         }
 
         togglePressedState() {
-          this.pressed = !this.pressed;
-          this.toggleKeyPressedClass();
+          // only modifier keys can be "pressed"
+          if (this.getAttribute("tp-type") == "modifier") {
+            this.pressed = !this.pressed;
+            this.toggleKeyPressedClass();
+          }
         }
 
         toggleKeyPressedClass() {
