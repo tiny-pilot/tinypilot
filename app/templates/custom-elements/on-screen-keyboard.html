@@ -289,6 +289,15 @@
               ctrlKey: keyboard.isCtrlKeyPressed,
             })
           );
+
+
+          // Remove pressed state from modifier keys if non-modifier key was pressed.
+          if (!evt.target.modifier){
+            this.shadowRoot.querySelectorAll("[modifier=true][pressed=true]").forEach(key => {
+              key.pressed = false;
+          })
+
+          }
         }
 
         get isMetaKeyPressed() {
