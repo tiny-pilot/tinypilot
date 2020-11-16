@@ -1,6 +1,6 @@
 "use strict";
 
-import { isAltGraphPressed, findKeyCode, findKeyValue, getShiftValue } from "./keycodes.js";
+import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -107,11 +107,6 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-function checkModifiers(modType){
-  const mods = document.querySelectorAll(".${modType}-modifier[pressed=true]");
-  return (mods.length) ? true : false
-}
-
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
   // On Android, when the user is typing with autocomplete enabled, the browser
@@ -155,52 +150,6 @@ function onSocketDisconnect(reason) {
   document.getElementById("app").focus();
 }
 
-
-function onKeyClick(evt) {
-  if (!connectedToServer) {
-    return;
-  }
-
-  const keyChar = evt.detail.keyChar;
-  const keyValue = (keyChar.match(/^[A-Z]+$/)) ? keyChar.toLowerCase() : findKeyValue(keyChar);
-  const keyCode = findKeyCode(keyValue,"en-US");
-
-  let keystrokeData = {
-      metaKey: checkModifiers('meta'),
-      altKey: checkModifiers('alt'),
-      shiftKey: checkModifiers('shift'),
-      ctrlKey: checkModifiers('ctrl'),
-      altGraphKey: false,
-      sysrqKey: checkModifiers('sysrq'),
-      key: keyValue,
-      keyCode: keyCode,
-      location: evt.detail.location
-    }
-
-  // if key has a different value when shift is pressed, and only shift is
-  // currently pressed, update keystrokeData to other value and its key code
-  if (keystrokeData["shiftKey"] == true &&
-      keystrokeData["metaKey"] == false &&
-      keystrokeData["altKey"] == false &&
-      keystrokeData["ctrlKey"] == false &&
-      keystrokeData["sysrqKey"] == false
-    ){
-    keystrokeData["key"] = getShiftValue(keystrokeData["key"]);
-    keystrokeData["keyCode"] = findKeyCode(keystrokeData["key"],"en-US");
-  }
-
-  processKeystroke(keystrokeData);
-
-  // clear all pressed states on modifier keys if non modifier key was sent
-  const pressedMods = document.querySelectorAll(`tp-key[modifier=true][pressed=true]`);
-  if ( evt.detail.isModifier == false && pressedMods.length > 0){
-    pressedMods.forEach(key => {
-      key.pressed = false;
-    })
-  }
-
-}
-
 function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
@@ -223,13 +172,15 @@ function onKeyDown(evt) {
     location = "right";
   }
 
+  const onScreenKeyboard = document.getElementById('on-screen-keyboard');
+
   processKeystroke({
-    metaKey: evt.metaKey || checkModifiers("meta"),
-    altKey: evt.altKey ||  checkModifiers("alt"),
-    shiftKey: evt.shiftKey || checkModifiers("shift"),
-    ctrlKey: evt.ctrlKey ||  checkModifiers("ctrl"),
+    metaKey: evt.metaKey || onScreenKeyboard.isMetaKeyPressed,
+    altKey: evt.altKey || onScreenKeyboard.isAltKeyPressed,
+    shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
+    ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
-    sysrqKey:  checkModifiers("sysrq"),
+    sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
@@ -315,19 +266,19 @@ function onModifierKeyButtonDoubleClick(evt) {
   processKeystroke({
     metaKey:
       mapping.key === "Meta" ||
-       checkModifiers("meta"),
+      document.getElementById("meta-modifier").pressed,
     altKey:
-      mapping.key === "Alt" ||  checkModifiers("alt"),
+      mapping.key === "Alt" || document.getElementById("alt-modifier").pressed,
     shiftKey:
       mapping.key === "Shift" ||
-       checkModifiers("shift"),
+      document.getElementById("shift-modifier").pressed,
     ctrlKey:
       mapping.key === "Control" ||
-       checkModifiers("ctrl"),
+      document.getElementById("ctrl-modifier").pressed,
     altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
     sysrqKey:
       mapping.key === "SysRq" ||
-       checkModifiers("sysrq"),
+      document.getElementById("sysrq-modifier").pressed,
     key: mapping.key,
     keyCode: mapping.keyCode,
     location: document.getElementById("left-right-toggle").modifierLocation,
@@ -398,7 +349,6 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
-document.addEventListener("key-click", onKeyClick);
 
 document
   .getElementById("remote-screen")
