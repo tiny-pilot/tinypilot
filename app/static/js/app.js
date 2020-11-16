@@ -108,7 +108,7 @@ function browserLanguage() {
 }
 
 function checkModifiers(modType){
-  const mods = document.querySelectorAll(`.${modType}-modifier[pressed=true]`);
+  const mods = document.querySelectorAll(".${modType}-modifier[pressed=true]");
   return (mods.length) ? true : false
 }
 
