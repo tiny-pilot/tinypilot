@@ -1,6 +1,6 @@
 "use strict";
 
-import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+import { isAltGraphPressed, findKeyCode, findKeyValue, getShiftValue } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -148,6 +148,51 @@ function onSocketDisconnect(reason) {
   connectionIndicator.connected = false;
   connectionIndicator.disconnectReason = reason;
   document.getElementById("app").focus();
+}
+
+
+function onKeyClick(evt) {
+  if (!connectedToServer) {
+    return;
+  }
+
+  function checkModifiers(modType){
+    const mods = document.querySelectorAll(`.${modType}-modifier[pressed=true]`);
+    return (mods.length) ? true : false
+  }
+
+  const keyChar = evt.detail.keyChar;
+  const keyValue = findKeyValue(keyChar);
+  const keyCode = findKeyCode(keyValue,"en-US");
+
+  let keystrokeData = {
+      metaKey: checkModifiers('meta'),
+      altKey: checkModifiers('alt'),
+      shiftKey: checkModifiers('shift'),
+      ctrlKey: checkModifiers('ctrl'),
+      altGraphKey: false,
+      sysrqKey: checkModifiers('sysrq'),
+      key: keyValue,
+      keyCode: keyCode,
+      location: evt.detail.location
+    }
+
+  // if key has a different value when shift is pressed, and only shift is
+  // currently pressed, update keystrokeData to other value and its key code
+  if (keystrokeData["shiftKey"] == true &&
+      keystrokeData["metaKey"] == false &&
+      keystrokeData["altKey"] == false &&
+      keystrokeData["ctrlKey"] == false &&
+      keystrokeData["sysrqKey"] == false
+    ){
+    keystrokeData["key"] = getShiftValue(keystrokeData["key"]);
+    keystrokeData["keyCode"] = findKeyCode(keystrokeData["key"],"en-US");
+  }
+
+  processKeystroke(keystrokeData);
+
+  // clearManualModifiers();
+
 }
 
 function onKeyDown(evt) {
@@ -347,6 +392,7 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
+document.addEventListener("key-click", onKeyClick);
 
 document
   .getElementById("remote-screen")

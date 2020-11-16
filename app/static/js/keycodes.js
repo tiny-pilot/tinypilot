@@ -63,6 +63,42 @@ const commonKeyCodes = {
   "]": 221,
   "}": 221,
   "'": 222,
+  'Escape': 27,
+  'PrintScreen': 44,
+  'ScrollLock': 145,
+  'Pause': 19,
+  'Backspace': 8,
+  'Insert': 45,
+  'GoHome': 36,
+  'PageUp': 33,
+  "Tab": 9,
+  'Enter': 13,
+  'Delete': 46,
+  "End": 35,
+  "PageDown": 34,
+  "CapsLock": 20,
+  "Shift": 16,
+  "Control": 17,
+  "Meta": 102,
+  "Alt": 18,
+  "ContextMenu": 93,
+  "ArrowUp": 38,
+  "ArrowLeft": 37,
+  "ArrowDown": 40,
+  "ArrowRight": 39,
+  "f1": 112,
+  "f2": 113,
+  "f3": 114,
+  "f4": 115,
+  "f5": 116,
+  "f6": 117,
+  "f7": 118,
+  "f8": 119,
+  "f9": 120,
+  "f10": 121,
+  "f11": 122,
+  "f12": 123,
+  "undefined": 0
 };
 
 // Given a character and a browser language, finds the matching keycode
@@ -149,4 +185,68 @@ export function isAltGraphPressed(browserLanguage, keyCode, key) {
     (keyCode === 164 && key === "ø") ||
     (keyCode === 169 && key === "]")
   );
+}
+
+// Find correct KeyboardEvent.key value for special keys, otherwise, return
+// value passed from on screen keyboard
+export function findKeyValue(keyChar){
+  const keyMappings = {
+    esc: 'Escape',
+    print: 'PrintScreen',
+    scrolllock: 'ScrollLock',
+    pause: 'Pause',
+    backspace: 'Backspace',
+    insert: 'Insert',
+    home: 'GoHome',
+    pageup: 'PageUp',
+    tab: "Tab",
+    enter: 'Enter',
+    delete: 'Delete',
+    end: "End",
+    pagedown: "PageDown",
+    capslock: "CapsLock",
+    shift: "Shift",
+    ctrl: "Control",
+    meta: "Meta",
+    alt: "Alt",
+    space: " ",
+    menu: "ContextMenu",
+    up: "ArrowUp",
+    left: "ArrowLeft",
+    down: "ArrowDown",
+    right: "ArrowRight"
+  }
+
+  return (keyMappings.hasOwnProperty(keyChar)) ? keyMappings[keyChar] : keyChar;
+
+}
+
+// map keys that have different values when shift is pressed to their shifted values
+export function getShiftValue(key){
+    const shiftMappings = {
+      "`": "~",
+      1: "!",
+      2: "@",
+      3: "#",
+      4: "$",
+      5: "%",
+      6: "^",
+      7: "&",
+      8: "*",
+      9: "(",
+      0: ")",
+      "-": "_",
+      "=": "+",
+      "[": "{",
+      "]": "}",
+      "\\": "|",
+      ";": ":",
+      "'": "\"",
+      ",": "<",
+      ".": ">",
+      "/": "?",
+    }
+
+    return (shiftMappings.hasOwnProperty(key)) ? shiftMappings[key] : key;
+
 }

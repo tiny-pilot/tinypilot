@@ -14,6 +14,7 @@
       cursor: pointer;
       border: 0 solid #fff;
       text-align: left;
+      outline: 0px solid #333333;
       transition: background-color 0.25s;
     }
 
@@ -84,13 +85,16 @@
       .ownerDocument;
     const template = doc.querySelector("#key-template");
 
+
+
     customElements.define(
       "tp-key",
       class extends HTMLElement {
         constructor() {
           super();
-          this.addEventListener("click", () => {
-            this.togglePressedState();
+          this.addEventListener("click", (e) => {
+            e.preventDefault();
+            this.processClick();
           });
         }
 
@@ -106,18 +110,56 @@
               button.classList.add(cls);
             })
           }
+
           this.shadowRoot.appendChild(instance);
+
         }
 
         get pressed() {
-          return this.getAttribute("pressed") === "true";
+            return this.getAttribute("pressed") === "true";
         }
 
         set pressed(newValue) {
           this.setAttribute("pressed", newValue);
         }
 
+        processClick(){
+          this.togglePressedState();
+
+          const location = (this.getAttribute("location")) ? this.getAttribute("location") : null;
+          let keyChar = 'undefined';
+          const thisChildren = Array.from(this.childNodes)
+
+          // get value of this key
+          if (thisChildren.length == 1){
+            keyChar = (thisChildren[0].constructor.name == 'Text') ?
+              thisChildren[0].data : 0;
+          } else if (thisChildren.length > 1) {
+            // if key has multiple characters, return the bottom character
+            // (meaning the one you get without shift, its processed in key-click event)
+            const bottomSlot = thisChildren.find(c => c.constructor.name == 'HTMLSpanElement');
+            keyChar = (bottomSlot.firstChild.constructor.name == 'Text') ?
+              bottomSlot.firstChild.data : 0;
+          }
+
+          this.dispatchEvent(
+            new CustomEvent("key-click", {
+              detail: {
+                keyChar: keyChar.toLowerCase().replace(' ',''),
+                location: location,
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
         togglePressedState() {
+          this.pressed = !this.pressed;
+          this.toggleKeyPressedClass();
+        }
+
+        toggleKeyPressedClass() {
           // add or remove css class to indicate whether key is pressed
           const buttonCls = this.shadowRoot.querySelector('#key-button').classList;
           if(buttonCls.contains('key-pressed')){
@@ -125,8 +167,6 @@
           } else {
             buttonCls.add('key-pressed');
           }
-
-          this.pressed = !this.pressed;
         }
       }
     );

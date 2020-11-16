@@ -135,7 +135,7 @@
         <!-- end keyboard-row -->
 
         <div class="keyboard-row">
-          <tp-key button-class="key-extend-full-half" >Shift</tp-key>
+          <tp-key class="shift-modifier" location="left" button-class="key-extend-full-half" >Shift</tp-key>
 
           <tp-key>Z</tp-key>
           <tp-key>X</tp-key>
@@ -156,25 +156,25 @@
             <slot>?</slot>
             <span slot="bottom">/</span>
           </tp-key>
-          <tp-key button-class="key-extend-full-half" >Shift</tp-key>
+          <tp-key class="shift-modifier" location="right" button-class="key-extend-full-half" >Shift</tp-key>
         </div>
         <!-- end keyboard-row -->
 
         <div class="keyboard-row">
-          <tp-key button-class="key-extend-full">Ctrl</tp-key>
-          <tp-key button-class="key-extend-half">Super</tp-key>
-          <tp-key >Alt</tp-key>
+          <tp-key class="ctrl-modifier" location="left" button-class="key-extend-full">Ctrl</tp-key>
+          <tp-key class="meta-modifier" location="left" button-class="key-extend-half">Meta</tp-key>
+          <tp-key class="alt-modifier" location="left">Alt</tp-key>
           <tp-key button-class="key-space">Space</tp-key>
-          <tp-key >Alt</tp-key>
-          <tp-key button-class="key-extend-half">Super</tp-key>
+          <tp-key class="alt-modifier" location="right">Alt</tp-key>
+          <tp-key class="meta-modifier" location="right" button-class="key-extend-half">Meta</tp-key>
           <tp-key button-class="key-extend-half">Menu</tp-key>
-          <tp-key button-class="key-extend-full">Ctrl</tp-key>
+          <tp-key class="ctrl-modifier" location="right" button-class="key-extend-full">Ctrl</tp-key>
         </div>
         <!-- end keyboard-row -->
       </div>
       <div id="keyboard-block-right" class="keyboard-block">
         <div class="keyboard-row keyboard-row-bump">
-          <tp-key>Print</tp-key>
+          <tp-key class="sysrq-modifier">Print</tp-key>
           <tp-key>Scroll Lock</tp-key>
           <tp-key>Pause</tp-key>
 
@@ -211,7 +211,7 @@
       </div>
     </div>
 
-    <div class="manual-modifiers">
+    <!-- <div class="manual-modifiers">
       <div class="inner">
         <div class="modifier-keys">
           <modifier-key id="ctrl-modifier">Ctrl</modifier-key>
@@ -243,6 +243,6 @@
           </p>
         </div>
       </content-tooltip>
-    </div>
+    </div> -->
   </div>
 </div>
