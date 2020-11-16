@@ -155,7 +155,7 @@
           this.dispatchEvent(
             new CustomEvent("key-click", {
               detail: {
-                keyChar: keyChar.toLowerCase().replace(' ',''),
+                keyChar: keyChar.replace(' ',''),
                 location: location,
                 isModifier: this.getAttribute("modifier") === "true"
               },

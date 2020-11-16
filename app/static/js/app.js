@@ -162,7 +162,7 @@ function onKeyClick(evt) {
   }
 
   const keyChar = evt.detail.keyChar;
-  const keyValue = findKeyValue(keyChar);
+  const keyValue = (keyChar.match(/^[A-Z]+$/)) ? keyChar.toLowerCase() : findKeyValue(keyChar);
   const keyCode = findKeyCode(keyValue,"en-US");
 
   let keystrokeData = {
