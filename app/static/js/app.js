@@ -56,7 +56,7 @@ function displayPoweringDownUI(restart) {
 }
 
 function clearManualModifiers() {
-  for (const modifierKey of document.getElementsByTagName("modifier-key")) {
+  for (const modifierKey of document.getElementsByTagName("tp-key")) {
     modifierKey.pressed = false;
   }
 }
@@ -107,6 +107,11 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
+function checkModifiers(modType){
+  const mods = document.querySelectorAll(`.${modType}-modifier[pressed=true]`);
+  return (mods.length) ? true : false
+}
+
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
   // On Android, when the user is typing with autocomplete enabled, the browser
@@ -154,11 +159,6 @@ function onSocketDisconnect(reason) {
 function onKeyClick(evt) {
   if (!connectedToServer) {
     return;
-  }
-
-  function checkModifiers(modType){
-    const mods = document.querySelectorAll(`.${modType}-modifier[pressed=true]`);
-    return (mods.length) ? true : false
   }
 
   const keyChar = evt.detail.keyChar;
@@ -224,12 +224,12 @@ function onKeyDown(evt) {
   }
 
   processKeystroke({
-    metaKey: evt.metaKey || document.getElementById("meta-modifier").pressed,
-    altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
-    shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
-    ctrlKey: evt.ctrlKey || document.getElementById("ctrl-modifier").pressed,
+    metaKey: evt.metaKey || checkModifiers("meta"),
+    altKey: evt.altKey ||  checkModifiers("alt"),
+    shiftKey: evt.shiftKey || checkModifiers("shift"),
+    ctrlKey: evt.ctrlKey ||  checkModifiers("ctrl"),
     altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
-    sysrqKey: document.getElementById("sysrq-modifier").pressed,
+    sysrqKey:  checkModifiers("sysrq"),
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
@@ -315,19 +315,19 @@ function onModifierKeyButtonDoubleClick(evt) {
   processKeystroke({
     metaKey:
       mapping.key === "Meta" ||
-      document.getElementById("meta-modifier").pressed,
+       checkModifiers("meta"),
     altKey:
-      mapping.key === "Alt" || document.getElementById("alt-modifier").pressed,
+      mapping.key === "Alt" ||  checkModifiers("alt"),
     shiftKey:
       mapping.key === "Shift" ||
-      document.getElementById("shift-modifier").pressed,
+       checkModifiers("shift"),
     ctrlKey:
       mapping.key === "Control" ||
-      document.getElementById("ctrl-modifier").pressed,
+       checkModifiers("ctrl"),
     altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
     sysrqKey:
       mapping.key === "SysRq" ||
-      document.getElementById("sysrq-modifier").pressed,
+       checkModifiers("sysrq"),
     key: mapping.key,
     keyCode: mapping.keyCode,
     location: document.getElementById("left-right-toggle").modifierLocation,
