@@ -191,7 +191,13 @@ function onKeyClick(evt) {
 
   processKeystroke(keystrokeData);
 
-  // clearManualModifiers();
+  // clear all pressed states on modifier keys if non modifier key was sent
+  const pressedMods = document.querySelectorAll(`tp-key[modifier=true][pressed=true]`);
+  if ( evt.detail.isModifier == false && pressedMods.length > 0){
+    pressedMods.forEach(key => {
+      key.pressed = false;
+    })
+  }
 
 }
 

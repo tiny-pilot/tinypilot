@@ -125,7 +125,11 @@
         }
 
         set pressed(newValue) {
-          this.setAttribute("pressed", newValue);
+          // only modifier keys can be "pressed"
+          if (this.getAttribute("modifier") == "true") {
+            this.setAttribute("pressed", newValue);
+            this.setKeyPressedClass(newValue);
+          }
         }
 
         processClick(){
@@ -152,6 +156,7 @@
               detail: {
                 keyChar: keyChar.toLowerCase().replace(' ',''),
                 location: location,
+                isModifier: this.getAttribute("modifier") === "true"
               },
               bubbles: true,
               composed: true,
@@ -160,20 +165,16 @@
         }
 
         togglePressedState() {
-          // only modifier keys can be "pressed"
-          if (this.getAttribute("modifier") == "true") {
-            this.pressed = !this.pressed;
-            this.toggleKeyPressedClass();
-          }
+          this.pressed = !this.pressed;
         }
 
-        toggleKeyPressedClass() {
+        setKeyPressedClass(newValue) {
           // add or remove css class to indicate whether key is pressed
           const buttonCls = this.shadowRoot.querySelector('#key-button').classList;
-          if(buttonCls.contains('key-pressed')){
-            buttonCls.remove('key-pressed');
-          } else {
+          if(newValue == true || newValue == 'true'){
             buttonCls.add('key-pressed');
+          } else {
+            buttonCls.remove('key-pressed');
           }
         }
       }
