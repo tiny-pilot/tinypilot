@@ -43,27 +43,27 @@
       left: 5px;
     }
 
-    .hidden {
+    :host(.hidden) .key {
       visibility: hidden;
     }
 
-    .key.key-collapse-half {
+    :host(.key-collapse-half) .key {
       width: 24px;
     }
 
-    .key.key-extend-half {
+    :host(.key-extend-half) .key {
       width: 77px;
     }
 
-    .key.key-extend-full {
+    :host(.key-extend-full) .key {
       width: 102px;
     }
 
-    .key.key-extend-full-half {
+    :host(.key-extend-full-half) .key {
       width: 128px;
     }
 
-    .key.key-space {
+    :host(.key-space) .key {
       width: 229px;
     }
 
@@ -100,19 +100,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" });
-          const instance = template.content.cloneNode(true);
-
-          // if special css classes passed for button, add them
-          if (this.getAttribute('button-class')){
-            const childClasses = this.getAttribute('button-class')
-            const button = instance.querySelector('#key-button')
-            childClasses.split(' ').forEach(cls => {
-              button.classList.add(cls);
-            })
-          }
-
-          this.shadowRoot.appendChild(instance);
-
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
         }
 
         get code() {
@@ -123,7 +111,7 @@
           if (this.getAttribute("symbolic-value")){
             return this.getAttribute("symbolic-value");
           } else {
-            return this.firstChild.data;
+            return this.firstChild.data.replace(' ','');
           }
         }
 
@@ -149,40 +137,7 @@
           // only modifier keys can be "pressed"
           if (this.getAttribute("modifier") == "true") {
             this.setAttribute("pressed", newValue);
-            // this.setKeyPressedClass(newValue);
           }
-        }
-
-        processClick(){
-          this.togglePressedState();
-
-          const location = (this.getAttribute("location")) ? this.getAttribute("location") : null;
-          let keyChar = 'undefined';
-          const thisChildren = Array.from(this.childNodes)
-
-          // get value of this key
-          if (thisChildren.length == 1){
-            keyChar = (thisChildren[0].constructor.name == 'Text') ?
-              thisChildren[0].data : 0;
-          } else if (thisChildren.length > 1) {
-            // if key has multiple characters, return the bottom character
-            // (meaning the one you get without shift, its processed in key-click event)
-            const bottomSlot = thisChildren.find(c => c.constructor.name == 'HTMLSpanElement');
-            keyChar = (bottomSlot.firstChild.constructor.name == 'Text') ?
-              bottomSlot.firstChild.data : 0;
-          }
-
-          this.dispatchEvent(
-            new CustomEvent("key-click", {
-              detail: {
-                keyChar: keyChar.replace(' ',''),
-                location: location,
-                isModifier: this.getAttribute("modifier") === "true"
-              },
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
 
         togglePressedState() {
