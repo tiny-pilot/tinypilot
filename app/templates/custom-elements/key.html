@@ -94,7 +94,12 @@
           super();
           this.addEventListener("click", (e) => {
             e.preventDefault();
-            this.processClick();
+
+            if (this.getAttribute("modifier") == "true" && this.pressed) {
+              this.togglePressedState()
+            } else {
+              this.processClick();
+            }
           });
         }
 
@@ -156,7 +161,7 @@
 
         togglePressedState() {
           // only modifier keys can be "pressed"
-          if (this.getAttribute("tp-type") == "modifier") {
+          if (this.getAttribute("modifier") == "true") {
             this.pressed = !this.pressed;
             this.toggleKeyPressedClass();
           }
