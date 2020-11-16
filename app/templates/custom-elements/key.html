@@ -135,7 +135,7 @@
 
         set pressed(newValue) {
           // only modifier keys can be "pressed"
-          if (this.getAttribute("modifier") == "true") {
+          if (this.modifier) {
             this.setAttribute("pressed", newValue);
           }
         }

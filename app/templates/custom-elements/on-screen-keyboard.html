@@ -257,21 +257,30 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          const clickEvent = this.onKeyClick
+          const keyboard = this;
           this.shadowRoot.querySelectorAll('keyboard-key').forEach(key =>{
-            key.addEventListener("click", clickEvent)
+            key.addEventListener("click", function(evt){
+              keyboard.onKeyClick(evt);
+            })
           })
 
         }
 
         onKeyClick(evt) {
           const keyboard = this;
+          let keyValue = evt.target.value;
+
+          if ( this.isShiftKeyPressed && !this.isMetaKeyPressed &&
+                !this.isAltKeyPressed && !this.isCtrlKeyPressed && !this.isSysrqKeyPressed
+          ) {
+              keyValue = this.getShiftedKeyValue(keyValue)
+          }
 
           this.dispatchEvent(
             new KeyboardEvent("keydown", {
               bubbles: true,
               composed: true,
-              key: evt.target.value,
+              key: keyValue,
               location: evt.target.location,
               keyCode: evt.target.code,
               metaKey: keyboard.isMetaKeyPressed,
@@ -305,6 +314,33 @@
         get isSysrqKeyPressed() {
           const pressedSysrqKeys = this.shadowRoot.querySelectorAll('.sysrq-modifier[pressed=true]')
           return (pressedSysrqKeys.length) ? true : false;
+        }
+
+        getShiftedKeyValue(key) {
+          const shiftMappings = {
+            "`": "~",
+            1: "!",
+            2: "@",
+            3: "#",
+            4: "$",
+            5: "%",
+            6: "^",
+            7: "&",
+            8: "*",
+            9: "(",
+            0: ")",
+            "-": "_",
+            "=": "+",
+            "[": "{",
+            "]": "}",
+            "\\": "|",
+            ";": ":",
+            "'": "\"",
+            ",": "<",
+            ".": ">",
+            "/": "?",
+          }
+          return (shiftMappings.hasOwnProperty(key)) ? shiftMappings[key] : key;
         }
       }
     );
