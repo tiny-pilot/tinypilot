@@ -334,7 +334,7 @@
 
           this.emitKeyDownEvent(keyValue, key.location, key.code);
 
-          if (!key.modifier) {
+          if (!key.isModifier) {
             this.emitKeyUpEvent(keyValue, key.location, key.code);
 
             // Remove pressed state from all modifier keys if non-modifier key
@@ -414,7 +414,7 @@
           this.shadowRoot
             .querySelectorAll("[modifier=true][pressed=true]")
             .forEach((key) => {
-              key.pressed = false;
+              key.isPressed = false;
               this.emitKeyUpEvent(key.value, key.location, key.code);
             });
         }
