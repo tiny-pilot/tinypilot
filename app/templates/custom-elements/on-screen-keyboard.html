@@ -344,38 +344,31 @@
         }
 
         get isMetaKeyPressed() {
-          const pressedMetaKeys = this.shadowRoot.querySelectorAll(
-            ".meta-modifier[pressed=true]"
-          );
-          return pressedMetaKeys.length ? true : false;
+          return this.isModifierKeyPressed("meta");
         }
 
         get isAltKeyPressed() {
-          const pressedAltKeys = this.shadowRoot.querySelectorAll(
-            ".alt-modifier[pressed=true]"
-          );
-          return pressedAltKeys.length ? true : false;
+          return this.isModifierKeyPressed("alt");
         }
 
         get isShiftKeyPressed() {
-          const pressedShiftKeys = this.shadowRoot.querySelectorAll(
-            ".shift-modifier[pressed=true]"
-          );
-          return pressedShiftKeys.length ? true : false;
+          return this.isModifierKeyPressed("shift");
         }
 
         get isCtrlKeyPressed() {
-          const pressedCtrlKeys = this.shadowRoot.querySelectorAll(
-            ".ctrl-modifier[pressed=true]"
-          );
-          return pressedCtrlKeys.length ? true : false;
+          return this.isModifierKeyPressed("ctrl");
         }
 
         get isSysrqKeyPressed() {
-          const pressedSysrqKeys = this.shadowRoot.querySelectorAll(
-            ".sysrq-modifier[pressed=true]"
+          return this.isModifierKeyPressed("sysrq");
+        }
+
+        isModifierKeyPressed(modifier) {
+          return (
+            this.shadowRoot.querySelectorAll(
+              `.${modifier}-modifier[pressed=true]`
+            ).length > 0
           );
-          return pressedSysrqKeys.length ? true : false;
         }
 
         emitKeyDownEvent(key, location, code) {
