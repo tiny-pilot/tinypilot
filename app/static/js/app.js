@@ -55,12 +55,6 @@ function displayPoweringDownUI(restart) {
   document.getElementById("shutdown-wait").show = true;
 }
 
-function clearManualModifiers() {
-  for (const modifierKey of document.getElementsByTagName("modifier-key")) {
-    modifierKey.pressed = false;
-  }
-}
-
 function isModifierKeyCode(keyCode) {
   const modifierKeyCodes = [16, 17, 18, 91, 84];
   return modifierKeyCodes.indexOf(keyCode) >= 0;
@@ -72,7 +66,9 @@ function isKeycodeAlreadyPressed(keyCode) {
 
 function isIgnoredKeystroke(keyCode) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
-  // already pressed.
+  // already pressed. Otherwise, something like holding down the Shift key
+  // is sent as multiple Shift key presses, which has special meaning on
+  // certain OSes.
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
@@ -172,18 +168,19 @@ function onKeyDown(evt) {
     location = "right";
   }
 
+  const onScreenKeyboard = document.getElementById("on-screen-keyboard");
+
   processKeystroke({
-    metaKey: evt.metaKey || document.getElementById("meta-modifier").pressed,
-    altKey: evt.altKey || document.getElementById("alt-modifier").pressed,
-    shiftKey: evt.shiftKey || document.getElementById("shift-modifier").pressed,
-    ctrlKey: evt.ctrlKey || document.getElementById("ctrl-modifier").pressed,
+    metaKey: evt.metaKey || onScreenKeyboard.isMetaKeyPressed,
+    altKey: evt.altKey || onScreenKeyboard.isAltKeyPressed,
+    shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
+    ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
-    sysrqKey: document.getElementById("sysrq-modifier").pressed,
+    sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
     keyCode: evt.keyCode,
     location: location,
   });
-  clearManualModifiers();
 }
 
 function sendMouseEvent(
@@ -230,59 +227,6 @@ function onKeyUp(evt) {
   if (isModifierKeyCode(evt.keyCode)) {
     socket.emit("keyRelease");
   }
-}
-
-function onModifierKeyButtonDoubleClick(evt) {
-  const keyMappings = {
-    "ctrl-modifier": {
-      key: "Control",
-      keyCode: 17,
-    },
-    "alt-modifier": {
-      key: "Alt",
-      keyCode: 18,
-    },
-    "shift-modifier": {
-      key: "Shift",
-      keyCode: 16,
-    },
-    "meta-modifier": {
-      key: "Meta",
-      keyCode: 91,
-    },
-    "sysrq-modifier": {
-      key: "SysRq",
-      keyCode: 44,
-    },
-  };
-
-  if (!(evt.target.id in keyMappings)) {
-    return;
-  }
-  const mapping = keyMappings[evt.target.id];
-
-  processKeystroke({
-    metaKey:
-      mapping.key === "Meta" ||
-      document.getElementById("meta-modifier").pressed,
-    altKey:
-      mapping.key === "Alt" || document.getElementById("alt-modifier").pressed,
-    shiftKey:
-      mapping.key === "Shift" ||
-      document.getElementById("shift-modifier").pressed,
-    ctrlKey:
-      mapping.key === "Control" ||
-      document.getElementById("ctrl-modifier").pressed,
-    altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
-    sysrqKey:
-      mapping.key === "SysRq" ||
-      document.getElementById("sysrq-modifier").pressed,
-    key: mapping.key,
-    keyCode: mapping.keyCode,
-    location: document.getElementById("left-right-toggle").modifierLocation,
-  });
-  socket.emit("keyRelease");
-  clearManualModifiers();
 }
 
 // Translate a single character into a keystroke and sends it to the backend.
@@ -396,10 +340,6 @@ document
   .addEventListener("shutdown-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
-
-for (const modifierKey of document.getElementsByTagName("modifier-key")) {
-  modifierKey.addEventListener("dblclick", onModifierKeyButtonDoubleClick);
-}
 
 const keyHistory = document.querySelector("key-history");
 keyHistory.show = settings.isKeyHistoryEnabled();
