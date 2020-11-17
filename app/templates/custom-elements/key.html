@@ -120,9 +120,17 @@
         get value() {
           if (this.getAttribute("symbolic-value")) {
             return this.getAttribute("symbolic-value");
-          } else {
-            return this.firstChild.data.replace(" ", "");
           }
+
+          const keyLabel = this.firstChild.data;
+          // If the key is a single A-Z character, return the lowercase
+          // version.
+          if (/^[A-Z]$/.test(keyLabel)) {
+            return keyLabel.toLowerCase();
+          }
+          // For any other label, strip out space characters (e.g., "Caps Lock"
+          // becomes "CapsLock").
+          return keyLabel.replace(" ", "");
         }
 
         get modifier() {

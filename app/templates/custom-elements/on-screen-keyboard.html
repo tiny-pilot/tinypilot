@@ -396,6 +396,9 @@
         }
 
         getShiftedKeyValue(key) {
+          if (/^[a-z]$/.test(key)) {
+            return key.toUpperCase();
+          }
           const shiftMappings = {
             "`": "~",
             1: "!",
