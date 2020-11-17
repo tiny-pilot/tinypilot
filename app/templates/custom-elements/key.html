@@ -28,7 +28,7 @@
 
     :host([pressed="true"]) .key {
       outline: 1px solid #333333;
-      background-color: #8f8f8f;
+      background-color: #8f8f8f !important;
     }
 
     .key .content-top {
@@ -45,6 +45,10 @@
 
     :host(.hidden) .key {
       visibility: hidden;
+    }
+
+    :host(.accented) .key {
+      background-color: #dbdbdb;
     }
 
     :host(.key-collapse-half) .key {
