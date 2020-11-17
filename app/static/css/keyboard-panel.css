@@ -8,15 +8,3 @@
   padding: 1rem;
   color: black;
 }
-
-.manual-modifiers {
-  border: 1px dotted rgba(0, 0, 0, 0.226);
-  margin-top: 1rem;
-  display: inline-flex;
-  padding: 0.5rem;
-}
-
-.manual-modifiers .inner {
-  display: flex;
-  flex-direction: column;
-}
