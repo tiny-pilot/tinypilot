@@ -157,7 +157,6 @@ function onKeyDown(evt) {
     return;
   }
   keyState[evt.keyCode] = true;
-
   if (!evt.metaKey) {
     evt.preventDefault();
   }
