@@ -95,7 +95,7 @@
 
             // Don't send event if click removed "pressed" state
             // on a modifier key.
-            if (!this.modifier || this.pressed) {
+            if (!this.isModifier || this.isPressed) {
               const clickedKey = this;
               this.dispatchEvent(
                 new CustomEvent("keyclick", {
@@ -133,7 +133,7 @@
           return keyLabel.replace(" ", "");
         }
 
-        get modifier() {
+        get isModifier() {
           return this.getAttribute("modifier") === "true";
         }
 
@@ -147,19 +147,19 @@
           }
         }
 
-        get pressed() {
+        get isPressed() {
           return this.getAttribute("pressed") === "true";
         }
 
-        set pressed(newValue) {
+        set isPressed(newValue) {
           // Only modifier keys can be "pressed".
-          if (this.modifier) {
+          if (this.isModifier) {
             this.setAttribute("pressed", newValue);
           }
         }
 
         togglePressedState() {
-          this.pressed = !this.pressed;
+          this.isPressed = !this.isPressed;
         }
       }
     );
