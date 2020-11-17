@@ -257,18 +257,15 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          const keyboard = this;
-          this.shadowRoot.querySelectorAll('keyboard-key').forEach(key =>{
-            key.addEventListener("click", function(evt){
-              keyboard.onKeyClick(evt);
-            })
+          this.addEventListener("keyclick", (evt) => {
+            this.onKeyClick(evt.detail.key);
           })
 
         }
 
-        onKeyClick(evt) {
+        onKeyClick(key) {
           const keyboard = this;
-          let keyValue = evt.target.value;
+          let keyValue = key.value;
 
           if ( this.isShiftKeyPressed && !this.isMetaKeyPressed &&
                 !this.isAltKeyPressed && !this.isCtrlKeyPressed && !this.isSysrqKeyPressed
@@ -281,8 +278,8 @@
               bubbles: true,
               composed: true,
               key: keyValue,
-              location: evt.target.location,
-              keyCode: evt.target.code,
+              location: key.location,
+              keyCode: key.code,
               metaKey: keyboard.isMetaKeyPressed,
               altKey: keyboard.isAltKeyPressed,
               shiftKey: keyboard.isShiftKeyPressed,
@@ -290,9 +287,8 @@
             })
           );
 
-
-          // Remove pressed state from modifier keys if non-modifier key was pressed.
-          if (!evt.target.modifier){
+          // Remove pressed state from all modifier keys if non-modifier key was pressed.
+          if (!key.modifier){
             this.shadowRoot.querySelectorAll("[modifier=true][pressed=true]").forEach(key => {
               key.pressed = false;
           })

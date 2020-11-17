@@ -93,8 +93,22 @@
       class extends HTMLElement {
         constructor() {
           super();
-          this.addEventListener("click", (e) => {
-            this.togglePressedState()
+
+          this.addEventListener("click", (evt) => {
+            this.togglePressedState();
+
+            // Don't send event if click removed "pressed" state
+            // on a modifier key.
+            if (!this.modifier || this.pressed){
+              const clickedKey = this;
+              this.dispatchEvent(
+                new CustomEvent("keyclick",{
+                  detail: { key : clickedKey },
+                  bubbles: true,
+                  composed: true
+                })
+              );
+            }
           });
         }
 
@@ -134,7 +148,7 @@
         }
 
         set pressed(newValue) {
-          // only modifier keys can be "pressed"
+          // Only modifier keys can be "pressed".
           if (this.modifier) {
             this.setAttribute("pressed", newValue);
           }
