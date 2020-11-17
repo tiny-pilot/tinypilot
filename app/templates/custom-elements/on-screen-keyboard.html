@@ -332,7 +332,6 @@
             keyValue = this.getShiftedKeyValue(keyValue);
           }
 
-          // Simulate a keydown and keyup event sequence.
           this.emitKeyDownEvent(keyValue, key.location, key.code);
 
           if (!key.modifier) {
