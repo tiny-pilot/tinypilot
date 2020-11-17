@@ -66,7 +66,9 @@ function isKeycodeAlreadyPressed(keyCode) {
 
 function isIgnoredKeystroke(keyCode) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
-  // already pressed.
+  // already pressed. Otherwise, something like holding down the Shift key
+  // is sent as multiple Shift key presses, which has special meaning on
+  // certain OSes.
   return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
 }
 
@@ -151,6 +153,10 @@ function onKeyDown(evt) {
   if (!connectedToServer) {
     return;
   }
+  if (isIgnoredKeystroke(evt.keyCode)) {
+    return;
+  }
+  keyState[evt.keyCode] = true;
 
   if (!evt.metaKey) {
     evt.preventDefault();

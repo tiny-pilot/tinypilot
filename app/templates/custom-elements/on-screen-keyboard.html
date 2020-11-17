@@ -332,22 +332,14 @@
             keyValue = this.getShiftedKeyValue(keyValue);
           }
 
-          this.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              bubbles: true,
-              composed: true,
-              key: keyValue,
-              location: key.location,
-              keyCode: key.code,
-              metaKey: keyboard.isMetaKeyPressed,
-              altKey: keyboard.isAltKeyPressed,
-              shiftKey: keyboard.isShiftKeyPressed,
-              ctrlKey: keyboard.isCtrlKeyPressed,
-            })
-          );
+          // Simulate a keydown and keyup event sequence.
+          this.emitKeyDownEvent(keyValue, key.location, key.code);
 
-          // Remove pressed state from all modifier keys if non-modifier key was pressed.
           if (!key.modifier) {
+            this.emitKeyUpEvent(keyValue, key.location, key.code);
+
+            // Remove pressed state from all modifier keys if non-modifier key
+            // was pressed.
             this.clearPressedKeys();
           }
         }
@@ -387,11 +379,44 @@
           return pressedSysrqKeys.length ? true : false;
         }
 
+        emitKeyDownEvent(key, location, code) {
+          this.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              bubbles: true,
+              composed: true,
+              key: key,
+              location: location,
+              keyCode: code,
+              metaKey: this.isMetaKeyPressed,
+              altKey: this.isAltKeyPressed,
+              shiftKey: this.isShiftKeyPressed,
+              ctrlKey: this.isCtrlKeyPressed,
+            })
+          );
+        }
+
+        emitKeyUpEvent(key, location, code) {
+          this.dispatchEvent(
+            new KeyboardEvent("keyup", {
+              bubbles: true,
+              composed: true,
+              key: key,
+              location: location,
+              keyCode: code,
+              metaKey: this.isMetaKeyPressed,
+              altKey: this.isAltKeyPressed,
+              shiftKey: this.isShiftKeyPressed,
+              ctrlKey: this.isCtrlKeyPressed,
+            })
+          );
+        }
+
         clearPressedKeys() {
           this.shadowRoot
             .querySelectorAll("[modifier=true][pressed=true]")
             .forEach((key) => {
               key.pressed = false;
+              this.emitKeyUpEvent(key.value, key.location, key.code);
             });
         }
 
