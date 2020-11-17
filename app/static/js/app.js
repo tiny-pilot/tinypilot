@@ -151,10 +151,7 @@ function onKeyDown(evt) {
   if (!connectedToServer) {
     return;
   }
-  if (isIgnoredKeystroke(evt.keyCode)) {
-    return;
-  }
-  keyState[evt.keyCode] = true;
+
   if (!evt.metaKey) {
     evt.preventDefault();
   }

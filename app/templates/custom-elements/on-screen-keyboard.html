@@ -348,11 +348,7 @@
 
           // Remove pressed state from all modifier keys if non-modifier key was pressed.
           if (!key.modifier) {
-            this.shadowRoot
-              .querySelectorAll("[modifier=true][pressed=true]")
-              .forEach((key) => {
-                key.pressed = false;
-              });
+            this.clearPressedKeys();
           }
         }
 
@@ -389,6 +385,14 @@
             ".sysrq-modifier[pressed=true]"
           );
           return pressedSysrqKeys.length ? true : false;
+        }
+
+        clearPressedKeys() {
+          this.shadowRoot
+            .querySelectorAll("[modifier=true][pressed=true]")
+            .forEach((key) => {
+              key.pressed = false;
+            });
         }
 
         getShiftedKeyValue(key) {
