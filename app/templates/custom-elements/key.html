@@ -26,7 +26,7 @@
       background-color: #8f8f8f;
     }
 
-    :host([pressed=true]) .key {
+    :host([pressed="true"]) .key {
       outline: 1px solid #333333;
       background-color: #8f8f8f;
     }
@@ -66,8 +66,6 @@
     :host(.key-space) .key {
       width: 229px;
     }
-
-
   </style>
   <button id="key-button" type="button" class="key">
     <span id="key-content-top" class="content-top">
@@ -86,8 +84,6 @@
       .ownerDocument;
     const template = doc.querySelector("#key-template");
 
-
-
     customElements.define(
       "keyboard-key",
       class extends HTMLElement {
@@ -99,13 +95,13 @@
 
             // Don't send event if click removed "pressed" state
             // on a modifier key.
-            if (!this.modifier || this.pressed){
+            if (!this.modifier || this.pressed) {
               const clickedKey = this;
               this.dispatchEvent(
-                new CustomEvent("keyclick",{
-                  detail: { key : clickedKey },
+                new CustomEvent("keyclick", {
+                  detail: { key: clickedKey },
                   bubbles: true,
-                  composed: true
+                  composed: true,
                 })
               );
             }
@@ -122,10 +118,10 @@
         }
 
         get value() {
-          if (this.getAttribute("symbolic-value")){
+          if (this.getAttribute("symbolic-value")) {
             return this.getAttribute("symbolic-value");
           } else {
-            return this.firstChild.data.replace(' ','');
+            return this.firstChild.data.replace(" ", "");
           }
         }
 
@@ -134,9 +130,9 @@
         }
 
         get location() {
-          if(this.getAttribute("location") == 'left'){
+          if (this.getAttribute("location") == "left") {
             return 1;
-          } else if (this.getAttribute("location") == 'right') {
+          } else if (this.getAttribute("location") == "right") {
             return 2;
           } else {
             return null;
@@ -157,7 +153,6 @@
         togglePressedState() {
           this.pressed = !this.pressed;
         }
-
       }
     );
   })();

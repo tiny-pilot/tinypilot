@@ -1,246 +1,303 @@
 <template id="on-screen-keyboard-template">
-    <style>
-      .keyboard {
-        width: 992px;
-        min-width: 992px;
-        background-color: #f7f7f7;
-        margin: 1rem auto;
-        padding: 14px;
-        color: #333;
-      }
+  <style>
+    .keyboard {
+      width: 992px;
+      min-width: 992px;
+      background-color: #f7f7f7;
+      margin: 1rem auto;
+      padding: 14px;
+      color: #333;
+    }
 
-      .keyboard-block {
-        display: inline-block;
-      }
+    .keyboard-block {
+      display: inline-block;
+    }
 
-      #keyboard-block-left {
-        margin-right: 14px;
-        width: 780px;
-      }
+    #keyboard-block-left {
+      margin-right: 14px;
+      width: 780px;
+    }
 
-      #keyboard-block-right {
-        margin-left: 14px;
-        width: 156px;
-      }
+    #keyboard-block-right {
+      margin-left: 14px;
+      width: 156px;
+    }
 
-      .keyboard-row {
-        width: 100%;
-        float: left;
-      }
+    .keyboard-row {
+      width: 100%;
+      float: left;
+    }
 
-      .keyboard-row-bump {
-        padding-bottom: 28px;
-      }
-    </style>
-    <div class="keyboard">
-      <div id="keyboard-block-left" class="keyboard-block">
+    .keyboard-row-bump {
+      padding-bottom: 28px;
+    }
+  </style>
+  <div class="keyboard">
+    <div id="keyboard-block-left" class="keyboard-block">
+      <div class="keyboard-row keyboard-row-bump">
+        <keyboard-key code="27">Esc</keyboard-key>
+        <keyboard-key class="hidden"></keyboard-key>
+        <keyboard-key code="112">F1</keyboard-key>
+        <keyboard-key code="113">F2</keyboard-key>
+        <keyboard-key code="114">F3</keyboard-key>
+        <keyboard-key code="115">F4</keyboard-key>
+        <keyboard-key class="hidden key-collapse-half"></keyboard-key>
 
-        <div class="keyboard-row keyboard-row-bump">
-          <keyboard-key code="27" >Esc</keyboard-key>
-          <keyboard-key class="hidden"></keyboard-key>
-          <keyboard-key code="112" >F1</keyboard-key>
-          <keyboard-key code="113" >F2</keyboard-key>
-          <keyboard-key code="114" >F3</keyboard-key>
-          <keyboard-key code="115" >F4</keyboard-key>
-          <keyboard-key class="hidden key-collapse-half"></keyboard-key>
+        <keyboard-key code="116">F5</keyboard-key>
+        <keyboard-key code="117">F6</keyboard-key>
+        <keyboard-key code="118">F7</keyboard-key>
+        <keyboard-key code="119">F8</keyboard-key>
+        <keyboard-key class="hidden key-collapse-half"></keyboard-key>
 
-          <keyboard-key code="116" >F5</keyboard-key>
-          <keyboard-key code="117" >F6</keyboard-key>
-          <keyboard-key code="118" >F7</keyboard-key>
-          <keyboard-key code="119" >F8</keyboard-key>
-          <keyboard-key class="hidden key-collapse-half"></keyboard-key>
-
-          <keyboard-key code="120" >F9</keyboard-key>
-          <keyboard-key code="121" >F10</keyboard-key>
-          <keyboard-key code="122" >F11</keyboard-key>
-          <keyboard-key code="123" >F12</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-
-        <div class="keyboard-row">
-          <keyboard-key code="192" symbolic-value="`">
-            <slot>~</slot>
-            <span slot="bottom">`</span>
-          </keyboard-key>
-          <keyboard-key  code="49" symbolic-value="1" >
-            <slot>!</slot>
-            <span slot="bottom">1</span>
-          </keyboard-key>
-          <keyboard-key code="50" symbolic-value="2">
-            <slot>@</slot>
-            <span slot="bottom">2</span>
-          </keyboard-key>
-          <keyboard-key code="51" symbolic-value="3">
-            <slot>#</slot>
-            <span slot="bottom">3</span>
-          </keyboard-key>
-          <keyboard-key code="52" symbolic-value="4">
-            <slot>$</slot>
-            <span slot="bottom">4</span>
-          </keyboard-key>
-          <keyboard-key code="53" symbolic-value="5">
-            <slot>%</slot>
-            <span slot="bottom">5</span>
-          </keyboard-key>
-          <keyboard-key code="54" symbolic-value="6">
-            <slot>^</slot>
-            <span slot="bottom">6</span>
-          </keyboard-key>
-          <keyboard-key code="55" symbolic-value="7">
-            <slot>&</slot>
-            <span slot="bottom">7</span>
-          </keyboard-key>
-          <keyboard-key code="56" symbolic-value="8">
-            <slot>*</slot>
-            <span slot="bottom">8</span>
-          </keyboard-key>
-          <keyboard-key code="57" symbolic-value="9">
-            <slot>(</slot>
-            <span slot="bottom">9</span>
-          </keyboard-key>
-          <keyboard-key code="48" symbolic-value="0">
-            <slot>)</slot>
-            <span slot="bottom">0</span>
-          </keyboard-key>
-          <keyboard-key code="189" symbolic-value="-">
-            <slot>_</slot>
-            <span slot="bottom">-</span>
-          </keyboard-key>
-          <keyboard-key code="187" symbolic-value="=">
-            <slot>+</slot>
-            <span slot="bottom">=</span>
-          </keyboard-key>
-
-          <keyboard-key code="8" class="key-extend-full">Backspace</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-
-        <div class="keyboard-row">
-          <keyboard-key code="9"  class="key-extend-full">Tab</keyboard-key>
-          <keyboard-key code="81" >Q</keyboard-key>
-          <keyboard-key code="87" >W</keyboard-key>
-          <keyboard-key code="69" >E</keyboard-key>
-          <keyboard-key code="82" >R</keyboard-key>
-          <keyboard-key code="84" >T</keyboard-key>
-          <keyboard-key code="89" >Y</keyboard-key>
-          <keyboard-key code="85" >U</keyboard-key>
-          <keyboard-key code="73" >I</keyboard-key>
-          <keyboard-key code="79" >O</keyboard-key>
-          <keyboard-key code="80" >P</keyboard-key>
-          <keyboard-key code="219" symbolic-value="[">
-            <slot>{</slot>
-            <span slot="bottom">[</span>
-          </keyboard-key>
-          <keyboard-key code="221" symbolic-value="]">
-            <slot>}</slot>
-            <span slot="bottom">]</span>
-          </keyboard-key>
-          <keyboard-key code="220" symbolic-value="|">
-            <slot>|</slot>
-            <span slot="bottom">\</span>
-          </keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row">
-          <keyboard-key code="20"  class="key-extend-full">Caps Lock</keyboard-key>
-          <keyboard-key code="65" >A</keyboard-key>
-          <keyboard-key code="83" >S</keyboard-key>
-          <keyboard-key code="68" >D</keyboard-key>
-          <keyboard-key code="70" >F</keyboard-key>
-          <keyboard-key code="71" >G</keyboard-key>
-          <keyboard-key code="72" >H</keyboard-key>
-          <keyboard-key code="74" >J</keyboard-key>
-          <keyboard-key code="75" >K</keyboard-key>
-          <keyboard-key code="76" >L</keyboard-key>
-          <keyboard-key code="59" symbolic-value=";">
-            <slot>:</slot>
-            <span slot="bottom">;</span>
-          </keyboard-key>
-          <keyboard-key code="222" symbolic-value="'">
-            <slot>"</slot>
-            <span slot="bottom">'</span>
-          </keyboard-key>
-
-          <keyboard-key code="13"  class="key-extend-full">Enter</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-
-        <div class="keyboard-row">
-          <keyboard-key code="16"  modifier="true" location="left" class="shift-modifier key-extend-full-half" >Shift</keyboard-key>
-
-          <keyboard-key code="90" >Z</keyboard-key>
-          <keyboard-key code="88" >X</keyboard-key>
-          <keyboard-key code="67" >C</keyboard-key>
-          <keyboard-key code="86" >V</keyboard-key>
-          <keyboard-key code="66" >B</keyboard-key>
-          <keyboard-key code="78" >N</keyboard-key>
-          <keyboard-key code="77" >M</keyboard-key>
-          <keyboard-key code="188" symbolic-value=",">
-            <slot><</slot>
-            <span slot="bottom">,</span>
-          </keyboard-key>
-          <keyboard-key code="190" symbolic-value=".">
-            <slot>></slot>
-            <span slot="bottom">.</span>
-          </keyboard-key>
-          <keyboard-key code="191" symbolic-value="/">
-            <slot>?</slot>
-            <span slot="bottom">/</span>
-          </keyboard-key>
-          <keyboard-key code="16"  modifier="true" location="right" class="shift-modifier key-extend-full-half" >Shift</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-
-        <div class="keyboard-row">
-          <keyboard-key code="17"  modifier="true" location="left" class="ctrl-modifier key-extend-full">Control</keyboard-key>
-          <keyboard-key code="102"  modifier="true" location="left" class="meta-modifier key-extend-half">Meta</keyboard-key>
-          <keyboard-key code="18"  modifier="true" class="alt-modifier" location="left">Alt</keyboard-key>
-          <keyboard-key code="32"  class="key-space">Space</keyboard-key>
-          <keyboard-key code="18"  modifier="true" class="alt-modifier" location="right">Alt</keyboard-key>
-          <keyboard-key code="102" modifier="true" location="right" class="meta-modifier key-extend-half">Meta</keyboard-key>
-          <keyboard-key code="93" symbolic-value="ContextMenu" class="key-extend-half">Menu</keyboard-key>
-          <keyboard-key code="17"  modifier="true" location="right" class="ctrl-modifier key-extend-full">Control</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
+        <keyboard-key code="120">F9</keyboard-key>
+        <keyboard-key code="121">F10</keyboard-key>
+        <keyboard-key code="122">F11</keyboard-key>
+        <keyboard-key code="123">F12</keyboard-key>
       </div>
-      <div id="keyboard-block-right" class="keyboard-block">
-        <div class="keyboard-row keyboard-row-bump">
-          <keyboard-key code="44" symbolic-value="PrintScreen" modifier="true" class="sysrq-modifier">Print</keyboard-key>
-          <keyboard-key code="145" >Scroll Lock</keyboard-key>
-          <keyboard-key code="19" >Pause</keyboard-key>
+      <!-- end keyboard-row -->
 
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row ">
-          <keyboard-key code="45" >Insert</keyboard-key>
-          <keyboard-key code="36" >Home</keyboard-key>
-          <keyboard-key code="33" >Page Up</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row ">
-          <keyboard-key code="46" >Delete</keyboard-key>
-          <keyboard-key code="35" >End</keyboard-key>
-          <keyboard-key code="34" >Page Down</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row ">
-          <keyboard-key class="hidden"></keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row ">
-          <keyboard-key class="hidden"></keyboard-key>
-          <keyboard-key symbolic-value="ArrowUp" code="38" >Up</keyboard-key>
-          <keyboard-key class="hidden"></keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
-        <div class="keyboard-row ">
-          <keyboard-key symbolic-value="ArrowLeft" code="37" >Left</keyboard-key>
-          <keyboard-key symbolic-value="ArrowDown" code="40" >Down</keyboard-key>
-          <keyboard-key symbolic-value="ArrowRight" code="39" >Right</keyboard-key>
-        </div>
-        <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key code="192" symbolic-value="`">
+          <slot>~</slot>
+          <span slot="bottom">`</span>
+        </keyboard-key>
+        <keyboard-key code="49" symbolic-value="1">
+          <slot>!</slot>
+          <span slot="bottom">1</span>
+        </keyboard-key>
+        <keyboard-key code="50" symbolic-value="2">
+          <slot>@</slot>
+          <span slot="bottom">2</span>
+        </keyboard-key>
+        <keyboard-key code="51" symbolic-value="3">
+          <slot>#</slot>
+          <span slot="bottom">3</span>
+        </keyboard-key>
+        <keyboard-key code="52" symbolic-value="4">
+          <slot>$</slot>
+          <span slot="bottom">4</span>
+        </keyboard-key>
+        <keyboard-key code="53" symbolic-value="5">
+          <slot>%</slot>
+          <span slot="bottom">5</span>
+        </keyboard-key>
+        <keyboard-key code="54" symbolic-value="6">
+          <slot>^</slot>
+          <span slot="bottom">6</span>
+        </keyboard-key>
+        <keyboard-key code="55" symbolic-value="7">
+          <slot>&</slot>
+          <span slot="bottom">7</span>
+        </keyboard-key>
+        <keyboard-key code="56" symbolic-value="8">
+          <slot>*</slot>
+          <span slot="bottom">8</span>
+        </keyboard-key>
+        <keyboard-key code="57" symbolic-value="9">
+          <slot>(</slot>
+          <span slot="bottom">9</span>
+        </keyboard-key>
+        <keyboard-key code="48" symbolic-value="0">
+          <slot>)</slot>
+          <span slot="bottom">0</span>
+        </keyboard-key>
+        <keyboard-key code="189" symbolic-value="-">
+          <slot>_</slot>
+          <span slot="bottom">-</span>
+        </keyboard-key>
+        <keyboard-key code="187" symbolic-value="=">
+          <slot>+</slot>
+          <span slot="bottom">=</span>
+        </keyboard-key>
+
+        <keyboard-key code="8" class="key-extend-full">Backspace</keyboard-key>
       </div>
+      <!-- end keyboard-row -->
+
+      <div class="keyboard-row">
+        <keyboard-key code="9" class="key-extend-full">Tab</keyboard-key>
+        <keyboard-key code="81">Q</keyboard-key>
+        <keyboard-key code="87">W</keyboard-key>
+        <keyboard-key code="69">E</keyboard-key>
+        <keyboard-key code="82">R</keyboard-key>
+        <keyboard-key code="84">T</keyboard-key>
+        <keyboard-key code="89">Y</keyboard-key>
+        <keyboard-key code="85">U</keyboard-key>
+        <keyboard-key code="73">I</keyboard-key>
+        <keyboard-key code="79">O</keyboard-key>
+        <keyboard-key code="80">P</keyboard-key>
+        <keyboard-key code="219" symbolic-value="[">
+          <slot>{</slot>
+          <span slot="bottom">[</span>
+        </keyboard-key>
+        <keyboard-key code="221" symbolic-value="]">
+          <slot>}</slot>
+          <span slot="bottom">]</span>
+        </keyboard-key>
+        <keyboard-key code="220" symbolic-value="|">
+          <slot>|</slot>
+          <span slot="bottom">\</span>
+        </keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key code="20" class="key-extend-full">Caps Lock</keyboard-key>
+        <keyboard-key code="65">A</keyboard-key>
+        <keyboard-key code="83">S</keyboard-key>
+        <keyboard-key code="68">D</keyboard-key>
+        <keyboard-key code="70">F</keyboard-key>
+        <keyboard-key code="71">G</keyboard-key>
+        <keyboard-key code="72">H</keyboard-key>
+        <keyboard-key code="74">J</keyboard-key>
+        <keyboard-key code="75">K</keyboard-key>
+        <keyboard-key code="76">L</keyboard-key>
+        <keyboard-key code="59" symbolic-value=";">
+          <slot>:</slot>
+          <span slot="bottom">;</span>
+        </keyboard-key>
+        <keyboard-key code="222" symbolic-value="'">
+          <slot>"</slot>
+          <span slot="bottom">'</span>
+        </keyboard-key>
+
+        <keyboard-key code="13" class="key-extend-full">Enter</keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+
+      <div class="keyboard-row">
+        <keyboard-key
+          code="16"
+          modifier="true"
+          location="left"
+          class="shift-modifier key-extend-full-half"
+          >Shift</keyboard-key
+        >
+
+        <keyboard-key code="90">Z</keyboard-key>
+        <keyboard-key code="88">X</keyboard-key>
+        <keyboard-key code="67">C</keyboard-key>
+        <keyboard-key code="86">V</keyboard-key>
+        <keyboard-key code="66">B</keyboard-key>
+        <keyboard-key code="78">N</keyboard-key>
+        <keyboard-key code="77">M</keyboard-key>
+        <keyboard-key code="188" symbolic-value=",">
+          <slot><</slot>
+          <span slot="bottom">,</span>
+        </keyboard-key>
+        <keyboard-key code="190" symbolic-value=".">
+          <slot>></slot>
+          <span slot="bottom">.</span>
+        </keyboard-key>
+        <keyboard-key code="191" symbolic-value="/">
+          <slot>?</slot>
+          <span slot="bottom">/</span>
+        </keyboard-key>
+        <keyboard-key
+          code="16"
+          modifier="true"
+          location="right"
+          class="shift-modifier key-extend-full-half"
+          >Shift</keyboard-key
+        >
+      </div>
+      <!-- end keyboard-row -->
+
+      <div class="keyboard-row">
+        <keyboard-key
+          code="17"
+          modifier="true"
+          location="left"
+          class="ctrl-modifier key-extend-full"
+          >Control</keyboard-key
+        >
+        <keyboard-key
+          code="102"
+          modifier="true"
+          location="left"
+          class="meta-modifier key-extend-half"
+          >Meta</keyboard-key
+        >
+        <keyboard-key
+          code="18"
+          modifier="true"
+          class="alt-modifier"
+          location="left"
+          >Alt</keyboard-key
+        >
+        <keyboard-key code="32" class="key-space">Space</keyboard-key>
+        <keyboard-key
+          code="18"
+          modifier="true"
+          class="alt-modifier"
+          location="right"
+          >Alt</keyboard-key
+        >
+        <keyboard-key
+          code="102"
+          modifier="true"
+          location="right"
+          class="meta-modifier key-extend-half"
+          >Meta</keyboard-key
+        >
+        <keyboard-key
+          code="93"
+          symbolic-value="ContextMenu"
+          class="key-extend-half"
+          >Menu</keyboard-key
+        >
+        <keyboard-key
+          code="17"
+          modifier="true"
+          location="right"
+          class="ctrl-modifier key-extend-full"
+          >Control</keyboard-key
+        >
+      </div>
+      <!-- end keyboard-row -->
     </div>
+    <div id="keyboard-block-right" class="keyboard-block">
+      <div class="keyboard-row keyboard-row-bump">
+        <keyboard-key
+          code="44"
+          symbolic-value="PrintScreen"
+          modifier="true"
+          class="sysrq-modifier"
+          >Print</keyboard-key
+        >
+        <keyboard-key code="145">Scroll Lock</keyboard-key>
+        <keyboard-key code="19">Pause</keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key code="45">Insert</keyboard-key>
+        <keyboard-key code="36">Home</keyboard-key>
+        <keyboard-key code="33">Page Up</keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key code="46">Delete</keyboard-key>
+        <keyboard-key code="35">End</keyboard-key>
+        <keyboard-key code="34">Page Down</keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key class="hidden"></keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key class="hidden"></keyboard-key>
+        <keyboard-key symbolic-value="ArrowUp" code="38">Up</keyboard-key>
+        <keyboard-key class="hidden"></keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+      <div class="keyboard-row">
+        <keyboard-key symbolic-value="ArrowLeft" code="37">Left</keyboard-key>
+        <keyboard-key symbolic-value="ArrowDown" code="40">Down</keyboard-key>
+        <keyboard-key symbolic-value="ArrowRight" code="39">Right</keyboard-key>
+      </div>
+      <!-- end keyboard-row -->
+    </div>
+  </div>
 </template>
 
 <script>
@@ -252,25 +309,27 @@
     customElements.define(
       "on-screen-keyboard",
       class extends HTMLElement {
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
           this.addEventListener("keyclick", (evt) => {
             this.onKeyClick(evt.detail.key);
-          })
-
+          });
         }
 
         onKeyClick(key) {
           const keyboard = this;
           let keyValue = key.value;
 
-          if ( this.isShiftKeyPressed && !this.isMetaKeyPressed &&
-                !this.isAltKeyPressed && !this.isCtrlKeyPressed && !this.isSysrqKeyPressed
+          if (
+            this.isShiftKeyPressed &&
+            !this.isMetaKeyPressed &&
+            !this.isAltKeyPressed &&
+            !this.isCtrlKeyPressed &&
+            !this.isSysrqKeyPressed
           ) {
-              keyValue = this.getShiftedKeyValue(keyValue)
+            keyValue = this.getShiftedKeyValue(keyValue);
           }
 
           this.dispatchEvent(
@@ -288,37 +347,48 @@
           );
 
           // Remove pressed state from all modifier keys if non-modifier key was pressed.
-          if (!key.modifier){
-            this.shadowRoot.querySelectorAll("[modifier=true][pressed=true]").forEach(key => {
-              key.pressed = false;
-          })
-
+          if (!key.modifier) {
+            this.shadowRoot
+              .querySelectorAll("[modifier=true][pressed=true]")
+              .forEach((key) => {
+                key.pressed = false;
+              });
           }
         }
 
         get isMetaKeyPressed() {
-          const pressedMetaKeys = this.shadowRoot.querySelectorAll('.meta-modifier[pressed=true]')
-          return (pressedMetaKeys.length) ? true : false;
+          const pressedMetaKeys = this.shadowRoot.querySelectorAll(
+            ".meta-modifier[pressed=true]"
+          );
+          return pressedMetaKeys.length ? true : false;
         }
 
         get isAltKeyPressed() {
-          const pressedAltKeys = this.shadowRoot.querySelectorAll('.alt-modifier[pressed=true]')
-          return (pressedAltKeys.length) ? true : false;
+          const pressedAltKeys = this.shadowRoot.querySelectorAll(
+            ".alt-modifier[pressed=true]"
+          );
+          return pressedAltKeys.length ? true : false;
         }
 
         get isShiftKeyPressed() {
-          const pressedShiftKeys = this.shadowRoot.querySelectorAll('.shift-modifier[pressed=true]')
-          return (pressedShiftKeys.length) ? true : false;
+          const pressedShiftKeys = this.shadowRoot.querySelectorAll(
+            ".shift-modifier[pressed=true]"
+          );
+          return pressedShiftKeys.length ? true : false;
         }
 
         get isCtrlKeyPressed() {
-          const pressedCtrlKeys = this.shadowRoot.querySelectorAll('.ctrl-modifier[pressed=true]')
-          return (pressedCtrlKeys.length) ? true : false;
+          const pressedCtrlKeys = this.shadowRoot.querySelectorAll(
+            ".ctrl-modifier[pressed=true]"
+          );
+          return pressedCtrlKeys.length ? true : false;
         }
 
         get isSysrqKeyPressed() {
-          const pressedSysrqKeys = this.shadowRoot.querySelectorAll('.sysrq-modifier[pressed=true]')
-          return (pressedSysrqKeys.length) ? true : false;
+          const pressedSysrqKeys = this.shadowRoot.querySelectorAll(
+            ".sysrq-modifier[pressed=true]"
+          );
+          return pressedSysrqKeys.length ? true : false;
         }
 
         getShiftedKeyValue(key) {
@@ -340,12 +410,12 @@
             "]": "}",
             "\\": "|",
             ";": ":",
-            "'": "\"",
+            "'": '"',
             ",": "<",
             ".": ">",
             "/": "?",
-          }
-          return (shiftMappings.hasOwnProperty(key)) ? shiftMappings[key] : key;
+          };
+          return shiftMappings.hasOwnProperty(key) ? shiftMappings[key] : key;
         }
       }
     );

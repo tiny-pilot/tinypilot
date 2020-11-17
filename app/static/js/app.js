@@ -172,7 +172,7 @@ function onKeyDown(evt) {
     location = "right";
   }
 
-  const onScreenKeyboard = document.getElementById('on-screen-keyboard');
+  const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 
   processKeystroke({
     metaKey: evt.metaKey || onScreenKeyboard.isMetaKeyPressed,
