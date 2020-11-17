@@ -176,7 +176,6 @@ function onKeyDown(evt) {
     keyCode: evt.keyCode,
     location: location,
   });
-
 }
 
 function sendMouseEvent(
