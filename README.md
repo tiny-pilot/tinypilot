@@ -105,7 +105,7 @@ If you need authentication, the simplest solution would be to adjust your Nginx 
 
 If this project is useful to you, consider making a financial contribution to support its development:
 
-* [paypal.me/mtlynchio](https://paypal.me/mtlynchio)
+* [paypal.me/tinypilotkvm](https://paypal.me/tinypilotkvm)
 
 ## Detailed project updates
 
