@@ -30,9 +30,19 @@ echo "voltage logs" >> "$LOG_FILE"
 sudo journalctl -xe | grep -i "voltage"  >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
+echo "Checking TinyPilot configuration..."
+printf "TinyPilot configuration\n" >> "$LOG_FILE"
+cat lib cat /lib/systemd/system/tinypilot.service >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
 echo "Checking TinyPilot logs..."
 printf "TinyPilot logs\n" >> "$LOG_FILE"
 sudo journalctl -u tinypilot | tail -n 200 >> "$LOG_FILE"
+printf "\n" >> "$LOG_FILE"
+
+echo "Checking uStreamer configuration..."
+printf "uStreamer configuration\n" >> "$LOG_FILE"
+cat lib cat /lib/systemd/system/ustreamer.service >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
