@@ -331,12 +331,20 @@
             );
           });
           this.addEventListener("keyrelease", (evt) => {
-            const key = evt.detail.key;
-            this.emitKeyUpEvent(key.value, key.location, key.code);
+            this.emitKeyUpEvent(
+              evt.detail.key,
+              evt.detail.location,
+              evt.detail.code
+            );
           });
         }
 
         onKeyClick(key, location, code, isModifier) {
+<<<<<<< HEAD
+=======
+          const keyboard = this;
+
+>>>>>>> Fixing key release
           if (
             this.isShiftKeyPressed &&
             !this.isMetaKeyPressed &&
