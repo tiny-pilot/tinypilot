@@ -112,6 +112,14 @@
                   composed: true,
                 })
               );
+            } else {
+              this.dispatchEvent(
+                new CustomEvent("keyrelease", {
+                  detail: { key: clickedKey },
+                  bubbles: true,
+                  composed: true,
+                })
+              );
             }
           });
         }

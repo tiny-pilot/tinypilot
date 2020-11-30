@@ -330,6 +330,10 @@
               evt.detail.isModifier
             );
           });
+          this.addEventListener("keyrelease", (evt) => {
+            const key = evt.detail.key;
+            this.emitKeyUpEvent(key.value, key.location, key.code);
+          });
         }
 
         onKeyClick(key, location, code, isModifier) {
