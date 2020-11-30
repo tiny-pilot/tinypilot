@@ -112,6 +112,18 @@
                   composed: true,
                 })
               );
+            } else {
+              this.dispatchEvent(
+                new CustomEvent("keyrelease", {
+                  detail: {
+                    key: this.value,
+                    location: this.location,
+                    code: this.code,
+                  },
+                  bubbles: true,
+                  composed: true,
+                })
+              );
             }
           });
         }

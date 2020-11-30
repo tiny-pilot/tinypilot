@@ -330,6 +330,13 @@
               evt.detail.isModifier
             );
           });
+          this.addEventListener("keyrelease", (evt) => {
+            this.emitKeyUpEvent(
+              evt.detail.key,
+              evt.detail.location,
+              evt.detail.code
+            );
+          });
         }
 
         onKeyClick(key, location, code, isModifier) {
