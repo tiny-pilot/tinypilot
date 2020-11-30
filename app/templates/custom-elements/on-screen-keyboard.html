@@ -323,13 +323,16 @@
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
           this.addEventListener("keyclick", (evt) => {
-            this.onKeyClick(evt.detail.key);
+            this.onKeyClick(
+              evt.detail.key,
+              evt.detail.location,
+              evt.detail.code,
+              evt.detail.isModifier
+            );
           });
         }
 
-        onKeyClick(key) {
-          let keyValue = key.value;
-
+        onKeyClick(key, location, code, isModifier) {
           if (
             this.isShiftKeyPressed &&
             !this.isMetaKeyPressed &&
@@ -337,13 +340,13 @@
             !this.isCtrlKeyPressed &&
             !this.isSysrqKeyPressed
           ) {
-            keyValue = this.getShiftedKeyValue(keyValue);
+            key = this.getShiftedKeyValue(key);
           }
 
-          this.emitKeyDownEvent(keyValue, key.location, key.code);
+          this.emitKeyDownEvent(key, location, code);
 
-          if (!key.isModifier) {
-            this.emitKeyUpEvent(keyValue, key.location, key.code);
+          if (!isModifier) {
+            this.emitKeyUpEvent(key, location, code);
 
             // Remove pressed state from all modifier keys if non-modifier key
             // was pressed.

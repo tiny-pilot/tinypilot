@@ -100,10 +100,14 @@
             // Don't send event if click removed "pressed" state
             // on a modifier key.
             if (!this.isModifier || this.isPressed) {
-              const clickedKey = this;
               this.dispatchEvent(
                 new CustomEvent("keyclick", {
-                  detail: { key: clickedKey },
+                  detail: {
+                    key: this.value,
+                    location: this.location,
+                    code: this.code,
+                    isModifier: this.isModifier,
+                  },
                   bubbles: true,
                   composed: true,
                 })
