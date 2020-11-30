@@ -115,7 +115,7 @@
             } else {
               this.dispatchEvent(
                 new CustomEvent("keyrelease", {
-                  detail: { key: clickedKey },
+                  detail: { key: this },
                   bubbles: true,
                   composed: true,
                 })
