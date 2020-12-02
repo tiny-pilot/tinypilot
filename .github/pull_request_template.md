@@ -8,7 +8,7 @@ Fixes #XX (if there's no associated Github issue, delete this line)
 
 ## How to get your PR merged quickly
 
-* Read my guide ["How to Make Your Code Reviewer Fall in Love with You"](https://mtlynch.io/code-review-love/) to understand how to contribute effectively to an open source project.
+* Read my guide, ["How to Make Your Code Reviewer Fall in Love with You,"](https://mtlynch.io/code-review-love/) to understand how to contribute effectively to an open source project.
 * Give a clear, one-line title to your PR.
   * Good: `Fix dropped keystrokes on Firefox`
   * Bad: `Fix issue`
