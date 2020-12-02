@@ -8,13 +8,10 @@ Fixes #XX (if there's no associated Github issue, delete this line)
 
 ## How to get your PR merged quickly
 
+* Read my guide, ["How to Make Your Code Reviewer Fall in Love with You,"](https://mtlynch.io/code-review-love/) to understand how to contribute effectively to an open source project.
 * Give a clear, one-line title to your PR.
   * Good: `Fix dropped keystrokes on Firefox`
   * Bad: `Fix issue`
-* Title your PR in the present tense.
-  * Good: `Change the background color to hot pink`
-  * Bad: `Changing the background color to hot pink`
-  * Bad: `Changed the background color to hot pink`
 * If your PR is not ready for review, mark it as "draft."
 * [Rebase your changes](https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase) onto the latest `master` commit so that there are no merge conflicts.
 * Your PR must pass build checks in CI before it will be considered for merge.
