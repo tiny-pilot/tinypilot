@@ -36,7 +36,7 @@ def socket_keystroke(message):
         keystroke = keystroke_request.parse_keystroke(message)
     except keystroke_request.Error as e:
         logger.error('Failed to parse keystroke request: %s', e)
-        return
+        return {'success': False}
     hid_keycode = None
     try:
         control_keys, hid_keycode = js_to_hid.convert(keystroke,
