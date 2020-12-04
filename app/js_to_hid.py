@@ -142,8 +142,9 @@ def convert(keystroke):
 def _map_modifier_keys(keystroke):
     modifier_bitmask = 0
 
-    # Because JavaScript's keydown event doesn't indicate left or right
-    # modifier unless it's the last key pressed, so check for that first.
+    # JavaScript's keydown event doesn't indicate left or right modifier flags,
+    # so the only one whose orientation we can detect is the newest key in the
+    # keystroke.
     if keystroke.code == 'ControlRight':
         modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
     elif keystroke.code == 'ShiftRight':
