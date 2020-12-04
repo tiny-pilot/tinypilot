@@ -390,12 +390,8 @@
           if (location) {
             locationSpecifier = ` location="${location}"`;
           }
-          let selector = `.${modifier}-modifier[pressed=true${locationSpecifier}]`;
-          return (
-            this.shadowRoot.querySelectorAll(
-              `.${modifier}-modifier[pressed=true]`
-            ).length > 0
-          );
+          const selector = `.${modifier}-modifier[pressed=true${locationSpecifier}]`;
+          return this.shadowRoot.querySelectorAll(selector).length > 0;
         }
 
         emitKeyDownEvent(key, location, code) {
