@@ -369,6 +369,10 @@
           return this.isModifierKeyPressed("alt");
         }
 
+        get isRightAltKeyPressed() {
+          return this.isModifierKeyPressed("alt", "right");
+        }
+
         get isShiftKeyPressed() {
           return this.isModifierKeyPressed("shift");
         }
@@ -381,7 +385,12 @@
           return this.isModifierKeyPressed("sysrq");
         }
 
-        isModifierKeyPressed(modifier) {
+        isModifierKeyPressed(modifier, location) {
+          let locationSpecifier = "";
+          if (location) {
+            locationSpecifier = ` location="${location}"`;
+          }
+          let selector = `.${modifier}-modifier[pressed=true${locationSpecifier}]`;
           return (
             this.shadowRoot.querySelectorAll(
               `.${modifier}-modifier[pressed=true]`
