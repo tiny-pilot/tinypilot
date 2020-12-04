@@ -70,17 +70,17 @@ const commonKeyCodes = {
 // Given a character and a browser language, finds the matching code
 export function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {
-    return findcodeEnGb(character);
+    return findKeyCodeEnGb(character);
   }
   // Default to en-US if no other language matches.
-  return findcodeEnUs(character);
+  return findKeyCodeEnUs(character);
 }
 
 function joinDictionaries(a, b) {
   return Object.assign({}, a, b);
 }
 
-function findcodeEnUs(character) {
+function findKeyCodeEnUs(character) {
   const usSpecificKeys = {
     "!": 49,
     "@": 50,
@@ -99,7 +99,7 @@ function findcodeEnUs(character) {
   return lookup[character];
 }
 
-function findcodeEnGb(character) {
+function findKeyCodeEnGb(character) {
   const gbSpecificKeys = {
     '"': 50,
     "£": 51,
