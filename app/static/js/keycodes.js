@@ -120,35 +120,3 @@ function findKeyCodeEnGb(character) {
   const lookup = joinDictionaries(commonKeyCodes, gbSpecificKeys);
   return lookup[character];
 }
-
-// This StackOverflow answer says that most browsers represent the Alt Graph
-// modifier as ctrlKey = true, altKey = true:
-//
-//   https://stackoverflow.com/a/18570096/90388
-//
-// But in my tests, I see all modifiers as false when Alt Graph is pushed.
-// The only difference in the onKeyDown event I see is that the key property
-// changes when Alt Graph is pushed, so we detect it that way.
-export function isAltGraphPressed(browserLanguage, code, key) {
-  // Only French AZERTY is supported now.
-  // This is not robust, as a user's browser language doesn't necessarily match
-  // their keyboard layout.
-  if (!browserLanguage.startsWith("fr")) {
-    return false;
-  }
-  return (
-    (code === "Digit0" && key === "@") ||
-    (code === "Digit2" && key === "~") ||
-    (code === "Digit3" && key === "#") ||
-    (code === "Digit4" && key === "{") ||
-    (code === "Digit5" && key === "[") ||
-    (code === "Digit6" && key === "|") ||
-    (code === "Digit7" && key === "`") ||
-    (code === "Digit8" && key === "\\") ||
-    (code === "Digit9" && key === "^") ||
-    (code === "Equal" && key === "}") ||
-    (code === "KeyE" && key === "€") ||
-    (code === "BracketRight" && key === "ø") ||
-    (code === "Minus" && key === "]")
-  );
-}

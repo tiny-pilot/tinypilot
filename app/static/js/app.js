@@ -159,13 +159,13 @@ function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
+  keyState[evt.code] = true;
   if (!connectedToServer) {
     return;
   }
   if (isIgnoredKeystroke(evt.code)) {
     return;
   }
-  keyState[evt.code] = true;
   if (!evt.metaKey) {
     evt.preventDefault();
   }
@@ -178,7 +178,7 @@ function onKeyDown(evt) {
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey:
-      isAltGraphPressed(browserLanguage(), evt.code, evt.key) ||
+      isKeycodeAlreadyPressed("AltRight") ||
       onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
