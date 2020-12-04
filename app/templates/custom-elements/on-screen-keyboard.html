@@ -177,7 +177,6 @@
         <keyboard-key
           code="ShiftLeft"
           modifier="true"
-          location="left"
           class="shift-modifier key-extend-full-half accented"
           >Shift</keyboard-key
         >
@@ -204,7 +203,6 @@
         <keyboard-key
           code="ShiftRight"
           modifier="true"
-          location="right"
           class="shift-modifier key-extend-full-half accented"
           >Shift</keyboard-key
         >
@@ -215,14 +213,12 @@
         <keyboard-key
           code="ControlLeft"
           modifier="true"
-          location="left"
           class="ctrl-modifier key-extend-full accented"
           >Control</keyboard-key
         >
         <keyboard-key
           code="MetaLeft"
           modifier="true"
-          location="left"
           class="meta-modifier key-extend-half accented"
           >Meta</keyboard-key
         >
@@ -230,7 +226,6 @@
           code="AltLeft"
           modifier="true"
           class="alt-modifier accented"
-          location="left"
           >Alt</keyboard-key
         >
         <keyboard-key code="32" class="key-space">Space</keyboard-key>
@@ -238,13 +233,11 @@
           code="AltRight"
           modifier="true"
           class="alt-modifier accented"
-          location="right"
           >Alt</keyboard-key
         >
         <keyboard-key
           code="MetaRight"
           modifier="true"
-          location="right"
           class="meta-modifier key-extend-half accented"
           >Meta</keyboard-key
         >
@@ -257,7 +250,6 @@
         <keyboard-key
           code="ControlRight"
           modifier="true"
-          location="right"
           class="ctrl-modifier key-extend-full accented"
           >Control</keyboard-key
         >
@@ -321,21 +313,16 @@
           this.addEventListener("keyclick", (evt) => {
             this.onKeyClick(
               evt.detail.key,
-              evt.detail.location,
               evt.detail.code,
               evt.detail.isModifier
             );
           });
           this.addEventListener("keyrelease", (evt) => {
-            this.emitKeyUpEvent(
-              evt.detail.key,
-              evt.detail.location,
-              evt.detail.code
-            );
+            this.emitKeyUpEvent(evt.detail.key, evt.detail.code);
           });
         }
 
-        onKeyClick(key, location, code, isModifier) {
+        onKeyClick(key, code, isModifier) {
           if (
             this.isShiftKeyPressed &&
             !this.isMetaKeyPressed &&
@@ -346,10 +333,10 @@
             key = this.getShiftedKeyValue(key);
           }
 
-          this.emitKeyDownEvent(key, location, code);
+          this.emitKeyDownEvent(key, code);
 
           if (!isModifier) {
-            this.emitKeyUpEvent(key, location, code);
+            this.emitKeyUpEvent(key, code);
 
             // Remove pressed state from all modifier keys if non-modifier key
             // was pressed.
@@ -366,7 +353,11 @@
         }
 
         get isRightAltKeyPressed() {
-          return this.isModifierKeyPressed("alt", "right");
+          return (
+            this.shadowRoot.querySelectorAll(
+              '.alt-modifier[code="AltRight"][pressed=true]'
+            ).length > 0
+          );
         }
 
         get isShiftKeyPressed() {
@@ -381,22 +372,20 @@
           return this.isModifierKeyPressed("sysrq");
         }
 
-        isModifierKeyPressed(modifier, location) {
-          let locationSpecifier = "";
-          if (location) {
-            locationSpecifier = `[location="${location}"]`;
-          }
-          const selector = `.${modifier}-modifier[pressed=true]${locationSpecifier}`;
-          return this.shadowRoot.querySelectorAll(selector).length > 0;
+        isModifierKeyPressed(modifier) {
+          return (
+            this.shadowRoot.querySelectorAll(
+              `.${modifier}-modifier[pressed=true]`
+            ).length > 0
+          );
         }
 
-        emitKeyDownEvent(key, location, code) {
+        emitKeyDownEvent(key, code) {
           this.dispatchEvent(
             new KeyboardEvent("keydown", {
               bubbles: true,
               composed: true,
               key: key,
-              location: location,
               code: code,
               metaKey: this.isMetaKeyPressed,
               altKey: this.isAltKeyPressed,
@@ -406,13 +395,12 @@
           );
         }
 
-        emitKeyUpEvent(key, location, code) {
+        emitKeyUpEvent(key, code) {
           this.dispatchEvent(
             new KeyboardEvent("keyup", {
               bubbles: true,
               composed: true,
               key: key,
-              location: location,
               code: code,
               metaKey: this.isMetaKeyPressed,
               altKey: this.isAltKeyPressed,
@@ -427,7 +415,7 @@
             .querySelectorAll("[modifier=true][pressed=true]")
             .forEach((key) => {
               key.isPressed = false;
-              this.emitKeyUpEvent(key.key, key.location, key.code);
+              this.emitKeyUpEvent(key.key, key.code);
             });
         }
 

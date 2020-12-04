@@ -30,7 +30,6 @@ class Keystroke:
     right_alt_modifier: bool
     key: str
     code: str
-    is_right_modifier: bool
 
 
 def parse_keystroke(message):
@@ -40,7 +39,6 @@ def parse_keystroke(message):
     required_fields = (
         'key',
         'code',
-        'location',
         'ctrlKey',
         'shiftKey',
         'altKey',
@@ -58,8 +56,7 @@ def parse_keystroke(message):
         left_meta_modifier=_parse_modifier_key(message['metaKey']),
         right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
         key=message['key'],
-        code=_parse_code(message['code']),
-        is_right_modifier=_parse_is_right_key_location(message['location']))
+        code=_parse_code(message['code']))
 
 
 def _parse_modifier_key(modifier_key):
@@ -77,15 +74,3 @@ def _parse_code(code):
     if len(code) > 30:
         raise InvalidKeyCode('Key code is too long: %s' % code)
     return code
-
-
-def _parse_is_right_key_location(location):
-    if location is None:
-        return False
-    if type(location) is not str:
-        raise InvalidLocation('Location must be "left", "right", or null.')
-    elif location.lower() == 'left':
-        return False
-    elif location.lower() == 'right':
-        return True
-    raise InvalidLocation('Location must be "left", "right", or null.')

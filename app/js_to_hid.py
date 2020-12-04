@@ -142,20 +142,16 @@ def convert(keystroke):
 def _map_modifier_keys(keystroke):
     modifier_bitmask = 0
 
-    # HACK: Because JavaScript's keydown event doesn't indicate left or right
-    # modifier unless it's the only key pressed, we special case it so that if
-    # we see is_right_modifier set to true, we assume it's not a key
-    # combination, but rather a modifier key in isolation, so we set only that
-    # one modifier key.
-    if keystroke.is_right_modifier:
-        if keystroke.left_ctrl_modifier:
-            return hid.MODIFIER_RIGHT_CTRL
-        elif keystroke.left_shift_modifier:
-            return hid.MODIFIER_RIGHT_SHIFT
-        elif keystroke.left_alt_modifier:
-            return hid.MODIFIER_RIGHT_ALT
-        elif keystroke.left_meta_modifier:
-            return hid.MODIFIER_RIGHT_META
+    # Because JavaScript's keydown event doesn't indicate left or right
+    # modifier unless it's the last key pressed, so check for that first.
+    if keystroke.code == 'ControlRight':
+        modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
+    elif keystroke.code == 'ShiftRight':
+        modifier_bitmask |= hid.MODIFIER_RIGHT_SHIFT
+    elif keystroke.code == 'MetaRight':
+        modifier_bitmask |= hid.MODIFIER_RIGHT_META
+    elif keystroke.code == 'AltRight':
+        modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
 
     if keystroke.left_ctrl_modifier:
         modifier_bitmask |= hid.MODIFIER_LEFT_CTRL

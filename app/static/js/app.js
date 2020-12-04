@@ -170,13 +170,6 @@ function onKeyDown(evt) {
     evt.preventDefault();
   }
 
-  let location = null;
-  if (evt.location === 1) {
-    location = "left";
-  } else if (evt.location === 2) {
-    location = "right";
-  }
-
   const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 
   processKeystroke({
@@ -190,7 +183,6 @@ function onKeyDown(evt) {
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
     code: evt.code,
-    location: location,
   });
 }
 
@@ -268,7 +260,6 @@ function processTextCharacter(textCharacter, language) {
     sysrqKey: false,
     key: friendlyName,
     code: code,
-    location: null,
   });
 }
 
