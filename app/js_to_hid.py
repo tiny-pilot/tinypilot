@@ -135,8 +135,8 @@ def convert(keystroke):
     try:
         return _map_modifier_keys(keystroke), _MAPPING[keystroke.code]
     except KeyError:
-        raise UnrecognizedKeyCodeError('Unrecognized key code %s (%d)' %
-                                       (keystroke.key, keystroke.key))
+        raise UnrecognizedKeyCodeError('Unrecognized key code %s (%s)' %
+                                       (keystroke.key, keystroke.code))
 
 
 def _map_modifier_keys(keystroke):

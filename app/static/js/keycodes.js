@@ -1,8 +1,10 @@
 "use strict";
 
+//TODO: Fix these mappings.
+
 // Mappings of characters to codes that are shared among different keyboard
 // layouts.
-const commoncodes = {
+const commonKeyCodes = {
   "\t": 9,
   "\n": 13,
   " ": 32,
@@ -25,32 +27,32 @@ const commoncodes = {
   "(": 57,
   ":": 59,
   ";": 59,
-  a: 65,
-  b: 66,
-  c: 67,
-  d: 68,
-  e: 69,
-  f: 70,
-  g: 71,
-  h: 72,
-  i: 73,
-  j: 74,
-  k: 75,
-  l: 76,
-  m: 77,
-  n: 78,
-  o: 79,
-  p: 80,
-  q: 81,
-  r: 82,
-  s: 83,
-  t: 84,
-  u: 85,
-  v: 86,
-  w: 87,
-  x: 88,
-  y: 89,
-  z: 90,
+  a: "KeyA",
+  b: "KeyB",
+  c: "KeyC",
+  d: "KeyD",
+  e: "KeyE",
+  f: "KeyF",
+  g: "KeyG",
+  h: "KeyH",
+  i: "KeyI",
+  j: "KeyJ",
+  k: "KeyK",
+  l: "KeyL",
+  m: "KeyM",
+  n: "KeyN",
+  o: "KeyO",
+  p: "KeyP",
+  q: "KeyQ",
+  r: "KeyR",
+  s: "KeyS",
+  t: "KeyT",
+  u: "KeyU",
+  v: "KeyV",
+  w: "KeyW",
+  x: "KeyX",
+  y: "KeyY",
+  z: "KeyZ",
   ",": 188,
   "<": 188,
   ".": 190,
@@ -93,7 +95,7 @@ function findcodeEnUs(character) {
     "\\": 220,
     '"': 222,
   };
-  const lookup = joinDictionaries(commoncodes, usSpecificKeys);
+  const lookup = joinDictionaries(commonKeyCodes, usSpecificKeys);
   return lookup[character];
 }
 
@@ -115,7 +117,7 @@ function findcodeEnGb(character) {
     "`": 223,
     ç: 231,
   };
-  const lookup = joinDictionaries(commoncodes, gbSpecificKeys);
+  const lookup = joinDictionaries(commonKeyCodes, gbSpecificKeys);
   return lookup[character];
 }
 
