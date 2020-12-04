@@ -175,7 +175,9 @@ function onKeyDown(evt) {
     altKey: evt.altKey || onScreenKeyboard.isAltKeyPressed,
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
-    altGraphKey: isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key),
+    altGraphKey:
+      isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key) ||
+      onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
     keyCode: evt.keyCode,
