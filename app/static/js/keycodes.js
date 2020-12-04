@@ -1,8 +1,8 @@
 "use strict";
 
-// Mappings of characters to keycodes that are shared among different keyboard
+// Mappings of characters to codes that are shared among different keyboard
 // layouts.
-const commonKeyCodes = {
+const commoncodes = {
   "\t": 9,
   "\n": 13,
   " ": 32,
@@ -65,20 +65,20 @@ const commonKeyCodes = {
   "'": 222,
 };
 
-// Given a character and a browser language, finds the matching keycode
+// Given a character and a browser language, finds the matching code
 export function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {
-    return findKeyCodeEnGb(character);
+    return findcodeEnGb(character);
   }
   // Default to en-US if no other language matches.
-  return findKeyCodeEnUs(character);
+  return findcodeEnUs(character);
 }
 
 function joinDictionaries(a, b) {
   return Object.assign({}, a, b);
 }
 
-function findKeyCodeEnUs(character) {
+function findcodeEnUs(character) {
   const usSpecificKeys = {
     "!": 49,
     "@": 50,
@@ -93,11 +93,11 @@ function findKeyCodeEnUs(character) {
     "\\": 220,
     '"': 222,
   };
-  const lookup = joinDictionaries(commonKeyCodes, usSpecificKeys);
+  const lookup = joinDictionaries(commoncodes, usSpecificKeys);
   return lookup[character];
 }
 
-function findKeyCodeEnGb(character) {
+function findcodeEnGb(character) {
   const gbSpecificKeys = {
     '"': 50,
     "£": 51,
@@ -115,7 +115,7 @@ function findKeyCodeEnGb(character) {
     "`": 223,
     ç: 231,
   };
-  const lookup = joinDictionaries(commonKeyCodes, gbSpecificKeys);
+  const lookup = joinDictionaries(commoncodes, gbSpecificKeys);
   return lookup[character];
 }
 
@@ -127,7 +127,7 @@ function findKeyCodeEnGb(character) {
 // But in my tests, I see all modifiers as false when Alt Graph is pushed.
 // The only difference in the onKeyDown event I see is that the key property
 // changes when Alt Graph is pushed, so we detect it that way.
-export function isAltGraphPressed(browserLanguage, keyCode, key) {
+export function isAltGraphPressed(browserLanguage, code, key) {
   // Only French AZERTY is supported now.
   // This is not robust, as a user's browser language doesn't necessarily match
   // their keyboard layout.
@@ -135,18 +135,18 @@ export function isAltGraphPressed(browserLanguage, keyCode, key) {
     return false;
   }
   return (
-    (keyCode === 48 && key === "@") ||
-    (keyCode === 50 && key === "~") ||
-    (keyCode === 51 && key === "#") ||
-    (keyCode === 52 && key === "{") ||
-    (keyCode === 53 && key === "[") ||
-    (keyCode === 54 && key === "|") ||
-    (keyCode === 55 && key === "`") ||
-    (keyCode === 56 && key === "\\") ||
-    (keyCode === 57 && key === "^") ||
-    (keyCode === 61 && key === "}") ||
-    (keyCode === 69 && key === "€") ||
-    (keyCode === 164 && key === "ø") ||
-    (keyCode === 169 && key === "]")
+    (code === "Digit0" && key === "@") ||
+    (code === "Digit2" && key === "~") ||
+    (code === "Digit3" && key === "#") ||
+    (code === "Digit4" && key === "{") ||
+    (code === "Digit5" && key === "[") ||
+    (code === "Digit6" && key === "|") ||
+    (code === "Digit7" && key === "`") ||
+    (code === "Digit8" && key === "\\") ||
+    (code === "Digit9" && key === "^") ||
+    (code === "Equal" && key === "}") ||
+    (code === "KeyE" && key === "€") ||
+    (code === "BracketRight" && key === "ø") ||
+    (code === "Minus" && key === "]")
   );
 }

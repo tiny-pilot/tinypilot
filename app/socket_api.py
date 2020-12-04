@@ -18,8 +18,6 @@ logger = logging.getLogger(__name__)
 keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 # Location of file path at which to write mouse HID input.
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
-# Keyboard layout on target computer.
-keyboard_layout = os.environ.get('KEYBOARD_LAYOUT', 'QWERTY')
 
 # TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
 # risk of a CSRF attack for this app is very low. Additionally, CORS doesn't
@@ -39,21 +37,20 @@ def socket_keystroke(message):
         return {'success': False}
     hid_keycode = None
     try:
-        control_keys, hid_keycode = js_to_hid.convert(keystroke,
-                                                      keyboard_layout)
+        control_keys, hid_keycode = js_to_hid.convert(keystroke)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
-                       keystroke.key_code)
+                       keystroke.code)
         return {'success': False}
     if hid_keycode is None:
         logger.info('Ignoring %s key (keycode=%d)', keystroke.key,
-                    keystroke.key_code)
+                    keystroke.code)
         return {'success': False}
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%d). %s', keystroke.key,
-                     keystroke.key_code, e)
+                     keystroke.code, e)
         return {'success': False}
     return {'success': True}
 

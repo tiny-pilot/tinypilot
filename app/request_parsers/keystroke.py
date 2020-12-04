@@ -29,7 +29,7 @@ class Keystroke:
     left_meta_modifier: bool
     right_alt_modifier: bool
     key: str
-    key_code: int
+    code: str
     is_right_modifier: bool
 
 
@@ -39,7 +39,7 @@ def parse_keystroke(message):
             'Keystroke parameter is invalid, expecting a dictionary data type')
     required_fields = (
         'key',
-        'keyCode',
+        'code',
         'location',
         'ctrlKey',
         'shiftKey',
@@ -58,7 +58,7 @@ def parse_keystroke(message):
         left_meta_modifier=_parse_modifier_key(message['metaKey']),
         right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
         key=message['key'],
-        key_code=_parse_key_code(message['keyCode']),
+        code=_parse_code(message['code']),
         is_right_modifier=_parse_is_right_key_location(message['location']))
 
 
@@ -69,13 +69,14 @@ def _parse_modifier_key(modifier_key):
     return modifier_key
 
 
-def _parse_key_code(key_code):
-    if type(key_code) is not int:
-        raise InvalidKeyCode('Key code must be an integer value: %s' % key_code)
-    if not (0 <= key_code <= 0xff):
-        raise InvalidKeyCode('Key code must be between 0x00 and 0xff: %d',
-                             key_code)
-    return key_code
+def _parse_code(code):
+    if type(code) is not str:
+        raise InvalidKeyCode('Key code must be a string: %s' % code)
+
+    # Arbitrary limit, but just to prevent anything crazy.
+    if len(code) > 30:
+        raise InvalidKeyCode('Key code is too long: %s' % code)
+    return code
 
 
 def _parse_is_right_key_location(location):

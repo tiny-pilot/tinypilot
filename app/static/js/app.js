@@ -55,21 +55,30 @@ function displayPoweringDownUI(restart) {
   document.getElementById("shutdown-wait").show = true;
 }
 
-function isModifierKeyCode(keyCode) {
-  const modifierKeyCodes = [16, 17, 18, 91, 84];
-  return modifierKeyCodes.indexOf(keyCode) >= 0;
+function isModifierCode(code) {
+  const modifierCodes = [
+    "AltLeft",
+    "AltRight",
+    "ControlLeft",
+    "ControlRight",
+    "MetaLeft",
+    "MetaRight",
+    "ShiftLeft",
+    "ShiftRight",
+  ];
+  return modifierCodes.indexOf(code) >= 0;
 }
 
-function isKeycodeAlreadyPressed(keyCode) {
-  return keyCode in keyState && keyState[keyCode];
+function isKeycodeAlreadyPressed(code) {
+  return code in keyState && keyState[code];
 }
 
-function isIgnoredKeystroke(keyCode) {
+function isIgnoredKeystroke(code) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
   // already pressed. Otherwise, something like holding down the Shift key
   // is sent as multiple Shift key presses, which has special meaning on
   // certain OSes.
-  return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
+  return isModifierCode(code) && isKeyAlreadyPressed(code);
 }
 
 function recalculateMouseEventThrottle(
@@ -153,10 +162,10 @@ function onKeyDown(evt) {
   if (!connectedToServer) {
     return;
   }
-  if (isIgnoredKeystroke(evt.keyCode)) {
+  if (isIgnoredKeystroke(evt.code)) {
     return;
   }
-  keyState[evt.keyCode] = true;
+  keyState[evt.code] = true;
   if (!evt.metaKey) {
     evt.preventDefault();
   }
@@ -176,11 +185,11 @@ function onKeyDown(evt) {
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey:
-      isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key) ||
+      isAltGraphPressed(browserLanguage(), evt.code, evt.key) ||
       onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
-    keyCode: evt.keyCode,
+    code: evt.code,
     location: location,
   });
 }
@@ -222,11 +231,11 @@ function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  keyState[evt.keyCode] = false;
+  keyState[evt.code] = false;
   if (!connectedToServer) {
     return;
   }
-  if (isModifierKeyCode(evt.keyCode)) {
+  if (isModifierCode(evt.code)) {
     socket.emit("keyRelease");
   }
 }
@@ -238,7 +247,7 @@ function processTextCharacter(textCharacter, language) {
     return;
   }
 
-  const keyCode = findKeyCode([textCharacter.toLowerCase()], language);
+  const code = findKeyCode([textCharacter.toLowerCase()], language);
   let friendlyName = textCharacter;
   // Give cleaner names to keys so that they render nicely in the history.
   if (textCharacter === "\n") {
@@ -258,7 +267,7 @@ function processTextCharacter(textCharacter, language) {
     altGraphKey: false,
     sysrqKey: false,
     key: friendlyName,
-    keyCode: keyCode,
+    code: code,
     location: null,
   });
 }

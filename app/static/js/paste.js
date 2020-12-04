@@ -20,11 +20,13 @@ function hidePasteOverlay() {
 
 function onPasteOverlayKeyDown(evt) {
   evt.stopPropagation();
-  const ctrlKeyCode = 17;
-  const vKeyCode = 86;
   // Return false on Ctrl or V because otherwise we capture the
   // event before the paste event can occur.
-  if (evt.keyCode === ctrlKeyCode || evt.keyCode === vKeyCode) {
+  if (
+    evt.code === "ControlLeft" ||
+    evt.code === "ControlRight" ||
+    evt.code === "KeyV"
+  ) {
     return false;
   }
   // Treat any other key as cancellation of the paste.
