@@ -388,9 +388,9 @@
         isModifierKeyPressed(modifier, location) {
           let locationSpecifier = "";
           if (location) {
-            locationSpecifier = ` location="${location}"`;
+            locationSpecifier = `[location="${location}"]`;
           }
-          const selector = `.${modifier}-modifier[pressed=true${locationSpecifier}]`;
+          const selector = `.${modifier}-modifier[pressed=true]${locationSpecifier}`;
           return this.shadowRoot.querySelectorAll(selector).length > 0;
         }
 
