@@ -145,11 +145,19 @@ function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  if (isIgnoredKeystroke(evt.code)) {
+
+  code = evt.code;
+
+  // Treat the AltGraph key like AltRight.
+  if (key === "Alt" && evt.location === 1 && code === "") {
+    code = "AltRight";
+  }
+
+  if (isIgnoredKeystroke(code)) {
     return;
   }
 
-  keyState[evt.code] = true;
+  keyState[code] = true;
 
   if (!connectedToServer) {
     return;
@@ -169,7 +177,7 @@ function onKeyDown(evt) {
       isKeyPressed("AltRight") || onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
-    code: evt.code,
+    code: code,
   });
 }
 
