@@ -237,3 +237,15 @@ class KeystrokeTest(unittest.TestCase):
                 'altGraphKey': False,
                 'key': 'A',
             })
+
+    def test_rejects_too_long_code_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCode):
+            keystroke.parse_keystroke({
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'altGraphKey': False,
+                'key': 'A',
+                'code': 'A' * 31,
+            })
