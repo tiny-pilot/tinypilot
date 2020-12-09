@@ -69,7 +69,7 @@ function isModifierCode(code) {
   return modifierCodes.indexOf(code) >= 0;
 }
 
-function isKeycodeAlreadyPressed(code) {
+function isKeyPressed(code) {
   return code in keyState && keyState[code];
 }
 
@@ -78,7 +78,7 @@ function isIgnoredKeystroke(code) {
   // already pressed. Otherwise, something like holding down the Shift key
   // is sent as multiple Shift key presses, which has special meaning on
   // certain OSes.
-  return isModifierCode(code) && isKeyAlreadyPressed(code);
+  return isModifierCode(code) && isKeyPressed(code);
 }
 
 function recalculateMouseEventThrottle(
@@ -178,8 +178,7 @@ function onKeyDown(evt) {
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey:
-      isKeycodeAlreadyPressed("AltRight") ||
-      onScreenKeyboard.isRightAltKeyPressed,
+      isKeyPressed("AltRight") || onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
     code: evt.code,
