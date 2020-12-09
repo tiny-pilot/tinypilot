@@ -149,7 +149,7 @@ function onKeyDown(evt) {
   let code = evt.code;
 
   // Treat the AltGraph key like AltRight.
-  if (key === "Alt" && evt.location === 1 && code === "") {
+  if (evt.key === "Alt" && evt.location === 1 && code === "") {
     code = "AltRight";
   }
 
