@@ -159,11 +159,13 @@ function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  keyState[evt.code] = true;
-  if (!connectedToServer) {
+  if (isIgnoredKeystroke(evt.code)) {
     return;
   }
-  if (isIgnoredKeystroke(evt.code)) {
+
+  keyState[evt.code] = true;
+
+  if (!connectedToServer) {
     return;
   }
   if (!evt.metaKey) {
