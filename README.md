@@ -6,7 +6,7 @@
 
 Turn your Raspberry Pi into a browser-based KVM.
 
-![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/demo.gif)
+![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo.gif)
 
 ## Features
 
@@ -16,12 +16,23 @@ Turn your Raspberry Pi into a browser-based KVM.
 * Fullscreen mode
 * Paste text from clipboard
 
-## Pre-requisites
+## Official builds
 
-* Raspberry Pi OS Stretch or later
-* python3-venv
+TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
 
-## Hardware requirements
+### [TinyPilot Voyager](https://tinypilotkvm.com/product/tinypilot-voyager)
+
+[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/voyager-side-cables.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager)
+
+Voyager is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
+
+### [TinyPilot Hobbyist Kit](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
+
+[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/hobbyist-kit.jpg)](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
+
+The TinyPilot Hobbyist Kit is a great fit for home users who want a low-cost, DIY KVM over IP device.
+
+## Build your own
 
 All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/order).
 
@@ -41,6 +52,11 @@ All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/o
   * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
 See ["TinyPilot: Build a KVM Over IP for Under $100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
+
+## Pre-requisites
+
+* Raspberry Pi OS Stretch or later
+* python3-venv
 
 ## Simple installation
 
