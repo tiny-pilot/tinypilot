@@ -144,13 +144,13 @@ def _map_modifier_keys(keystroke):
     # so the only one whose orientation we can detect is the newest key in the
     # keystroke.
     if keystroke.code == 'ControlRight':
-        modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
+        return hid.MODIFIER_RIGHT_CTRL
     elif keystroke.code == 'ShiftRight':
-        modifier_bitmask |= hid.MODIFIER_RIGHT_SHIFT
+        return hid.MODIFIER_RIGHT_SHIFT
     elif keystroke.code == 'MetaRight':
-        modifier_bitmask |= hid.MODIFIER_RIGHT_META
+        return hid.MODIFIER_RIGHT_META
     elif keystroke.code == 'AltRight':
-        modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
+        return hid.MODIFIER_RIGHT_ALT
 
     if keystroke.left_ctrl_modifier:
         modifier_bitmask |= hid.MODIFIER_LEFT_CTRL

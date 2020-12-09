@@ -67,8 +67,5 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 right_alt_modifier=False,
                                 key='Control',
                                 code='ControlRight'))
-        # When the right modifier is pressed, assume the left one is as well
-        # because we can't distinguish between right-only and right+left.
-        self.assertEqual(hid.MODIFIER_LEFT_CTRL | hid.MODIFIER_RIGHT_CTRL,
-                         modifier_bitmask)
+        self.assertEqual(hid.MODIFIER_RIGHT_CTRL, modifier_bitmask)
         self.assertEqual(hid.KEYCODE_RIGHT_CTRL, hid_keycode)
