@@ -39,17 +39,17 @@ def socket_keystroke(message):
     try:
         control_keys, hid_keycode = js_to_hid.convert(keystroke)
     except js_to_hid.UnrecognizedKeyCodeError:
-        logger.warning('Unrecognized key: %s (keycode=%d)', keystroke.key,
+        logger.warning('Unrecognized key: %s (keycode=%s)', keystroke.key,
                        keystroke.code)
         return {'success': False}
     if hid_keycode is None:
-        logger.info('Ignoring %s key (keycode=%d)', keystroke.key,
+        logger.info('Ignoring %s key (keycode=%s)', keystroke.key,
                     keystroke.code)
         return {'success': False}
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
-        logger.error('Failed to write key: %s (keycode=%d). %s', keystroke.key,
+        logger.error('Failed to write key: %s (keycode=%s). %s', keystroke.key,
                      keystroke.code, e)
         return {'success': False}
     return {'success': True}
