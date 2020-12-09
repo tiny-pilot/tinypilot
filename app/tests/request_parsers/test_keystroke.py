@@ -17,8 +17,7 @@ class KeystrokeTest(unittest.TestCase):
                                 left_ctrl_modifier=False,
                                 right_alt_modifier=False,
                                 key='A',
-                                key_code=65,
-                                is_right_modifier=False),
+                                code='KeyA'),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -26,8 +25,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             }))
 
     def test_parses_valid_keystroke_message_with_all_modifiers_pushed(self):
@@ -38,8 +36,7 @@ class KeystrokeTest(unittest.TestCase):
                                 left_ctrl_modifier=True,
                                 right_alt_modifier=True,
                                 key='A',
-                                key_code=65,
-                                is_right_modifier=False),
+                                code='KeyA'),
             keystroke.parse_keystroke({
                 'metaKey': True,
                 'altKey': True,
@@ -47,8 +44,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': True,
                 'altGraphKey': True,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             }))
 
     def test_parses_left_ctrl_key(self):
@@ -59,8 +55,7 @@ class KeystrokeTest(unittest.TestCase):
                                 left_ctrl_modifier=True,
                                 right_alt_modifier=False,
                                 key='Control',
-                                key_code=17,
-                                is_right_modifier=False),
+                                code='ControlLeft'),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -68,8 +63,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': True,
                 'altGraphKey': False,
                 'key': 'Control',
-                'keyCode': 17,
-                'location': 'left',
+                'code': 'ControlLeft',
             }))
 
     def test_parses_right_ctrl_key(self):
@@ -84,8 +78,7 @@ class KeystrokeTest(unittest.TestCase):
                 left_ctrl_modifier=True,
                 right_alt_modifier=False,
                 key='Control',
-                key_code=17,
-                is_right_modifier=True),
+                code='ControlRight'),
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -93,8 +86,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': True,
                 'altGraphKey': False,
                 'key': 'Control',
-                'keyCode': 17,
-                'location': 'right',
+                'code': 'ControlRight',
             }))
 
     def test_rejects_invalid_meta_modifier(self):
@@ -106,8 +98,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_invalid_alt_modifier(self):
@@ -119,8 +110,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_invalid_shift_modifier(self):
@@ -132,8 +122,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_invalid_ctrl_modifier(self):
@@ -145,8 +134,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': 'banana',
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_invalid_alt_graph_modifier(self):
@@ -158,47 +146,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': 'banana',
                 'key': 'A',
-                'keyCode': 65,
-                'location': None,
-            })
-
-    def test_rejects_negative_keycode_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'keyCode': -1,
-                'location': None,
-            })
-
-    def test_rejects_too_high_keycode_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'keyCode': 0xff + 1,
-                'location': None,
-            })
-
-    def test_rejects_string_keycode_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCode):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'keyCode': 'banana',
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_float_keycode_value(self):
@@ -210,21 +158,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1.25,
-                'location': None,
-            })
-
-    def test_rejects_invalid_location_value(self):
-        with self.assertRaises(keystroke.InvalidLocation):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'keyCode': 65,
-                'location': 12345,
+                'code': 1.25,
             })
 
     def test_rejects_missing_meta_key_value(self):
@@ -235,8 +169,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_missing_alt_key_value(self):
@@ -247,7 +180,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1,
+                'code': 'KeyA',
             })
 
     def test_rejects_missing_alt_graph_key_value(self):
@@ -258,8 +191,7 @@ class KeystrokeTest(unittest.TestCase):
                 'shiftKey': False,
                 'ctrlKey': False,
                 'key': 'A',
-                'keyCode': 1,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_missing_shift_key_value(self):
@@ -270,8 +202,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_missing_ctrl_key_value(self):
@@ -282,8 +213,7 @@ class KeystrokeTest(unittest.TestCase):
                 'shiftKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1,
-                'location': None,
+                'code': 'KeyA',
             })
 
     def test_rejects_missing_key_value(self):
@@ -294,11 +224,10 @@ class KeystrokeTest(unittest.TestCase):
                 'shiftKey': False,
                 'ctrlKey': False,
                 'altGraphKey': False,
-                'keyCode': 1,
-                'location': None,
+                'code': 'KeyA',
             })
 
-    def test_rejects_missing_key_code_value(self):
+    def test_rejects_missing_code_value(self):
         with self.assertRaises(keystroke.MissingField):
             keystroke.parse_keystroke({
                 'metaKey': False,
@@ -307,11 +236,10 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'location': None,
             })
 
-    def test_rejects_missing_location_value(self):
-        with self.assertRaises(keystroke.MissingField):
+    def test_rejects_too_long_code_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCode):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -319,5 +247,5 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-                'keyCode': 1,
+                'code': 'A' * 31,
             })

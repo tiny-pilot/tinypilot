@@ -15,7 +15,6 @@ Turn your Raspberry Pi into a browser-based KVM.
 * Mouse forwarding
 * Fullscreen mode
 * Paste text from clipboard
-* Support for QWERTY and AZERTY keyboard layouts
 
 ## Pre-requisites
 
@@ -82,7 +81,6 @@ TinyPilot accepts various options through environment variables:
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
 | `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
 | `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
-| `KEYBOARD_LAYOUT`    | `QWERTY`     | Keyboard layout on target computer. Options are: `QWERTY`, `AZERTY`, `NORWEGIAN`. |
 | `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
 
 ## Upgrades

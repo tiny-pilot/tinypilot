@@ -1,6 +1,11 @@
 "use strict";
 
-import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+import {
+  isModifierCode,
+  findKeyCode,
+  keystrokeToCanonicalCode,
+  requiresShiftKey,
+} from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -55,21 +60,16 @@ function displayPoweringDownUI(restart) {
   document.getElementById("shutdown-wait").show = true;
 }
 
-function isModifierKeyCode(keyCode) {
-  const modifierKeyCodes = [16, 17, 18, 91, 84];
-  return modifierKeyCodes.indexOf(keyCode) >= 0;
+function isKeyPressed(code) {
+  return code in keyState && keyState[code];
 }
 
-function isKeycodeAlreadyPressed(keyCode) {
-  return keyCode in keyState && keyState[keyCode];
-}
-
-function isIgnoredKeystroke(keyCode) {
+function isIgnoredKeystroke(code) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
   // already pressed. Otherwise, something like holding down the Shift key
   // is sent as multiple Shift key presses, which has special meaning on
   // certain OSes.
-  return isModifierKeyCode(keyCode) && isKeycodeAlreadyPressed(keyCode);
+  return isModifierCode(code) && isKeyPressed(code);
 }
 
 function recalculateMouseEventThrottle(
@@ -150,22 +150,20 @@ function onKeyDown(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
+
+  const code = keystrokeToCanonicalCode(evt);
+
+  if (isIgnoredKeystroke(code)) {
+    return;
+  }
+
+  keyState[code] = true;
+
   if (!connectedToServer) {
     return;
   }
-  if (isIgnoredKeystroke(evt.keyCode)) {
-    return;
-  }
-  keyState[evt.keyCode] = true;
   if (!evt.metaKey) {
     evt.preventDefault();
-  }
-
-  let location = null;
-  if (evt.location === 1) {
-    location = "left";
-  } else if (evt.location === 2) {
-    location = "right";
   }
 
   const onScreenKeyboard = document.getElementById("on-screen-keyboard");
@@ -176,12 +174,10 @@ function onKeyDown(evt) {
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey:
-      isAltGraphPressed(browserLanguage(), evt.keyCode, evt.key) ||
-      onScreenKeyboard.isRightAltKeyPressed,
+      isKeyPressed("AltRight") || onScreenKeyboard.isRightAltKeyPressed,
     sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
     key: evt.key,
-    keyCode: evt.keyCode,
-    location: location,
+    code: code,
   });
 }
 
@@ -222,11 +218,12 @@ function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  keyState[evt.keyCode] = false;
+  const code = keystrokeToCanonicalCode(evt);
+  keyState[code] = false;
   if (!connectedToServer) {
     return;
   }
-  if (isModifierKeyCode(evt.keyCode)) {
+  if (isModifierCode(code)) {
     socket.emit("keyRelease");
   }
 }
@@ -238,7 +235,7 @@ function processTextCharacter(textCharacter, language) {
     return;
   }
 
-  const keyCode = findKeyCode([textCharacter.toLowerCase()], language);
+  const code = findKeyCode([textCharacter.toLowerCase()], language);
   let friendlyName = textCharacter;
   // Give cleaner names to keys so that they render nicely in the history.
   if (textCharacter === "\n") {
@@ -247,19 +244,15 @@ function processTextCharacter(textCharacter, language) {
     friendlyName = "Tab";
   }
 
-  // We need to identify keys which are typed with modifiers and send Shift +
-  // the lowercase key.
-  const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
   processKeystroke({
     metaKey: false,
     altKey: false,
-    shiftKey: requiresShiftKey.test(textCharacter),
+    shiftKey: requiresShiftKey(textCharacter),
     ctrlKey: false,
     altGraphKey: false,
     sysrqKey: false,
     key: friendlyName,
-    keyCode: keyCode,
-    location: null,
+    code: code,
   });
 }
 

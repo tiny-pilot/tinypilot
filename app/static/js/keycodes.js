@@ -1,71 +1,86 @@
 "use strict";
 
-// Mappings of characters to keycodes that are shared among different keyboard
+//TODO: Fix these mappings.
+
+// Mappings of characters to codes that are shared among different keyboard
 // layouts.
 const commonKeyCodes = {
-  "\t": 9,
-  "\n": 13,
-  " ": 32,
-  0: 48,
-  ")": 48,
-  1: 49,
-  2: 50,
-  3: 51,
-  4: 52,
-  $: 52,
-  5: 53,
-  "%": 53,
-  6: 54,
-  "^": 54,
-  7: 55,
-  "&": 55,
-  8: 56,
-  "*": 56,
-  9: 57,
-  "(": 57,
-  ":": 59,
-  ";": 59,
-  a: 65,
-  b: 66,
-  c: 67,
-  d: 68,
-  e: 69,
-  f: 70,
-  g: 71,
-  h: 72,
-  i: 73,
-  j: 74,
-  k: 75,
-  l: 76,
-  m: 77,
-  n: 78,
-  o: 79,
-  p: 80,
-  q: 81,
-  r: 82,
-  s: 83,
-  t: 84,
-  u: 85,
-  v: 86,
-  w: 87,
-  x: 88,
-  y: 89,
-  z: 90,
-  ",": 188,
-  "<": 188,
-  ".": 190,
-  ">": 190,
-  "/": 191,
-  "?": 191,
-  "[": 219,
-  "{": 219,
-  "|": 220,
-  "]": 221,
-  "}": 221,
-  "'": 222,
+  "\t": "Tab",
+  "\n": "Enter",
+  " ": "Space",
+  1: "Digit1",
+  2: "Digit2",
+  3: "Digit3",
+  4: "Digit4",
+  5: "Digit5",
+  6: "Digit6",
+  7: "Digit7",
+  8: "Digit8",
+  9: "Digit9",
+  0: "Digit0",
+  $: "Digit4",
+  "!": "Digit1",
+  "%": "Digit5",
+  "^": "Digit6",
+  "&": "Digit7",
+  "*": "Digit8",
+  "(": "Digit9",
+  ")": "Digit0",
+  _: "Minus",
+  "-": "Minus",
+  "+": "Equal",
+  "=": "Equal",
+  ":": "Semicolon",
+  ";": "Semicolon",
+  a: "KeyA",
+  b: "KeyB",
+  c: "KeyC",
+  d: "KeyD",
+  e: "KeyE",
+  f: "KeyF",
+  g: "KeyG",
+  h: "KeyH",
+  i: "KeyI",
+  j: "KeyJ",
+  k: "KeyK",
+  l: "KeyL",
+  m: "KeyM",
+  n: "KeyN",
+  o: "KeyO",
+  p: "KeyP",
+  q: "KeyQ",
+  r: "KeyR",
+  s: "KeyS",
+  t: "KeyT",
+  u: "KeyU",
+  v: "KeyV",
+  w: "KeyW",
+  x: "KeyX",
+  y: "KeyY",
+  z: "KeyZ",
+  ",": "Comma",
+  "<": "Comma",
+  ".": "Period",
+  ">": "Period",
+  "/": "Slash",
+  "?": "Slash",
+  "[": "BracketLeft",
+  "{": "BracketLeft",
+  "]": "BracketRight",
+  "}": "BracketRight",
+  "'": "Quote",
 };
 
-// Given a character and a browser language, finds the matching keycode
+export function keystrokeToCanonicalCode(keystroke) {
+  // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
+  // Alt key has a blank code.
+  if (keystroke.key === "Alt" && keystroke.code === "") {
+    return "AltRight";
+  }
+  return keystroke.code;
+}
+
+// Given a character and a browser language, finds the matching code.
 export function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {
     return findKeyCodeEnGb(character);
@@ -74,24 +89,39 @@ export function findKeyCode(character, browserLanguage) {
   return findKeyCodeEnUs(character);
 }
 
+// Returns true if the text character requires a shift key.
+export function requiresShiftKey(character) {
+  const shiftedPattern = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
+  return shiftedPattern.test(character);
+}
+
+export function isModifierCode(code) {
+  const modifierCodes = [
+    "AltLeft",
+    "AltRight",
+    "ControlLeft",
+    "ControlRight",
+    "MetaLeft",
+    "MetaRight",
+    "ShiftLeft",
+    "ShiftRight",
+  ];
+  return modifierCodes.indexOf(code) >= 0;
+}
+
 function joinDictionaries(a, b) {
   return Object.assign({}, a, b);
 }
 
 function findKeyCodeEnUs(character) {
   const usSpecificKeys = {
-    "!": 49,
-    "@": 50,
-    "#": 51,
-    "+": 187,
-    "=": 187,
-    "<": 188,
-    "-": 189,
-    _: 189,
-    "~": 192,
-    "`": 192,
-    "\\": 220,
-    '"': 222,
+    "@": "Digit2",
+    "#": "Digit3",
+    "~": "Backquote",
+    "`": "Backquote",
+    "\\": "Backslash",
+    "|": "Backslash",
+    '"': "Quote",
   };
   const lookup = joinDictionaries(commonKeyCodes, usSpecificKeys);
   return lookup[character];
@@ -99,54 +129,16 @@ function findKeyCodeEnUs(character) {
 
 function findKeyCodeEnGb(character) {
   const gbSpecificKeys = {
-    '"': 50,
-    "£": 51,
-    "<": 60,
-    "+": 61,
-    "=": 61,
-    "\\": 94,
-    "!": 161,
-    "~": 163,
-    "#": 163,
-    "-": 173,
-    _: 173,
-    "¬": 192,
-    "@": 222,
-    "`": 223,
-    ç: 231,
+    '"': "Digit2",
+    "£": "Digit3",
+    "\\": "IntlBackslash",
+    "|": "IntlBackslash",
+    "~": "Backslash",
+    "#": "Backslash",
+    "`": "Backquote",
+    "¬": "Backquote",
+    "@": "Quote",
   };
   const lookup = joinDictionaries(commonKeyCodes, gbSpecificKeys);
   return lookup[character];
-}
-
-// This StackOverflow answer says that most browsers represent the Alt Graph
-// modifier as ctrlKey = true, altKey = true:
-//
-//   https://stackoverflow.com/a/18570096/90388
-//
-// But in my tests, I see all modifiers as false when Alt Graph is pushed.
-// The only difference in the onKeyDown event I see is that the key property
-// changes when Alt Graph is pushed, so we detect it that way.
-export function isAltGraphPressed(browserLanguage, keyCode, key) {
-  // Only French AZERTY is supported now.
-  // This is not robust, as a user's browser language doesn't necessarily match
-  // their keyboard layout.
-  if (!browserLanguage.startsWith("fr")) {
-    return false;
-  }
-  return (
-    (keyCode === 48 && key === "@") ||
-    (keyCode === 50 && key === "~") ||
-    (keyCode === 51 && key === "#") ||
-    (keyCode === 52 && key === "{") ||
-    (keyCode === 53 && key === "[") ||
-    (keyCode === 54 && key === "|") ||
-    (keyCode === 55 && key === "`") ||
-    (keyCode === 56 && key === "\\") ||
-    (keyCode === 57 && key === "^") ||
-    (keyCode === 61 && key === "}") ||
-    (keyCode === 69 && key === "€") ||
-    (keyCode === 164 && key === "ø") ||
-    (keyCode === 169 && key === "]")
-  );
 }

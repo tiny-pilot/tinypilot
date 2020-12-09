@@ -103,8 +103,7 @@
               this.dispatchEvent(
                 new CustomEvent("keyclick", {
                   detail: {
-                    key: this.value,
-                    location: this.location,
+                    key: this.key,
                     code: this.code,
                     isModifier: this.isModifier,
                   },
@@ -116,8 +115,7 @@
               this.dispatchEvent(
                 new CustomEvent("keyrelease", {
                   detail: {
-                    key: this.value,
-                    location: this.location,
+                    key: this.key,
                     code: this.code,
                   },
                   bubbles: true,
@@ -137,9 +135,16 @@
           return this.getAttribute("code");
         }
 
-        get value() {
-          if (this.getAttribute("symbolic-value")) {
-            return this.getAttribute("symbolic-value");
+        get key() {
+          // If a key has a shifted label and an unshifted label, return the
+          // unshifted label.
+          const bottomLabel = this.querySelector("[slot=bottom]");
+          if (bottomLabel) {
+            return bottomLabel.innerText;
+          }
+
+          if (this.getAttribute("use-code")) {
+            return this.getAttribute("code");
           }
 
           const keyLabel = this.firstChild.data;
@@ -148,23 +153,11 @@
           if (/^[A-Z]$/.test(keyLabel)) {
             return keyLabel.toLowerCase();
           }
-          // For any other label, strip out space characters (e.g., "Caps Lock"
-          // becomes "CapsLock").
-          return keyLabel.replace(" ", "");
+          return keyLabel;
         }
 
         get isModifier() {
           return this.getAttribute("modifier") === "true";
-        }
-
-        get location() {
-          if (this.getAttribute("location") == "left") {
-            return 1;
-          } else if (this.getAttribute("location") == "right") {
-            return 2;
-          } else {
-            return null;
-          }
         }
 
         get isPressed() {
