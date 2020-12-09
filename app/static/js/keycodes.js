@@ -74,7 +74,7 @@ const commonKeyCodes = {
 export function keystrokeToCanonicalCode(keystroke) {
   // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
   // Alt key has a blank code.
-  if (keystroke.key === "Alt" && keystroke.ctrlKey && keystroke.code === "") {
+  if (keystroke.key === "Alt" && keystroke.code === "") {
     return "AltRight";
   }
   return keystroke.code;
