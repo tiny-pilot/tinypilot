@@ -65,6 +65,7 @@ _MAPPING = {
     'F23': hid.KEYCODE_F23,
     'Home': hid.KEYCODE_HOME,
     'Insert': hid.KEYCODE_INSERT,
+    'IntlBackslash': hid.KEYCODE_102ND,
     'KeyA': hid.KEYCODE_A,
     'KeyB': hid.KEYCODE_B,
     'KeyC': hid.KEYCODE_C,
