@@ -1,6 +1,6 @@
 "use strict";
 
-import { findKeyCode } from "./keycodes.js";
+import { findKeyCode, requiresShiftKey } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -248,13 +248,10 @@ function processTextCharacter(textCharacter, language) {
     friendlyName = "Tab";
   }
 
-  // We need to identify keys which are typed with modifiers and send Shift +
-  // the lowercase key.
-  const requiresShiftKey = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
   processKeystroke({
     metaKey: false,
     altKey: false,
-    shiftKey: requiresShiftKey.test(textCharacter),
+    shiftKey: requiresShiftKey(textCharacter),
     ctrlKey: false,
     altGraphKey: false,
     sysrqKey: false,
