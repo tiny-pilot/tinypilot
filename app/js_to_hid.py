@@ -16,6 +16,7 @@ _MAPPING = {
     'ArrowLeft': hid.KEYCODE_LEFT_ARROW,
     'ArrowRight': hid.KEYCODE_RIGHT_ARROW,
     'ArrowUp': hid.KEYCODE_UP_ARROW,
+    'Backquote': hid.KEYCODE_ACCENT_GRAVE,
     'Backslash': hid.KEYCODE_BACKSLASH,
     'Backspace': hid.KEYCODE_BACKSPACE_DELETE,
     'BracketLeft': hid.KEYCODE_LEFT_BRACKET,
