@@ -1,6 +1,6 @@
 "use strict";
 
-import { isAltGraphPressed, findKeyCode } from "./keycodes.js";
+import { findKeyCode } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
