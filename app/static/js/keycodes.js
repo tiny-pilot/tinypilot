@@ -71,6 +71,15 @@ const commonKeyCodes = {
   "'": "Quote",
 };
 
+export function keystrokeToCanonicalCode(keystroke) {
+  // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
+  // Alt key has a blank code.
+  if (keystroke.key === "Alt" && keystroke.ctrlKey && keystroke.code === "") {
+    return "AltRight";
+  }
+  return keystroke.code;
+}
+
 // Given a character and a browser language, finds the matching code.
 export function findKeyCode(character, browserLanguage) {
   if (browserLanguage === "en-GB") {

@@ -1,6 +1,11 @@
 "use strict";
 
-import { isModifierCode, findKeyCode, requiresShiftKey } from "./keycodes.js";
+import {
+  isModifierCode,
+  findKeyCode,
+  keystrokeToCanonicalCode,
+  requiresShiftKey,
+} from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -146,13 +151,7 @@ function onKeyDown(evt) {
     return;
   }
 
-  let code = evt.code;
-
-  // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
-  // Alt key has a blank code.
-  if (evt.key === "Alt" && evt.ctrlKey && code === "") {
-    code = "AltRight";
-  }
+  const code = keystrokeToCanonicalCode(evt);
 
   if (isIgnoredKeystroke(code)) {
     return;
@@ -219,11 +218,12 @@ function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  keyState[evt.code] = false;
+  const code = keystrokeToCanonicalCode(evt);
+  keyState[code] = false;
   if (!connectedToServer) {
     return;
   }
-  if (isModifierCode(evt.code)) {
+  if (isModifierCode(code)) {
     socket.emit("keyRelease");
   }
 }
