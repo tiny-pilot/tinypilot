@@ -148,8 +148,9 @@ function onKeyDown(evt) {
 
   let code = evt.code;
 
-  // Treat the AltGraph key like AltRight.
-  if (evt.key === "Alt" && evt.location === 1 && code === "") {
+  // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
+  // Alt key has a blank code.
+  if (evt.key === "Alt" && evt.ctrlKey && code === "") {
     code = "AltRight";
   }
 
