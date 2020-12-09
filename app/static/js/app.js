@@ -1,6 +1,6 @@
 "use strict";
 
-import { findKeyCode, requiresShiftKey } from "./keycodes.js";
+import { isModifierCode, findKeyCode, requiresShiftKey } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 
@@ -53,20 +53,6 @@ function displayPoweringDownUI(restart) {
   }
   document.getElementById("shutdown-dialog").show = false;
   document.getElementById("shutdown-wait").show = true;
-}
-
-function isModifierCode(code) {
-  const modifierCodes = [
-    "AltLeft",
-    "AltRight",
-    "ControlLeft",
-    "ControlRight",
-    "MetaLeft",
-    "MetaRight",
-    "ShiftLeft",
-    "ShiftRight",
-  ];
-  return modifierCodes.indexOf(code) >= 0;
 }
 
 function isKeyPressed(code) {

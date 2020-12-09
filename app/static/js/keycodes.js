@@ -86,6 +86,20 @@ export function requiresShiftKey(character) {
   return shiftedPattern.test(character);
 }
 
+export function isModifierCode(code) {
+  const modifierCodes = [
+    "AltLeft",
+    "AltRight",
+    "ControlLeft",
+    "ControlRight",
+    "MetaLeft",
+    "MetaRight",
+    "ShiftLeft",
+    "ShiftRight",
+  ];
+  return modifierCodes.indexOf(code) >= 0;
+}
+
 function joinDictionaries(a, b) {
   return Object.assign({}, a, b);
 }
