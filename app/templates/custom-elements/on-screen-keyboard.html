@@ -326,7 +326,8 @@
           if (
             this.isShiftKeyPressed &&
             !this.isMetaKeyPressed &&
-            !this.isAltKeyPressed &&
+            !this.isLeftAltKeyPressed &&
+            !this.isRightAltKeyPressed &&
             !this.isCtrlKeyPressed &&
             !this.isSysrqKeyPressed
           ) {
@@ -348,8 +349,12 @@
           return this.isModifierKeyPressed("meta");
         }
 
-        get isAltKeyPressed() {
-          return this.isModifierKeyPressed("alt");
+        get isLeftAltKeyPressed() {
+          return (
+            this.shadowRoot.querySelectorAll(
+              '.alt-modifier[code="AltLeft"][pressed=true]'
+            ).length > 0
+          );
         }
 
         get isRightAltKeyPressed() {
@@ -388,7 +393,7 @@
               key: key,
               code: code,
               metaKey: this.isMetaKeyPressed,
-              altKey: this.isAltKeyPressed,
+              altKey: this.isLeftAltKeyPressed,
               shiftKey: this.isShiftKeyPressed,
               ctrlKey: this.isCtrlKeyPressed,
             })
@@ -403,7 +408,7 @@
               key: key,
               code: code,
               metaKey: this.isMetaKeyPressed,
-              altKey: this.isAltKeyPressed,
+              altKey: this.isLeftAltKeyPressed,
               shiftKey: this.isShiftKeyPressed,
               ctrlKey: this.isCtrlKeyPressed,
             })

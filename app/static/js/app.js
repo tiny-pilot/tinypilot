@@ -170,7 +170,7 @@ function onKeyDown(evt) {
 
   processKeystroke({
     metaKey: evt.metaKey || onScreenKeyboard.isMetaKeyPressed,
-    altKey: evt.altKey || onScreenKeyboard.isAltKeyPressed,
+    altKey: evt.altKey || onScreenKeyboard.isLeftAltKeyPressed,
     shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
     ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
     altGraphKey:
