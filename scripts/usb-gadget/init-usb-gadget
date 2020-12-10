@@ -37,88 +37,38 @@ echo 1 > "${KEYBOARD_FUNCTIONS_DIR}/protocol" # Keyboard
 echo 1 > "${KEYBOARD_FUNCTIONS_DIR}/subclass" # Boot interface subclass
 echo 8 > "${KEYBOARD_FUNCTIONS_DIR}/report_length"
 # Write the report descriptor
-# Source: https://www.kernel.org/doc/html/latest/usb/gadget_hid.html
 D=$(mktemp)
-echo -ne \\x05\\x01 >> "$D" # USAGE_PAGE (Generic Desktop)
-echo -ne \\x09\\x06 >> "$D" # USAGE (Keyboard)
-echo -ne \\xa1\\x01 >> "$D" # COLLECTION (Application)
-echo -ne \\x05\\x07 >> "$D" #   USAGE_PAGE (Keyboard)
-echo -ne \\x19\\xe0 >> "$D" #   USAGE_MINIMUM (Keyboard LeftControl)
-echo -ne \\x29\\xe7 >> "$D" #   USAGE_MAXIMUM (Keyboard Right GUI)
-echo -ne \\x15\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
-echo -ne \\x25\\x01 >> "$D" #   LOGICAL_MAXIMUM (1)
-echo -ne \\x75\\x01 >> "$D" #   REPORT_SIZE (1)
-echo -ne \\x95\\x08 >> "$D" #   REPORT_COUNT (8)
-echo -ne \\x81\\x02 >> "$D" #   INPUT (Data,Var,Abs)
-echo -ne \\x95\\x01 >> "$D" #   REPORT_COUNT (1)
-echo -ne \\x75\\x08 >> "$D" #   REPORT_SIZE (8)
-echo -ne \\x81\\x03 >> "$D" #   INPUT (Cnst,Var,Abs)
-echo -ne \\x95\\x05 >> "$D" #   REPORT_COUNT (5)
-echo -ne \\x75\\x01 >> "$D" #   REPORT_SIZE (1)
-echo -ne \\x05\\x08 >> "$D" #   USAGE_PAGE (LEDs)
-echo -ne \\x19\\x01 >> "$D" #   USAGE_MINIMUM (Num Lock)
-echo -ne \\x29\\x05 >> "$D" #   USAGE_MAXIMUM (Kana)
-echo -ne \\x91\\x02 >> "$D" #   OUTPUT (Data,Var,Abs)
-echo -ne \\x95\\x01 >> "$D" #   REPORT_COUNT (1)
-echo -ne \\x75\\x03 >> "$D" #   REPORT_SIZE (3)
-echo -ne \\x91\\x03 >> "$D" #   OUTPUT (Cnst,Var,Abs)
-echo -ne \\x95\\x06 >> "$D" #   REPORT_COUNT (6)
-echo -ne \\x75\\x08 >> "$D" #   REPORT_SIZE (8)
-echo -ne \\x15\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
-echo -ne \\x25\\x65 >> "$D" #   LOGICAL_MAXIMUM (101)
-echo -ne \\x05\\x07 >> "$D" #   USAGE_PAGE (Keyboard)
-echo -ne \\x19\\x00 >> "$D" #   USAGE_MINIMUM (Reserved)
-echo -ne \\x29\\x65 >> "$D" #   USAGE_MAXIMUM (Keyboard Application)
-echo -ne \\x81\\x00 >> "$D" #   INPUT (Data,Ary,Abs)
-echo -ne \\xc0 >> "$D"      # END_COLLECTION
+echo -ne \\x05\\x01 >> "$D"
+echo -ne \\x09\\x06 >> "$D"
+echo -ne \\xA1\\x01 >> "$D"
+echo -ne \\x05\\x08 >> "$D"
+echo -ne \\x19\\x01 >> "$D"
+echo -ne \\x29\\x03 >> "$D"
+echo -ne \\x15\\x00 >> "$D"
+echo -ne \\x25\\x01 >> "$D"
+echo -ne \\x75\\x01 >> "$D"
+echo -ne \\x95\\x03 >> "$D"
+echo -ne \\x91\\x02 >> "$D"
+echo -ne \\x09\\x4B >> "$D"
+echo -ne \\x95\\x01 >> "$D"
+echo -ne \\x91\\x02 >> "$D"
+echo -ne \\x95\\x04 >> "$D"
+echo -ne \\x91\\x01 >> "$D"
+echo -ne \\x05\\x07 >> "$D"
+echo -ne \\x19\\xE0 >> "$D"
+echo -ne \\x29\\xE7 >> "$D"
+echo -ne \\x95\\x08 >> "$D"
+echo -ne \\x81\\x02 >> "$D"
+echo -ne \\x75\\x08 >> "$D"
+echo -ne \\x95\\x01 >> "$D"
+echo -ne \\x81\\x01 >> "$D"
+echo -ne \\x19\\x00 >> "$D"
+echo -ne \\x29\\x91 >> "$D"
+echo -ne \\x26\\xFF\\x00 >> "$D"
+echo -ne \\x95\\x06 >> "$D"
+echo -ne \\x81\\x00 >> "$D"
+echo -ne \\xC0 >> "$D"
 cp "$D" "${KEYBOARD_FUNCTIONS_DIR}/report_desc"
-
-# Mouse
-MOUSE_FUNCTIONS_DIR="functions/hid.mouse"
-mkdir -p "$MOUSE_FUNCTIONS_DIR"
-echo 0 > "${MOUSE_FUNCTIONS_DIR}/protocol"
-echo 0 > "${MOUSE_FUNCTIONS_DIR}/subclass"
-echo 5 > "${MOUSE_FUNCTIONS_DIR}/report_length"
-# Write the report descriptor
-D=$(mktemp)
-echo -ne \\x05\\x01 >> "$D"      # USAGE_PAGE (Generic Desktop)
-echo -ne \\x09\\x02 >> "$D"      # USAGE (Mouse)
-echo -ne \\xA1\\x01 >> "$D"      # COLLECTION (Application)
-                                 #   8-buttons
-echo -ne \\x05\\x09 >> "$D"      #   USAGE_PAGE (Button)
-echo -ne \\x19\\x01 >> "$D"      #   USAGE_MINIMUM (Button 1)
-echo -ne \\x29\\x08 >> "$D"      #   USAGE_MAXIMUM (Button 8)
-echo -ne \\x15\\x00 >> "$D"      #   LOGICAL_MINIMUM (0)
-echo -ne \\x25\\x01 >> "$D"      #   LOGICAL_MAXIMUM (1)
-echo -ne \\x95\\x08 >> "$D"      #   REPORT_COUNT (8)
-echo -ne \\x75\\x01 >> "$D"      #   REPORT_SIZE (1)
-echo -ne \\x81\\x02 >> "$D"      #   INPUT (Data,Var,Abs)
-                                 #   x,y absolute coordinates
-echo -ne \\x05\\x01 >> "$D"      #   USAGE_PAGE (Generic Desktop)
-echo -ne \\x09\\x30 >> "$D"      #   USAGE (X)
-echo -ne \\x09\\x31 >> "$D"      #   USAGE (Y)
-echo -ne \\x16\\x00\\x00 >> "$D" #   LOGICAL_MINIMUM (0)
-echo -ne \\x26\\xFF\\x7F >> "$D" #   LOGICAL_MAXIMUM (32767)
-echo -ne \\x75\\x10 >> "$D"      #   REPORT_SIZE (16)
-echo -ne \\x95\\x02 >> "$D"      #   REPORT_COUNT (2)
-echo -ne \\x81\\x02 >> "$D"      #   INPUT (Data,Var,Abs)
-                                 #   vertical wheel
-echo -ne \\x09\\x38 >> "$D"      #   USAGE (wheel)
-echo -ne \\x15\\x81 >> "$D"      #   LOGICAL_MINIMUM (-127)
-echo -ne \\x25\\x7F >> "$D"      #   LOGICAL_MAXIMUM (127)
-echo -ne \\x75\\x08 >> "$D"      #   REPORT_SIZE (8)
-echo -ne \\x95\\x01 >> "$D"      #   REPORT_COUNT (1)
-echo -ne \\x81\\x06 >> "$D"      #   INPUT (Data,Var,Rel)
-                                 #   horizontal wheel
-echo -ne \\x05\\x0C >> "$D"      #   USAGE_PAGE (Consumer Devices)
-echo -ne \\x0A\\x38\\x02 >> "$D" #   USAGE (AC Pan)
-echo -ne \\x15\\x81 >> "$D"      #   LOGICAL_MINIMUM (-127)
-echo -ne \\x25\\x7F >> "$D"      #   LOGICAL_MAXIMUM (127)
-echo -ne \\x75\\x08 >> "$D"      #   REPORT_SIZE (8)
-echo -ne \\x95\\x01 >> "$D"      #   REPORT_COUNT (1)
-echo -ne \\x81\\x06 >> "$D"      #   INPUT (Data,Var,Rel)
-echo -ne \\xC0 >> "$D"           # END_COLLECTION
-cp "$D" "${MOUSE_FUNCTIONS_DIR}/report_desc"
 
 CONFIG_INDEX=1
 CONFIGS_DIR="configs/c.${CONFIG_INDEX}"
@@ -130,8 +80,6 @@ mkdir -p "$CONFIGS_STRINGS_DIR"
 echo "Config ${CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configuration"
 
 ln -s "$KEYBOARD_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
-ln -s "$MOUSE_FUNCTIONS_DIR" "${CONFIGS_DIR}/"
 ls /sys/class/udc > UDC
 
 chmod 777 /dev/hidg0
-chmod 777 /dev/hidg1
