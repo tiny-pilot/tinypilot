@@ -2,3 +2,18 @@ eventlet==0.25.2
 Flask==1.1.1
 Flask-SocketIO==4.3.2
 Flask-WTF==0.14.3
+
+# Indirect dependencies
+click==7.1.2
+dnspython==2.0.0
+greenlet==0.4.17
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+monotonic==1.5
+python-engineio==3.14.2
+python-socketio==4.6.1
+six==1.15.0
+Werkzeug==1.0.1
+WTForms==2.3.3
+
