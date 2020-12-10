@@ -101,10 +101,10 @@ TinyPilot accepts various options through environment variables:
 
 ## Upgrades
 
-The installation script is idempotent, so you can upgrade to the latest stable release of TinyPilot and its dependencies through the quick-install script:
+To upgrade to the latest version of TinyPilot, run the upgrade script:
 
 ```bash
-/opt/tinypilot/quick-install && sudo reboot
+/opt/tinypilot/scripts/upgrade && sudo reboot
 ```
 
 ## Diagnostics
