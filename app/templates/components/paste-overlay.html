@@ -5,6 +5,7 @@
 
   #paste-overlay[show="true"] {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 24pt;
@@ -17,10 +18,22 @@
     margin: auto;
     background-color: rgba(255, 255, 255, 0.9);
   }
+
+  #paste-overlay .note {
+    font-size: 0.5em;
+  }
+
+  #paste-overlay .cursor {
+    font-size: 0.01em;
+    caret-color: white;
+  }
 </style>
 <div id="paste-overlay" contenteditable="true">
-  <p>
-    Press Ctrl+V / Cmd+V to paste text from clipboard or any other key to
-    cancel&nbsp;
+  <p class="directions">
+    Press Ctrl+V / Cmd+V to paste text from clipboard or any other key to cancel
   </p>
+  <p class="note">
+    Target system must have an en-US or en-GB keyboard layout.
+  </p>
+  <p class="cursor">&nbsp;</p>
 </div>
