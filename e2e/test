@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Echo commands to stdout.
+set -x
+
+# Treat undefined environment variables as errors.
+set -u
+
+# Exit on first error.
+set -e
+
+OUTPUT=$(mktemp)
+
+RESULT=$(curl \
+  -o "$OUTPUT" \
+  --silent \
+  --write-out "%{http_code}" \
+  http://localhost \
+  )
+
+if [ "$RESULT" = "200" ]; then
+  echo "E2E test succeeded"
+  exit 0
+else
+  echo "E2E test failed"
+  echo "HTTP status = $RESULT"
+  cat "$OUTPUT"
+  exit 1
+fi

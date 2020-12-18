@@ -37,7 +37,9 @@ jobs:
       - run:
           name: Install TinyPilot
           command: ./quick-install
-      # TODO: Check that TinyPilot's web interface is up and running.
+      - run:
+          name: Run TinyPilot e2e tests
+          command: ./e2e/test
 workflows:
   test:
     jobs:
