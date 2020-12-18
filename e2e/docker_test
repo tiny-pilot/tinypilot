@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Echo commands to stdout.
+set -x
+
+# Treat undefined environment variables as errors.
+set -u
+
+# Exit on first error.
+set -e
+
+docker run -it -v "$PWD:/app" -d --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro mtlynch/debian10-ansible:2.9.13
+
+# TCP protocol is missing for some reason in test image?
+sudo apt-get -o Dpkg::Options::="--force-confmiss" install --reinstall netbase
+
+./test
