@@ -31,7 +31,7 @@ jobs:
       # A Debian image would be better, as it matches Raspberry Pi OS more
       # closely, but install fails with a Docker image because systemctl
       # behaves differently under docker.
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run:
