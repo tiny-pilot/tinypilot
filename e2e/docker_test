@@ -11,6 +11,11 @@ set -e
 
 docker run -it -v "$PWD:/app" -d --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro mtlynch/debian10-ansible:2.9.13
 
+# We have to reinstall this for some reason?
+# https://stackoverflow.com/a/10538412/90388
+sudo apt-get remove python-setuptools
+sudo apt-get install python-setuptools
+
 # TCP protocol is missing for some reason in test image?
 sudo apt-get -o Dpkg::Options::="--force-confmiss" install --reinstall netbase
 
