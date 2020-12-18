@@ -34,11 +34,14 @@ logger = logging.getLogger(__name__)
 logger.info('Starting app')
 
 app = flask.Flask(__name__, static_url_path='')
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config.update(
+    SECRET_KEY=os.urandom(32),
+    TEMPLATES_AUTO_RELOAD=True,
+    WTF_CSRF_TIME_LIMIT=None,
+)
 
 # Configure CSRF protection.
 csrf = flask_wtf.csrf.CSRFProtect(app)
-app.config['SECRET_KEY'] = os.urandom(32)
 
 app.register_blueprint(api.api_blueprint)
 app.register_blueprint(views.views_blueprint)
