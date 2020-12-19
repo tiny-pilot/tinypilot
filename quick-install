@@ -68,8 +68,7 @@ echo "[defaults]
 roles_path = $PWD
 interpreter_python = /usr/bin/python3
 " > ansible.cfg
-git clone https://github.com/mtlynch/ansible-role-tinypilot.git mtlynch.tinypilot
-ansible-galaxy install --role-file mtlynch.tinypilot/requirements.yml
+ansible-galaxy install mtlynch.tinypilot
 echo "- hosts: localhost
   connection: local
   become: true
