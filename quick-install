@@ -71,12 +71,12 @@ interpreter_python = /usr/bin/python3
 
 TINYPILOT_ROLE_NAME="mtlynch.tinypilot"
 if [ -d "$TINYPILOT_ROLE_NAME" ]; then
-  TINYPILOT_ROLE_REPO="https://github.com/mtlynch/ansible-role-tinypilot.git"
-  git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
-else
   pushd "$TINYPILOT_ROLE_NAME"
   git pull origin master
   popd
+else
+  TINYPILOT_ROLE_REPO="https://github.com/mtlynch/ansible-role-tinypilot.git"
+  git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
 fi
 
 ansible-galaxy install --role-file "${TINYPILOT_ROLE_NAME}/requirements.yml"
