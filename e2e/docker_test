@@ -9,14 +9,28 @@ set -u
 # Exit on first error.
 set -e
 
-docker run -it -v "$PWD:/app" -d --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro mtlynch/debian10-ansible:2.9.13
+IMAGE_NAME="tinypilot-e2e-image"
+CONTAINER_NAME="tinypilot-e2e"
 
-# We have to reinstall this for some reason?
-# https://stackoverflow.com/a/10538412/90388
-sudo apt-get remove python-setuptools
-sudo apt-get install python-setuptools
+docker version
 
-# TCP protocol is missing for some reason in test image?
-sudo apt-get -o Dpkg::Options::="--force-confmiss" install --reinstall netbase
+# Clear any previous container.
+docker rm -f "$CONTAINER_NAME" &> /dev/null || true
 
-./test
+docker build \
+  --tag "$IMAGE_NAME" \
+  ./e2e
+
+docker run \
+  -it \
+  -v "$PWD:/app" \
+  -w "/app" \
+  --detach \
+  --privileged \
+  --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
+  --name "$CONTAINER_NAME" \
+  "$IMAGE_NAME"
+
+docker exec "$CONTAINER_NAME" ./quick-install
+
+docker exec "$CONTAINER_NAME" ./e2e/test

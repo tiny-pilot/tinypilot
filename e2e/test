@@ -6,9 +6,6 @@ set -x
 # Treat undefined environment variables as errors.
 set -u
 
-# Exit on first error.
-set -e
-
 OUTPUT=$(mktemp)
 
 RESULT=$(curl \
