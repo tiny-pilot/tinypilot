@@ -28,18 +28,12 @@ jobs:
           command: ./dev-scripts/check-frontend-format
   e2e:
     machine:
-      # A Debian image would be better, as it matches Raspberry Pi OS more
-      # closely, but install fails with a Docker image because systemctl
-      # behaves differently under docker.
       image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run:
-          name: Install TinyPilot
-          command: ./quick-install
-      - run:
           name: Run TinyPilot e2e tests
-          command: ./e2e/test
+          command: ./e2e/docker-test
 workflows:
   test:
     jobs:
