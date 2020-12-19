@@ -68,8 +68,19 @@ echo "[defaults]
 roles_path = $PWD
 interpreter_python = /usr/bin/python3
 " > ansible.cfg
-git clone https://github.com/mtlynch/ansible-role-tinypilot.git mtlynch.tinypilot
-ansible-galaxy install --role-file mtlynch.tinypilot/requirements.yml
+
+TINYPILOT_ROLE_NAME="mtlynch.tinypilot"
+if [ -d "$TINYPILOT_ROLE_NAME" ]; then
+  TINYPILOT_ROLE_REPO="https://github.com/mtlynch/ansible-role-tinypilot.git"
+  git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
+else
+  pushd "$TINYPILOT_ROLE_NAME"
+  git pull origin master
+  popd
+fi
+
+ansible-galaxy install --role-file "${TINYPILOT_ROLE_NAME}/requirements.yml"
+
 echo "- hosts: localhost
   connection: local
   become: true
