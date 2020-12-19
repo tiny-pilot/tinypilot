@@ -86,5 +86,5 @@ echo "- hosts: localhost
   become: true
   become_method: sudo
   roles:
-    - role: mtlynch.tinypilot" > install.yml
+    - role: $TINYPILOT_ROLE_NAME" > install.yml
 ansible-playbook -i localhost, install.yml --extra-vars "$TINYPILOT_INSTALL_VARS"
