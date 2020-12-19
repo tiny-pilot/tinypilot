@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Echo commands to stdout.
+set -x
+
+# Treat undefined environment variables as errors.
+set -u
+
+# Exit on first error.
+set -e
+
+IMAGE_NAME="tinypilot-e2e-image"
+CONTAINER_NAME="tinypilot-e2e"
+
+docker version
+
+# Clear any previous container.
+docker rm -f "$CONTAINER_NAME" &> /dev/null || true
+
+docker build \
+  --tag "$IMAGE_NAME" \
+  ./e2e
+
+docker run \
+  -it \
+  -v "$PWD:/app" \
+  -w "/app" \
+  --detach \
+  --privileged \
+  --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
+  --name "$CONTAINER_NAME" \
+  "$IMAGE_NAME"
+
+docker exec "$CONTAINER_NAME" ./quick-install
+
+docker exec "$CONTAINER_NAME" ./e2e/test
