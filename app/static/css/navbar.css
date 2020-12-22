@@ -32,6 +32,10 @@
   align-items: center;
 }
 
+.navbar a {
+  color: white;
+}
+
 .navbar ul {
   padding: 0;
   margin: 0;
@@ -56,7 +60,6 @@
   display: block;
   text-decoration: none;
   padding: 5px 15px;
-  color: #000;
 }
 
 .navbar li a:hover {
@@ -94,7 +97,6 @@
 }
 
 .navbar .dropdown a {
-  color: white;
   background-color: rgb(25, 7, 126);
   min-width: 90px;
   padding: 0.7rem 1.3rem;
