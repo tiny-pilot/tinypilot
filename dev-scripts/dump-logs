@@ -32,7 +32,7 @@ printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot configuration..."
 printf "TinyPilot configuration\n" >> "$LOG_FILE"
-cat lib cat /lib/systemd/system/tinypilot.service >> "$LOG_FILE"
+cat /lib/systemd/system/tinypilot.service >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking TinyPilot logs..."
@@ -42,7 +42,7 @@ printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer configuration..."
 printf "uStreamer configuration\n" >> "$LOG_FILE"
-cat lib cat /lib/systemd/system/ustreamer.service >> "$LOG_FILE"
+cat /lib/systemd/system/ustreamer.service >> "$LOG_FILE"
 printf "\n" >> "$LOG_FILE"
 
 echo "Checking uStreamer logs..."
