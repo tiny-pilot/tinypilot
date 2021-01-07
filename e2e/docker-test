@@ -22,9 +22,10 @@ docker build \
   ./e2e
 
 docker run \
-  -it \
-  -v "$PWD:/app" \
-  -w "/app" \
+  --interactive \
+  --tty \
+  --volume "$PWD:/app" \
+  --workdir "/app" \
   --detach \
   --privileged \
   --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
