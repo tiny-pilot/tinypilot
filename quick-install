@@ -61,7 +61,7 @@ sudo apt-get install -y \
 
 INSTALLER_DIR="/opt/tinypilot-updater"
 sudo mkdir -p "$INSTALLER_DIR"
-sudo chown "$(whoami):$(whoami)" "$INSTALLER_DIR"
+sudo chown "$(whoami):$(whoami)" --recursive "$INSTALLER_DIR"
 pushd "$INSTALLER_DIR"
 
 python3 -m venv venv
