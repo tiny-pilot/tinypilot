@@ -43,6 +43,16 @@ if [ -z "$USE_TC358743_DEFAULTS" ]; then
   fi
 fi
 
+# To use proxy
+if [[ ${http_proxy} != "" ]];then
+   pip_args="--trusted-host pypi.org"
+   galaxy_args="--ignore-cert"
+   TINYPILOT_INSTALL_VARS+=" pip_args='${pip_args}'"
+else
+   pip_args=""
+   galaxy_args=""
+fi
+
 # Treat undefined environment variables as errors.
 set -u
 
@@ -51,8 +61,9 @@ set -e
 
 echo "Final install vars: $TINYPILOT_INSTALL_VARS"
 
-sudo apt-get update
-sudo apt-get install -y \
+# add -E to pass for "http_proxy"
+sudo -E apt-get update
+sudo -E apt-get install -y \
   git \
   libffi-dev \
   libssl-dev \
@@ -67,8 +78,8 @@ pushd "$INSTALLER_DIR"
 python3 -m venv venv
 . venv/bin/activate
 # Ansible depends on wheel.
-pip install wheel==0.34.2
-pip install ansible==2.9.10
+pip ${pip_args} install wheel==0.34.2
+pip ${pip_args} install ansible==2.9.10
 echo "[defaults]
 roles_path = $PWD
 interpreter_python = /usr/bin/python3
@@ -84,7 +95,7 @@ else
   git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
 fi
 
-ansible-galaxy install --role-file "${TINYPILOT_ROLE_NAME}/requirements.yml"
+ansible-galaxy install --role-file "${TINYPILOT_ROLE_NAME}/requirements.yml" ${galaxy_args}
 
 echo "- hosts: localhost
   connection: local
