@@ -41,6 +41,7 @@ All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/o
   * [In smaller form factor](https://www.amazon.com/dp/B08B4J2XXF/)
   * They have no brand name, and there are several variants, but they're all built on the same MacroSilicon 2109 chip.
   * They're available for $10-15 on eBay and AliExpress.
+* [3 Amp power supply](https://smile.amazon.com/gp/product/B01ASXBY62/)
 * [USB-C to USB-A](https://www.amazon.com/dp/B01GGKYN0A/) cable (Male/Male)
 * [microSD card](https://www.amazon.com/dp/B073K14CVB/) (Class 10, 8 GB or larger)
 * [HDMI to HDMI cable](https://www.amazon.com/dp/B014I8SSD0/)
