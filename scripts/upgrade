@@ -1,16 +1,8 @@
 #!/usr/bin/env bash
 
-# Echo commands to stdout.
-set -x
+# avoid closing the SSH connection when returning -1
+set +e
 
-# Treat undefined environment variables as errors.
-set -u
+echo "This script has moved to /opt/tinypilot-privileged/update"
 
-# Exit on first error.
-set -e
-
-curl \
-  --silent \
-  --show-error \
-  https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | \
-    bash -
+return -1
