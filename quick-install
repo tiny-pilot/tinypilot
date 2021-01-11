@@ -80,9 +80,7 @@ if [ -d "$TINYPILOT_ROLE_NAME" ]; then
   git pull origin master
   popd
 else
-  # TODO: move back to mtlynch
-  # TINYPILOT_ROLE_REPO="https://github.com/mtlynch/ansible-role-tinypilot.git"
-  TINYPILOT_ROLE_REPO="https://github.com/tretinha/ansible-role-tinypilot.git"
+  TINYPILOT_ROLE_REPO="https://github.com/mtlynch/ansible-role-tinypilot.git"
   git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
 fi
 
