@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  check-whitespace:
+  check_whitespace:
     docker:
       - image: cimg/base:2020.01
     steps:
