@@ -1,5 +1,16 @@
 version: 2.1
 jobs:
+  check-whitespace:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - run:
+          name: Check for trailing whitespace
+          command: tests/check-trailing-whitespace
+      - run:
+          name: Check that all text files end in a trailing newline
+          command: tests/check-trailing-newline
   build_python:
     docker:
       - image: circleci/python:3.7.3
@@ -37,6 +48,7 @@ jobs:
 workflows:
   test:
     jobs:
+      - check_whitespace
       - build_python
       - format_frontend
       - e2e

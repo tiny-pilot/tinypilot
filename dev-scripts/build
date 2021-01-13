@@ -9,5 +9,7 @@ set -x
 # Exit on unset variable.
 set -u
 
+./dev-scripts/check-trailing-whitespace
+./dev-scripts/check-trailing-newline
 ./dev-scripts/build-python
 ./dev-scripts/check-frontend-format
