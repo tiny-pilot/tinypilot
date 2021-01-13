@@ -7,10 +7,10 @@ jobs:
       - checkout
       - run:
           name: Check for trailing whitespace
-          command: tests/check-trailing-whitespace
+          command: ./dev-scripts/check-trailing-whitespace
       - run:
           name: Check that all text files end in a trailing newline
-          command: tests/check-trailing-newline
+          command: ./dev-scripts/check-trailing-newline
   build_python:
     docker:
       - image: circleci/python:3.7.3
