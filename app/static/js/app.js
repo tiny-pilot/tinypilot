@@ -8,6 +8,7 @@ import {
 } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
+import { displayUpdatingUI, getVersion, getLatestRelease } from "./update.js";
 
 const socket = io();
 let connectedToServer = false;
@@ -33,9 +34,14 @@ function showElementById(id, display = "block") {
   document.getElementById(id).style.display = display;
 }
 
-function showError(errorType, errorMessage) {
+function showError(errorType, errorMessage, update = false) {
   document.getElementById("error-type").innerText = errorType;
   document.getElementById("error-message").innerText = errorMessage;
+  // Because it's a slower operation, the update-wait dialog will always be
+  // shown. In case there's an error, we should stop showing it.
+  if (update) {
+    document.getElementById("update-wait").show = false;
+  }
   showElementById("error-panel");
 }
 
@@ -296,6 +302,32 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
 document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
+
+document.getElementById("update-btn").addEventListener("click", async () => {
+  const { version } = await getVersion();
+  const { latestRelease } = await getLatestRelease();
+  const updateDialog = document.getElementById("update-dialog");
+
+  if (version === latestRelease) {
+    updateDialog.update = false;
+  }
+  updateDialog.update = true;
+  updateDialog.updateButtons();
+  updateDialog.show = true;
+});
+
+document
+  .getElementById("update-dialog")
+  .addEventListener("update-started", () => {
+    displayUpdatingUI();
+  });
+
+document
+  .getElementById("update-dialog")
+  .addEventListener("update-failure", (evt) => {
+    showError(evt.detail.summary, evt.detail.detail, true);
+  });
+
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
