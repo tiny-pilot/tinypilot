@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# avoid closing the SSH connection when returning -1
-set +e
+# The canonical way to update is through the update script below,
+# but this file is here for backwards compatibility.
 
-echo "This script has moved to /opt/tinypilot-privileged/update"
+# Without this file, we have no way of giving users an update command
+# that will work regardless of TinyPilot version.
 
-return -1
+sudo /opt/tinypilot-privileged/update
