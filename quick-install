@@ -51,6 +51,22 @@ set -e
 
 echo "Final install vars: $TINYPILOT_INSTALL_VARS"
 
+# Check if the user is accidentally downgrading from TinyPilot Pro.
+if [ "$(head -n 1 README.md)" = "# TinyPilot Pro" ]; then
+  read -p "Are you sure you want to downgrade from TinyPilot Pro to the TinyPilot Community Edition? (y/n) " DOWNGRADE_ANSWER
+  case ${DOWNGRADE_ANSWER:0:1} in
+      y|Y )
+          echo "OK, downgrading..."
+      ;;
+      * )
+          echo "To update to the latest version of TinyPilot Pro:"
+          echo "  sudo /opt/tinypilot-privileged/update && \\"
+          echo "    sudo reboot"
+          exit 0
+      ;;
+  esac
+fi
+
 sudo apt-get update
 sudo apt-get install -y \
   git \
