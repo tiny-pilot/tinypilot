@@ -100,12 +100,12 @@ TinyPilot accepts various options through environment variables:
 | `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
 | `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
 
-## Upgrades
+## Updates
 
-To upgrade to the latest version of TinyPilot, run the upgrade script:
+To update to the latest version of TinyPilot, run the update script:
 
 ```bash
-/opt/tinypilot/scripts/upgrade && sudo reboot
+/opt/tinypilot-privileged/update && sudo reboot
 ```
 
 ## Diagnostics
