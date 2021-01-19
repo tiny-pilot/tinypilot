@@ -52,7 +52,24 @@ set -e
 echo "Final install vars: $TINYPILOT_INSTALL_VARS"
 
 # Check if the user is accidentally downgrading from TinyPilot Pro.
-if [ "$(head -n 1 README.md)" = "# TinyPilot Pro" ]; then
+HAS_PRO_INSTALLED=0
+
+SCRIPT_DIR="$(dirname $0)"
+# If they're piping this script in from stdin, guess that TinyPilot is
+# in the default location.
+if [ "$SCRIPT_DIR" = "." ]; then
+  SCRIPT_DIR="/opt/tinypilot"
+fi
+
+# Detect TinyPilot Pro if the README file has a TinyPilot Pro header.
+TINYPILOT_README="${SCRIPT_DIR}/README.md"
+if [ -f "$TINYPILOT_README" ]; then
+  if [ "$(head -n 1 $TINYPILOT_README)" = "# TinyPilot Pro" ]; then
+    HAS_PRO_INSTALLED=1
+  fi
+fi
+
+if [ "$HAS_PRO_INSTALLED" = 1 ]; then
   read -p "Are you sure you want to downgrade from TinyPilot Pro to the TinyPilot Community Edition? (y/n) " DOWNGRADE_ANSWER
   case ${DOWNGRADE_ANSWER:0:1} in
       y|Y )
