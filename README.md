@@ -105,7 +105,7 @@ TinyPilot accepts various options through environment variables:
 To update to the latest version of TinyPilot, run the update script:
 
 ```bash
-/opt/tinypilot-privileged/update && sudo reboot
+sudo /opt/tinypilot-privileged/update && sudo reboot
 ```
 
 ## Diagnostics
