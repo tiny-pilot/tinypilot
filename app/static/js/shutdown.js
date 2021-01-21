@@ -26,7 +26,10 @@
         // A 502 usually means that nginx shutdown before it could process the
         // response. Treat this as success.
         if (response.status === 502) {
-          return Promise.resolve({});
+          return Promise.resolve({
+            success: true,
+            error: null,
+          });
         }
         if (response.status !== 200) {
           // See if the error response is JSON.
