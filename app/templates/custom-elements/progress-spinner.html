@@ -1,0 +1,45 @@
+<template id="progress-spinner-template">
+  <style>
+    .spinner {
+      margin: auto;
+      border: 10px solid #e6d4c8;
+      border-top: 10px solid #664bd2;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <div class="spinner"></div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#progress-spinner-template");
+
+    customElements.define(
+      "progress-spinner",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+      }
+    );
+  })();
+</script>
