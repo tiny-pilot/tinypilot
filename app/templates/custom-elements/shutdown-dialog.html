@@ -93,6 +93,7 @@
   </div>
 </template>
 
+<script src="/js/shutdown.js"></script>
 <script>
   (function () {
     const doc = (document._currentScript || document.currentScript)
@@ -114,17 +115,13 @@
           this.shadowRoot
             .getElementById("confirm-shutdown")
             .addEventListener("click", () => {
-              this.sendShutdownRequest(/*restart=*/ false);
-              this.state = "shutting-down";
-              setTimeout(() => {
-                this.state = "shutdown-complete";
-              }, 30 * 1000);
+              this.doShutdown(/*restart=*/ false);
             });
+
           this.shadowRoot
             .getElementById("confirm-restart")
             .addEventListener("click", () => {
-              this.sendShutdownRequest(/*restart=*/ true);
-              this.state = "restarting";
+              this.doShutdown(/*restart=*/ true);
             });
           this.shadowRoot
             .getElementById("cancel-shutdown")
@@ -157,7 +154,36 @@
           this.setAttribute("state", newValue);
         }
 
-        emitShutdownEvent(restart) {
+        doShutdown(restart) {
+          controllers
+            .shutdown(restart)
+            .then(() => {
+              this.emitShutdownStartedEvent(restart);
+              if (restart) {
+                this.state = "restarting";
+              } else {
+                this.state = "shutting-down";
+              }
+              setTimeout(() => {
+                this.state = "shutdown-complete";
+              }, 30 * 1000);
+            })
+            .catch((error) => {
+              if (restart) {
+                this.emitShutdownFailureEvent(
+                  "Failed to restart TinyPilot device",
+                  error
+                );
+              } else {
+                this.emitShutdownFailureEvent(
+                  "Failed to shut down TinyPilot device",
+                  error
+                );
+              }
+            });
+        }
+
+        emitShutdownStartedEvent(restart) {
           this.dispatchEvent(
             new CustomEvent("shutdown-started", {
               detail: { restart },
@@ -175,75 +201,6 @@
               composed: true,
             })
           );
-        }
-
-        getCsrfToken() {
-          return document
-            .querySelector("meta[name='csrf-token']")
-            .getAttribute("content");
-        }
-
-        sendShutdownRequest(restart) {
-          let route = "/api/shutdown";
-          if (restart) {
-            route = "/api/restart";
-          }
-          fetch(route, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": this.getCsrfToken(),
-            },
-            mode: "same-origin",
-            cache: "no-cache",
-            redirect: "error",
-          })
-            .then((response) => {
-              // A 502 usually means that nginx shutdown before it could process the
-              // response. Treat this as success.
-              if (response.status === 502) {
-                return Promise.resolve({});
-              }
-              if (response.status !== 200) {
-                // See if the error response is JSON.
-                const contentType = response.headers.get("content-type");
-                if (
-                  contentType &&
-                  contentType.indexOf("application/json") !== -1
-                ) {
-                  return response.json().then((data) => {
-                    return Promise.reject(new Error(data.error));
-                  });
-                }
-                return Promise.reject(new Error(response.statusText));
-              }
-              return response.json();
-            })
-            .then((result) => {
-              if (result.error) {
-                return Promise.reject(new Error(result.error));
-              }
-              this.emitShutdownEvent(restart);
-            })
-            .catch((error) => {
-              // Depending on timing, the server may not respond to the shutdown request
-              // because it's shutting down. If we get a NetworkError, assume the
-              // shutdown succeeded.
-              if (error.message.indexOf("NetworkError") >= 0) {
-                this.emitShutdownEvent(restart);
-                return;
-              }
-              if (restart) {
-                this.emitShutdownFailureEvent(
-                  "Failed to restart TinyPilot device",
-                  error
-                );
-              } else {
-                this.emitShutdownFailureEvent(
-                  "Failed to shut down TinyPilot device",
-                  error
-                );
-              }
-            });
         }
       }
     );
