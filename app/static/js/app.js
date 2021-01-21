@@ -336,7 +336,6 @@ document
 document
   .getElementById("update-dialog")
   .addEventListener("update-failure", (evt) => {
-    document.getElementById("countdown-timer").show = false;
     showError(evt.detail.summary, evt.detail.detail);
   });
 document
