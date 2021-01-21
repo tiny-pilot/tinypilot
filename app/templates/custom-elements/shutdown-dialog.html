@@ -164,6 +164,8 @@
               } else {
                 this.state = "shutting-down";
               }
+              // We can't tell when the system has fully shut down, but assume that it's done
+              // after 30 seconds.
               setTimeout(() => {
                 this.state = "shutdown-complete";
               }, 30 * 1000);

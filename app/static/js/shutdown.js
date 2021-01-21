@@ -1,4 +1,5 @@
 "use strict";
+
 (function (windows) {
   // TODO: Avoid duplicating this function everywhere.
   function getCsrfToken() {
