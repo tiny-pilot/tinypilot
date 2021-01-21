@@ -45,9 +45,9 @@ function displayPoweringDownUI(restart) {
   }
   const shutdownWait = document.getElementById("shutdown-wait");
   if (restart) {
-    shutdownWait.message = "Restarting TinyPilot Device...";
+    shutdownWait.message = "Restarting TinyPilot device...";
   } else {
-    shutdownWait.message = "Shutting down TinyPilot Device...";
+    shutdownWait.message = "Shutting down TinyPilot device...";
     setTimeout(() => {
       const shutdownWait = document.getElementById("shutdown-wait");
       if (shutdownWait.show) {
