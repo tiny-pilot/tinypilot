@@ -25,6 +25,29 @@
       z-index: 2;
     }
 
+    #prompt,
+    #restarting,
+    #shutting-down,
+    #shutdown-complete {
+      display: none;
+    }
+
+    :host([state="prompt"]) #prompt {
+      display: block;
+    }
+
+    :host([state="restarting"]) #restarting {
+      display: block;
+    }
+
+    :host([state="shutting-down"]) #shutting-down {
+      display: block;
+    }
+
+    :host([state="shutdown-complete"]) #shutdown-complete {
+      display: block;
+    }
+
     #shutdown-confirmation-panel > div {
       background-color: rgb(252, 236, 223);
       border: 1px solid rgb(139, 97, 62);
@@ -42,7 +65,7 @@
     }
   </style>
   <div id="shutdown-confirmation-panel" class="overlay">
-    <div>
+    <div id="prompt">
       <h3>Shut Down TinyPilot Device?</h3>
       <p>
         Note that this will shut down <strong>TinyPilot</strong>, not the
@@ -55,6 +78,17 @@
         Restart
       </button>
       <button id="cancel-shutdown" type="button">Cancel</button>
+    </div>
+    <div id="restarting">
+      <h3>Restarting TinyPilot device</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="shutting-down">
+      <h3>Shutting down TinyPilot device</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="shutdown-complete">
+      <h3>Shutdown complete</h3>
     </div>
   </div>
 </template>
@@ -75,16 +109,22 @@
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.state = "prompt";
 
           this.shadowRoot
             .getElementById("confirm-shutdown")
             .addEventListener("click", () => {
               this.sendShutdownRequest(/*restart=*/ false);
+              this.state = "shutting-down";
+              setTimeout(() => {
+                this.state = "shutdown-complete";
+              }, 30 * 1000);
             });
           this.shadowRoot
             .getElementById("confirm-restart")
             .addEventListener("click", () => {
               this.sendShutdownRequest(/*restart=*/ true);
+              this.state = "restarting";
             });
           this.shadowRoot
             .getElementById("cancel-shutdown")
@@ -107,6 +147,14 @@
 
         set show(newValue) {
           this.setAttribute("show", newValue);
+        }
+
+        get state() {
+          return this.getAttribute("state");
+        }
+
+        set state(newValue) {
+          this.setAttribute("state", newValue);
         }
 
         emitShutdownEvent(restart) {
@@ -196,7 +244,6 @@
                 );
               }
             });
-          this.show = false;
         }
       }
     );
