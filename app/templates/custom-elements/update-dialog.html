@@ -230,7 +230,11 @@
               return response.json();
             })
             .then((result) => {
-              if (result.error || result.success === false) {
+              if (
+                result.error ||
+                result.success === false ||
+                !result.hasOwnProperty("success")
+              ) {
                 return Promise.reject(new Error(result.error));
               }
               return result;
@@ -257,7 +261,11 @@
               return response.json();
             })
             .then((result) => {
-              if (result.error || result.success === false) {
+              if (
+                result.error ||
+                result.success === false ||
+                !result.hasOwnProperty("success")
+              ) {
                 return Promise.reject(new Error(result.error));
               }
               return result;
@@ -288,7 +296,11 @@
               return response.json();
             })
             .then((result) => {
-              if (result.error || result.success === false) {
+              if (
+                result.error ||
+                result.success === false ||
+                !result.hasOwnProperty("success")
+              ) {
                 return Promise.reject(new Error(result.error));
               }
             })
