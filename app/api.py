@@ -13,7 +13,7 @@ def shutdown_post():
         local_system.shutdown()
         return _json_success()
     except local_system.Error as e:
-        return _json_error(str(e)), 500
+        return _json_error(str(e)), 200
 
 
 @api_blueprint.route('/restart', methods=['POST'])
@@ -22,7 +22,7 @@ def restart_post():
         local_system.restart()
         return _json_success()
     except local_system.Error as e:
-        return _json_error(str(e)), 500
+        return _json_error(str(e)), 200
 
 
 @api_blueprint.route('/update', methods=['POST'])
@@ -52,7 +52,7 @@ def update_post():
     try:
         update.update()
     except update.Error as e:
-        return _json_error(str(e)), 500
+        return _json_error(str(e)), 200
     return _json_success()
 
 
@@ -83,7 +83,7 @@ def version_get():
     try:
         return _json_success({"version": git.local_head_commit_id()})
     except git.Error as e:
-        return _json_error(str(e)), 500
+        return _json_error(str(e)), 200
 
 
 @api_blueprint.route('/latestRelease', methods=['GET'])
@@ -113,7 +113,7 @@ def latest_release_get():
     try:
         return _json_success({"version": git.remote_head_commit_id()})
     except git.Error as e:
-        return _json_error(str(e)), 500
+        return _json_error(str(e)), 200
 
 
 def _json_success(fields={}):
