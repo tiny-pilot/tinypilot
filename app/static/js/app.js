@@ -39,27 +39,6 @@ function showError(errorType, errorMessage) {
   showElementById("error-panel");
 }
 
-function displayPoweringDownUI(restart) {
-  for (const elementId of ["error-panel", "remote-screen", "keystroke-panel"]) {
-    hideElementById(elementId);
-  }
-  const shutdownWait = document.getElementById("shutdown-wait");
-  if (restart) {
-    shutdownWait.message = "Restarting TinyPilot device...";
-  } else {
-    shutdownWait.message = "Shutting down TinyPilot device...";
-    setTimeout(() => {
-      const shutdownWait = document.getElementById("shutdown-wait");
-      if (shutdownWait.show) {
-        shutdownWait.message = "Shutdown complete";
-        shutdownWait.hideSpinner();
-      }
-    }, 30 * 1000);
-  }
-  document.getElementById("shutdown-dialog").show = false;
-  document.getElementById("shutdown-wait").show = true;
-}
-
 function isKeyPressed(code) {
   return code in keyState && keyState[code];
 }
@@ -128,7 +107,7 @@ function processKeystroke(keystroke) {
 }
 
 function onSocketConnect() {
-  if (document.getElementById("shutdown-wait").show) {
+  if (document.getElementById("shutdown-dialog").show) {
     location.reload();
   } else {
     connectedToServer = true;
@@ -325,16 +304,17 @@ document
     // Give focus back to the app for normal text input.
     document.getElementById("app").focus();
   });
-document
-  .getElementById("shutdown-dialog")
-  .addEventListener("shutdown-started", (evt) => {
-    displayPoweringDownUI(evt.detail.restart);
-  });
-document
-  .getElementById("shutdown-dialog")
-  .addEventListener("shutdown-failure", (evt) => {
-    showError(evt.detail.summary, evt.detail.detail);
-  });
+const shutdownDialog = document.getElementById("shutdown-dialog");
+shutdownDialog.addEventListener("shutdown-started", (evt) => {
+  // Hide the interactive elements of the page during shutdown.
+  for (const elementId of ["error-panel", "remote-screen", "keystroke-panel"]) {
+    hideElementById(elementId);
+  }
+});
+shutdownDialog.addEventListener("shutdown-failure", (evt) => {
+  shutdownDialog.show = false;
+  showError(evt.detail.summary, evt.detail.detail);
+});
 
 const keyHistory = document.querySelector("key-history");
 keyHistory.show = settings.isKeyHistoryEnabled();
