@@ -31,30 +31,11 @@
       margin: 100px auto 0rem auto;
       padding: 2rem;
     }
-
-    .spinner {
-      margin: auto;
-      border: 10px solid #e6d4c8;
-      border-top: 10px solid #664bd2;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1.5s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
   </style>
   <div id="shutdown-wait-panel" class="overlay">
     <div>
       <h3 id="shutdown-wait-message"></h3>
-      <div class="spinner"></div>
+      <progress-spinner></progress-spinner>
     </div>
   </div>
 </template>
@@ -75,6 +56,7 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
         }
+
         get show() {
           return this.getAttribute("show") === "true";
         }
@@ -95,7 +77,8 @@
         }
 
         hideSpinner() {
-          this.shadowRoot.querySelector(".spinner").style.display = "none";
+          this.shadowRoot.querySelector("progress-spinner").style.display =
+            "none";
         }
       }
     );
