@@ -145,7 +145,7 @@
           this.shadowRoot
             .getElementById("ok-finished")
             .addEventListener("click", () => {
-              this.show = false;
+              location.reload();
             });
         }
 
@@ -208,9 +208,9 @@
           timer.start();
           // When the countdown timer ends, a "finished" event is emitted.
           // This means that the update must finish and change its state to
-          // "update-finished" *before* the countdown ends.
+          // "restarting" *before* the countdown ends.
           timer.addEventListener("finished", () => {
-            if (this.state != "update-finished") {
+            if (this.state !== "restarting") {
               this.emitUpdateFailureEvent(
                 "Failed to update TinyPilot device",
                 "Update timed out."
@@ -221,11 +221,10 @@
           controllers
             .update()
             .then(() => {
-              this.state = "restarting";
               controllers
                 .shutdown(/*restart*/ true)
                 .then(() => {
-                  this.state = "update-finished";
+                  this.state = "restarting";
                 })
                 .catch((error) => {
                   this.emitUpdateFailureEvent(
