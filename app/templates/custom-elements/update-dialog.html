@@ -92,7 +92,7 @@
     <div id="latest">
       <h3>No Updates Available</h3>
       <p>You are running the latest version of TinyPilot.</p>
-      <button id="ok-btn" type="button">OK</button>
+      <button id="ok-latest" type="button">OK</button>
     </div>
     <div id="updating">
       <h3>Please wait while TinyPilot updates</h3>
@@ -104,7 +104,7 @@
     </div>
     <div id="update-finished">
       <h3>Update complete</h3>
-      <button id="ok-btn" type="button">OK</button>
+      <button id="ok-finished" type="button">OK</button>
     </div>
   </div>
 </template>
@@ -138,7 +138,12 @@
               this.show = false;
             });
           this.shadowRoot
-            .getElementById("ok-btn")
+            .getElementById("ok-latest")
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+          this.shadowRoot
+            .getElementById("ok-finished")
             .addEventListener("click", () => {
               this.show = false;
             });
