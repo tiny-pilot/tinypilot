@@ -167,13 +167,11 @@
 
         async checkVersion() {
           this.state = "checking";
+
           const version = await controllers
             .getVersion()
-            .then((result) => {
-              if (result.hasOwnProperty("version")) {
-                return result.version;
-              }
-              return Promise.reject(new Error("Unknown error"));
+            .then((versionResponse) => {
+              return result.version;
             })
             .catch((error) => {
               this.emitUpdateFailureEvent(
@@ -183,11 +181,8 @@
             });
           const latestRelease = await controllers
             .getLatestRelease()
-            .then((result) => {
-              if (result.hasOwnProperty("version")) {
-                return result.version;
-              }
-              return Promise.reject(new Error("Unknown error"));
+            .then((versionResponse) => {
+              return result.version;
             })
             .catch((error) => {
               this.emitUpdateFailureEvent(
@@ -195,6 +190,7 @@
                 error
               );
             });
+
           if (version === latestRelease) {
             this.state = "latest";
           } else {
