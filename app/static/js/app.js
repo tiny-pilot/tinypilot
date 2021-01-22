@@ -354,6 +354,5 @@ for (const cursorOption of screenCursorOptions.splice(1)) {
   }
   cursorList.appendChild(listItem);
 }
-
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
