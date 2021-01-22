@@ -52,6 +52,56 @@
     return Promise.resolve(response);
   }
 
+  function getLatestRelease() {
+    let route = "/api/latestRelease";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve({ version: versionResponse.version });
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function getVersion() {
+    let route = "/api/version";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve({ version: versionResponse.version });
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   function shutdown(restart) {
     let route = "/api/shutdown";
     if (restart) {
@@ -95,8 +145,34 @@
       });
   }
 
+  function update() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        processResponse(response);
+        return response.json();
+      })
+      .then((result) => {
+        return processResult(result);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
+  window.controllers.getVersion = getVersion;
+  window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
+  window.controllers.update = update;
 })(window);
