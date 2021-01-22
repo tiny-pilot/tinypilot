@@ -1,7 +1,6 @@
 "use strict";
 
 (function (windows) {
-  // TODO: Avoid duplicating this function everywhere.
   function getCsrfToken() {
     return document
       .querySelector("meta[name='csrf-token']")
