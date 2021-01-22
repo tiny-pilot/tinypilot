@@ -221,13 +221,11 @@
           controllers
             .update()
             .then(() => {
+              this.state = "restarting";
               controllers
                 .shutdown(/*restart*/ true)
                 .then(() => {
-                  this.state = "restarting";
-                  setTimeout(() => {
-                    this.state = "update-finished";
-                  }, 30 * 1000);
+                  this.state = "update-finished";
                 })
                 .catch((error) => {
                   this.emitUpdateFailureEvent(
