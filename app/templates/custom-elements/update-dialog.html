@@ -4,7 +4,6 @@
 
     .overlay {
       display: none;
-      text-align: center;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
@@ -30,7 +29,8 @@
     #update-available,
     #latest,
     #updating,
-    #update-finished {
+    #update-finished,
+    #restarting {
       display: none;
     }
 
@@ -54,31 +54,8 @@
       display: block;
     }
 
-    :host([state="checking"]) .spinner {
-      margin: auto;
-      border: 10px solid #e6d4c8;
-      border-top: 10px solid #664bd2;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1.5s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .btn-success {
-      background-color: rgb(15, 157, 88);
-    }
-
-    .btn-success:hover {
-      background-color: rgb(65, 177, 108);
+    :host([state="restarting"]) #restarting {
+      display: block;
     }
 
     #update-panel > div {
@@ -88,11 +65,19 @@
       margin: 100px auto 0rem auto;
       padding: 2rem;
     }
+
+    .btn-success {
+      background-color: rgb(15, 157, 88);
+    }
+
+    .btn-success:hover {
+      background-color: rgb(65, 177, 108);
+    }
   </style>
   <div id="update-panel" class="overlay">
     <div id="checking">
       <h3>Checking for updates</h3>
-      <div class="spinner"></div>
+      <progress-spinner></progress-spinner>
     </div>
     <div id="update-available">
       <h3>Update TinyPilot</h3>
@@ -110,7 +95,11 @@
     </div>
     <div id="updating">
       <h3>Please wait while TinyPilot updates</h3>
-      <h2 id="timer"></h2>
+      <countdown-timer id="timer" seconds="300"></countdown-timer>
+    </div>
+    <div id="restarting">
+      <h3>Restarting TinyPilot device</h3>
+      <progress-spinner></progress-spinner>
     </div>
     <div id="update-finished">
       <h3>Update complete</h3>
@@ -118,6 +107,7 @@
   </div>
 </template>
 
+<script src="/js/update.js"></script>
 <script>
   (function () {
     const doc = (document._currentScript || document.currentScript)
@@ -138,20 +128,12 @@
           this.shadowRoot
             .getElementById("confirm-update")
             .addEventListener("click", () => {
-              this.sendUpdateRequest();
+              this.doUpdate();
             });
           this.shadowRoot
             .getElementById("cancel-update")
             .addEventListener("click", () => {
               this.show = false;
-            });
-          this.shadowRoot
-            .getElementById("update-panel")
-            .addEventListener("click", (evt) => {
-              evt = window.event || evt;
-              if (evt.target.className === "overlay") {
-                this.show = false;
-              }
             });
         }
 
@@ -171,24 +153,87 @@
           this.setAttribute("state", newValue);
         }
 
-        get timer() {
-          return this.shadowRoot.getElementById("timer").innerText;
-        }
-
-        set timer(newValue) {
-          this.shadowRoot.getElementById("timer").innerText = newValue;
-        }
-
-        emitUpdateEvent() {
-          this.dispatchEvent(
-            new CustomEvent("update-started", {
-              bubbles: true,
-              composed: true,
+        async checkVersion() {
+          this.state = "checking";
+          const version = await controllers
+            .getVersion()
+            .then((result) => {
+              if (result.hasOwnProperty("version")) {
+                return result.version;
+              }
+              return Promise.reject(new Error("Unknown error"));
             })
-          );
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to retrieve installed version",
+                error
+              );
+            });
+          const latestRelease = await controllers
+            .getLatestRelease()
+            .then((result) => {
+              if (result.hasOwnProperty("version")) {
+                return result.version;
+              }
+              return Promise.reject(new Error("Unknown error"));
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to retrieve latest version number",
+                error
+              );
+            });
+          if (version === latestRelease) {
+            this.state = "latest";
+          } else {
+            this.state = "update-available";
+          }
+        }
+
+        doUpdate() {
+          this.state = "updating";
+          const timer = this.shadowRoot.getElementById("timer");
+          timer.start();
+          // When the countdown timer ends, a "finished" event is emitted.
+          // This means that the update must finish and change its state to
+          // "update-finished" *before* the countdown ends.
+          timer.addEventListener("finished", () => {
+            if (this.state != "update-finished") {
+              this.emitUpdateFailureEvent(
+                "Failed to update TinyPilot device",
+                "Update timed out."
+              );
+            }
+          });
+
+          controllers
+            .update()
+            .then(() => {
+              controllers
+                .shutdown(/*restart*/ true)
+                .then(() => {
+                  this.state = "restarting";
+                  setTimeout(() => {
+                    this.state = "update-finished";
+                  }, 30 * 1000);
+                })
+                .catch((error) => {
+                  this.emitUpdateFailureEvent(
+                    "Failed to restart TinyPilot device",
+                    error
+                  );
+                });
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to update TinyPilot device",
+                error
+              );
+            });
         }
 
         emitUpdateFailureEvent(summary, detail) {
+          this.show = false;
           this.dispatchEvent(
             new CustomEvent("update-failure", {
               detail: { summary, detail },
@@ -196,168 +241,6 @@
               composed: true,
             })
           );
-        }
-
-        getCsrfToken() {
-          return document
-            .querySelector("meta[name='csrf-token']")
-            .getAttribute("content");
-        }
-
-        checkResponse(response) {
-          if (response.status !== 200) {
-            // See if the error response is JSON.
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
-              return response.json().then((data) => {
-                return Promise.reject(new Error(data.error));
-              });
-            }
-            return Promise.reject(new Error(response.statusText));
-          }
-        }
-
-        getVersion() {
-          let route = "/api/version";
-          return fetch(route, {
-            method: "GET",
-            mode: "same-origin",
-            cache: "no-cache",
-            redirect: "error",
-          })
-            .then((response) => {
-              this.checkResponse(response);
-              return response.json();
-            })
-            .then((result) => {
-              if (
-                result.error ||
-                result.success === false ||
-                !result.hasOwnProperty("success")
-              ) {
-                return Promise.reject(new Error(result.error));
-              }
-              return result;
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to retrieve installed version",
-                error
-              );
-              this.show = false;
-            });
-        }
-
-        getLatestRelease() {
-          let route = "/api/latestRelease";
-          return fetch(route, {
-            method: "GET",
-            mode: "same-origin",
-            cache: "no-cache",
-            redirect: "error",
-          })
-            .then((response) => {
-              this.checkResponse(response);
-              return response.json();
-            })
-            .then((result) => {
-              if (
-                result.error ||
-                result.success === false ||
-                !result.hasOwnProperty("success")
-              ) {
-                return Promise.reject(new Error(result.error));
-              }
-              return result;
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to retrieve latest version number",
-                error
-              );
-              this.show = false;
-            });
-        }
-
-        sendUpdateRequest() {
-          this.emitUpdateEvent();
-          let route = "/api/update";
-          fetch(route, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": this.getCsrfToken(),
-            },
-            mode: "same-origin",
-            cache: "no-cache",
-            redirect: "error",
-          })
-            .then((response) => {
-              this.checkResponse(response);
-              return response.json();
-            })
-            .then((result) => {
-              if (
-                result.error ||
-                result.success === false ||
-                !result.hasOwnProperty("success")
-              ) {
-                return Promise.reject(new Error(result.error));
-              }
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to update TinyPilot device",
-                error
-              );
-              this.show = false;
-            });
-        }
-
-        async startDialog() {
-          this.state = "checking";
-          this.show = true;
-          const version = await this.getVersion();
-          const latestRelease = await this.getLatestRelease();
-          if (version.version === latestRelease.version) {
-            this.state = "latest";
-          } else {
-            this.state = "update-available";
-          }
-        }
-
-        finishCountdown(interval) {
-          clearInterval(interval);
-          this.timer = "";
-          // Reboot if no error was emitted.
-          const errorPanel = document.getElementById("error-panel");
-          if (getComputedStyle(errorPanel).display === "none") {
-            this.state = "update-finished";
-            this.show = false;
-            document
-              .getElementById("shutdown-dialog")
-              .sendShutdownRequest(true);
-          }
-        }
-
-        startCountdown() {
-          // The updates generally takes 2~4 minutes to complete, this changes
-          // the state to "updating" and sets a five minutes countdown timer as
-          // a safety measure.
-          this.state = "updating";
-          let countdownTimer = 60 * 5 /* Five minutes */,
-            minutes,
-            seconds;
-          const interval = setInterval(() => {
-            minutes = parseInt(countdownTimer / 60, 10);
-            seconds = parseInt(countdownTimer % 60, 10);
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-            this.timer = minutes + ":" + seconds;
-            if (--countdownTimer < 0) {
-              this.finishCountdown(interval);
-              this.timer = "";
-            }
-          }, 1000);
         }
       }
     );

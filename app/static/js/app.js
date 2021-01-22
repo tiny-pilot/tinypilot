@@ -297,14 +297,10 @@ document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
 document.getElementById("update-btn").addEventListener("click", () => {
-  document.getElementById("update-dialog").startDialog();
+  const updateDialog = document.getElementById("update-dialog");
+  updateDialog.show = true;
+  updateDialog.checkVersion();
 });
-
-document
-  .getElementById("update-dialog")
-  .addEventListener("update-started", () => {
-    displayUpdatingUI();
-  });
 document
   .getElementById("update-dialog")
   .addEventListener("update-failure", (evt) => {

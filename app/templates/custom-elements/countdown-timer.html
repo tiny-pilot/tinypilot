@@ -1,0 +1,61 @@
+<template id="countdown-timer-template">
+  <h2 id="timer"></h2>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#countdown-timer-template");
+
+    customElements.define(
+      "countdown-timer",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this.seconds = 0;
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        get timer() {
+          return this.shadowRoot.getElementById("timer").innerText;
+        }
+
+        set timer(newValue) {
+          this.shadowRoot.getElementById("timer").innerText = newValue;
+        }
+
+        start() {
+          let secondsLeft = this.getAttribute("seconds");
+          const countdownTimer = () => {
+            if (secondsLeft >= 0) {
+              let minutes = Math.floor(secondsLeft / 60);
+              let seconds = secondsLeft % 60;
+              this.timer = `${minutes}:${String(seconds).padStart(2, "0")}`;
+              secondsLeft--;
+            } else {
+              clearInterval(interval);
+              this.timer = "";
+              this.emitFinishedEvent();
+            }
+          };
+          countdownTimer();
+          const interval = setInterval(countdownTimer, 1000);
+        }
+
+        emitFinishedEvent() {
+          this.dispatchEvent(
+            new CustomEvent("finished", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    );
+  })();
+</script>
