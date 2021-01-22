@@ -109,6 +109,8 @@ function processKeystroke(keystroke) {
 function onSocketConnect() {
   if (document.getElementById("shutdown-dialog").show) {
     location.reload();
+  } else if (document.getElementById("update-dialog").show) {
+    document.getElementById("update-dialog").state = "update-finished";
   } else {
     connectedToServer = true;
     document.getElementById("connection-indicator").connected = true;
