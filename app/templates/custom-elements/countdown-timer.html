@@ -1,5 +1,5 @@
 <template id="countdown-timer-template">
-  <h2 id="timer"></h2>
+  <span id="timer"></span>
 </template>
 
 <script>
@@ -18,32 +18,38 @@
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.renderTime();
         }
 
-        get timer() {
-          return this.shadowRoot.getElementById("timer").innerText;
+        get seconds() {
+          return parseInt(this.getAttribute("seconds"));
         }
 
-        set timer(newValue) {
-          this.shadowRoot.getElementById("timer").innerText = newValue;
+        set seconds(newValue) {
+          this.setAttribute("seconds", newValue);
+        }
+
+        renderTime() {
+          const minutesPart = String(Math.floor(this.seconds / 60));
+          const secondsPart = String(this.seconds % 60).padStart(2, "0");
+          this.shadowRoot.getElementById(
+            "timer"
+          ).innerText = `${minutesPart}:${secondsPart}`;
         }
 
         start() {
-          let secondsLeft = this.getAttribute("seconds");
-          const countdownTimer = () => {
-            if (secondsLeft >= 0) {
-              let minutes = Math.floor(secondsLeft / 60);
-              let seconds = secondsLeft % 60;
-              this.timer = `${minutes}:${String(seconds).padStart(2, "0")}`;
-              secondsLeft--;
-            } else {
-              clearInterval(interval);
-              this.timer = "";
+          const intervalId = setInterval(() => {
+            // This should never happen, but just in case.
+            if (this.seconds < 0) {
+              return;
+            }
+            this.seconds = this.seconds - 1;
+            this.renderTime();
+            if (this.seconds === 0) {
+              clearInterval(intervalId);
               this.emitFinishedEvent();
             }
-          };
-          countdownTimer();
-          const interval = setInterval(countdownTimer, 1000);
+          }, 1000);
         }
 
         emitFinishedEvent() {
