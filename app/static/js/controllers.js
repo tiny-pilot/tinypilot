@@ -30,18 +30,23 @@
       });
     }
 
-    // If all else fails, return the HTTP body as the error message.
-    return Promise.reject(new Error(response.statusText));
+    return response.text().then((text) => {
+      if (text) {
+        return Promise.reject(new Error(text));
+      } else {
+        return Promise.reject(new Error(response.statusText));
+      }
+    });
   }
 
   // Checks TinyPilot-level details of the response. The standard TinyPilot
   // response body contains two fields: "success" (bool) and "error" (string)
   // A message indicates success if success is true and error is non-null.
   function checkJsonSuccess(response) {
-    if (result.hasOwnProperty("error") && response.error) {
+    if (response.hasOwnProperty("error") && response.error) {
       return Promise.reject(new Error(response.error));
     }
-    if (!result.hasOwnProperty("success") || !response.success) {
+    if (!response.hasOwnProperty("success") || !response.success) {
       return Promise.reject(new Error("Unknown error"));
     }
     return Promise.resolve(response);
