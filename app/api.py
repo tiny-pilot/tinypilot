@@ -1,3 +1,6 @@
+import subprocess
+import traceback
+
 import flask
 
 import git
@@ -5,6 +8,25 @@ import local_system
 import update
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
+
+
+@api_blueprint.route('/debugLogs', methods=['GET'])
+def debug_logs():
+    try:
+        script_path = '/opt/tinypilot-privileged/collect-debug-logs'
+        output = subprocess.check_output([script_path, '-q'])
+        return flask.Response(output)
+    except subprocess.CalledProcessError:
+        return flask.Response(
+            'An error occurred while fetching debug logs.',
+            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    except:
+        traceback.print_exc()
+        return flask.Response(
+            'An unknown error has occurred.',
+            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
