@@ -3,6 +3,7 @@ import traceback
 
 import flask
 
+import debug_logs
 import git
 import local_system
 import update
@@ -12,21 +13,17 @@ api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
 @api_blueprint.route('/debugLogs', methods=['GET'])
 def debug_logs():
+    """Runs the collect-debug-logs script and returns the output to the user.
+    
+    Returns:
+        A text/plain response with the content of the logs in the response body.
+    """
     try:
-        script_path = '/opt/tinypilot-privileged/collect-debug-logs'
-        output = subprocess.check_output([script_path, '-q'])
-        return flask.Response(output)
-    except subprocess.CalledProcessError:
+        return flask.Response(debug_logs.collect())
+    except debug_logs.Error as e:
         return flask.Response(
-            'An error occurred while fetching debug logs.',
-            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-    except:
-        traceback.print_exc()
-        return flask.Response(
-            'An unknown error has occurred.',
-            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+            'Failed to retrieve debug logs: %s' % str(e),
+            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
