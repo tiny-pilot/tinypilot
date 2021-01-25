@@ -1,10 +1,26 @@
 import flask
 
+import debug_logs
 import git
 import local_system
 import update
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
+
+
+@api_blueprint.route('/debugLogs', methods=['GET'])
+def debug_logs_get():
+    """Returns the TinyPilot debug log as a plaintext HTTP response.
+
+    Returns:
+        A text/plain response with the content of the logs in the response body.
+    """
+    try:
+        return flask.Response(debug_logs.collect())
+    except debug_logs.Error as e:
+        return flask.Response(
+            'Failed to retrieve debug logs: %s' % str(e),
+            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
