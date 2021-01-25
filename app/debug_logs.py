@@ -6,9 +6,15 @@ class Error(RuntimeError):
 
 
 def collect():
-    """Collects debug logs by running the collect-debug-logs script."""
+    """Collects and aggregates contents of TinyPilot-related logs and files.
+
+    Returns:
+        A large string with the full contents of TinyPilot's debug logs and
+        configuration files.
+    """
+
     try:
-        script_path = '/opt/tinypilot-privileged/collect-debug-logs'
-        return subprocess.check_output([script_path, '-q'])
+        return subprocess.check_output(
+            ['/opt/tinypilot-privileged/collect-debug-logs', '-q'])
     except subprocess.CalledProcessError as e:
         return Error(str(e))
