@@ -11,7 +11,7 @@ api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 @api_blueprint.route('/debugLogs', methods=['GET'])
 def fetch_debug_logs():
     """Runs the collect-debug-logs script and returns the output to the user.
-    
+
     Returns:
         A text/plain response with the content of the logs in the response body.
     """
