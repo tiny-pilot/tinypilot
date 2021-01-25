@@ -43,7 +43,7 @@ class UpdateJob:
         """Checks and returns the status of the process.
 
         Returns:
-            One of of the statuses in the Status enum.
+            One of the statuses in the Status enum.
 
             If the return value is Status.ERROR, the error will be stored in
             self.error.
