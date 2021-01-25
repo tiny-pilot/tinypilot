@@ -41,7 +41,7 @@ class UpdateJob:
 
     def get_status(self):
         """Checks and returns the status of the process.
-        
+
         Returns:
             One of of the statuses in the Status enum.
 
