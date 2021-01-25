@@ -9,11 +9,17 @@ set -e
 # Exit on unset variable.
 set -u
 
+if [[ "${OSTYPE}" == "darwin"* ]]; then
+  FOLLOW_SYMLINKS_RECURSIVELY_FLAG="-R -S"
+else
+  FOLLOW_SYMLINKS_RECURSIVELY_FLAG=--dereference-recursive
+fi
+
 if egrep \
   "\s$" \
   --line-number \
   --binary-files=without-match \
-  --dereference-recursive \
+  ${FOLLOW_SYMLINKS_RECURSIVELY_FLAG} \
   --exclude-dir={.git,venv,node_modules} \
   ./ ; then
   echo "ERROR: Found trailing whitespace";
