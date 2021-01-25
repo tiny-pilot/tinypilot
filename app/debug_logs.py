@@ -1,5 +1,4 @@
 import subprocess
-import traceback
 
 
 class Error(RuntimeError):

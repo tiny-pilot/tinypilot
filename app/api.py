@@ -1,6 +1,3 @@
-import subprocess
-import traceback
-
 import flask
 
 import debug_logs
@@ -12,7 +9,7 @@ api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
 
 @api_blueprint.route('/debugLogs', methods=['GET'])
-def debug_logs():
+def fetch_debug_logs():
     """Runs the collect-debug-logs script and returns the output to the user.
     
     Returns:
