@@ -6,8 +6,6 @@ import time
 
 logger = logging.getLogger(__name__)
 
-current_job = None
-
 
 class Error(Exception):
     pass
