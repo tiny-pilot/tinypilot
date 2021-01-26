@@ -117,7 +117,7 @@ class UpdateJob:
                 Status.TIMEOUT: 'Update timed out',
                 Status.NOT_RUNNING: 'No update in progress',
             }
-            message = messages.get(status, 'Update is an unrecognized state')
+            message = messages.get(status, 'Update is in an unrecognized state')
 
         return message, self.start_time, self.end_time
 
