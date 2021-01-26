@@ -1,3 +1,5 @@
+import datetime
+
 import flask
 
 import git
@@ -25,32 +27,46 @@ def restart_post():
         return _json_error(str(e)), 200
 
 
-@api_blueprint.route('/update', methods=['POST'])
-def update_post():
-    """Updates TinyPilot to the latest version available.
+@api_blueprint.route('/update', methods=['GET'])
+def update_get():
+    """Fetches the state of the latest update job.
 
-    This is a slow endpoint, as it is expected to take 2~4 minutes to
-    complete.
+    Returns:
+        A JSON string describing the latest update job.
+
+        success: true if we were able to fetch job.
+        error: null if successful, str otherwise.
+        status: str describing the status of the job
+        startTime: start time of the job
+        endTime: end time of the job if job finished, null otherwise
+    """
+
+    def format_timestamp(timestamp):
+        if timestamp is not None:
+            return datetime.datetime.fromtimestamp(timestamp).isoformat()
+
+    status, status_message, start_time, end_time = update.get_current_state()
+    return _json_success({
+        'status': str(status),
+        'status_message': status_message,
+        'startTime': format_timestamp(start_time),
+        'endTime': format_timestamp(end_time),
+    })
+
+
+@api_blueprint.route('/update', methods=['PUT'])
+def update_put():
+    """Initiates job to update TinyPilot to the latest version available.
+    API clients can query the status of the job with GET /api/update.
 
     Returns:
         A JSON string with two keys: success and error.
 
-        success: true if successful.
+        success: true if update job was successful.
         error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null,
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'sudo: /opt/tinypilot-privileged/update: command not found'
-        }
     """
     try:
-        update.update()
+        update.start_async()
     except update.Error as e:
         return _json_error(str(e)), 200
     return _json_success()
