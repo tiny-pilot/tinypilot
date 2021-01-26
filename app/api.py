@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 import flask
 
@@ -29,7 +29,7 @@ def restart_post():
 
 @api_blueprint.route('/update', methods=['GET'])
 def update_get():
-    """Fetch the state of the latest update job.
+    """Fetches the state of the latest update job.
 
     Returns:
         A JSON string describing the latest update job.
@@ -42,42 +42,21 @@ def update_get():
     """
 
     def format_timestamp(timestamp):
-        if timestamp is None:
-            return None
-        return datetime.fromtimestamp(timestamp).isoformat()
+        if timestamp is not None:
+            return datetime.datetime.fromtimestamp(timestamp).isoformat()
 
-    def make_response(job, status):
-        return _json_success({
-            'status': status,
-            'startTime': job and format_timestamp(job.start_time),
-            'endTime': job and format_timestamp(job.end_time),
-        })
-
-    job = update.current_job
-    if job is None:
-        return make_response(None, "No update in progress")
-
-    status = job.get_status()
-    if status == job.Status.PENDING:
-        return make_response(job, "Updating")
-
-    # Update job finished (not pending), unset the global variable.
-    update.current_job = None
-
-    if status == job.Status.DONE:
-        return make_response(job, "Update complete")
-    if status == job.Status.TIMEOUT:
-        return _json_success(job, "Update timed out.")
-    if status == job.Status.ERROR:
-        return _json_error("Update job failed: %s" % job.error)
-    return _json_error("Update job is in an unrecognized state.")
+    status_message, start_time, end_time = update.get_current_state
+    return _json_success({
+        'status': status_message,
+        'startTime': format_timestamp(start_time),
+        'endTime': format_timestamp(end_time),
+    })
 
 
 @api_blueprint.route('/update', methods=['PUT'])
 def update_put():
     """Initiates job to update TinyPilot to the latest version available.
-    This is a slow endpoint, as it is expected to take 2~4 minutes to
-    complete. The status of the job can be fetched with GET /api/update.
+    API clients can query the status of the job with GET /api/update.
 
     Returns:
         A JSON string with two keys: success and error.
@@ -85,17 +64,10 @@ def update_put():
         success: true if update job was successful.
         error: null if successful, str otherwise.
     """
-    if update.current_job is not None:
-        status = update.current_job.get_status()
-        if status == update.Status.PENDING:
-            return _json_error("An update is already in progreses"), 200
-
     try:
-        job = update.UpdateJob()
+        update.start_async()
     except update.Error as e:
-        return _json_error("Failed to initiate update: %s", str(e)), 200
-
-    update.current_job = job
+        return _json_error(str(e)), 200
     return _json_success()
 
 

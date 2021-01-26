@@ -1,6 +1,7 @@
 import enum
 import logging
 import subprocess
+import threading
 import time
 
 logger = logging.getLogger(__name__)
@@ -17,30 +18,69 @@ class Status(enum.Enum):
     PENDING = 1
     TIMEOUT = 2
     ERROR = 3
+    NOT_RUNNING = 4
 
 
-DEFAULT_PROCESS_TIMEOUT = 60 * 10  # 10 minutes
+_UPDATE_MAXIMUM_RUN_TIME = 60 * 10  # 10 minutes
+
+EXIT_SUCCESS = 0
 
 
 class UpdateJob:
-    """Executes the TinyPilot update script. The script takes 2~4 minutes to
-    complete.
+    """Executes the TinyPilot update script.
+
+    The script takes 2~4 minutes to complete.
     """
 
     def __init__(self):
-        self.start_time = time.time()
-        self.end_time = None
+        self.status = Status.NOT_RUNNING
         self.error = None
 
+        self.start_time = None
+        self.end_time = None
+
+        self.process = None
+        self.wait_thread = None
+
+    def start(self):
         try:
-            self.proc = subprocess.Popen(
+            self.start_time = time.time()
+            self.process = subprocess.Popen(
                 ['sudo', '/opt/tinypilot-privileged/update'],
                 stderr=subprocess.PIPE)
         except Exception as e:
+            self.error = str(e)
+            self.status = Status.ERROR
             raise Error(e)
 
-    def get_status(self):
+        self.status = Status.PENDING
+        self.wait_thread = threading.Thread(target=self.wait_for_progress)
+
+    def wait_for_process(self):
+        try:
+            out, errs = self.process.communicate(
+                timeout=_UPDATE_MAXIMUM_RUN_TIME)
+            if self.process.returncode == EXIT_SUCCESS:
+                self.status = Status.DONE
+            else:
+                self.status = Status.ERROR
+                self.error = errs.strip()
+            self.end_time = time.time()
+        except subprocess.TimeoutExpired:
+            self.status = Status.TIMEOUT
+        except Exception as e:
+            self.status = Status.ERROR
+            self.error = 'An error occurred with the update job: %s' % str(e)
+            self.process.kill()
+
+    def is_running(self):
+        return self.status in (Status.PENDING)
+
+    def get_and_clear_status(self):
         """Checks and returns the status of the process.
+
+        If the status was a "completed" status, clears the status so that
+        subsequent calls indicate the job is "not running".
 
         Returns:
             One of the statuses in the Status enum.
@@ -49,18 +89,49 @@ class UpdateJob:
             self.error.
         """
 
-        try:
-            out, err = self.proc.communicate(None, timeout=0)
-        except subprocess.TimeoutExpired:
-            if time.time() - self.start_time > DEFAULT_PROCESS_TIMEOUT:
-                self.proc.kill()
-                self.end_time = time.time()
-                return Status.TIMEOUT
-            return Status.PENDING
+        last_status = self.status
 
-        if self.proc.returncode == 0:
-            self.end_time = time.time()
-            return Status.DONE
+        if last_status in (Status.DONE, Status.ERROR, Status.TIMEOUT):
+            self.status = Status.NOT_RUNNING
 
-        self.error = err.strip()
-        return Status.ERROR
+        return last_status
+
+    def get_state(self):
+        """Returns the state of the update job.
+
+        Returns:
+            A tuple (status_message, start_time, end_time) containing the
+            state of the job.
+
+            status_message: string describing the current status
+            start_time: datetime indicating when job started
+            end_time: datetime indicating when job ended
+        """
+
+        status = self.get_and_clear_status()
+
+        if status == Status.ERROR:
+            message = 'Update job failed: %s' % self.error
+        else:
+            messages = {
+                Status.PENDING: 'Updating',
+                Status.DONE: 'Update complete',
+                Status.TIMEOUT: 'Update timed out',
+                Status.NOT_RUNNING: 'No update in progress',
+            }
+            message = messages.get(status, 'Update is an unrecognized state.')
+
+        return message, self.start_time, self.end_time
+
+
+_global_job = UpdateJob()
+
+
+def start_async():
+    if _global_job.get_status() == Status.PENDING:
+        raise Error('An update is already in progress')
+    _global_job.start()
+
+
+def get_current_state():
+    return _global_job.get_state()
