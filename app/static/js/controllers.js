@@ -148,7 +148,7 @@
   function update() {
     let route = "/api/update";
     return fetch(route, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "X-CSRFToken": getCsrfToken(),
       },
@@ -157,11 +157,32 @@
       redirect: "error",
     })
       .then((response) => {
-        processResponse(response);
-        return response.json();
+        return readHttpJsonResponse(response);
       })
-      .then((result) => {
-        return processResult(result);
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function getUpdateStatus() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
       })
       .catch((error) => {
         return Promise.reject(error);
@@ -175,4 +196,5 @@
   window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
   window.controllers.update = update;
+  window.controllers.getUpdateStatus = getUpdateStatus;
 })(window);
