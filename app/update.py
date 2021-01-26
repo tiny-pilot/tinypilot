@@ -52,7 +52,7 @@ class UpdateJob:
             raise Error(e)
 
         self.status = Status.PENDING
-        self.wait_thread = threading.Thread(target=self.wait_for_progress)
+        self.wait_thread = threading.Thread(target=self.wait_for_process)
 
     def wait_for_process(self):
         try:
@@ -126,7 +126,7 @@ _global_job = UpdateJob()
 
 
 def start_async():
-    if _global_job.get_status() == Status.PENDING:
+    if _global_job.get_and_clear_status() == Status.PENDING:
         raise Error('An update is already in progress')
     _global_job.start()
 
