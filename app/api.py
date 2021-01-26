@@ -45,9 +45,10 @@ def update_get():
         if timestamp is not None:
             return datetime.datetime.fromtimestamp(timestamp).isoformat()
 
-    status_message, start_time, end_time = update.get_current_state()
+    status, status_message, start_time, end_time = update.get_current_state()
     return _json_success({
-        'status': status_message,
+        'status': str(status),
+        'status_message': status_message,
         'startTime': format_timestamp(start_time),
         'endTime': format_timestamp(end_time),
     })

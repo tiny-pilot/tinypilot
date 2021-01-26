@@ -53,6 +53,7 @@ class UpdateJob:
 
         self.status = Status.PENDING
         self.wait_thread = threading.Thread(target=self.wait_for_process)
+        self.wait_thread.start()
 
     def wait_for_process(self):
         try:
@@ -119,7 +120,7 @@ class UpdateJob:
             }
             message = messages.get(status, 'Update is in an unrecognized state')
 
-        return message, self.start_time, self.end_time
+        return status, message, self.start_time, self.end_time
 
 
 _global_job = UpdateJob()
