@@ -1,0 +1,253 @@
+<template id="update-dialog-template">
+  <style>
+    @import "css/button.css";
+
+    .overlay {
+      display: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    :host([show="true"]) .overlay {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2;
+    }
+
+    #checking,
+    #update-available,
+    #latest,
+    #updating,
+    #update-finished,
+    #restarting {
+      display: none;
+    }
+
+    :host([state="checking"]) #checking {
+      display: block;
+    }
+
+    :host([state="update-available"]) #update-available {
+      display: block;
+    }
+
+    :host([state="latest"]) #latest {
+      display: block;
+    }
+
+    :host([state="updating"]) #updating {
+      display: block;
+    }
+
+    :host([state="update-finished"]) #update-finished {
+      display: block;
+    }
+
+    :host([state="restarting"]) #restarting {
+      display: block;
+    }
+
+    #update-panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    .btn-success {
+      background-color: rgb(15, 157, 88);
+    }
+
+    .btn-success:hover {
+      background-color: rgb(65, 177, 108);
+    }
+  </style>
+  <div id="update-panel" class="overlay">
+    <div id="checking">
+      <h3>Checking for updates</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="update-available">
+      <h3>Update TinyPilot</h3>
+      <p>
+        An update is available. Would you like to install the latest version?
+      </p>
+      <button id="confirm-update" class="btn-success" type="button">
+        Update
+      </button>
+      <button id="cancel-update" type="button">Cancel</button>
+    </div>
+    <div id="latest">
+      <h3>No Updates Available</h3>
+      <p>You are running the latest version of TinyPilot.</p>
+      <button id="ok-latest" type="button">OK</button>
+    </div>
+    <div id="updating">
+      <h3>Please wait while TinyPilot updates</h3>
+      <countdown-timer id="timer" seconds="300"></countdown-timer>
+    </div>
+    <div id="restarting">
+      <h3>Restarting TinyPilot device</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="update-finished">
+      <h3>Update complete</h3>
+      <button id="ok-finished" type="button">OK</button>
+    </div>
+  </div>
+</template>
+
+<script src="/js/update.js"></script>
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#update-dialog-template");
+
+    customElements.define(
+      "update-dialog",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this.shadowRoot
+            .getElementById("confirm-update")
+            .addEventListener("click", () => {
+              this.doUpdate();
+            });
+          this.shadowRoot
+            .getElementById("cancel-update")
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+          this.shadowRoot
+            .getElementById("ok-latest")
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+          this.shadowRoot
+            .getElementById("ok-finished")
+            .addEventListener("click", () => {
+              location.reload();
+            });
+        }
+
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          this.setAttribute("show", newValue);
+        }
+
+        get state() {
+          return this.getAttribute("state");
+        }
+
+        set state(newValue) {
+          this.setAttribute("state", newValue);
+        }
+
+        async checkVersion() {
+          this.state = "checking";
+
+          const version = await controllers
+            .getVersion()
+            .then((versionResponse) => {
+              return result.version;
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to retrieve installed version",
+                error
+              );
+            });
+          const latestRelease = await controllers
+            .getLatestRelease()
+            .then((versionResponse) => {
+              return result.version;
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to retrieve latest version number",
+                error
+              );
+            });
+
+          if (version === latestRelease) {
+            this.state = "latest";
+          } else {
+            this.state = "update-available";
+          }
+        }
+
+        doUpdate() {
+          this.state = "updating";
+          const timer = this.shadowRoot.getElementById("timer");
+          timer.start();
+          // When the countdown timer ends, a "finished" event is emitted.
+          // This means that the update must finish and change its state to
+          // "restarting" *before* the countdown ends.
+          timer.addEventListener("finished", () => {
+            if (this.state !== "restarting") {
+              this.emitUpdateFailureEvent(
+                "Failed to update TinyPilot device",
+                "Update timed out."
+              );
+            }
+          });
+
+          controllers
+            .update()
+            .then(() => {
+              controllers
+                .shutdown(/*restart*/ true)
+                .then(() => {
+                  this.state = "restarting";
+                })
+                .catch((error) => {
+                  this.emitUpdateFailureEvent(
+                    "Failed to restart TinyPilot device",
+                    error
+                  );
+                });
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to update TinyPilot device",
+                error
+              );
+            });
+        }
+
+        emitUpdateFailureEvent(summary, detail) {
+          this.show = false;
+          this.dispatchEvent(
+            new CustomEvent("update-failure", {
+              detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    );
+  })();
+</script>
