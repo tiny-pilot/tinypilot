@@ -1,5 +1,3 @@
-import datetime
-
 import flask
 
 import git
@@ -41,17 +39,10 @@ def update_get():
         endTime: end time of the job if job finished, null otherwise
     """
 
-    def format_timestamp(timestamp):
-        if timestamp is not None:
-            return datetime.datetime.fromtimestamp(timestamp).isoformat()
-
-    status, status_message, start_time, end_time = update.get_current_state()
-    return _json_success({
-        'status': str(status),
-        'status_message': status_message,
-        'startTime': format_timestamp(start_time),
-        'endTime': format_timestamp(end_time),
-    })
+    status, error = update.get_current_state()
+    if error:
+        return _json_error(error), 200
+    return _json_success({'status': str(status)})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
