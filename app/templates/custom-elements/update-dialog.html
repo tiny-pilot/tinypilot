@@ -212,7 +212,7 @@
                 .getUpdateStatus()
                 .then((statusResponse) => {
                   this.updateDialogWithUpdateStatus(statusResponse);
-                  if (statusResponse.status !== "Status.PENDING") {
+                  if (statusResponse.status !== "IN_PROGRESS") {
                     return resolve(statusResponse);
                   }
                   setTimeout(checkUpdate, POLL_UPDATE_STATUS_INTERVAL);
@@ -245,11 +245,10 @@
               return this.waitForUpdateToFinish();
             })
             .then((data) => {
-              if (
-                data.status == "Status.ERROR" ||
-                data.status == "Status.TIMEOUT"
-              ) {
-                throw new Error(data.status_message);
+              if (data.status != "DONE") {
+                throw new Error(
+                  `Status is in an unknown state: ${data.status}`
+                );
               }
               controllers
                 .shutdown(/*restart*/ true)
