@@ -1,5 +1,12 @@
 "use strict";
 
+class NetworkError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "NetworkError";
+  }
+}
+
 (function (windows) {
   function getCsrfToken() {
     return document
@@ -167,7 +174,7 @@
       });
   }
 
-  function getUpdateStatus() {
+  function fetchUpdateAndCatchNetworkErrors() {
     let route = "/api/update";
     return fetch(route, {
       method: "GET",
@@ -177,7 +184,16 @@
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
-    })
+    }).catch((e) => {
+      // `fetch` only throws errors for network errors. By placing a .catch()
+      // here before any other .then()/.catch() chains, we catch network errors
+      // before they get potentially mixed up with other types of errors.
+      throw new NetworkError("A network error has occurred.");
+    });
+  }
+
+  function getUpdateStatus() {
+    return fetchUpdateAndCatchNetworkErrors()
       .then((response) => {
         return readHttpJsonResponse(response);
       })
