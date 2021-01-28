@@ -208,6 +208,16 @@
           return new Promise((resolve, reject) => {
             const checkUpdate = (retries = 0) => {
               const POLL_UPDATE_STATUS_INTERVAL = 3000;
+
+              function shouldRetry(error) {
+                const MAX_NETWORK_ERROR_RETRIES = 4;
+
+                return (
+                  error.name === "NetworkError" &&
+                  retries <= MAX_NETWORK_ERROR_RETRIES
+                );
+              }
+
               controllers
                 .getUpdateStatus()
                 .then((statusResponse) => {
@@ -216,18 +226,15 @@
                   }
                   setTimeout(checkUpdate, POLL_UPDATE_STATUS_INTERVAL);
                 })
-                .catch((e) => {
-                  if (e.name === "NetworkError") {
-                    const MAX_NETWORK_ERROR_RETRIES = 4;
-                    if (retries <= MAX_NETWORK_ERROR_RETRIES) {
-                      setTimeout(
-                        () => checkUpdate(retries + 1),
-                        POLL_UPDATE_STATUS_INTERVAL
-                      );
-                      return;
-                    }
+                .catch((error) => {
+                  if (shouldRetry(error)) {
+                    setTimeout(
+                      () => checkUpdate(retries + 1),
+                      POLL_UPDATE_STATUS_INTERVAL
+                    );
+                  } else {
+                    reject(error);
                   }
-                  reject(e);
                 });
             };
             checkUpdate();
