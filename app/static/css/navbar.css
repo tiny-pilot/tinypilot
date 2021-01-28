@@ -43,7 +43,7 @@
 }
 
 .navbar li {
-  display: inline;
+  display: inline-block;
   position: relative;
   margin-left: 1.5rem;
   list-style: none;
@@ -76,8 +76,8 @@
 
 .navbar ul ul ul {
   position: absolute;
-  left: 67px;
-  top: 100%;
+  left: 100%;
+  top: 0;
   visibility: hidden;
   opacity: 0;
 }
