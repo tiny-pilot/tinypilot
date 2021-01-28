@@ -41,32 +41,44 @@ def restart_post():
         return _json_error(str(e)), 200
 
 
-@api_blueprint.route('/update', methods=['POST'])
-def update_post():
-    """Updates TinyPilot to the latest version available.
+@api_blueprint.route('/update', methods=['GET'])
+def update_get():
+    """Fetches the state of the latest update job.
 
-    This is a slow endpoint, as it is expected to take 2~4 minutes to
-    complete.
+    Returns:
+        A JSON string describing the latest update job.
+
+        success: true if we were able to fetch job.
+        error: null if successful, str otherwise.
+        status: str describing the status of the job. Can be one of
+                ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
+    """
+
+    status, error = update.get_current_state()
+    if error is not None:
+        return _json_error(error), 200
+    return _json_success({'status': str(status)})
+
+
+@api_blueprint.route('/update', methods=['PUT'])
+def update_put():
+    """Initiates job to update TinyPilot to the latest version available.
+
+    This endpoint asynchronously starts a job to update TinyPilot to the latest
+    version.  API clients can then query the status of the job with GET
+    /api/update to see the status of the update.
 
     Returns:
         A JSON string with two keys: success and error.
 
-        success: true if successful.
+        success: true if update task was initiated successfully.
         error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null,
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'sudo: /opt/tinypilot-privileged/update: command not found'
-        }
     """
     try:
-        update.update()
+        update.start_async()
+    except update.AlreadyInProgressError:
+        # If an update is already in progress, treat it as success.
+        pass
     except update.Error as e:
         return _json_error(str(e)), 200
     return _json_success()
