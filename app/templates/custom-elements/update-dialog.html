@@ -205,8 +205,6 @@
         }
 
         waitForUpdateToFinish() {
-          const POLL_UPDATE_STATUS_INTERVAL = 3000;
-
           return new Promise((resolve, reject) => {
             const checkUpdate = () => {
               controllers
@@ -215,6 +213,8 @@
                   if (statusResponse.status !== "IN_PROGRESS") {
                     return resolve(statusResponse);
                   }
+
+                  const POLL_UPDATE_STATUS_INTERVAL = 3000;
                   setTimeout(checkUpdate, POLL_UPDATE_STATUS_INTERVAL);
                 })
                 .catch(reject);
