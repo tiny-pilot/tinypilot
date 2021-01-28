@@ -41,7 +41,7 @@ _EXIT_SUCCESS = 0
 
 
 def _run_script():
-    logger.info('Setting _job.status to IN_PROGRESS')
+    logger.info('Starting background thread to launch update process')
     _job.status = Status.IN_PROGRESS
 
     proc = None
@@ -55,25 +55,24 @@ def _run_script():
         if proc.returncode != _EXIT_SUCCESS:
             if isinstance(errs, bytes):
                 errs = errs.decode('utf-8')
-            logger.info(
-                f'Update process return with status code {proc.returncode}, updating _job.error'
-            )
+            logger.info('Update process returned with status code %d',
+                        proc.returncode)
             _job.error = errs.strip()
-        proc = None  # Set proc to none so we don't try to kill it in the finally block
+
+        # Set proc to none so we don't try to kill it in the finally block
+        proc = None
     except subprocess.TimeoutExpired:
-        logger.info('Update process timed out, updating _job.error')
+        logger.info('Update process timed out')
         _job.error = 'The update timed out'
     except Exception as e:
-        logger.error(
-            f'Update process met unexpected exception {str(e)}, updating _job.error'
-        )
+        logger.error('Update process met unexpected exception %s', str(e))
         _job.error = str(e)
     finally:
         if proc is not None:
             logger.info('Killing update process')
             proc.kill()
 
-    logger.info('Setting _job.status to DONE')
+    logger.info('Background thread completed')
     _job.status = Status.DONE
 
 

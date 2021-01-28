@@ -34,7 +34,8 @@ def update_get():
 
         success: true if we were able to fetch job.
         error: null if successful, str otherwise.
-        status: str describing the status of the job. Can be one of ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
+        status: str describing the status of the job. Can be one of
+                ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
     """
 
     status, error = update.get_current_state()
@@ -47,7 +48,9 @@ def update_get():
 def update_put():
     """Initiates job to update TinyPilot to the latest version available.
 
-    API clients can query the status of the job with GET /api/update.
+    This endpoint asynchronously starts a job to update TinyPilot to the latest
+    version.  API clients can then query the status of the job with GET
+    /api/update to see the status of the update.
 
     Returns:
         A JSON string with two keys: success and error.
