@@ -34,9 +34,7 @@ def update_get():
 
         success: true if we were able to fetch job.
         error: null if successful, str otherwise.
-        status: str describing the status of the job
-        startTime: start time of the job
-        endTime: end time of the job if job finished, null otherwise
+        status: str describing the status of the job. Can be one of ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
     """
 
     status, error = update.get_current_state()
@@ -48,16 +46,20 @@ def update_get():
 @api_blueprint.route('/update', methods=['PUT'])
 def update_put():
     """Initiates job to update TinyPilot to the latest version available.
+
     API clients can query the status of the job with GET /api/update.
 
     Returns:
         A JSON string with two keys: success and error.
 
-        success: true if update job was successful.
+        success: true if update task was initiated successfully.
         error: null if successful, str otherwise.
     """
     try:
         update.start_async()
+    except update.AlreadyInProgressError:
+        # If an update is already in progress, treat it as success.
+        pass
     except update.Error as e:
         return _json_error(str(e)), 200
     return _json_success()
