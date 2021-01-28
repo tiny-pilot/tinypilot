@@ -219,7 +219,7 @@
                 .catch((e) => {
                   if (e.name === "NetworkError") {
                     const MAX_NETWORK_ERROR_RETRIES = 4;
-                    if (retries < MAX_NETWORK_ERROR_RETRIES) {
+                    if (retries <= MAX_NETWORK_ERROR_RETRIES) {
                       setTimeout(
                         () => checkUpdate(retries + 1),
                         POLL_UPDATE_STATUS_INTERVAL
