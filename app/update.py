@@ -70,7 +70,7 @@ def _run_script():
         _job.error = str(e)
     finally:
         if proc is not None:
-            logger.info('Killing update process.')
+            logger.info('Killing update process')
             proc.kill()
 
     logger.info('Setting _job.status to DONE')
