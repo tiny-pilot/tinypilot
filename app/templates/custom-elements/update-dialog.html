@@ -73,6 +73,9 @@
     .btn-success:hover {
       background-color: rgb(65, 177, 108);
     }
+    .updating-spinner {
+      margin: 1rem 0;
+    }
   </style>
   <div id="update-panel" class="overlay">
     <div id="checking">
@@ -96,6 +99,9 @@
     </div>
     <div id="updating">
       <h3>Please wait while TinyPilot updates</h3>
+      <div class="updating-spinner">
+        <progress-spinner></progress-spinner>
+      </div>
       <countdown-timer id="timer" seconds="300"></countdown-timer>
     </div>
     <div id="restarting">
@@ -112,8 +118,6 @@
 <script src="/js/update.js"></script>
 <script>
   (function () {
-    const POLL_UPDATE_STATUS_INTERVAL = 3000;
-
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#update-dialog-template");
@@ -200,18 +204,14 @@
           }
         }
 
-        updateDialogWithUpdateStatus(statusResponse) {
-          console.log(statusResponse);
-          // TODO: update the dialog with current status.
-        }
-
         waitForUpdateToFinish() {
+          const POLL_UPDATE_STATUS_INTERVAL = 3000;
+
           return new Promise((resolve, reject) => {
             const checkUpdate = () => {
               controllers
                 .getUpdateStatus()
                 .then((statusResponse) => {
-                  this.updateDialogWithUpdateStatus(statusResponse);
                   if (statusResponse.status !== "IN_PROGRESS") {
                     return resolve(statusResponse);
                   }
@@ -227,27 +227,16 @@
           this.state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
-          // When the countdown timer ends, a "finished" event is emitted.
-          // This means that the update must finish and change its state to
-          // "restarting" *before* the countdown ends.
-          timer.addEventListener("finished", () => {
-            if (this.state !== "restarting") {
-              this.emitUpdateFailureEvent(
-                "Failed to update TinyPilot device",
-                "Update timed out."
-              );
-            }
-          });
 
           controllers
             .update()
             .then(() => {
               return this.waitForUpdateToFinish();
             })
-            .then((data) => {
-              if (data.status != "DONE") {
+            .then((updateResult) => {
+              if (updateResult.status != "DONE") {
                 throw new Error(
-                  `Status is in an unknown state: ${data.status}`
+                  `Status is in an unknown state: ${updateResult.status}`
                 );
               }
               controllers
