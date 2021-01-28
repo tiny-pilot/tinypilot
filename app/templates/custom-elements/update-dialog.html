@@ -206,18 +206,29 @@
 
         waitForUpdateToFinish() {
           return new Promise((resolve, reject) => {
-            const checkUpdate = () => {
+            const checkUpdate = (retries = 0) => {
+              const POLL_UPDATE_STATUS_INTERVAL = 3000;
               controllers
                 .getUpdateStatus()
                 .then((statusResponse) => {
                   if (statusResponse.status !== "IN_PROGRESS") {
                     return resolve(statusResponse);
                   }
-
-                  const POLL_UPDATE_STATUS_INTERVAL = 3000;
                   setTimeout(checkUpdate, POLL_UPDATE_STATUS_INTERVAL);
                 })
-                .catch(reject);
+                .catch((e) => {
+                  if (e.name === "NetworkError") {
+                    const MAX_NETWORK_ERROR_RETRIES = 4;
+                    if (retries < MAX_NETWORK_ERROR_RETRIES) {
+                      setTimeout(
+                        () => checkUpdate(retries + 1),
+                        POLL_UPDATE_STATUS_INTERVAL
+                      );
+                      return;
+                    }
+                  }
+                  reject(e);
+                });
             };
             checkUpdate();
           });
