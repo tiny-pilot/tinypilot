@@ -108,7 +108,7 @@ def version_get():
         }
     """
     try:
-        return _json_success({"version": git.local_head_commit_id()})
+        return _json_success({'version': git.local_head_commit_id()})
     except git.Error as e:
         return _json_error(str(e)), 200
 
@@ -138,7 +138,7 @@ def latest_release_get():
         }
     """
     try:
-        return _json_success({"version": git.remote_head_commit_id()})
+        return _json_success({'version': git.remote_head_commit_id()})
     except git.Error as e:
         return _json_error(str(e)), 200
 
