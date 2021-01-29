@@ -150,8 +150,8 @@ def _json_success(fields={}):
         'success': True,
         'error': None,
     }
-    for k, v in fields.items():
-        response[k] = v
+    for key, val in fields.items():
+        response[key] = val
     return flask.jsonify(response)
 
 
