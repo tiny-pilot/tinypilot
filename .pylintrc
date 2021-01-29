@@ -246,6 +246,9 @@ max-parents=7
 # Maximum number of attributes for a class (see R0902).
 max-attributes=10
 
+# Minimum number of public methods for a class (see R0903).
+min-public-methods=0
+
 # Maximum number of boolean expressions in a if statement
 max-bool-expr=5
 
