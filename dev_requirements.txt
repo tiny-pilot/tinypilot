@@ -1,4 +1,5 @@
 coverage==5.1
 isort[requirements]==4.3.21
 pyflakes==2.2.0
+pylint==2.6.0
 yapf==0.30.0

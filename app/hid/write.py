@@ -49,5 +49,5 @@ def write_to_hid_interface(hid_path, buffer):
 
 def _wait_for_process_exit(target_process):
     max_attempts = 3
-    for i in range(max_attempts):
+    for _ in range(max_attempts):
         target_process.join(timeout=0.1)

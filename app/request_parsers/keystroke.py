@@ -60,14 +60,14 @@ def parse_keystroke(message):
 
 
 def _parse_modifier_key(modifier_key):
-    if type(modifier_key) is not bool:
+    if not isinstance(modifier_key, bool):
         raise InvalidModifierKey('Modifier keys must be boolean values: %s' %
                                  modifier_key)
     return modifier_key
 
 
 def _parse_code(code):
-    if type(code) is not str:
+    if not isinstance(code, str):
         raise InvalidKeyCode('Key code must be a string: %s' % code)
 
     # Arbitrary limit, but just to prevent anything crazy.

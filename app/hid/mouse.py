@@ -3,6 +3,7 @@ from hid import write as hid_write
 
 def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
                      vertical_wheel_delta, horizontal_wheel_delta):
+    # pylint: disable=invalid-name
     x, y = _scale_mouse_coordinates(relative_x, relative_y)
 
     buf = [0] * 7
@@ -19,6 +20,7 @@ def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
 def _scale_mouse_coordinates(relative_x, relative_y):
     # This comes from LOGICAL_MAXIMUM in the mouse HID descriptor.
     max_hid_value = 32767.0
+    # pylint: disable=invalid-name
     x = int(relative_x * max_hid_value)
     y = int(relative_y * max_hid_value)
     return x, y

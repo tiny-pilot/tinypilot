@@ -21,7 +21,7 @@ class Status(enum.Enum):
     DONE = 2
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 @dataclasses.dataclass
@@ -64,7 +64,7 @@ def _run_script():
     except subprocess.TimeoutExpired:
         logger.info('Update process timed out')
         _job.error = 'The update timed out'
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         logger.error('Update process met unexpected exception %s', str(e))
         _job.error = str(e)
     finally:
