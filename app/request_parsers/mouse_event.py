@@ -67,7 +67,7 @@ def parse_mouse_event(message):
 
 
 def _parse_button_state(buttons):
-    if type(buttons) is not int:
+    if not isinstance(buttons, int):
         raise InvalidButtonState('Button state must be an integer value: %s' %
                                  buttons)
     if not (0 <= buttons <= _MAX_BUTTON_STATE):
@@ -77,8 +77,8 @@ def _parse_button_state(buttons):
 
 
 def _parse_relative_position(relative_position):
-    if type(relative_position) is not float and type(
-            relative_position) is not int:
+    if not isinstance(relative_position, float) and not isinstance(
+            relative_position, int):
         raise InvalidRelativePosition(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
@@ -90,7 +90,7 @@ def _parse_relative_position(relative_position):
 
 
 def _parse_wheel_value(wheel_value):
-    if type(wheel_value) is not int:
+    if not isinstance(wheel_value, int):
         raise InvalidWheelValue('Wheel value must be a int: %s' % wheel_value)
     if wheel_value not in (-1, 0, 1):
         raise InvalidWheelValue('Wheel value must be -1, 0, or 1: %s' %

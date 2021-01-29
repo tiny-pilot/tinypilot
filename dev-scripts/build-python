@@ -48,3 +48,6 @@ isort \
 
 # Run static analysis for Python bugs/cruft.
 pyflakes "${SOURCE_DIR}/"
+
+# Check for other style violations.
+PYTHONPATH="${SOURCE_DIR}/" pylint "${SOURCE_DIR}/"

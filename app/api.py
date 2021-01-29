@@ -18,9 +18,8 @@ def debug_logs_get():
     try:
         return flask.Response(debug_logs.collect())
     except debug_logs.Error as e:
-        return flask.Response(
-            'Failed to retrieve debug logs: %s' % str(e),
-            status=flask.status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return flask.Response('Failed to retrieve debug logs: %s' % str(e),
+                              status=500)
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
@@ -144,6 +143,8 @@ def latest_release_get():
         return _json_error(str(e)), 200
 
 
+# The default dictionary is okay because we're not modifying it.
+# pylint: disable=dangerous-default-value
 def _json_success(fields={}):
     response = {
         'success': True,

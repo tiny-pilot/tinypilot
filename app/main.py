@@ -48,10 +48,10 @@ app.register_blueprint(views.views_blueprint)
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
-def handle_csrf_error(e):
+def handle_csrf_error(error):
     return flask.jsonify({
         'success': False,
-        'error': e.description,
+        'error': error.description,
     }), 400
 
 

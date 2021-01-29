@@ -46,9 +46,9 @@ def _fetch():
 
 
 def _run(cmd):
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
     try:
         result.check_returncode()
-    except subprocess.CalledProcessError:
-        raise Error(result.stderr.strip())
+    except subprocess.CalledProcessError as e:
+        raise Error(result.stderr.strip()) from e
     return result
