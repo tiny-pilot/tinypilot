@@ -134,6 +134,9 @@ no-docstring-rgx=^test_
 # ones are exempt.
 docstring-min-length=60
 
+[STRING]
+check-quote-consistency=yes
+
 [ELIF]
 
 # Maximum number of nested blocks for function / method body
