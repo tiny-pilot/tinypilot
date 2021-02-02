@@ -48,7 +48,7 @@ All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/o
   * Or \[other\] to HDMI, depending on how your target machine displays output.
 * (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/product/tinypilot-power-connector): Supports continuous power when the target computer turns off.
   * Requires two additional [USB-A to microUSB cables](https://smile.amazon.com/dp/B01JPDTZXK/) and a [3 Amp power adapter](https://smile.amazon.com/dp/B0728HB18G).
-  * If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://amzn.to/3hayLOJ) to minimize voltage drop along the cable.
+  * If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://smile.amazon.com/dp/B012V56D2A/) to minimize voltage drop along the cable.
 * (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/)
   * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
