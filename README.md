@@ -36,20 +36,20 @@ The TinyPilot Hobbyist Kit is a great fit for home users who want a low-cost, DI
 
 All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/order).
 
-* [Raspberry Pi 4](https://www.amazon.com/dp/B07TD42S27) (all variants work)
-* [HDMI to USB dongle](https://www.amazon.com/dp/B0899YQ6M2/)
-  * [In smaller form factor](https://www.amazon.com/dp/B08B4J2XXF/)
+* [Raspberry Pi 4](https://smile.amazon.com/dp/B07TD42S27) (all variants work)
+* [HDMI to USB dongle](https://smile.amazon.com/dp/B08CXWPYQ8/)
+  * [In smaller form factor](https://smile.amazon.com/dp/B08C9FCF2X/)
   * They have no brand name, and there are several variants, but they're all built on the same MacroSilicon 2109 chip.
   * They're available for $10-15 on eBay and AliExpress.
 * [3 Amp power supply](https://smile.amazon.com/gp/product/B01ASXBY62/)
-* [USB-C to USB-A](https://www.amazon.com/dp/B01GGKYN0A/) cable (Male/Male)
-* [microSD card](https://www.amazon.com/dp/B073K14CVB/) (Class 10, 8 GB or larger)
-* [HDMI to HDMI cable](https://www.amazon.com/dp/B014I8SSD0/)
+* [USB-C to USB-A](https://smile.amazon.com/dp/B01GGKYN0A/) cable (Male/Male)
+* [microSD card](https://smile.amazon.com/dp/B073K14CVB/) (Class 10, 8 GB or larger)
+* [HDMI to HDMI cable](https://smile.amazon.com/dp/B014I8SSD0/)
   * Or \[other\] to HDMI, depending on how your target machine displays output.
 * (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/product/tinypilot-power-connector): Supports continuous power when the target computer turns off.
-  * Requires two additional [USB-A to microUSB cables](https://www.amazon.com/dp/B01JPDTZXK/).
-  * If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://amzn.to/3hayLOJ) to minimize voltage drop along the cable.
-* (Optional) [VGA to HDMI Adapter](https://www.amazon.com/dp/B07121Y1Z3/)
+  * Requires two additional [USB-A to microUSB cables](https://smile.amazon.com/dp/B01JPDTZXK/) and a [3 Amp power adapter](https://smile.amazon.com/dp/B0728HB18G).
+  * If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://smile.amazon.com/dp/B012V56D2A/) to minimize voltage drop along the cable.
+* (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/)
   * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
 See ["TinyPilot: Build a KVM Over IP for Under $100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
