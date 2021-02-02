@@ -110,7 +110,13 @@ To update to the latest version of TinyPilot, run the update script:
 
 ## Diagnostics
 
-If you're having trouble with TinyPilot, you can run `/opt/tinypilot/dev-scripts/dump-logs` to print logs for all the software components related to TinyPilot. This log is useful if you [file a bug report](https://github.com/mtlynch/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
+If you're having trouble with TinyPilot, you can print logs for all the software components related to TinyPilot with the following command:
+
+```bash
+/opt/tinypilot/dev-scripts/dump-logs
+```
+
+This log is useful if you [file a bug report](https://github.com/mtlynch/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
 You can read more details about the logs [in the wiki](https://github.com/mtlynch/tinypilot/wiki/Troubleshooting-and-Diagnostics).
 
