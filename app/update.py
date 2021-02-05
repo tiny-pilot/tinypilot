@@ -1,6 +1,8 @@
 import dataclasses
+import datetime
 import enum
 import logging
+import os
 import subprocess
 import threading
 
@@ -37,51 +39,61 @@ class _UpdateJob:
 _job = _UpdateJob()
 
 _UPDATE_MAXIMUM_RUN_TIME = 60 * 10  # 10 minutes
-_EXIT_SUCCESS = 0
+_LOG_FILE_DIR = os.path.expanduser('~/logs')
 
 
 def start_async():
     if _job.status == Status.IN_PROGRESS:
         raise AlreadyInProgressError
 
-    threading.Thread(target=_run_script).start()
+    threading.Thread(target=_perform_update).start()
 
 
 def get_current_state():
     return _job.status, _job.error
 
 
-def _run_script():
+def _perform_update():
     logger.info('Starting background thread to launch update process')
     _job.status = Status.IN_PROGRESS
 
-    proc = None
+    os.makedirs(_LOG_FILE_DIR)
+    stdout_log, stderr_log = _generate_log_paths()
+
+    with open(stdout_log, 'w') as stdout_file, open(stderr_log,
+                                                    'w') as stderr_file:
+        _run_update_script(stdout_file, stderr_file)
+
+    logger.info('Background thread completed')
+    _job.status = Status.DONE
+
+
+def _generate_log_paths():
+    timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H%M%SZ')
+
+    stdout_log = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update-stdout.log')
+    stderr_log = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update-stderr.log')
+
+    return stdout_log, stderr_log
+
+
+def _run_update_script(stdout_file, stderr_file):
+    logger.info('Starting update process')
     try:
-        logger.info('Starting update process')
-        proc = subprocess.Popen(['sudo', '/opt/tinypilot-privileged/update'],
-                                stderr=subprocess.PIPE)
-
-        logger.info('Waiting for update process to finish or time out')
-        _, errs = proc.communicate(timeout=_UPDATE_MAXIMUM_RUN_TIME)
-        if proc.returncode != _EXIT_SUCCESS:
-            if isinstance(errs, bytes):
-                errs = errs.decode('utf-8')
-            logger.info('Update process returned with status code %d',
-                        proc.returncode)
-            _job.error = errs.strip()
-
-        # Set proc to none so we don't try to kill it in the finally block
+        proc = subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
+                              stdout=stdout_file,
+                              stderr=stderr_file,
+                              check=True,
+                              timeout=_UPDATE_MAXIMUM_RUN_TIME)
+        # Don't try to kill the completed process.
         proc = None
     except subprocess.TimeoutExpired:
         logger.info('Update process timed out')
         _job.error = 'The update timed out'
-    except Exception as e:  # pylint: disable=broad-except
-        logger.error('Update process met unexpected exception %s', str(e))
-        _job.error = str(e)
+    except subprocess.CalledProcessError:
+        logger.info('Update process terminated with failing exit code')
+        _job.error = 'The update failed'
     finally:
         if proc is not None:
             logger.info('Killing update process')
             proc.kill()
-
-    logger.info('Background thread completed')
-    _job.status = Status.DONE
