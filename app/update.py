@@ -80,20 +80,14 @@ def _generate_log_paths():
 def _run_update_script(stdout_file, stderr_file):
     logger.info('Starting update process')
     try:
-        proc = subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
-                              stdout=stdout_file,
-                              stderr=stderr_file,
-                              check=True,
-                              timeout=_UPDATE_MAXIMUM_RUN_TIME)
-        # Don't try to kill the completed process.
-        proc = None
+        subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
+                       stdout=stdout_file,
+                       stderr=stderr_file,
+                       check=True,
+                       timeout=_UPDATE_MAXIMUM_RUN_TIME)
     except subprocess.TimeoutExpired:
         logger.info('Update process timed out')
         _job.error = 'The update timed out'
     except subprocess.CalledProcessError:
         logger.info('Update process terminated with failing exit code')
         _job.error = 'The update failed'
-    finally:
-        if proc is not None:
-            logger.info('Killing update process')
-            proc.kill()
