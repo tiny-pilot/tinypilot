@@ -1,5 +1,12 @@
 "use strict";
 
+class NetworkError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "NetworkError";
+  }
+}
+
 (function (windows) {
   function getCsrfToken() {
     return document
@@ -52,6 +59,56 @@
     return Promise.resolve(response);
   }
 
+  function getLatestRelease() {
+    let route = "/api/latestRelease";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve({ version: versionResponse.version });
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function getVersion() {
+    let route = "/api/version";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve({ version: versionResponse.version });
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   function shutdown(restart) {
     let route = "/api/shutdown";
     if (restart) {
@@ -95,8 +152,65 @@
       });
   }
 
+  function update() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function fetchUpdateAndCatchNetworkErrors() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    }).catch((e) => {
+      // `fetch` only throws errors for network errors. By placing a .catch()
+      // here before any other .then()/.catch() chains, we catch network errors
+      // before they get potentially mixed up with other types of errors.
+      throw new NetworkError("A network error has occurred.");
+    });
+  }
+
+  function getUpdateStatus() {
+    return fetchUpdateAndCatchNetworkErrors()
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
+  window.controllers.getVersion = getVersion;
+  window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
+  window.controllers.update = update;
+  window.controllers.getUpdateStatus = getUpdateStatus;
 })(window);
