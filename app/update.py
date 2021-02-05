@@ -58,11 +58,10 @@ def _perform_update():
     _job.status = Status.IN_PROGRESS
 
     os.makedirs(_LOG_FILE_DIR)
-    stdout_log, stderr_log = _generate_log_paths()
+    log_path, success_path = _generate_log_paths()
 
-    with open(stdout_log, 'w') as stdout_file, open(stderr_log,
-                                                    'w') as stderr_file:
-        _run_update_script(stdout_file, stderr_file)
+    with open(log_path, 'w') as log_file:
+        _run_update_script(log_file, success_path)
 
     logger.info('Background thread completed')
     _job.status = Status.DONE
@@ -71,23 +70,31 @@ def _perform_update():
 def _generate_log_paths():
     timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H%M%SZ')
 
-    stdout_log = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update-stdout.log')
-    stderr_log = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update-stderr.log')
+    log_path = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update.log')
+    success_path = os.path.join(_LOG_FILE_DIR,
+                                f'{timestamp}-update-success.log')
 
-    return stdout_log, stderr_log
+    return log_path, success_path
 
 
-def _run_update_script(stdout_file, stderr_file):
+def _run_update_script(log_file, success_path):
     logger.info('Starting update process')
     try:
         subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
-                       stdout=stdout_file,
-                       stderr=stderr_file,
+                       stdout=log_file,
+                       stderr=log_file,
                        check=True,
                        timeout=_UPDATE_MAXIMUM_RUN_TIME)
+
     except subprocess.TimeoutExpired:
         logger.info('Update process timed out')
         _job.error = 'The update timed out'
+        return
     except subprocess.CalledProcessError:
         logger.info('Update process terminated with failing exit code')
         _job.error = 'The update failed'
+        return
+
+    # Create success file to record success
+    with open(success_path, 'w') as _:
+        pass
