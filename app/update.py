@@ -88,11 +88,11 @@ def _run_update_script(log_file, success_path):
                        timeout=_UPDATE_MAXIMUM_RUN_TIME)
 
     except subprocess.TimeoutExpired:
-        logger.info('Update process timed out')
+        logger.error('Update process timed out')
         _job.error = 'The update timed out'
         return
     except subprocess.CalledProcessError:
-        logger.info('Update process terminated with failing exit code')
+        logger.error('Update process terminated with failing exit code')
         _job.error = 'The update failed'
         return
 
