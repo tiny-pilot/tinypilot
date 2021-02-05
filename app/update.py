@@ -61,6 +61,7 @@ def _perform_update():
     log_path, success_path = _generate_log_paths()
 
     with open(log_path, 'w') as log_file:
+        logger.info('Saving update log to %s', log_path)
         _run_update_script(log_file, success_path)
 
     logger.info('Background thread completed')
@@ -97,4 +98,4 @@ def _run_update_script(log_file, success_path):
 
     # Create success file to record success
     with open(success_path, 'w') as _:
-        pass
+        logger.info('Created success file at %s', success_path)
