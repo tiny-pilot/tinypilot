@@ -40,6 +40,17 @@ _UPDATE_MAXIMUM_RUN_TIME = 60 * 10  # 10 minutes
 _EXIT_SUCCESS = 0
 
 
+def start_async():
+    if _job.status == Status.IN_PROGRESS:
+        raise AlreadyInProgressError
+
+    threading.Thread(target=_run_script).start()
+
+
+def get_current_state():
+    return _job.status, _job.error
+
+
 def _run_script():
     logger.info('Starting background thread to launch update process')
     _job.status = Status.IN_PROGRESS
@@ -74,14 +85,3 @@ def _run_script():
 
     logger.info('Background thread completed')
     _job.status = Status.DONE
-
-
-def start_async():
-    if _job.status == Status.IN_PROGRESS:
-        raise AlreadyInProgressError
-
-    threading.Thread(target=_run_script).start()
-
-
-def get_current_state():
-    return _job.status, _job.error
