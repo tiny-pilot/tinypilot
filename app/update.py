@@ -57,7 +57,7 @@ def _perform_update():
     logger.info('Starting background thread to launch update process')
     _job.status = Status.IN_PROGRESS
 
-    os.makedirs(_LOG_FILE_DIR)
+    os.makedirs(_LOG_FILE_DIR, exist_ok=True)
     log_path, success_path = _generate_log_paths()
 
     with open(log_path, 'w') as log_file:
