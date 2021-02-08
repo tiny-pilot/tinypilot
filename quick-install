@@ -105,9 +105,19 @@ pushd "$INSTALLER_DIR"
 
 python3 -m venv venv
 . venv/bin/activate
-# Ansible depends on wheel.
+# For some reason, wheel has to be installed before anything else.
 pip install wheel==0.34.2
-pip install ansible==2.9.10
+echo 'ansible==2.9.10
+cffi==1.14.4
+cryptography==3.3.1
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+pkg-resources==0.0.0
+pycparser==2.20
+pyOpenSSL==20.0.1
+PyYAML==5.3.1
+six==1.15.0' > requirements.txt
+pip install -r requirements.txt
 echo "[defaults]
 roles_path = $PWD
 interpreter_python = /usr/bin/python3
