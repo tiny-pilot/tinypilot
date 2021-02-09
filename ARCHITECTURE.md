@@ -4,6 +4,20 @@
 
 ![TinyPilot Architecture](https://docs.google.com/drawings/d/e/2PACX-1vR48PdVelUodnzk7az1FE4pNX4WK3l3YRas8Ty8fnE-2qE-DN5AYXsHD26F4OJgmGSZkmGGJgs0RvpT/pub?w=903&amp;h=792)
 
+## TinyPilot frontend
+
+The TinyPilot frontend runs in the user's browser. It is responsible for:
+
+* Presenting the target computer's video stream in the browser window
+* Forwarding keyboard and mouse input to the [TinyPilot backend](#tinypilot-backend)
+* Offering friendly interfaces for the user to change TinyPilot's settings
+
+The TinyPilot frontend is a pure HTML/CSS/JS app. It has no build or compilation step and no framework like Vue, Angular, or React. It uses external libraries as little as possible.
+
+The frontend makes heavy use of [HTML Custom Elements](https://css-tricks.com/creating-a-custom-element-from-scratch/). Modern browsers support these natively. TinyPilot's custom elements try to mirror the style of Vue's [Single File Components](https://vuejs.org/v2/guide/single-file-components.html).
+
+TinyPilot's custom elements can be found in [app/templates/custom-elements](./app/templates/custom-elements).
+
 ## TinyPilot backend
 
 The backend is a Flask application. It offers handles three types of requests:
@@ -16,14 +30,6 @@ The backend is a Flask application. It offers handles three types of requests:
   * To handle requests for keystrokes or mouse movements, the backend needs something faster than regular HTTP REST requests, so it uses a WebSockets channel.
 
 The backend is responsible for sending keyboard and mouse input to the target computer via its USB gadgets (see [USB gadgets](#usb-gadgets) section, below).
-
-## TinyPilot frontend
-
-TinyPilot's frontend is pure HTML/CSS/JS. It has no build or compilation step and no framework like Vue, Angular, or React. It uses external libraries as little as possible.
-
-The frontend makes heavy use of [HTML Custom Elements](https://css-tricks.com/creating-a-custom-element-from-scratch/). Modern browsers support these natively. TinyPilot's custom elements try to mirror the style of Vue's [Single File Components](https://vuejs.org/v2/guide/single-file-components.html).
-
-TinyPilot's custom elements can be found in [app/templates/custom-elements](./app/templates/custom-elements).
 
 ## USB gadgets
 
@@ -41,7 +47,7 @@ TinyPilot uses nginx to listen to incoming HTTP requests and proxy them to the c
 
 ## uStreamer
 
-[uStreamer](https://github.com/pikvm/ustreamer) is a third-party video streaming tool. It is much faster than other options, and generally delivers a stream on a local network with latency between 100-200ms.
+[uStreamer](https://github.com/pikvm/ustreamer) is a third-party video streaming tool. It is much faster than other options and generally delivers a stream on a local network with latency between 100-200ms.
 
 Its workflow is:
 
