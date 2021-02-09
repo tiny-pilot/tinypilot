@@ -1,7 +1,11 @@
 import subprocess
 
 
-class Error(RuntimeError):
+class Error(Exception):
+    pass
+
+
+class LogCollectionScriptFailed(Error):
     pass
 
 
@@ -12,9 +16,8 @@ def collect():
         A large string with the full contents of TinyPilot's debug logs and
         configuration files.
     """
-
     try:
         return subprocess.check_output(
             ['/opt/tinypilot-privileged/collect-debug-logs', '-q'])
     except subprocess.CalledProcessError as e:
-        return Error(str(e))
+        raise LogCollectionScriptFailed(str(e)) from e
