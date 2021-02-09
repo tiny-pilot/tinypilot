@@ -82,11 +82,14 @@ When your Pi reboots, you should be able to access TinyPilot by visiting your Pi
 
 * [http://raspberrypi/](http://raspberrypi/)
 
-### Other installation options
+## Developer installation
+
+See the [CONTRIBUTING](CONTRIBUTING.md) file.
+
+## Other installation options
 
 * [Advanced installation options](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#advanced-installation)
 * [Remote installation via Ansible](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#remote-installation)
-* [Developer installation](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#developer-installation)
 
 ## Options
 
