@@ -29,17 +29,12 @@ def perform_update():
     result = update_result.Result(success=False,
                                   error='',
                                   timestamp=datetime.datetime.utcnow())
-    log_path = update.get_log_path(result.timestamp)
     result_path = update.get_result_path(result.timestamp)
-    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    os.makedirs(os.path.dirname(result_path), exist_ok=True)
     try:
-        with open(log_path, 'w') as log_file:
-            logger.info('Saving update log to %s', log_path)
-            subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
-                           stdout=log_file,
-                           stderr=log_file,
-                           check=True,
-                           timeout=_UPDATE_TIMEOUT_SECONDS)
+        subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
+                       check=True,
+                       timeout=_UPDATE_TIMEOUT_SECONDS)
         logger.info('Update completed successfully')
         result.success = True
     except subprocess.TimeoutExpired:

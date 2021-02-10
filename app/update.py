@@ -31,10 +31,9 @@ UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 
 # Cutoff under which an update is considered "recently" completed.
 _RECENT_UPDATE_THRESHOLD_SECONDS = 60 * 30
-_LOG_FILE_DIR = os.path.expanduser('~/logs')
+_RESULT_FILE_DIR = os.path.expanduser('~/logs')
 
-# Log and result files are prefixed with UTC timestamps in ISO-8601 format.
-_LOG_FILENAME_FORMAT = '%s-update.log'
+# Result files are prefixed with UTC timestamps in ISO-8601 format.
 _UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
 _ISO_8601_FORMAT = '%Y-%m-%dT%H%M%S%z'
@@ -60,15 +59,9 @@ def get_current_state():
     return Status.DONE, recent_result.error
 
 
-def get_log_path(timestamp):
-    return os.path.join(
-        _LOG_FILE_DIR,
-        _LOG_FILENAME_FORMAT % timestamp.strftime(_ISO_8601_FORMAT))
-
-
 def get_result_path(timestamp):
     return os.path.join(
-        _LOG_FILE_DIR,
+        _RESULT_FILE_DIR,
         _UPDATE_RESULT_FILENAME_FORMAT % timestamp.strftime(_ISO_8601_FORMAT))
 
 
@@ -83,7 +76,7 @@ def _is_update_process_running():
 
 def _get_latest_update_result():
     result_files = glob.glob(
-        os.path.join(_LOG_FILE_DIR, _UPDATE_RESULT_FILENAME_FORMAT % '*'))
+        os.path.join(_RESULT_FILE_DIR, _UPDATE_RESULT_FILENAME_FORMAT % '*'))
     if not result_files:
         return None
 
