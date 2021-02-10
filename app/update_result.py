@@ -1,23 +1,27 @@
+import dataclasses
 import datetime
 import json
 
 _ISO_8601_FORMAT = '%Y-%m-%dT%H%M%S%z'
 
 
+@dataclasses.dataclass
+class Result:
+    success: bool
+    error: str
+    timestamp: datetime.datetime
+
+
 def read(result_file):
     raw_result = json.load(result_file, cls=_ResultDecoder)
-    return {
-        'success':
-            raw_result.get('success', False),
-        'error':
-            raw_result.get('error', None),
-        'timestamp':
-            raw_result.get('timestamp', datetime.datetime.utcfromtimestamp(0))
-    }
+    return Result(success=raw_result.get('success', False),
+                  error=raw_result.get('error', ''),
+                  timestamp=raw_result.get(
+                      'timestamp', datetime.datetime.utcfromtimestamp(0)))
 
 
 def write(result, result_file):
-    json.dump(result, result_file, cls=_ResultEncoder)
+    json.dump(dataclasses.asdict(result), result_file, cls=_ResultEncoder)
 
 
 class _ResultEncoder(json.JSONEncoder):
