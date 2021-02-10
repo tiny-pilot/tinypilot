@@ -25,6 +25,7 @@ find . \
 # Run unit tests and calculate code coverage.
 coverage run \
   --source "$SOURCE_DIR" \
+  --omit "*test_*" \
   -m unittest discover
 coverage report
 
