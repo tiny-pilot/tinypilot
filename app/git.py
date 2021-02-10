@@ -8,6 +8,10 @@ class Error(Exception):
     pass
 
 
+class GitFailedError(Error):
+    pass
+
+
 def local_head_commit_id():
     """Gets the commit ID from the HEAD of the local git repository.
 
@@ -50,5 +54,5 @@ def _run(cmd):
     try:
         result.check_returncode()
     except subprocess.CalledProcessError as e:
-        raise Error(result.stderr.strip()) from e
+        raise GitFailedError(result.stderr.strip()) from e
     return result
