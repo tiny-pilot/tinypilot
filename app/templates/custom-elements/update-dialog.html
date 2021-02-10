@@ -254,7 +254,7 @@
             .then((updateResult) => {
               if (updateResult.status != "DONE") {
                 throw new Error(
-                  `Status is in an unknown state: ${updateResult.status}`
+                  `Status is in an unexpected state: ${updateResult.status}`
                 );
               }
               controllers
