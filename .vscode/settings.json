@@ -3,5 +3,8 @@
   "editor.formatOnSave": true,
   "[markdown]": {
     "editor.formatOnSave": false
+  },
+  "[python]": {
+    "editor.tabSize": 4
   }
 }
