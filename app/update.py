@@ -80,15 +80,14 @@ def _get_latest_update_result():
     if not result_files:
         return None
 
-    results = [_read_update_result_file(f) for f in result_files]
-    most_recent_result = sorted(results, key=lambda r: r.timestamp)[-1]
+    # Filenames start with a timestamp, so the last one is the most recent.
+    most_recent_result_file = sorted(result_files)[-1]
+    with open(most_recent_result_file) as result_file:
+        most_recent_result = update_result.read(result_file)
+
+    # Ignore the result if it's too old.
     delta = datetime.datetime.utcnow() - most_recent_result.timestamp
     if delta.total_seconds() > _RECENT_UPDATE_THRESHOLD_SECONDS:
         return None
 
     return most_recent_result
-
-
-def _read_update_result_file(result_path):
-    with open(result_path) as result_file:
-        return update_result.read(result_file)
