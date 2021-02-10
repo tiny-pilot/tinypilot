@@ -8,13 +8,6 @@ import update_result
 class UpdateResultTest(unittest.TestCase):
 
     def test_reads_correct_values_for_successful_result(self):
-        mock_file = io.StringIO("""
-{
-  "success": true,
-  "error": "",
-  "timestamp": "2021-02-10T085735Z"
-}
-""")
         self.assertEqual(
             update_result.Result(
                 success=True,
@@ -26,16 +19,17 @@ class UpdateResultTest(unittest.TestCase):
                                             57,
                                             35,
                                             tzinfo=datetime.timezone.utc),
-            ), update_result.read(mock_file))
-
-    def test_reads_correct_values_for_failed_result(self):
-        mock_file = io.StringIO("""
+            ),
+            update_result.read(
+                io.StringIO("""
 {
-  "success": false,
-  "error": "dummy update error",
+  "success": true,
+  "error": "",
   "timestamp": "2021-02-10T085735Z"
 }
-""")
+""")))
+
+    def test_reads_correct_values_for_failed_result(self):
         self.assertEqual(
             update_result.Result(
                 success=False,
@@ -47,16 +41,23 @@ class UpdateResultTest(unittest.TestCase):
                                             57,
                                             35,
                                             tzinfo=datetime.timezone.utc),
-            ), update_result.read(mock_file))
+            ),
+            update_result.read(
+                io.StringIO("""
+{
+  "success": false,
+  "error": "dummy update error",
+  "timestamp": "2021-02-10T085735Z"
+}
+""")))
 
     def test_reads_default_values_for_empty_dict(self):
-        mock_file = io.StringIO('{}')
         self.assertEqual(
             update_result.Result(
                 success=False,
                 error='',
                 timestamp=datetime.datetime.utcfromtimestamp(0),
-            ), update_result.read(mock_file))
+            ), update_result.read(io.StringIO('{}')))
 
     def test_writes_success_result_accurately(self):
         mock_file = io.StringIO()
