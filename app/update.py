@@ -4,7 +4,6 @@ import glob
 import logging
 import multiprocessing
 import os
-import signal
 import subprocess
 
 import update_result
@@ -72,11 +71,7 @@ def _is_update_process_running():
 
 
 def _perform_update():
-    logger.info('Starting background thread to launch update process')
-
-    # Stay alive even if our parent process exits.
-    signal.signal(signal.SIGHUP, signal.SIG_IGN)
-    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    logger.info('Starting background process to manage update')
 
     result = update_result.Result(success=False,
                                   error='',
