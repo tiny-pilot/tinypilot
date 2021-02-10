@@ -61,12 +61,15 @@ def get_current_state():
 
 
 def get_log_path(timestamp):
-    return os.path.join(_LOG_FILE_DIR, _LOG_FILENAME_FORMAT % timestamp)
+    return os.path.join(
+        _LOG_FILE_DIR,
+        _LOG_FILENAME_FORMAT % timestamp.strftime(_ISO_8601_FORMAT))
 
 
 def get_result_path(timestamp):
-    return os.path.join(_LOG_FILE_DIR,
-                        _UPDATE_RESULT_FILENAME_FORMAT % timestamp)
+    return os.path.join(
+        _LOG_FILE_DIR,
+        _UPDATE_RESULT_FILENAME_FORMAT % timestamp.strftime(_ISO_8601_FORMAT))
 
 
 def _is_update_process_running():
