@@ -33,6 +33,7 @@ _UPDATE_TIMEOUT_SECONDS = 60 * 10
 # Cutoff under which an update is considered "recently" completed.
 _RECENT_UPDATE_THRESHOLD_SECONDS = _UPDATE_TIMEOUT_SECONDS * 3
 _LOG_FILE_DIR = os.path.expanduser('~/logs')
+_UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 
 # Log and result files are prefixed with UTC timestamps in ISO-8601 format.
 _LOG_FILENAME_FORMAT = '%s-update.log'
@@ -62,7 +63,12 @@ def get_current_state():
 
 
 def _is_update_process_running():
-    pass
+    lines = subprocess.check_output(
+        ('ps', '-auxwe')).decode('utf-8').splitlines()
+    for line in lines:
+        if _UPDATE_SCRIPT_PATH in line:
+            return True
+    return False
 
 
 def _perform_update():
@@ -79,7 +85,7 @@ def _perform_update():
     try:
         with open(log_path, 'w') as log_file:
             logger.info('Saving update log to %s', log_path)
-            subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
+            subprocess.run(['sudo', _UPDATE_SCRIPT_PATH],
                            stdout=log_file,
                            stderr=log_file,
                            check=True,
@@ -116,8 +122,8 @@ def _get_latest_update_result():
         return None
 
     results = [_read_update_result_file(f) for f in result_files]
-    most_recent_result = sorted(results, key=lambda r: r['timestamp'])[-1]
-    delta = datetime.datetime.utcnow() - most_recent_result['timestamp']
+    most_recent_result = sorted(results, key=lambda r: r.timestamp)[-1]
+    delta = datetime.datetime.utcnow() - most_recent_result.timestamp
     if delta.total_seconds() > _RECENT_UPDATE_THRESHOLD_SECONDS:
         return None
 
