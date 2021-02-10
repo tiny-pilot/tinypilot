@@ -2,7 +2,6 @@ import datetime
 import enum
 import glob
 import logging
-import multiprocessing
 import os
 import subprocess
 
@@ -28,17 +27,16 @@ class Status(enum.Enum):
         return str(self.name)
 
 
-_UPDATE_TIMEOUT_SECONDS = 60 * 10
+UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
+
 # Cutoff under which an update is considered "recently" completed.
-_RECENT_UPDATE_THRESHOLD_SECONDS = _UPDATE_TIMEOUT_SECONDS * 3
+_RECENT_UPDATE_THRESHOLD_SECONDS = 60 * 30
 _LOG_FILE_DIR = os.path.expanduser('~/logs')
-_UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 
 # Log and result files are prefixed with UTC timestamps in ISO-8601 format.
 _LOG_FILENAME_FORMAT = '%s-update.log'
 _UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
-_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%SZ'
 _ISO_8601_FORMAT = '%Y-%m-%dT%H%M%S%z'
 
 
@@ -47,7 +45,7 @@ def start_async():
     if current_state == Status.IN_PROGRESS:
         raise AlreadyInProgressError('An update is already in progress')
 
-    multiprocessing.Process(target=_perform_update).start()
+    subprocess.Popen(('/usr/sbin/service', 'tinypilot-updater', 'start'))
 
 
 def get_current_state():
@@ -61,54 +59,22 @@ def get_current_state():
     return Status.DONE, recent_result.error
 
 
+def get_log_path(timestamp):
+    return os.path.join(_LOG_FILE_DIR, _LOG_FILENAME_FORMAT % timestamp)
+
+
+def get_result_path(timestamp):
+    return os.path.join(_LOG_FILE_DIR,
+                        _UPDATE_RESULT_FILENAME_FORMAT % timestamp)
+
+
 def _is_update_process_running():
     lines = subprocess.check_output(
         ('ps', '-auxwe')).decode('utf-8').splitlines()
     for line in lines:
-        if _UPDATE_SCRIPT_PATH in line:
+        if UPDATE_SCRIPT_PATH in line:
             return True
     return False
-
-
-def _perform_update():
-    logger.info('Starting background process to manage update')
-
-    result = update_result.Result(success=False,
-                                  error='',
-                                  timestamp=datetime.datetime.utcnow())
-    log_path, result_path = _generate_log_paths()
-    os.makedirs(_LOG_FILE_DIR, exist_ok=True)
-    try:
-        with open(log_path, 'w') as log_file:
-            logger.info('Saving update log to %s', log_path)
-            subprocess.run(['sudo', _UPDATE_SCRIPT_PATH],
-                           stdout=log_file,
-                           stderr=log_file,
-                           check=True,
-                           timeout=_UPDATE_TIMEOUT_SECONDS)
-        logger.info('Update completed successfully')
-        result.success = True
-    except subprocess.TimeoutExpired:
-        logger.error('Update process timed out')
-        result.error = 'The update timed out'
-    except subprocess.CalledProcessError as e:
-        logger.error('Update process terminated with failing exit code: %s',
-                     str(e))
-        result.error = 'The update failed: %s' % str(e)
-
-    with open(result_path, 'w') as result_file:
-        logger.info('Writing result file to %s', result_path)
-        update_result.write(result, result_file)
-
-
-def _generate_log_paths():
-    timestamp = datetime.datetime.utcnow().strftime(_ISO_8601_FORMAT)
-
-    log_path = os.path.join(_LOG_FILE_DIR, _LOG_FILENAME_FORMAT % timestamp)
-    result_path = os.path.join(_LOG_FILE_DIR,
-                               _UPDATE_RESULT_FILENAME_FORMAT % timestamp)
-
-    return log_path, result_path
 
 
 def _get_latest_update_result():
