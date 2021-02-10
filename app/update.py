@@ -45,7 +45,8 @@ def start_async():
     if current_state == Status.IN_PROGRESS:
         raise AlreadyInProgressError('An update is already in progress')
 
-    subprocess.Popen(('/usr/sbin/service', 'tinypilot-updater', 'start'))
+    subprocess.Popen(
+        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
 
 
 def get_current_state():
