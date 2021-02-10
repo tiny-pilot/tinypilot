@@ -71,10 +71,9 @@ def _perform_update():
     # Stay alive even if our parent process exits.
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
-    result = {
-        'success': False,
-        'error': None,
-    }
+    result = update_result.Result(success=False,
+                                  error='',
+                                  timestamp=datetime.datetime.utcnow())
     log_path, result_path = _generate_log_paths()
     os.makedirs(_LOG_FILE_DIR, exist_ok=True)
     try:
