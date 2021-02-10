@@ -76,6 +76,7 @@ def _perform_update():
 
     # Stay alive even if our parent process exits.
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
     result = update_result.Result(success=False,
                                   error='',
