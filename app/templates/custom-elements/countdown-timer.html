@@ -1,0 +1,71 @@
+<template id="countdown-timer-template">
+  <style>
+    #timer {
+      font-size: 150%;
+    }
+  </style>
+  <span id="timer"></span>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#countdown-timer-template");
+
+    customElements.define(
+      "countdown-timer",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.renderTime();
+        }
+
+        get seconds() {
+          return parseInt(this.getAttribute("seconds"));
+        }
+
+        set seconds(newValue) {
+          this.setAttribute("seconds", newValue);
+        }
+
+        renderTime() {
+          const minutesPart = String(Math.floor(this.seconds / 60));
+          const secondsPart = String(this.seconds % 60).padStart(2, "0");
+          this.shadowRoot.getElementById(
+            "timer"
+          ).innerText = `${minutesPart}:${secondsPart}`;
+        }
+
+        start() {
+          const intervalId = setInterval(() => {
+            // This should never happen, but just in case.
+            if (this.seconds < 0) {
+              return;
+            }
+            this.seconds = this.seconds - 1;
+            this.renderTime();
+            if (this.seconds === 0) {
+              clearInterval(intervalId);
+              this.emitFinishedEvent();
+            }
+          }, 1000);
+        }
+
+        emitFinishedEvent() {
+          this.dispatchEvent(
+            new CustomEvent("finished", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    );
+  })();
+</script>
