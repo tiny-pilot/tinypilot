@@ -102,6 +102,7 @@ TinyPilot accepts various options through environment variables:
 | `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
 | `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
 | `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
+| `DEV_MODE`           | undefined    | Set to `1` to enable development features (e.g., hot reloading). |
 
 ## Updates
 
