@@ -36,7 +36,7 @@ _RESULT_FILE_DIR = os.path.expanduser('~/logs')
 # Result files are prefixed with UTC timestamps in ISO-8601 format.
 _UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
-_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%S%z'
+_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%SZ'
 
 
 def start_async():

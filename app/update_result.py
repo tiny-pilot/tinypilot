@@ -2,7 +2,7 @@ import dataclasses
 import datetime
 import json
 
-_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%S%z'
+_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%SZ'
 
 
 @dataclasses.dataclass
@@ -52,4 +52,5 @@ def _datetime_to_iso8601(dt):
 
 
 def _iso8601_to_datetime(iso8601_string):
-    return datetime.datetime.strptime(iso8601_string, _ISO_8601_FORMAT)
+    return datetime.datetime.strptime(
+        iso8601_string, _ISO_8601_FORMAT).replace(tzinfo=datetime.timezone.utc)

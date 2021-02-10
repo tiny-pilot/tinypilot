@@ -12,7 +12,7 @@ class UpdateResultTest(unittest.TestCase):
 {
   "success": true,
   "error": "",
-  "timestamp": "2021-02-10T085735+0000"
+  "timestamp": "2021-02-10T085735Z"
 }
 """)
         self.assertEqual(
@@ -33,7 +33,7 @@ class UpdateResultTest(unittest.TestCase):
 {
   "success": false,
   "error": "dummy update error",
-  "timestamp": "2021-02-10T085735+0000"
+  "timestamp": "2021-02-10T085735Z"
 }
 """)
         self.assertEqual(
@@ -73,7 +73,7 @@ class UpdateResultTest(unittest.TestCase):
                                             tzinfo=datetime.timezone.utc),
             ), mock_file)
         self.assertEqual(('{"success": true, "error": "", '
-                          '"timestamp": "2021-02-10T085735+0000"}'),
+                          '"timestamp": "2021-02-10T085735Z"}'),
                          mock_file.getvalue())
 
     def test_writes_error_result_accurately(self):
@@ -91,5 +91,5 @@ class UpdateResultTest(unittest.TestCase):
                                             tzinfo=datetime.timezone.utc),
             ), mock_file)
         self.assertEqual(('{"success": false, "error": "dummy update error", '
-                          '"timestamp": "2021-02-10T085735+0000"}'),
+                          '"timestamp": "2021-02-10T085735Z"}'),
                          mock_file.getvalue())
