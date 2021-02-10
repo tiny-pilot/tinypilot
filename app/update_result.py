@@ -29,6 +29,7 @@ class _ResultEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return _datetime_to_iso8601(obj)
+        return obj
 
 
 class _ResultDecoder(json.JSONDecoder):
@@ -39,6 +40,7 @@ class _ResultDecoder(json.JSONDecoder):
                                   *args,
                                   **kwargs)
 
+    # pylint: disable=no-self-use
     def _decode_object(self, obj):
         if 'timestamp' in obj:
             obj['timestamp'] = _iso8601_to_datetime(obj['timestamp'])
