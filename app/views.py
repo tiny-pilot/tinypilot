@@ -17,5 +17,5 @@ def index_get():
 @views_blueprint.route('/stream', methods=['GET'])
 def stream_get():
     if flask.current_app.debug:
-        return flask.send_file('tests/data/test-remote-screen.jpg')
+        return flask.send_file('testdata/test-remote-screen.jpg')
     return flask.abort(404)

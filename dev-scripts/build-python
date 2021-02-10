@@ -25,8 +25,8 @@ find . \
 # Run unit tests and calculate code coverage.
 coverage run \
   --source "$SOURCE_DIR" \
-  --omit "*test_*" \
-  -m unittest discover
+  --omit "*_test.py" \
+  -m unittest discover --pattern "*_test.py"
 coverage report
 
 # Check that source has correct formatting.
