@@ -1,4 +1,3 @@
-import datetime
 import enum
 import glob
 import logging
@@ -7,6 +6,7 @@ import subprocess
 
 import iso8601
 import update_result
+import utc
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +105,7 @@ def _get_latest_update_result():
         most_recent_result = update_result.read(result_file)
 
     # Ignore the result if it's too old.
-    delta = datetime.datetime.utcnow() - most_recent_result.timestamp
+    delta = utc.now() - most_recent_result.timestamp
     if delta.total_seconds() > _RECENT_UPDATE_THRESHOLD_SECONDS:
         return None
 

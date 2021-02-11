@@ -12,6 +12,7 @@ import subprocess
 
 import update
 import update_result
+import utc
 
 logger = logging.getLogger(__name__)
 
@@ -35,9 +36,7 @@ def perform_update():
 
 
 def run_update_script():
-    result = update_result.Result(success=False,
-                                  error='',
-                                  timestamp=datetime.datetime.utcnow())
+    result = update_result.Result(success=False, error='', timestamp=utc.now())
     try:
         logger.info('Launching update script: %s', update.UPDATE_SCRIPT_PATH)
         subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
