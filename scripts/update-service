@@ -30,12 +30,16 @@ def configure_logging():
 
 
 def perform_update():
+    result = run_update_script()
+    write_result(result)
+
+
+def run_update_script():
     result = update_result.Result(success=False,
                                   error='',
                                   timestamp=datetime.datetime.utcnow())
-    result_path = update.get_result_path(result.timestamp)
-    os.makedirs(os.path.dirname(result_path), exist_ok=True)
     try:
+        logger.info('Launching update script: %s', update.UPDATE_SCRIPT_PATH)
         subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
                        check=True,
                        timeout=_UPDATE_TIMEOUT_SECONDS)
@@ -48,7 +52,12 @@ def perform_update():
         logger.error('Update process terminated with failing exit code: %s',
                      str(e))
         result.error = 'The update failed: %s' % str(e)
+    return result
 
+
+def write_result(result):
+    result_path = update.get_result_path(result.timestamp)
+    os.makedirs(os.path.dirname(result_path), exist_ok=True)
     with open(result_path, 'w') as result_file:
         logger.info('Writing result file to %s', result_path)
         update_result.write(result, result_file)
