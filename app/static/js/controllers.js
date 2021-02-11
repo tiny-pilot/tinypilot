@@ -77,7 +77,7 @@ class NetworkError extends Error {
         if (!versionResponse.hasOwnProperty("version")) {
           return Promise.reject(new Error("Missing expected version field"));
         }
-        return Promise.resolve({ version: versionResponse.version });
+        return Promise.resolve(versionResponse.version);
       })
       .catch((error) => {
         return Promise.reject(error);
@@ -102,7 +102,7 @@ class NetworkError extends Error {
         if (!versionResponse.hasOwnProperty("version")) {
           return Promise.reject(new Error("Missing expected version field"));
         }
-        return Promise.resolve({ version: versionResponse.version });
+        return Promise.resolve(versionResponse.version);
       })
       .catch((error) => {
         return Promise.reject(error);

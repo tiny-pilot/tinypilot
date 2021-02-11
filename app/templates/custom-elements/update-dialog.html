@@ -216,37 +216,29 @@
           this.setAttribute("state", newValue);
         }
 
-        async checkVersion() {
+        checkVersion() {
           this.state = "checking";
 
-          const version = await controllers
-            .getVersion()
-            .then((versionResponse) => {
-              return versionResponse.version;
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to retrieve installed version",
-                error
-              );
-            });
-          const latestRelease = await controllers
-            .getLatestRelease()
-            .then((versionResponse) => {
-              return versionResponse.version;
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to retrieve latest version number",
-                error
-              );
-            });
+          Promise.all([
+            controllers.getVersion(),
+            controllers.getLatestRelease(),
+          ])
+            .then((versions) => {
+              const localVersion = versions[0];
+              const latestRelease = versions[1];
 
-          if (version === latestRelease) {
-            this.state = "latest";
-          } else {
-            this.state = "update-available";
-          }
+              if (localVersion === latestRelease) {
+                this.state = "latest";
+              } else {
+                this.state = "update-available";
+              }
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to retrieve version information",
+                error
+              );
+            });
         }
 
         waitForUpdateToStart() {
