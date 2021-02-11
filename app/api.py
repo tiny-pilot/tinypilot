@@ -54,7 +54,7 @@ def update_get():
     """
 
     status, error = update.get_current_state()
-    if error is not None:
+    if error:
         return _json_error(error), 200
     return _json_success({'status': str(status)})
 
