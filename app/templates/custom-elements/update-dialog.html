@@ -105,7 +105,7 @@
       <countdown-timer id="timer" seconds="300"></countdown-timer>
     </div>
     <div id="restarting">
-      <h3>Restarting TinyPilot device</h3>
+      <h3>Restarting to complete update</h3>
       <progress-spinner></progress-spinner>
     </div>
     <div id="update-finished">
@@ -117,29 +117,51 @@
 
 <script>
   (function () {
-    const poll = async ({ fn, validate, interval, maxAttempts }) => {
-      console.log("Starting polling!");
-      let attempts = 0;
+    const poll = async ({
+      fn,
+      validate,
+      interval,
+      maxConsecutiveNetworkErrors,
+    }) => {
+      let result = null;
+      let consecutiveNetworkErrors = 0;
 
       const executePoll = async (resolve, reject) => {
-        console.log(`Attempt ${attempts}, calling fn`);
-        const result = await fn();
-        attempts++;
+        try {
+          result = await fn();
+          consecutiveNetworkErrors = 0;
+        } catch (error) {
+          result = null;
+          if (error.message.indexOf("NetworkError")) {
+            consecutiveNetworkErrors++;
+            if (
+              maxConsecutiveNetworkErrors &&
+              consecutiveNetworkErrors === maxConsecutiveNetworkErrors
+            ) {
+              return reject(error);
+            }
+          }
+        }
 
         if (validate(result)) {
-          console.log("Got result we wanted");
           return resolve(result);
-        } else if (maxAttempts && attempts === maxAttempts) {
-          console.log("Exceeded max attempts");
-          return reject(new Error("Exceeded max attempts"));
         } else {
-          console.log("Trying again");
           setTimeout(executePoll, interval, resolve, reject);
         }
       };
 
       return new Promise(executePoll);
     };
+
+    function resultHasStatus(result, statusExpected) {
+      return (
+        result &&
+        result.hasOwnProperty("success") &&
+        result.success &&
+        result.hasOwnProperty("status") &&
+        result.status === statusExpected
+      );
+    }
 
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
@@ -231,9 +253,13 @@
           return poll({
             fn: controllers.getUpdateStatus,
             validate: (result) => {
-              return result.success && result.status === "IN_PROGRESS";
+              return (
+                resultHasStatus(result, "IN_PROGRESS") ||
+                resultHasStatus(result, "DONE")
+              );
             },
             interval: 1500,
+            maxConsecutiveNetworkErrors: 5,
           });
         }
 
@@ -241,9 +267,10 @@
           return poll({
             fn: controllers.getUpdateStatus,
             validate: (result) => {
-              return result.success && result.status === "DONE";
+              return resultHasStatus(result, "DONE");
             },
             interval: 1500,
+            maxConsecutiveNetworkErrors: 5,
           });
         }
 
@@ -261,27 +288,39 @@
             });
         }
 
-        doUpdate() {
+        async startUpdateWithRetries() {
+          const maxAttempts = 3;
+          for (let i = 1; i <= maxAttempts; i++) {
+            try {
+              return await controllers.update();
+            } catch (error) {
+              if (i === maxAttempts) {
+                throw error;
+              }
+            }
+          }
+        }
+
+        async doUpdate() {
           this.state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
-          controllers.update().then(() => {
-            this.waitForUpdateToStart()
-              .then(() => {
-                this.waitForUpdateToFinish().then(() => {
-                  this.performRestart().then(() => {
-                    // TODO
-                  });
-                });
-              })
-              .catch((error) => {
-                this.emitUpdateFailureEvent(
-                  "Failed to update TinyPilot device",
-                  error
-                );
-              });
-          });
+          try {
+            await this.startUpdateWithRetries();
+          } catch (error) {
+            this.emitUpdateFailureEvent("Failed to start update", error);
+            return;
+          }
+
+          try {
+            await this.waitForUpdateToStart();
+            await this.waitForUpdateToFinish();
+            await this.performRestart();
+          } catch (error) {
+            this.emitUpdateFailureEvent("Failed to complete update", error);
+            return;
+          }
         }
 
         emitUpdateFailureEvent(summary, detail) {
