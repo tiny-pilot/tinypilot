@@ -20,7 +20,7 @@
       })
       .then(function (html) {
         const doc = new DOMParser().parseFromString(html, "text/html");
-        csrfToken = getCsrfToken(doc);
+        const csrfToken = getCsrfToken(doc);
         setCsrfToken(csrfToken);
         return Promise.resolve();
       })
