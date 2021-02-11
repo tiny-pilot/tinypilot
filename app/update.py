@@ -39,6 +39,14 @@ _UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
 
 def start_async():
+    """Launches the update service asynchronously.
+
+    Launches the tinypilot-update systemd service in the background. If the
+    service is already running, raises an exception.
+
+    Raises:
+        AlreadyInProgressError if the update process is already running.
+    """
     current_state, _ = get_current_state()
     if current_state == Status.IN_PROGRESS:
         raise AlreadyInProgressError('An update is already in progress')
@@ -48,6 +56,16 @@ def start_async():
 
 
 def get_current_state():
+    """Retrieves the current state of the update process.
+
+    Checks the state of any actively running update jobs or jobs that have
+    finished in the last 30 minutes and returns the status and error state.
+
+    Returns:
+        A two-tuple where the first value is a Status enum and the second is a
+        string containing the error associated with a recently completed update
+        job. If the job completed successfully, the error string is empty.
+    """
     if _is_update_process_running():
         return Status.IN_PROGRESS, None
 
@@ -59,6 +77,7 @@ def get_current_state():
 
 
 def get_result_path(timestamp):
+    """Retrieves the associated file path for a result file for a timestamp."""
     return os.path.join(
         _RESULT_FILE_DIR,
         _UPDATE_RESULT_FILENAME_FORMAT % iso8601.to_string(timestamp))
