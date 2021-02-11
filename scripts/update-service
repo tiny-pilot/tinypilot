@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+
+# Standalone executable for running the TinyPilot updater and saving the result
+# to a file. This executable is meant to be run as a systemd one-shot service,
+# launched manually when the user requests an update.
+
+import argparse
+import datetime
+import logging
+import os
+import subprocess
+
+import update
+import update_result
+
+logger = logging.getLogger(__name__)
+
+_UPDATE_TIMEOUT_SECONDS = 60 * 10
+
+
+def configure_logging():
+    root_logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)-15s %(levelname)-4s %(message)s',
+        '%Y-%m-%d %H:%M:%S')
+    handler.setFormatter(formatter)
+    root_logger.addHandler(handler)
+    root_logger.setLevel(logging.INFO)
+
+
+def perform_update():
+    result = run_update_script()
+    write_result(result)
+
+
+def run_update_script():
+    result = update_result.Result(success=False,
+                                  error='',
+                                  timestamp=datetime.datetime.utcnow())
+    try:
+        logger.info('Launching update script: %s', update.UPDATE_SCRIPT_PATH)
+        subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
+                       check=True,
+                       timeout=_UPDATE_TIMEOUT_SECONDS)
+        logger.info('Update completed successfully')
+        result.success = True
+    except subprocess.TimeoutExpired:
+        logger.error('Update process timed out')
+        result.error = 'The update timed out'
+    except subprocess.CalledProcessError as e:
+        logger.error('Update process terminated with failing exit code: %s',
+                     str(e))
+        result.error = 'The update failed: %s' % str(e)
+    return result
+
+
+def write_result(result):
+    result_path = update.get_result_path(result.timestamp)
+    os.makedirs(os.path.dirname(result_path), exist_ok=True)
+    with open(result_path, 'w') as result_file:
+        logger.info('Writing result file to %s', result_path)
+        update_result.write(result, result_file)
+
+
+def main(_):
+    configure_logging()
+    logger.info('Starting TinyPilot update')
+    perform_update()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        prog='TinyPilot Update Service',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    main(parser.parse_args())

@@ -1,10 +1,12 @@
-import dataclasses
 import datetime
 import enum
+import glob
 import logging
 import os
 import subprocess
-import threading
+
+import iso8601
+import update_result
 
 logger = logging.getLogger(__name__)
 
@@ -26,75 +28,85 @@ class Status(enum.Enum):
         return str(self.name)
 
 
-@dataclasses.dataclass
-class _UpdateJob:
-    status: Status
-    error: str
+UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 
-    def __init__(self):
-        self.status = Status.NOT_RUNNING
-        self.error = None
+# Cutoff under which an update is considered "recently" completed.
+_RECENT_UPDATE_THRESHOLD_SECONDS = 60 * 30
+_RESULT_FILE_DIR = os.path.expanduser('~/logs')
 
-
-_job = _UpdateJob()
-
-_UPDATE_MAXIMUM_RUN_TIME = 60 * 10  # 10 minutes
-_LOG_FILE_DIR = os.path.expanduser('~/logs')
+# Result files are prefixed with UTC timestamps in ISO-8601 format.
+_UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
 
 def start_async():
-    if _job.status == Status.IN_PROGRESS:
-        raise AlreadyInProgressError
+    """Launches the update service asynchronously.
 
-    threading.Thread(target=_perform_update).start()
+    Launches the tinypilot-update systemd service in the background. If the
+    service is already running, raises an exception.
+
+    Raises:
+        AlreadyInProgressError if the update process is already running.
+    """
+    current_state, _ = get_current_state()
+    if current_state == Status.IN_PROGRESS:
+        raise AlreadyInProgressError('An update is already in progress')
+
+    subprocess.Popen(
+        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
 
 
 def get_current_state():
-    return _job.status, _job.error
+    """Retrieves the current state of the update process.
+
+    Checks the state of any actively running update jobs or jobs that have
+    finished in the last 30 minutes and returns the status and error state.
+
+    Returns:
+        A two-tuple where the first value is a Status enum and the second is a
+        string containing the error associated with a recently completed update
+        job. If the job completed successfully, the error string is empty.
+    """
+    if _is_update_process_running():
+        return Status.IN_PROGRESS, None
+
+    recent_result = _get_latest_update_result()
+    if not recent_result:
+        return Status.NOT_RUNNING, None
+
+    return Status.DONE, recent_result.error
 
 
-def _perform_update():
-    logger.info('Starting background thread to launch update process')
-    _job.status = Status.IN_PROGRESS
-
-    os.makedirs(_LOG_FILE_DIR, exist_ok=True)
-    log_path, success_path = _generate_log_paths()
-
-    with open(log_path, 'w') as log_file:
-        logger.info('Saving update log to %s', log_path)
-        _run_update_script(log_file, success_path)
-
-    logger.info('Background thread completed')
-    _job.status = Status.DONE
+def get_result_path(timestamp):
+    """Retrieves the associated file path for a result file for a timestamp."""
+    return os.path.join(
+        _RESULT_FILE_DIR,
+        _UPDATE_RESULT_FILENAME_FORMAT % iso8601.to_string(timestamp))
 
 
-def _generate_log_paths():
-    timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H%M%SZ')
+def _is_update_process_running():
+    lines = subprocess.check_output(
+        ('ps', '-auxwe')).decode('utf-8').splitlines()
+    for line in lines:
+        if UPDATE_SCRIPT_PATH in line:
+            return True
+    return False
 
-    log_path = os.path.join(_LOG_FILE_DIR, f'{timestamp}-update.log')
-    success_path = os.path.join(_LOG_FILE_DIR,
-                                f'{timestamp}-update-success.log')
 
-    return log_path, success_path
+def _get_latest_update_result():
+    result_files = glob.glob(
+        os.path.join(_RESULT_FILE_DIR, _UPDATE_RESULT_FILENAME_FORMAT % '*'))
+    if not result_files:
+        return None
 
+    # Filenames start with a timestamp, so the last one lexicographically is the
+    # most recently created file.
+    most_recent_result_file = sorted(result_files)[-1]
+    with open(most_recent_result_file) as result_file:
+        most_recent_result = update_result.read(result_file)
 
-def _run_update_script(log_file, success_path):
-    logger.info('Starting update process')
-    try:
-        subprocess.run(['sudo', '/opt/tinypilot-privileged/update'],
-                       stdout=log_file,
-                       stderr=log_file,
-                       check=True,
-                       timeout=_UPDATE_MAXIMUM_RUN_TIME)
-    except subprocess.TimeoutExpired:
-        logger.error('Update process timed out')
-        _job.error = 'The update timed out'
-        return
-    except subprocess.CalledProcessError:
-        logger.error('Update process terminated with failing exit code')
-        _job.error = 'The update failed'
-        return
+    # Ignore the result if it's too old.
+    delta = datetime.datetime.utcnow() - most_recent_result.timestamp
+    if delta.total_seconds() > _RECENT_UPDATE_THRESHOLD_SECONDS:
+        return None
 
-    # Create success file to record success
-    with open(success_path, 'w') as _:
-        logger.info('Created success file at %s', success_path)
+    return most_recent_result
