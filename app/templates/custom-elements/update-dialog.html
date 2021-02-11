@@ -115,9 +115,32 @@
   </div>
 </template>
 
-<script src="/js/update.js"></script>
 <script>
   (function () {
+    const poll = async ({ fn, validate, interval, maxAttempts }) => {
+      console.log("Starting polling!");
+      let attempts = 0;
+
+      const executePoll = async (resolve, reject) => {
+        console.log(`Attempt ${attempts}, calling fn`);
+        const result = await fn();
+        attempts++;
+
+        if (validate(result)) {
+          console.log("Got result we wanted");
+          return resolve(result);
+        } else if (maxAttempts && attempts === maxAttempts) {
+          console.log("Exceeded max attempts");
+          return reject(new Error("Exceeded max attempts"));
+        } else {
+          console.log("Trying again");
+          setTimeout(executePoll, interval, resolve, reject);
+        }
+      };
+
+      return new Promise(executePoll);
+    };
+
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#update-dialog-template");
@@ -204,41 +227,38 @@
           }
         }
 
-        waitForUpdateToFinish() {
-          return new Promise((resolve, reject) => {
-            const checkUpdate = (retries = 0) => {
-              const POLL_UPDATE_STATUS_INTERVAL = 3000;
-
-              function shouldRetry(error) {
-                const MAX_NETWORK_ERROR_RETRIES = 4;
-
-                return (
-                  error.name === "NetworkError" &&
-                  retries <= MAX_NETWORK_ERROR_RETRIES
-                );
-              }
-
-              controllers
-                .getUpdateStatus()
-                .then((statusResponse) => {
-                  if (statusResponse.status !== "IN_PROGRESS") {
-                    return resolve(statusResponse);
-                  }
-                  setTimeout(checkUpdate, POLL_UPDATE_STATUS_INTERVAL);
-                })
-                .catch((error) => {
-                  if (shouldRetry(error)) {
-                    setTimeout(
-                      () => checkUpdate(retries + 1),
-                      POLL_UPDATE_STATUS_INTERVAL
-                    );
-                  } else {
-                    reject(error);
-                  }
-                });
-            };
-            checkUpdate();
+        waitForUpdateToStart() {
+          return poll({
+            fn: controllers.getUpdateStatus,
+            validate: (result) => {
+              return result.success && result.status === "IN_PROGRESS";
+            },
+            interval: 1500,
           });
+        }
+
+        waitForUpdateToFinish() {
+          return poll({
+            fn: controllers.getUpdateStatus,
+            validate: (result) => {
+              return result.success && result.status === "DONE";
+            },
+            interval: 1500,
+          });
+        }
+
+        performRestart() {
+          return controllers
+            .shutdown(/*restart*/ true)
+            .then(() => {
+              this.state = "restarting";
+            })
+            .catch((error) => {
+              this.emitUpdateFailureEvent(
+                "Failed to restart TinyPilot device",
+                error
+              );
+            });
         }
 
         doUpdate() {
@@ -246,35 +266,22 @@
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
-          controllers
-            .update()
-            .then(() => {
-              return this.waitForUpdateToFinish();
-            })
-            .then((updateResult) => {
-              if (updateResult.status != "DONE") {
-                throw new Error(
-                  `Status is in an unexpected state: ${updateResult.status}`
-                );
-              }
-              controllers
-                .shutdown(/*restart*/ true)
-                .then(() => {
-                  this.state = "restarting";
-                })
-                .catch((error) => {
-                  this.emitUpdateFailureEvent(
-                    "Failed to restart TinyPilot device",
-                    error
-                  );
+          controllers.update().then(() => {
+            this.waitForUpdateToStart()
+              .then(() => {
+                this.waitForUpdateToFinish().then(() => {
+                  this.performRestart().then(() => {
+                    // TODO
+                  });
                 });
-            })
-            .catch((error) => {
-              this.emitUpdateFailureEvent(
-                "Failed to update TinyPilot device",
-                error
-              );
-            });
+              })
+              .catch((error) => {
+                this.emitUpdateFailureEvent(
+                  "Failed to update TinyPilot device",
+                  error
+                );
+              });
+          });
         }
 
         emitUpdateFailureEvent(summary, detail) {
