@@ -295,6 +295,8 @@
           try {
             await this.waitForUpdateToStart();
             await this.waitForUpdateToFinish();
+            // Updating causes the backend to restart, changing the CSRF token.
+            await controllers.refreshCsrfToken();
             await this.performRestart();
           } catch (error) {
             this.emitUpdateFailureEvent("Failed to complete update", error);

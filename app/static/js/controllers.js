@@ -1,10 +1,32 @@
 "use strict";
 
 (function (windows) {
-  function getCsrfToken() {
-    return document
-      .querySelector("meta[name='csrf-token']")
-      .getAttribute("content");
+  function getCsrfToken(doc = document) {
+    return getCsrfTokenElement(doc).getAttribute("content");
+  }
+
+  function getCsrfTokenElement(doc) {
+    return doc.querySelector("meta[name='csrf-token']");
+  }
+
+  function setCsrfToken(tokenValue) {
+    return getCsrfTokenElement(document).setAttribute("content", tokenValue);
+  }
+
+  function refreshCsrfToken() {
+    return fetch("/")
+      .then(function (response) {
+        return response.text();
+      })
+      .then(function (html) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        csrfToken = getCsrfToken(doc);
+        setCsrfToken(csrfToken);
+        return Promise.resolve();
+      })
+      .catch(function (error) {
+        return Promise.reject("Failed to refresh CSRF token: " + error);
+      });
   }
 
   // Reads a response from an HTTP endpoint that we expect to contain a JSON
@@ -195,6 +217,7 @@
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
+  window.controllers.refreshCsrfToken = refreshCsrfToken;
   window.controllers.getVersion = getVersion;
   window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
