@@ -43,9 +43,6 @@ def write(result, result_file):
     Args:
         result: A Result object containing results of an update job.
         result_file: File handle to which to serialize the result object.
-
-    Returns:
-        None.
     """
     json.dump(dataclasses.asdict(result), result_file, cls=_ResultEncoder)
 
