@@ -2,7 +2,7 @@ import dataclasses
 import datetime
 import json
 
-_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%SZ'
+import iso8601
 
 
 @dataclasses.dataclass
@@ -54,7 +54,7 @@ class _ResultEncoder(json.JSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
-            return _datetime_to_iso8601(obj)
+            return iso8601.to_string(obj)
         return obj
 
 
@@ -69,14 +69,5 @@ class _ResultDecoder(json.JSONDecoder):
     # pylint: disable=no-self-use
     def _decode_object(self, obj):
         if 'timestamp' in obj:
-            obj['timestamp'] = _iso8601_to_datetime(obj['timestamp'])
+            obj['timestamp'] = iso8601.parse(obj['timestamp'])
         return obj
-
-
-def _datetime_to_iso8601(dt):
-    return dt.strftime(_ISO_8601_FORMAT)
-
-
-def _iso8601_to_datetime(iso8601_string):
-    return datetime.datetime.strptime(
-        iso8601_string, _ISO_8601_FORMAT).replace(tzinfo=datetime.timezone.utc)

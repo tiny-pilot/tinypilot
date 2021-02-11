@@ -5,6 +5,7 @@ import logging
 import os
 import subprocess
 
+import iso8601
 import update_result
 
 logger = logging.getLogger(__name__)
@@ -36,8 +37,6 @@ _RESULT_FILE_DIR = os.path.expanduser('~/logs')
 # Result files are prefixed with UTC timestamps in ISO-8601 format.
 _UPDATE_RESULT_FILENAME_FORMAT = '%s-update-result.json'
 
-_ISO_8601_FORMAT = '%Y-%m-%dT%H%M%SZ'
-
 
 def start_async():
     current_state, _ = get_current_state()
@@ -62,7 +61,7 @@ def get_current_state():
 def get_result_path(timestamp):
     return os.path.join(
         _RESULT_FILE_DIR,
-        _UPDATE_RESULT_FILENAME_FORMAT % timestamp.strftime(_ISO_8601_FORMAT))
+        _UPDATE_RESULT_FILENAME_FORMAT % iso8601.to_string(timestamp))
 
 
 def _is_update_process_running():
@@ -80,7 +79,8 @@ def _get_latest_update_result():
     if not result_files:
         return None
 
-    # Filenames start with a timestamp, so the last one is the most recent.
+    # Filenames start with a timestamp, so the last one lexicographically is the
+    # most recently created file.
     most_recent_result_file = sorted(result_files)[-1]
     with open(most_recent_result_file) as result_file:
         most_recent_result = update_result.read(result_file)
