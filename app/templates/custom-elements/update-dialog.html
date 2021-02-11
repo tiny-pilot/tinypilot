@@ -153,16 +153,6 @@
       return new Promise(executePoll);
     };
 
-    function resultHasStatus(result, statusExpected) {
-      return (
-        result &&
-        result.hasOwnProperty("success") &&
-        result.success &&
-        result.hasOwnProperty("status") &&
-        result.status === statusExpected
-      );
-    }
-
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#update-dialog-template");
@@ -244,11 +234,8 @@
         waitForUpdateToStart() {
           return poll({
             fn: controllers.getUpdateStatus,
-            validate: (result) => {
-              return (
-                resultHasStatus(result, "IN_PROGRESS") ||
-                resultHasStatus(result, "DONE")
-              );
+            validate: (status) => {
+              return ["IN_PROGRESS", "DONE"].includes(status);
             },
             interval: 1500,
             maxConsecutiveNetworkErrors: 5,
@@ -258,8 +245,8 @@
         waitForUpdateToFinish() {
           return poll({
             fn: controllers.getUpdateStatus,
-            validate: (result) => {
-              return resultHasStatus(result, "DONE");
+            validate: (status) => {
+              return status === "DONE";
             },
             interval: 1500,
             maxConsecutiveNetworkErrors: 5,

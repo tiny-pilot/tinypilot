@@ -188,6 +188,12 @@ class NetworkError extends Error {
       .then((jsonResponse) => {
         return checkJsonSuccess(jsonResponse);
       })
+      .then((updateResponse) => {
+        if (!updateResponse.hasOwnProperty("status")) {
+          return Promise.reject(new Error("Missing expected status field"));
+        }
+        return Promise.resolve(updateResponse.status);
+      })
       .catch((error) => {
         return Promise.reject(error);
       });
