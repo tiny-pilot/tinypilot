@@ -23,7 +23,9 @@ def local_head_commit_id():
         Error: The git command failed.
     """
     logger.info('Getting local HEAD commit ID')
-    return _run(['git', 'rev-parse', 'HEAD']).stdout.strip()
+    commit_id = _run(['git', 'rev-parse', 'HEAD']).stdout.strip()
+    logger.info('Local HEAD commit ID: %s', commit_id)
+    return commit_id
 
 
 def remote_head_commit_id():
@@ -41,12 +43,15 @@ def remote_head_commit_id():
     """
     logger.info('Getting remote HEAD commit ID')
     _fetch()
-    return _run(['git', 'rev-parse', 'origin/master']).stdout.strip()
+    commit_id = _run(['git', 'rev-parse', 'origin/master']).stdout.strip()
+    logger.info('Remote HEAD commit ID: %s', commit_id)
+    return commit_id
 
 
 def _fetch():
-    logger.info('Fetching changes')
-    return _run(['git', 'fetch'])
+    logger.info('Performing git fetch')
+    _run(['git', 'fetch'])
+    logger.info('git fetch complete')
 
 
 def _run(cmd):
