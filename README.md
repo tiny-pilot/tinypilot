@@ -146,6 +146,16 @@ If you're interested in seeing what's happening with the project at a granular l
 * [TinyPilot Wiki](https://github.com/mtlynch/tinypilot/wiki): Guides for tasks related to TinyPilot.
 * [TinyPilot Ansible Role](https://github.com/mtlynch/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
 
+## Acknowledgements
+
+TinyPilot would not be possible without the excellent and generous work of many open source projects, the most notable of which are listed here:
+
+* [uStreamer](https://github.com/pikvm/ustreamer)
+* [Flask](https://github.com/pallets/flask) and [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/)
+* [vdesktop](https://github.com/Botspot/vdesktop)
+* [Raspberry Pi](https://www.raspberrypi.org/)
+* [nginx](https://nginx.org/) and [ansible-role-nginx](https://github.com/geerlingguy/ansible-role-nginx)
+
 ## Mailing list
 
 For news about major TinyPilot releases and other updates about the project, sign up for the TinyPilot mailing list:
