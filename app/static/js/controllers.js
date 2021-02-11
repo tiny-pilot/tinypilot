@@ -1,12 +1,5 @@
 "use strict";
 
-class NetworkError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "NetworkError";
-  }
-}
-
 (function (windows) {
   function getCsrfToken() {
     return document
