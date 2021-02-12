@@ -1,10 +1,32 @@
 "use strict";
 
 (function (windows) {
-  function getCsrfToken() {
-    return document
-      .querySelector("meta[name='csrf-token']")
-      .getAttribute("content");
+  function getCsrfToken(doc = document) {
+    return getCsrfTokenElement(doc).getAttribute("content");
+  }
+
+  function getCsrfTokenElement(doc) {
+    return doc.querySelector("meta[name='csrf-token']");
+  }
+
+  function setCsrfToken(tokenValue) {
+    return getCsrfTokenElement(document).setAttribute("content", tokenValue);
+  }
+
+  function refreshCsrfToken() {
+    return fetch("/")
+      .then(function (response) {
+        return response.text();
+      })
+      .then(function (html) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const csrfToken = getCsrfToken(doc);
+        setCsrfToken(csrfToken);
+        return Promise.resolve();
+      })
+      .catch(function (error) {
+        return Promise.reject("Failed to refresh CSRF token: " + error);
+      });
   }
 
   // Reads a response from an HTTP endpoint that we expect to contain a JSON
@@ -52,6 +74,56 @@
     return Promise.resolve(response);
   }
 
+  function getLatestRelease() {
+    let route = "/api/latestRelease";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve(versionResponse.version);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function getVersion() {
+    let route = "/api/version";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((httpResponse) => {
+        return readHttpJsonResponse(httpResponse);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((versionResponse) => {
+        if (!versionResponse.hasOwnProperty("version")) {
+          return Promise.reject(new Error("Missing expected version field"));
+        }
+        return Promise.resolve(versionResponse.version);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   function shutdown(restart) {
     let route = "/api/shutdown";
     if (restart) {
@@ -95,8 +167,60 @@
       });
   }
 
+  function update() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function getUpdateStatus() {
+    let route = "/api/update";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((updateResponse) => {
+        if (!updateResponse.hasOwnProperty("status")) {
+          return Promise.reject(new Error("Missing expected status field"));
+        }
+        return Promise.resolve(updateResponse.status);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
+  window.controllers.refreshCsrfToken = refreshCsrfToken;
+  window.controllers.getVersion = getVersion;
+  window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
+  window.controllers.update = update;
+  window.controllers.getUpdateStatus = getUpdateStatus;
 })(window);

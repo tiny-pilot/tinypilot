@@ -109,10 +109,17 @@ function processKeystroke(keystroke) {
 function onSocketConnect() {
   if (document.getElementById("shutdown-dialog").show) {
     location.reload();
-  } else {
-    connectedToServer = true;
-    document.getElementById("connection-indicator").connected = true;
-    setCursor(settings.getScreenCursor());
+    return;
+  }
+
+  connectedToServer = true;
+  document.getElementById("connection-indicator").connected = true;
+  setCursor(settings.getScreenCursor());
+
+  // If we're restarting after an update, mark the update as finished.
+  const updateDialog = document.getElementById("update-dialog");
+  if (updateDialog.show && updateDialog.state === "restarting") {
+    updateDialog.state = "update-finished";
   }
 }
 
@@ -296,6 +303,16 @@ document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
 document.getElementById("paste-btn").addEventListener("click", () => {
   showPasteOverlay();
 });
+document.getElementById("update-btn").addEventListener("click", () => {
+  const updateDialog = document.getElementById("update-dialog");
+  updateDialog.show = true;
+  updateDialog.checkVersion();
+});
+document
+  .getElementById("update-dialog")
+  .addEventListener("update-failure", (evt) => {
+    showError(evt.detail.summary, evt.detail.detail);
+  });
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
