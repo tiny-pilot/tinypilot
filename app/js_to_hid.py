@@ -112,6 +112,8 @@ _MAPPING = {
     'NumpadDecimal': hid.KEYCODE_NUMPAD_DOT,
     'NumpadDivide': hid.KEYCODE_NUMPAD_DIVIDE,
     'NumLock': hid.KEYCODE_NUM_LOCK,
+    'OSLeft': hid.KEYCODE_LEFT_META,
+    'OSRight': hid.KEYCODE_RIGHT_META,
     'PageUp': hid.KEYCODE_PAGE_UP,
     'PageDown': hid.KEYCODE_PAGE_DOWN,
     'Pause': hid.KEYCODE_PAUSE_BREAK,
