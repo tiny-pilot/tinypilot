@@ -4,6 +4,7 @@ import debug_logs
 import git
 import local_system
 import update
+import hostname
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -140,6 +141,78 @@ def latest_release_get():
     try:
         return _json_success({'version': git.remote_head_commit_id()})
     except git.Error as e:
+        return _json_error(str(e)), 200
+
+
+@api_blueprint.route('/hostname', methods=['GET'])
+def hostname_get():
+    """Determines the hostname of the machine.
+
+    Returns:
+        A JSON string with three keys when successful and two otherwise:
+        success, error and hostname (if successful).
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+        hostname: object with two keys (active: str, current: str)
+            if successful, null otherwise.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null,
+            'hostname': {
+                'active': 'tinypilot',
+                'configured': 'tinypilot'
+            }
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Cannot determine hostname.'
+        }
+    """
+    try:
+        return _json_success({'hostname': hostname.determine()})
+    except hostname.Error as e:
+        return _json_error(str(e)), 200
+
+
+@api_blueprint.route('/hostname', methods=['PUT'])
+def hostname_set():
+    """Changes the machine’s hostname
+
+    Expects a JSON data structure in the request body that contains the
+    new hostname as string. Example:
+    {
+        'hostname': 'grandpilot'
+    }
+
+    Returns:
+        A JSON string with two keys: success, error.
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Invalid hostname.'
+        }
+    """
+    try:
+        body = flask.request.json
+        if 'hostname' not in body:
+            raise ValueError(
+                'Request body must be valid JSON with `hostname` property')
+        hostname.change(body['hostname'])
+        return _json_success()
+    except (hostname.Error, ValueError) as e:
         return _json_error(str(e)), 200
 
 
