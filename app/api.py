@@ -2,9 +2,9 @@ import flask
 
 import debug_logs
 import git
+import hostname
 import local_system
 import update
-import hostname
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 

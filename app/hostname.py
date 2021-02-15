@@ -46,8 +46,9 @@ def determine():
         with open(_ETC_HOSTNAME_FILE_PATH) as file:
             configured = parse_etc_hostname(file.read())
         return Hostname(current, configured)
-    except Exception:
-        raise CannotDetermineHostnameError('Cannot read configuration file')
+    except Exception as e:
+        raise CannotDetermineHostnameError('Cannot read configuration file: ' +
+                                           str(e)) from e
 
 
 def change(new_hostname):
@@ -62,7 +63,8 @@ def change(new_hostname):
     try:
         return subprocess.check_output(
             ['/opt/tinypilot-privileged/change-hostname', new_hostname],
-            stderr=subprocess.STDOUT, universal_newlines=True)
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise HostnameChangeError(str(e.output).strip()) from e
     except Exception as e:
