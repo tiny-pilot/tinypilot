@@ -7,7 +7,7 @@ set -e
 # Exit on unset variable.
 set -u
 
-FILES=$(find . \
+readonly FILES=$(find . \
   -type f \
   -not -path "./.git/*" \
   -not -path "./venv/*" \
@@ -20,14 +20,14 @@ FILES=$(find . \
   --quiet \
   . {} \; -print)
 
-SUCCESS=0
+success=0
 
-for F in ${FILES[*]}
+for source_file in ${FILES[*]}
 do
-  if ! [[ -s "$F" && -z "$(tail -c 1 "$F")" ]]; then
-    printf "File must end in a trailing newline: $F\n"
-    SUCCESS=-1
+  if ! [[ -s "${source_file}" && -z "$(tail -c 1 "${source_file}")" ]]; then
+    printf "File must end in a trailing newline: ${source_file}\n"
+    success=-1
   fi
 done
 
-exit "$SUCCESS"
+exit "${success}"
