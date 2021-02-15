@@ -25,7 +25,7 @@ success=0
 for source_file in ${FILES[*]}
 do
   if ! [[ -s "${source_file}" && -z "$(tail -c 1 "${source_file}")" ]]; then
-    printf "File must end in a trailing newline: ${source_file}\n"
+    printf "File must end in a trailing newline: ${source_file}\n" >&2
     success=-1
   fi
 done
