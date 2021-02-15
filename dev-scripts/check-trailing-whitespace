@@ -2,27 +2,17 @@
 
 # Check for trailing whitespace
 
-# Echo commands to console.
-set -x
 # Exit on first failing command.
 set -e
 # Exit on unset variable.
 set -u
 
-if [[ "${OSTYPE}" == "darwin"* ]]; then
-  FOLLOW_SYMLINKS_RECURSIVELY_FLAG="-R -S"
-else
-  FOLLOW_SYMLINKS_RECURSIVELY_FLAG=--dereference-recursive
-fi
-readonly FOLLOW_SYMLINKS_RECURSIVELY_FLAG
-
-if egrep \
+if grep \
   "\s$" \
   --line-number \
   --binary-files=without-match \
-  ${FOLLOW_SYMLINKS_RECURSIVELY_FLAG} \
-  --exclude-dir={.git,venv,node_modules} \
-  ./ ; then
-  echo "ERROR: Found trailing whitespace" >&2;
+  --exclude="*third-party*" \
+  $(git ls-files | xargs); then
+  echo "ERROR: Found trailing whitespace";
   exit 1;
 fi
