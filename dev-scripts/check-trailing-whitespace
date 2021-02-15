@@ -14,6 +14,7 @@ if [[ "${OSTYPE}" == "darwin"* ]]; then
 else
   FOLLOW_SYMLINKS_RECURSIVELY_FLAG=--dereference-recursive
 fi
+readonly FOLLOW_SYMLINKS_RECURSIVELY_FLAG
 
 if egrep \
   "\s$" \
@@ -22,6 +23,6 @@ if egrep \
   ${FOLLOW_SYMLINKS_RECURSIVELY_FLAG} \
   --exclude-dir={.git,venv,node_modules} \
   ./ ; then
-  echo "ERROR: Found trailing whitespace";
+  echo "ERROR: Found trailing whitespace" >&2;
   exit 1;
 fi
