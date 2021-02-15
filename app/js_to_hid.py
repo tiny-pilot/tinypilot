@@ -9,6 +9,17 @@ class UnrecognizedKeyCodeError(Error):
     pass
 
 
+_MODIFIER_KEYCODES = [
+    'AltLeft',
+    'AltRight',
+    'ControlLeft',
+    'ControlRight',
+    'MetaLeft',
+    'MetaRight',
+    'ShiftLeft',
+    'ShiftRight',
+]
+
 _MAPPING = {
     'AltLeft': hid.KEYCODE_LEFT_ALT,
     'AltRight': hid.KEYCODE_RIGHT_ALT,
@@ -175,12 +186,25 @@ def _map_modifier_keys(keystroke):
 
 
 def _map_keycode(keystroke):
+    # If the current key press is a modifier key and it's the *only* modifier
+    # being pressed, treat it as a special case where we remap the HID code to
+    # KEYCODE_NONE. This is based on a report that certain KVMs only recognize
+    # a modifier keystroke if the HID code is KEYCODE_NONE, but we should verify
+    # that it matches behavior from normal USB keyboards.
+    if (keystroke.code in _MODIFIER_KEYCODES and
+            _count_modifiers(keystroke) == 1):
+        return hid.KEYCODE_NONE
 
-    keycode = _MAPPING[keystroke.code]
+    try:
+        return _MAPPING[keystroke.code]
+    except KeyError as e:
+        raise UnrecognizedKeyCodeError('Unrecognized key code %s (%s)' %
+                                       (keystroke.key, keystroke.code)) from e
 
-    # Detect bare modifier key. Based on modifier 'code' prefixed with 'key'
-    if keystroke.key in ['Control', 'Alt', 'Meta', 'Shift']:
-        if keystroke.code.startswith(keystroke.key):
-            keycode = hid.KEYCODE_NONE
 
-    return keycode
+def _count_modifiers(keystroke):
+    return (int(keystroke.left_ctrl_modifier) +
+            int(keystroke.left_shift_modifier) +
+            int(keystroke.left_alt_modifier) +
+            int(keystroke.left_meta_modifier) +
+            int(keystroke.right_alt_modifier))
