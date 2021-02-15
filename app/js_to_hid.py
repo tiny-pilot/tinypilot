@@ -133,7 +133,7 @@ _MAPPING = {
 
 def convert(keystroke):
     try:
-        return _map_modifier_keys(keystroke), _MAPPING[keystroke.code]
+        return _map_modifier_keys(keystroke), _map_keycode(keystroke)
     except KeyError as e:
         raise UnrecognizedKeyCodeError('Unrecognized key code %s (%s)' %
                                        (keystroke.key, keystroke.code)) from e
@@ -172,3 +172,15 @@ def _map_modifier_keys(keystroke):
         modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
 
     return modifier_bitmask
+
+
+def _map_keycode(keystroke):
+
+    keycode = _MAPPING[keystroke.code]
+
+    # Detect bare modifier key. Based on modifier 'code' prefixed with 'key'
+    if keystroke.key in ['Control', 'Alt', 'Meta', 'Shift']:
+        if keystroke.code.startswith(keystroke.key):
+            keycode = hid.KEYCODE_NONE
+
+    return keycode
