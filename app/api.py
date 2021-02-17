@@ -4,6 +4,7 @@ import debug_logs
 import git
 import hostname
 import local_system
+import request_parsers.hostname
 import update
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -202,11 +203,9 @@ def hostname_set():
         }
     """
     try:
-        body = flask.request.json
-        if 'hostname' not in body:
-            raise ValueError(
-                'Request body must be valid JSON with `hostname` property')
-        hostname.change(body['hostname'])
+        new_hostname = request_parsers.hostname.parse_hostname(
+            flask.request)
+        hostname.change(new_hostname)
         return _json_success()
     except (hostname.Error, ValueError) as e:
         return _json_error(str(e)), 200
