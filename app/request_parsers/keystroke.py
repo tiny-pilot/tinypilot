@@ -5,19 +5,19 @@ class Error(Exception):
     pass
 
 
-class MissingField(Error):
+class MissingFieldError(Error):
     pass
 
 
-class InvalidModifierKey(Error):
+class InvalidModifierKeyError(Error):
     pass
 
 
-class InvalidKeyCode(Error):
+class InvalidKeyCodeError(Error):
     pass
 
 
-class InvalidLocation(Error):
+class InvalidLocationError(Error):
     pass
 
 
@@ -34,7 +34,7 @@ class Keystroke:
 
 def parse_keystroke(message):
     if not isinstance(message, dict):
-        raise MissingField(
+        raise MissingFieldError(
             'Keystroke parameter is invalid, expecting a dictionary data type')
     required_fields = (
         'key',
@@ -47,7 +47,7 @@ def parse_keystroke(message):
     )
     for field in required_fields:
         if field not in message:
-            raise MissingField(
+            raise MissingFieldError(
                 'Keystroke request is missing required field: %s' % field)
     return Keystroke(
         left_ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
@@ -61,16 +61,16 @@ def parse_keystroke(message):
 
 def _parse_modifier_key(modifier_key):
     if not isinstance(modifier_key, bool):
-        raise InvalidModifierKey('Modifier keys must be boolean values: %s' %
-                                 modifier_key)
+        raise InvalidModifierKeyError(
+            'Modifier keys must be boolean values: %s' % modifier_key)
     return modifier_key
 
 
 def _parse_code(code):
     if not isinstance(code, str):
-        raise InvalidKeyCode('Key code must be a string: %s' % code)
+        raise InvalidKeyCodeError('Key code must be a string: %s' % code)
 
     # Arbitrary limit, but just to prevent anything crazy.
     if len(code) > 30:
-        raise InvalidKeyCode('Key code is too long: %s' % code)
+        raise InvalidKeyCodeError('Key code is too long: %s' % code)
     return code

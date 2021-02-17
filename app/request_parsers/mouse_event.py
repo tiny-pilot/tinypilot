@@ -5,19 +5,19 @@ class Error(Exception):
     pass
 
 
-class MissingField(Error):
+class MissingFieldError(Error):
     pass
 
 
-class InvalidButtonState(Error):
+class InvalidButtonStateError(Error):
     pass
 
 
-class InvalidRelativePosition(Error):
+class InvalidRelativePositionError(Error):
     pass
 
 
-class InvalidWheelValue(Error):
+class InvalidWheelValueError(Error):
     pass
 
 
@@ -47,14 +47,14 @@ class MouseEvent:
 
 def parse_mouse_event(message):
     if not isinstance(message, dict):
-        raise MissingField(
+        raise MissingFieldError(
             'Mouse event parameter is invalid, expecting a dictionary data type'
         )
     required_fields = ('buttons', 'relativeX', 'relativeY',
                        'verticalWheelDelta', 'horizontalWheelDelta')
     for field in required_fields:
         if field not in message:
-            raise MissingField(
+            raise MissingFieldError(
                 'Mouse event request is missing required field: %s' % field)
     return MouseEvent(
         buttons=_parse_button_state(message['buttons']),
@@ -68,22 +68,22 @@ def parse_mouse_event(message):
 
 def _parse_button_state(buttons):
     if not isinstance(buttons, int):
-        raise InvalidButtonState('Button state must be an integer value: %s' %
-                                 buttons)
+        raise InvalidButtonStateError(
+            'Button state must be an integer value: %s' % buttons)
     if not (0 <= buttons <= _MAX_BUTTON_STATE):
-        raise InvalidButtonState('Button state must be <= 0x%x: %s' %
-                                 (_MAX_BUTTON_STATE, buttons))
+        raise InvalidButtonStateError('Button state must be <= 0x%x: %s' %
+                                      (_MAX_BUTTON_STATE, buttons))
     return buttons
 
 
 def _parse_relative_position(relative_position):
     if not isinstance(relative_position, float) and not isinstance(
             relative_position, int):
-        raise InvalidRelativePosition(
+        raise InvalidRelativePositionError(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
     if not (0.0 <= relative_position <= 1.0):
-        raise InvalidRelativePosition(
+        raise InvalidRelativePositionError(
             'Relative position must be a float between 0.0 and 1.0: %s' %
             relative_position)
     return relative_position
@@ -91,8 +91,9 @@ def _parse_relative_position(relative_position):
 
 def _parse_wheel_value(wheel_value):
     if not isinstance(wheel_value, int):
-        raise InvalidWheelValue('Wheel value must be a int: %s' % wheel_value)
+        raise InvalidWheelValueError('Wheel value must be a int: %s' %
+                                     wheel_value)
     if wheel_value not in (-1, 0, 1):
-        raise InvalidWheelValue('Wheel value must be -1, 0, or 1: %s' %
-                                wheel_value)
+        raise InvalidWheelValueError('Wheel value must be -1, 0, or 1: %s' %
+                                     wheel_value)
     return wheel_value
