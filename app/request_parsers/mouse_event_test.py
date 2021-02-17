@@ -111,7 +111,7 @@ class MouseEventTest(unittest.TestCase):
             }))
 
     def test_rejects_negative_buttons_value(self):
-        with self.assertRaises(mouse_event.InvalidButtonState):
+        with self.assertRaises(mouse_event.InvalidButtonStateError):
             mouse_event.parse_mouse_event({
                 'buttons': -1,
                 'relativeX': 0.5,
@@ -121,7 +121,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_high_buttons_value(self):
-        with self.assertRaises(mouse_event.InvalidButtonState):
+        with self.assertRaises(mouse_event.InvalidButtonStateError):
             mouse_event.parse_mouse_event({
                 'buttons': 32,
                 'relativeX': 0.5,
@@ -131,7 +131,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_non_numeric_buttons_value(self):
-        with self.assertRaises(mouse_event.InvalidButtonState):
+        with self.assertRaises(mouse_event.InvalidButtonStateError):
             mouse_event.parse_mouse_event({
                 'buttons': 'a',
                 'relativeX': 0.5,
@@ -141,7 +141,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_negative_relative_x_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': -0.001,
@@ -151,7 +151,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_negative_relative_y_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -161,7 +161,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_high_relative_x_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 1.001,
@@ -171,7 +171,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_high_relative_y_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -181,7 +181,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_non_float_relative_x_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 'a',
@@ -191,7 +191,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_non_float_relative_y_value(self):
-        with self.assertRaises(mouse_event.InvalidRelativePosition):
+        with self.assertRaises(mouse_event.InvalidRelativePositionError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -201,7 +201,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_buttons_field(self):
-        with self.assertRaises(mouse_event.MissingField):
+        with self.assertRaises(mouse_event.MissingFieldError):
             mouse_event.parse_mouse_event({
                 'relativeX': 0,
                 'relativeY': 0,
@@ -210,7 +210,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_relative_x_field(self):
-        with self.assertRaises(mouse_event.MissingField):
+        with self.assertRaises(mouse_event.MissingFieldError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeY': 0,
@@ -219,7 +219,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_relative_y_field(self):
-        with self.assertRaises(mouse_event.MissingField):
+        with self.assertRaises(mouse_event.MissingFieldError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
@@ -228,7 +228,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_vertical_wheel_field(self):
-        with self.assertRaises(mouse_event.MissingField):
+        with self.assertRaises(mouse_event.MissingFieldError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
@@ -236,7 +236,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_horizontal_wheel_field(self):
-        with self.assertRaises(mouse_event.MissingField):
+        with self.assertRaises(mouse_event.MissingFieldError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
@@ -244,7 +244,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_string_vertical_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -254,7 +254,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_float_vertical_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -264,7 +264,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_high_vertical_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -274,7 +274,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_low_vertical_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -284,7 +284,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_string_horizontal_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -294,7 +294,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_float_horizontal_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -304,7 +304,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_high_horizontal_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,
@@ -314,7 +314,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_too_low_horizontal_wheel_value(self):
-        with self.assertRaises(mouse_event.InvalidWheelValue):
+        with self.assertRaises(mouse_event.InvalidWheelValueError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0.5,

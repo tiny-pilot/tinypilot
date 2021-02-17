@@ -5,7 +5,7 @@ class Error(Exception):
     pass
 
 
-class LogCollectionScriptFailed(Error):
+class LogCollectionScriptFailedError(Error):
     pass
 
 
@@ -20,4 +20,4 @@ def collect():
         return subprocess.check_output(
             ['/opt/tinypilot-privileged/collect-debug-logs', '-q'])
     except subprocess.CalledProcessError as e:
-        raise LogCollectionScriptFailed(str(e)) from e
+        raise LogCollectionScriptFailedError(str(e)) from e
