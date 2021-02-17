@@ -4,6 +4,7 @@ import debug_logs
 import git
 import hostname
 import local_system
+import request_parsers.errors
 import request_parsers.hostname
 import update
 
@@ -207,8 +208,10 @@ def hostname_set():
             flask.request)
         hostname.change(new_hostname)
         return _json_success()
-    except (hostname.Error, ValueError) as e:
-        return _json_error(str(e)), 200
+    except request_parsers.errors.Error as e:
+        return _json_error('Malformed request: %s' % str(e)), 200
+    except hostname.Error as e:
+        return _json_error('Operation failed: %s' % str(e)), 200
 
 
 # The default dictionary is okay because we're not modifying it.
