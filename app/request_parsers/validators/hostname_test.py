@@ -13,6 +13,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_rejects_hostname_that_is_not_a_string(self):
         self.assertFalse(hostname.validate(1))
+        self.assertFalse(hostname.validate(None))
 
     def test_rejects_hostnames_with_invalid_characters(self):
         self.assertFalse(hostname.validate('TINYPILOT'))
