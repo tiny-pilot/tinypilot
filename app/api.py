@@ -154,17 +154,13 @@ def hostname_get():
 
         success: true if successful.
         error: null if successful, str otherwise.
-        hostname: object with two keys (active: str, current: str)
-            if successful, null otherwise.
+        hostname: str if successful.
 
         Example of success:
         {
             'success': true,
             'error': null,
-            'hostname': {
-                'active': 'tinypilot',
-                'configured': 'tinypilot'
-            }
+            'hostname': 'tinypilot'
         }
         Example of error:
         {
