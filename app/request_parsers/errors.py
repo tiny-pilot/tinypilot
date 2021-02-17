@@ -8,3 +8,7 @@ class MalformedRequest(Error):
 
 class MissingField(Error):
     pass
+
+
+class InvalidHostname(Error):
+    pass
