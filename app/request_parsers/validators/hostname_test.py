@@ -3,7 +3,7 @@ import unittest
 from request_parsers.validators import hostname
 
 
-class MyTestCase(unittest.TestCase):
+class HostnameValidationTest(unittest.TestCase):
 
     def test_accepts_hostname_with_valid_characters(self):
         self.assertTrue(hostname.validate('tiny-pilot123'))
