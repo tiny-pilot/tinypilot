@@ -32,11 +32,12 @@ class Hostname:
 def determine():
     """Determines the hostname of the machine.
 
-    Raises:
-        CannotDetermineHostname
-
     Returns:
         A hostname object as described in `Hostname`.
+
+    Raises:
+        CannotDetermineHostnameError: If the hostname cannot be obtained from
+            the system.
     """
     current = platform.node()  # Returns empty string on failure.
     if current == '':
