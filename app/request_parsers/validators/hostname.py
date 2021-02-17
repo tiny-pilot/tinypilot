@@ -12,7 +12,7 @@ def validate(hostname):
         hostname: A hostname as string.
 
     Returns:
-        Whether or not the hostname is valid or not (bool).
+        Whether or not the hostname is valid (bool).
     """
     if not isinstance(hostname, str):
         return False
