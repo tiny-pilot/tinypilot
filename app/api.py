@@ -204,8 +204,7 @@ def hostname_set():
         }
     """
     try:
-        new_hostname = request_parsers.hostname.parse_hostname(
-            flask.request)
+        new_hostname = request_parsers.hostname.parse_hostname(flask.request)
         hostname.change(new_hostname)
         return _json_success()
     except request_parsers.errors.Error as e:
