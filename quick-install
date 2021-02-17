@@ -159,5 +159,5 @@ echo "- hosts: localhost
   roles:
     - role: $TINYPILOT_ROLE_NAME" > install.yml
 ansible-playbook -i localhost, install.yml \
-  --extra-vars "${EXTRA_VARS_PATH}"
+  --extra-vars "${EXTRA_VARS_PATH}" \
   --extra-vars "${TINYPILOT_INSTALL_VARS}"
