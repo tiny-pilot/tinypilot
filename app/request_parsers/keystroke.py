@@ -5,7 +5,7 @@ class Error(Exception):
     pass
 
 
-class MissingFieldError(Error):
+class MissingFieldErrorError(Error):
     pass
 
 
@@ -34,7 +34,7 @@ class Keystroke:
 
 def parse_keystroke(message):
     if not isinstance(message, dict):
-        raise MissingFieldError(
+        raise MissingFieldErrorError(
             'Keystroke parameter is invalid, expecting a dictionary data type')
     required_fields = (
         'key',
@@ -47,7 +47,7 @@ def parse_keystroke(message):
     )
     for field in required_fields:
         if field not in message:
-            raise MissingFieldError(
+            raise MissingFieldErrorError(
                 'Keystroke request is missing required field: %s' % field)
     return Keystroke(
         left_ctrl_modifier=_parse_modifier_key(message['ctrlKey']),

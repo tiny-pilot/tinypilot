@@ -166,7 +166,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_meta_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'altKey': False,
                 'shiftKey': False,
@@ -177,7 +177,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_alt_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'shiftKey': False,
@@ -188,7 +188,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_alt_graph_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'altKey': False,
                 'metaKey': False,
@@ -199,7 +199,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_shift_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -210,7 +210,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_ctrl_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -221,7 +221,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,
@@ -232,7 +232,7 @@ class KeystrokeTest(unittest.TestCase):
             })
 
     def test_rejects_missing_code_value(self):
-        with self.assertRaises(keystroke.MissingFieldError):
+        with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaKey': False,
                 'altKey': False,

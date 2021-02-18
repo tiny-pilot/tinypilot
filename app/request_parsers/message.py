@@ -15,11 +15,11 @@ def parse_message(request, required_fields):
     message = request.get_json()
 
     if not isinstance(message, dict):
-        raise errors.MalformedRequest(
+        raise errors.MalformedRequestError(
             'Request is invalid, expecting a JSON dictionary')
 
     for field in required_fields:
         if field not in message:
-            raise errors.MissingField('Missing required field: %s' % field)
+            raise errors.MissingFieldError('Missing required field: %s' % field)
 
     return message
