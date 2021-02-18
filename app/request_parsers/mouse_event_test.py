@@ -201,7 +201,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_buttons_field(self):
-        with self.assertRaises(mouse_event.MissingFieldError):
+        with self.assertRaises(mouse_event.MissingFieldErrorError):
             mouse_event.parse_mouse_event({
                 'relativeX': 0,
                 'relativeY': 0,
@@ -210,7 +210,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_relative_x_field(self):
-        with self.assertRaises(mouse_event.MissingFieldError):
+        with self.assertRaises(mouse_event.MissingFieldErrorError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeY': 0,
@@ -219,7 +219,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_relative_y_field(self):
-        with self.assertRaises(mouse_event.MissingFieldError):
+        with self.assertRaises(mouse_event.MissingFieldErrorError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
@@ -228,7 +228,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_vertical_wheel_field(self):
-        with self.assertRaises(mouse_event.MissingFieldError):
+        with self.assertRaises(mouse_event.MissingFieldErrorError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,
@@ -236,7 +236,7 @@ class MouseEventTest(unittest.TestCase):
             })
 
     def test_rejects_missing_horizontal_wheel_field(self):
-        with self.assertRaises(mouse_event.MissingFieldError):
+        with self.assertRaises(mouse_event.MissingFieldErrorError):
             mouse_event.parse_mouse_event({
                 'buttons': 0,
                 'relativeX': 0,

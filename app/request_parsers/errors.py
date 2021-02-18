@@ -2,13 +2,13 @@ class Error(Exception):
     pass
 
 
-class MalformedRequest(Error):
+class MalformedRequestError(Error):
     pass
 
 
-class MissingField(Error):
+class MissingFieldError(Error):
     pass
 
 
-class InvalidHostname(Error):
+class InvalidHostnameError(Error):
     pass
