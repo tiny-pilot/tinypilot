@@ -2,6 +2,7 @@
 @import "cursors.css";
 @import "keyboard-panel.css";
 @import "navbar.css";
+@import "footer.css";
 
 body {
   margin: 0;
