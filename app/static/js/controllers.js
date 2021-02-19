@@ -215,36 +215,36 @@
   }
 
   function getDebugLogs() {
-    return fetch('/api/debugLogs', {
-      method: 'GET',
-      mode: 'same-origin',
-      cache: 'no-cache',
-      redirect: 'error',
+    return fetch("/api/debugLogs", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           return Promise.reject(new Error(response.statusText));
         }
         return Promise.resolve(response);
       })
-      .then(response => response.text());
+      .then((response) => response.text());
   }
 
-  function getShareableURL(text, lang='text') {
-    return fetch('/api/pastebin', {
-      method: 'POST',
+  function getShareableURL(text, lang = "text") {
+    return fetch("/api/pastebin", {
+      method: "POST",
       headers: {
-        'X-CSRFToken': getCsrfToken(),
-        'Content-Type': 'application/json',
+        "X-CSRFToken": getCsrfToken(),
+        "Content-Type": "application/json",
       },
-      mode: 'same-origin',
-      cache: 'no-cache',
-      redirect: 'error',
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
       body: JSON.stringify({ text }),
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
-      .then(data => data.url);
+      .then((data) => data.url);
   }
 
   if (!window.hasOwnProperty("controllers")) {
