@@ -1,0 +1,21 @@
+.footer {
+  margin: 2rem 0;
+  color:
+}
+
+.footer .list-inline {
+  padding: 0;
+  list-style: none;
+}
+
+.footer .list-inline-item {
+  display: inline-block;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer li a:hover {
+  cursor: pointer;
+}
