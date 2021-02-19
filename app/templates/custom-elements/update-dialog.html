@@ -115,44 +115,9 @@
   </div>
 </template>
 
+<script src="/js/util/poll.js"></script>
 <script>
   (function () {
-    const poll = async ({
-      fn,
-      validate,
-      interval,
-      maxConsecutiveNetworkErrors,
-    }) => {
-      let result = null;
-      let consecutiveNetworkErrors = 0;
-
-      const executePoll = async (resolve, reject) => {
-        try {
-          result = await fn();
-          consecutiveNetworkErrors = 0;
-        } catch (error) {
-          result = null;
-          if (error.message.includes("NetworkError")) {
-            consecutiveNetworkErrors++;
-            if (
-              maxConsecutiveNetworkErrors &&
-              consecutiveNetworkErrors === maxConsecutiveNetworkErrors
-            ) {
-              return reject(error);
-            }
-          }
-        }
-
-        if (validate(result)) {
-          return resolve(result);
-        } else {
-          setTimeout(executePoll, interval, resolve, reject);
-        }
-      };
-
-      return new Promise(executePoll);
-    };
-
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#update-dialog-template");
