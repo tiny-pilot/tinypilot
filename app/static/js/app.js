@@ -313,6 +313,11 @@ document
   .addEventListener("update-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
+document.querySelector('#debug-dialog-btn').addEventListener('click', () => {
+  const debugDialog = document.querySelector('#debug-dialog');
+  debugDialog.show = true;
+  debugDialog.getLogs();
+});
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
