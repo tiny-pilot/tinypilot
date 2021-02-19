@@ -208,7 +208,7 @@ def hostname_set():
         hostname.change(new_hostname)
         return _json_success()
     except request_parsers.errors.Error as e:
-        return _json_error('Malformed request: %s' % str(e)), 200
+        return _json_error('Invalid input: %s' % str(e)), 200
     except hostname.Error as e:
         return _json_error('Operation failed: %s' % str(e)), 200
 
