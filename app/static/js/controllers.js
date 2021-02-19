@@ -304,6 +304,23 @@
       .then(response => response.text());
   }
 
+  function getShareableURL(text, lang='text') {
+    return fetch('/api/pastebin', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      mode: 'same-origin',
+      cache: 'no-cache',
+      redirect: 'error',
+      body: JSON.stringify({ text }),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then(data => data.url);
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -317,4 +334,5 @@
   window.controllers.changeHostname = changeHostname;
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
+  window.controllers.getShareableURL = getShareableURL;
 })(window);

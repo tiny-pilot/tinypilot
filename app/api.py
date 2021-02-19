@@ -1,4 +1,5 @@
 import flask
+import requests
 
 import debug_logs
 import git
@@ -23,6 +24,46 @@ def debug_logs_get():
     except debug_logs.Error as e:
         return flask.Response('Failed to retrieve debug logs: %s' % str(e),
                               status=500)
+
+
+@api_blueprint.route('/pastebin', methods=['POST'])
+def pastebin_post():
+    """Returns a URL to your publically hosted text.
+
+    Returns:
+        A JSON string with three keys when successful and two otherwise:
+        success, error and url (if successful).
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+        url: str.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null,
+            'url': 'http://sprunge.us/F6Ugtq'
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to get shareable URL. Please try again later.'
+        }
+    """
+    data = flask.request.get_json()
+    try:
+        text = data['text']
+    except KeyError:
+        return _json_error('Missing field: text')
+    lang = data.get('lang', 'text')
+    try:
+        response = requests.post(f'http://sprunge.us?{lang}',
+                                 data={'sprunge': text})
+        response.raise_for_status()
+    except requests.exceptions.RequestException:
+        return _json_error(
+            'Failed to get shareable URL. Please try again later.')
+    return _json_success({'url': response.text})
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
