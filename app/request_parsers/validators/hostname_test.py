@@ -20,6 +20,9 @@ class HostnameValidationTest(unittest.TestCase):
         self.assertFalse(hostname.validate('tinypilot***'))
         self.assertFalse(hostname.validate('tiny.pilot'))
 
+    def test_rejects_localhost_as_hostname(self):
+        self.assertFalse(hostname.validate('localhost'))
+
     def test_rejects_empty_hostname(self):
         self.assertFalse(hostname.validate(''))
 
