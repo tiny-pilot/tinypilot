@@ -114,7 +114,9 @@
           super();
           this.attachShadow({ mode: 'open' });
           this.close = this.close.bind(this);
+          this.reset = this.reset.bind(this);
           this.getLogs = this.getLogs.bind(this);
+          this.getShareableURL = this.getShareableURL.bind(this);
         }
 
         connectedCallback() {
@@ -123,6 +125,8 @@
             .addEventListener('click', this.close);
           this.shadowRoot.querySelector('.close')
             .addEventListener('click', this.close);
+          this.shadowRoot.querySelector('#share')
+            .addEventListener('click', this.getShareableURL);
         }
 
         disconnectedCallback() {
@@ -130,6 +134,8 @@
             .removeEventListener('click', this.close);
           this.shadowRoot.querySelector('.close')
             .removeEventListener('click', this.close);
+          this.shadowRoot.querySelector('#share')
+            .removeEventListener('click', this.getShareableURL);
         }
 
         get show() {
@@ -151,7 +157,16 @@
         close(event) {
           if (['overlay', 'close'].includes(event.target.className)) {
             this.show = false;
+            this.reset();
           }
+        }
+
+        reset() {
+          this.state = null;
+          const url = this.shadowRoot.querySelector('#url')
+            .classList.add('hide');
+          const share = this.shadowRoot.querySelector('#share')
+            .classList.remove('hide');
         }
 
         getLogs() {
@@ -164,6 +179,20 @@
             .catch(error => {
               this.shadowRoot.querySelector('#error').innerText = error;
               this.state = 'fail';
+            });
+        }
+
+        getShareableURL() {
+          const text = this.shadowRoot.querySelector('#logs').innerText;
+          controllers.getShareableURL(text)
+            .then(url => {
+              this.shadowRoot.querySelector('#share').classList.add('hide');
+              const share = this.shadowRoot.querySelector('#url');
+              share.innerText = url;
+              share.classList.remove('hide');
+            })
+            .catch(error => {
+              console.log('Error getting shareable URL', error);
             });
         }
       }

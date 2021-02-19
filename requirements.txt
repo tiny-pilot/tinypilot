@@ -2,6 +2,7 @@ eventlet==0.25.2
 Flask==1.1.1
 Flask-SocketIO==4.3.2
 Flask-WTF==0.14.3
+requests==2.25.1
 
 # Indirect dependencies
 click==7.1.2
@@ -16,4 +17,3 @@ python-socketio==4.6.1
 six==1.15.0
 Werkzeug==1.0.1
 WTForms==2.3.3
-
