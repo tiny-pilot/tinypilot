@@ -321,8 +321,8 @@ document
   .addEventListener("change-hostname-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
-document.querySelector('#debug-dialog-btn').addEventListener('click', () => {
-  const debugDialog = document.querySelector('#debug-dialog');
+document.querySelector("#debug-dialog-btn").addEventListener("click", () => {
+  const debugDialog = document.querySelector("#debug-dialog");
   debugDialog.show = true;
   debugDialog.getLogs();
 });
