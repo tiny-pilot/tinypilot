@@ -132,7 +132,7 @@
           consecutiveNetworkErrors = 0;
         } catch (error) {
           result = null;
-          if (error.message.indexOf("NetworkError")) {
+          if (error.message.includes("NetworkError")) {
             consecutiveNetworkErrors++;
             if (
               maxConsecutiveNetworkErrors &&
