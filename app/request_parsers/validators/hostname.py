@@ -16,6 +16,8 @@ def validate(hostname):
     """
     if not isinstance(hostname, str):
         return False
+    if hostname == 'localhost':
+        return False
     if hostname.startswith('-'):
         return False
     if _HOSTNAME_PATTERN.match(hostname) is None:
