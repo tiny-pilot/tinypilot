@@ -313,6 +313,17 @@ document
   .addEventListener("update-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
+document.getElementById("change-hostname-btn").addEventListener("click", () => {
+  const changeHostnameDialog = document.getElementById(
+    "change-hostname-dialog"
+  );
+  changeHostnameDialog.show = true;
+});
+document
+  .getElementById("change-hostname-dialog")
+  .addEventListener("change-hostname-failure", (evt) => {
+    showError(evt.detail.summary, evt.detail.detail);
+  });
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
