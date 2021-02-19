@@ -1,0 +1,172 @@
+<template id="debug-dialog-template">
+  <style>
+    @import "css/button.css";
+
+    .overlay {
+      display: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    :host([show="true"]) .overlay {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2;
+    }
+
+    #loading,
+    #success,
+    #fail {
+      display: none;
+    }
+
+    :host([state="loading"]) #loading,
+    :host([state="success"]) #success,
+    :host([state="fail"]) #fail {
+      display: block;
+    }
+
+    #panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    #logs {
+      font-family: consolas, monospace;
+      background-color: #F1F1F1;
+      user-select: text;
+      text-align: left;
+      overflow-y: scroll;
+      max-height: 500px;
+    }
+
+    #url {
+      font-family: consolas, monospace;
+      background-color: #F1F1F1;
+      user-select: text;
+      padding: 1rem 2rem;
+      display: inline-block;
+    }
+
+    #error {
+      color: rgb(153, 8, 8);
+    }
+
+    .btn-success {
+      background-color: rgb(15, 157, 88);
+    }
+
+    .btn-success:hover {
+      background-color: rgb(65, 177, 108);
+    }
+
+    .hide {
+      display: none !important;
+    }
+  </style>
+  <div id="panel" class="overlay">
+    <div id="loading">
+      <h3>Fetching debug logs</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="success">
+      <h3>Debug Logs</h3>
+      <p id="logs"></p>
+      <button id="share" class="btn-success" type="button">
+        Get shareable URL
+      </button>
+      <p id="url" class="hide"></p>
+      <button id="copy" class="btn-success" type="button">
+        Copy to clipboard
+      </button>
+      <button class="close" type="button">Close</button>
+    </div>
+    <div id="fail">
+      <h3>Whoops there was a problem</h3>
+      <p id="error"></p>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector('#debug-dialog-template');
+    customElements.define(
+      'debug-dialog',
+      class DebugDialog extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+          this.close = this.close.bind(this);
+          this.getLogs = this.getLogs.bind(this);
+        }
+
+        connectedCallback() {
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot.querySelector('.overlay')
+            .addEventListener('click', this.close);
+          this.shadowRoot.querySelector('.close')
+            .addEventListener('click', this.close);
+        }
+
+        disconnectedCallback() {
+          this.shadowRoot.querySelector('.overlay')
+            .removeEventListener('click', this.close);
+          this.shadowRoot.querySelector('.close')
+            .removeEventListener('click', this.close);
+        }
+
+        get show() {
+          return this.getAttribute('show') === 'true';
+        }
+
+        set show(newValue) {
+          this.setAttribute('show', newValue);
+        }
+
+        get state() {
+          return this.getAttribute('state');
+        }
+
+        set state(newValue) {
+          this.setAttribute('state', newValue);
+        }
+
+        close(event) {
+          if (['overlay', 'close'].includes(event.target.className)) {
+            this.show = false;
+          }
+        }
+
+        getLogs() {
+          this.state = 'loading';
+          controllers.getDebugLogs()
+            .then(text => {
+              this.shadowRoot.querySelector('#logs').innerText = text;
+              this.state = 'success';
+            })
+            .catch(error => {
+              this.shadowRoot.querySelector('#error').innerText = error;
+              this.state = 'fail';
+            });
+        }
+      }
+    )
+  })();
+</script>

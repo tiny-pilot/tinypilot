@@ -288,6 +288,22 @@
       });
   }
 
+  function getDebugLogs() {
+    return fetch('/api/debugLogs', {
+      method: 'GET',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      redirect: 'error',
+    })
+      .then(response => {
+        if (!response.ok) {
+          return Promise.reject(new Error(response.statusText));
+        }
+        return Promise.resolve(response);
+      })
+      .then(response => response.text());
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -300,4 +316,5 @@
   window.controllers.determineHostname = determineHostname;
   window.controllers.changeHostname = changeHostname;
   window.controllers.checkStatus = checkStatus;
+  window.controllers.getDebugLogs = getDebugLogs;
 })(window);
