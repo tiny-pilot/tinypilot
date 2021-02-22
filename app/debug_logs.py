@@ -18,6 +18,6 @@ def collect():
     """
     try:
         return subprocess.check_output(
-            ['/opt/tinypilot-privileged/collect-debug-logs', '-q'])
+            ['sudo', '/opt/tinypilot-privileged/collect-debug-logs', '-q'])
     except subprocess.CalledProcessError as e:
         raise LogCollectionScriptFailedError(str(e)) from e
