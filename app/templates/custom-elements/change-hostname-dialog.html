@@ -252,66 +252,68 @@
         async initialize() {
           this.state = "initializing";
           this.inputError = null;
-          try {
-            const hostname = await controllers.determineHostname();
-            this.initialHostname = hostname;
-            this.elements.hostnameInput.value = hostname;
-            this.onInputChanged(hostname);
-            this.state = "prompt";
-          } catch(error) {
-            this.show = false;
-            this.emitChangeHostnameFailureEvent(
-              "Failed to determine hostname",
-              error
-            );
-          }
+          controllers.determineHostname()
+            .then((hostname) => {
+              this.initialHostname = hostname;
+              this.elements.hostnameInput.value = hostname;
+              this.onInputChanged(hostname);
+              this.state = "prompt";
+            }).catch((error) => {
+              this.show = false;
+              this.emitChangeHostnameFailureEvent(
+                "Failed to determine hostname",
+                error
+              );
+            });
         }
 
         async doChangeHostname() {
           this.state = "changing";
-          try {
-            const newHostname = await controllers
-              .changeHostname(this.elements.hostnameInput.value);
-            await controllers.shutdown(/*restart=*/ true);
-            const redirectURL = futureLocation(
-              window.location,
-              this.initialHostname,
-              newHostname,
-            );
-            this.elements.futureLocation.innerText = redirectURL;
-            this.elements.futureLocation.href = redirectURL;
-            return await this.waitForReboot(redirectURL);
-          } catch(error) {
-            if (error.toString().toLowerCase().includes("invalid input")) {
-              // Display validation errors inline in order to make it more
-              // convenient for the user to correct them.
-              // TODO(jotaen): Rely on the HTTP status code once we have that
-              this.state = "prompt";
-              this.inputError = error.toString();
-              return;
-            }
-            this.show = false;
-            this.emitChangeHostnameFailureEvent(
-              "Failed to change hostname",
-              error
-            );
-          }
+          controllers.changeHostname(this.elements.hostnameInput.value)
+            .then((newHostname) => {
+              return newHostname;
+              return controllers.shutdown(/*restart=*/ true)
+                .then(() => newHostname);
+            }).then((newHostname) => {
+              return futureLocation(
+                window.location,
+                this.initialHostname,
+                newHostname,
+              );
+            }).then((redirectURL) => {
+              this.elements.futureLocation.innerText = redirectURL;
+              this.elements.futureLocation.href = redirectURL;
+              return this.waitForReboot(redirectURL);
+            }).catch((error) => {
+              if (error.toString().toLowerCase().includes("invalid input")) {
+                // Display validation errors inline in order to make it more
+                // convenient for the user to correct them.
+                // TODO(jotaen): Rely on the HTTP status code once we have that
+                this.state = "prompt";
+                this.inputError = error.toString();
+                return;
+              }
+              this.show = false;
+              this.emitChangeHostnameFailureEvent(
+                "Failed to change hostname",
+                error
+              );
+            });
         }
 
         async waitForReboot(futureLocation) {
-          try {
-            // Try to reach the future location for a total of 60 seconds.
-            await poll({
-              fn: async () => {
-                const response = await fetch(futureLocation);
-                return response.status;
-              },
-              validate: (status) => status === 200,
-              interval: 3000,
-              maxConsecutiveNetworkErrors: 20,
-            });
+          // Try to reach the future location for a total of 60 seconds.
+          poll({
+            fn: async () => {
+              const response = await fetch(futureLocation);
+              return response.status;
+            },
+            validate: (status) => status === 200,
+            interval: 3000,
+            maxConsecutiveNetworkErrors: 20,
+          }).then(() => {
             window.location = futureLocation;
-          } catch(error) {
+          }).catch((error) => {
             console.error(error);
             this.show = false;
             this.emitChangeHostnameFailureEvent(
@@ -320,7 +322,7 @@
               " have failed to reboot, or your browser is failing to " +
               " resolve the new hostname."
             );
-          }
+          });
         }
 
         emitChangeHostnameFailureEvent(summary, detail) {
