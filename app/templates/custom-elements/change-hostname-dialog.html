@@ -135,8 +135,7 @@
      * @returns {string}
      */
     function futureLocation(currentLocation, oldHostname, newHostname) {
-      const protocol = currentLocation.protocol
-      const port = currentLocation.port;
+      const protocol = currentLocation.protocol + "//";
       let fqdn = currentLocation.hostname;
       if (fqdn.startsWith(oldHostname + ".")) {
         // When the fqdn (fully qualified domain name) starts with the old
@@ -149,7 +148,9 @@
         // one. That might not be correct, but it’s the best possible guess.
         fqdn = newHostname;
       }
-      return `${protocol}//${fqdn}:${port}`;
+      const port = currentLocation.port === "" ?
+        "" : `:${currentLocation.port}`;
+      return protocol + fqdn + port;
     }
 
     customElements.define(
@@ -305,13 +306,10 @@
           // Note: it’s not enough to just wait for the mere reboot, but it
           // might require additional time for the new hostname to propagate.
           poll({
-            fn: async () => {
-              const response = await fetch(futureLocation, {
+            fn: () => fetch(futureLocation, {
                 // Disable CORS as we only send a “ping” here
                 mode: "no-cors",
-              });
-              return response.status;
-            },
+              }).then((response) => response.status),
             validate: (status) => status === 200,
             interval: 3000,
             maxConsecutiveNetworkErrors: 40,
