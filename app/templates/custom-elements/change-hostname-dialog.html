@@ -302,7 +302,7 @@
         }
 
         waitForReboot(futureLocation) {
-          // Try to reach the future location for a total of 120 seconds.
+          // Try to reach the future location for a total of 180 seconds.
           // Note: it’s not enough to just wait for the mere reboot, but it
           // might require additional time for the new hostname to propagate.
           return poll({
@@ -314,7 +314,7 @@
             // get any response at all from the new location.
             validate: (response) => response instanceof Response,
             interval: 3000,
-            maxConsecutiveNetworkErrors: 40,
+            maxConsecutiveNetworkErrors: 60,
           }).then(() => {
             window.location = futureLocation;
           }).catch((error) => {
