@@ -302,7 +302,7 @@
         }
 
         async waitForReboot(futureLocation) {
-          // Try to reach the future location for a total of 60 seconds.
+          // Try to reach the future location for a total of 120 seconds.
           poll({
             fn: async () => {
               const response = await fetch(futureLocation);
@@ -310,7 +310,7 @@
             },
             validate: (status) => status === 200,
             interval: 3000,
-            maxConsecutiveNetworkErrors: 20,
+            maxConsecutiveNetworkErrors: 40,
           }).then(() => {
             window.location = futureLocation;
           }).catch((error) => {
