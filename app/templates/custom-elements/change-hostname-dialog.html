@@ -250,8 +250,8 @@
         }
 
         async initialize() {
-          this.state = "initializing";
           this.inputError = null;
+          this.state = "initializing";
           controllers.determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
@@ -288,8 +288,8 @@
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
                 // TODO(jotaen): Rely on the HTTP status code once we have that
-                this.state = "prompt";
                 this.inputError = error.toString();
+                this.state = "prompt";
                 return;
               }
               this.show = false;
