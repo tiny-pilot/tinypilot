@@ -304,12 +304,14 @@
         waitForReboot(futureLocation) {
           // Try to reach the future location. Note:
           // - The timeout behaviour of `fetch` is browser-dependent.
-          // - How long it takes exactly for the new hostname to be reachable
-          //   is dependent on DNS propagation and caching.
-          // - We are still issuing the “ping” requests from the old location
-          //   and the server doesn’t have any CORS policy, so we have to use
-          //   `no-cors`. That entails that the response is opaque, so its
-          //   status will be `0` for example.
+          // - It’s not possible to tell exactly when the new hostname will
+          //   actually be reachable, because of DNS propagation and caching.
+          // - We are issuing the “pings” from the old location but the server
+          //   doesn’t allow requests from other locations due to CORS, so the
+          //   new server would reject our pings. Therefore we have to use
+          //   `no-cors`. That implies that the response is opaque, though, so
+          //   we can only tell that there is a response but we cannot inspect
+          //   it any further. (`response.status` is `0`, for example.)
           return poll({
             fn: () => fetch(futureLocation, {
                 mode: "no-cors",
