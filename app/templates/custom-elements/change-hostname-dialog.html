@@ -306,7 +306,10 @@
           // might require additional time for the new hostname to propagate.
           poll({
             fn: async () => {
-              const response = await fetch(futureLocation);
+              const response = await fetch(futureLocation, {
+                // Disable CORS as we only send a “ping” here
+                mode: "no-cors",
+              });
               return response.status;
             },
             validate: (status) => status === 200,
