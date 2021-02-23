@@ -254,10 +254,10 @@
           this.inputError = null;
           try {
             const hostname = await controllers.determineHostname();
-            this.state = "prompt";
             this.initialHostname = hostname;
             this.elements.hostnameInput.value = hostname;
             this.onInputChanged(hostname);
+            this.state = "prompt";
           } catch(error) {
             this.show = false;
             this.emitChangeHostnameFailureEvent(
