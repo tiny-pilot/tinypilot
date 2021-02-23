@@ -271,7 +271,6 @@
           this.state = "changing";
           controllers.changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
-              return newHostname;
               return controllers.shutdown(/*restart=*/ true)
                 .then(() => newHostname);
             }).then((newHostname) => {
