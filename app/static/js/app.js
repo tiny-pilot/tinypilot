@@ -314,10 +314,7 @@ document
     showError(evt.detail.summary, evt.detail.detail);
   });
 document.getElementById("change-hostname-btn").addEventListener("click", () => {
-  const changeHostnameDialog = document.getElementById(
-    "change-hostname-dialog"
-  );
-  changeHostnameDialog.show = true;
+  document.getElementById("change-hostname-dialog").show = true;
 });
 document
   .getElementById("change-hostname-dialog")
