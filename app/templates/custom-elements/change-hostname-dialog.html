@@ -249,7 +249,7 @@
           this.elements.changeAndRestart.disabled = isEqualToInitialValue;
         }
 
-        async initialize() {
+        initialize() {
           this.inputError = null;
           this.state = "initializing";
           controllers.determineHostname()
@@ -267,7 +267,7 @@
             });
         }
 
-        async doChangeHostname() {
+        doChangeHostname() {
           this.state = "changing";
           controllers.changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
@@ -300,8 +300,10 @@
             });
         }
 
-        async waitForReboot(futureLocation) {
+        waitForReboot(futureLocation) {
           // Try to reach the future location for a total of 120 seconds.
+          // Note: it’s not enough to just wait for the mere reboot, but it
+          // might require additional time for the new hostname to propagate.
           poll({
             fn: async () => {
               const response = await fetch(futureLocation);
