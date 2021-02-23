@@ -269,7 +269,6 @@
         }
 
         doChangeHostname() {
-          this.state = "changing";
           controllers.changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
               return controllers.shutdown(/*restart=*/ true)
@@ -283,6 +282,7 @@
             }).then((redirectURL) => {
               this.elements.futureLocation.innerText = redirectURL;
               this.elements.futureLocation.href = redirectURL;
+              this.state = "changing";
               return this.waitForReboot(redirectURL);
             }).catch((error) => {
               if (error.toString().toLowerCase().includes("invalid input")) {
@@ -305,12 +305,14 @@
           // Try to reach the future location for a total of 120 seconds.
           // Note: it’s not enough to just wait for the mere reboot, but it
           // might require additional time for the new hostname to propagate.
-          poll({
+          return poll({
             fn: () => fetch(futureLocation, {
-                // Disable CORS as we only send a “ping” here
+                // Disable CORS as we only send a “ping” here.
                 mode: "no-cors",
-              }).then((response) => response.status),
-            validate: (status) => status === 200,
+              }),
+            // Due to `no-cors` the only thing we can check for is whether we
+            // get any response at all from the new location.
+            validate: (response) => response instanceof Response,
             interval: 3000,
             maxConsecutiveNetworkErrors: 40,
           }).then(() => {
