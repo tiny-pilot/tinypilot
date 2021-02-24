@@ -230,7 +230,7 @@
       .then((response) => response.text());
   }
 
-  function getShareableURL(text, lang = "text") {
+  function textToShareableURL(text, lang = "text") {
     return fetch("/api/pastebin", {
       method: "POST",
       headers: {
@@ -257,5 +257,5 @@
   window.controllers.update = update;
   window.controllers.getUpdateStatus = getUpdateStatus;
   window.controllers.getDebugLogs = getDebugLogs;
-  window.controllers.getShareableURL = getShareableURL;
+  window.controllers.textToShareableURL = textToShareableURL;
 })(window);

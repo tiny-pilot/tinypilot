@@ -27,3 +27,11 @@ button:focus {
 button:active {
   transform: scale(0.99);
 }
+
+button.btn-success {
+  background-color: rgb(15, 157, 88);
+}
+
+button.btn-success:hover {
+  background-color: rgb(65, 177, 108);
+}

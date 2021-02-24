@@ -25,15 +25,21 @@
       z-index: 2;
     }
 
-    #loading,
-    #success,
-    #fail {
+    #logs-loading,
+    #logs-success,
+    #logs-fail,
+    #url-loading,
+    #url-success,
+    #url-fail {
       display: none;
     }
 
-    :host([state="loading"]) #loading,
-    :host([state="success"]) #success,
-    :host([state="fail"]) #fail {
+    :host([state="logs-loading"]) #logs-loading,
+    :host([state="logs-success"]) #logs-success,
+    :host([state="logs-fail"]) #logs-fail,
+    :host([state="url-loading"]) #url-loading,
+    :host([state="url-success"]) #url-success,
+    :host([state="url-fail"]) #url-fail {
       display: block;
     }
 
@@ -45,7 +51,7 @@
       padding: 2rem;
     }
 
-    #logs {
+    #logs-success .logs {
       font-family: consolas, monospace;
       background-color: #F1F1F1;
       user-select: text;
@@ -54,50 +60,56 @@
       max-height: 500px;
     }
 
-    #url {
+    #url-success .url {
       font-family: consolas, monospace;
       background-color: #F1F1F1;
       user-select: text;
       padding: 1rem 2rem;
-      display: inline-block;
     }
 
-    #error {
+    .error {
       color: rgb(153, 8, 8);
-    }
-
-    .btn-success {
-      background-color: rgb(15, 157, 88);
-    }
-
-    .btn-success:hover {
-      background-color: rgb(65, 177, 108);
-    }
-
-    .hide {
-      display: none !important;
     }
   </style>
   <div id="panel" class="overlay">
-    <div id="loading">
-      <h3>Fetching debug logs</h3>
+    <!-- Get Debug Logs -->
+    <div id="logs-loading">
+      <h3>Retrieving debug logs</h3>
       <progress-spinner></progress-spinner>
     </div>
-    <div id="success">
+    <div id="logs-success">
       <h3>Debug Logs</h3>
-      <p id="logs"></p>
-      <button id="share" class="btn-success" type="button">
+      <p class="logs"></p>
+      <button class="share-btn btn-success" type="button">
         Get shareable URL
       </button>
-      <p id="url" class="hide"></p>
-      <button id="copy" class="btn-success" type="button">
+      <button class="copy-btn btn-success" type="button">
         Copy to clipboard
       </button>
-      <button class="close" type="button">Close</button>
+      <button class="close-btn" type="button">Close</button>
     </div>
-    <div id="fail">
-      <h3>Whoops there was a problem</h3>
-      <p id="error"></p>
+    <div id="logs-fail">
+      <h3>Error retrieving debug logs</h3>
+      <p class="error"></p>
+      <button class="close-btn" type="button">Close</button>
+    </div>
+    <!-- Get Shareable URL -->
+    <div id="url-loading">
+      <h3>Retrieving shareable URL</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+    <div id="url-success">
+      <h3>Shareable URL</h3>
+      <p class="url"></p>
+      <button class="copy-btn btn-success" type="button">
+        Copy to clipboard
+      </button>
+      <button class="close-btn" type="button">Close</button>
+    </div>
+    <div id="url-fail">
+      <h3>Error retrieving shareable URL</h3>
+      <p class="error"></p>
+      <button class="close-btn" type="button">Close</button>
     </div>
   </div>
 </template>
@@ -113,29 +125,29 @@
         constructor() {
           super();
           this.attachShadow({ mode: 'open' });
+          // Ensure that these methods always refer to the correct "this",
+          // regardless of where they are called.
           this.close = this.close.bind(this);
           this.reset = this.reset.bind(this);
           this.getLogs = this.getLogs.bind(this);
-          this.getShareableURL = this.getShareableURL.bind(this);
+          this.getURL = this.getURL.bind(this);
+          this._watchKeyboard = this._watchKeyboard.bind(this);
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.shadowRoot.querySelector('.overlay')
             .addEventListener('click', this.close);
-          this.shadowRoot.querySelector('.close')
-            .addEventListener('click', this.close);
-          this.shadowRoot.querySelector('#share')
-            .addEventListener('click', this.getShareableURL);
+          this.shadowRoot.querySelectorAll('.close-btn').forEach((el) => {
+            el.addEventListener('click', this.close);
+          });
+          this.shadowRoot.querySelector('#logs-success .share-btn')
+            .addEventListener('click', this.getURL);
+          document.addEventListener('keydown', this._watchKeyboard);
         }
 
         disconnectedCallback() {
-          this.shadowRoot.querySelector('.overlay')
-            .removeEventListener('click', this.close);
-          this.shadowRoot.querySelector('.close')
-            .removeEventListener('click', this.close);
-          this.shadowRoot.querySelector('#share')
-            .removeEventListener('click', this.getShareableURL);
+          document.removeEventListener('keydown', this._watchKeyboard);
         }
 
         get show() {
@@ -154,45 +166,58 @@
           this.setAttribute('state', newValue);
         }
 
-        close(event) {
-          if (['overlay', 'close'].includes(event.target.className)) {
-            this.show = false;
-            this.reset();
+        _watchKeyboard(event) {
+          // Prevent keystrokes from being sent to TinyPilot
+          if (this.show) {
+            event.stopImmediatePropagation();
           }
+        }
+
+        close(event) {
+          // Only close the dialog when the element that triggered the
+          // event (i.e. event.target) is the same as the element that the
+          // event listener is attached to (i.e. event.currentTarget).
+          // Source: https://stackoverflow.com/a/53815609/3769045
+          if (event.target !== event.currentTarget) {
+            return;
+          }
+          this.show = false;
+          this.reset();
         }
 
         reset() {
           this.state = null;
-          const url = this.shadowRoot.querySelector('#url')
-            .classList.add('hide');
-          const share = this.shadowRoot.querySelector('#share')
-            .classList.remove('hide');
         }
 
         getLogs() {
-          this.state = 'loading';
+          this.state = 'logs-loading';
           controllers.getDebugLogs()
             .then(text => {
-              this.shadowRoot.querySelector('#logs').innerText = text;
-              this.state = 'success';
+              this.shadowRoot.querySelector('#logs-success .logs')
+                .innerText = text;
+              this.state = 'logs-success';
             })
             .catch(error => {
-              this.shadowRoot.querySelector('#error').innerText = error;
-              this.state = 'fail';
+              this.shadowRoot.querySelector('#logs-fail .error')
+                .innerText = error;
+              this.state = 'logs-fail';
             });
         }
 
-        getShareableURL() {
-          const text = this.shadowRoot.querySelector('#logs').innerText;
-          controllers.getShareableURL(text)
+        getURL() {
+          this.state = 'url-loading';
+          const text = this.shadowRoot.querySelector('#logs-success .logs')
+            .innerText;
+          controllers.textToShareableURL(text)
             .then(url => {
-              this.shadowRoot.querySelector('#share').classList.add('hide');
-              const share = this.shadowRoot.querySelector('#url');
-              share.innerText = url;
-              share.classList.remove('hide');
+              this.shadowRoot.querySelector('#url-success .url')
+                .innerText = url;
+              this.state = 'url-success';
             })
             .catch(error => {
-              console.log('Error getting shareable URL', error);
+              this.shadowRoot.querySelector('#url-fail .error')
+                .innerText = error;
+              this.state = 'url-fail';
             });
         }
       }
