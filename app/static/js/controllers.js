@@ -266,6 +266,28 @@
       });
   }
 
+  function checkStatus(baseURL) {
+    const route = "/api/status";
+    return fetch(baseURL + route, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then(() => {
+        return Promise.resolve(true);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -277,4 +299,5 @@
   window.controllers.getUpdateStatus = getUpdateStatus;
   window.controllers.determineHostname = determineHostname;
   window.controllers.changeHostname = changeHostname;
+  window.controllers.checkStatus = checkStatus;
 })(window);

@@ -306,27 +306,16 @@
           // - The timeout behaviour of `fetch` is browser-dependent.
           // - It’s not possible to tell exactly when the new hostname will
           //   actually be reachable, because of DNS propagation and caching.
-          // - We are issuing the “pings” from the old location but the server
-          //   doesn’t allow requests from other locations due to CORS, so the
-          //   new server would reject our pings. Therefore we have to use
-          //   `no-cors`. That implies that the response is opaque, though, so
-          //   we can only tell that there is a response but we cannot inspect
-          //   it any further. (`response.status` is `0`, for example.)
+          // - The `status` endpoint is the only one that allows requests
+          //   from everywhere (due to CORS), so it’s safe to request from
+          //   the “old” location.
           return poll({
-            fn: () => fetch(futureLocation, {
-                mode: "no-cors",
-              }),
-            validate: (response) => response instanceof Response,
+            fn: () => controllers.checkStatus(futureLocation),
+            validate: (isUpAndRunning) => isUpAndRunning === true,
             interval: 3000,
             maxConsecutiveNetworkErrors: 60,
           }).then(() => {
-            setTimeout(() => {
-              // The response status might be 502 shortly after reboot, but we
-              // cannot tell for sure due to the CORS behaviour described
-              // above. Therefore we just delay the redirect by a bit and hope
-              // for the best.
-              window.location = futureLocation;
-            }, 3000);
+            window.location = futureLocation;
           }).catch((error) => {
             console.error(error);
             this.show = false;
