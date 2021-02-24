@@ -213,6 +213,27 @@ def hostname_set():
         return _json_error('Operation failed: %s' % str(e)), 200
 
 
+@api_blueprint.route('/status', methods=['GET'])
+def status_get():
+    """Checks the status of TinyPilot.
+
+    This endpoint may be called from all locations, so there is no restriction
+    in regards to CORS.
+
+    Returns:
+        A JSON string with two keys: success, error.
+
+        Example:
+        {
+            'success': true,
+            'error': null
+        }
+    """
+    response = _json_success()
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
 # The default dictionary is okay because we're not modifying it.
 # pylint: disable=dangerous-default-value
 def _json_success(fields={}):

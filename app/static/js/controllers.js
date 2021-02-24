@@ -214,6 +214,80 @@
       });
   }
 
+  function determineHostname() {
+    const route = "/api/hostname";
+    return fetch(route, {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then((hostnameResponse) => {
+        if (!hostnameResponse.hasOwnProperty("hostname")) {
+          return Promise.reject(new Error("Missing expected hostname field"));
+        }
+        return Promise.resolve(hostnameResponse.hostname);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function changeHostname(newHostname) {
+    const route = "/api/hostname";
+    return fetch(route, {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({ hostname: newHostname }),
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then(() => {
+        return Promise.resolve(newHostname);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function checkStatus(baseURL) {
+    const route = "/api/status";
+    return fetch(baseURL + route, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .then(() => {
+        return Promise.resolve(true);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -223,4 +297,7 @@
   window.controllers.shutdown = shutdown;
   window.controllers.update = update;
   window.controllers.getUpdateStatus = getUpdateStatus;
+  window.controllers.determineHostname = determineHostname;
+  window.controllers.changeHostname = changeHostname;
+  window.controllers.checkStatus = checkStatus;
 })(window);

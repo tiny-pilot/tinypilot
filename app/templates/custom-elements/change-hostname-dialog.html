@@ -1,0 +1,344 @@
+<template id="change-hostname-template">
+  <style>
+    @import "css/button.css";
+
+    .overlay {
+      display: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    :host([show="true"]) .overlay {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2;
+    }
+
+    #initializing,
+    #prompt,
+    #changing,
+    #input-error {
+      display: none;
+    }
+
+    :host([state="initializing"]) #initializing {
+      display: block;
+    }
+
+    :host([state="prompt"]) #prompt {
+      display: block;
+    }
+
+    :host([state="changing"]) #changing {
+      display: block;
+    }
+
+    :host([has-input-error="true"]) #input-error {
+      display: block;
+    }
+
+    #change-hostname-panel > div {
+      background-color: rgb(252, 236, 223);
+      border: 1px solid rgb(139, 97, 62);
+      max-width: 800px;
+      margin: 100px auto 0rem auto;
+      padding: 2rem;
+    }
+
+    #hostname-input {
+      margin: 0 auto;
+      font-family: monospace;
+      font-size: 1.1rem;
+      padding: 0.3rem;
+    }
+
+    #change-and-restart {
+      background-color: rgb(15, 157, 88);
+    }
+
+    #change-and-restart:disabled {
+      background-color: rgb(117, 202, 161);
+      cursor: not-allowed;
+    }
+
+    #change-and-restart:hover {
+      background-color: rgb(65, 177, 108);
+    }
+
+    .input-container {
+      margin: 1.5rem 0;
+    }
+
+    #input-error {
+      color: rgb(153, 8, 8);
+      font-weight: bold;
+    }
+  </style>
+  <div id="change-hostname-panel" class="overlay">
+    <div id="initializing">
+      <p>Retrieving current hostname</p>
+      <progress-spinner></progress-spinner>
+      <button id="cancel-initialization" type="button">Cancel</button>
+    </div>
+    <div id="prompt">
+      <h3>Change hostname</h3>
+      <p>
+        Enter a new hostname for TinyPilot.
+      </p>
+      <div class="input-container">
+        <label for="hostname-input">Hostname:</label>
+        <input type="text" id="hostname-input" size="30">
+        <p id="input-error"><!-- Filled programmatically --></p>
+      </div>
+      <button id="change-and-restart" type="button">
+        Change and restart
+      </button>
+      <button id="cancel-hostname-change" type="button">Cancel</button>
+    </div>
+    <div id="changing">
+      <h3>Changing hostname</h3>
+      <p>
+        Waiting for TinyPilot to reboot at
+        <a href="" id="future-location"><!-- Filled programmatically --></a>
+        <br>
+        You will be redirected automatically.
+      </p>
+      <progress-spinner></progress-spinner>
+    </div>
+  </div>
+</template>
+
+<script src="/js/util/poll.js"></script>
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#change-hostname-template");
+
+    /**
+     * Figure out the new URL under which TinyPilot will become
+     * available after rebooting.
+     * @param {Location} currentLocation
+     * @param {string} oldHostname
+     * @param {string} newHostname
+     * @returns {string}
+     */
+    function futureLocation(currentLocation, oldHostname, newHostname) {
+      const protocol = currentLocation.protocol + "//";
+      let fqdn = currentLocation.hostname;
+      if (fqdn.startsWith(oldHostname + ".")) {
+        // When the fqdn (fully qualified domain name) starts with the old
+        // hostname followed by a dot, then we replace the old one by the
+        // new one in order to preserve the domain part.
+        // E.g.: "oldtinypilot.home.local" => "newtinypilot.home.local"
+        fqdn = fqdn.replace(oldHostname, newHostname);
+      } else {
+        // Otherwise we just assume the new hostname to be a fully qualified
+        // one. That might not be correct, but it’s the best possible guess.
+        fqdn = newHostname;
+      }
+      const port = currentLocation.port === "" ?
+        "" : `:${currentLocation.port}`;
+      return protocol + fqdn + port;
+    }
+
+    customElements.define(
+      "change-hostname-dialog",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.elements = {
+            inputError: this.shadowRoot
+              .getElementById("input-error"),
+            hostnameInput: this.shadowRoot
+              .getElementById("hostname-input"),
+            changeAndRestart: this.shadowRoot
+              .getElementById("change-and-restart"),
+            cancelInitialization: this.shadowRoot
+              .getElementById("cancel-initialization"),
+            cancelHostnameChange: this.shadowRoot
+              .getElementById("cancel-hostname-change"),
+            futureLocation: this.shadowRoot
+              .getElementById("future-location"),
+          };
+
+          this.elements.hostnameInput
+            .addEventListener("keydown", evt => {
+              // Prevent keystrokes from being sent to TinyPilot
+              evt.stopPropagation();
+            })
+          this.elements.hostnameInput
+            .addEventListener("input", () => {
+              this.onInputChanged();
+            })
+          this.elements.changeAndRestart
+            .addEventListener("click", () => {
+              this.doChangeHostname();
+            });
+          this.elements.cancelInitialization
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+          this.elements.cancelHostnameChange
+            .addEventListener("click", () => {
+              this.show = false;
+            });
+        }
+
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          if (this.show !== newValue && newValue === true) {
+            // Initialize when opening freshly
+            this.initialize();
+          }
+          this.setAttribute("show", newValue);
+        }
+
+        get state() {
+          return this.getAttribute("state");
+        }
+
+        set state(newValue) {
+          this.setAttribute("state", newValue);
+        }
+
+        get initialHostname() {
+          return this.getAttribute("initial-hostname");
+        }
+
+        set initialHostname(initialHostname) {
+          this.setAttribute("initial-hostname", initialHostname);
+        }
+
+        get inputError() {
+          return this.getAttribute("has-input-error");
+        }
+
+        set inputError(message) {
+          const inputError = this.elements.inputError;
+          if (message) {
+            this.setAttribute("has-input-error", "true");
+            inputError.innerText = message;
+            return;
+          }
+          this.removeAttribute("has-input-error");
+          inputError.innerText = "";
+        }
+
+        onInputChanged() {
+          const isEqualToInitialValue =
+            (this.elements.hostnameInput.value === this.initialHostname);
+          this.elements.changeAndRestart.disabled = isEqualToInitialValue;
+        }
+
+        initialize() {
+          this.inputError = null;
+          this.state = "initializing";
+          controllers.determineHostname()
+            .then((hostname) => {
+              this.initialHostname = hostname;
+              this.elements.hostnameInput.value = hostname;
+              this.onInputChanged(hostname);
+              this.state = "prompt";
+            }).catch((error) => {
+              this.show = false;
+              this.emitChangeHostnameFailureEvent(
+                "Failed to determine hostname",
+                error
+              );
+            });
+        }
+
+        doChangeHostname() {
+          controllers.changeHostname(this.elements.hostnameInput.value)
+            .then((newHostname) => {
+              return controllers.shutdown(/*restart=*/ true)
+                .then(() => newHostname);
+            }).then((newHostname) => {
+              return futureLocation(
+                window.location,
+                this.initialHostname,
+                newHostname,
+              );
+            }).then((redirectURL) => {
+              this.elements.futureLocation.innerText = redirectURL;
+              this.elements.futureLocation.href = redirectURL;
+              this.state = "changing";
+              return this.waitForReboot(redirectURL);
+            }).catch((error) => {
+              if (error.toString().toLowerCase().includes("invalid input")) {
+                // Display validation errors inline in order to make it more
+                // convenient for the user to correct them.
+                // TODO(jotaen): Rely on the HTTP status code once we have that
+                this.inputError = error.toString();
+                this.state = "prompt";
+                return;
+              }
+              this.show = false;
+              this.emitChangeHostnameFailureEvent(
+                "Failed to change hostname",
+                error
+              );
+            });
+        }
+
+        waitForReboot(futureLocation) {
+          // Try to reach the future location. Note:
+          // - The timeout behaviour of `fetch` is browser-dependent.
+          // - It’s not possible to tell exactly when the new hostname will
+          //   actually be reachable, because of DNS propagation and caching.
+          // - The `status` endpoint is the only one that allows requests
+          //   from everywhere (due to CORS), so it’s safe to request from
+          //   the “old” location.
+          return poll({
+            fn: () => controllers.checkStatus(futureLocation),
+            validate: (isUpAndRunning) => isUpAndRunning === true,
+            interval: 3000,
+            maxConsecutiveNetworkErrors: 60,
+          }).then(() => {
+            window.location = futureLocation;
+          }).catch((error) => {
+            console.error(error);
+            this.show = false;
+            this.emitChangeHostnameFailureEvent(
+              "Failed to redirect",
+              "Cannot reach TinyPilot under the new hostname. The device may" +
+              " have failed to reboot, or your browser is failing to " +
+              " resolve the new hostname."
+            );
+          });
+        }
+
+        emitChangeHostnameFailureEvent(summary, detail) {
+          this.dispatchEvent(
+            new CustomEvent("change-hostname-failure", {
+              detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+      }
+    );
+  })();
+</script>
