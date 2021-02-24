@@ -229,9 +229,9 @@ def status_get():
             'error': null
         }
     """
-    resp = _json_success()
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    return resp
+    response = _json_success()
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 # The default dictionary is okay because we're not modifying it.
