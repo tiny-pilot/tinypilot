@@ -155,6 +155,7 @@ TinyPilot would not be possible without the excellent and generous work from man
 * [uStreamer](https://github.com/pikvm/ustreamer)
 * [Flask](https://github.com/pallets/flask) and [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/)
 * [vdesktop](https://github.com/Botspot/vdesktop)
+* [litestream](https://litestream.io)
 * [Raspberry Pi](https://www.raspberrypi.org/)
 * [nginx](https://nginx.org/) and [ansible-role-nginx](https://github.com/geerlingguy/ansible-role-nginx)
 
