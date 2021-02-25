@@ -125,6 +125,8 @@
     customElements.define(
       'debug-dialog',
       class DebugDialog extends HTMLElement {
+        copyTimer = null;
+
         constructor() {
           super();
           this.attachShadow({ mode: 'open' });
@@ -134,6 +136,8 @@
           this.reset = this.reset.bind(this);
           this.getLogs = this.getLogs.bind(this);
           this.getURL = this.getURL.bind(this);
+          this.copyLogs = this.copyLogs.bind(this);
+          this.copyURL = this.copyURL.bind(this);
           this._watchKeyboard = this._watchKeyboard.bind(this);
         }
 
@@ -146,6 +150,10 @@
           });
           this.shadowRoot.querySelector('#logs-success .share-btn')
             .addEventListener('click', this.getURL);
+          this.shadowRoot.querySelector('#logs-success .copy-btn')
+            .addEventListener('click', this.copyLogs);
+          this.shadowRoot.querySelector('#url-success .copy-btn')
+            .addEventListener('click', this.copyURL);
           doc.addEventListener('keydown', this._watchKeyboard);
         }
 
@@ -222,6 +230,25 @@
                 .textContent = error;
               this.state = 'url-fail';
             });
+        }
+
+        copyLogs(event) {
+          let logs = this.shadowRoot.querySelector('#logs-success .logs');
+          this.copyToClipboard(logs, event.target);
+        }
+
+        copyURL(event) {
+          let url = this.shadowRoot.querySelector('#url-success .url');
+          this.copyToClipboard(url, event.target);
+        }
+
+        copyToClipboard(element, button) {
+          if (this.copyTimer) clearTimeout(this.copyTimer);
+          controllers.copyElementTextToClipboard(element);
+          button.innerText = 'Copied!';
+          this.copyTimer = setTimeout(() => {
+            button.innerText = 'Copy to clipboard';
+          }, 1000);
         }
       }
     )
