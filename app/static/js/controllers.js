@@ -317,6 +317,19 @@
       .then((data) => `${route}/${data.id}`);
   }
 
+  function copyElementTextToClipboard(element) {
+    // Reliably copy text to a clipboard. The fancy Async Clipboard API
+    // only works on pages served up by https (i.e. not on the dev server)
+    // Source: https://stackoverflow.com/a/25456308/3769045
+    let range = document.createRange();
+    let selection = window.getSelection();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand("copy");
+    selection.removeAllRanges();
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -331,4 +344,5 @@
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
   window.controllers.textToShareableURL = textToShareableURL;
+  window.controllers.copyElementTextToClipboard = copyElementTextToClipboard;
 })(window);
