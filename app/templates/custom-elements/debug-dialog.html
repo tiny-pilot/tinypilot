@@ -58,6 +58,7 @@
       text-align: left;
       overflow-y: scroll;
       max-height: 500px;
+      white-space: pre-wrap;
     }
 
     #url-success .url {
@@ -69,6 +70,8 @@
 
     .error {
       color: rgb(153, 8, 8);
+      user-select: text;
+      white-space: pre-wrap;
     }
   </style>
   <div id="panel" class="overlay">
@@ -143,11 +146,11 @@
           });
           this.shadowRoot.querySelector('#logs-success .share-btn')
             .addEventListener('click', this.getURL);
-          document.addEventListener('keydown', this._watchKeyboard);
+          doc.addEventListener('keydown', this._watchKeyboard);
         }
 
         disconnectedCallback() {
-          document.removeEventListener('keydown', this._watchKeyboard);
+          doc.removeEventListener('keydown', this._watchKeyboard);
         }
 
         get show() {
@@ -194,12 +197,12 @@
           controllers.getDebugLogs()
             .then(text => {
               this.shadowRoot.querySelector('#logs-success .logs')
-                .innerText = text;
+                .textContent = text;
               this.state = 'logs-success';
             })
             .catch(error => {
               this.shadowRoot.querySelector('#logs-fail .error')
-                .innerText = error;
+                .textContent = error;
               this.state = 'logs-fail';
             });
         }
@@ -207,16 +210,16 @@
         getURL() {
           this.state = 'url-loading';
           const text = this.shadowRoot.querySelector('#logs-success .logs')
-            .innerText;
+            .textContent;
           controllers.textToShareableURL(text)
             .then(url => {
               this.shadowRoot.querySelector('#url-success .url')
-                .innerText = url;
+                .textContent = url;
               this.state = 'url-success';
             })
             .catch(error => {
               this.shadowRoot.querySelector('#url-fail .error')
-                .innerText = error;
+                .textContent = error;
               this.state = 'url-fail';
             });
         }

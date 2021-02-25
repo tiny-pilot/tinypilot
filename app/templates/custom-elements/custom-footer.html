@@ -1,0 +1,70 @@
+<template id="custom-footer-template">
+  <style>
+    .footer {
+      margin: 1rem 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding: 0 2rem;
+    }
+
+    .list-inline {
+      padding: 0;
+      list-style: none;
+    }
+
+    .list-inline-item {
+      display: inline-block;
+    }
+
+    li a {
+      color: white;
+      padding: 0.7rem 1.3rem;
+      border: 1px solid white;
+    }
+
+    li a:hover {
+      cursor: pointer;
+      background-color: rgb(135, 135, 135);
+    }
+  </style>
+  <div class="footer">
+    <div class="container">
+      <ul class="list-inline">
+        <li class="list-inline-item">
+          <a id="debug-dialog-btn">View Logs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector('#custom-footer-template');
+    customElements.define(
+      'custom-footer',
+      class CustomFooter extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+        }
+
+        connectedCallback() {
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot.querySelector('#debug-dialog-btn')
+            .addEventListener('click', () => {
+              const debugDialog = doc.querySelector('#debug-dialog');
+              debugDialog.show = true;
+              debugDialog.getLogs();
+            });
+        }
+      }
+    )
+  })();
+</script>
