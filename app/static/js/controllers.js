@@ -230,21 +230,17 @@
       .then((response) => response.text());
   }
 
-  function textToShareableURL(text, lang = "text") {
-    return fetch("/api/pastebin", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-        "Content-Type": "application/json",
-      },
-      mode: "same-origin",
+  function textToShareableURL(text) {
+    let route = "https://logs.tinypilotkvm.com";
+    return fetch(route, {
+      method: "PUT",
+      mode: "cors",
       cache: "no-cache",
       redirect: "error",
-      body: JSON.stringify({ text }),
+      body: text,
     })
       .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then((data) => data.url);
+      .then((data) => `${route}/${data.id}`);
   }
 
   if (!window.hasOwnProperty("controllers")) {
