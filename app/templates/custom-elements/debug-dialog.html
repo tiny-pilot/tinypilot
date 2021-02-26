@@ -62,10 +62,7 @@
     }
 
     #url-success .url {
-      font-family: consolas, monospace;
-      background-color: #F1F1F1;
       user-select: text;
-      padding: 1rem 2rem;
     }
 
     .error {
@@ -103,7 +100,9 @@
     </div>
     <div id="url-success">
       <h3>Shareable URL</h3>
-      <p class="url"></p>
+      <div>
+        <a class="url"></a>
+      </div>
       <button class="copy-btn btn-success" type="button">
         Copy to clipboard
       </button>
@@ -117,6 +116,7 @@
   </div>
 </template>
 
+<script src="/js/util/clipboard.js"></script>
 <script>
   (function () {
     const doc = (document._currentScript || document.currentScript)
@@ -125,8 +125,6 @@
     customElements.define(
       'debug-dialog',
       class DebugDialog extends HTMLElement {
-        copyTimer = null;
-
         constructor() {
           super();
           this.attachShadow({ mode: 'open' });
@@ -135,30 +133,38 @@
           this.close = this.close.bind(this);
           this.reset = this.reset.bind(this);
           this.getLogs = this.getLogs.bind(this);
-          this.getURL = this.getURL.bind(this);
-          this.copyLogs = this.copyLogs.bind(this);
-          this.copyURL = this.copyURL.bind(this);
-          this._watchKeyboard = this._watchKeyboard.bind(this);
+          this.getUrl = this.getUrl.bind(this);
+          this._consumeKeystrokes = this._consumeKeystrokes.bind(this);
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.shadowRoot.querySelector('.overlay')
-            .addEventListener('click', this.close);
           this.shadowRoot.querySelectorAll('.close-btn').forEach((el) => {
             el.addEventListener('click', this.close);
           });
           this.shadowRoot.querySelector('#logs-success .share-btn')
-            .addEventListener('click', this.getURL);
+            .addEventListener('click', this.getUrl);
           this.shadowRoot.querySelector('#logs-success .copy-btn')
-            .addEventListener('click', this.copyLogs);
+            .addEventListener('click', (event) => {
+              this.onPushCopyButton(
+                /*buttonElement=*/ event.target,
+                /*sourceElement=*/ this.shadowRoot
+                  .querySelector('#logs-success .logs')
+              );
+            });
           this.shadowRoot.querySelector('#url-success .copy-btn')
-            .addEventListener('click', this.copyURL);
-          doc.addEventListener('keydown', this._watchKeyboard);
+            .addEventListener('click', (event) => {
+              this.onPushCopyButton(
+                /*buttonElement=*/ event.target,
+                /*sourceElement=*/ this.shadowRoot
+                  .querySelector('#url-success .url')
+              );
+            });
+          doc.addEventListener('keydown', this._consumeKeystrokes);
         }
 
         disconnectedCallback() {
-          doc.removeEventListener('keydown', this._watchKeyboard);
+          doc.removeEventListener('keydown', this._consumeKeystrokes);
         }
 
         get show() {
@@ -177,7 +183,7 @@
           this.setAttribute('state', newValue);
         }
 
-        _watchKeyboard(event) {
+        _consumeKeystrokes(event) {
           // Prevent keystrokes from being sent to TinyPilot
           if (this.show) {
             event.stopImmediatePropagation();
@@ -185,13 +191,6 @@
         }
 
         close(event) {
-          // Only close the dialog when the element that triggered the
-          // event (i.e. event.target) is the same as the element that the
-          // event listener is attached to (i.e. event.currentTarget).
-          // Source: https://stackoverflow.com/a/53815609/3769045
-          if (event.target !== event.currentTarget) {
-            return;
-          }
           this.show = false;
           this.reset();
         }
@@ -215,14 +214,16 @@
             });
         }
 
-        getURL() {
+        getUrl() {
           this.state = 'url-loading';
           const text = this.shadowRoot.querySelector('#logs-success .logs')
             .textContent;
-          controllers.textToShareableURL(text)
+          controllers.textToShareableUrl(text)
             .then(url => {
-              this.shadowRoot.querySelector('#url-success .url')
-                .textContent = url;
+              const urlElement = this.shadowRoot
+                .querySelector('#url-success .url');
+              urlElement.textContent = url;
+              urlElement.href = url;
               this.state = 'url-success';
             })
             .catch(error => {
@@ -232,23 +233,9 @@
             });
         }
 
-        copyLogs(event) {
-          let logs = this.shadowRoot.querySelector('#logs-success .logs');
-          this.copyToClipboard(logs, event.target);
-        }
-
-        copyURL(event) {
-          let url = this.shadowRoot.querySelector('#url-success .url');
-          this.copyToClipboard(url, event.target);
-        }
-
-        copyToClipboard(element, button) {
-          if (this.copyTimer) clearTimeout(this.copyTimer);
-          controllers.copyElementTextToClipboard(element);
-          button.innerText = 'Copied!';
-          this.copyTimer = setTimeout(() => {
-            button.innerText = 'Copy to clipboard';
-          }, 1000);
+        onPushCopyButton(buttonElement, sourceElement) {
+          copyElementTextToClipboard(sourceElement);
+          buttonElement.innerText = 'Copied!';
         }
       }
     )

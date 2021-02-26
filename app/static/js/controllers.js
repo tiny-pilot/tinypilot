@@ -304,9 +304,9 @@
       .then((response) => response.text());
   }
 
-  function textToShareableURL(text) {
-    let route = "https://logs.tinypilotkvm.com";
-    return fetch(route, {
+  function textToShareableUrl(text) {
+    const baseUrl = "https://logs.tinypilotkvm.com";
+    return fetch(baseUrl + "/", {
       method: "PUT",
       mode: "cors",
       cache: "no-cache",
@@ -314,20 +314,13 @@
       body: text,
     })
       .then(readHttpJsonResponse)
-      .then((data) => `${route}/${data.id}`);
-  }
-
-  function copyElementTextToClipboard(element) {
-    // Reliably copy text to a clipboard. The fancy Async Clipboard API
-    // only works on pages served up by https (i.e. not on the dev server)
-    // Source: https://stackoverflow.com/a/25456308/3769045
-    let range = document.createRange();
-    let selection = window.getSelection();
-    range.selectNodeContents(element);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    document.execCommand("copy");
-    selection.removeAllRanges();
+      .then((data) => {
+        if (!data.hasOwnProperty("id")) {
+          return Promise.reject(new Error("Missing expected id field"));
+        }
+        return Promise.resolve(data);
+      })
+      .then((data) => baseUrl + `/${data.id}`);
   }
 
   if (!window.hasOwnProperty("controllers")) {
@@ -343,6 +336,5 @@
   window.controllers.changeHostname = changeHostname;
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
-  window.controllers.textToShareableURL = textToShareableURL;
-  window.controllers.copyElementTextToClipboard = copyElementTextToClipboard;
+  window.controllers.textToShareableUrl = textToShareableUrl;
 })(window);

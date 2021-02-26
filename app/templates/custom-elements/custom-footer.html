@@ -2,43 +2,23 @@
   <style>
     .footer {
       margin: 1rem 0;
-    }
-
-    .container {
+      padding: 0 2rem;
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
-      padding: 0 2rem;
     }
 
-    .list-inline {
-      padding: 0;
-      list-style: none;
-    }
-
-    .list-inline-item {
-      display: inline-block;
-    }
-
-    li a {
+    a {
       color: white;
-      padding: 0.7rem 1.3rem;
-      border: 1px solid white;
     }
 
-    li a:hover {
+    a:hover {
       cursor: pointer;
-      background-color: rgb(135, 135, 135);
+      text-decoration: underline;
     }
   </style>
   <div class="footer">
-    <div class="container">
-      <ul class="list-inline">
-        <li class="list-inline-item">
-          <a id="debug-dialog-btn">View Logs</a>
-        </li>
-      </ul>
-    </div>
+    <a id="debug-dialog-btn">View Logs</a>
   </div>
 </template>
 
