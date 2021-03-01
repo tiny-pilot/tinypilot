@@ -34,6 +34,7 @@
         <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
         <update-dialog id="update-dialog"></update-dialog>
         <change-hostname-dialog id="change-hostname-dialog"></change-hostname-dialog>
+        <debug-dialog id="debug-dialog"></debug-dialog>
 
         <remote-screen
           id="remote-screen"
@@ -42,6 +43,7 @@
 
         {% include "components/keyboard-panel.html" %}
       </div>
+      <custom-footer></custom-footer>
     </div>
     {% include "components/paste-overlay.html" %}
     <script src="/third-party/socket.io/2.3.0/socket.io.js"></script>

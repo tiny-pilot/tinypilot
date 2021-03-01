@@ -16,4 +16,3 @@ python-socketio==4.6.1
 six==1.15.0
 Werkzeug==1.0.1
 WTForms==2.3.3
-

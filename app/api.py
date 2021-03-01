@@ -19,7 +19,7 @@ def debug_logs_get():
         A text/plain response with the content of the logs in the response body.
     """
     try:
-        return flask.Response(debug_logs.collect())
+        return flask.Response(debug_logs.collect(), mimetype='text/plain')
     except debug_logs.Error as e:
         return flask.Response('Failed to retrieve debug logs: %s' % str(e),
                               status=500)

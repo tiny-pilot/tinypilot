@@ -288,6 +288,41 @@
       });
   }
 
+  function getDebugLogs() {
+    return fetch("/api/debugLogs", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(new Error(response.statusText));
+        }
+        return Promise.resolve(response);
+      })
+      .then((response) => response.text());
+  }
+
+  function textToShareableUrl(text) {
+    const baseUrl = "https://logs.tinypilotkvm.com";
+    return fetch(baseUrl + "/", {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      redirect: "error",
+      body: text,
+    })
+      .then(readHttpJsonResponse)
+      .then((data) => {
+        if (!data.hasOwnProperty("id")) {
+          return Promise.reject(new Error("Missing expected id field"));
+        }
+        return Promise.resolve(data);
+      })
+      .then((data) => baseUrl + `/${data.id}`);
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -300,4 +335,6 @@
   window.controllers.determineHostname = determineHostname;
   window.controllers.changeHostname = changeHostname;
   window.controllers.checkStatus = checkStatus;
+  window.controllers.getDebugLogs = getDebugLogs;
+  window.controllers.textToShareableUrl = textToShareableUrl;
 })(window);
