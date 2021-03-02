@@ -57,8 +57,8 @@ TinyPilot follows Google code style conventions:
 
 * [Python](https://google.github.io/styleguide/pyguide.html)
 * [HTML/CSS](https://google.github.io/styleguide/htmlcssguide.html)
-* [JavaScript](https://google.github.io/styleguide/jsguide.html)
 * [Shell](https://google.github.io/styleguide/shellguide.html)
+* ~~[JavaScript](https://google.github.io/styleguide/jsguide.html)~~ - We are "loosely inspired" by the JS style guide, but don't observe it strictly
 
 TinyPilot uses automated linters and formatters as much as possible to automate style conventions.
 
