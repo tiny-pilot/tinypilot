@@ -312,8 +312,8 @@
           return poll({
             fn: () => controllers.checkStatus(futureLocation),
             validate: (isUpAndRunning) => isUpAndRunning === true,
-            interval: 3000,
-            maxConsecutiveNetworkErrors: 60,
+            interval: 3 * 1000,
+            timeout: 180 * 1000,
           }).then(() => {
             window.location = futureLocation;
           }).catch((error) => {
