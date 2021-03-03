@@ -189,25 +189,14 @@
             });
         }
 
-        waitForUpdateToStart() {
-          return poll({
-            fn: controllers.getUpdateStatus,
-            validate: (status) => {
-              return ["IN_PROGRESS", "DONE"].includes(status);
-            },
-            interval: 1500,
-            maxConsecutiveNetworkErrors: 5,
-          });
-        }
-
         waitForUpdateToFinish() {
           return poll({
             fn: controllers.getUpdateStatus,
             validate: (status) => {
               return status === "DONE";
             },
-            interval: 1500,
-            maxConsecutiveNetworkErrors: 5,
+            interval: 2 * 1000,
+            timeout: 300 * 1000,
           });
         }
 
@@ -251,13 +240,16 @@
           }
 
           try {
-            await this.waitForUpdateToStart();
             await this.waitForUpdateToFinish();
             // Updating causes the backend to restart, changing the CSRF token.
             await controllers.refreshCsrfToken();
             await this.performRestart();
           } catch (error) {
-            this.emitUpdateFailureEvent("Failed to complete update", error);
+            console.error(error);
+            this.emitUpdateFailureEvent(
+              "Failed to complete update",
+              "Please refresh this page and try again. Error details: " + error
+            );
             return;
           }
         }
