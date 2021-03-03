@@ -103,9 +103,7 @@ function onSocketConnect() {
   }
 
   connectedToServer = true;
-  const menuBar = document.getElementById("menu-bar");
-  menuBar.connected = true;
-  menuBar.onSetCursor = setCursor;
+  document.getElementById("menu-bar").connectionIndicator.connected = true;
   setCursor(settings.getScreenCursor());
 
   // If we're restarting after an update, mark the update as finished.
@@ -118,7 +116,8 @@ function onSocketConnect() {
 function onSocketDisconnect(reason) {
   setCursor("disabled", false);
   connectedToServer = false;
-  const connectionIndicator = document.getElementById("menu-bar");
+  const connectionIndicator = document.getElementById("menu-bar")
+    .connectionIndicator;
   connectionIndicator.connected = false;
   connectionIndicator.disconnectReason = reason;
   document.getElementById("app").focus();
@@ -259,7 +258,10 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
-document.getElementById("menu-bar").cursor = settings.getScreenCursor()
+const menuBar = document.getElementById("menu-bar");
+menuBar.cursor = settings.getScreenCursor();
+menuBar.onChangeCursor = setCursor;
+
 document
   .getElementById("remote-screen")
   .addEventListener("mouse-event", (evt) => {

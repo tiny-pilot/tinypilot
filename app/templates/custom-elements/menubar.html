@@ -182,7 +182,10 @@
     </li>
 
     <li class="connection-indicator">
-      <connection-indicator id="connection-indicator"></connection-indicator>
+      <!-- The connection indicator will be moved
+        to the status bar later on -->
+      <connection-indicator id="connection-indicator">
+      </connection-indicator>
     </li>
     <li class="nav-icon">
       <a href="https://github.com/mtlynch/tinypilot" target="_blank">
@@ -210,23 +213,28 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          this.shadowRoot.getElementById("power-btn").addEventListener("click", () => {
-            document.getElementById("shutdown-dialog").show = true;
+          this.shadowRoot.getElementById("power-btn")
+            .addEventListener("click", () => {
+              document.getElementById("shutdown-dialog").show = true;
           });
-          this.shadowRoot.getElementById("screenshot-btn").addEventListener("click", (evt) => {
-            evt.target.download = "TinyPilot-" + new Date().toISOString() + ".jpg";
+          this.shadowRoot.getElementById("screenshot-btn")
+            .addEventListener("click", (evt) => {
+              evt.target.download = "TinyPilot-" + new Date().toISOString() + ".jpg";
           });
-          this.shadowRoot.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
-            document.getElementById("remote-screen").fullscreen = true;
-            evt.preventDefault();
+          this.shadowRoot.getElementById("fullscreen-btn")
+            .addEventListener("click", (evt) => {
+              document.getElementById("remote-screen").fullscreen = true;
+              evt.preventDefault();
           });
-          this.shadowRoot.getElementById("paste-btn").addEventListener("click", () => {
-            showPasteOverlay();
+          this.shadowRoot.getElementById("paste-btn")
+            .addEventListener("click", () => {
+              showPasteOverlay();
           });
-          this.shadowRoot.getElementById("update-btn").addEventListener("click", () => {
-            const updateDialog = document.getElementById("update-dialog");
-            updateDialog.show = true;
-            updateDialog.checkVersion();
+          this.shadowRoot.getElementById("update-btn")
+            .addEventListener("click", () => {
+              const updateDialog = document.getElementById("update-dialog");
+              updateDialog.show = true;
+              updateDialog.checkVersion();
           });
           this.shadowRoot.getElementById("change-hostname-btn").addEventListener("click", () => {
             document.getElementById("change-hostname-dialog").show = true;
@@ -259,8 +267,8 @@
           }
         }
 
-        set connected(newStatus) {
-          this.shadowRoot.getElementById("connection-indicator").connected = newStatus;
+        get connectionIndicator() {
+          return this.shadowRoot.getElementById("connection-indicator");
         }
 
         set cursor(newCursor) {
@@ -273,7 +281,7 @@
           }
         }
 
-        set onSetCursor(handler) {
+        set onChangeCursor(handler) {
           this.setCursor = handler;
         }
       }
