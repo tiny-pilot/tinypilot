@@ -12,16 +12,6 @@ import * as settings from "./settings.js";
 const socket = io();
 let connectedToServer = false;
 
-const screenCursorOptions = [
-  "disabled", // To show on disconnect
-  "default", // Note that this is the browser default, not TinyPilot's default.
-  "none",
-  "crosshair",
-  "dot",
-  "pointer",
-  "cell",
-];
-
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
 
@@ -113,7 +103,9 @@ function onSocketConnect() {
   }
 
   connectedToServer = true;
-  document.getElementById("connection-indicator").connected = true;
+  const menuBar = document.getElementById("menu-bar");
+  menuBar.connected = true;
+  menuBar.onSetCursor = setCursor;
   setCursor(settings.getScreenCursor());
 
   // If we're restarting after an update, mark the update as finished.
@@ -126,7 +118,7 @@ function onSocketConnect() {
 function onSocketDisconnect(reason) {
   setCursor("disabled", false);
   connectedToServer = false;
-  const connectionIndicator = document.getElementById("connection-indicator");
+  const connectionIndicator = document.getElementById("menu-bar");
   connectionIndicator.connected = false;
   connectionIndicator.disconnectReason = reason;
   document.getElementById("app").focus();
@@ -254,13 +246,7 @@ function processTextInput(textInput) {
 function setCursor(cursor, save = true) {
   // Ensure the correct cursor option displays as active in the navbar.
   if (save) {
-    for (const cursorListItem of document.querySelectorAll("#cursor-list li")) {
-      if (cursor === cursorListItem.getAttribute("cursor")) {
-        cursorListItem.classList.add("nav-selected");
-      } else {
-        cursorListItem.classList.remove("nav-selected");
-      }
-    }
+    document.getElementById("menu-bar").cursor = cursor;
     settings.setScreenCursor(cursor);
   }
   if (connectedToServer) {
@@ -273,6 +259,7 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
+document.getElementById("menu-bar").cursor = settings.getScreenCursor()
 document
   .getElementById("remote-screen")
   .addEventListener("mouse-event", (evt) => {
@@ -284,38 +271,17 @@ document
       evt.detail.horizontalWheelDelta
     );
   });
-document.getElementById("power-btn").addEventListener("click", () => {
-  document.getElementById("shutdown-dialog").show = true;
-});
 document.getElementById("hide-error-btn").addEventListener("click", () => {
   hideElementById("error-panel");
 });
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-document.getElementById("screenshot-btn").addEventListener("click", (evt) => {
-  evt.target.download = "TinyPilot-" + new Date().toISOString() + ".jpg";
-});
-document.getElementById("fullscreen-btn").addEventListener("click", (evt) => {
-  document.getElementById("remote-screen").fullscreen = true;
-  evt.preventDefault();
-});
-document.getElementById("paste-btn").addEventListener("click", () => {
-  showPasteOverlay();
-});
-document.getElementById("update-btn").addEventListener("click", () => {
-  const updateDialog = document.getElementById("update-dialog");
-  updateDialog.show = true;
-  updateDialog.checkVersion();
-});
 document
   .getElementById("update-dialog")
   .addEventListener("update-failure", (evt) => {
     showError(evt.detail.summary, evt.detail.detail);
   });
-document.getElementById("change-hostname-btn").addEventListener("click", () => {
-  document.getElementById("change-hostname-dialog").show = true;
-});
 document
   .getElementById("change-hostname-dialog")
   .addEventListener("change-hostname-failure", (evt) => {
@@ -350,24 +316,5 @@ keyHistory.addEventListener("history-disabled", () => {
   settings.disableKeyHistory();
 });
 
-// Add cursor options to navbar.
-const cursorList = document.getElementById("cursor-list");
-for (const cursorOption of screenCursorOptions.splice(1)) {
-  const cursorLink = document.createElement("a");
-  cursorLink.setAttribute("href", "#");
-  cursorLink.innerText = cursorOption;
-  cursorLink.addEventListener("click", (evt) => {
-    setCursor(cursorOption);
-    evt.preventDefault();
-  });
-  const listItem = document.createElement("li");
-  listItem.appendChild(cursorLink);
-  listItem.classList.add("cursor-option");
-  listItem.setAttribute("cursor", cursorOption);
-  if (cursorOption === settings.getScreenCursor()) {
-    listItem.classList.add("nav-selected");
-  }
-  cursorList.appendChild(listItem);
-}
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
