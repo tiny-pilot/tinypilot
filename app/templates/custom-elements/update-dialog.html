@@ -245,10 +245,10 @@
             await controllers.refreshCsrfToken();
             await this.performRestart();
           } catch (error) {
-            console.error(error)
+            console.error(error);
             this.emitUpdateFailureEvent(
               "Failed to complete update",
-              "Please refresh this page and try again."
+              "Please refresh this page and try again. Error details: " + error
             );
             return;
           }

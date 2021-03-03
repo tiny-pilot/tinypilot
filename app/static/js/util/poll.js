@@ -18,7 +18,7 @@ async function poll({ fn, validate, interval, timeout }) {
       if (validate(result)) {
         return resolve(result);
       } else {
-        lastError = new Error("Result did not pass validation");
+        lastError = new Error("Operation timed out.");
       }
     } catch (error) {
       lastError = error;
