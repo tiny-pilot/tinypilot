@@ -1,0 +1,290 @@
+<template id="menu-bar-template">
+  <style>
+    @import "css/cursors.css";
+
+    a {
+      color: white;
+      display: block;
+      text-decoration: none;
+      padding: 5px 15px;
+    }
+
+    a:hover {
+      cursor: pointer;
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: block;
+      position: relative;
+      margin-left: 1.5rem;
+      list-style: none;
+    }
+
+    li:hover > ul {
+      visibility: visible;
+      opacity: 1;
+      -webkit-transition: 0.7s;
+      transition: 0.7s;
+    }
+
+    :host {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0 2rem;
+      margin: 0;
+      color: white;
+      background-color: rgb(42, 42, 143);
+      border-bottom: 1px solid black;
+      margin-bottom: 1rem;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .logo {
+      margin: 1rem 0 0.6rem 0;
+    }
+
+    .logo img {
+      max-width: 200px;
+    }
+
+    .groups {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .items {
+      position: absolute;
+      left: 0;
+      top: 100%;
+      visibility: hidden;
+      opacity: 0;
+      min-width: 12em;
+    }
+
+    .subgroup .items {
+      left: 100%;
+      top: 0;
+    }
+
+    .item {
+      margin: 0;
+      padding: 0;
+    }
+
+    .group {
+      z-index: 1;
+    }
+
+    .group > a:after {
+      content: "▾";
+      margin-left: 0.5em;
+    }
+
+    .group a {
+      background-color: rgb(25, 7, 126);
+      padding: 0.7rem 1.3rem;
+      border: 1px solid rgb(72, 61, 131);
+    }
+
+    .group > ul > a:after {
+      content: "▾";
+      margin-left: 1em;
+    }
+
+    .group ul a:hover {
+      background: rgb(148 134 226);
+    }
+
+    .group ul a {
+      background-color: rgb(65, 50, 146);
+    }
+
+    .subgroup:after {
+      content: "▸";
+      position: absolute;
+      right: 5px;
+      top: 11px;
+    }
+
+    #cursor-list a {
+      text-transform: capitalize;
+    }
+
+    .connection-indicator {
+      margin-right: 0.5rem;
+      margin-left: auto;
+    }
+
+    .nav-icon img {
+      max-height: 22px;
+    }
+
+    .nav-selected a {
+      background: #241e7f !important;
+    }
+  </style>
+
+  <div class="logo"><img src="/img/slim-logo-white.png" /></div>
+  <ul class="groups">
+    <li class="group">
+      <a>System</a>
+      <ul class="items">
+        <li class="item">
+          <a id="update-btn">Update</a>
+        </li>
+        <li class="item">
+          <a id="change-hostname-btn">Change hostname</a>
+        </li>
+        <li class="item">
+          <a id="power-btn">Power</a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="group">
+      <a>Actions</a>
+      <ul class="items">
+        <li class="item">
+          <a id="paste-btn">Paste</a>
+        </li>
+        <li class="item">
+          <a id="screenshot-btn" href="/snapshot">Screenshot</a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="group">
+      <a>View</a>
+      <ul class="items">
+        <li class="item subgroup">
+          <a>Cursor</a>
+          <ul id="cursor-list" class="items">
+            <!-- JavaScript populates this list dynamically. -->
+          </ul>
+        </li>
+        <li class="item">
+          <a id="fullscreen-btn">Full Screen</a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="connection-indicator">
+      <!-- The connection indicator will be moved
+        to the status bar later on -->
+      <connection-indicator id="connection-indicator">
+      </connection-indicator>
+    </li>
+    <li class="nav-icon">
+      <a href="https://github.com/mtlynch/tinypilot" target="_blank">
+        <img src="/img/GitHub-Mark-Light-120px-plus.png" />
+      </a>
+    </li>
+  </ul>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#menu-bar-template");
+
+    customElements.define(
+      "menu-bar",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this.setCursor = () => {};
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this.shadowRoot.getElementById("power-btn")
+            .addEventListener("click", () => {
+              document.getElementById("shutdown-dialog").show = true;
+          });
+          this.shadowRoot.getElementById("screenshot-btn")
+            .addEventListener("click", (evt) => {
+              evt.target.download = "TinyPilot-" + new Date().toISOString() + ".jpg";
+          });
+          this.shadowRoot.getElementById("fullscreen-btn")
+            .addEventListener("click", (evt) => {
+              document.getElementById("remote-screen").fullscreen = true;
+              evt.preventDefault();
+          });
+          this.shadowRoot.getElementById("paste-btn")
+            .addEventListener("click", () => {
+              showPasteOverlay();
+          });
+          this.shadowRoot.getElementById("update-btn")
+            .addEventListener("click", () => {
+              const updateDialog = document.getElementById("update-dialog");
+              updateDialog.show = true;
+              updateDialog.checkVersion();
+          });
+          this.shadowRoot.getElementById("change-hostname-btn").addEventListener("click", () => {
+            document.getElementById("change-hostname-dialog").show = true;
+          });
+
+          // Add cursor options to navbar.
+          const screenCursorOptions = [
+            "disabled", // To show on disconnect
+            "default", // Note that this is the browser default, not TinyPilot's default.
+            "none",
+            "crosshair",
+            "dot",
+            "pointer",
+            "cell",
+          ];
+          const cursorList = this.shadowRoot.getElementById("cursor-list");
+          for (const cursorOption of screenCursorOptions.splice(1)) {
+            const cursorLink = document.createElement("a");
+            cursorLink.setAttribute("href", "#");
+            cursorLink.innerText = cursorOption;
+            cursorLink.addEventListener("click", (evt) => {
+              this.setCursor(cursorOption);
+              evt.preventDefault();
+            });
+            const listItem = document.createElement("li");
+            listItem.appendChild(cursorLink);
+            listItem.classList.add("cursor-option", "item");
+            listItem.setAttribute("cursor", cursorOption);
+            cursorList.appendChild(listItem);
+          }
+        }
+
+        get connectionIndicator() {
+          return this.shadowRoot.getElementById("connection-indicator");
+        }
+
+        set cursor(newCursor) {
+          for (const cursorListItem of this.shadowRoot.querySelectorAll("#cursor-list li")) {
+            if (newCursor === cursorListItem.getAttribute("cursor")) {
+              cursorListItem.classList.add("nav-selected");
+            } else {
+              cursorListItem.classList.remove("nav-selected");
+            }
+          }
+        }
+
+        set onChangeCursor(handler) {
+          this.setCursor = handler;
+        }
+      }
+    );
+  })();
+</script>
