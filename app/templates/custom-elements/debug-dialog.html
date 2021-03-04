@@ -46,7 +46,7 @@
     #panel > div {
       background-color: rgb(252, 236, 223);
       border: 1px solid rgb(139, 97, 62);
-      max-width: 800px;
+      max-width: 1000px;
       margin: 100px auto 0rem auto;
       padding: 2rem;
     }
@@ -54,15 +54,22 @@
     #logs-success .logs {
       font-family: consolas, monospace;
       background-color: #f1f1f1;
+      border: 1px solid #302e28;
       user-select: text;
       text-align: left;
       overflow-y: scroll;
-      max-height: 500px;
+      max-height: 600px;
       white-space: pre-wrap;
+    }
+
+    #url-success .url-wrapper {
+      margin: 3rem 0;
     }
 
     #url-success .url {
       user-select: text;
+      background: #bdbdbd;
+      padding: 1rem 2rem;
     }
 
     .error {
@@ -99,8 +106,8 @@
       <progress-spinner></progress-spinner>
     </div>
     <div id="url-success">
-      <h3>Shareable URL</h3>
-      <div>
+      <h3>Debug Logs</h3>
+      <div class="url-wrapper">
         <a class="url"></a>
       </div>
       <button class="copy-btn btn-success" type="button">
