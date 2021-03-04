@@ -53,7 +53,7 @@
 
     #logs-success .logs {
       font-family: consolas, monospace;
-      background-color: #F1F1F1;
+      background-color: #f1f1f1;
       user-select: text;
       text-align: left;
       overflow-y: scroll;
@@ -121,13 +121,13 @@
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
-    const template = doc.querySelector('#debug-dialog-template');
+    const template = doc.querySelector("#debug-dialog-template");
     customElements.define(
-      'debug-dialog',
+      "debug-dialog",
       class DebugDialog extends HTMLElement {
         constructor() {
           super();
-          this.attachShadow({ mode: 'open' });
+          this.attachShadow({ mode: "open" });
           // Ensure that these methods always refer to the correct "this",
           // regardless of where they are called.
           this.close = this.close.bind(this);
@@ -139,48 +139,53 @@
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.shadowRoot.querySelectorAll('.close-btn').forEach((el) => {
-            el.addEventListener('click', this.close);
+          this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
+            el.addEventListener("click", this.close);
           });
-          this.shadowRoot.querySelector('#logs-success .share-btn')
-            .addEventListener('click', this.getUrl);
-          this.shadowRoot.querySelector('#logs-success .copy-btn')
-            .addEventListener('click', (event) => {
+          this.shadowRoot
+            .querySelector("#logs-success .share-btn")
+            .addEventListener("click", this.getUrl);
+          this.shadowRoot
+            .querySelector("#logs-success .copy-btn")
+            .addEventListener("click", (event) => {
               this.onPushCopyButton(
                 /*buttonElement=*/ event.target,
-                /*sourceElement=*/ this.shadowRoot
-                  .querySelector('#logs-success .logs')
+                /*sourceElement=*/ this.shadowRoot.querySelector(
+                  "#logs-success .logs"
+                )
               );
             });
-          this.shadowRoot.querySelector('#url-success .copy-btn')
-            .addEventListener('click', (event) => {
+          this.shadowRoot
+            .querySelector("#url-success .copy-btn")
+            .addEventListener("click", (event) => {
               this.onPushCopyButton(
                 /*buttonElement=*/ event.target,
-                /*sourceElement=*/ this.shadowRoot
-                  .querySelector('#url-success .url')
+                /*sourceElement=*/ this.shadowRoot.querySelector(
+                  "#url-success .url"
+                )
               );
             });
-          doc.addEventListener('keydown', this._consumeKeystrokes);
+          doc.addEventListener("keydown", this._consumeKeystrokes);
         }
 
         disconnectedCallback() {
-          doc.removeEventListener('keydown', this._consumeKeystrokes);
+          doc.removeEventListener("keydown", this._consumeKeystrokes);
         }
 
         get show() {
-          return this.getAttribute('show') === 'true';
+          return this.getAttribute("show") === "true";
         }
 
         set show(newValue) {
-          this.setAttribute('show', newValue);
+          this.setAttribute("show", newValue);
         }
 
         get state() {
-          return this.getAttribute('state');
+          return this.getAttribute("state");
         }
 
         set state(newValue) {
-          this.setAttribute('state', newValue);
+          this.setAttribute("state", newValue);
         }
 
         _consumeKeystrokes(event) {
@@ -200,44 +205,50 @@
         }
 
         getLogs() {
-          this.state = 'logs-loading';
-          controllers.getDebugLogs()
-            .then(text => {
-              this.shadowRoot.querySelector('#logs-success .logs')
-                .textContent = text;
-              this.state = 'logs-success';
+          this.state = "logs-loading";
+          controllers
+            .getDebugLogs()
+            .then((text) => {
+              this.shadowRoot.querySelector(
+                "#logs-success .logs"
+              ).textContent = text;
+              this.state = "logs-success";
             })
-            .catch(error => {
-              this.shadowRoot.querySelector('#logs-fail .error')
-                .textContent = error;
-              this.state = 'logs-fail';
+            .catch((error) => {
+              this.shadowRoot.querySelector(
+                "#logs-fail .error"
+              ).textContent = error;
+              this.state = "logs-fail";
             });
         }
 
         getUrl() {
-          this.state = 'url-loading';
-          const text = this.shadowRoot.querySelector('#logs-success .logs')
+          this.state = "url-loading";
+          const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
-          controllers.textToShareableUrl(text)
-            .then(url => {
-              const urlElement = this.shadowRoot
-                .querySelector('#url-success .url');
+          controllers
+            .textToShareableUrl(text)
+            .then((url) => {
+              const urlElement = this.shadowRoot.querySelector(
+                "#url-success .url"
+              );
               urlElement.textContent = url;
               urlElement.href = url;
-              this.state = 'url-success';
+              this.state = "url-success";
             })
-            .catch(error => {
-              this.shadowRoot.querySelector('#url-fail .error')
-                .textContent = error;
-              this.state = 'url-fail';
+            .catch((error) => {
+              this.shadowRoot.querySelector(
+                "#url-fail .error"
+              ).textContent = error;
+              this.state = "url-fail";
             });
         }
 
         onPushCopyButton(buttonElement, sourceElement) {
           copyElementTextToClipboard(sourceElement);
-          buttonElement.innerText = 'Copied!';
+          buttonElement.innerText = "Copied!";
         }
       }
-    )
+    );
   })();
 </script>

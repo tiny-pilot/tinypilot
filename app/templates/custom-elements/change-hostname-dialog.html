@@ -98,7 +98,7 @@
       </p>
       <div class="input-container">
         <label for="hostname-input">Hostname:</label>
-        <input type="text" id="hostname-input" size="30">
+        <input type="text" id="hostname-input" size="30" />
         <p id="input-error"><!-- Filled programmatically --></p>
       </div>
       <button id="change-and-restart" type="button">
@@ -111,7 +111,7 @@
       <p>
         Waiting for TinyPilot to reboot at
         <a href="" id="future-location"><!-- Filled programmatically --></a>
-        <br>
+        <br />
         You will be redirected automatically.
       </p>
       <progress-spinner></progress-spinner>
@@ -148,8 +148,8 @@
         // one. That might not be correct, but it’s the best possible guess.
         fqdn = newHostname;
       }
-      const port = currentLocation.port === "" ?
-        "" : `:${currentLocation.port}`;
+      const port =
+        currentLocation.port === "" ? "" : `:${currentLocation.port}`;
       return protocol + fqdn + port;
     }
 
@@ -164,41 +164,36 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.elements = {
-            inputError: this.shadowRoot
-              .getElementById("input-error"),
-            hostnameInput: this.shadowRoot
-              .getElementById("hostname-input"),
-            changeAndRestart: this.shadowRoot
-              .getElementById("change-and-restart"),
-            cancelInitialization: this.shadowRoot
-              .getElementById("cancel-initialization"),
-            cancelHostnameChange: this.shadowRoot
-              .getElementById("cancel-hostname-change"),
-            futureLocation: this.shadowRoot
-              .getElementById("future-location"),
+            inputError: this.shadowRoot.getElementById("input-error"),
+            hostnameInput: this.shadowRoot.getElementById("hostname-input"),
+            changeAndRestart: this.shadowRoot.getElementById(
+              "change-and-restart"
+            ),
+            cancelInitialization: this.shadowRoot.getElementById(
+              "cancel-initialization"
+            ),
+            cancelHostnameChange: this.shadowRoot.getElementById(
+              "cancel-hostname-change"
+            ),
+            futureLocation: this.shadowRoot.getElementById("future-location"),
           };
 
-          this.elements.hostnameInput
-            .addEventListener("keydown", evt => {
-              // Prevent keystrokes from being sent to TinyPilot
-              evt.stopPropagation();
-            })
-          this.elements.hostnameInput
-            .addEventListener("input", () => {
-              this.onInputChanged();
-            })
-          this.elements.changeAndRestart
-            .addEventListener("click", () => {
-              this.doChangeHostname();
-            });
-          this.elements.cancelInitialization
-            .addEventListener("click", () => {
-              this.show = false;
-            });
-          this.elements.cancelHostnameChange
-            .addEventListener("click", () => {
-              this.show = false;
-            });
+          this.elements.hostnameInput.addEventListener("keydown", (evt) => {
+            // Prevent keystrokes from being sent to TinyPilot
+            evt.stopPropagation();
+          });
+          this.elements.hostnameInput.addEventListener("input", () => {
+            this.onInputChanged();
+          });
+          this.elements.changeAndRestart.addEventListener("click", () => {
+            this.doChangeHostname();
+          });
+          this.elements.cancelInitialization.addEventListener("click", () => {
+            this.show = false;
+          });
+          this.elements.cancelHostnameChange.addEventListener("click", () => {
+            this.show = false;
+          });
         }
 
         get show() {
@@ -246,20 +241,22 @@
 
         onInputChanged() {
           const isEqualToInitialValue =
-            (this.elements.hostnameInput.value === this.initialHostname);
+            this.elements.hostnameInput.value === this.initialHostname;
           this.elements.changeAndRestart.disabled = isEqualToInitialValue;
         }
 
         initialize() {
           this.inputError = null;
           this.state = "initializing";
-          controllers.determineHostname()
+          controllers
+            .determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
               this.onInputChanged(hostname);
               this.state = "prompt";
-            }).catch((error) => {
+            })
+            .catch((error) => {
               this.show = false;
               this.emitChangeHostnameFailureEvent(
                 "Failed to determine hostname",
@@ -269,22 +266,27 @@
         }
 
         doChangeHostname() {
-          controllers.changeHostname(this.elements.hostnameInput.value)
+          controllers
+            .changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
-              return controllers.shutdown(/*restart=*/ true)
+              return controllers
+                .shutdown(/*restart=*/ true)
                 .then(() => newHostname);
-            }).then((newHostname) => {
+            })
+            .then((newHostname) => {
               return futureLocation(
                 window.location,
                 this.initialHostname,
-                newHostname,
+                newHostname
               );
-            }).then((redirectURL) => {
+            })
+            .then((redirectURL) => {
               this.elements.futureLocation.innerText = redirectURL;
               this.elements.futureLocation.href = redirectURL;
               this.state = "changing";
               return this.waitForReboot(redirectURL);
-            }).catch((error) => {
+            })
+            .catch((error) => {
               if (error.toString().toLowerCase().includes("invalid input")) {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
@@ -314,18 +316,20 @@
             validate: (isUpAndRunning) => isUpAndRunning === true,
             interval: 3 * 1000,
             timeout: 180 * 1000,
-          }).then(() => {
-            window.location = futureLocation;
-          }).catch((error) => {
-            console.error(error);
-            this.show = false;
-            this.emitChangeHostnameFailureEvent(
-              "Failed to redirect",
-              "Cannot reach TinyPilot under the new hostname. The device may" +
-              " have failed to reboot, or your browser is failing to " +
-              " resolve the new hostname."
-            );
-          });
+          })
+            .then(() => {
+              window.location = futureLocation;
+            })
+            .catch((error) => {
+              console.error(error);
+              this.show = false;
+              this.emitChangeHostnameFailureEvent(
+                "Failed to redirect",
+                "Cannot reach TinyPilot under the new hostname. The device may" +
+                  " have failed to reboot, or your browser is failing to " +
+                  " resolve the new hostname."
+              );
+            });
         }
 
         emitChangeHostnameFailureEvent(summary, detail) {
@@ -337,7 +341,6 @@
             })
           );
         }
-
       }
     );
   })();
