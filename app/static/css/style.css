@@ -25,6 +25,7 @@ button {
 
 .monospace {
   font-family: "Overpass Mono", monospace;
+  font-size: 0.9em;
 }
 
 *:focus {

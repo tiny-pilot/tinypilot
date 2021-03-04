@@ -1,6 +1,7 @@
 <template id="debug-dialog-template">
   <style>
     @import "css/button.css";
+    @import "css/style.css";
 
     .overlay {
       display: none;
@@ -52,7 +53,6 @@
     }
 
     #logs-success .logs {
-      font-family: consolas, monospace;
       background-color: #f1f1f1;
       border: 1px solid #302e28;
       user-select: text;
@@ -86,7 +86,7 @@
     </div>
     <div id="logs-success">
       <h3>Debug Logs</h3>
-      <p class="logs"></p>
+      <p class="logs monospace"></p>
       <button class="share-btn btn-success" type="button">
         Get shareable URL
       </button>
