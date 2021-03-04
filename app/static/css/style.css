@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  background: rgb(114, 114, 114);
+  background: rgb(214, 215, 217);
 }
 
 .container {
@@ -16,19 +16,19 @@ body {
 }
 
 * {
-  font-family: Lora;
+  font-family: "Overpass", sans-serif;
+}
+
+button {
+  font-family: inherit;
+}
+
+.monospace {
+  font-family: "Overpass Mono", monospace;
 }
 
 *:focus {
   outline: none;
-}
-
-h1,
-h2,
-h3,
-h4,
-.brand {
-  font-family: Nunito;
 }
 
 a {

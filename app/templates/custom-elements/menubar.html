@@ -6,7 +6,6 @@
       color: white;
       display: block;
       text-decoration: none;
-      padding: 5px 15px;
     }
 
     a:hover {
@@ -21,27 +20,26 @@
     li {
       display: block;
       position: relative;
-      margin-left: 1.5rem;
       list-style: none;
     }
 
     li:hover > ul {
       visibility: visible;
       opacity: 1;
-      -webkit-transition: 0.7s;
-      transition: 0.7s;
+      -webkit-transition: 0.3s;
+      transition: 0.3s;
     }
 
     :host {
+      height: 40px;
       display: flex;
       flex-direction: row;
       align-items: center;
       padding: 0 2rem;
-      margin: 0;
+      margin: 0 0 12px 0;
       color: white;
-      background-color: rgb(42, 42, 143);
-      border-bottom: 1px solid black;
-      margin-bottom: 1rem;
+      background-color: rgb(42, 42, 81);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
@@ -51,18 +49,41 @@
     }
 
     .logo {
-      margin: 1rem 0 0.6rem 0;
+      position: relative;
+      box-sizing: border-box;
+      height: 100%;
+      padding: 6px 0;
+      margin-right: 1rem;
     }
 
     .logo img {
-      max-width: 200px;
+      height: 100%;
+      position: relative;
+    }
+
+    .logo:before {
+      /* Tiny-hamster needs some subtle visual help to shine
+         on the dark background */
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 1px;
+      height: 25px;
+      width: 25px;
+      background-color: rgba(189, 215, 223, 0.2);
+      filter: blur(5px);
+    }
+
+    .header-item {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      margin-top: 0.1rem;
     }
 
     .groups {
       flex-grow: 1;
-      display: flex;
       flex-direction: row;
-      align-items: center;
     }
 
     .items {
@@ -72,6 +93,7 @@
       visibility: hidden;
       opacity: 0;
       min-width: 12em;
+      margin-top: -0.1rem;
     }
 
     .subgroup .items {
@@ -84,19 +106,21 @@
       padding: 0;
     }
 
+    .item a {
+      padding: 0.5em 0.8em;
+    }
+
     .group {
+      display: flex;
       z-index: 1;
+      margin-left: 2rem;
+      height: 100%;
+      align-items: center;
     }
 
     .group > a:after {
       content: "▾";
       margin-left: 0.5em;
-    }
-
-    .group a {
-      background-color: rgb(25, 7, 126);
-      padding: 0.7rem 1.3rem;
-      border: 1px solid rgb(72, 61, 131);
     }
 
     .group > ul > a:after {
@@ -105,11 +129,11 @@
     }
 
     .group ul a:hover {
-      background: rgb(148 134 226);
+      background: rgb(132, 131, 140);
     }
 
     .group ul a {
-      background-color: rgb(65, 50, 146);
+      background-color: rgb(105, 103, 117);
     }
 
     .subgroup:after {
@@ -124,11 +148,12 @@
     }
 
     .connection-indicator {
-      margin-right: 0.5rem;
+      margin-right: 2rem;
       margin-left: auto;
     }
 
     .nav-icon img {
+      margin-top: 5px;
       max-height: 22px;
     }
 
@@ -137,8 +162,10 @@
     }
   </style>
 
-  <div class="logo"><img src="/img/slim-logo-white.png" /></div>
-  <ul class="groups">
+  <div class="logo">
+    <img src="/img/slim-logo-white.png" alt="Tiny Pilot">
+  </div>
+  <ul class="groups header-item">
     <li class="group">
       <a>System</a>
       <ul class="items">
@@ -157,7 +184,7 @@
       </ul>
     </li>
 
-    <li class="group">
+    <li class="group monospace">
       <a>Actions</a>
       <ul class="items">
         <li class="item">
@@ -183,18 +210,17 @@
         </li>
       </ul>
     </li>
-
-    <li class="connection-indicator">
-      <!-- The connection indicator will be moved
-        to the status bar later on -->
-      <connection-indicator id="connection-indicator"> </connection-indicator>
-    </li>
-    <li class="nav-icon">
-      <a href="https://github.com/mtlynch/tinypilot" target="_blank">
-        <img src="/img/GitHub-Mark-Light-120px-plus.png" />
-      </a>
-    </li>
   </ul>
+  <div class="header-item connection-indicator">
+    <!-- The connection indicator will be moved
+      to the status bar later on -->
+    <connection-indicator id="connection-indicator"> </connection-indicator>
+  </div>
+  <div class="header-item nav-icon">
+    <a href="https://github.com/mtlynch/tinypilot" target="_blank">
+      <img src="/img/GitHub-Mark-Light-120px-plus.png" />
+    </a>
+  </div>
 </template>
 
 <script>

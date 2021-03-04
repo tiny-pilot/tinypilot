@@ -1,6 +1,7 @@
 <template id="change-hostname-template">
   <style>
     @import "css/button.css";
+    @import "css/style.css";
 
     .overlay {
       display: none;
@@ -58,8 +59,6 @@
 
     #hostname-input {
       margin: 0 auto;
-      font-family: monospace;
-      font-size: 1.1rem;
       padding: 0.3rem;
     }
 
@@ -98,7 +97,7 @@
       </p>
       <div class="input-container">
         <label for="hostname-input">Hostname:</label>
-        <input type="text" id="hostname-input" size="30" />
+        <input type="text" id="hostname-input" size="30" class="monospace" />
         <p id="input-error"><!-- Filled programmatically --></p>
       </div>
       <button id="change-and-restart" type="button">
