@@ -9,4 +9,4 @@ set -x
 # Exit on unset variable.
 set -u
 
-./node_modules/.bin/prettier --check app/static
+./node_modules/.bin/prettier --check app

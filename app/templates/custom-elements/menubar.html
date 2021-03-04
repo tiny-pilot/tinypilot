@@ -184,8 +184,7 @@
     <li class="connection-indicator">
       <!-- The connection indicator will be moved
         to the status bar later on -->
-      <connection-indicator id="connection-indicator">
-      </connection-indicator>
+      <connection-indicator id="connection-indicator"> </connection-indicator>
     </li>
     <li class="nav-icon">
       <a href="https://github.com/mtlynch/tinypilot" target="_blank">
@@ -213,32 +212,47 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          this.shadowRoot.getElementById("power-btn")
+          this.shadowRoot
+            .getElementById("power-btn")
             .addEventListener("click", () => {
               document.getElementById("shutdown-dialog").show = true;
-          });
-          this.shadowRoot.getElementById("screenshot-btn")
+            });
+          this.shadowRoot
+            .getElementById("screenshot-btn")
             .addEventListener("click", (evt) => {
-              evt.target.download = "TinyPilot-" + new Date().toISOString() + ".jpg";
-          });
-          this.shadowRoot.getElementById("fullscreen-btn")
+              evt.target.download =
+                "TinyPilot-" + new Date().toISOString() + ".jpg";
+            });
+          this.shadowRoot
+            .getElementById("fullscreen-btn")
             .addEventListener("click", (evt) => {
               document.getElementById("remote-screen").fullscreen = true;
               evt.preventDefault();
-          });
-          this.shadowRoot.getElementById("paste-btn")
+            });
+          this.shadowRoot
+            .getElementById("paste-btn")
             .addEventListener("click", () => {
               showPasteOverlay();
-          });
-          this.shadowRoot.getElementById("update-btn")
+            });
+          this.shadowRoot
+            .getElementById("update-btn")
             .addEventListener("click", () => {
               const updateDialog = document.getElementById("update-dialog");
               updateDialog.show = true;
               updateDialog.checkVersion();
-          });
-          this.shadowRoot.getElementById("change-hostname-btn").addEventListener("click", () => {
-            document.getElementById("change-hostname-dialog").show = true;
-          });
+            });
+          this.shadowRoot
+            .getElementById("change-hostname-btn")
+            .addEventListener("click", () => {
+              document.getElementById("change-hostname-dialog").show = true;
+            });
+          this.shadowRoot
+            .getElementById("debug-dialog-btn")
+            .addEventListener("click", () => {
+              const debugDialog = doc.querySelector("#debug-dialog");
+              debugDialog.show = true;
+              debugDialog.getLogs();
+            });
 
           // Add cursor options to navbar.
           const screenCursorOptions = [
@@ -272,7 +286,9 @@
         }
 
         set cursor(newCursor) {
-          for (const cursorListItem of this.shadowRoot.querySelectorAll("#cursor-list li")) {
+          for (const cursorListItem of this.shadowRoot.querySelectorAll(
+            "#cursor-list li"
+          )) {
             if (newCursor === cursorListItem.getAttribute("cursor")) {
               cursorListItem.classList.add("nav-selected");
             } else {

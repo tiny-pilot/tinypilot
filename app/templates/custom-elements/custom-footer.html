@@ -26,25 +26,26 @@
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
-    const template = doc.querySelector('#custom-footer-template');
+    const template = doc.querySelector("#custom-footer-template");
     customElements.define(
-      'custom-footer',
+      "custom-footer",
       class CustomFooter extends HTMLElement {
         constructor() {
           super();
-          this.attachShadow({ mode: 'open' });
+          this.attachShadow({ mode: "open" });
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.shadowRoot.querySelector('#debug-dialog-btn')
-            .addEventListener('click', () => {
-              const debugDialog = doc.querySelector('#debug-dialog');
+          this.shadowRoot
+            .querySelector("#debug-dialog-btn")
+            .addEventListener("click", () => {
+              const debugDialog = doc.querySelector("#debug-dialog");
               debugDialog.show = true;
               debugDialog.getLogs();
             });
         }
       }
-    )
+    );
   })();
 </script>
