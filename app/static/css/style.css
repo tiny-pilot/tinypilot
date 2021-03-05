@@ -41,25 +41,26 @@ body {
   margin: 0 auto;
 }
 
-* {
-  font-family: Lora;
+html {
+  font-family: "Overpass", sans-serif;
 }
 
 *:focus {
   outline: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-.brand {
-  font-family: Nunito;
+p {
+  line-height: 1.6;
 }
 
 a {
   color: var(--brand-blue);
   text-decoration: none;
+}
+
+.monospace {
+  font-family: "Overpass Mono", monospace;
+  font-size: 0.9em;
 }
 
 img {

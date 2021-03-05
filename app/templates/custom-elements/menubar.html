@@ -7,7 +7,6 @@
       color: white;
       display: block;
       text-decoration: none;
-      padding: 5px 15px;
     }
 
     a:hover {
@@ -22,27 +21,26 @@
     li {
       display: block;
       position: relative;
-      margin-left: 1.5rem;
       list-style: none;
     }
 
     li:hover > ul {
       visibility: visible;
       opacity: 1;
-      -webkit-transition: 0.7s;
-      transition: 0.7s;
+      -webkit-transition: 0.3s;
+      transition: 0.3s;
     }
 
     :host {
       display: flex;
+      height: 45px;
       flex-direction: row;
       align-items: center;
       padding: 0 2rem;
-      margin: 0;
+      margin: 0 0 12px 0;
       color: white;
       background-color: var(--brand-metallic-dark);
-      border-bottom: 1px solid black;
-      margin-bottom: 1rem;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
@@ -52,27 +50,73 @@
     }
 
     .logo {
-      margin: 1rem 0 0.6rem 0;
+      position: relative;
+      box-sizing: border-box;
+      height: 90%;
+      padding: 6px 0;
+      margin-right: 1rem;
     }
 
     .logo img {
-      max-width: 200px;
+      height: 100%;
+      position: relative;
     }
 
-    .groups {
-      flex-grow: 1;
+    .logo:before {
+      /* This creates a subtle glow behind tiny-hamster in the logo, which
+         makes him shine a bit better on the background. */
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 1px;
+      height: 25px;
+      width: 25px;
+      background-color: rgba(189, 215, 223, 0.2);
+      filter: blur(5px);
+    }
+
+    .header-item {
+      box-sizing: border-box;
       display: flex;
-      flex-direction: row;
       align-items: center;
+      height: 100%;
+      padding-top: 3px;
     }
 
     .items {
       position: absolute;
-      left: 0;
+      left: -0.85rem;
       top: 100%;
       visibility: hidden;
       opacity: 0;
       min-width: 12em;
+    }
+
+    .item a {
+      padding: 0.5em 0.8em;
+    }
+
+    .group {
+      display: flex;
+      z-index: 1;
+      margin-left: 2rem;
+      padding-right: 17px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .group > a:after {
+      --width: 5px;
+      --height: 7px;
+      content: "";
+      position: absolute;
+      top: 17px;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-left: var(--width) solid transparent;
+      border-right: var(--width) solid transparent;
+      border-top: var(--height) solid var(--brand-creme-light);
     }
 
     .subgroup .items {
@@ -85,24 +129,6 @@
       padding: 0;
     }
 
-    .group {
-      z-index: 1;
-    }
-
-    .group > a:after {
-      content: "▾";
-      margin-left: 0.5em;
-    }
-
-    .group a {
-      padding: 0.7rem 1.3rem;
-    }
-
-    .group > ul > a:after {
-      content: "▾";
-      margin-left: 1em;
-    }
-
     .group ul a:hover {
       background: var(--brand-metallic-light);
     }
@@ -112,10 +138,17 @@
     }
 
     .subgroup:after {
-      content: "▸";
+      --width: 5px;
+      --height: 7px;
+      content: "";
       position: absolute;
-      right: 5px;
-      top: 11px;
+      top: 13px;
+      right: 11px;
+      width: 0;
+      height: 0;
+      border-top: var(--width) solid transparent;
+      border-bottom: var(--width) solid transparent;
+      border-left: var(--height) solid var(--brand-creme-light);
     }
 
     #cursor-list a {
@@ -123,21 +156,24 @@
     }
 
     .connection-indicator {
-      margin-right: 0.5rem;
+      margin-right: 2rem;
       margin-left: auto;
     }
 
     .nav-icon img {
+      margin-top: 5px;
       max-height: 22px;
     }
 
-    .nav-selected a {
-      background: #241e7f !important;
+    .nav-selected a:after {
+      content: "✓";
+      position: absolute;
+      right: 10px;
     }
   </style>
 
   <div class="logo"><img src="/img/slim-logo-white.png" /></div>
-  <ul class="groups">
+  <ul class="groups header-item">
     <li class="group">
       <a>System</a>
       <ul class="items">
@@ -182,18 +218,17 @@
         </li>
       </ul>
     </li>
-
-    <li class="connection-indicator">
-      <!-- The connection indicator will be moved
-        to the status bar later on -->
-      <connection-indicator id="connection-indicator"> </connection-indicator>
-    </li>
-    <li class="nav-icon">
-      <a href="https://github.com/mtlynch/tinypilot" target="_blank">
-        <img src="/img/GitHub-Mark-Light-120px-plus.png" />
-      </a>
-    </li>
   </ul>
+  <div class="header-item connection-indicator">
+    <!-- The connection indicator will be moved
+      to the status bar later on -->
+    <connection-indicator id="connection-indicator"> </connection-indicator>
+  </div>
+  <div class="header-item nav-icon">
+    <a href="https://github.com/mtlynch/tinypilot" target="_blank">
+      <img src="/img/GitHub-Mark-Light-120px-plus.png" />
+    </a>
+  </div>
 </template>
 
 <script>

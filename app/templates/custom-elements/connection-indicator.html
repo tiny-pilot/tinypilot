@@ -15,7 +15,7 @@
     .status-dot {
       height: 1rem;
       width: 1rem;
-      margin-left: 0.8rem;
+      margin: 0 0 0.1rem 0.6rem;
       border-radius: 50%;
       display: inline-block;
       /* Disconnected state */
@@ -43,14 +43,16 @@
     }
   </style>
   <div class="status">
-    <p>Connection</p>
+    <div>Connection</div>
     <content-tooltip position="bottom">
       <span class="status-dot"></span>
-      <p slot="text" class="connected-text">You are connected to TinyPilot.</p>
-      <p slot="text" class="disconnected-text">
+      <div slot="text" class="connected-text">
+        You are connected to TinyPilot.
+      </div>
+      <div slot="text" class="disconnected-text">
         Could not connect to TinyPilot:
         <span id="disconnect-reason"></span>
-      </p>
+      </div>
     </content-tooltip>
   </div>
 </template>
