@@ -1,5 +1,6 @@
 <template id="change-hostname-template">
   <style>
+    @import "css/style.css";
     @import "css/button.css";
 
     .overlay {
@@ -49,8 +50,8 @@
     }
 
     #change-hostname-panel > div {
-      background-color: rgb(252, 236, 223);
-      border: 1px solid rgb(139, 97, 62);
+      background-color: var(--brand-creme-light);
+      border: 1px solid var(--brand-metallic-dark);
       max-width: 800px;
       margin: 100px auto 0rem auto;
       padding: 2rem;
@@ -64,16 +65,16 @@
     }
 
     #change-and-restart {
-      background-color: rgb(15, 157, 88);
+      background-color: var(--brand-green);
     }
 
     #change-and-restart:disabled {
-      background-color: rgb(117, 202, 161);
+      background-color: var(--brand-green-light);
       cursor: not-allowed;
     }
 
     #change-and-restart:hover {
-      background-color: rgb(65, 177, 108);
+      background-color: var(--brand-green-bright);
     }
 
     .input-container {
@@ -81,7 +82,7 @@
     }
 
     #input-error {
-      color: rgb(153, 8, 8);
+      color: var(--brand-red);
       font-weight: bold;
     }
   </style>

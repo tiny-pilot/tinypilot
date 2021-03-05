@@ -30,7 +30,7 @@
 
 body {
   margin: 0;
-  background: rgb(114, 114, 114);
+  background: var(--brand-creme-light);
 }
 
 .container {
@@ -58,7 +58,7 @@ h4,
 }
 
 a {
-  color: rgb(192, 255, 110);
+  color: var(--brand-blue);
   text-decoration: none;
 }
 
@@ -72,8 +72,8 @@ img {
 
 #error-panel {
   display: none;
-  background-color: rgb(255, 133, 133);
-  border: 2px solid rgb(175, 1, 1);
+  background-color: var(--brand-red-light);
+  border: 2px solid var(--brand-red);
   max-width: 800px;
   padding: 1rem 3rem;
   margin: 0 auto 1rem auto;
