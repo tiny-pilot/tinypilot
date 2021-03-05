@@ -65,7 +65,7 @@ button {
 }
 
 a {
-  color: rgb(192, 255, 110);
+  color: var(--brand-blue);
   text-decoration: none;
 }
 
