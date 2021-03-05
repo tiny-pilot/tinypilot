@@ -64,19 +64,6 @@
       padding: 0.3rem;
     }
 
-    #change-and-restart {
-      background-color: var(--brand-green);
-    }
-
-    #change-and-restart:disabled {
-      background-color: var(--brand-green-light);
-      cursor: not-allowed;
-    }
-
-    #change-and-restart:hover {
-      background-color: var(--brand-green-bright);
-    }
-
     .input-container {
       margin: 1.5rem 0;
     }
@@ -102,7 +89,7 @@
         <input type="text" id="hostname-input" size="30" />
         <p id="input-error"><!-- Filled programmatically --></p>
       </div>
-      <button id="change-and-restart" type="button">
+      <button id="change-and-restart" class="btn-success" type="button">
         Change and restart
       </button>
       <button id="cancel-hostname-change" type="button">Cancel</button>

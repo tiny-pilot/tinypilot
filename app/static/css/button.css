@@ -37,3 +37,16 @@ button.btn-success {
 button.btn-success:hover {
   background-color: var(--brand-green-bright);
 }
+
+button.btn-success:disabled {
+  background-color: var(--brand-green-light);
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: var(--brand-red);
+}
+
+.btn-danger:hover {
+  background-color: var(--brand-red-bright);
+}
