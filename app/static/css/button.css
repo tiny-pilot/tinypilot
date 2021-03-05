@@ -9,6 +9,7 @@ button {
   background: var(--brand-metallic-light);
   color: #ffffff;
   font-size: 1rem;
+  font-family: inherit;
   cursor: pointer;
   text-align: center;
   transition: background 250ms ease-in-out, transform 150ms ease;
