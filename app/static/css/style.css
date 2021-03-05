@@ -9,8 +9,8 @@
   --brand-hue-red: 5;
   --brand-hue-green: 135;
 
-  --brand-metallic-dark: hsl(var(--brand-hue-metallic), 20%, 27%);
-  /*--brand-metallic-dark: hsl(var(--brand-hue-metallic), 29%, 31%);*/
+  --brand-metallic-dark: hsl(var(--brand-hue-metallic), 29%, 31%);
+  /*--brand-metallic-dark: hsl(var(--brand-hue-metallic), 20%, 27%);*/
   /*--brand-metallic-dark: hsl(var(--brand-hue-metallic), 38%, 34%);*/
   --brand-metallic-medium: hsl(var(--brand-hue-metallic), 13%, 40%);
   --brand-metallic-light: hsl(var(--brand-hue-metallic), 10%, 55%);

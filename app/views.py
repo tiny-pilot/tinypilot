@@ -11,6 +11,11 @@ def index_get():
         'index.html', custom_elements_files=find_files.custom_elements_files())
 
 
+@views_blueprint.route('/styleguide', methods=['GET'])
+def styleguide_get():
+    return flask.render_template('styleguide.html')
+
+
 # On a real install, nginx redirects the /stream route to uStreamer, so a real
 # user should never hit this route in production. In development, show a fake
 # still image to give a better sense of how the TinyPilot UI looks.
