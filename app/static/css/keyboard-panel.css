@@ -1,8 +1,10 @@
+@import "style.css";
+
 #keystroke-panel {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background-color: rgb(244, 237, 231);
+  background-color: var(--brand-sand-light);
   border: 1px solid rgb(139, 97, 62);
   margin: 2rem auto;
   padding: 1rem;

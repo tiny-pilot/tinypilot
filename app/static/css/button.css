@@ -1,10 +1,12 @@
+@import "style.css";
+
 button {
   display: inline-block;
   border: none;
   padding: 1rem 2rem;
   margin: 1rem;
   text-decoration: none;
-  background: #0069ed;
+  background: var(--brand-metallic-light);
   color: #ffffff;
   font-size: 1rem;
   cursor: pointer;
@@ -17,7 +19,7 @@ button {
 
 button:hover,
 button:focus {
-  background: #0053ba;
+  background-color: var(--brand-metallic-bright);
 }
 
 button:focus {
@@ -30,9 +32,22 @@ button:active {
 }
 
 button.btn-success {
-  background-color: rgb(15, 157, 88);
+  background-color: var(--brand-green);
 }
 
 button.btn-success:hover {
-  background-color: rgb(65, 177, 108);
+  background-color: var(--brand-green-bright);
+}
+
+button.btn-success:disabled {
+  background-color: var(--brand-green-light);
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: var(--brand-red);
+}
+
+.btn-danger:hover {
+  background-color: var(--brand-red-bright);
 }

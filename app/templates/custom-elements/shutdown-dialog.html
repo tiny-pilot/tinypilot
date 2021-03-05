@@ -1,6 +1,7 @@
 <template id="shutdown-dialog-template">
   <style>
     @import "css/button.css";
+    @import "css/style.css";
 
     .overlay {
       display: none;
@@ -49,19 +50,11 @@
     }
 
     #shutdown-confirmation-panel > div {
-      background-color: rgb(252, 236, 223);
-      border: 1px solid rgb(139, 97, 62);
+      background-color: var(--brand-creme-light);
+      border: 1px solid var(--brand-metallic-dark);
       max-width: 800px;
       margin: 100px auto 0rem auto;
       padding: 2rem;
-    }
-
-    .btn-danger {
-      background-color: rgb(153, 8, 8);
-    }
-
-    .btn-danger:hover {
-      background-color: rgb(223, 48, 48);
     }
   </style>
   <div id="shutdown-confirmation-panel" class="overlay">

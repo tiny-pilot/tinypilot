@@ -13,11 +13,12 @@
     }
 
     :host([result="succeeded"]) .key-card {
-      background-color: rgb(168, 255, 168);
+      background-color: var(--brand-green-light);
     }
 
     :host([result="failed"]) .key-card {
-      background-color: red;
+      background-color: var(--brand-red);
+      color: white;
     }
   </style>
   <div class="key-card monospace"></div>

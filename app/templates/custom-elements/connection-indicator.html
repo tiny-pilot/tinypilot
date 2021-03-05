@@ -15,17 +15,15 @@
     .status-dot {
       height: 1rem;
       width: 1rem;
-      margin-left: 0.8rem;
+      margin: 0 0 0.1rem 0.6rem;
       border-radius: 50%;
       display: inline-block;
       /* Disconnected state */
-      border: 1px solid rgb(255, 82, 82);
-      background-color: red;
+      background-color: var(--brand-red-bright);
     }
 
     :host([connected="true"]) .status-dot {
-      border: 1px solid rgb(190, 255, 170);
-      background-color: rgb(116, 238, 116);
+      background-color: var(--brand-green-bright);
     }
 
     .connected-text {
