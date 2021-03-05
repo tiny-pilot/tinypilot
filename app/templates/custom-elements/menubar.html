@@ -115,18 +115,23 @@
       display: flex;
       z-index: 1;
       margin-left: 2rem;
+      padding-right: 17px;
       height: 100%;
       align-items: center;
     }
 
     .group > a:after {
-      content: "▾";
-      margin-left: 0.5em;
-    }
-
-    .group > ul > a:after {
-      content: "▾";
-      margin-left: 1em;
+      --width: 5px;
+      --height: 7px;
+      content: "";
+      position: absolute;
+      top: 18px;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-left: var(--width) solid transparent;
+      border-right: var(--width) solid transparent;
+      border-top: var(--height) solid var(--brand-creme-light);
     }
 
     .group ul a:hover {
@@ -138,10 +143,17 @@
     }
 
     .subgroup:after {
-      content: "▸";
+      --width: 5px;
+      --height: 7px;
+      content: "";
       position: absolute;
-      right: 5px;
-      top: 11px;
+      top: 13px;
+      right: 11px;
+      width: 0;
+      height: 0;
+      border-top: var(--width) solid transparent;
+      border-bottom: var(--width) solid transparent;
+      border-left: var(--height) solid var(--brand-creme-light);
     }
 
     #cursor-list a {
