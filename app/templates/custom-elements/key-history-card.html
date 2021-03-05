@@ -1,10 +1,12 @@
 <template id="key-history-card-template">
   <style>
+    @import "css/style.css";
+
     .key-card {
       margin: 1rem;
       padding: 1rem;
       display: block;
-      background-color: aliceblue;
+      background-color: var(--brand-metallic-light);
       font-family: "Courier New", Courier, monospace;
       border: 1px solid gray;
       width: 40px;
@@ -12,11 +14,11 @@
     }
 
     :host([result="succeeded"]) .key-card {
-      background-color: rgb(168, 255, 168);
+      background-color: var(--brand-green-light);
     }
 
     :host([result="failed"]) .key-card {
-      background-color: red;
+      background-color: var(--brand-red);
     }
   </style>
   <div class="key-card"></div>

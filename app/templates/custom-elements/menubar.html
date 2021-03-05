@@ -1,5 +1,6 @@
 <template id="menu-bar-template">
   <style>
+    @import "css/style.css";
     @import "css/cursors.css";
 
     a {
@@ -39,7 +40,7 @@
       padding: 0 2rem;
       margin: 0;
       color: white;
-      background-color: rgb(42, 42, 143);
+      background-color: var(--brand-metallic-dark);
       border-bottom: 1px solid black;
       margin-bottom: 1rem;
       -webkit-touch-callout: none;
@@ -94,9 +95,7 @@
     }
 
     .group a {
-      background-color: rgb(25, 7, 126);
       padding: 0.7rem 1.3rem;
-      border: 1px solid rgb(72, 61, 131);
     }
 
     .group > ul > a:after {
@@ -105,11 +104,11 @@
     }
 
     .group ul a:hover {
-      background: rgb(148 134 226);
+      background: var(--brand-metallic-light);
     }
 
     .group ul a {
-      background-color: rgb(65, 50, 146);
+      background-color: var(--brand-metallic-medium);
     }
 
     .subgroup:after {
