@@ -122,6 +122,7 @@ _MAPPING = {
     'NumpadMinus': hid.KEYCODE_NUMPAD_MINUS,
     'NumpadDecimal': hid.KEYCODE_NUMPAD_DOT,
     'NumpadDivide': hid.KEYCODE_NUMPAD_DIVIDE,
+    'NumpadEnter': hid.KEYCODE_NUMPAD_ENTER,
     'NumLock': hid.KEYCODE_NUM_LOCK,
     'OSLeft': hid.KEYCODE_LEFT_META,
     'OSRight': hid.KEYCODE_RIGHT_META,
