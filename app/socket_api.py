@@ -19,13 +19,7 @@ keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 # Location of file path at which to write mouse HID input.
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 
-# TODO(mtlynch): Ideally, we wouldn't accept requests from any origin, but the
-# risk of a CSRF attack for this app is very low. Additionally, CORS doesn't
-# protect us from the dangerous part of a CSRF attack. Even without same-origin
-# enforcement, third-party pages can still *send* requests (i.e. inject
-# keystrokes into the target machine) - it doesn't matter much if they can't
-# read responses.
-socketio = flask_socketio.SocketIO(cors_allowed_origins='*')
+socketio = flask_socketio.SocketIO()
 
 
 @socketio.on('keystroke')
