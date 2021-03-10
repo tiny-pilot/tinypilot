@@ -330,7 +330,9 @@
 
         set showKeyboard(isShown) {
           const keystrokePanel = document.getElementById("keystroke-panel");
-          const keyboardMenuItem = this.shadowRoot.getElementById("keyboard-menu-item");
+          const keyboardMenuItem = this.shadowRoot.getElementById(
+            "keyboard-menu-item"
+          );
           if (isShown) {
             keystrokePanel.style.display = "block";
             keyboardMenuItem.classList.add("nav-selected");
