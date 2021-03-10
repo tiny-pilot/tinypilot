@@ -266,7 +266,7 @@
           this.shadowRoot
             .getElementById("keyboard-btn")
             .addEventListener("click", (evt) => {
-              this.emitKeyboardVisibilityToggledEvent();
+              this.emitCustomEvent("keyboard-visibility-toggled");
               evt.preventDefault();
             });
           this.shadowRoot
@@ -336,9 +336,9 @@
           }
         }
 
-        emitKeyboardVisibilityToggledEvent() {
+        emitCustomEvent(eventId) {
           this.dispatchEvent(
-            new CustomEvent("keyboard-visibility-toggled", {
+            new CustomEvent(eventId, {
               bubbles: true,
               composed: true,
             })
