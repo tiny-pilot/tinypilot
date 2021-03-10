@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Run static analysis on bash scripts.
+
+# Exit on first failing command.
+set -e
+
+# Exit on unset variable.
+set -u
+
+readonly BASH_SCRIPTS=$(find . \
+  -not -path './\.*' \
+  -not -path './venv/*' \
+  -not -path './node_modules/*' \
+  -type f \
+  -exec bash -c 'head -n 1 {} | grep --quiet "#!/bin/bash"' \; \
+  -print)
+
+shellcheck ${BASH_SCRIPTS} \
+   --exclude SC2046 \
+   --exclude SC2059 \
+   --exclude SC2156 \
+   --exclude SC2086
