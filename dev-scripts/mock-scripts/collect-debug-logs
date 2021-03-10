@@ -1,0 +1,426 @@
+#!/bin/bash
+
+# Mock version of /opt/tinypilot-privileged/collect-debug-logs
+
+cat << EOF
+***NOTICE: This is a synthetic log dump for development purposes***
+
+Mock TinyPilot log dump
+https://tinypilotkvm.com
+Timestamp: 2021-03-01T10:06:47-05:00
+
+Software versions
+TinyPilot version: 1.3.0-76-g77ad758 77ad758
+uStreamer version: v1.17-85-g28563ab 28563ab
+OS version: Linux tinypilot 5.4.83-v7l+ #1379 SMP Mon Dec 14 13:11:54 GMT 2020 armv7l GNU/Linux
+
+voltage logs
+Mar 01 10:06:47 tinypilot python[573]: Checking for voltage issues...
+
+TinyPilot configuration
+[Unit]
+Description=TinyPilot - RPi-based virtual KVM
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=tinypilot
+WorkingDirectory=/opt/tinypilot
+ExecStart=/opt/tinypilot/venv/bin/python app/main.py
+Environment=HOST=127.0.0.1
+Environment=PORT=8000
+Environment=KEYBOARD_PATH=/dev/hidg0
+Environment=MOUSE_PATH=/dev/hidg1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+TinyPilot logs
+Mar 01 03:25:03 tinypilot python[573]: [2021-03-01 03:25:03,542] INFO in socket_api: Client disconnected
+Mar 01 03:25:04 tinypilot python[573]: [2021-03-01 03:25:04,365] INFO in socket_api: Client connected
+Mar 01 03:30:03 tinypilot python[573]: [2021-03-01 03:30:03,596] INFO in socket_api: Client disconnected
+Mar 01 03:30:04 tinypilot python[573]: [2021-03-01 03:30:04,914] INFO in socket_api: Client connected
+Mar 01 03:35:03 tinypilot python[573]: [2021-03-01 03:35:03,652] INFO in socket_api: Client disconnected
+Mar 01 03:35:05 tinypilot python[573]: [2021-03-01 03:35:05,279] INFO in socket_api: Client connected
+Mar 01 03:40:03 tinypilot python[573]: [2021-03-01 03:40:03,677] INFO in socket_api: Client disconnected
+Mar 01 03:40:04 tinypilot python[573]: [2021-03-01 03:40:04,707] INFO in socket_api: Client connected
+Mar 01 03:45:03 tinypilot python[573]: [2021-03-01 03:45:03,748] INFO in socket_api: Client disconnected
+Mar 01 03:45:04 tinypilot python[573]: [2021-03-01 03:45:04,569] INFO in socket_api: Client connected
+Mar 01 03:50:03 tinypilot python[573]: [2021-03-01 03:50:03,804] INFO in socket_api: Client disconnected
+Mar 01 03:50:04 tinypilot python[573]: [2021-03-01 03:50:04,603] INFO in socket_api: Client connected
+Mar 01 03:55:03 tinypilot python[573]: [2021-03-01 03:55:03,776] INFO in socket_api: Client disconnected
+Mar 01 03:55:04 tinypilot python[573]: [2021-03-01 03:55:04,404] INFO in socket_api: Client connected
+Mar 01 04:00:03 tinypilot python[573]: [2021-03-01 04:00:03,867] INFO in socket_api: Client disconnected
+Mar 01 04:00:05 tinypilot python[573]: [2021-03-01 04:00:05,404] INFO in socket_api: Client connected
+Mar 01 04:05:03 tinypilot python[573]: [2021-03-01 04:05:03,882] INFO in socket_api: Client disconnected
+Mar 01 04:05:05 tinypilot python[573]: [2021-03-01 04:05:05,371] INFO in socket_api: Client connected
+Mar 01 04:10:03 tinypilot python[573]: [2021-03-01 04:10:03,935] INFO in socket_api: Client disconnected
+Mar 01 04:10:05 tinypilot python[573]: [2021-03-01 04:10:05,131] INFO in socket_api: Client connected
+Mar 01 04:15:04 tinypilot python[573]: [2021-03-01 04:15:04,015] INFO in socket_api: Client disconnected
+Mar 01 04:15:05 tinypilot python[573]: [2021-03-01 04:15:05,430] INFO in socket_api: Client connected
+Mar 01 04:20:04 tinypilot python[573]: [2021-03-01 04:20:04,083] INFO in socket_api: Client disconnected
+Mar 01 04:20:04 tinypilot python[573]: [2021-03-01 04:20:04,881] INFO in socket_api: Client connected
+Mar 01 04:25:04 tinypilot python[573]: [2021-03-01 04:25:04,094] INFO in socket_api: Client disconnected
+Mar 01 04:25:05 tinypilot python[573]: [2021-03-01 04:25:05,530] INFO in socket_api: Client connected
+Mar 01 04:30:04 tinypilot python[573]: [2021-03-01 04:30:04,128] INFO in socket_api: Client disconnected
+Mar 01 04:30:05 tinypilot python[573]: [2021-03-01 04:30:05,026] INFO in socket_api: Client connected
+Mar 01 04:35:04 tinypilot python[573]: [2021-03-01 04:35:04,175] INFO in socket_api: Client disconnected
+Mar 01 04:35:05 tinypilot python[573]: [2021-03-01 04:35:05,079] INFO in socket_api: Client connected
+Mar 01 04:40:04 tinypilot python[573]: [2021-03-01 04:40:04,221] INFO in socket_api: Client disconnected
+Mar 01 04:40:05 tinypilot python[573]: [2021-03-01 04:40:05,512] INFO in socket_api: Client connected
+Mar 01 04:45:04 tinypilot python[573]: [2021-03-01 04:45:04,289] INFO in socket_api: Client disconnected
+Mar 01 04:45:05 tinypilot python[573]: [2021-03-01 04:45:05,074] INFO in socket_api: Client connected
+Mar 01 04:50:04 tinypilot python[573]: [2021-03-01 04:50:04,294] INFO in socket_api: Client disconnected
+Mar 01 04:50:05 tinypilot python[573]: [2021-03-01 04:50:05,319] INFO in socket_api: Client connected
+Mar 01 04:55:04 tinypilot python[573]: [2021-03-01 04:55:04,395] INFO in socket_api: Client disconnected
+Mar 01 04:55:05 tinypilot python[573]: [2021-03-01 04:55:05,705] INFO in socket_api: Client connected
+Mar 01 05:00:04 tinypilot python[573]: [2021-03-01 05:00:04,405] INFO in socket_api: Client disconnected
+Mar 01 05:00:05 tinypilot python[573]: [2021-03-01 05:00:05,339] INFO in socket_api: Client connected
+Mar 01 05:05:04 tinypilot python[573]: [2021-03-01 05:05:04,558] INFO in socket_api: Client disconnected
+Mar 01 05:05:05 tinypilot python[573]: [2021-03-01 05:05:05,676] INFO in socket_api: Client connected
+Mar 01 05:10:04 tinypilot python[573]: [2021-03-01 05:10:04,577] INFO in socket_api: Client disconnected
+Mar 01 05:10:06 tinypilot python[573]: [2021-03-01 05:10:06,076] INFO in socket_api: Client connected
+Mar 01 05:15:04 tinypilot python[573]: [2021-03-01 05:15:04,593] INFO in socket_api: Client disconnected
+Mar 01 05:15:05 tinypilot python[573]: [2021-03-01 05:15:05,699] INFO in socket_api: Client connected
+Mar 01 05:20:04 tinypilot python[573]: [2021-03-01 05:20:04,637] INFO in socket_api: Client disconnected
+Mar 01 05:20:05 tinypilot python[573]: [2021-03-01 05:20:05,333] INFO in socket_api: Client connected
+Mar 01 05:25:04 tinypilot python[573]: [2021-03-01 05:25:04,700] INFO in socket_api: Client disconnected
+Mar 01 05:25:06 tinypilot python[573]: [2021-03-01 05:25:06,090] INFO in socket_api: Client connected
+Mar 01 05:30:04 tinypilot python[573]: [2021-03-01 05:30:04,785] INFO in socket_api: Client disconnected
+Mar 01 05:30:06 tinypilot python[573]: [2021-03-01 05:30:06,188] INFO in socket_api: Client connected
+Mar 01 05:35:04 tinypilot python[573]: [2021-03-01 05:35:04,771] INFO in socket_api: Client disconnected
+Mar 01 05:35:05 tinypilot python[573]: [2021-03-01 05:35:05,787] INFO in socket_api: Client connected
+Mar 01 05:40:04 tinypilot python[573]: [2021-03-01 05:40:04,864] INFO in socket_api: Client disconnected
+Mar 01 05:40:06 tinypilot python[573]: [2021-03-01 05:40:06,252] INFO in socket_api: Client connected
+Mar 01 05:45:04 tinypilot python[573]: [2021-03-01 05:45:04,911] INFO in socket_api: Client disconnected
+Mar 01 05:45:05 tinypilot python[573]: [2021-03-01 05:45:05,731] INFO in socket_api: Client connected
+Mar 01 05:50:04 tinypilot python[573]: [2021-03-01 05:50:04,946] INFO in socket_api: Client disconnected
+Mar 01 05:50:05 tinypilot python[573]: [2021-03-01 05:50:05,662] INFO in socket_api: Client connected
+Mar 01 05:55:04 tinypilot python[573]: [2021-03-01 05:55:04,981] INFO in socket_api: Client disconnected
+Mar 01 05:55:06 tinypilot python[573]: [2021-03-01 05:55:06,295] INFO in socket_api: Client connected
+Mar 01 06:00:05 tinypilot python[573]: [2021-03-01 06:00:05,050] INFO in socket_api: Client disconnected
+Mar 01 06:00:05 tinypilot python[573]: [2021-03-01 06:00:05,657] INFO in socket_api: Client connected
+Mar 01 06:05:05 tinypilot python[573]: [2021-03-01 06:05:05,058] INFO in socket_api: Client disconnected
+Mar 01 06:05:06 tinypilot python[573]: [2021-03-01 06:05:06,560] INFO in socket_api: Client connected
+Mar 01 06:10:05 tinypilot python[573]: [2021-03-01 06:10:05,126] INFO in socket_api: Client disconnected
+Mar 01 06:10:05 tinypilot python[573]: [2021-03-01 06:10:05,723] INFO in socket_api: Client connected
+Mar 01 06:15:05 tinypilot python[573]: [2021-03-01 06:15:05,120] INFO in socket_api: Client disconnected
+Mar 01 06:15:06 tinypilot python[573]: [2021-03-01 06:15:06,501] INFO in socket_api: Client connected
+Mar 01 06:20:05 tinypilot python[573]: [2021-03-01 06:20:05,191] INFO in socket_api: Client disconnected
+Mar 01 06:20:06 tinypilot python[573]: [2021-03-01 06:20:06,331] INFO in socket_api: Client connected
+Mar 01 06:25:05 tinypilot python[573]: [2021-03-01 06:25:05,232] INFO in socket_api: Client disconnected
+Mar 01 06:25:05 tinypilot python[573]: [2021-03-01 06:25:05,998] INFO in socket_api: Client connected
+Mar 01 06:30:05 tinypilot python[573]: [2021-03-01 06:30:05,224] INFO in socket_api: Client disconnected
+Mar 01 06:30:06 tinypilot python[573]: [2021-03-01 06:30:06,238] INFO in socket_api: Client connected
+Mar 01 06:35:05 tinypilot python[573]: [2021-03-01 06:35:05,328] INFO in socket_api: Client disconnected
+Mar 01 06:35:06 tinypilot python[573]: [2021-03-01 06:35:06,617] INFO in socket_api: Client connected
+Mar 01 06:40:05 tinypilot python[573]: [2021-03-01 06:40:05,351] INFO in socket_api: Client disconnected
+Mar 01 06:40:06 tinypilot python[573]: [2021-03-01 06:40:06,457] INFO in socket_api: Client connected
+Mar 01 06:45:05 tinypilot python[573]: [2021-03-01 06:45:05,377] INFO in socket_api: Client disconnected
+Mar 01 06:45:06 tinypilot python[573]: [2021-03-01 06:45:06,578] INFO in socket_api: Client connected
+Mar 01 06:50:05 tinypilot python[573]: [2021-03-01 06:50:05,381] INFO in socket_api: Client disconnected
+Mar 01 06:50:06 tinypilot python[573]: [2021-03-01 06:50:06,278] INFO in socket_api: Client connected
+Mar 01 06:55:05 tinypilot python[573]: [2021-03-01 06:55:05,371] INFO in socket_api: Client disconnected
+Mar 01 06:55:06 tinypilot python[573]: [2021-03-01 06:55:06,369] INFO in socket_api: Client connected
+Mar 01 07:00:05 tinypilot python[573]: [2021-03-01 07:00:05,427] INFO in socket_api: Client disconnected
+Mar 01 07:00:06 tinypilot python[573]: [2021-03-01 07:00:06,644] INFO in socket_api: Client connected
+Mar 01 07:05:05 tinypilot python[573]: [2021-03-01 07:05:05,464] INFO in socket_api: Client disconnected
+Mar 01 07:05:06 tinypilot python[573]: [2021-03-01 07:05:06,682] INFO in socket_api: Client connected
+Mar 01 07:10:05 tinypilot python[573]: [2021-03-01 07:10:05,563] INFO in socket_api: Client disconnected
+Mar 01 07:10:07 tinypilot python[573]: [2021-03-01 07:10:07,002] INFO in socket_api: Client connected
+Mar 01 07:15:05 tinypilot python[573]: [2021-03-01 07:15:05,602] INFO in socket_api: Client disconnected
+Mar 01 07:15:06 tinypilot python[573]: [2021-03-01 07:15:06,200] INFO in socket_api: Client connected
+Mar 01 07:20:05 tinypilot python[573]: [2021-03-01 07:20:05,597] INFO in socket_api: Client disconnected
+Mar 01 07:20:06 tinypilot python[573]: [2021-03-01 07:20:06,717] INFO in socket_api: Client connected
+Mar 01 07:25:05 tinypilot python[573]: [2021-03-01 07:25:05,692] INFO in socket_api: Client disconnected
+Mar 01 07:25:07 tinypilot python[573]: [2021-03-01 07:25:07,024] INFO in socket_api: Client connected
+Mar 01 07:30:05 tinypilot python[573]: [2021-03-01 07:30:05,695] INFO in socket_api: Client disconnected
+Mar 01 07:30:06 tinypilot python[573]: [2021-03-01 07:30:06,848] INFO in socket_api: Client connected
+Mar 01 07:35:05 tinypilot python[573]: [2021-03-01 07:35:05,786] INFO in socket_api: Client disconnected
+Mar 01 07:35:07 tinypilot python[573]: [2021-03-01 07:35:07,003] INFO in socket_api: Client connected
+Mar 01 07:40:05 tinypilot python[573]: [2021-03-01 07:40:05,841] INFO in socket_api: Client disconnected
+Mar 01 07:40:06 tinypilot python[573]: [2021-03-01 07:40:06,766] INFO in socket_api: Client connected
+Mar 01 07:45:05 tinypilot python[573]: [2021-03-01 07:45:05,887] INFO in socket_api: Client disconnected
+Mar 01 07:45:06 tinypilot python[573]: [2021-03-01 07:45:06,580] INFO in socket_api: Client connected
+Mar 01 07:50:05 tinypilot python[573]: [2021-03-01 07:50:05,974] INFO in socket_api: Client disconnected
+Mar 01 07:50:06 tinypilot python[573]: [2021-03-01 07:50:06,581] INFO in socket_api: Client connected
+Mar 01 07:55:05 tinypilot python[573]: [2021-03-01 07:55:05,942] INFO in socket_api: Client disconnected
+Mar 01 07:55:07 tinypilot python[573]: [2021-03-01 07:55:07,123] INFO in socket_api: Client connected
+Mar 01 08:00:05 tinypilot python[573]: [2021-03-01 08:00:05,987] INFO in socket_api: Client disconnected
+Mar 01 08:00:07 tinypilot python[573]: [2021-03-01 08:00:07,080] INFO in socket_api: Client connected
+Mar 01 08:05:06 tinypilot python[573]: [2021-03-01 08:05:06,020] INFO in socket_api: Client disconnected
+Mar 01 08:05:06 tinypilot python[573]: [2021-03-01 08:05:06,833] INFO in socket_api: Client connected
+Mar 01 08:10:06 tinypilot python[573]: [2021-03-01 08:10:06,052] INFO in socket_api: Client disconnected
+Mar 01 08:10:07 tinypilot python[573]: [2021-03-01 08:10:07,356] INFO in socket_api: Client connected
+Mar 01 08:15:06 tinypilot python[573]: [2021-03-01 08:15:06,128] INFO in socket_api: Client disconnected
+Mar 01 08:15:07 tinypilot python[573]: [2021-03-01 08:15:07,117] INFO in socket_api: Client connected
+Mar 01 08:20:06 tinypilot python[573]: [2021-03-01 08:20:06,105] INFO in socket_api: Client disconnected
+Mar 01 08:20:07 tinypilot python[573]: [2021-03-01 08:20:07,635] INFO in socket_api: Client connected
+Mar 01 08:25:06 tinypilot python[573]: [2021-03-01 08:25:06,213] INFO in socket_api: Client disconnected
+Mar 01 08:25:07 tinypilot python[573]: [2021-03-01 08:25:07,012] INFO in socket_api: Client connected
+Mar 01 08:30:06 tinypilot python[573]: [2021-03-01 08:30:06,235] INFO in socket_api: Client disconnected
+Mar 01 08:30:07 tinypilot python[573]: [2021-03-01 08:30:07,617] INFO in socket_api: Client connected
+Mar 01 08:35:06 tinypilot python[573]: [2021-03-01 08:35:06,321] INFO in socket_api: Client disconnected
+Mar 01 08:35:07 tinypilot python[573]: [2021-03-01 08:35:07,139] INFO in socket_api: Client connected
+Mar 01 08:40:06 tinypilot python[573]: [2021-03-01 08:40:06,346] INFO in socket_api: Client disconnected
+Mar 01 08:40:07 tinypilot python[573]: [2021-03-01 08:40:07,784] INFO in socket_api: Client connected
+Mar 01 08:45:06 tinypilot python[573]: [2021-03-01 08:45:06,375] INFO in socket_api: Client disconnected
+Mar 01 08:45:07 tinypilot python[573]: [2021-03-01 08:45:07,879] INFO in socket_api: Client connected
+Mar 01 08:50:06 tinypilot python[573]: [2021-03-01 08:50:06,373] INFO in socket_api: Client disconnected
+Mar 01 08:50:07 tinypilot python[573]: [2021-03-01 08:50:07,677] INFO in socket_api: Client connected
+Mar 01 08:55:06 tinypilot python[573]: [2021-03-01 08:55:06,431] INFO in socket_api: Client disconnected
+Mar 01 08:55:07 tinypilot python[573]: [2021-03-01 08:55:07,715] INFO in socket_api: Client connected
+Mar 01 09:00:06 tinypilot python[573]: [2021-03-01 09:00:06,502] INFO in socket_api: Client disconnected
+Mar 01 09:00:07 tinypilot python[573]: [2021-03-01 09:00:07,088] INFO in socket_api: Client connected
+Mar 01 09:05:06 tinypilot python[573]: [2021-03-01 09:05:06,518] INFO in socket_api: Client disconnected
+Mar 01 09:05:07 tinypilot python[573]: [2021-03-01 09:05:07,179] INFO in socket_api: Client connected
+Mar 01 09:10:06 tinypilot python[573]: [2021-03-01 09:10:06,598] INFO in socket_api: Client disconnected
+Mar 01 09:10:07 tinypilot python[573]: [2021-03-01 09:10:07,723] INFO in socket_api: Client connected
+Mar 01 09:15:06 tinypilot python[573]: [2021-03-01 09:15:06,648] INFO in socket_api: Client disconnected
+Mar 01 09:15:08 tinypilot python[573]: [2021-03-01 09:15:08,063] INFO in socket_api: Client connected
+Mar 01 09:20:06 tinypilot python[573]: [2021-03-01 09:20:06,630] INFO in socket_api: Client disconnected
+Mar 01 09:20:07 tinypilot python[573]: [2021-03-01 09:20:07,939] INFO in socket_api: Client connected
+Mar 01 09:25:06 tinypilot python[573]: [2021-03-01 09:25:06,721] INFO in socket_api: Client disconnected
+Mar 01 09:25:07 tinypilot python[573]: [2021-03-01 09:25:07,914] INFO in socket_api: Client connected
+Mar 01 09:30:06 tinypilot python[573]: [2021-03-01 09:30:06,746] INFO in socket_api: Client disconnected
+Mar 01 09:30:07 tinypilot python[573]: [2021-03-01 09:30:07,634] INFO in socket_api: Client connected
+Mar 01 09:35:06 tinypilot python[573]: [2021-03-01 09:35:06,776] INFO in socket_api: Client disconnected
+Mar 01 09:35:07 tinypilot python[573]: [2021-03-01 09:35:07,916] INFO in socket_api: Client connected
+Mar 01 09:40:06 tinypilot python[573]: [2021-03-01 09:40:06,788] INFO in socket_api: Client disconnected
+Mar 01 09:40:07 tinypilot python[573]: [2021-03-01 09:40:07,880] INFO in socket_api: Client connected
+Mar 01 09:45:06 tinypilot python[573]: [2021-03-01 09:45:06,862] INFO in socket_api: Client disconnected
+Mar 01 09:45:07 tinypilot python[573]: [2021-03-01 09:45:07,548] INFO in socket_api: Client connected
+Mar 01 09:50:06 tinypilot python[573]: [2021-03-01 09:50:06,873] INFO in socket_api: Client disconnected
+Mar 01 09:50:08 tinypilot python[573]: [2021-03-01 09:50:08,054] INFO in socket_api: Client connected
+Mar 01 09:55:06 tinypilot python[573]: [2021-03-01 09:55:06,895] INFO in socket_api: Client disconnected
+Mar 01 09:55:07 tinypilot python[573]: [2021-03-01 09:55:07,611] INFO in socket_api: Client connected
+Mar 01 10:00:06 tinypilot python[573]: [2021-03-01 10:00:06,931] INFO in socket_api: Client disconnected
+Mar 01 10:00:07 tinypilot python[573]: [2021-03-01 10:00:07,908] INFO in socket_api: Client connected
+Mar 01 10:04:36 tinypilot python[573]: [2021-03-01 10:04:36,913] INFO in _internal:  * Detected change in '/opt/tinypilot/app/main.py', reloading
+Mar 01 10:04:37 tinypilot python[573]: [2021-03-01 10:04:37,054] INFO in _internal:  * Restarting with stat
+Mar 01 10:04:37 tinypilot python[573]: [2021-03-01 10:04:37,975] INFO in main: Starting app
+Mar 01 10:04:39 tinypilot python[573]: [2021-03-01 10:04:39,535] INFO in socket_api: Client connected
+Mar 01 10:04:40 tinypilot python[573]: [2021-03-01 10:04:40,205] INFO in socket_api: Client connected
+Mar 01 10:04:55 tinypilot systemd[1]: Stopping TinyPilot - RPi-based virtual KVM...
+Mar 01 10:04:55 tinypilot systemd[1]: tinypilot.service: Succeeded.
+Mar 01 10:04:55 tinypilot systemd[1]: Stopped TinyPilot - RPi-based virtual KVM.
+Mar 01 10:04:55 tinypilot systemd[1]: Started TinyPilot - RPi-based virtual KVM.
+Mar 01 10:04:56 tinypilot python[7838]: [2021-03-01 10:04:56,344] INFO in main: Starting app
+Mar 01 10:04:56 tinypilot python[7838]: [2021-03-01 10:04:56,393] INFO in _internal:  * Restarting with stat
+Mar 01 10:04:57 tinypilot systemd[1]: Stopping TinyPilot - RPi-based virtual KVM...
+Mar 01 10:04:57 tinypilot systemd[1]: tinypilot.service: Succeeded.
+Mar 01 10:04:57 tinypilot systemd[1]: Stopped TinyPilot - RPi-based virtual KVM.
+-- Reboot --
+Mar 01 10:05:14 tinypilot systemd[1]: Started TinyPilot - RPi-based virtual KVM.
+Mar 01 10:05:16 tinypilot python[573]: [2021-03-01 10:05:16,336] INFO in main: Starting app
+Mar 01 10:05:16 tinypilot python[573]: [2021-03-01 10:05:16,402] INFO in _internal:  * Restarting with stat
+Mar 01 10:05:17 tinypilot python[573]: [2021-03-01 10:05:17,303] INFO in main: Starting app
+Mar 01 10:06:36 tinypilot python[573]: [2021-03-01 10:06:36,775] INFO in _internal:  * Detected change in '/opt/tinypilot/app/main.py', reloading
+Mar 01 10:06:36 tinypilot python[573]: [2021-03-01 10:06:36,926] INFO in _internal:  * Restarting with stat
+Mar 01 10:06:37 tinypilot python[573]: [2021-03-01 10:06:37,897] INFO in main: Starting app
+Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,008] INFO in _internal:  * Detected change in '/opt/tinypilot/app/api.py', reloading
+Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,170] INFO in _internal:  * Restarting with stat
+Mar 01 10:06:41 tinypilot python[573]: [2021-03-01 10:06:41,114] INFO in main: Starting app
+Mar 01 10:06:43 tinypilot python[573]: [2021-03-01 10:06:43,133] INFO in socket_api: Client connected
+Mar 01 10:06:47 tinypilot sudo[791]: tinypilot : TTY=unknown ; PWD=/opt/tinypilot ; USER=root ; COMMAND=/opt/tinypilot-privileged/collect-debug-logs -q
+Mar 01 10:06:47 tinypilot sudo[791]: pam_unix(sudo:session): session opened for user root by (uid=0)
+Mar 01 10:06:47 tinypilot python[573]: Writing diagnostic logs to /tmp/tmp.EvctHesve7
+Mar 01 10:06:47 tinypilot python[573]: Checking TinyPilot version...
+Mar 01 10:06:47 tinypilot python[573]: Checking uStreamer version...
+Mar 01 10:06:47 tinypilot python[573]: Checking OS version...
+Mar 01 10:06:47 tinypilot python[573]: Checking for voltage issues...
+Mar 01 10:06:47 tinypilot sudo[800]:     root : TTY=unknown ; PWD=/opt/ustreamer ; USER=root ; COMMAND=/usr/bin/journalctl -xe
+Mar 01 10:06:47 tinypilot sudo[800]: pam_unix(sudo:session): session opened for user root by (uid=0)
+Mar 01 10:06:47 tinypilot sudo[800]: pam_unix(sudo:session): session closed for user root
+Mar 01 10:06:47 tinypilot python[573]: Checking TinyPilot configuration...
+Mar 01 10:06:47 tinypilot python[573]: Checking TinyPilot logs...
+Mar 01 10:06:47 tinypilot sudo[804]:     root : TTY=unknown ; PWD=/opt/ustreamer ; USER=root ; COMMAND=/usr/bin/journalctl -u tinypilot
+Mar 01 10:06:47 tinypilot sudo[804]: pam_unix(sudo:session): session opened for user root by (uid=0)
+
+TinyPilot update logs
+
+uStreamer configuration
+[Unit]
+Description=uStreamer - Lightweight, optimized video encoder
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=ustreamer
+WorkingDirectory=/opt/ustreamer
+ExecStart=/opt/ustreamer/ustreamer \
+  --host 127.0.0.1 \
+  --port 8001 \
+  --encoder omx \
+  --format uyvy \
+  --workers 3 \
+  --drop-same-frames 30 \
+  --persistent \
+  --dv-timings \
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+uStreamer logs
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.528    stream] -- Using pixelformat: UYVY
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.528    stream] -- Querying HW FPS changing is not supported
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.528    stream] -- Using IO method: MMAP
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.539    stream] -- Requested 5 device buffers, got 5
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.546    stream] -- Capturing started
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.546    stream] -- Initializing BCM ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.547    stream] -- Initializing OMX ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.548    stream] -- Initializing OMX encoder ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.549    stream] -- Initializing OMX encoder ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.552    stream] -- Initializing OMX encoder ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.564    stream] -- Using JPEG quality: 80%
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.564    stream] -- Creating pool with 3 workers ...
+Feb 26 16:33:41 tinypilot ustreamer[571]: -- INFO  [17.564    stream] -- Capturing ...
+Feb 26 17:36:47 tinypilot ustreamer[571]: -- INFO  [1671.056      http] -- HTTP: Registered client: [127.0.0.1]:36936, id=63fbddab-cafe-4d0b-b88a-a62f6b3ae640; clients now: 1
+Feb 26 17:36:52 tinypilot ustreamer[571]: -- INFO  [1676.755      http] -- HTTP: Disconnected client: [127.0.0.1]:36936, id=63fbddab-cafe-4d0b-b88a-a62f6b3ae640, Success (reading,eof); clients now: 0
+Feb 26 17:42:02 tinypilot ustreamer[571]: -- INFO  [1986.899    stream] -- Got V4L2 event
+Feb 26 17:42:02 tinypilot ustreamer[571]: -- INFO  [1986.899    stream] -- Got V4L2_EVENT_SOURCE_CHANGE: source changed
+Feb 26 17:42:02 tinypilot ustreamer[571]: -- INFO  [1986.899    stream] -- Destroying workers pool ...
+Feb 26 17:42:02 tinypilot ustreamer[571]: -- INFO  [1986.903      http] -- HTTP: Changed picture to BLANK
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.918    stream] -- Capturing stopped
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.924    stream] -- Device fd=8 closed
+Feb 26 17:42:03 tinypilot ustreamer[571]: ================================================================================
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.924    stream] -- Device fd=8 opened
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.924    stream] -- Using input channel: 0
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.924    stream] -- Using TV standard: DEFAULT
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- ERROR [1986.946    stream] -- Requested resolution=640x480 is unavailable
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.946    stream] -- Using resolution: 1280x720
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.946    stream] -- Using pixelformat: UYVY
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.946    stream] -- Querying HW FPS changing is not supported
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.946    stream] -- Using IO method: MMAP
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.960    stream] -- Requested 5 device buffers, got 5
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.966    stream] -- Capturing started
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.985    stream] -- Using JPEG quality: 80%
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.985    stream] -- Creating pool with 3 workers ...
+Feb 26 17:42:03 tinypilot ustreamer[571]: -- INFO  [1986.985    stream] -- Capturing ...
+Feb 26 17:42:04 tinypilot ustreamer[571]: -- ERROR [1987.987    stream] -- Mainloop select() timeout, polling ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233763.799      main] -- ===== Stopping by SIGTERM =====
+Mar 01 10:04:57 tinypilot systemd[1]: Stopping uStreamer - Lightweight, optimized video encoder...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233763.803      http] -- HTTP eventloop stopped
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.479    stream] -- Destroying workers pool ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.496    stream] -- Capturing stopped
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.499    stream] -- Device fd=8 closed
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.499      main] -- Destroying OMX encoder ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.500      main] -- Destroying OMX encoder ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.503      main] -- Destroying OMX encoder ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.505      main] -- Destroying OMX ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.505      main] -- Destroying BCM ...
+Mar 01 10:04:57 tinypilot ustreamer[571]: -- INFO  [233764.505      main] -- Bye-bye
+Mar 01 10:04:57 tinypilot systemd[1]: ustreamer.service: Succeeded.
+Mar 01 10:04:57 tinypilot systemd[1]: Stopped uStreamer - Lightweight, optimized video encoder.
+-- Reboot --
+Mar 01 10:05:14 tinypilot systemd[1]: Started uStreamer - Lightweight, optimized video encoder.
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.678      main] -- Installing SIGINT handler ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.679      main] -- Installing SIGTERM handler ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.679      main] -- Ignoring SIGPIPE ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.679      main] -- Using internal blank placeholder
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.679      main] -- Listening HTTP on [127.0.0.1]:8001
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680    stream] -- Using V4L2 device: /dev/video0
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680    stream] -- Using desired FPS: 0
+Mar 01 10:05:14 tinypilot ustreamer[578]: ================================================================================
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680      http] -- Starting HTTP eventloop ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680    stream] -- Device fd=8 opened
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680    stream] -- Using input channel: 0
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.680    stream] -- Using TV standard: DEFAULT
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.690    stream] -- Got new DV timings: resolution=1280x720, pixclk=74250000
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.731    stream] -- Using resolution: 1280x720
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.731    stream] -- Using pixelformat: UYVY
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.731    stream] -- Querying HW FPS changing is not supported
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.732    stream] -- Using IO method: MMAP
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.741    stream] -- Requested 5 device buffers, got 5
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.748    stream] -- Capturing started
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.749    stream] -- Initializing BCM ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.751    stream] -- Initializing OMX ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.751    stream] -- Initializing OMX encoder ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.753    stream] -- Initializing OMX encoder ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.755    stream] -- Initializing OMX encoder ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.767    stream] -- Using JPEG quality: 80%
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.767    stream] -- Creating pool with 3 workers ...
+Mar 01 10:05:14 tinypilot ustreamer[578]: -- INFO  [18.768    stream] -- Capturing ...
+Mar 01 10:06:43 tinypilot ustreamer[578]: -- INFO  [93.927      http] -- HTTP: Registered client: [127.0.0.1]:60678, id=14b8f27d-27ea-4214-b98d-237ef18d5c24; clients now: 1
+
+nginx logs
+-- Logs begin at Thu 2019-02-14 05:11:59 EST, end at Mon 2021-03-01 10:06:48 EST. --
+Feb 26 07:31:29 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 26 07:31:29 tinypilot systemd[1]: nginx.service: Failed to parse PID from file /run/nginx.pid: Invalid argument
+Feb 26 07:31:29 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+Feb 26 07:31:31 tinypilot systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Feb 26 07:31:31 tinypilot systemd[1]: nginx.service: Succeeded.
+Feb 26 07:31:31 tinypilot systemd[1]: Stopped A high performance web server and a reverse proxy server.
+-- Reboot --
+Feb 26 07:31:46 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 26 07:31:47 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+Feb 26 16:23:42 tinypilot systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Feb 26 16:23:47 tinypilot systemd[1]: nginx.service: Succeeded.
+Feb 26 16:23:47 tinypilot systemd[1]: Stopped A high performance web server and a reverse proxy server.
+Feb 26 16:23:47 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 26 16:23:47 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+Feb 26 16:26:01 tinypilot systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Feb 26 16:26:01 tinypilot systemd[1]: nginx.service: Succeeded.
+Feb 26 16:26:01 tinypilot systemd[1]: Stopped A high performance web server and a reverse proxy server.
+-- Reboot --
+Feb 26 16:26:18 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 26 16:26:18 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+Feb 26 16:33:25 tinypilot systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Feb 26 16:33:26 tinypilot systemd[1]: nginx.service: Succeeded.
+Feb 26 16:33:26 tinypilot systemd[1]: Stopped A high performance web server and a reverse proxy server.
+-- Reboot --
+Feb 26 16:33:41 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 26 16:33:41 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+Mar 01 10:04:56 tinypilot systemd[1]: Reloading A high performance web server and a reverse proxy server.
+Mar 01 10:04:56 tinypilot systemd[1]: Reloaded A high performance web server and a reverse proxy server.
+Mar 01 10:04:57 tinypilot systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Mar 01 10:04:57 tinypilot systemd[1]: nginx.service: Succeeded.
+Mar 01 10:04:57 tinypilot systemd[1]: Stopped A high performance web server and a reverse proxy server.
+-- Reboot --
+Mar 01 10:05:14 tinypilot systemd[1]: Starting A high performance web server and a reverse proxy server...
+Mar 01 10:05:14 tinypilot systemd[1]: Started A high performance web server and a reverse proxy server.
+
+
+2021/03/01 10:04:37 [error] 582#582: *38966 upstream prematurely closed connection while reading response header from upstream, client: 10.0.0.38, server: tinypilot, request: "GET /socket.io/?EIO=3&transport=polling&t=NVkKOvs&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKOvs&sid=1be74b7f1bbc46f7979eb8932ec06127", host: "tinypilot", referrer: "https://tinypilot/"
+2021/03/01 10:04:37 [error] 582#582: *38968 connect() failed (111: Connection refused) while connecting to upstream, client: 10.0.0.38, server: tinypilot, request: "POST /socket.io/?EIO=3&transport=polling&t=NVkKTSI&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKTSI&sid=1be74b7f1bbc46f7979eb8932ec06127", host: "tinypilot", referrer: "https://tinypilot/"
+2021/03/01 10:04:37 [error] 582#582: *38970 connect() failed (111: Connection refused) while connecting to upstream, client: 10.0.0.38, server: tinypilot, request: "GET /socket.io/?EIO=3&transport=polling&t=NVkKTfn HTTP/1.1", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKTfn", host: "tinypilot", referrer: "https://tinypilot/"
+2021/03/01 10:04:55 [error] 582#582: *38981 upstream prematurely closed connection while reading response header from upstream, client: 10.0.0.38, server: tinypilot, request: "GET /socket.io/?EIO=3&transport=polling&t=NVkKUDX&sid=e9488288f2d34754859243aa303b844f HTTP/1.1", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKUDX&sid=e9488288f2d34754859243aa303b844f", host: "tinypilot", referrer: "https://tinypilot/"
+2021/03/01 10:04:55 [error] 582#582: *38983 connect() failed (111: Connection refused) while connecting to upstream, client: 10.0.0.38, server: tinypilot, request: "POST /socket.io/?EIO=3&transport=polling&t=NVkKXv7&sid=e9488288f2d34754859243aa303b844f HTTP/1.1", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKXv7&sid=e9488288f2d34754859243aa303b844f", host: "tinypilot", referrer: "https://tinypilot/"
+2021/03/01 10:04:56 [error] 582#582: *38973 connect() failed (111: Connection refused) while connecting to upstream, client: 10.0.0.38, server: tinypilot, request: "GET /socket.io/?EIO=3&transport=polling&t=NVkKY9F HTTP/2.0", upstream: "http://127.0.0.1:8000/socket.io/?EIO=3&transport=polling&t=NVkKY9F", host: "tinypilot.local", referrer: "https://tinypilot.local/"
+2021/03/01 10:04:56 [notice] 7871#7871: signal process started
+
+
+10.0.0.38 - - [01/Mar/2021:10:00:32 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJRkt&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:00:58 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkJdz5&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:00:58 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJXsF&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:01:23 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkJk4f&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:01:23 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJdzq&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:01:48 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkJqBy&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:01:48 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJk5J&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:02:13 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkJwJL&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:02:13 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJqCa&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:02:38 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkK0R8&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:02:38 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkJwKT&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:03 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkK0SE&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:03 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkK6Yv&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:28 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkK6Zt&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:28 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkKCgl&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:53 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKChK&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:03:53 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkKIo2&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:18 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKIoc&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 4 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:18 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkKOvI&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 200 2 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:37 -0500] "GET /socket.io/?EIO=3&transport=websocket&sid=02dd2fc311e44a158a8a1e47bdf40c79 HTTP/1.1" 101 44950 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:37 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKOvs&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 502 173 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:37 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkKTSI&sid=1be74b7f1bbc46f7979eb8932ec06127 HTTP/1.1" 502 173 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:37 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKTfn HTTP/1.1" 502 173 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:39 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKTm3 HTTP/2.0" 200 119 "https://tinypilot.local/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:39 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKU35&sid=2cbd702bfb81486daa28a44de5289be6 HTTP/2.0" 200 4 "https://tinypilot.local/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:40 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKUCq HTTP/1.1" 200 119 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:55 -0500] "GET /socket.io/?EIO=3&transport=websocket&sid=2cbd702bfb81486daa28a44de5289be6 HTTP/1.1" 101 10 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:55 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKUDX&sid=e9488288f2d34754859243aa303b844f HTTP/1.1" 502 173 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:55 -0500] "POST /socket.io/?EIO=3&transport=polling&t=NVkKXv7&sid=e9488288f2d34754859243aa303b844f HTTP/1.1" 502 173 "https://tinypilot/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0" "-"
+10.0.0.38 - - [01/Mar/2021:10:04:56 -0500] "GET /socket.io/?EIO=3&transport=polling&t=NVkKY9F HTTP/2.0" 502 575 "https://tinypilot.local/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36" "-"
+EOF

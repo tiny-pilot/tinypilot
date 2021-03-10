@@ -39,6 +39,16 @@ If you're planning to contribute code to TinyPilot, it's a good idea to enable t
 ./hooks/enable_hooks
 ```
 
+### Enable mock scripts
+
+The TinyPilot server backend uses several privileged scripts (created in [ansible-role-tinypilot](https://github.com/mtlynch/ansible-role-tinypilot)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
+
+To set up symlinks that mock out those scripts and facilitate development, run the following command:
+
+```bash
+sudo ./dev-scripts/enable-mock-scripts
+```
+
 ### Run in dev mode
 
 To run TinyPilot on a non-Pi machine, run:

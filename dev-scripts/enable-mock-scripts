@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Creates a symlink from /opt/tinypilot-privileged to dev-scripts/mock-scripts
+# to facilitate development on non-TinyPilot systems.
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+readonly PRIVILEGED_SCRIPTS_DIR="/opt/tinypilot-privileged"
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly MOCK_SCRIPTS_DIR="${SCRIPT_DIR}/mock-scripts"
+
+# If there's an existing symlink, remove it.
+if [[ -L "${PRIVILEGED_SCRIPTS_DIR}" ]]; then
+  rm "${PRIVILEGED_SCRIPTS_DIR}"
+fi
+
+ln -s "${MOCK_SCRIPTS_DIR}" "${PRIVILEGED_SCRIPTS_DIR}"
