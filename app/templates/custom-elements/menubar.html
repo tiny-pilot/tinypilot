@@ -258,11 +258,13 @@
             "change-hostname-btn": "change-hostname-dialog-requested",
             "debug-dialog-btn": "debug-logs-dialog-requested",
           };
-          for (const btn in menuButtonIdToEventId) {
+          for (const [buttonId, eventId] of Object.entries(
+            menuButtonIdToEventId
+          )) {
             this.shadowRoot
-              .getElementById(btn)
+              .getElementById(buttonId)
               .addEventListener("click", (evt) => {
-                this.emitCustomEvent(menuButtonIdToEventId[btn]);
+                this.emitCustomEvent(eventId);
                 evt.preventDefault();
               });
           }
