@@ -250,13 +250,13 @@
           // All “simple”/standard menu items, that just emit a custom
           // event without any further ado.
           const menuButtonIdToEventId = {
-            "power-btn": "shutdown-initialized",
+            "power-btn": "shutdown-dialog-requested",
             "keyboard-btn": "keyboard-visibility-toggled",
             "fullscreen-btn": "fullscreen-requested",
             "paste-btn": "paste-requested",
-            "update-btn": "update-initialized",
-            "change-hostname-btn": "change-hostname-initialized",
-            "debug-dialog-btn": "debug-logs-requested",
+            "update-btn": "update-dialog-requested",
+            "change-hostname-btn": "change-hostname-dialog-requested",
+            "debug-dialog-btn": "debug-logs-dialog-requested",
           };
           for (const btn in menuButtonIdToEventId) {
             this.shadowRoot

@@ -280,21 +280,21 @@ menuBar.addEventListener("cursor-selected", (evt) => {
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("keystroke-panel"));
 });
-menuBar.addEventListener("shutdown-initialized", () => {
+menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-dialog").show = true;
 });
-menuBar.addEventListener("update-initialized", () => {
+menuBar.addEventListener("update-dialog-requested", () => {
   const updateDialog = document.getElementById("update-dialog");
   updateDialog.show = true;
   updateDialog.checkVersion();
 });
-menuBar.addEventListener("change-hostname-initialized", () => {
+menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-dialog").show = true;
 });
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
-menuBar.addEventListener("debug-logs-requested", () => {
+menuBar.addEventListener("debug-logs-dialog-requested", () => {
   const debugDialog = document.getElementById("debug-dialog");
   debugDialog.show = true;
   debugDialog.getLogs();
