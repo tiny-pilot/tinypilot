@@ -6,6 +6,7 @@ try {
 const defaults = {
   isKeyHistoryEnabled: true,
   cursor: "crosshair",
+  isKeyboardVisible: true,
 };
 
 // Initialize any undefined settings to their default values.
@@ -42,5 +43,14 @@ export function getScreenCursor() {
 
 export function setScreenCursor(newCursor) {
   settings["cursor"] = newCursor;
+  persistSettings();
+}
+
+export function isKeyboardVisible() {
+  return settings["isKeyboardVisible"];
+}
+
+export function setKeyboardVisibility(isVisible) {
+  settings["isKeyboardVisible"] = isVisible;
   persistSettings();
 }
