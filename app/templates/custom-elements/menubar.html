@@ -252,53 +252,32 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          this.shadowRoot
-            .getElementById("power-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("shutdown-initialized");
-              evt.preventDefault();
-            });
+          // All “simple”/straightforward menu items, that just emit a custom
+          // event without any further ado.
+          const menuButtonIdToEventId = {
+            "power-btn": "shutdown-initialized",
+            "keyboard-btn": "keyboard-visibility-toggled",
+            "fullscreen-btn": "fullscreen-requested",
+            "paste-btn": "paste-requested",
+            "update-btn": "update-initialized",
+            "change-hostname-btn": "change-hostname-initialized",
+            "debug-dialog-btn": "debug-logs-requested",
+          };
+          for (const btn in menuButtonIdToEventId) {
+            this.shadowRoot
+              .getElementById(btn)
+              .addEventListener("click", (evt) => {
+                this.emitCustomEvent(menuButtonIdToEventId[btn]);
+                evt.preventDefault();
+              });
+          }
+
+          // Setup screenshot button.
           this.shadowRoot
             .getElementById("screenshot-btn")
             .addEventListener("click", (evt) => {
               evt.target.download =
                 "TinyPilot-" + new Date().toISOString() + ".jpg";
-            });
-          this.shadowRoot
-            .getElementById("keyboard-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("keyboard-visibility-toggled");
-              evt.preventDefault();
-            });
-          this.shadowRoot
-            .getElementById("fullscreen-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("fullscreen-requested");
-              evt.preventDefault();
-            });
-          this.shadowRoot
-            .getElementById("paste-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("paste-requested");
-              evt.preventDefault();
-            });
-          this.shadowRoot
-            .getElementById("update-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("update-initialized");
-              evt.preventDefault();
-            });
-          this.shadowRoot
-            .getElementById("change-hostname-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("change-hostname-initialized");
-              evt.preventDefault();
-            });
-          this.shadowRoot
-            .getElementById("debug-dialog-btn")
-            .addEventListener("click", (evt) => {
-              this.emitCustomEvent("debug-logs-requested");
-              evt.preventDefault();
             });
 
           // Add cursor options to navbar.
