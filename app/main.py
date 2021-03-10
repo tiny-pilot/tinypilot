@@ -55,6 +55,17 @@ def handle_csrf_error(error):
     }), 400
 
 
+@app.after_request
+def after_request(response):
+    # Disable caching in debug mode.
+    if debug:
+        response.headers['Cache-Control'] = (
+            'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
+        response.headers['Expires'] = 0
+        response.headers['Pragma'] = 'no-cache'
+    return response
+
+
 def main():
     socketio = socket_api.socketio
     socketio.init_app(app)
