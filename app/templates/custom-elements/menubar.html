@@ -283,10 +283,9 @@
             });
           this.shadowRoot
             .getElementById("update-btn")
-            .addEventListener("click", () => {
-              const updateDialog = document.getElementById("update-dialog");
-              updateDialog.show = true;
-              updateDialog.checkVersion();
+            .addEventListener("click", (evt) => {
+              this.emitCustomEvent("update-initialized");
+              evt.preventDefault();
             });
           this.shadowRoot
             .getElementById("change-hostname-btn")

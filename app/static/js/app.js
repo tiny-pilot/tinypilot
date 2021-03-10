@@ -281,6 +281,11 @@ menuBar.addEventListener("keyboard-visibility-toggled", () => {
 menuBar.addEventListener("shutdown-initialized", () => {
   document.getElementById("shutdown-dialog").show = true;
 });
+menuBar.addEventListener("update-initialized", () => {
+  const updateDialog = document.getElementById("update-dialog");
+  updateDialog.show = true;
+  updateDialog.checkVersion();
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
