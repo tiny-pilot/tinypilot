@@ -273,7 +273,7 @@
           this.shadowRoot
             .getElementById("fullscreen-btn")
             .addEventListener("click", (evt) => {
-              document.getElementById("remote-screen").fullscreen = true;
+              this.emitCustomEvent("fullscreen-requested");
               evt.preventDefault();
             });
           this.shadowRoot

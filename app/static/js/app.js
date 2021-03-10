@@ -289,6 +289,9 @@ menuBar.addEventListener("update-initialized", () => {
 menuBar.addEventListener("change-hostname-initialized", () => {
   document.getElementById("change-hostname-dialog").show = true;
 });
+menuBar.addEventListener("fullscreen-requested", () => {
+  document.getElementById("remote-screen").fullscreen = true;
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
