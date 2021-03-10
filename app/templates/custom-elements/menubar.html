@@ -254,8 +254,9 @@
 
           this.shadowRoot
             .getElementById("power-btn")
-            .addEventListener("click", () => {
-              document.getElementById("shutdown-dialog").show = true;
+            .addEventListener("click", (evt) => {
+              this.emitCustomEvent("shutdown-initialized");
+              evt.preventDefault();
             });
           this.shadowRoot
             .getElementById("screenshot-btn")

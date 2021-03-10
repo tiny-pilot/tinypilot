@@ -278,6 +278,9 @@ menuBar.onChangeCursor = setCursor;
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("keystroke-panel"));
 });
+menuBar.addEventListener("shutdown-initialized", () => {
+  document.getElementById("shutdown-dialog").show = true;
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
