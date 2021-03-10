@@ -243,11 +243,6 @@
     customElements.define(
       "menu-bar",
       class extends HTMLElement {
-        constructor() {
-          super();
-          this.setCursorCallback = () => {};
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -296,7 +291,7 @@
             cursorLink.setAttribute("href", "#");
             cursorLink.innerText = cursorOption;
             cursorLink.addEventListener("click", (evt) => {
-              this.setCursorCallback(cursorOption);
+              this.emitCustomEvent("cursor-selected", { cursor: cursorOption });
               evt.preventDefault();
             });
             const listItem = document.createElement("li");
@@ -316,9 +311,10 @@
           }
         }
 
-        emitCustomEvent(eventId) {
+        emitCustomEvent(eventId, detail) {
           this.dispatchEvent(
             new CustomEvent(eventId, {
+              detail,
               bubbles: true,
               composed: true,
             })
@@ -341,10 +337,6 @@
               cursorListItem.classList.remove("nav-selected");
             }
           }
-        }
-
-        set onChangeCursor(handler) {
-          this.setCursorCallback = handler;
         }
       }
     );

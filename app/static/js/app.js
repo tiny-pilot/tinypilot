@@ -274,7 +274,9 @@ document.addEventListener("keyup", onKeyUp);
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
-menuBar.onChangeCursor = setCursor;
+menuBar.addEventListener("cursor-selected", (evt) => {
+  setCursor(evt.detail.cursor);
+});
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("keystroke-panel"));
 });
