@@ -252,7 +252,7 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          // All “simple”/straightforward menu items, that just emit a custom
+          // All “simple”/standard menu items, that just emit a custom
           // event without any further ado.
           const menuButtonIdToEventId = {
             "power-btn": "shutdown-initialized",
@@ -326,6 +326,8 @@
         }
 
         get connectionIndicator() {
+          // Just returning the element is a bit ugly of course. However,
+          // the indicator is supposed to be moved to the status bar anyway.
           return this.shadowRoot.getElementById("connection-indicator");
         }
 
