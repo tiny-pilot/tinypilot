@@ -39,6 +39,13 @@ body {
   justify-content: center;
   text-align: center;
   margin: 0 auto;
+  padding-top: 55px; /* Account for menu bar plus some extra spacing */
+}
+
+.header-bar {
+  position: fixed;
+  width: 100%;
+  z-index: 999999; /* Ensure the header is always the topmost element */
 }
 
 html {
