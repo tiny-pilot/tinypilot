@@ -242,7 +242,7 @@
       class extends HTMLElement {
         constructor() {
           super();
-          this.setCursor = () => {};
+          this.setCursorCallback = () => {};
         }
 
         connectedCallback() {
@@ -307,7 +307,7 @@
             cursorLink.setAttribute("href", "#");
             cursorLink.innerText = cursorOption;
             cursorLink.addEventListener("click", (evt) => {
-              this.setCursor(cursorOption);
+              this.setCursorCallback(cursorOption);
               evt.preventDefault();
             });
             const listItem = document.createElement("li");
@@ -335,7 +335,7 @@
         }
 
         set onChangeCursor(handler) {
-          this.setCursor = handler;
+          this.setCursorCallback = handler;
         }
       }
     );
