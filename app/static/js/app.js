@@ -297,6 +297,9 @@ menuBar.addEventListener("debug-logs-requested", () => {
   debugDialog.show = true;
   debugDialog.getLogs();
 });
+menuBar.addEventListener("paste-requested", () => {
+  showPasteOverlay();
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document

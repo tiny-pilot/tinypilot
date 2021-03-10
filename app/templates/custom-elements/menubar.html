@@ -278,8 +278,9 @@
             });
           this.shadowRoot
             .getElementById("paste-btn")
-            .addEventListener("click", () => {
-              showPasteOverlay();
+            .addEventListener("click", (evt) => {
+              this.emitCustomEvent("paste-requested");
+              evt.preventDefault();
             });
           this.shadowRoot
             .getElementById("update-btn")
