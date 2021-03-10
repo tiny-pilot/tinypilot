@@ -295,10 +295,9 @@
             });
           this.shadowRoot
             .getElementById("debug-dialog-btn")
-            .addEventListener("click", () => {
-              const debugDialog = doc.querySelector("#debug-dialog");
-              debugDialog.show = true;
-              debugDialog.getLogs();
+            .addEventListener("click", (evt) => {
+              this.emitCustomEvent("debug-logs-requested");
+              evt.preventDefault();
             });
 
           // Add cursor options to navbar.

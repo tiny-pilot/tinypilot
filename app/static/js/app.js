@@ -292,6 +292,11 @@ menuBar.addEventListener("change-hostname-initialized", () => {
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
+menuBar.addEventListener("debug-logs-requested", () => {
+  const debugDialog = document.getElementById("debug-dialog");
+  debugDialog.show = true;
+  debugDialog.getLogs();
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
