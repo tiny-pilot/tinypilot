@@ -6,6 +6,7 @@ try {
 const defaults = {
   isKeyHistoryEnabled: true,
   cursor: "crosshair",
+  showKeyboard: true,
 };
 
 // Initialize any undefined settings to their default values.
@@ -42,5 +43,14 @@ export function getScreenCursor() {
 
 export function setScreenCursor(newCursor) {
   settings["cursor"] = newCursor;
+  persistSettings();
+}
+
+export function getShowKeyboard() {
+  return settings["showKeyboard"];
+}
+
+export function setShowKeyboard(isShown) {
+  settings["showKeyboard"] = isShown;
   persistSettings();
 }

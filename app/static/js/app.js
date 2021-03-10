@@ -261,7 +261,8 @@ document.addEventListener("keyup", onKeyUp);
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
 menuBar.onChangeCursor = setCursor;
-menuBar.showKeyboard = true;
+menuBar.showKeyboard = settings.getShowKeyboard();
+menuBar.showKeyboardCallback = (isShown) => settings.setShowKeyboard(isShown);
 
 document
   .getElementById("remote-screen")
