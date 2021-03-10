@@ -23,6 +23,10 @@ function showElementById(id, display = "block") {
   document.getElementById(id).style.display = display;
 }
 
+function isElementShown(id) {
+  return document.getElementById(id).style.display !== "none";
+}
+
 function showError(errorType, errorMessage) {
   document.getElementById("error-type").innerText = errorType;
   document.getElementById("error-message").innerText = errorMessage;
@@ -253,6 +257,16 @@ function setCursor(cursor, save = true) {
   }
 }
 
+function setKeyboardVisibility(isVisible) {
+  if (isVisible) {
+    showElementById("keystroke-panel");
+  } else {
+    hideElementById("keystroke-panel");
+  }
+  settings.setKeyboardVisibility(isVisible);
+  document.getElementById("menu-bar").isKeyboardVisible = isVisible;
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
@@ -261,8 +275,10 @@ document.addEventListener("keyup", onKeyUp);
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
 menuBar.onChangeCursor = setCursor;
-menuBar.showKeyboard = settings.getShowKeyboard();
-menuBar.showKeyboardCallback = (isShown) => settings.setShowKeyboard(isShown);
+menuBar.addEventListener("keyboard-visibility-toggled", () => {
+  setKeyboardVisibility(!isElementShown("keystroke-panel"));
+});
+setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
   .getElementById("remote-screen")

@@ -267,7 +267,7 @@
           this.shadowRoot
             .getElementById("keyboard-btn")
             .addEventListener("click", (evt) => {
-              this.showKeyboard = !this.showKeyboard;
+              this.emitKeyboardVisibilityToggledEvent();
               evt.preventDefault();
             });
           this.shadowRoot
@@ -328,28 +328,22 @@
           }
         }
 
-        set showKeyboard(isShown) {
-          const keystrokePanel = document.getElementById("keystroke-panel");
-          const keyboardMenuItem = this.shadowRoot.getElementById(
-            "keyboard-menu-item"
-          );
-          if (isShown) {
-            keystrokePanel.style.display = "block";
-            keyboardMenuItem.classList.add("nav-selected");
+        set isKeyboardVisible(isVisible) {
+          const menuItem = this.shadowRoot.getElementById("keyboard-menu-item");
+          if (isVisible) {
+            menuItem.classList.add("nav-selected");
           } else {
-            keystrokePanel.style.display = "none";
-            keyboardMenuItem.classList.remove("nav-selected");
+            menuItem.classList.remove("nav-selected");
           }
-          this.showKeyboardCallback(isShown);
         }
 
-        get showKeyboard() {
-          const keystrokePanel = document.getElementById("keystroke-panel");
-          return keystrokePanel.style.display === "block";
-        }
-
-        set onShowKeyboard(handler) {
-          this.showKeyboardCallback = handler;
+        emitKeyboardVisibilityToggledEvent() {
+          this.dispatchEvent(
+            new CustomEvent("keyboard-visibility-toggled", {
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
 
         get connectionIndicator() {
