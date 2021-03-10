@@ -246,6 +246,7 @@
         constructor() {
           super();
           this.setCursor = () => {};
+          this.showKeyboardCallback = () => {};
         }
 
         connectedCallback() {
@@ -337,11 +338,16 @@
             keystrokePanel.style.display = "none";
             keyboardMenuItem.classList.remove("nav-selected");
           }
+          this.showKeyboardCallback(isShown);
         }
 
         get showKeyboard() {
           const keystrokePanel = document.getElementById("keystroke-panel");
           return keystrokePanel.style.display === "block";
+        }
+
+        set onShowKeyboard(handler) {
+          this.showKeyboardCallback = handler;
         }
 
         get connectionIndicator() {
