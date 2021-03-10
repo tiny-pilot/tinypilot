@@ -289,8 +289,9 @@
             });
           this.shadowRoot
             .getElementById("change-hostname-btn")
-            .addEventListener("click", () => {
-              document.getElementById("change-hostname-dialog").show = true;
+            .addEventListener("click", (evt) => {
+              this.emitCustomEvent("change-hostname-initialized");
+              evt.preventDefault();
             });
           this.shadowRoot
             .getElementById("debug-dialog-btn")

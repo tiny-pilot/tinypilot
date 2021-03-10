@@ -286,6 +286,9 @@ menuBar.addEventListener("update-initialized", () => {
   updateDialog.show = true;
   updateDialog.checkVersion();
 });
+menuBar.addEventListener("change-hostname-initialized", () => {
+  document.getElementById("change-hostname-dialog").show = true;
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 
 document
