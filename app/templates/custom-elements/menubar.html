@@ -213,6 +213,9 @@
             <!-- JavaScript populates this list dynamically. -->
           </ul>
         </li>
+        <li class="item" id="keyboard-menu-item">
+          <a id="keyboard-btn">Show Keyboard</a>
+        </li>
         <li class="item">
           <a id="fullscreen-btn">Full Screen</a>
         </li>
@@ -259,6 +262,12 @@
             .addEventListener("click", (evt) => {
               evt.target.download =
                 "TinyPilot-" + new Date().toISOString() + ".jpg";
+            });
+          this.shadowRoot
+            .getElementById("keyboard-btn")
+            .addEventListener("click", (evt) => {
+              this.showKeyboard = !this.showKeyboard;
+              evt.preventDefault();
             });
           this.shadowRoot
             .getElementById("fullscreen-btn")
@@ -316,6 +325,23 @@
             listItem.setAttribute("cursor", cursorOption);
             cursorList.appendChild(listItem);
           }
+        }
+
+        set showKeyboard(isShown) {
+          const keystrokePanel = document.getElementById("keystroke-panel");
+          const keyboardMenuItem = this.shadowRoot.getElementById("keyboard-menu-item");
+          if (isShown) {
+            keystrokePanel.style.display = "block";
+            keyboardMenuItem.classList.add("nav-selected");
+          } else {
+            keystrokePanel.style.display = "none";
+            keyboardMenuItem.classList.remove("nav-selected");
+          }
+        }
+
+        get showKeyboard() {
+          const keystrokePanel = document.getElementById("keystroke-panel");
+          return keystrokePanel.style.display === "block";
         }
 
         get connectionIndicator() {
