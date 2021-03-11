@@ -13,8 +13,11 @@ jobs:
           command: ./dev-scripts/check-trailing-newline
   check_bash:
     docker:
-      - image: koalaman/shellcheck:latest
+      - image: koalaman/shellcheck-alpine:v0.7.1
     steps:
+      - run:
+          name: Install dependencies
+          command: apk add bash git grep
       - checkout
       - run:
           name: Run static analysis on bash scripts
