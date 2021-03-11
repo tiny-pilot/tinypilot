@@ -26,19 +26,23 @@
       background-color: var(--brand-green-bright);
     }
 
-    .connected-text {
+    .connected-text,
+    .label-connected {
       display: none;
     }
 
-    :host([connected="true"]) .connected-text {
+    :host([connected="true"]) .connected-text,
+    :host([connected="true"]) .label-connected {
       display: block;
     }
 
-    .disconnected-text {
+    .disconnected-text,
+    .label-disconnected {
       display: block;
     }
 
-    :host([connected="true"]) .disconnected-text {
+    :host([connected="true"]) .disconnected-text,
+    :host([connected="true"]) .label-disconnected {
       display: none;
     }
   </style>
@@ -53,7 +57,10 @@
         <span id="disconnect-reason"></span>
       </div>
     </content-tooltip>
-    <div>Connection</div>
+    <div>
+      <span class="label-connected">Connected</span>
+      <span class="label-disconnected">Disconnected</span>
+    </div>
   </div>
 </template>
 
@@ -66,10 +73,6 @@
     customElements.define(
       "connection-indicator",
       class extends HTMLElement {
-        constructor() {
-          super();
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -79,8 +82,8 @@
           return this.getAttribute("connected");
         }
 
-        set connected(newValue) {
-          this.setAttribute("connected", newValue);
+        set connected(isConnected) {
+          this.setAttribute("connected", isConnected);
         }
 
         get disconnectReason() {
