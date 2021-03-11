@@ -10,7 +10,7 @@
   --brand-hue-green: 135;
 
   --brand-metallic-dark: hsl(var(--brand-hue-blue), 33%, 33%);
-  --brand-metallic-medium: hsl(var(--brand-hue-metallic), 19%, 40%);
+  --brand-metallic-medium: hsl(var(--brand-hue-metallic), 18%, 45%);
   --brand-metallic-light: hsl(var(--brand-hue-metallic), 16%, 55%);
   --brand-metallic-bright: hsl(var(--brand-hue-metallic), 18%, 71%);
 
@@ -27,7 +27,7 @@
   --brand-green-light: hsl(var(--brand-hue-green), 42%, 73%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
-  --z-index-menubar: 1;
+  --z-index-bar: 1;
   --z-index-overlay: 2;
 }
 
@@ -43,12 +43,21 @@ body {
   text-align: center;
   margin: 0 auto;
   padding-top: 55px; /* Account for menu bar plus some extra spacing */
+  padding-bottom: 40px; /* Account for status bar plus some extra spacing */
 }
 
 .header-bar {
   position: fixed;
+  top: 0;
   width: 100%;
-  z-index: var(--z-index-menubar);
+  z-index: var(--z-index-bar);
+}
+
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: var(--z-index-bar);
 }
 
 html {

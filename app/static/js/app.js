@@ -107,7 +107,7 @@ function onSocketConnect() {
   }
 
   connectedToServer = true;
-  document.getElementById("menu-bar").connectionIndicator.connected = true;
+  document.getElementById("status-bar").connectionIndicator.connected = true;
   setCursor(settings.getScreenCursor());
 
   // If we're restarting after an update, mark the update as finished.
@@ -120,7 +120,7 @@ function onSocketConnect() {
 function onSocketDisconnect(reason) {
   setCursor("disabled", false);
   connectedToServer = false;
-  const connectionIndicator = document.getElementById("menu-bar")
+  const connectionIndicator = document.getElementById("status-bar")
     .connectionIndicator;
   connectionIndicator.connected = false;
   connectionIndicator.disconnectReason = reason;

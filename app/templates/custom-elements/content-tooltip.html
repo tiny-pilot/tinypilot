@@ -1,6 +1,8 @@
 <template id="content-tooltip-template">
   <style>
     :host {
+      --tooltip-width: 200px;
+
       position: relative;
       display: inline-block;
     }
@@ -17,17 +19,17 @@
       z-index: 1;
     }
 
-    :host([position="top-left"]) .tooltip-text {
-      width: 400px;
+    :host([position="top-right"]) .tooltip-text {
+      width: var(--tooltip-width);
       bottom: 100%;
-      left: 0%;
-      margin-left: -420px;
+      right: 0;
+      margin-right: calc(-1 * var(--tooltip-width));
     }
 
     :host([position="bottom"]) .tooltip-text {
       top: 100%;
       left: 50%;
-      margin-left: -200px;
+      margin-left: calc(-1 * var(--tooltip-width));
     }
 
     :host(:hover) .tooltip-text {
