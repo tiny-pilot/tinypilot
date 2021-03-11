@@ -53,7 +53,7 @@
         <span id="disconnect-reason"></span>
       </div>
     </content-tooltip>
-    <div>Connection</div>
+    <div id="label"><!-- Set via JavaScript --></div>
   </div>
 </template>
 
@@ -66,21 +66,24 @@
     customElements.define(
       "connection-indicator",
       class extends HTMLElement {
-        constructor() {
-          super();
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.label = this.shadowRoot.getElementById("label");
+          this.connected = false;
         }
 
         get connected() {
           return this.getAttribute("connected");
         }
 
-        set connected(newValue) {
-          this.setAttribute("connected", newValue);
+        set connected(isConnected) {
+          this.setAttribute("connected", isConnected);
+          if (isConnected) {
+            this.label.innerText = "Connected";
+          } else {
+            this.label.innerText = "Disconnected";
+          }
         }
 
         get disconnectReason() {
