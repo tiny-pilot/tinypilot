@@ -7,23 +7,18 @@ set -e
 # Exit on unset variable.
 set -u
 
-readonly TEXT_FILES=$(grep \
-  ".*" \
-  --files-with-matches \
-  --binary-files=without-match \
-   --exclude="*.svg" \
-   --exclude="*third-party*" \
-   $(git ls-files | xargs)
-)
-
 success=0
 
-for text_file in ${TEXT_FILES[*]}
-do
-  if ! [[ -s "${text_file}" && -z "$(tail -c 1 "${text_file}")" ]]; then
-    printf "File must end in a trailing newline: ${text_file}\n" >&2
+while read -r line; do
+  if ! [[ -s "${line}" && -z "$(tail -c 1 "${line}")" ]]; then
+    printf "File must end in a trailing newline: %s\n" "${line}" >&2
     success=-1
   fi
-done
+done < <(git ls-files \
+  | xargs grep ".*" \
+    --files-with-matches \
+    --binary-files=without-match \
+    --exclude="*.svg" \
+    --exclude="*third-party*")
 
 exit "${success}"
