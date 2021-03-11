@@ -154,11 +154,6 @@
       text-transform: capitalize;
     }
 
-    .connection-indicator {
-      margin-right: 2rem;
-      margin-left: auto;
-    }
-
     .nav-icon img {
       margin-top: 5px;
       max-height: 22px;
@@ -168,6 +163,10 @@
       content: "✓";
       position: absolute;
       right: 10px;
+    }
+
+    .spacer {
+      flex: 1;
     }
   </style>
 
@@ -221,11 +220,8 @@
       </ul>
     </li>
   </ul>
-  <div class="header-item connection-indicator">
-    <!-- The connection indicator will be moved
-      to the status bar later on -->
-    <connection-indicator id="connection-indicator"> </connection-indicator>
-  </div>
+
+  <div class="spacer"></div>
   <div class="header-item nav-icon">
     <a href="https://github.com/mtlynch/tinypilot" target="_blank">
       <img src="/img/GitHub-Mark-Light-120px-plus.png" />
@@ -320,12 +316,6 @@
               composed: true,
             })
           );
-        }
-
-        get connectionIndicator() {
-          // Just returning the element is a bit ugly of course. However,
-          // the indicator is supposed to be moved to the status bar anyway.
-          return this.shadowRoot.getElementById("connection-indicator");
         }
 
         set cursor(newCursor) {

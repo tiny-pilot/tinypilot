@@ -15,7 +15,7 @@
     .status-dot {
       height: 1rem;
       width: 1rem;
-      margin: 0 0 0.1rem 0.6rem;
+      margin: 0 0.5rem 0.2rem 0;
       border-radius: 50%;
       display: inline-block;
       /* Disconnected state */
@@ -43,7 +43,6 @@
     }
   </style>
   <div class="status">
-    <div>Connection</div>
     <content-tooltip position="bottom">
       <span class="status-dot"></span>
       <div slot="text" class="connected-text">
@@ -54,6 +53,7 @@
         <span id="disconnect-reason"></span>
       </div>
     </content-tooltip>
+    <div>Connection</div>
   </div>
 </template>
 
