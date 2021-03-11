@@ -17,17 +17,21 @@
       z-index: 1;
     }
 
-    :host([position="top-left"]) .tooltip-text {
-      width: 400px;
+    :host .tooltip-text {
+      --width: 200px;
+    }
+
+    :host([position="top-right"]) .tooltip-text {
+      width: var(--width);
       bottom: 100%;
-      left: 0%;
-      margin-left: -420px;
+      right: 0;
+      margin-right: calc(-1 * var(--width));
     }
 
     :host([position="bottom"]) .tooltip-text {
       top: 100%;
       left: 50%;
-      margin-left: -200px;
+      margin-left: calc(-1 * var(--width));
     }
 
     :host(:hover) .tooltip-text {
