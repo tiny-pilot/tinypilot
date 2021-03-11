@@ -27,7 +27,7 @@
   --brand-green-light: hsl(var(--brand-hue-green), 42%, 73%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
-  --z-index-menubar: 1;
+  --z-index-bar: 1;
   --z-index-overlay: 2;
 }
 
@@ -50,14 +50,14 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: var(--z-index-menubar);
+  z-index: var(--z-index-bar);
 }
 
 .footer-bar {
   position: fixed;
   bottom: 0;
   width: 100%;
-  z-index: var(--z-index-menubar);
+  z-index: var(--z-index-bar);
 }
 
 html {
