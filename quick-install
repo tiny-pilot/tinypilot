@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Echo commands to stdout.
 set -x
@@ -69,7 +69,7 @@ readonly EXTRA_VARS_PATH
 # Check if the user is accidentally downgrading from TinyPilot Pro.
 HAS_PRO_INSTALLED=0
 
-SCRIPT_DIR="$(dirname $0)"
+SCRIPT_DIR="$(dirname "$0")"
 # If they're piping this script in from stdin, guess that TinyPilot is
 # in the default location.
 if [ "$SCRIPT_DIR" = "." ]; then
@@ -101,7 +101,7 @@ if [ "$HAS_PRO_INSTALLED" = 1 ]; then
     printf "type the following:\n\n"
     printf "  export FORCE_DOWNGRADE=1\n\n"
     printf "And then run your previous command again.\n"
-    exit -1
+    exit 255
   fi
 fi
 

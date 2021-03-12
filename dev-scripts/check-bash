@@ -8,16 +8,16 @@ set -e
 # Exit on unset variable.
 set -u
 
-readonly BASH_SCRIPTS=$(find . \
-  -not -path './\.*' \
-  -not -path './venv/*' \
-  -not -path './node_modules/*' \
-  -type f \
-  -exec bash -c 'head -n 1 {} | grep --quiet "#!/bin/bash"' \; \
-  -print)
+BASH_SCRIPTS=()
 
-shellcheck ${BASH_SCRIPTS} \
-   --exclude SC2046 \
-   --exclude SC2059 \
-   --exclude SC2156 \
-   --exclude SC2086
+while read -r line; do
+  if head -n 1 "${line}" | grep --quiet "#!/bin/bash"; then
+    BASH_SCRIPTS+=("${line}")
+  fi
+done < <(git ls-files)
+
+readonly BASH_SCRIPTS
+
+shellcheck \
+  --external-sources \
+  "${BASH_SCRIPTS[@]}"

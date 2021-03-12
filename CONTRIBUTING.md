@@ -23,6 +23,18 @@ python3.7 -m venv venv && \
   npm install prettier@2.0.5
 ```
 
+TinyPilot uses [ShellCheck](https://github.com/koalaman/shellcheck) to do
+static analysis on its bash scripts.
+[Install ShellCheck](https://github.com/koalaman/shellcheck#installing) through
+your package manager:
+
+```bash
+# Debian/Ubuntu/Mint
+sudo apt-get install shellcheck
+# macOS
+brew install shellcheck
+```
+
 ### Run automated tests
 
 To run TinyPilot's build scripts, run:
