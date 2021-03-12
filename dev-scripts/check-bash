@@ -18,6 +18,4 @@ done < <(git ls-files)
 
 readonly BASH_SCRIPTS
 
-shellcheck \
-  --external-sources \
-  "${BASH_SCRIPTS[@]}"
+shellcheck "${BASH_SCRIPTS[@]}"

@@ -119,6 +119,7 @@ sudo chown "$(whoami):$(whoami)" --recursive "$INSTALLER_DIR"
 pushd "$INSTALLER_DIR"
 
 python3 -m venv venv
+# shellcheck disable=SC1091
 . venv/bin/activate
 # For some reason, wheel has to be installed before anything else.
 pip install wheel==0.34.2
