@@ -10,6 +10,7 @@ The steps below show you how to quickly set up a development environment for Tin
 
 * Python 3.7 or higher
 * Node.js 13.x or higher
+* [shellcheck](https://github.com/koalaman/shellcheck#installing)
 
 ### Install packages
 
@@ -21,18 +22,6 @@ python3.7 -m venv venv && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
   npm install prettier@2.0.5
-```
-
-TinyPilot uses [ShellCheck](https://github.com/koalaman/shellcheck) to do
-static analysis on its bash scripts.
-[Install ShellCheck](https://github.com/koalaman/shellcheck#installing) through
-your package manager:
-
-```bash
-# Debian/Ubuntu/Mint
-sudo apt-get install shellcheck
-# macOS
-brew install shellcheck
 ```
 
 ### Run automated tests
