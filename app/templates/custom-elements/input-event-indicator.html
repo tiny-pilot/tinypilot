@@ -1,0 +1,121 @@
+<template id="input-event-indicator-template">
+  <style>
+    @import "css/style.css";
+
+    .array {
+      display: flex;
+    }
+
+    .item {
+      border: 1px solid white;
+      padding: 0.1em 0.3em;
+      margin-left: 0.5em;
+      border-radius: 4px;
+      background-color: var(--brand-metallic-light);
+      min-width: 0.8em;
+      animation: appear ease 200ms forwards;
+    }
+
+    .succeeded {
+      border-style: solid !important;
+    }
+
+    .failed {
+      background-color: var(--brand-red-bright);
+      color: white;
+      opacity: 1 !important;
+    }
+
+    @keyframes appear {
+      0% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0.45;
+        border-style: dotted;
+      }
+    }
+
+    .hide {
+      animation: disappear ease 300ms forwards;
+    }
+    @keyframes disappear {
+      0% {
+        opacity: 0.45;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .keystroke {
+      white-space: pre;
+      text-align: center;
+      font-family: "Overpass Mono", monospace;
+      font-size: 0.9em;
+    }
+  </style>
+
+  <div id="history" class="array"></div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#input-event-indicator-template");
+
+    const DISPLAY_THRESHOLD_MS = 4000;
+    const MAX_ITEMS = 7;
+
+    customElements.define(
+      "input-event-indicator",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.history = this.shadowRoot.getElementById("history");
+        }
+
+        pushKeystroke(key) {
+          const item = document.createElement("div");
+          item.innerText = key;
+          item.classList.add("keystroke");
+          this.push(item);
+          return {
+            succeeded: () => item.classList.add("succeeded"),
+            failed: () => item.classList.add("failed"),
+          };
+        }
+
+        push(item) {
+          const items = Array.from(this.history.childNodes).reverse();
+          let numberDisplayed = 0;
+          for (let item of items) {
+            if (item.classList.contains("hide")) {
+              continue;
+            }
+            numberDisplayed++;
+            if (numberDisplayed >= MAX_ITEMS) {
+              this.pop(item);
+            }
+          }
+          item.classList.add("item");
+          this.history.appendChild(item);
+          setTimeout(() => this.pop(item), DISPLAY_THRESHOLD_MS);
+        }
+
+        pop(item) {
+          if (item.classList.contains("hide")) {
+            return;
+          }
+          item.classList.add("hide");
+          setTimeout(() => {
+            item.style.display = "none";
+            this.history.removeChild(item);
+          }, 500);
+        }
+      }
+    );
+  })();
+</script>

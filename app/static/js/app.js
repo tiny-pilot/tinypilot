@@ -76,6 +76,9 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
+const inputEventIndicator = document.getElementById("status-bar")
+  .inputEventIndicator;
+
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
   // On Android, when the user is typing with autocomplete enabled, the browser
@@ -87,15 +90,18 @@ function processKeystroke(keystroke) {
   const keyCard = document
     .querySelector("key-history")
     .addKeyCard(keystroke.key);
+  const item = inputEventIndicator.pushKeystroke(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
   if (!keyCard) {
     return;
   }
   result
     .then(() => {
+      item.succeeded();
       keyCard.succeeded = true;
     })
     .catch(() => {
+      item.failed();
       keyCard.failed = true;
     });
 }
