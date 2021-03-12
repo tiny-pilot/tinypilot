@@ -2,6 +2,11 @@
   <style>
     @import "css/style.css";
 
+    :host {
+      --opacity: 0.5;
+      --delay: 200ms;
+    }
+
     .array {
       display: flex;
     }
@@ -13,7 +18,21 @@
       border-radius: 4px;
       background-color: var(--brand-metallic-light);
       min-width: 0.8em;
-      animation: appear ease 200ms forwards;
+      animation: appear ease var(--delay) forwards;
+    }
+
+    .item:nth-last-child(n + 10) {
+      display: none;
+    }
+
+    .item:nth-last-child(8) {
+      opacity: calc(var(--opacity) * 0.5);
+      animation: disappear ease var(--delay) forwards;
+    }
+
+    .item:nth-last-child(9) {
+      opacity: calc(var(--opacity) * 0.25);
+      animation: disappear ease var(--delay) forwards;
     }
 
     .succeeded {
@@ -31,18 +50,16 @@
         opacity: 0.9;
       }
       100% {
-        opacity: 0.45;
+        opacity: var(--opacity);
         border-style: dotted;
       }
     }
 
     .hide {
+      opacity: var(--opacity);
       animation: disappear ease 300ms forwards;
     }
     @keyframes disappear {
-      0% {
-        opacity: 0.45;
-      }
       100% {
         opacity: 0;
       }
@@ -66,7 +83,6 @@
     const template = doc.querySelector("#input-event-indicator-template");
 
     const DISPLAY_THRESHOLD_MS = 4000;
-    const MAX_ITEMS = 7;
 
     customElements.define(
       "input-event-indicator",
@@ -96,7 +112,7 @@
               continue;
             }
             numberDisplayed++;
-            if (numberDisplayed >= MAX_ITEMS) {
+            if (numberDisplayed >= 7) {
               this.pop(item);
             }
           }
