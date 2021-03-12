@@ -1,4 +1,4 @@
-@import "fonts.css";
+@import "../third-party/fonts/fonts.css";
 @import "button.css";
 @import "cursors.css";
 @import "keyboard-panel.css";
