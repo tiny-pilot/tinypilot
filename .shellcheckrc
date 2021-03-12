@@ -1,0 +1,3 @@
+# Stop shellcheck from complaining about references to files that don't
+# exist. They'll exist in a production environment, so these flags are noise.
+disable=SC1091

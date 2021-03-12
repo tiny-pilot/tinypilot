@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # The canonical way to update is through the update script below,
 # but this file is here for backwards compatibility.
