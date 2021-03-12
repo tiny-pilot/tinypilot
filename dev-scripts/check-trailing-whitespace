@@ -12,6 +12,7 @@ if grep \
   --line-number \
   --binary-files=without-match \
   --exclude="*third-party*" \
+  --exclude="*.txt" \
   $(git ls-files | xargs); then
   echo "ERROR: Found trailing whitespace";
   exit 1;
