@@ -1,5 +1,6 @@
 import flask
 
+import hostname
 from find_files import find as find_files
 
 views_blueprint = flask.Blueprint('views', __name__, url_prefix='')
@@ -8,7 +9,9 @@ views_blueprint = flask.Blueprint('views', __name__, url_prefix='')
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
     return flask.render_template(
-        'index.html', custom_elements_files=find_files.custom_elements_files())
+        'index.html',
+        hostname=hostname.determine(),
+        custom_elements_files=find_files.custom_elements_files())
 
 
 # The style guide is for development purpose only, so we don’t ship it to
