@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>TinyPilot</title>
+    <title>
+      {% if hostname and hostname.lower() != 'tinypilot' %}{{ hostname }} - {%
+      endif %}TinyPilot
+    </title>
     <link rel="stylesheet" type="text/css" href="/css/style.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
