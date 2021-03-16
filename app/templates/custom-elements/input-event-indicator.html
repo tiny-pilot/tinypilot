@@ -2,62 +2,50 @@
   <style>
     @import "css/style.css";
 
-    :host {
-      --opacity: 0.5;
-      --delay: 200ms;
-    }
-
     .array {
       display: flex;
     }
 
     .item {
-      border: 1px solid white;
+      border-width: 1px;
+      border-color: white;
       padding: 0.1em 0.3em;
       margin-left: 0.5em;
       border-radius: 4px;
-      background-color: var(--brand-metallic-light);
+      opacity: 0.6;
       min-width: 0.8em;
-      animation: appear ease var(--delay) forwards;
+      animation: appear ease 200ms forwards;
     }
 
-    .item:nth-last-child(n + 10) {
+    .item:nth-last-child(n + 8) {
       display: none;
     }
 
-    .item:nth-last-child(8) {
-      opacity: calc(var(--opacity) * 0.5);
-      animation: disappear ease var(--delay) forwards;
-    }
-
-    .item:nth-last-child(9) {
-      opacity: calc(var(--opacity) * 0.25);
-      animation: disappear ease var(--delay) forwards;
+    .pending {
+      border-style: dotted;
+      background-color: #acacacac;
     }
 
     .succeeded {
-      border-style: solid !important;
+      border-style: solid;
+      background-color: #7e7e7e7e;
     }
 
     .failed {
+      border-style: solid;
       background-color: var(--brand-red-bright);
-      color: white;
-      opacity: 1 !important;
     }
 
     @keyframes appear {
       0% {
-        opacity: 0.9;
-      }
-      100% {
-        opacity: var(--opacity);
-        border-style: dotted;
+        opacity: 1;
+        background-color: #888;
+        border-style: solid;
       }
     }
 
     .hide {
-      opacity: var(--opacity);
-      animation: disappear ease 300ms forwards;
+      animation: disappear ease 200ms forwards;
     }
     @keyframes disappear {
       100% {
@@ -82,11 +70,23 @@
       .ownerDocument;
     const template = doc.querySelector("#input-event-indicator-template");
 
-    const DISPLAY_THRESHOLD_MS = 4000;
-
     customElements.define(
       "input-event-indicator",
+
+      /**
+       * The concept of the input-event indicator is to give users feedback
+       * about their input actions (e.g. keystrokes). The feedback is
+       * transient, so it is only shown for a brief period of time, just long
+       * enough to allow for a double-check. The overall appearance of the
+       * indicator is intentionally subtle in order to not be distracting.
+       *
+       * The animation of newly appearing items is optimistic. Only in case an
+       * item is still pending or has errored after the initial fade-in
+       * duration, we mark it as such “after the fact”.
+       */
       class extends HTMLElement {
+        DISPLAY_THRESHOLD_MS = 4000;
+
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -97,37 +97,34 @@
           const item = document.createElement("div");
           item.innerText = key;
           item.classList.add("keystroke");
-          this.push(item);
+          return this.push(item, "Keystroke");
+        }
+
+        push(item, title) {
+          item.classList.add("item", "pending");
+          item.title = `${title} pending...`;
+          this.history.appendChild(item);
+          setTimeout(() => this.pop(item), this.DISPLAY_THRESHOLD_MS);
           return {
-            succeeded: () => item.classList.add("succeeded"),
-            failed: () => item.classList.add("failed"),
+            succeeded: () => {
+              item.classList.remove("pending");
+              item.classList.add("succeeded");
+              item.title = `${title} succeeded`;
+            },
+            failed: () => {
+              item.classList.remove("pending");
+              item.classList.add("failed");
+              item.title = `${title} failed`;
+            },
           };
         }
 
-        push(item) {
-          const items = Array.from(this.history.childNodes).reverse();
-          let numberDisplayed = 0;
-          for (let item of items) {
-            if (item.classList.contains("hide")) {
-              continue;
-            }
-            numberDisplayed++;
-            if (numberDisplayed >= 7) {
-              this.pop(item);
-            }
-          }
-          item.classList.add("item");
-          this.history.appendChild(item);
-          setTimeout(() => this.pop(item), DISPLAY_THRESHOLD_MS);
-        }
-
         pop(item) {
-          if (item.classList.contains("hide")) {
-            return;
-          }
           item.classList.add("hide");
+          // Give the animation enough time to complete, then eventually
+          // garbage-collect the item.
           setTimeout(() => {
-            item.style.display = "none";
+            item.style.display = "none"; // Prevent flickering on removal
             this.history.removeChild(item);
           }, 500);
         }
