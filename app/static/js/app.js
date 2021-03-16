@@ -273,6 +273,17 @@ function setKeyboardVisibility(isVisible) {
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 }
 
+function setInputIndicatorStatus(isEnabled) {
+  if (isEnabled) {
+    settings.enableKeyHistory();
+    document.getElementById("status-bar").inputEventIndicator.enable();
+  } else {
+    settings.disableKeyHistory();
+    document.getElementById("status-bar").inputEventIndicator.disable();
+  }
+  document.getElementById("menu-bar").isInputIndicatorEnabled = isEnabled;
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
@@ -282,6 +293,11 @@ const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
+});
+menuBar.addEventListener("input-indicator-status-toggled", () => {
+  const isEnabled = document.getElementById("status-bar")
+    .inputEventIndicator.isEnabled;
+  setInputIndicatorStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("keystroke-panel"));
@@ -309,6 +325,7 @@ menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
 setKeyboardVisibility(settings.isKeyboardVisible());
+setInputIndicatorStatus(settings.isKeyHistoryEnabled());
 
 document
   .getElementById("remote-screen")
