@@ -6,7 +6,7 @@
       display: flex;
     }
 
-    .item {
+    .keystroke {
       border-width: 1px;
       border-color: white;
       padding: 0.1em 0.3em;
@@ -17,7 +17,7 @@
       animation: appear ease 200ms forwards;
     }
 
-    .item:nth-last-child(n + 8) {
+    .keystroke:nth-last-child(n + 8) {
       display: none;
     }
 
@@ -81,9 +81,9 @@
        * a double-check. The overall appearance of the indicator is
        * intentionally subtle in order to not be distracting.
        *
-       * The animation of newly appearing items is optimistic. Only in case an
-       * item is still pending or has errored after the initial fade-in
-       * duration, we mark it as such “after the fact”.
+       * The animation of newly appearing keystrokes is optimistic. Only in
+       * case an keystroke status is still pending or has errored after the
+       * initial fade-in duration, we mark it as such “after the fact”.
        */
       class extends HTMLElement {
         DISPLAY_THRESHOLD_MS = 4000;
@@ -101,8 +101,8 @@
 
         disable() {
           this.isEnabled = false;
-          Array.from(this.history.childNodes).forEach((item) => {
-            item.style.display = "none";
+          Array.from(this.history.childNodes).forEach((keystroke) => {
+            keystroke.style.display = "none";
           });
         }
 
@@ -113,38 +113,38 @@
               failed: () => {},
             };
           }
-          const item = document.createElement("div");
-          item.innerText = key;
-          item.classList.add("keystroke");
-          return this.push(item, "Keystroke");
+          const keystroke = document.createElement("div");
+          keystroke.innerText = key;
+          keystroke.classList.add("keystroke");
+          return this.push(keystroke, "Keystroke");
         }
 
-        push(item, title) {
-          item.classList.add("item", "pending");
-          item.title = `${title} pending...`;
-          this.history.appendChild(item);
-          setTimeout(() => this.pop(item), this.DISPLAY_THRESHOLD_MS);
+        push(keystroke, title) {
+          keystroke.classList.add("keystroke", "pending");
+          keystroke.title = `${title} pending...`;
+          this.history.appendChild(keystroke);
+          setTimeout(() => this.pop(keystroke), this.DISPLAY_THRESHOLD_MS);
           return {
             succeeded: () => {
-              item.classList.remove("pending");
-              item.classList.add("succeeded");
-              item.title = `${title} succeeded`;
+              keystroke.classList.remove("pending");
+              keystroke.classList.add("succeeded");
+              keystroke.title = `${title} succeeded`;
             },
             failed: () => {
-              item.classList.remove("pending");
-              item.classList.add("failed");
-              item.title = `${title} failed`;
+              keystroke.classList.remove("pending");
+              keystroke.classList.add("failed");
+              keystroke.title = `${title} failed`;
             },
           };
         }
 
-        pop(item) {
-          item.classList.add("hide");
+        pop(keystroke) {
+          keystroke.classList.add("hide");
           // Give the animation enough time to complete, then eventually
-          // garbage-collect the item.
+          // garbage-collect the keystroke item.
           setTimeout(() => {
-            item.style.display = "none"; // Prevent flickering on removal
-            this.history.removeChild(item);
+            keystroke.style.display = "none"; // Prevent flickering on removal
+            this.history.removeChild(keystroke);
           }, 500);
         }
       }
