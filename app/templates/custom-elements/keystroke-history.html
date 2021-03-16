@@ -6,11 +6,11 @@
       display: flex;
     }
 
-    .keystroke {
+    .keystrokeContainer {
       margin-left: 0.5em;
     }
 
-    .keystroke:nth-last-child(n + 8) {
+    .keystrokeContainer:nth-last-child(n + 8) {
       display: none;
     }
   </style>
@@ -31,8 +31,8 @@
        * The concept of the key history is to give users feedback
        * about their keystrokes. The feedback is transient, so it is only
        * shown for a brief period of time, just long enough to allow for
-       * a double-check. The overall appearance of the indicator is
-       * intentionally subtle in order to not be distracting.
+       * a double-check. The overall appearance of the history/indicator is
+       * intentionally subtle in order to not be too distracting.
        */
       class extends HTMLElement {
         DISPLAY_THRESHOLD_MS = 4000;
@@ -57,13 +57,12 @@
 
         push(key) {
           if (!this.isEnabled) {
-            return {
-              status: null,
-            };
+            // Return dummy object when disabled.
+            return { status: null };
           }
           const keystroke = document.createElement("keystroke-history-event");
           this.history.appendChild(keystroke);
-          keystroke.classList.add("keystroke");
+          keystroke.classList.add("keystrokeContainer");
           keystroke.label = key;
           setTimeout(() => this.pop(keystroke), this.DISPLAY_THRESHOLD_MS);
           return keystroke;
