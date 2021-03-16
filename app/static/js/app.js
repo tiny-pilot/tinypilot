@@ -76,8 +76,7 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-const keyHistory = document.getElementById("status-bar")
-  .keyHistory;
+const keyHistory = document.getElementById("status-bar").keyHistory;
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
@@ -287,8 +286,7 @@ menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
 menuBar.addEventListener("keystroke-history-toggled", () => {
-  const isEnabled = document.getElementById("status-bar").keyHistory
-    .isEnabled;
+  const isEnabled = document.getElementById("status-bar").keyHistory.isEnabled;
   setKeyHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
