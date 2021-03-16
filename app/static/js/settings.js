@@ -23,17 +23,17 @@ function persistSettings() {
   window.localStorage.setItem("settings", JSON.stringify(settings));
 }
 
-export function enableKeyHistory() {
+export function enableKeystrokeHistory() {
   settings["isKeyHistoryEnabled"] = true;
   persistSettings();
 }
 
-export function disableKeyHistory() {
+export function disableKeystrokeHistory() {
   settings["isKeyHistoryEnabled"] = false;
   persistSettings();
 }
 
-export function isKeyHistoryEnabled() {
+export function isKeystrokeHistoryEnabled() {
   return settings["isKeyHistoryEnabled"];
 }
 

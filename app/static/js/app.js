@@ -76,7 +76,7 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-const keyHistory = document.getElementById("status-bar").keyHistory;
+const keystrokeHistory = document.getElementById("status-bar").keystrokeHistory;
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
@@ -86,7 +86,7 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  const keystrokeHistoryEvent = keyHistory.push(keystroke.key);
+  const keystrokeHistoryEvent = keystrokeHistory.push(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
   result
     .then(() => {
@@ -264,13 +264,13 @@ function setKeyboardVisibility(isVisible) {
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 }
 
-function setKeyHistoryStatus(isEnabled) {
+function setKeystrokeHistoryStatus(isEnabled) {
   if (isEnabled) {
-    settings.enableKeyHistory();
-    document.getElementById("status-bar").keyHistory.enable();
+    settings.enableKeystrokeHistory();
+    document.getElementById("status-bar").keystrokeHistory.enable();
   } else {
-    settings.disableKeyHistory();
-    document.getElementById("status-bar").keyHistory.disable();
+    settings.disableKeystrokeHistory();
+    document.getElementById("status-bar").keystrokeHistory.disable();
   }
   document.getElementById("menu-bar").isInputIndicatorEnabled = isEnabled;
 }
@@ -286,8 +286,9 @@ menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
 menuBar.addEventListener("keystroke-history-toggled", () => {
-  const isEnabled = document.getElementById("status-bar").keyHistory.isEnabled;
-  setKeyHistoryStatus(!isEnabled);
+  const isEnabled = document.getElementById("status-bar").keystrokeHistory
+    .isEnabled;
+  setKeystrokeHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
@@ -315,7 +316,7 @@ menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
 setKeyboardVisibility(settings.isKeyboardVisible());
-setKeyHistoryStatus(settings.isKeyHistoryEnabled());
+setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
 document
   .getElementById("remote-screen")
