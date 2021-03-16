@@ -76,8 +76,8 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
-const inputEventIndicator = document.getElementById("status-bar")
-  .inputEventIndicator;
+const keyHistory = document.getElementById("status-bar")
+  .keyHistory;
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
@@ -87,7 +87,7 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  const item = inputEventIndicator.pushKeystroke(keystroke.key);
+  const item = keyHistory.pushKeystroke(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
   result
     .then(() => {
@@ -265,13 +265,13 @@ function setKeyboardVisibility(isVisible) {
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 }
 
-function setInputEventIndicatorStatus(isEnabled) {
+function setKeyHistoryStatus(isEnabled) {
   if (isEnabled) {
-    settings.enableInputEventHistory();
-    document.getElementById("status-bar").inputEventIndicator.enable();
+    settings.enableKeyHistory();
+    document.getElementById("status-bar").keyHistory.enable();
   } else {
-    settings.disableInputEventHistory();
-    document.getElementById("status-bar").inputEventIndicator.disable();
+    settings.disableKeyHistory();
+    document.getElementById("status-bar").keyHistory.disable();
   }
   document.getElementById("menu-bar").isInputIndicatorEnabled = isEnabled;
 }
@@ -286,10 +286,10 @@ menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
-menuBar.addEventListener("input-event-indicator-toggled", () => {
-  const isEnabled = document.getElementById("status-bar").inputEventIndicator
+menuBar.addEventListener("key-history-toggled", () => {
+  const isEnabled = document.getElementById("status-bar").keyHistory
     .isEnabled;
-  setInputEventIndicatorStatus(!isEnabled);
+  setKeyHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
@@ -317,7 +317,7 @@ menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
 setKeyboardVisibility(settings.isKeyboardVisible());
-setInputEventIndicatorStatus(settings.isKeyHistoryEnabled());
+setKeyHistoryStatus(settings.isKeyHistoryEnabled());
 
 document
   .getElementById("remote-screen")

@@ -34,7 +34,7 @@
   </div>
   <div class="spacer"></div>
   <div class="item">
-    <input-event-indicator id="input-event-indicator"></input-event-indicator>
+    <key-history id="key-history"></key-history>
   </div>
 </template>
 
@@ -56,8 +56,8 @@
           return this.shadowRoot.getElementById("connection-indicator");
         }
 
-        get inputEventIndicator() {
-          return this.shadowRoot.getElementById("input-event-indicator");
+        get keyHistory() {
+          return this.shadowRoot.getElementById("key-history");
         }
       }
     );

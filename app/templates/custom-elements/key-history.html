@@ -1,4 +1,4 @@
-<template id="input-event-indicator-template">
+<template id="key-history-template">
   <style>
     @import "css/style.css";
 
@@ -69,17 +69,17 @@
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
-    const template = doc.querySelector("#input-event-indicator-template");
+    const template = doc.querySelector("#key-history-template");
 
     customElements.define(
-      "input-event-indicator",
+      "key-history",
 
       /**
-       * The concept of the input-event indicator is to give users feedback
-       * about their input actions (e.g. keystrokes). The feedback is
-       * transient, so it is only shown for a brief period of time, just long
-       * enough to allow for a double-check. The overall appearance of the
-       * indicator is intentionally subtle in order to not be distracting.
+       * The concept of the key history is to give users feedback
+       * about their keystrokes. The feedback is transient, so it is only
+       * shown for a brief period of time, just long enough to allow for
+       * a double-check. The overall appearance of the indicator is
+       * intentionally subtle in order to not be distracting.
        *
        * The animation of newly appearing items is optimistic. Only in case an
        * item is still pending or has errored after the initial fade-in
