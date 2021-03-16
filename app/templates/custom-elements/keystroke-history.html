@@ -1,4 +1,4 @@
-<template id="key-history-template">
+<template id="keystroke-history-template">
   <style>
     @import "css/style.css";
 
@@ -69,10 +69,10 @@
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
-    const template = doc.querySelector("#key-history-template");
+    const template = doc.querySelector("#keystroke-history-template");
 
     customElements.define(
-      "key-history",
+      "keystroke-history",
 
       /**
        * The concept of the key history is to give users feedback

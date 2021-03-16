@@ -286,7 +286,7 @@ menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
-menuBar.addEventListener("key-history-toggled", () => {
+menuBar.addEventListener("keystroke-history-toggled", () => {
   const isEnabled = document.getElementById("status-bar").keyHistory
     .isEnabled;
   setKeyHistoryStatus(!isEnabled);

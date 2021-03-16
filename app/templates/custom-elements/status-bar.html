@@ -34,7 +34,7 @@
   </div>
   <div class="spacer"></div>
   <div class="item">
-    <key-history id="key-history"></key-history>
+    <keystroke-history id="keystroke-history"></keystroke-history>
   </div>
 </template>
 
@@ -57,7 +57,7 @@
         }
 
         get keyHistory() {
-          return this.shadowRoot.getElementById("key-history");
+          return this.shadowRoot.getElementById("keystroke-history");
         }
       }
     );
