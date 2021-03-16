@@ -87,22 +87,14 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  const keyCard = document
-    .querySelector("key-history")
-    .addKeyCard(keystroke.key);
   const item = inputEventIndicator.pushKeystroke(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
-  if (!keyCard) {
-    return;
-  }
   result
     .then(() => {
       item.succeeded();
-      keyCard.succeeded = true;
     })
     .catch(() => {
       item.failed();
-      keyCard.failed = true;
     });
 }
 
@@ -265,9 +257,9 @@ function setCursor(cursor, save = true) {
 
 function setKeyboardVisibility(isVisible) {
   if (isVisible) {
-    showElementById("keystroke-panel");
+    showElementById("on-screen-keyboard");
   } else {
-    hideElementById("keystroke-panel");
+    hideElementById("on-screen-keyboard");
   }
   settings.setKeyboardVisibility(isVisible);
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
@@ -295,12 +287,12 @@ menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
 menuBar.addEventListener("input-indicator-status-toggled", () => {
-  const isEnabled = document.getElementById("status-bar")
-    .inputEventIndicator.isEnabled;
+  const isEnabled = document.getElementById("status-bar").inputEventIndicator
+    .isEnabled;
   setInputIndicatorStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
-  setKeyboardVisibility(!isElementShown("keystroke-panel"));
+  setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-dialog").show = true;
@@ -365,22 +357,17 @@ document
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
-  for (const elementId of ["error-panel", "remote-screen", "keystroke-panel"]) {
+  for (const elementId of [
+    "error-panel",
+    "remote-screen",
+    "on-screen-keyboard",
+  ]) {
     hideElementById(elementId);
   }
 });
 shutdownDialog.addEventListener("shutdown-failure", (evt) => {
   shutdownDialog.show = false;
   showError(evt.detail.summary, evt.detail.detail);
-});
-
-const keyHistory = document.querySelector("key-history");
-keyHistory.show = settings.isKeyHistoryEnabled();
-keyHistory.addEventListener("history-enabled", () => {
-  settings.enableKeyHistory();
-});
-keyHistory.addEventListener("history-disabled", () => {
-  settings.disableKeyHistory();
 });
 
 socket.on("connect", onSocketConnect);
