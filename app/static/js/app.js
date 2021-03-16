@@ -87,14 +87,14 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  const keystrokeEvent = keyHistory.pushKeystroke(keystroke.key);
+  const keystrokeHistoryEvent = keyHistory.push(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
   result
     .then(() => {
-      keystrokeEvent.succeeded();
+      keystrokeHistoryEvent.status = "succeeded";
     })
     .catch(() => {
-      keystrokeEvent.failed();
+      keystrokeHistoryEvent.status = "failed";
     });
 }
 

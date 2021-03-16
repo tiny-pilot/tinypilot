@@ -7,58 +7,11 @@
     }
 
     .keystroke {
-      border-width: 1px;
-      border-color: white;
-      padding: 0.1em 0.3em;
       margin-left: 0.5em;
-      border-radius: 4px;
-      opacity: 0.6;
-      min-width: 0.8em;
-      animation: appear ease 200ms forwards;
     }
 
     .keystroke:nth-last-child(n + 8) {
       display: none;
-    }
-
-    .pending {
-      border-style: dotted;
-      background-color: #acacacac;
-    }
-
-    .succeeded {
-      border-style: solid;
-      background-color: #7e7e7e7e;
-    }
-
-    .failed {
-      border-style: solid;
-      background-color: var(--brand-red-bright);
-    }
-
-    @keyframes appear {
-      0% {
-        opacity: 1;
-        background-color: #888;
-        border-style: solid;
-      }
-    }
-
-    .hide {
-      animation: disappear ease 200ms forwards;
-    }
-
-    @keyframes disappear {
-      100% {
-        opacity: 0;
-      }
-    }
-
-    .keystroke {
-      white-space: pre;
-      text-align: center;
-      font-family: "Overpass Mono", monospace;
-      font-size: 0.9em;
     }
   </style>
 
@@ -80,10 +33,6 @@
        * shown for a brief period of time, just long enough to allow for
        * a double-check. The overall appearance of the indicator is
        * intentionally subtle in order to not be distracting.
-       *
-       * The animation of newly appearing keystrokes is optimistic. Only in
-       * case an keystroke status is still pending or has errored after the
-       * initial fade-in duration, we mark it as such “after the fact”.
        */
       class extends HTMLElement {
         DISPLAY_THRESHOLD_MS = 4000;
@@ -106,40 +55,22 @@
           });
         }
 
-        pushKeystroke(key) {
+        push(key) {
           if (!this.isEnabled) {
             return {
-              succeeded: () => {},
-              failed: () => {},
+              status: null,
             };
           }
-          const keystroke = document.createElement("div");
-          keystroke.innerText = key;
-          keystroke.classList.add("keystroke");
-          return this.push(keystroke, "Keystroke");
-        }
-
-        push(keystroke, title) {
-          keystroke.classList.add("keystroke", "pending");
-          keystroke.title = `${title} pending...`;
+          const keystroke = document.createElement("keystroke-history-event");
           this.history.appendChild(keystroke);
+          keystroke.classList.add("keystroke");
+          keystroke.label = key;
           setTimeout(() => this.pop(keystroke), this.DISPLAY_THRESHOLD_MS);
-          return {
-            succeeded: () => {
-              keystroke.classList.remove("pending");
-              keystroke.classList.add("succeeded");
-              keystroke.title = `${title} succeeded`;
-            },
-            failed: () => {
-              keystroke.classList.remove("pending");
-              keystroke.classList.add("failed");
-              keystroke.title = `${title} failed`;
-            },
-          };
+          return keystroke;
         }
 
         pop(keystroke) {
-          keystroke.classList.add("hide");
+          keystroke.fadeOut();
           // Give the animation enough time to complete, then eventually
           // garbage-collect the keystroke item.
           setTimeout(() => {

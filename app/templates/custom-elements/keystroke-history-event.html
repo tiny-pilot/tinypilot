@@ -1,0 +1,99 @@
+<template id="keystroke-history-event-template">
+  <style>
+    @import "css/style.css";
+
+    #keystroke {
+      border-width: 1px;
+      border-color: white;
+      padding: 0.1em 0.3em;
+      border-radius: 4px;
+      opacity: 0.6;
+      min-width: 0.8em;
+      white-space: pre;
+      text-align: center;
+      font-family: "Overpass Mono", monospace;
+      font-size: 0.9em;
+      animation: appear ease 200ms forwards;
+    }
+
+    .pending {
+      border-style: dotted;
+      background-color: #acacacac;
+    }
+
+    .succeeded {
+      border-style: solid;
+      background-color: #7e7e7e7e;
+    }
+
+    .failed {
+      border-style: solid;
+      background-color: var(--brand-red-bright);
+    }
+
+    @keyframes appear {
+      0% {
+        opacity: 1;
+        background-color: #888;
+
+        /**
+         * The animation of newly appearing items is optimistic, so it has a
+         * solid border for the initial animation period.
+         */
+        border-style: solid;
+      }
+    }
+
+    .hide {
+      animation: disappear ease 200ms forwards;
+    }
+
+    @keyframes disappear {
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
+
+  <div id="keystroke"></div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#keystroke-history-event-template");
+
+    customElements.define(
+      "keystroke-history-event",
+
+      class extends HTMLElement {
+        STATUSES = ["pending", "succeeded", "failed"];
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.keystroke = this.shadowRoot.getElementById("keystroke");
+          this.status = "pending";
+        }
+
+        set status(newStatus) {
+          if (!this.STATUSES.includes(newStatus)) {
+            return;
+          }
+          this.keystroke.classList.remove(...this.STATUSES);
+          this.keystroke.classList.add(newStatus);
+          this.keystroke.title = `Keystroke ${newStatus}`;
+        }
+
+        set label(newLabel) {
+          this.keystroke.innerText = newLabel;
+        }
+
+        fadeOut() {
+          this.keystroke.classList.add("hide");
+        }
+      }
+    );
+  })();
+</script>
