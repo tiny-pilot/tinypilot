@@ -1,0 +1,74 @@
+<template id="overlay-panel-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      display: none;
+      position: fixed;
+      overflow: scroll;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: var(--z-index-overlay);
+    }
+
+    :host([show="true"]) {
+      display: block;
+    }
+
+    .panel {
+      background-color: var(--brand-creme-light);
+      max-width: 800px;
+      margin: 100px auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    :host([variant="error"]) .panel {
+      border-top: 0.4rem solid var(--brand-red-bright);
+      background-color: var(--brand-red-light);
+    }
+  </style>
+
+  <div class="panel neutral">
+    <slot name="panel"></slot>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#overlay-panel-template");
+
+    customElements.define(
+      "overlay-panel",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+
+        get show() {
+          return this.getAttribute("show") === "true";
+        }
+
+        set show(newValue) {
+          this.setAttribute("show", newValue);
+        }
+
+        set variant(newValue) {
+          this.setAttribute("variant", newValue);
+        }
+      }
+    );
+  })();
+</script>
