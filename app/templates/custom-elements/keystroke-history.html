@@ -1,0 +1,83 @@
+<template id="keystroke-history-template">
+  <style>
+    @import "css/style.css";
+
+    #history {
+      display: flex;
+    }
+
+    .keystroke-container {
+      margin-left: 0.5em;
+    }
+
+    .keystroke-container:nth-last-child(n + 8) {
+      display: none;
+    }
+  </style>
+
+  <div id="history"></div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#keystroke-history-template");
+
+    customElements.define(
+      "keystroke-history",
+
+      /**
+       * The concept of the key history is to give users feedback
+       * about their keystrokes. The feedback is transient, so it is only
+       * shown for a brief period of time, just long enough to allow for
+       * a double-check. The overall appearance of the history/indicator is
+       * intentionally subtle in order to not be too distracting.
+       */
+      class extends HTMLElement {
+        DISPLAY_THRESHOLD_MS = 4000;
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.history = this.shadowRoot.getElementById("history");
+          this.isEnabled = true;
+        }
+
+        enable() {
+          this.isEnabled = true;
+        }
+
+        disable() {
+          this.isEnabled = false;
+          Array.from(this.history.childNodes).forEach((keystroke) => {
+            keystroke.style.display = "none";
+          });
+        }
+
+        push(key) {
+          if (!this.isEnabled) {
+            // Return dummy object when disabled.
+            return { status: null };
+          }
+          const keystroke = document.createElement("keystroke-history-event");
+          this.history.appendChild(keystroke);
+          keystroke.classList.add("keystroke-container");
+          keystroke.label = key;
+          setTimeout(() => this.pop(keystroke), this.DISPLAY_THRESHOLD_MS);
+          return keystroke;
+        }
+
+        pop(keystroke) {
+          keystroke.fadeOut();
+          // Give the animation enough time to complete, then eventually
+          // garbage-collect the keystroke item.
+          setTimeout(() => {
+            keystroke.style.display = "none"; // Prevent flickering on removal
+            this.history.removeChild(keystroke);
+          }, 500);
+        }
+      }
+    );
+  })();
+</script>

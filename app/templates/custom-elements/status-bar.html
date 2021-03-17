@@ -23,10 +23,18 @@
     .item {
       padding-top: 3px;
     }
+
+    .spacer {
+      flex: 1;
+    }
   </style>
 
   <div class="item">
     <connection-indicator id="connection-indicator"></connection-indicator>
+  </div>
+  <div class="spacer"></div>
+  <div class="item">
+    <keystroke-history id="keystroke-history"></keystroke-history>
   </div>
 </template>
 
@@ -46,6 +54,10 @@
 
         get connectionIndicator() {
           return this.shadowRoot.getElementById("connection-indicator");
+        }
+
+        get keystrokeHistory() {
+          return this.shadowRoot.getElementById("keystroke-history");
         }
       }
     );

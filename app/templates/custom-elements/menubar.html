@@ -214,6 +214,9 @@
         <li class="item" id="keyboard-menu-item">
           <a id="keyboard-btn">Show Keyboard</a>
         </li>
+        <li class="item" id="keystroke-history-menu-item">
+          <a id="keystroke-history-btn">Enable Key History</a>
+        </li>
         <li class="item">
           <a id="fullscreen-btn">Full Screen</a>
         </li>
@@ -247,6 +250,7 @@
           const menuButtonIdToEventId = {
             "power-btn": "shutdown-dialog-requested",
             "keyboard-btn": "keyboard-visibility-toggled",
+            "keystroke-history-btn": "keystroke-history-toggled",
             "fullscreen-btn": "fullscreen-requested",
             "paste-btn": "paste-requested",
             "update-btn": "update-dialog-requested",
@@ -302,6 +306,17 @@
         set isKeyboardVisible(isVisible) {
           const menuItem = this.shadowRoot.getElementById("keyboard-menu-item");
           if (isVisible) {
+            menuItem.classList.add("nav-selected");
+          } else {
+            menuItem.classList.remove("nav-selected");
+          }
+        }
+
+        set isInputIndicatorEnabled(isEnabled) {
+          const menuItem = this.shadowRoot.getElementById(
+            "keystroke-history-menu-item"
+          );
+          if (isEnabled) {
             menuItem.classList.add("nav-selected");
           } else {
             menuItem.classList.remove("nav-selected");

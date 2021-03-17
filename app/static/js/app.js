@@ -76,6 +76,8 @@ function browserLanguage() {
   return navigator.language || navigator.userLanguage;
 }
 
+const keystrokeHistory = document.getElementById("status-bar").keystrokeHistory;
+
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
   // On Android, when the user is typing with autocomplete enabled, the browser
@@ -84,19 +86,14 @@ function processKeystroke(keystroke) {
   if (keystroke.keyCode === 229) {
     resolve({});
   }
-  const keyCard = document
-    .querySelector("key-history")
-    .addKeyCard(keystroke.key);
+  const keystrokeHistoryEvent = keystrokeHistory.push(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
-  if (!keyCard) {
-    return;
-  }
   result
     .then(() => {
-      keyCard.succeeded = true;
+      keystrokeHistoryEvent.status = "succeeded";
     })
     .catch(() => {
-      keyCard.failed = true;
+      keystrokeHistoryEvent.status = "failed";
     });
 }
 
@@ -259,12 +256,23 @@ function setCursor(cursor, save = true) {
 
 function setKeyboardVisibility(isVisible) {
   if (isVisible) {
-    showElementById("keystroke-panel");
+    showElementById("on-screen-keyboard");
   } else {
-    hideElementById("keystroke-panel");
+    hideElementById("on-screen-keyboard");
   }
   settings.setKeyboardVisibility(isVisible);
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
+}
+
+function setKeystrokeHistoryStatus(isEnabled) {
+  if (isEnabled) {
+    settings.enableKeystrokeHistory();
+    document.getElementById("status-bar").keystrokeHistory.enable();
+  } else {
+    settings.disableKeystrokeHistory();
+    document.getElementById("status-bar").keystrokeHistory.disable();
+  }
+  document.getElementById("menu-bar").isInputIndicatorEnabled = isEnabled;
 }
 
 document.onload = document.getElementById("app").focus();
@@ -277,8 +285,13 @@ menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
+menuBar.addEventListener("keystroke-history-toggled", () => {
+  const isEnabled = document.getElementById("status-bar").keystrokeHistory
+    .isEnabled;
+  setKeystrokeHistoryStatus(!isEnabled);
+});
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
-  setKeyboardVisibility(!isElementShown("keystroke-panel"));
+  setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-dialog").show = true;
@@ -303,6 +316,7 @@ menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
 setKeyboardVisibility(settings.isKeyboardVisible());
+setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
 document
   .getElementById("remote-screen")
@@ -342,22 +356,17 @@ document
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
-  for (const elementId of ["error-panel", "remote-screen", "keystroke-panel"]) {
+  for (const elementId of [
+    "error-panel",
+    "remote-screen",
+    "on-screen-keyboard",
+  ]) {
     hideElementById(elementId);
   }
 });
 shutdownDialog.addEventListener("shutdown-failure", (evt) => {
   shutdownDialog.show = false;
   showError(evt.detail.summary, evt.detail.detail);
-});
-
-const keyHistory = document.querySelector("key-history");
-keyHistory.show = settings.isKeyHistoryEnabled();
-keyHistory.addEventListener("history-enabled", () => {
-  settings.enableKeyHistory();
-});
-keyHistory.addEventListener("history-disabled", () => {
-  settings.disableKeyHistory();
 });
 
 socket.on("connect", onSocketConnect);
