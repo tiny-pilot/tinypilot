@@ -1,6 +1,10 @@
 <template id="keystroke-history-event-template">
   <style>
-    @import "css/style.css";
+    /**
+     * Don’t use CSS imports here, since Chrome will re-fetch the files
+     * on every keystroke otherwise. We can rely on the CSS variables
+     * to be loaded by the parent component (`<keystroke-history>`)
+     */
 
     #keystroke {
       border-width: 1px;
