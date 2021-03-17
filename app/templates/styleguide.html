@@ -19,6 +19,9 @@
     }
   </style>
   <body>
+    {% for child_template in custom_elements_files %}
+      {% include child_template.replace('./app/templates/', '') %}
+    {% endfor %}
     <main>
       <div
         style="

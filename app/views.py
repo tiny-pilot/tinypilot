@@ -19,7 +19,9 @@ def index_get():
 @views_blueprint.route('/styleguide', methods=['GET'])
 def styleguide_get():
     if flask.current_app.debug:
-        return flask.render_template('styleguide.html')
+        return flask.render_template(
+            'styleguide.html',
+            custom_elements_files=find_files.custom_elements_files())
     return flask.abort(404)
 
 
