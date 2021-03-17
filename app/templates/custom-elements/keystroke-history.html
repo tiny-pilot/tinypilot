@@ -6,11 +6,11 @@
       display: flex;
     }
 
-    .keystrokeContainer {
+    .keystroke-container {
       margin-left: 0.5em;
     }
 
-    .keystrokeContainer:nth-last-child(n + 8) {
+    .keystroke-container:nth-last-child(n + 8) {
       display: none;
     }
   </style>
@@ -62,7 +62,7 @@
           }
           const keystroke = document.createElement("keystroke-history-event");
           this.history.appendChild(keystroke);
-          keystroke.classList.add("keystrokeContainer");
+          keystroke.classList.add("keystroke-container");
           keystroke.label = key;
           setTimeout(() => this.pop(keystroke), this.DISPLAY_THRESHOLD_MS);
           return keystroke;
