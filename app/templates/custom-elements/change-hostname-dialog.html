@@ -3,29 +3,6 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    .overlay {
-      display: none;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    :host([show="true"]) .overlay {
-      display: block;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: var(--z-index-overlay);
-    }
-
     #initializing,
     #prompt,
     #changing,
@@ -49,14 +26,6 @@
       display: block;
     }
 
-    #change-hostname-panel > div {
-      background-color: var(--brand-creme-light);
-      border: 1px solid var(--brand-metallic-dark);
-      max-width: 800px;
-      margin: 100px auto 0rem auto;
-      padding: 2rem;
-    }
-
     #hostname-input {
       margin: 0 auto;
       padding: 0.3rem;
@@ -71,37 +40,38 @@
       font-weight: bold;
     }
   </style>
-  <div id="change-hostname-panel" class="overlay">
-    <div id="initializing">
-      <p>Retrieving current hostname</p>
-      <progress-spinner></progress-spinner>
-      <button id="cancel-initialization" type="button">Cancel</button>
+
+  <div id="initializing">
+    <p>Retrieving current hostname</p>
+    <progress-spinner></progress-spinner>
+    <button id="cancel-initialization" type="button">Cancel</button>
+  </div>
+
+  <div id="prompt">
+    <h3>Change hostname</h3>
+    <p>
+      Enter a new hostname for TinyPilot.
+    </p>
+    <div class="input-container">
+      <label for="hostname-input">Hostname:</label>
+      <input type="text" id="hostname-input" size="30" class="monospace" />
+      <p id="input-error"><!-- Filled programmatically --></p>
     </div>
-    <div id="prompt">
-      <h3>Change hostname</h3>
-      <p>
-        Enter a new hostname for TinyPilot.
-      </p>
-      <div class="input-container">
-        <label for="hostname-input">Hostname:</label>
-        <input type="text" id="hostname-input" size="30" class="monospace" />
-        <p id="input-error"><!-- Filled programmatically --></p>
-      </div>
-      <button id="change-and-restart" class="btn-success" type="button">
-        Change and restart
-      </button>
-      <button id="cancel-hostname-change" type="button">Cancel</button>
-    </div>
-    <div id="changing">
-      <h3>Changing hostname</h3>
-      <p>
-        Waiting for TinyPilot to reboot at
-        <a href="" id="future-location"><!-- Filled programmatically --></a>
-        <br />
-        You will be redirected automatically.
-      </p>
-      <progress-spinner></progress-spinner>
-    </div>
+    <button id="change-and-restart" class="btn-success" type="button">
+      Change and restart
+    </button>
+    <button id="cancel-hostname-change" type="button">Cancel</button>
+  </div>
+
+  <div id="changing">
+    <h3>Changing hostname</h3>
+    <p>
+      Waiting for TinyPilot to reboot at
+      <a href="" id="future-location"><!-- Filled programmatically --></a>
+      <br />
+      You will be redirected automatically.
+    </p>
+    <progress-spinner></progress-spinner>
   </div>
 </template>
 
@@ -142,10 +112,6 @@
     customElements.define(
       "change-hostname-dialog",
       class extends HTMLElement {
-        constructor() {
-          super();
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -164,34 +130,18 @@
             futureLocation: this.shadowRoot.getElementById("future-location"),
           };
 
-          this.elements.hostnameInput.addEventListener("keydown", (evt) => {
-            // Prevent keystrokes from being sent to TinyPilot
-            evt.stopPropagation();
-          });
           this.elements.hostnameInput.addEventListener("input", () => {
-            this.onInputChanged();
+            this._onInputChanged();
           });
           this.elements.changeAndRestart.addEventListener("click", () => {
-            this.doChangeHostname();
+            this._doChangeHostname();
           });
           this.elements.cancelInitialization.addEventListener("click", () => {
-            this.show = false;
+            this._close();
           });
           this.elements.cancelHostnameChange.addEventListener("click", () => {
-            this.show = false;
+            this._close();
           });
-        }
-
-        get show() {
-          return this.getAttribute("show") === "true";
-        }
-
-        set show(newValue) {
-          if (this.show !== newValue && newValue === true) {
-            // Initialize when opening freshly
-            this.initialize();
-          }
-          this.setAttribute("show", newValue);
         }
 
         get state() {
@@ -225,12 +175,6 @@
           inputError.innerText = "";
         }
 
-        onInputChanged() {
-          const isEqualToInitialValue =
-            this.elements.hostnameInput.value === this.initialHostname;
-          this.elements.changeAndRestart.disabled = isEqualToInitialValue;
-        }
-
         initialize() {
           this.inputError = null;
           this.state = "initializing";
@@ -239,19 +183,24 @@
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
-              this.onInputChanged(hostname);
+              this._onInputChanged(hostname);
               this.state = "prompt";
             })
             .catch((error) => {
-              this.show = false;
-              this.emitChangeHostnameFailureEvent(
+              this._handleHostnameChangeFailure(
                 "Failed to determine hostname",
                 error
               );
             });
         }
 
-        doChangeHostname() {
+        _onInputChanged() {
+          const isEqualToInitialValue =
+            this.elements.hostnameInput.value === this.initialHostname;
+          this.elements.changeAndRestart.disabled = isEqualToInitialValue;
+        }
+
+        _doChangeHostname() {
           controllers
             .changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
@@ -270,7 +219,7 @@
               this.elements.futureLocation.innerText = redirectURL;
               this.elements.futureLocation.href = redirectURL;
               this.state = "changing";
-              return this.waitForReboot(redirectURL);
+              return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
               if (error.toString().toLowerCase().includes("invalid input")) {
@@ -281,15 +230,14 @@
                 this.state = "prompt";
                 return;
               }
-              this.show = false;
-              this.emitChangeHostnameFailureEvent(
+              this._handleHostnameChangeFailure(
                 "Failed to change hostname",
                 error
               );
             });
         }
 
-        waitForReboot(futureLocation) {
+        _waitForReboot(futureLocation) {
           // Try to reach the future location. Note:
           // - The timeout behaviour of `fetch` is browser-dependent.
           // - It’s not possible to tell exactly when the new hostname will
@@ -308,8 +256,7 @@
             })
             .catch((error) => {
               console.error(error);
-              this.show = false;
-              this.emitChangeHostnameFailureEvent(
+              this._handleHostnameChangeFailure(
                 "Failed to redirect",
                 "Cannot reach TinyPilot under the new hostname. The device may" +
                   " have failed to reboot, or your browser is failing to " +
@@ -318,10 +265,20 @@
             });
         }
 
-        emitChangeHostnameFailureEvent(summary, detail) {
+        _handleHostnameChangeFailure(summary, detail) {
+          this._close();
           this.dispatchEvent(
             new CustomEvent("change-hostname-failure", {
               detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        _close() {
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })
