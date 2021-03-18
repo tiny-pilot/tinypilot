@@ -12,7 +12,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.75);
+      background-color: rgba(0, 0, 0, 0.7);
       z-index: var(--z-index-overlay);
     }
 
@@ -20,15 +20,21 @@
       display: block;
     }
 
-    .panel {
-      background-color: var(--brand-creme-light);
+    #panel {
       max-width: 800px;
       margin: 100px auto;
       padding: 2rem;
       text-align: center;
     }
 
-    :host([variant="danger"]) .panel {
+    :host([variant="default"]) #panel,
+    :host([variant=""]) #panel,
+    :host(:not([variant])) #panel {
+      border-top: none;
+      background-color: var(--brand-creme-light);
+    }
+
+    :host([variant="danger"]) #panel {
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-light);
     }
@@ -65,8 +71,6 @@
           this.setAttribute("show", newValue);
         }
 
-        set variant(newValue) {
-          this.setAttribute("variant", newValue);
         }
       }
     );
