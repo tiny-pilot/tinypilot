@@ -1,3 +1,8 @@
+/**
+ * A registry to keep track of all overlays being shown.
+ * Usually, there should be just one overlay at any time, but technically
+ * speaking it’s not safe to rely on that.
+ */
 export class OverlayTracker {
   currentOverlays = new Set();
 
