@@ -314,9 +314,8 @@ menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
 menuBar.addEventListener("debug-logs-dialog-requested", () => {
-  const debugDialog = document.getElementById("debug-dialog");
-  debugDialog.show = true;
-  debugDialog.getLogs();
+  document.getElementById("debug-dialog").getLogs();
+  document.getElementById("debug-overlay").show();
 });
 menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
