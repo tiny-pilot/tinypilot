@@ -101,7 +101,7 @@ function processKeystroke(keystroke) {
 }
 
 function onSocketConnect() {
-  if (document.getElementById("shutdown-dialog").show) {
+  if (document.getElementById("shutdown-overlay").isShown()) {
     location.reload();
     return;
   }
@@ -300,7 +300,7 @@ menuBar.addEventListener("keyboard-visibility-toggled", () => {
   setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
-  document.getElementById("shutdown-dialog").show = true;
+  document.getElementById("shutdown-overlay").show();
 });
 menuBar.addEventListener("update-dialog-requested", () => {
   const updateDialog = document.getElementById("update-dialog");
@@ -365,7 +365,6 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
   }
 });
 shutdownDialog.addEventListener("shutdown-failure", (evt) => {
-  shutdownDialog.show = false;
   showError(evt.detail.summary, evt.detail.detail);
 });
 
