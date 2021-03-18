@@ -31,10 +31,11 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
-function showError(errorType, errorMessage) {
-  document.getElementById("error-type").innerText = errorType;
-  document.getElementById("error-message").innerText = errorMessage;
-  showElementById("error-panel");
+function showError(title, message, details) {
+  document.getElementById("error-dialog")
+    .setup(title, message, details);
+  document.getElementById("error-overlay")
+    .show();
 }
 
 function isKeyPressed(code) {
@@ -336,9 +337,7 @@ document
       evt.detail.horizontalWheelDelta
     );
   });
-document.getElementById("hide-error-btn").addEventListener("click", () => {
-  hideElementById("error-panel");
-});
+
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
@@ -364,7 +363,6 @@ const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
   for (const elementId of [
-    "error-panel",
     "remote-screen",
     "on-screen-keyboard",
   ]) {

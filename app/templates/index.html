@@ -29,12 +29,9 @@
       </div>
 
       <div class="page-content container">
-        <div id="error-panel">
-          <h3 id="error-type">Error Type</h3>
-          <p id="error-message">Error message</p>
-          <button id="hide-error-btn" type="button">Close</button>
-        </div>
-
+        <overlay-panel id="error-overlay" variant="danger">
+          <error-dialog id="error-dialog"></error-dialog>
+        </overlay-panel>
         <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
         <update-dialog id="update-dialog"></update-dialog>
         <change-hostname-dialog
