@@ -54,23 +54,29 @@
     customElements.define(
       "overlay-panel",
       class extends HTMLElement {
-        constructor() {
-          super();
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.hide = this.hide.bind(this);
+          this.show = this.show.bind(this);
+          this.shadowRoot.addEventListener("dialog-closed", this.hide);
         }
 
-        get show() {
-          return this.getAttribute("show") === "true";
+        disconnectedCallback() {
+          this.shadowRoot.removeEventListener("dialog-closed", this.hide);
         }
 
-        set show(newValue) {
-          this.setAttribute("show", newValue);
+        show(isShown = true) {
+          this.setAttribute("show", isShown ? "true" : "false");
+          this.dispatchEvent(new CustomEvent("overlay-toggled", {
+            detail: { isShown },
+            bubbles: true,
+            composed: true,
+          }));
         }
 
+        hide() {
+          this.show(false);
         }
       }
     );
