@@ -51,6 +51,8 @@ def run_update_script():
         logger.error('Update process terminated with failing exit code: %s',
                      str(e))
         result.error = 'The update failed: %s' % str(e)
+
+    result.timestamp = utc.now()
     return result
 
 

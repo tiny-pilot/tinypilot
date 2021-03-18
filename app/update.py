@@ -34,7 +34,7 @@ UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 # just long enough that it's the one we see right after a device reboot but not
 # so long that there's risk of it being confused with the result from a later
 # update attempt.
-_RECENT_UPDATE_THRESHOLD_SECONDS = 60 * 3
+_RECENT_UPDATE_THRESHOLD_SECONDS = 60 * 8
 _RESULT_FILE_DIR = os.path.expanduser('~/logs')
 
 # Result files are prefixed with UTC timestamps in ISO-8601 format.
