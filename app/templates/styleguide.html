@@ -17,9 +17,12 @@
       height: 5rem;
       min-width: 10rem;
     }
-    h3 {
-      margin-top: 2rem;
-      margin-bottom: 1rem;
+    .section {
+      margin-top: 2.5em;
+      margin-bottom: 1em;
+    }
+    h2.section {
+      border-bottom: 1px solid black;
     }
   </style>
   <body>
@@ -37,12 +40,22 @@
       >
         <img src="/img/slim-logo-white.png" alt="Tiny Pilot" />
       </div>
-      <h2 style="text-align: center;">Style guide</h2>
+
+      <h1 style="text-align: center;">Style guide</h1>
       <p>
         This style guide is an ongoing collection of all things visual that make
         up the brand, such as colours, fonts, patterns or UI components.
       </p>
-      <h3>Colors</h3>
+
+      <h2 class="section">Typeface</h2>
+      <p>
+        We use “Overpass” for regular text. Technical text (e.g. logs or error
+        messages) is set in the monospace variant “<span class="monospace"
+          >Overpass Mono</span
+        >”.
+      </p>
+
+      <h2 class="section">Colors</h2>
       <div>
         <div
           class="colorcard"
@@ -92,24 +105,82 @@
 
       <div style="clear: both;"></div>
 
-      <h3>Overlay</h3>
+      <h2 class="section">Buttons</h2>
+      <ul>
+        <li>
+          Button labels should have meaningful wording, e.g. “Apply Changes” or
+          “Restart Now” instead of just “Okay”.
+        </li>
+        <li>Use <i>Title Case</i>.</li>
+        <li>
+          If ever feasible, call-to-action buttons should only appear once.
+        </li>
+      </ul>
+      <h3>Default Button</h3>
+      <button class="btn">Default</button>
+      <p>For harmless operations like “close” or “cancel”.</p>
+      <h3>Danger Button</h3>
+      <button class="btn-danger">Danger</button>
+      <p>For destructive call-to-actions like “delete” or “shutdown”.</p>
+      <h3>Success Button</h3>
+      <button class="btn-success">Success</button>
+      <p>For the main (and non-destructive) call-to-action.</p>
 
+      <h2 class="section">Overlay</h2>
+      <p>
+        There are two overlay variants to choose from.
+      </p>
+      <!-- Default overlay: -->
+      <button id="show-default-overlay-btn" class="btn">
+        Open Default Overlay
+      </button>
+      <overlay-panel id="default-overlay">
+        <h3>Default Overlay</h3>
+        <div>
+          The default overlay displays dialogs or asks for user confirmation. It
+          contains call-to-action buttons and a cancel button (in that order).
+          Does that make sense?
+        </div>
+        <button class="close-default-overlay btn-success">Confirm</button>
+        <button class="close-default-overlay">Cancel</button>
+      </overlay-panel>
+      <script>
+        document
+          .getElementById("show-default-overlay-btn")
+          .addEventListener("click", () => {
+            document.getElementById("default-overlay").show();
+          });
+        Array.from(
+          document.getElementsByClassName("close-default-overlay")
+        ).forEach((button) =>
+          button.addEventListener("click", (evt) => {
+            evt.target.dispatchEvent(
+              new CustomEvent("dialog-closed", {
+                bubbles: true,
+                composed: true,
+              })
+            );
+          })
+        );
+      </script>
+      <!-- Error overlay: -->
       <overlay-panel id="error-overlay" variant="danger">
         <error-dialog id="error-dialog"></error-dialog>
       </overlay-panel>
-      <button id="show-error-btn" class="btn-danger">Error</button>
+      <button id="show-error-overlay-btn" class="btn-danger">
+        Open Error Overlay
+      </button>
       <script>
-        console.log(document.getElementById("error-dialog"));
-        console.log(document.getElementById("error-dialog").setup);
         document
-          .getElementById("show-error-btn")
+          .getElementById("show-error-overlay-btn")
           .addEventListener("click", () => {
             document
               .getElementById("error-dialog")
               .setup(
                 "Example Error Message",
-                "Your style guide is showing you an example error. " +
-                  "Please reload the page.",
+                "The title is set in Title Case. The message should be user-friendly" +
+                  " and ideally provide some guidance. Technical error messages can" +
+                  " be displayed in the “details” box below.",
                 "" +
                   "dummyElementFailed: line 502\n" +
                   "  dummyParentElement returned unexpected response: foo\n" +
