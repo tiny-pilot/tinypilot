@@ -5,6 +5,7 @@ pasteOverlay.addEventListener("click", () => {
   hidePasteOverlay();
 });
 
+// TODO(jotaen) Migrate this to use `OverlayTracker`
 function isPasteOverlayShowing() {
   return pasteOverlay.getAttribute("show") === "true";
 }

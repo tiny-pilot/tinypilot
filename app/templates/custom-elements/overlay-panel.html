@@ -1,0 +1,79 @@
+<template id="overlay-panel-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      display: none;
+      position: fixed;
+      overflow: scroll;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: var(--z-index-overlay);
+    }
+
+    :host([show="true"]) {
+      display: block;
+    }
+
+    #panel {
+      max-width: 800px;
+      margin: 100px auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    :host([variant="default"]) #panel,
+    :host([variant=""]) #panel,
+    :host(:not([variant])) #panel {
+      border-top: none;
+      background-color: var(--brand-creme-light);
+    }
+
+    :host([variant="danger"]) #panel {
+      border-top: 0.4rem solid var(--brand-red-bright);
+      background-color: var(--brand-red-light);
+    }
+  </style>
+
+  <div id="panel">
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#overlay-panel-template");
+
+    customElements.define(
+      "overlay-panel",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.show = this.show.bind(this);
+          this.shadowRoot.addEventListener("dialog-closed", () =>
+            this.show(false)
+          );
+        }
+
+        show(isShown = true) {
+          this.setAttribute("show", isShown ? "true" : "false");
+          this.dispatchEvent(
+            new CustomEvent("overlay-toggled", {
+              detail: { isShown },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    );
+  })();
+</script>

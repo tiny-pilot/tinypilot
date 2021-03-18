@@ -17,8 +17,16 @@
       height: 5rem;
       min-width: 10rem;
     }
+    h3 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
   </style>
   <body>
+    <!-- prettier-ignore -->
+    {% for child_template in custom_elements_files %}
+      {% include child_template.replace('./app/templates/', '') %}
+    {% endfor %}
     <main>
       <div
         style="
@@ -34,6 +42,7 @@
         This style guide is an ongoing collection of all things visual that make
         up the brand, such as colours, fonts, patterns or UI components.
       </p>
+      <h3>Colors</h3>
       <div>
         <div
           class="colorcard"
@@ -80,6 +89,37 @@
           style="background-color: var(--brand-sand-light);"
         ></div>
       </div>
+
+      <div style="clear: both;"></div>
+
+      <h3>Overlay</h3>
+
+      <overlay-panel id="error-overlay" variant="danger">
+        <error-dialog id="error-dialog"></error-dialog>
+      </overlay-panel>
+      <button id="show-error-btn" class="btn-danger">Error</button>
+      <script>
+        console.log(document.getElementById("error-dialog"));
+        console.log(document.getElementById("error-dialog").setup);
+        document
+          .getElementById("show-error-btn")
+          .addEventListener("click", () => {
+            document
+              .getElementById("error-dialog")
+              .setup(
+                "Example Error Message",
+                "Your style guide is showing you an example error. " +
+                  "Please reload the page.",
+                "" +
+                  "dummyElementFailed: line 502\n" +
+                  "  dummyParentElement returned unexpected response: foo\n" +
+                  "    exhausted resources.\n" +
+                  "Stacktrace:\n" +
+                  "  fooBarBaz\n".repeat(80)
+              );
+            document.getElementById("error-overlay").show();
+          });
+      </script>
     </main>
   </body>
 </html>

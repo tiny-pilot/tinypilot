@@ -20,7 +20,7 @@
   --brand-blue: hsl(var(--brand-hue-blue), 80%, 60%);
 
   --brand-red: hsl(var(--brand-hue-red), 55%, 40%);
-  --brand-red-light: hsl(var(--brand-hue-red), 52%, 80%);
+  --brand-red-light: hsl(var(--brand-hue-red), 54%, 95%);
   --brand-red-bright: hsl(var(--brand-hue-red), 85%, 46%);
 
   --brand-green: hsl(var(--brand-hue-green), 40%, 45%);
@@ -88,17 +88,4 @@ img {
 
 .question-icon {
   max-width: 20px;
-}
-
-#error-panel {
-  display: none;
-  background-color: var(--brand-red-light);
-  border: 2px solid var(--brand-red);
-  max-width: 800px;
-  padding: 1rem 3rem;
-  margin: 0 auto 1rem auto;
-}
-
-#error-panel #error-type {
-  margin-top: 0;
 }

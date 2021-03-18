@@ -8,12 +8,16 @@ import {
 } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
+import { OverlayTracker } from "./overlays.js";
 
 const socket = io();
 let connectedToServer = false;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
+
+// Keep track of overlays, in order to properly deactivate keypress forwarding.
+const overlayTracker = new OverlayTracker();
 
 function hideElementById(id) {
   document.getElementById(id).style.display = "none";
@@ -27,10 +31,9 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
-function showError(errorType, errorMessage) {
-  document.getElementById("error-type").innerText = errorType;
-  document.getElementById("error-message").innerText = errorMessage;
-  showElementById("error-panel");
+function showError(title, message, details) {
+  document.getElementById("error-dialog").setup(title, message, details);
+  document.getElementById("error-overlay").show();
 }
 
 function isKeyPressed(code) {
@@ -125,7 +128,7 @@ function onSocketDisconnect(reason) {
 }
 
 function onKeyDown(evt) {
-  if (isPasteOverlayShowing()) {
+  if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
     return;
   }
 
@@ -279,6 +282,9 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
+document.addEventListener("overlay-toggled", (evt) => {
+  overlayTracker.trackStatus(evt.target, evt.detail.isShown);
+});
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
@@ -329,9 +335,7 @@ document
       evt.detail.horizontalWheelDelta
     );
   });
-document.getElementById("hide-error-btn").addEventListener("click", () => {
-  hideElementById("error-panel");
-});
+
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
@@ -356,11 +360,7 @@ document
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
-  for (const elementId of [
-    "error-panel",
-    "remote-screen",
-    "on-screen-keyboard",
-  ]) {
+  for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     hideElementById(elementId);
   }
 });
