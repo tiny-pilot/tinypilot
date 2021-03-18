@@ -68,11 +68,13 @@
 
         show(isShown = true) {
           this.setAttribute("show", isShown ? "true" : "false");
-          this.dispatchEvent(new CustomEvent("overlay-toggled", {
-            detail: { isShown },
-            bubbles: true,
-            composed: true,
-          }));
+          this.dispatchEvent(
+            new CustomEvent("overlay-toggled", {
+              detail: { isShown },
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
 
         hide() {

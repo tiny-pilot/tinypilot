@@ -57,15 +57,18 @@
           this.shadowRoot.getElementById("title").innerText = title;
           this.shadowRoot.getElementById("message").innerText = message;
           this.shadowRoot.getElementById("details").innerText = details;
-          this.shadowRoot.getElementById("details-container")
-            .style.display = details ? "block" : "none";
+          this.shadowRoot.getElementById(
+            "details-container"
+          ).style.display = details ? "block" : "none";
         }
 
         close() {
-          this.dispatchEvent(new CustomEvent("dialog-closed", {
-            bubbles: true,
-            composed: true,
-          }));
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
       }
     );

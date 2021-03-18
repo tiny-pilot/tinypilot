@@ -32,10 +32,8 @@ function isElementShown(id) {
 }
 
 function showError(title, message, details) {
-  document.getElementById("error-dialog")
-    .setup(title, message, details);
-  document.getElementById("error-overlay")
-    .show();
+  document.getElementById("error-dialog").setup(title, message, details);
+  document.getElementById("error-overlay").show();
 }
 
 function isKeyPressed(code) {
@@ -362,10 +360,7 @@ document
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
-  for (const elementId of [
-    "remote-screen",
-    "on-screen-keyboard",
-  ]) {
+  for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     hideElementById(elementId);
   }
 });
