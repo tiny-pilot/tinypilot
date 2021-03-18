@@ -111,8 +111,9 @@ function onSocketConnect() {
   setCursor(settings.getScreenCursor());
 
   // If we're restarting after an update, mark the update as finished.
+  const updateOverlay = document.getElementById("update-overlay");
   const updateDialog = document.getElementById("update-dialog");
-  if (updateDialog.show && updateDialog.state === "restarting") {
+  if (updateOverlay.isShown() && updateDialog.state === "restarting") {
     updateDialog.state = "update-finished";
   }
 }
@@ -303,9 +304,8 @@ menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
 menuBar.addEventListener("update-dialog-requested", () => {
-  const updateDialog = document.getElementById("update-dialog");
-  updateDialog.show = true;
-  updateDialog.checkVersion();
+  document.getElementById("update-overlay").show();
+  document.getElementById("update-dialog").checkVersion();
 });
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-dialog").show = true;

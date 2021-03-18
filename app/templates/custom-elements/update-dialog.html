@@ -3,29 +3,6 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    .overlay {
-      display: none;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    :host([show="true"]) .overlay {
-      display: block;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: var(--z-index-overlay);
-    }
-
     #checking,
     #update-available,
     #latest,
@@ -59,53 +36,49 @@
       display: block;
     }
 
-    #update-panel > div {
-      background-color: var(--brand-creme-light);
-      border: 1px solid var(--brand-metallic-dark);
-      max-width: 800px;
-      margin: 100px auto 0rem auto;
-      padding: 2rem;
-    }
-
     .updating-spinner {
       margin: 1rem 0;
     }
   </style>
-  <div id="update-panel" class="overlay">
-    <div id="checking">
-      <h3>Checking for updates</h3>
+
+  <div id="checking">
+    <h3>Checking for updates</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="update-available">
+    <h3>Update TinyPilot</h3>
+    <p>
+      An update is available. Would you like to install the latest version?
+    </p>
+    <button id="confirm-update" class="btn-success" type="button">
+      Update
+    </button>
+    <button id="cancel-update" type="button">Cancel</button>
+  </div>
+
+  <div id="latest">
+    <h3>No Updates Available</h3>
+    <p>You are running the latest version of TinyPilot.</p>
+    <button id="ok-latest" type="button">OK</button>
+  </div>
+
+  <div id="updating">
+    <h3>Please wait while TinyPilot updates</h3>
+    <div class="updating-spinner">
       <progress-spinner></progress-spinner>
     </div>
-    <div id="update-available">
-      <h3>Update TinyPilot</h3>
-      <p>
-        An update is available. Would you like to install the latest version?
-      </p>
-      <button id="confirm-update" class="btn-success" type="button">
-        Update
-      </button>
-      <button id="cancel-update" type="button">Cancel</button>
-    </div>
-    <div id="latest">
-      <h3>No Updates Available</h3>
-      <p>You are running the latest version of TinyPilot.</p>
-      <button id="ok-latest" type="button">OK</button>
-    </div>
-    <div id="updating">
-      <h3>Please wait while TinyPilot updates</h3>
-      <div class="updating-spinner">
-        <progress-spinner></progress-spinner>
-      </div>
-      <countdown-timer id="timer" seconds="300"></countdown-timer>
-    </div>
-    <div id="restarting">
-      <h3>Restarting to complete update</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="update-finished">
-      <h3>Update complete</h3>
-      <button id="ok-finished" type="button">OK</button>
-    </div>
+    <countdown-timer id="timer" seconds="300"></countdown-timer>
+  </div>
+
+  <div id="restarting">
+    <h3>Restarting to complete update</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="update-finished">
+    <h3>Update complete</h3>
+    <button id="ok-finished" type="button">OK</button>
   </div>
 </template>
 
@@ -119,10 +92,6 @@
     customElements.define(
       "update-dialog",
       class extends HTMLElement {
-        constructor() {
-          super();
-        }
-
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -130,31 +99,23 @@
           this.shadowRoot
             .getElementById("confirm-update")
             .addEventListener("click", () => {
-              this.doUpdate();
+              this._doUpdate();
             });
           this.shadowRoot
             .getElementById("cancel-update")
             .addEventListener("click", () => {
-              this.show = false;
+              this._close();
             });
           this.shadowRoot
             .getElementById("ok-latest")
             .addEventListener("click", () => {
-              this.show = false;
+              this._close();
             });
           this.shadowRoot
             .getElementById("ok-finished")
             .addEventListener("click", () => {
               location.reload();
             });
-        }
-
-        get show() {
-          return this.getAttribute("show") === "true";
-        }
-
-        set show(newValue) {
-          this.setAttribute("show", newValue);
         }
 
         get state() {
@@ -183,14 +144,14 @@
               }
             })
             .catch((error) => {
-              this.emitUpdateFailureEvent(
+              this._handleUpdateFailure(
                 "Failed to retrieve version information",
                 error
               );
             });
         }
 
-        waitForUpdateToFinish() {
+        _waitForUpdateToFinish() {
           return poll({
             fn: controllers.getUpdateStatus,
             validate: (status) => {
@@ -201,21 +162,21 @@
           });
         }
 
-        performRestart() {
+        _performRestart() {
           return controllers
             .shutdown(/*restart*/ true)
             .then(() => {
               this.state = "restarting";
             })
             .catch((error) => {
-              this.emitUpdateFailureEvent(
+              this._handleUpdateFailure(
                 "Failed to restart TinyPilot device",
                 error
               );
             });
         }
 
-        async startUpdateWithRetries() {
+        async _startUpdateWithRetries() {
           const maxAttempts = 3;
           for (let i = 1; i <= maxAttempts; i++) {
             try {
@@ -228,26 +189,26 @@
           }
         }
 
-        async doUpdate() {
+        async _doUpdate() {
           this.state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
           try {
-            await this.startUpdateWithRetries();
+            await this._startUpdateWithRetries();
           } catch (error) {
-            this.emitUpdateFailureEvent("Failed to start update", error);
+            this._handleUpdateFailure("Failed to start update", error);
             return;
           }
 
           try {
-            await this.waitForUpdateToFinish();
+            await this._waitForUpdateToFinish();
             // Updating causes the backend to restart, changing the CSRF token.
             await controllers.refreshCsrfToken();
-            await this.performRestart();
+            await this._performRestart();
           } catch (error) {
             console.error(error);
-            this.emitUpdateFailureEvent(
+            this._handleUpdateFailure(
               "Failed to complete update",
               "Please refresh this page and try again. Error details: " + error
             );
@@ -255,11 +216,20 @@
           }
         }
 
-        emitUpdateFailureEvent(summary, detail) {
-          this.show = false;
+        _handleUpdateFailure(summary, detail) {
+          this._close();
           this.dispatchEvent(
             new CustomEvent("update-failure", {
               detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        _close() {
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })
