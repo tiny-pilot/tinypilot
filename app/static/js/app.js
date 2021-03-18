@@ -308,7 +308,8 @@ menuBar.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-dialog").checkVersion();
 });
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
-  document.getElementById("change-hostname-dialog").show = true;
+  document.getElementById("change-hostname-overlay").show();
+  document.getElementById("change-hostname-dialog").initialize();
 });
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
