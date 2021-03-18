@@ -3,29 +3,6 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    .overlay {
-      display: none;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    :host([show="true"]) .overlay {
-      display: block;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: var(--z-index-overlay);
-    }
-
     #logs-loading,
     #logs-success,
     #logs-fail,
@@ -42,14 +19,6 @@
     :host([state="url-success"]) #url-success,
     :host([state="url-fail"]) #url-fail {
       display: block;
-    }
-
-    #panel > div {
-      background-color: var(--brand-creme-light);
-      border: 1px solid var(--brand-metallic-dark);
-      max-width: 1000px;
-      margin: 100px auto 0rem auto;
-      padding: 2rem;
     }
 
     #logs-success .logs {
@@ -80,48 +49,52 @@
       white-space: pre-wrap;
     }
   </style>
-  <div id="panel" class="overlay">
-    <!-- Get Debug Logs -->
-    <div id="logs-loading">
-      <h3>Retrieving debug logs</h3>
-      <progress-spinner></progress-spinner>
+
+  <!-- Get Debug Logs -->
+  <div id="logs-loading">
+    <h3>Retrieving debug logs</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="logs-success">
+    <h3>Debug Logs</h3>
+    <p class="logs monospace"></p>
+    <button class="share-btn btn-success" type="button">
+      Get shareable URL
+    </button>
+    <button class="copy-btn btn-success" type="button">
+      Copy to clipboard
+    </button>
+    <button class="close-btn" type="button">Close</button>
+  </div>
+
+  <div id="logs-fail">
+    <h3>Error retrieving debug logs</h3>
+    <p class="error"></p>
+    <button class="close-btn" type="button">Close</button>
+  </div>
+
+  <!-- Get Shareable URL -->
+  <div id="url-loading">
+    <h3>Retrieving shareable URL</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="url-success">
+    <h3>Debug Logs</h3>
+    <div class="url-wrapper">
+      <a class="url"></a>
     </div>
-    <div id="logs-success">
-      <h3>Debug Logs</h3>
-      <p class="logs monospace"></p>
-      <button class="share-btn btn-success" type="button">
-        Get shareable URL
-      </button>
-      <button class="copy-btn btn-success" type="button">
-        Copy to clipboard
-      </button>
-      <button class="close-btn" type="button">Close</button>
-    </div>
-    <div id="logs-fail">
-      <h3>Error retrieving debug logs</h3>
-      <p class="error"></p>
-      <button class="close-btn" type="button">Close</button>
-    </div>
-    <!-- Get Shareable URL -->
-    <div id="url-loading">
-      <h3>Retrieving shareable URL</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="url-success">
-      <h3>Debug Logs</h3>
-      <div class="url-wrapper">
-        <a class="url"></a>
-      </div>
-      <button class="copy-btn btn-success" type="button">
-        Copy to clipboard
-      </button>
-      <button class="close-btn" type="button">Close</button>
-    </div>
-    <div id="url-fail">
-      <h3>Error retrieving shareable URL</h3>
-      <p class="error"></p>
-      <button class="close-btn" type="button">Close</button>
-    </div>
+    <button class="copy-btn btn-success" type="button">
+      Copy to clipboard
+    </button>
+    <button class="close-btn" type="button">Close</button>
+  </div>
+
+  <div id="url-fail">
+    <h3>Error retrieving shareable URL</h3>
+    <p class="error"></p>
+    <button class="close-btn" type="button">Close</button>
   </div>
 </template>
 
@@ -139,21 +112,20 @@
           this.attachShadow({ mode: "open" });
           // Ensure that these methods always refer to the correct "this",
           // regardless of where they are called.
-          this.close = this.close.bind(this);
-          this.reset = this.reset.bind(this);
           this.getLogs = this.getLogs.bind(this);
-          this.getUrl = this.getUrl.bind(this);
-          this._consumeKeystrokes = this._consumeKeystrokes.bind(this);
+          this._close = this._close.bind(this);
+          this._reset = this._reset.bind(this);
+          this._getUrl = this._getUrl.bind(this);
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
-            el.addEventListener("click", this.close);
+            el.addEventListener("click", this._close);
           });
           this.shadowRoot
             .querySelector("#logs-success .share-btn")
-            .addEventListener("click", this.getUrl);
+            .addEventListener("click", this._getUrl);
           this.shadowRoot
             .querySelector("#logs-success .copy-btn")
             .addEventListener("click", (event) => {
@@ -174,19 +146,6 @@
                 )
               );
             });
-          doc.addEventListener("keydown", this._consumeKeystrokes);
-        }
-
-        disconnectedCallback() {
-          doc.removeEventListener("keydown", this._consumeKeystrokes);
-        }
-
-        get show() {
-          return this.getAttribute("show") === "true";
-        }
-
-        set show(newValue) {
-          this.setAttribute("show", newValue);
         }
 
         get state() {
@@ -195,22 +154,6 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
-        }
-
-        _consumeKeystrokes(event) {
-          // Prevent keystrokes from being sent to TinyPilot
-          if (this.show) {
-            event.stopImmediatePropagation();
-          }
-        }
-
-        close(event) {
-          this.show = false;
-          this.reset();
-        }
-
-        reset() {
-          this.state = null;
         }
 
         getLogs() {
@@ -231,7 +174,21 @@
             });
         }
 
-        getUrl() {
+        _close() {
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+          this._reset();
+        }
+
+        _reset() {
+          this.state = null;
+        }
+
+        _getUrl() {
           this.state = "url-loading";
           const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
