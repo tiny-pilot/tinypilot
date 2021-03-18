@@ -23,8 +23,6 @@
     }
   </style>
   <body>
-    {% for child_template in custom_elements_files %} {% include
-    child_template.replace('./app/templates/', '') %} {% endfor %}
     <main>
       <div
         style="
@@ -88,36 +86,6 @@
           style="background-color: var(--brand-sand-light);"
         ></div>
       </div>
-      <div style="clear: both;"></div>
-
-      <h3>Overlay</h3>
-      <button onClick="openOverlay()">Regular</button>
-      <button onClick="openOverlay('danger')">Error</button>
-      <overlay-panel id="example-overlay">
-        <h1>Title</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-          sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-          rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-          ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-          sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-          dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-          et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-          takimata sanctus est Lorem ipsum dolor sit amet.
-        </p>
-        <button onClick="closeOverlay()">Close</button>
-      </overlay-panel>
-      <script>
-        const overlay = document.getElementById("example-overlay");
-        function openOverlay(variant = "") {
-          overlay.variant = variant;
-          overlay.show = true;
-        }
-        function closeOverlay() {
-          overlay.show = false;
-        }
-      </script>
     </main>
   </body>
 </html>
