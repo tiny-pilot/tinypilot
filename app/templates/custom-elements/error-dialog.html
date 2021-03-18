@@ -49,12 +49,6 @@
             .addEventListener("click", this.close);
         }
 
-        disconnectedCallback() {
-          this.shadowRoot
-            .getElementById("close")
-            .removeEventListener("click", this.close);
-        }
-
         /**
          * @param title   A concise summary of the error.
          * @param message A user-friendly and helpful message that (ideally)

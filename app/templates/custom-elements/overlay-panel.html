@@ -57,13 +57,10 @@
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.hide = this.hide.bind(this);
           this.show = this.show.bind(this);
-          this.shadowRoot.addEventListener("dialog-closed", this.hide);
-        }
-
-        disconnectedCallback() {
-          this.shadowRoot.removeEventListener("dialog-closed", this.hide);
+          this.shadowRoot.addEventListener("dialog-closed", () =>
+            this.show(false)
+          );
         }
 
         show(isShown = true) {
@@ -75,10 +72,6 @@
               composed: true,
             })
           );
-        }
-
-        hide() {
-          this.show(false);
         }
       }
     );
