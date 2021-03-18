@@ -8,12 +8,16 @@ import {
 } from "./keycodes.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
+import { OverlayTracker } from "./overlays.js";
 
 const socket = io();
 let connectedToServer = false;
 
 // A map of keycodes to booleans indicating whether the key is currently pressed.
 let keyState = {};
+
+// Keep track of overlays, in order to properly deactivate keypress forwarding.
+const overlayTracker = new OverlayTracker();
 
 function hideElementById(id) {
   document.getElementById(id).style.display = "none";
@@ -125,7 +129,7 @@ function onSocketDisconnect(reason) {
 }
 
 function onKeyDown(evt) {
-  if (isPasteOverlayShowing()) {
+  if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
     return;
   }
 
@@ -279,6 +283,9 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
+document.addEventListener("overlay-toggled", (evt) => {
+  overlayTracker.trackStatus(evt.target, evt.detail.isShown);
+});
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
