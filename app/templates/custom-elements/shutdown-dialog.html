@@ -77,17 +77,17 @@
           this.shadowRoot
             .getElementById("confirm-shutdown")
             .addEventListener("click", () => {
-              this.doShutdown(/*restart=*/ false);
+              this._doShutdown(/*restart=*/ false);
             });
           this.shadowRoot
             .getElementById("confirm-restart")
             .addEventListener("click", () => {
-              this.doShutdown(/*restart=*/ true);
+              this._doShutdown(/*restart=*/ true);
             });
           this.shadowRoot
             .getElementById("cancel-shutdown")
             .addEventListener("click", () => {
-              this.close();
+              this._close();
             });
         }
 
@@ -99,11 +99,11 @@
           this.setAttribute("state", newValue);
         }
 
-        doShutdown(restart) {
+        _doShutdown(restart) {
           controllers
             .shutdown(restart)
             .then(() => {
-              this.emitShutdownStartedEvent(restart);
+              this._emitShutdownStartedEvent(restart);
               if (restart) {
                 this.state = "restarting";
               } else {
@@ -117,12 +117,12 @@
             })
             .catch((error) => {
               if (restart) {
-                this.handleShutdownFailure(
+                this._handleShutdownFailure(
                   "Failed to restart TinyPilot device",
                   error
                 );
               } else {
-                this.handleShutdownFailure(
+                this._handleShutdownFailure(
                   "Failed to shut down TinyPilot device",
                   error
                 );
@@ -130,7 +130,7 @@
             });
         }
 
-        emitShutdownStartedEvent(restart) {
+        _emitShutdownStartedEvent(restart) {
           this.dispatchEvent(
             new CustomEvent("shutdown-started", {
               detail: { restart },
@@ -140,8 +140,8 @@
           );
         }
 
-        handleShutdownFailure(summary, detail) {
-          this.close();
+        _handleShutdownFailure(summary, detail) {
+          this._close();
           this.dispatchEvent(
             new CustomEvent("shutdown-failure", {
               detail: { summary, detail },
@@ -151,7 +151,7 @@
           );
         }
 
-        close() {
+        _close() {
           this.dispatchEvent(
             new CustomEvent("dialog-closed", {
               bubbles: true,
