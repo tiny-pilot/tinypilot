@@ -175,12 +175,6 @@
           inputError.innerText = "";
         }
 
-        _onInputChanged() {
-          const isEqualToInitialValue =
-            this.elements.hostnameInput.value === this.initialHostname;
-          this.elements.changeAndRestart.disabled = isEqualToInitialValue;
-        }
-
         initialize() {
           this.inputError = null;
           this.state = "initializing";
@@ -198,6 +192,12 @@
                 error
               );
             });
+        }
+
+        _onInputChanged() {
+          const isEqualToInitialValue =
+            this.elements.hostnameInput.value === this.initialHostname;
+          this.elements.changeAndRestart.disabled = isEqualToInitialValue;
         }
 
         _doChangeHostname() {
