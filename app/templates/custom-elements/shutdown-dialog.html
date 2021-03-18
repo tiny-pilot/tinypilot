@@ -3,29 +3,6 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    .overlay {
-      display: none;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    :host([show="true"]) .overlay {
-      display: block;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: var(--z-index-overlay);
-    }
-
     #prompt,
     #restarting,
     #shutting-down,
@@ -48,41 +25,35 @@
     :host([state="shutdown-complete"]) #shutdown-complete {
       display: block;
     }
-
-    #shutdown-confirmation-panel > div {
-      background-color: var(--brand-creme-light);
-      border: 1px solid var(--brand-metallic-dark);
-      max-width: 800px;
-      margin: 100px auto 0rem auto;
-      padding: 2rem;
-    }
   </style>
-  <div id="shutdown-confirmation-panel" class="overlay">
-    <div id="prompt">
-      <h3>Shut Down TinyPilot Device?</h3>
-      <p>
-        Note that this will shut down <strong>TinyPilot</strong>, not the
-        machine to which it is attached.
-      </p>
-      <button id="confirm-shutdown" class="btn-danger" type="button">
-        Shut Down
-      </button>
-      <button id="confirm-restart" class="btn-danger" type="button">
-        Restart
-      </button>
-      <button id="cancel-shutdown" type="button">Cancel</button>
-    </div>
-    <div id="restarting">
-      <h3>Restarting TinyPilot device</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="shutting-down">
-      <h3>Shutting down TinyPilot device</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="shutdown-complete">
-      <h3>Shutdown complete</h3>
-    </div>
+
+  <div id="prompt">
+    <h3>Shut Down TinyPilot Device?</h3>
+    <p>
+      Note that this will shut down <strong>TinyPilot</strong>, not the machine
+      to which it is attached.
+    </p>
+    <button id="confirm-shutdown" class="btn-danger" type="button">
+      Shut Down
+    </button>
+    <button id="confirm-restart" class="btn-danger" type="button">
+      Restart
+    </button>
+    <button id="cancel-shutdown" type="button">Cancel</button>
+  </div>
+
+  <div id="restarting">
+    <h3>Restarting TinyPilot device</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="shutting-down">
+    <h3>Shutting down TinyPilot device</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="shutdown-complete">
+    <h3>Shutdown complete</h3>
   </div>
 </template>
 
@@ -108,35 +79,18 @@
           this.shadowRoot
             .getElementById("confirm-shutdown")
             .addEventListener("click", () => {
-              this.doShutdown(/*restart=*/ false);
+              this._doShutdown(/*restart=*/ false);
             });
-
           this.shadowRoot
             .getElementById("confirm-restart")
             .addEventListener("click", () => {
-              this.doShutdown(/*restart=*/ true);
+              this._doShutdown(/*restart=*/ true);
             });
           this.shadowRoot
             .getElementById("cancel-shutdown")
             .addEventListener("click", () => {
-              this.show = false;
+              this._close();
             });
-          this.shadowRoot
-            .getElementById("shutdown-confirmation-panel")
-            .addEventListener("click", (evt) => {
-              evt = window.event || evt;
-              if (evt.target.className === "overlay") {
-                this.show = false;
-              }
-            });
-        }
-
-        get show() {
-          return this.getAttribute("show") === "true";
-        }
-
-        set show(newValue) {
-          this.setAttribute("show", newValue);
         }
 
         get state() {
@@ -147,11 +101,11 @@
           this.setAttribute("state", newValue);
         }
 
-        doShutdown(restart) {
+        _doShutdown(restart) {
           controllers
             .shutdown(restart)
             .then(() => {
-              this.emitShutdownStartedEvent(restart);
+              this._emitShutdownStartedEvent(restart);
               if (restart) {
                 this.state = "restarting";
               } else {
@@ -165,12 +119,12 @@
             })
             .catch((error) => {
               if (restart) {
-                this.emitShutdownFailureEvent(
+                this._handleShutdownFailure(
                   "Failed to restart TinyPilot device",
                   error
                 );
               } else {
-                this.emitShutdownFailureEvent(
+                this._handleShutdownFailure(
                   "Failed to shut down TinyPilot device",
                   error
                 );
@@ -178,7 +132,7 @@
             });
         }
 
-        emitShutdownStartedEvent(restart) {
+        _emitShutdownStartedEvent(restart) {
           this.dispatchEvent(
             new CustomEvent("shutdown-started", {
               detail: { restart },
@@ -188,10 +142,20 @@
           );
         }
 
-        emitShutdownFailureEvent(summary, detail) {
+        _handleShutdownFailure(summary, detail) {
+          this._close();
           this.dispatchEvent(
             new CustomEvent("shutdown-failure", {
               detail: { summary, detail },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        _close() {
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })
