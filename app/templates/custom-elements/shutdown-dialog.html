@@ -26,32 +26,34 @@
       display: block;
     }
   </style>
-  <div id="shutdown-confirmation-panel">
-    <div id="prompt">
-      <h3>Shut Down TinyPilot Device?</h3>
-      <p>
-        Note that this will shut down <strong>TinyPilot</strong>, not the
-        machine to which it is attached.
-      </p>
-      <button id="confirm-shutdown" class="btn-danger" type="button">
-        Shut Down
-      </button>
-      <button id="confirm-restart" class="btn-danger" type="button">
-        Restart
-      </button>
-      <button id="cancel-shutdown" type="button">Cancel</button>
-    </div>
-    <div id="restarting">
-      <h3>Restarting TinyPilot device</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="shutting-down">
-      <h3>Shutting down TinyPilot device</h3>
-      <progress-spinner></progress-spinner>
-    </div>
-    <div id="shutdown-complete">
-      <h3>Shutdown complete</h3>
-    </div>
+
+  <div id="prompt">
+    <h3>Shut Down TinyPilot Device?</h3>
+    <p>
+      Note that this will shut down <strong>TinyPilot</strong>, not the machine
+      to which it is attached.
+    </p>
+    <button id="confirm-shutdown" class="btn-danger" type="button">
+      Shut Down
+    </button>
+    <button id="confirm-restart" class="btn-danger" type="button">
+      Restart
+    </button>
+    <button id="cancel-shutdown" type="button">Cancel</button>
+  </div>
+
+  <div id="restarting">
+    <h3>Restarting TinyPilot device</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="shutting-down">
+    <h3>Shutting down TinyPilot device</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="shutdown-complete">
+    <h3>Shutdown complete</h3>
   </div>
 </template>
 
