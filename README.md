@@ -1,6 +1,10 @@
 # TinyPilot
 
-[![CircleCI](https://circleci.com/gh/mtlynch/tinypilot.svg?style=svg)](https://circleci.com/gh/mtlynch/tinypilot) [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE) [![Reddit](https://img.shields.io/badge/reddit-join-orange?logo=reddit)](https://www.reddit.com/r/tinypilot)
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
+[![Contributors](https://img.shields.io/github/contributors/mtlynch/tinypilot)](https://github.com/mtlynch/tinypilot/graphs/contributors)
+[![CircleCI](https://circleci.com/gh/mtlynch/tinypilot.svg?style=svg)](https://circleci.com/gh/mtlynch/tinypilot)
+[![Reddit](https://img.shields.io/badge/reddit-join-orange?logo=reddit)](https://www.reddit.com/r/tinypilot)
+[![Twitter](https://img.shields.io/twitter/follow/tinypilotkvm?label=Twitter&style=social)](https://twitter.com/tinypilotkvm)
 
 ## Overview
 
