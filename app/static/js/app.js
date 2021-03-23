@@ -31,7 +31,8 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
-function showError(title, message, details) {
+function showError({ title, message, details }) {
+  console.error(`${title}:\n${details}`);
   document.getElementById("error-dialog").setup(title, message, details);
   document.getElementById("error-overlay").show();
 }
@@ -342,12 +343,12 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
 document
   .getElementById("update-dialog")
   .addEventListener("update-failure", (evt) => {
-    showError(evt.detail.summary, evt.detail.detail);
+    showError(evt.detail);
   });
 document
   .getElementById("change-hostname-dialog")
   .addEventListener("change-hostname-failure", (evt) => {
-    showError(evt.detail.summary, evt.detail.detail);
+    showError(evt.detail);
   });
 document
   .getElementById("paste-overlay")
@@ -365,7 +366,7 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
   }
 });
 shutdownDialog.addEventListener("shutdown-failure", (evt) => {
-  showError(evt.detail.summary, evt.detail.detail);
+  showError(evt.detail);
 });
 
 socket.on("connect", onSocketConnect);

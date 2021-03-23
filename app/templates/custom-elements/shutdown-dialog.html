@@ -120,12 +120,14 @@
             .catch((error) => {
               if (restart) {
                 this._handleShutdownFailure(
-                  "Failed to restart TinyPilot device",
+                  "Failed to Restart TinyPilot Device",
+                  "Please refresh this page and try again.",
                   error
                 );
               } else {
                 this._handleShutdownFailure(
-                  "Failed to shut down TinyPilot device",
+                  "Failed to Shut Down TinyPilot Device",
+                  "Please refresh this page and try again.",
                   error
                 );
               }
@@ -142,11 +144,11 @@
           );
         }
 
-        _handleShutdownFailure(summary, detail) {
+        _handleShutdownFailure(title, message, details) {
           this._close();
           this.dispatchEvent(
             new CustomEvent("shutdown-failure", {
-              detail: { summary, detail },
+              detail: { title, message, details },
               bubbles: true,
               composed: true,
             })
