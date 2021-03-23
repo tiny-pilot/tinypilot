@@ -341,12 +341,12 @@ for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
 
-const errorEventRegistry = [
+const errorEvents = [
   "update-failure",
   "change-hostname-failure",
   "shutdown-failure",
 ];
-errorEventRegistry.forEach((name) => {
+errorEvents.forEach((name) => {
   document.addEventListener(name, (evt) => {
     showError(evt.detail);
   });
