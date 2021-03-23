@@ -340,16 +340,18 @@ document
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-document
-  .getElementById("update-dialog")
-  .addEventListener("update-failure", (evt) => {
+
+const errorEventRegistry = [
+  "update-failure",
+  "change-hostname-failure",
+  "shutdown-failure",
+];
+errorEventRegistry.forEach((name) => {
+  document.addEventListener(name, (evt) => {
     showError(evt.detail);
   });
-document
-  .getElementById("change-hostname-dialog")
-  .addEventListener("change-hostname-failure", (evt) => {
-    showError(evt.detail);
-  });
+});
+
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
@@ -364,9 +366,6 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     hideElementById(elementId);
   }
-});
-shutdownDialog.addEventListener("shutdown-failure", (evt) => {
-  showError(evt.detail);
 });
 
 socket.on("connect", onSocketConnect);
