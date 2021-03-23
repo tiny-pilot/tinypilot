@@ -189,7 +189,7 @@
             .catch((error) => {
               this._handleHostnameChangeFailure(
                 "Failed to Determine Hostname",
-                "Please refresh the page and try again.",
+                null,
                 error
               );
             });
@@ -233,7 +233,7 @@
               }
               this._handleHostnameChangeFailure(
                 "Failed to Change Hostname",
-                "Please refresh the page and try again.",
+                null,
                 error
               );
             });
