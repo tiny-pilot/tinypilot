@@ -40,7 +40,6 @@
     customElements.define(
       "error-dialog",
       class extends HTMLElement {
-        // TODO(jotaen) Make this importable once we have JS modules.
         DEFAULT_MESSAGE = "Please refresh the page and try again.";
 
         connectedCallback() {
@@ -60,10 +59,9 @@
          * @param details (optional) The technical error details, e.g. the
          *                original error message from the API or library call.
          */
-        setup(title, message, details = "") {
+        setup({ title, message = this.DEFAULT_MESSAGE, details = "" }) {
           this.shadowRoot.getElementById("title").innerText = title;
-          this.shadowRoot.getElementById("message").innerText =
-            message || this.DEFAULT_MESSAGE;
+          this.shadowRoot.getElementById("message").innerText = message;
           this.shadowRoot.getElementById("details").innerText = details;
           this.shadowRoot.getElementById(
             "details-container"

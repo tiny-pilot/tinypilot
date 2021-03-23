@@ -187,11 +187,10 @@
               this.state = "prompt";
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure(
-                "Failed to Determine Hostname",
-                null,
-                error
-              );
+              this._handleHostnameChangeFailure({
+                title: "Failed to Determine Hostname",
+                details: error,
+              });
             });
         }
 
@@ -231,11 +230,10 @@
                 this.state = "prompt";
                 return;
               }
-              this._handleHostnameChangeFailure(
-                "Failed to Change Hostname",
-                null,
-                error
-              );
+              this._handleHostnameChangeFailure({
+                title: "Failed to Change Hostname",
+                details: error,
+              });
             });
         }
 
@@ -257,21 +255,22 @@
               window.location = futureLocation;
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure(
-                "Failed to Redirect",
-                "Cannot reach TinyPilot under the new hostname. The device may" +
+              this._handleHostnameChangeFailure({
+                title: "Failed to Redirect",
+                message:
+                  "Cannot reach TinyPilot under the new hostname. The device may" +
                   " have failed to reboot, or your browser is failing to " +
                   " resolve the new hostname.",
-                error
-              );
+                details: error,
+              });
             });
         }
 
-        _handleHostnameChangeFailure(title, message, details) {
+        _handleHostnameChangeFailure(errorInfo) {
           this._close();
           this.dispatchEvent(
             new CustomEvent("change-hostname-failure", {
-              detail: { title, message, details },
+              detail: errorInfo,
               bubbles: true,
               composed: true,
             })

@@ -144,11 +144,10 @@
               }
             })
             .catch((error) => {
-              this._handleUpdateFailure(
-                "Failed to Retrieve Version Information",
-                null,
-                error
-              );
+              this._handleUpdateFailure({
+                title: "Failed to Retrieve Version Information",
+                details: error,
+              });
             });
         }
 
@@ -170,11 +169,10 @@
               this.state = "restarting";
             })
             .catch((error) => {
-              this._handleUpdateFailure(
-                "Failed to Restart TinyPilot Device",
-                null,
-                error
-              );
+              this._handleUpdateFailure({
+                title: "Failed to Restart TinyPilot Device",
+                details: error,
+              });
             });
         }
 
@@ -199,7 +197,10 @@
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
-            this._handleUpdateFailure("Failed to Start Update", null, error);
+            this._handleUpdateFailure({
+              title: "Failed to Start Update",
+              details: error,
+            });
             return;
           }
 
@@ -209,16 +210,19 @@
             await controllers.refreshCsrfToken();
             await this._performRestart();
           } catch (error) {
-            this._handleUpdateFailure("Failed to Complete Update", null, error);
+            this._handleUpdateFailure({
+              title: "Failed to Complete Update",
+              details: error,
+            });
             return;
           }
         }
 
-        _handleUpdateFailure(title, message, details) {
+        _handleUpdateFailure(errorInfo) {
           this._close();
           this.dispatchEvent(
             new CustomEvent("update-failure", {
-              detail: { title, message, details },
+              detail: errorInfo,
               bubbles: true,
               composed: true,
             })

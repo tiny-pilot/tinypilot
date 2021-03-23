@@ -31,9 +31,9 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
-function showError({ title, message, details }) {
-  console.error(`${title}:\n${details}`);
-  document.getElementById("error-dialog").setup(title, message, details);
+function showError(errorInfo) {
+  console.error(`${errorInfo.title}:\n${errorInfo.details}`);
+  document.getElementById("error-dialog").setup(errorInfo);
   document.getElementById("error-overlay").show();
 }
 
