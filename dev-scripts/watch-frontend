@@ -9,4 +9,5 @@ set -x
 # Exit on unset variable.
 set -u
 
-./node_modules/.bin/prettier --check app
+# Watch frontend sources and re-run bundler automatically.
+./node_modules/.bin/rollup --config --watch

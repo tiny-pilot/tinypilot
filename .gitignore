@@ -65,7 +65,6 @@ venv/
 
 # Node
 node_modules
-package-lock.json
 
 # Mac OS
 *.DS_Store

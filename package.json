@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "prettier": "2.0.5",
+    "rollup": "2.42.0"
+  }
+}
