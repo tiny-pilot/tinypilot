@@ -146,7 +146,7 @@
             .catch((error) => {
               this._handleUpdateFailure(
                 "Failed to Retrieve Version Information",
-                "Please refresh this page and try again.",
+                null,
                 error
               );
             });
@@ -172,7 +172,7 @@
             .catch((error) => {
               this._handleUpdateFailure(
                 "Failed to Restart TinyPilot Device",
-                "Please refresh this page and try again.",
+                null,
                 error
               );
             });
@@ -199,11 +199,7 @@
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
-            this._handleUpdateFailure(
-              "Failed to Start Update",
-              "Please refresh this page and try again.",
-              error
-            );
+            this._handleUpdateFailure("Failed to Start Update", null, error);
             return;
           }
 
@@ -213,11 +209,7 @@
             await controllers.refreshCsrfToken();
             await this._performRestart();
           } catch (error) {
-            this._handleUpdateFailure(
-              "Failed to Complete Update",
-              "Please refresh this page and try again.",
-              error
-            );
+            this._handleUpdateFailure("Failed to Complete Update", null, error);
             return;
           }
         }
