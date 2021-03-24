@@ -81,6 +81,7 @@ The installation process:
 * Creates a service account for TinyPilot with limited priviliges.
 * Installs TinyPilot as a systemd service so it runs automatically on every boot.
 * Installs TinyPilot's dependencies.
+* Installs TinyPilot to the `/opt/tinypilot` directory.
 
 When your Pi reboots, you should be able to access TinyPilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:
 
