@@ -10,7 +10,7 @@
 
 Turn your Raspberry Pi into a browser-based KVM.
 
-![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo.gif)
+[![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo-500w.gif)](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo-500w.gif)
 
 ## Features
 
