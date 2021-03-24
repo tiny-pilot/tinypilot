@@ -7,6 +7,7 @@ import flask
 import flask_wtf
 
 import api
+import json_response
 import socket_api
 import views
 from find_files import find as find_files
@@ -49,10 +50,7 @@ app.register_blueprint(views.views_blueprint)
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
 def handle_csrf_error(error):
-    return flask.jsonify({
-        'success': False,
-        'error': error.description,
-    }), 400
+    return json_response.error(error.description), 400
 
 
 @app.after_request
