@@ -5,12 +5,15 @@ from find_files import find as find_files
 
 views_blueprint = flask.Blueprint('views', __name__, url_prefix='')
 
+# Default hostname of TinyPilot device.
+_DEFAULT_HOSTNAME = 'tinypilot'
+
 
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
     return flask.render_template(
         'index.html',
-        hostname=hostname.determine(),
+        page_title_prefix=_page_title_prefix(),
         custom_elements_files=find_files.custom_elements_files())
 
 
@@ -33,3 +36,9 @@ def stream_get():
     if flask.current_app.debug:
         return flask.send_file('testdata/test-remote-screen.jpg')
     return flask.abort(404)
+
+
+def _page_title_prefix():
+    if hostname.determine().lower() != _DEFAULT_HOSTNAME.lower():
+        return '%s - ' % hostname.determine()
+    return ''
