@@ -3,6 +3,7 @@ import flask
 import debug_logs
 import git
 import hostname
+import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
@@ -29,18 +30,18 @@ def debug_logs_get():
 def shutdown_post():
     try:
         local_system.shutdown()
-        return _json_success()
+        return json_response.success()
     except local_system.Error as e:
-        return _json_error(str(e)), 200
+        return json_response.error(str(e)), 200
 
 
 @api_blueprint.route('/restart', methods=['POST'])
 def restart_post():
     try:
         local_system.restart()
-        return _json_success()
+        return json_response.success()
     except local_system.Error as e:
-        return _json_error(str(e)), 200
+        return json_response.error(str(e)), 200
 
 
 @api_blueprint.route('/update', methods=['GET'])
@@ -58,8 +59,8 @@ def update_get():
 
     status, error = update.get_current_state()
     if error:
-        return _json_error(error), 200
-    return _json_success({'status': str(status)})
+        return json_response.error(error), 200
+    return json_response.success({'status': str(status)})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
@@ -82,8 +83,8 @@ def update_put():
         # If an update is already in progress, treat it as success.
         pass
     except update.Error as e:
-        return _json_error(str(e)), 200
-    return _json_success()
+        return json_response.error(str(e)), 200
+    return json_response.success()
 
 
 @api_blueprint.route('/version', methods=['GET'])
@@ -111,9 +112,9 @@ def version_get():
         }
     """
     try:
-        return _json_success({'version': git.local_head_commit_id()})
+        return json_response.success({'version': git.local_head_commit_id()})
     except git.Error as e:
-        return _json_error(str(e)), 200
+        return json_response.error(str(e)), 200
 
 
 @api_blueprint.route('/latestRelease', methods=['GET'])
@@ -141,9 +142,9 @@ def latest_release_get():
         }
     """
     try:
-        return _json_success({'version': git.remote_head_commit_id()})
+        return json_response.success({'version': git.remote_head_commit_id()})
     except git.Error as e:
-        return _json_error(str(e)), 200
+        return json_response.error(str(e)), 200
 
 
 @api_blueprint.route('/hostname', methods=['GET'])
@@ -171,9 +172,9 @@ def hostname_get():
         }
     """
     try:
-        return _json_success({'hostname': hostname.determine()})
+        return json_response.success({'hostname': hostname.determine()})
     except hostname.Error as e:
-        return _json_error(str(e)), 200
+        return json_response.error(str(e)), 200
 
 
 @api_blueprint.route('/hostname', methods=['PUT'])
@@ -206,11 +207,11 @@ def hostname_set():
     try:
         new_hostname = request_parsers.hostname.parse_hostname(flask.request)
         hostname.change(new_hostname)
-        return _json_success()
+        return json_response.success()
     except request_parsers.errors.Error as e:
-        return _json_error('Invalid input: %s' % str(e)), 200
+        return json_response.error('Invalid input: %s' % str(e)), 200
     except hostname.Error as e:
-        return _json_error('Operation failed: %s' % str(e)), 200
+        return json_response.error('Operation failed: %s' % str(e)), 200
 
 
 @api_blueprint.route('/status', methods=['GET'])
@@ -229,25 +230,6 @@ def status_get():
             'error': null
         }
     """
-    response = _json_success()
+    response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
-
-
-# The default dictionary is okay because we're not modifying it.
-# pylint: disable=dangerous-default-value
-def _json_success(fields={}):
-    response = {
-        'success': True,
-        'error': None,
-    }
-    for key, val in fields.items():
-        response[key] = val
-    return flask.jsonify(response)
-
-
-def _json_error(message):
-    return flask.jsonify({
-        'success': False,
-        'error': message,
-    })

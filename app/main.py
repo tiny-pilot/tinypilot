@@ -5,8 +5,10 @@ import os
 
 import flask
 import flask_wtf
+from werkzeug import exceptions
 
 import api
+import json_response
 import socket_api
 import views
 from find_files import find as find_files
@@ -49,10 +51,7 @@ app.register_blueprint(views.views_blueprint)
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
 def handle_csrf_error(error):
-    return flask.jsonify({
-        'success': False,
-        'error': error.description,
-    }), 400
+    return json_response.error(error.description), 400
 
 
 @app.after_request
@@ -64,6 +63,15 @@ def after_request(response):
         response.headers['Expires'] = 0
         response.headers['Pragma'] = 'no-cache'
     return response
+
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    logger.exception(e)
+    code = 500
+    if isinstance(e, exceptions.HTTPException):
+        code = e.code
+    return json_response.error(str(e)), code
 
 
 def main():
