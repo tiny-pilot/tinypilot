@@ -31,6 +31,9 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
+/**
+ * @see the `setup` method in error-dialog.html for the `errorInfo` param
+ */
 function showError(errorInfo) {
   console.error(`${errorInfo.title}:\n${errorInfo.details}`);
   document.getElementById("error-dialog").setup(errorInfo);
