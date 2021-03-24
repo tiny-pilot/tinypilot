@@ -40,6 +40,8 @@
     customElements.define(
       "error-dialog",
       class extends HTMLElement {
+        DEFAULT_MESSAGE = "Please refresh the page and try again.";
+
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -51,12 +53,13 @@
 
         /**
          * @param title   A concise summary of the error.
-         * @param message A user-friendly and helpful message that (ideally)
-         *                gives the user some guidance what to do now.
+         * @param message (optional) A user-friendly and helpful message that
+         *                (ideally) gives the user some guidance what to do
+         *                now. Defaults to a generic `DEFAULT_MESSAGE`.
          * @param details (optional) The technical error details, e.g. the
          *                original error message from the API or library call.
          */
-        setup(title, message, details = "") {
+        setup({ title, message = this.DEFAULT_MESSAGE, details = "" }) {
           this.shadowRoot.getElementById("title").innerText = title;
           this.shadowRoot.getElementById("message").innerText = message;
           this.shadowRoot.getElementById("details").innerText = details;

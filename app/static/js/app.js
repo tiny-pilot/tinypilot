@@ -31,8 +31,12 @@ function isElementShown(id) {
   return document.getElementById(id).style.display !== "none";
 }
 
-function showError(title, message, details) {
-  document.getElementById("error-dialog").setup(title, message, details);
+/**
+ * @see the `setup` method in error-dialog.html for the `errorInfo` param
+ */
+function showError(errorInfo) {
+  console.error(`${errorInfo.title}:\n${errorInfo.details}`);
+  document.getElementById("error-dialog").setup(errorInfo);
   document.getElementById("error-overlay").show();
 }
 
@@ -339,16 +343,18 @@ document
 for (const button of document.getElementsByClassName("manual-modifier-btn")) {
   button.addEventListener("click", onManualModifierButtonClicked);
 }
-document
-  .getElementById("update-dialog")
-  .addEventListener("update-failure", (evt) => {
-    showError(evt.detail.summary, evt.detail.detail);
+
+const errorEvents = [
+  "update-failure",
+  "change-hostname-failure",
+  "shutdown-failure",
+];
+errorEvents.forEach((name) => {
+  document.addEventListener(name, (evt) => {
+    showError(evt.detail);
   });
-document
-  .getElementById("change-hostname-dialog")
-  .addEventListener("change-hostname-failure", (evt) => {
-    showError(evt.detail.summary, evt.detail.detail);
-  });
+});
+
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
@@ -363,9 +369,6 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     hideElementById(elementId);
   }
-});
-shutdownDialog.addEventListener("shutdown-failure", (evt) => {
-  showError(evt.detail.summary, evt.detail.detail);
 });
 
 socket.on("connect", onSocketConnect);

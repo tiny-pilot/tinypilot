@@ -144,10 +144,10 @@
               }
             })
             .catch((error) => {
-              this._handleUpdateFailure(
-                "Failed to retrieve version information",
-                error
-              );
+              this._handleUpdateFailure({
+                title: "Failed to Retrieve Version Information",
+                details: error,
+              });
             });
         }
 
@@ -169,10 +169,10 @@
               this.state = "restarting";
             })
             .catch((error) => {
-              this._handleUpdateFailure(
-                "Failed to restart TinyPilot device",
-                error
-              );
+              this._handleUpdateFailure({
+                title: "Failed to Restart TinyPilot Device",
+                details: error,
+              });
             });
         }
 
@@ -197,7 +197,10 @@
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
-            this._handleUpdateFailure("Failed to start update", error);
+            this._handleUpdateFailure({
+              title: "Failed to Start Update",
+              details: error,
+            });
             return;
           }
 
@@ -207,20 +210,19 @@
             await controllers.refreshCsrfToken();
             await this._performRestart();
           } catch (error) {
-            console.error(error);
-            this._handleUpdateFailure(
-              "Failed to complete update",
-              "Please refresh this page and try again. Error details: " + error
-            );
+            this._handleUpdateFailure({
+              title: "Failed to Complete Update",
+              details: error,
+            });
             return;
           }
         }
 
-        _handleUpdateFailure(summary, detail) {
+        _handleUpdateFailure(errorInfo) {
           this._close();
           this.dispatchEvent(
             new CustomEvent("update-failure", {
-              detail: { summary, detail },
+              detail: errorInfo,
               bubbles: true,
               composed: true,
             })

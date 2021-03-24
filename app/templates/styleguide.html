@@ -174,20 +174,20 @@
         document
           .getElementById("show-error-overlay-btn")
           .addEventListener("click", () => {
-            document
-              .getElementById("error-dialog")
-              .setup(
-                "Example Error Message",
-                "The title is set in Title Case. The message should be user-friendly" +
-                  " and ideally provide some guidance. Technical error messages can" +
-                  " be displayed in the “details” box below.",
+            document.getElementById("error-dialog").setup({
+              title: "Example Error Message",
+              message:
+                "The title is set in Title Case. The message should be" +
+                " user-friendly and ideally provide some guidance. Technical" +
+                " error messages can be displayed in the “details” box below.",
+              details:
                 "" +
-                  "dummyElementFailed: line 502\n" +
-                  "  dummyParentElement returned unexpected response: foo\n" +
-                  "    exhausted resources.\n" +
-                  "Stacktrace:\n" +
-                  "  fooBarBaz\n".repeat(80)
-              );
+                "dummyElementFailed: line 502\n" +
+                "  dummyParentElement returned unexpected response: foo\n" +
+                "    exhausted resources.\n" +
+                "Stacktrace:\n" +
+                "  fooBarBaz\n".repeat(80),
+            });
             document.getElementById("error-overlay").show();
           });
       </script>

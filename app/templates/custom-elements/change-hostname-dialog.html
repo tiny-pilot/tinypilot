@@ -187,10 +187,10 @@
               this.state = "prompt";
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure(
-                "Failed to determine hostname",
-                error
-              );
+              this._handleHostnameChangeFailure({
+                title: "Failed to Determine Hostname",
+                details: error,
+              });
             });
         }
 
@@ -230,10 +230,10 @@
                 this.state = "prompt";
                 return;
               }
-              this._handleHostnameChangeFailure(
-                "Failed to change hostname",
-                error
-              );
+              this._handleHostnameChangeFailure({
+                title: "Failed to Change Hostname",
+                details: error,
+              });
             });
         }
 
@@ -255,21 +255,22 @@
               window.location = futureLocation;
             })
             .catch((error) => {
-              console.error(error);
-              this._handleHostnameChangeFailure(
-                "Failed to redirect",
-                "Cannot reach TinyPilot under the new hostname. The device may" +
-                  " have failed to reboot, or your browser is failing to " +
-                  " resolve the new hostname."
-              );
+              this._handleHostnameChangeFailure({
+                title: "Failed to Redirect",
+                message:
+                  "Cannot reach TinyPilot under the new hostname. The device" +
+                  "may have failed to reboot, or your browser is failing to " +
+                  " resolve the new hostname.",
+                details: error,
+              });
             });
         }
 
-        _handleHostnameChangeFailure(summary, detail) {
+        _handleHostnameChangeFailure(errorInfo) {
           this._close();
           this.dispatchEvent(
             new CustomEvent("change-hostname-failure", {
-              detail: { summary, detail },
+              detail: errorInfo,
               bubbles: true,
               composed: true,
             })
