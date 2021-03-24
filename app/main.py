@@ -5,7 +5,7 @@ import os
 
 import flask
 import flask_wtf
-from werkzeug.exceptions import HTTPException
+from werkzeug import exceptions
 
 import api
 import json_response
@@ -69,7 +69,7 @@ def after_request(response):
 def handle_error(e):
     logger.exception(e)
     code = 500
-    if isinstance(e, HTTPException):
+    if isinstance(e, exceptions.HTTPException):
         code = e.code
     return json_response.error(str(e)), code
 
