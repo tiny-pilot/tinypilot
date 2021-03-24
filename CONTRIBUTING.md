@@ -78,4 +78,16 @@ TinyPilot uses automated linters and formatters as much as possible to automate 
 * If you're making a small change, submit a PR to show your proposal.
 * If you're making a large change (over 100 LOC or three hours of dev time), [file an issue](https://github.com/mtlynch/tinypilot/issues/new/choose) first to talk through the proposed change. This prevents you from wasting time on a change that has a low chance of being accepted.
 
-See the [pull request template](.github/pull_request_template.md) for more details on submitting a pull request.
+## How to get your PR merged quickly
+
+* Read my guide, ["How to Make Your Code Reviewer Fall in Love with You,"](https://mtlynch.io/code-review-love/) to understand how to contribute effectively to an open source project.
+* Give a clear, one-line title to your PR.
+  * Good: `Fix dropped keystrokes on Firefox`
+  * Bad: `Fix issue`
+* If your PR is not ready for review, mark it as "draft."
+* [Rebase your changes](https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase) onto the latest `master` commit so that there are no merge conflicts.
+* Your PR must pass build checks in CI before it will be considered for merge.
+  * You'll see a green checkmark or red X next to your PR depending on whether your build passed or failed.
+  * You are responsible for fixing formatting and tests to ensure that your code passes build checks in CI.
+
+I try to review all PRs within one business day. If you've been waiting longer than this, feel free to comment on the PR to verify that it's on my radar.
