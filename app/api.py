@@ -1,13 +1,13 @@
 import flask
 
 import debug_logs
-import git
 import hostname
 import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
 import update
+import version
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -112,8 +112,8 @@ def version_get():
         }
     """
     try:
-        return json_response.success({'version': git.local_head_commit_id()})
-    except git.Error as e:
+        return json_response.success({'version': version.local_version()})
+    except version.Error as e:
         return json_response.error(str(e)), 200
 
 
@@ -142,8 +142,8 @@ def latest_release_get():
         }
     """
     try:
-        return json_response.success({'version': git.remote_head_commit_id()})
-    except git.Error as e:
+        return json_response.success({'version': version.latest_version()})
+    except version.Error as e:
         return json_response.error(str(e)), 200
 
 
