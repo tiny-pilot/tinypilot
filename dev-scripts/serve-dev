@@ -10,4 +10,5 @@ set -x
 set -u
 
 # Serve TinyPilot in dev mode.
-PORT=8000 KEYBOARD_PATH=/dev/null MOUSE_PATH=/dev/null DEBUG=1 ./app/main.py
+HOST=0.0.0.0 PORT=8000 KEYBOARD_PATH=/dev/null MOUSE_PATH=/dev/null DEBUG=1 \
+  ./app/main.py
