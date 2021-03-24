@@ -62,6 +62,18 @@ To run TinyPilot on a non-Pi machine, run:
 
 For a high-level view of TinyPilot's architecture, see the [ARCHITECTURE](ARCHITECTURE.md) file.
 
+## Options
+
+TinyPilot accepts various options through environment variables:
+
+| Environment Variable | Default      | Description |
+|----------------------|--------------|-------------|
+| `HOST`               | `127.0.0.1`  | Network interface to listen for incoming connections. |
+| `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
+| `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
+| `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
+| `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
+
 ## Code style conventions
 
 TinyPilot follows Google code style conventions:

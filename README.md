@@ -96,18 +96,6 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 * [Advanced installation options](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#advanced-installation)
 * [Remote installation via Ansible](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#remote-installation)
 
-## Options
-
-TinyPilot accepts various options through environment variables:
-
-| Environment Variable | Default      | Description |
-|----------------------|--------------|-------------|
-| `HOST`               | `127.0.0.1`  | Network interface to listen for incoming connections. |
-| `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
-| `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
-| `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
-| `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
-
 ## Updates
 
 To update to the latest version of TinyPilot, run the update script:
