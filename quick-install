@@ -17,11 +17,10 @@ set -x
 #   The line appended to the settings file, if the variable wasn't yet defined.
 #######################################
 add_setting_if_undefined() {
-  local file="${TINYPILOT_SETTINGS_FILE}"
-  local key="${1}"
-  local value="${2}"
-  if ! grep --silent "^${key}:" "${file}"; then
-    echo "${key}: ${value}" | tee --append "${file}"
+  local key="$1"
+  local value="$2"
+  if ! grep --silent "^${key}:" "${TINYPILOT_SETTINGS_FILE}"; then
+    echo "${key}: ${value}" | tee --append "${TINYPILOT_SETTINGS_FILE}"
   fi
 }
 
@@ -38,7 +37,9 @@ set -u
 
 # Create a temporary settings file that will be used throughout this script to
 # avoid repeatedly using sudo.
-readonly TINYPILOT_SETTINGS_FILE="$(mktemp --suffix ".yml")"
+# HACK: If we let mktemp use the default /tmp directory, the system purges the file
+# before the end of the script for some reason. We use /var/tmp as a workaround.
+readonly TINYPILOT_SETTINGS_FILE="$(mktemp --tmpdir="/var/tmp" --suffix ".yml")"
 # Check if there's already a settings file with extra installation settings.
 if [[ -f "${DEFAULT_TINYPILOT_SETTINGS_FILE}" ]]; then
   echo "Using settings file at: ${DEFAULT_TINYPILOT_SETTINGS_FILE}"
