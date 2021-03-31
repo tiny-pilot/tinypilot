@@ -6,34 +6,50 @@ set -e
 # Echo commands to stdout.
 set -x
 
-readonly TINYPILOT_SETTINGS_FILE="/home/tinypilot/settings.yml"
+#######################################
+# Adds a setting to the YAML settings file, if it's not yet defined.
+# Globals:
+#   TINYPILOT_SETTINGS_FILE, a path.
+# Arguments:
+#   Key to define.
+#   Value to set.
+# Outputs:
+#   The line appended to the settings file, if the variable wasn't yet defined.
+#######################################
+add_setting_if_undefined() {
+  local file="${TINYPILOT_SETTINGS_FILE}"
+  local key="${1}"
+  local value="${2}"
+  if ! grep --silent "^${key}:" "${file}"; then
+    echo "${key}: ${value}" | tee --append "${file}"
+  fi
+}
+
+readonly DEFAULT_TINYPILOT_SETTINGS_FILE="/home/tinypilot/settings.yml"
 
 if [[ -n "${TINYPILOT_INSTALL_VARS}" ]]; then
   echo "TINYPILOT_INSTALL_VARS is no longer supported." >&2
-  echo "Please specify extra settings via the ${TINYPILOT_SETTINGS_FILE} file." >&2
+  echo "Please specify extra settings via the ${DEFAULT_TINYPILOT_SETTINGS_FILE} file." >&2
   exit 255
 fi
 
 # Treat undefined environment variables as errors.
 set -u
 
-# Check if there's a settings file with extra installation settings.
-if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
-  echo "Using settings file at: ${TINYPILOT_SETTINGS_FILE}"
+# Create a temporary settings file that will be used throughout this script to
+# avoid repeatedly using sudo.
+readonly TINYPILOT_SETTINGS_FILE="$(mktemp --suffix ".yml")"
+# Check if there's already a settings file with extra installation settings.
+if [[ -f "${DEFAULT_TINYPILOT_SETTINGS_FILE}" ]]; then
+  echo "Using settings file at: ${DEFAULT_TINYPILOT_SETTINGS_FILE}"
+  sudo cp "${DEFAULT_TINYPILOT_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
 else
-  echo "No pre-existing settings file found at: ${TINYPILOT_SETTINGS_FILE}"
-  sudo touch "${TINYPILOT_SETTINGS_FILE}"
+  echo "No pre-existing settings file found at: ${DEFAULT_TINYPILOT_SETTINGS_FILE}"
 fi
-sudo chown "$(whoami):$(whoami)" "${TINYPILOT_SETTINGS_FILE}"
 readonly EXTRA_VARS_PATH="@${TINYPILOT_SETTINGS_FILE}"
 
 # Set default installation settings
-if ! grep --silent "^ustreamer_interface:" "${TINYPILOT_SETTINGS_FILE}"; then
-  echo "ustreamer_interface: 127.0.0.1" >> ${TINYPILOT_SETTINGS_FILE}
-fi
-if ! grep --silent "^ustreamer_port:" "${TINYPILOT_SETTINGS_FILE}"; then
-  echo "ustreamer_port: 8001" >> ${TINYPILOT_SETTINGS_FILE}
-fi
+add_setting_if_undefined "ustreamer_port" "8001"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
 USE_TC358743_DEFAULTS=''
@@ -50,22 +66,15 @@ fi
 # If this system does not use a TC358743 capture chip, set defaults for any
 # unset install variables.
 if [ -z "$USE_TC358743_DEFAULTS" ]; then
-  if ! grep --silent "^ustreamer_encoder:" "${TINYPILOT_SETTINGS_FILE}"; then
-    echo "ustreamer_encoder: hw" >> ${TINYPILOT_SETTINGS_FILE}
-  fi
-  if ! grep --silent "^ustreamer_format:" "${TINYPILOT_SETTINGS_FILE}"; then
-    echo "ustreamer_format: jpeg" >> ${TINYPILOT_SETTINGS_FILE}
-  fi
-  if ! grep --silent "^ustreamer_resolution:" "${TINYPILOT_SETTINGS_FILE}"; then
-    echo "ustreamer_resolution: 1920x1080" >> ${TINYPILOT_SETTINGS_FILE}
-  fi
-  if ! grep --silent "^ustreamer_persistent:" "${TINYPILOT_SETTINGS_FILE}"; then
-    echo "ustreamer_persistent: true" >> ${TINYPILOT_SETTINGS_FILE}
-  fi
-  if ! grep --silent "^ustreamer_desired_fps:" "${TINYPILOT_SETTINGS_FILE}"; then
-    echo "ustreamer_desired_fps: 30" >> ${TINYPILOT_SETTINGS_FILE}
-  fi
+  add_setting_if_undefined "ustreamer_encoder" "hw"
+  add_setting_if_undefined "ustreamer_format" "jpeg"
+  add_setting_if_undefined "ustreamer_resolution" "1920x1080"
+  add_setting_if_undefined "ustreamer_persistent" "true"
+  add_setting_if_undefined "ustreamer_desired_fps" "30"
 fi
+
+echo "Final install settings:"
+cat "${TINYPILOT_SETTINGS_FILE}"
 
 # Check if the user is accidentally downgrading from TinyPilot Pro.
 HAS_PRO_INSTALLED=0
@@ -161,3 +170,8 @@ echo "- hosts: localhost
     - role: $TINYPILOT_ROLE_NAME" > install.yml
 ansible-playbook -i localhost, install.yml \
   --extra-vars "${EXTRA_VARS_PATH}"
+
+# Copy the final install settings used in this installation back to the default
+# settings location.
+sudo cp "${TINYPILOT_SETTINGS_FILE}" "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
+sudo chown tinypilot:tinypilot "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
