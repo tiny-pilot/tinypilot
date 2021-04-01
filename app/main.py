@@ -16,7 +16,7 @@ from find_files import find as find_files
 host = os.environ.get('HOST', '127.0.0.1')
 port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
-use_reloader = os.environ.get('USE_RELOADER', '1') == '1'
+use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 
 root_logger = logging.getLogger()
 handler = logging.StreamHandler()
