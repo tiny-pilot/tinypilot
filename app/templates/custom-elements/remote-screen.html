@@ -66,10 +66,6 @@
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
     <img id="remote-screen-img" src="/stream?advance_headers=1" />
   </div>
-  <script
-    id="underscore-library"
-    src="/third-party/underscore.js/1.11.0/underscore-min.js"
-  ></script>
 </template>
 
 <script>
@@ -93,17 +89,6 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          this.isUnderscoreLibraryLoaded = false;
-          this.throttledSendMouseEvent = undefined;
-
-          // Prevent drag on screen for Firefox.
-          this.addEventListener("dragstart", function (evt) {
-            evt.preventDefault();
-          });
-          // Prevent drop on screen for Firefox.
-          this.addEventListener("drop", function (evt) {
-            evt.preventDefault();
-          });
           this.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement) {
               this.fullscreen = false;
@@ -116,71 +101,10 @@
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-          this.shadowRoot
-            .getElementById("underscore-library")
-            .addEventListener("load", () => {
-              this.isUnderscoreLibraryLoaded = true;
-              this.throttledSendMouseEvent = this.makeThrottledSendMouseEvent(
-                this.millisecondsBetweenMouseEvents
-              );
-            });
-
           // Forward all mouse activity that occurs over the image of the remote screen.
           const screenImg = this.shadowRoot.getElementById("remote-screen-img");
-          screenImg.addEventListener("mousemove", (evt) => {
-            // Ensure that mouse drags don't attempt to drag the image on the screen.
-            evt.preventDefault();
-
-            this.throttledSendMouseEvent(evt);
-          });
-          screenImg.addEventListener("mousedown", this.sendMouseEvent);
-          screenImg.addEventListener("mouseup", this.sendMouseEvent);
-          screenImg.addEventListener("wheel", (evt) => {
-            evt.preventDefault();
-            this.sendMouseEvent(evt);
-          });
-
-          // Ignore the context menu so that it doesn't block the screen when the user
-          // right-clicks.
-          screenImg.addEventListener("contextmenu", (evt) => {
-            evt.preventDefault();
-          });
 
           window.addEventListener("resize", this.onWindowResize);
-
-          // Detect whether this is a touchscreen device.
-          let isTouchScreen = false;
-          this.shadowRoot.addEventListener("touchend", () => {
-            isTouchScreen = true;
-          });
-          this.shadowRoot.addEventListener("click", () => {
-            if (isTouchScreen) {
-              this.shadowRoot.getElementById("mobile-keyboard-input").focus();
-            }
-          });
-
-          // On mobile, the keydown events function differently due to the OS
-          // attempting to autocomplete text. Instead of listening for keydown
-          // events, we listen for input events.
-          const mobileKeyboard = this.shadowRoot.getElementById(
-            "mobile-keyboard-input"
-          );
-          mobileKeyboard.addEventListener("input", (evt) => {
-            // Handle insertCompositionText, which mean typing in autocomplete
-            // mode. The global keydown event handler processes all other key
-            // input events.
-            if (
-              evt.inputType === "insertText" ||
-              evt.inputType === "insertCompositionText"
-            ) {
-              sendTextInput(evt.data);
-            }
-
-            // Force the autocomplete sequence to restart.
-            mobileKeyboard.blur();
-            mobileKeyboard.value = "";
-            mobileKeyboard.focus();
-          });
         }
 
         disconnectedCallback() {
@@ -227,21 +151,6 @@
             this.shadowRoot
               .querySelector(".screen-wrapper")
               .requestFullscreen();
-          } else if (
-            name === "milliseconds-between-mouse-events" &&
-            oldValue !== newValue
-          ) {
-            // Note: This is a bit of a hack. When we replace the throttled
-            // event, it resets the throttle. To *sort of* preserve the
-            // throttle, wait to replace it until 90% of the last throttle time
-            // elapsed.
-            const newThrottle = parseInt(newValue);
-            const oldThrottle = parseInt(oldValue) || newThrottle;
-            setTimeout(() => {
-              this.throttledSendMouseEvent = this.makeThrottledSendMouseEvent(
-                newThrottle
-              );
-            }, Math.min(oldThrottle, newThrottle) * 0.9);
           }
         }
 
@@ -265,45 +174,6 @@
           } else {
             screenImg.classList.add("full-height");
           }
-        }
-
-        makeThrottledSendMouseEvent(waitInMilliseconds) {
-          if (!this.isUnderscoreLibraryLoaded) {
-            return this.sendMouseEvent;
-          }
-          return _.throttle(
-            function (evt) {
-              this.sendMouseEvent(evt);
-            },
-            waitInMilliseconds,
-            { trailing: false }
-          );
-        }
-
-        sendMouseEvent(evt) {
-          const boundingRect = evt.target.getBoundingClientRect();
-          const cursorX = Math.max(0, evt.clientX - boundingRect.left);
-          const cursorY = Math.max(0, evt.clientY - boundingRect.top);
-          const width = boundingRect.right - boundingRect.left;
-          const height = boundingRect.bottom - boundingRect.top;
-          const relativeX = Math.min(1.0, Math.max(0.0, cursorX / width));
-          const relativeY = Math.min(1.0, Math.max(0.0, cursorY / height));
-          // Negate y-delta so that negative number means scroll down.
-          const verticalWheelDelta = normalizeWheelDelta(evt.deltaY) * -1;
-          const horizontalWheelDelta = normalizeWheelDelta(evt.deltaX);
-          this.dispatchEvent(
-            new CustomEvent("mouse-event", {
-              detail: {
-                buttons: evt.buttons,
-                relativeX,
-                relativeY,
-                verticalWheelDelta,
-                horizontalWheelDelta,
-              },
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
       }
     );
