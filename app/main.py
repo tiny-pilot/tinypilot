@@ -9,7 +9,6 @@ from werkzeug import exceptions
 
 import api
 import json_response
-import socket_api
 import views
 from find_files import find as find_files
 
@@ -72,14 +71,11 @@ def handle_error(e):
 
 
 def main():
-    socketio = socket_api.socketio
-    socketio.init_app(app)
-    socketio.run(app,
-                 host=host,
-                 port=port,
-                 debug=debug,
-                 use_reloader=use_reloader,
-                 extra_files=find_files.all_frontend_files())
+    app.run(host=host,
+            port=port,
+            debug=debug,
+            use_reloader=use_reloader,
+            extra_files=find_files.all_frontend_files())
 
 
 if __name__ == '__main__':
