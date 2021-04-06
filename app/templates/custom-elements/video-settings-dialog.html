@@ -1,0 +1,60 @@
+<template id="video-settings-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    :host div {
+      display: block;
+    }
+  </style>
+  <div>
+    <h1>Update Video Settings</h1>
+    <p>Change video settings.</p>
+    <button class="btn-success" type="button">
+      Save
+    </button>
+    <button class="close-btn" type="button">Cancel</button>
+  </div>
+</template>
+
+<script>
+  (function(){
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#video-settings-template");
+
+    customElements.define(
+      "video-settings-dialog",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
+
+        connectedCallback() {
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot
+            .querySelector(".close-btn")
+            .addEventListener("click", () => this._close());
+        }
+
+        get state() {
+          return this.getAttribute("state");
+        }
+
+        set state(newValue) {
+          this.setAttribute("state", newValue);
+        }
+
+        _close() {
+          this.dispatchEvent(
+            new CustomEvent("dialog-closed", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    )
+  })()
+</script>
