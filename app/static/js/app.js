@@ -340,10 +340,6 @@ document
     );
   });
 
-for (const button of document.getElementsByClassName("manual-modifier-btn")) {
-  button.addEventListener("click", onManualModifierButtonClicked);
-}
-
 const errorEvents = [
   "update-failure",
   "change-hostname-failure",
