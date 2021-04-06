@@ -1,0 +1,65 @@
+<template id="shutter-control-template">
+  <style>
+    .container {
+      max-width: 400px;
+      background-color: #f7f7f7;
+      margin: 1rem auto;
+      padding: 14px;
+      color: #333;
+      border: 1px solid rgb(92, 92, 92);
+    }
+
+    .gpio-select {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 1rem auto 1rem auto;
+    }
+
+    .gpio-select .select-wrapper {
+      margin-left: 1rem;
+      display: block;
+    }
+  </style>
+  <div class="container">
+    <h2>Shutter controls</h2>
+    <div class="gpio-select">
+      <p>GPIO Pin</p>
+      <div class="select-wrapper">
+        <select id="gpio-pin">
+          <!-- JavaScript will add these values -->
+        </select>
+      </div>
+    </div>
+    <div>
+      <button>Auto-Focus</button>
+      <button>Shutter</button>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#shutter-control-template");
+
+    customElements.define(
+      "shutter-control",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          const gpioPinSelect = this.shadowRoot.getElementById("gpio-pin");
+          for (let pin = 0; pin <= 26; pin++) {
+            const pinOption = document.createElement("option");
+            pinOption.setAttribute("value", pin);
+            pinOption.innerText = pin;
+            gpioPinSelect.appendChild(pinOption);
+          }
+        }
+      }
+    );
+  })();
+</script>

@@ -1,6 +1,7 @@
 eventlet==0.25.2
 Flask==1.1.1
 Flask-WTF==0.14.3
+RPi.GPIO==0.7.0
 
 # Indirect dependencies
 bidict==0.21.2
