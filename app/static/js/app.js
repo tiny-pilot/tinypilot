@@ -315,6 +315,9 @@ menuBar.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-dialog").getLogs();
   document.getElementById("debug-overlay").show();
 });
+menuBar.addEventListener("video-settings-dialog-requested", () => {
+  document.getElementById("video-settings-overlay").show();
+});
 menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
