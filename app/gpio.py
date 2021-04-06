@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 
+# pylint: disable=no-member
+
 GPIO.setmode(GPIO.BOARD)
 _OUTPUT_PINS = set()
 
