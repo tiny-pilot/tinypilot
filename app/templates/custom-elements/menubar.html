@@ -175,9 +175,6 @@
       <a>System</a>
       <ul class="items">
         <li class="item">
-          <a id="update-btn">Update</a>
-        </li>
-        <li class="item">
           <a id="change-hostname-btn">Change hostname</a>
         </li>
         <li class="item">
@@ -193,9 +190,6 @@
       <a>Actions</a>
       <ul class="items">
         <li class="item">
-          <a id="paste-btn">Paste</a>
-        </li>
-        <li class="item">
           <a id="screenshot-btn" href="/snapshot">Screenshot</a>
         </li>
       </ul>
@@ -204,18 +198,6 @@
     <li class="group">
       <a>View</a>
       <ul class="items">
-        <li class="item subgroup">
-          <a>Cursor</a>
-          <ul id="cursor-list" class="items">
-            <!-- JavaScript populates this list dynamically. -->
-          </ul>
-        </li>
-        <li class="item" id="keyboard-menu-item">
-          <a id="keyboard-btn">Show Keyboard</a>
-        </li>
-        <li class="item" id="keystroke-history-menu-item">
-          <a id="keystroke-history-btn">Enable Key History</a>
-        </li>
         <li class="item">
           <a id="fullscreen-btn">Full Screen</a>
         </li>
@@ -248,11 +230,7 @@
           // event without any further ado.
           const menuButtonIdToEventId = {
             "power-btn": "shutdown-dialog-requested",
-            "keyboard-btn": "keyboard-visibility-toggled",
-            "keystroke-history-btn": "keystroke-history-toggled",
             "fullscreen-btn": "fullscreen-requested",
-            "paste-btn": "paste-requested",
-            "update-btn": "update-dialog-requested",
             "change-hostname-btn": "change-hostname-dialog-requested",
             "debug-dialog-btn": "debug-logs-dialog-requested",
           };
@@ -274,52 +252,6 @@
               evt.target.download =
                 "TinyPilot-" + new Date().toISOString() + ".jpg";
             });
-
-          // Add cursor options to navbar.
-          const screenCursorOptions = [
-            "disabled", // To show on disconnect
-            "default", // Note that this is the browser default, not TinyPilot's default.
-            "none",
-            "crosshair",
-            "dot",
-            "pointer",
-            "cell",
-          ];
-          const cursorList = this.shadowRoot.getElementById("cursor-list");
-          for (const cursorOption of screenCursorOptions.splice(1)) {
-            const cursorLink = document.createElement("a");
-            cursorLink.setAttribute("href", "#");
-            cursorLink.innerText = cursorOption;
-            cursorLink.addEventListener("click", (evt) => {
-              this.emitCustomEvent("cursor-selected", { cursor: cursorOption });
-              evt.preventDefault();
-            });
-            const listItem = document.createElement("li");
-            listItem.appendChild(cursorLink);
-            listItem.classList.add("cursor-option", "item");
-            listItem.setAttribute("cursor", cursorOption);
-            cursorList.appendChild(listItem);
-          }
-        }
-
-        set isKeyboardVisible(isVisible) {
-          const menuItem = this.shadowRoot.getElementById("keyboard-menu-item");
-          if (isVisible) {
-            menuItem.classList.add("nav-selected");
-          } else {
-            menuItem.classList.remove("nav-selected");
-          }
-        }
-
-        set isInputIndicatorEnabled(isEnabled) {
-          const menuItem = this.shadowRoot.getElementById(
-            "keystroke-history-menu-item"
-          );
-          if (isEnabled) {
-            menuItem.classList.add("nav-selected");
-          } else {
-            menuItem.classList.remove("nav-selected");
-          }
         }
 
         emitCustomEvent(eventId, detail) {
@@ -330,18 +262,6 @@
               composed: true,
             })
           );
-        }
-
-        set cursor(newCursor) {
-          for (const cursorListItem of this.shadowRoot.querySelectorAll(
-            "#cursor-list li"
-          )) {
-            if (newCursor === cursorListItem.getAttribute("cursor")) {
-              cursorListItem.classList.add("nav-selected");
-            } else {
-              cursorListItem.classList.remove("nav-selected");
-            }
-          }
         }
       }
     );

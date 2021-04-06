@@ -28,9 +28,6 @@ if debug:
     root_logger.setLevel(logging.DEBUG)
 else:
     root_logger.setLevel(logging.INFO)
-    # Socket.io logs are too chatty at INFO level.
-    logging.getLogger('socketio').setLevel(logging.ERROR)
-    logging.getLogger('engineio').setLevel(logging.ERROR)
 
 logger = logging.getLogger(__name__)
 logger.info('Starting app')

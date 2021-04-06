@@ -1,6 +1,5 @@
 eventlet==0.25.2
 Flask==1.1.1
-Flask-SocketIO==5.0.1
 Flask-WTF==0.14.3
 
 # Indirect dependencies
@@ -12,8 +11,6 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 monotonic==1.5
-python-engineio==4.0.1
-python-socketio==5.1.0
 six==1.15.0
 Werkzeug==1.0.1
 WTForms==2.3.3
