@@ -29,6 +29,9 @@ class Settings:
     def as_dict(self):
         return self._data
 
+    def update(self, data):
+        self._data.update(data)
+
     # Note: tinypilot_repo_branch is confusingly named. It should really be
     # tinypilot_repo_version, but this class just reflects the names in the
     # TinyPilot Ansible role.
