@@ -6,7 +6,9 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.update_settings
 import update
+import update_settings
 import version
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -233,3 +235,23 @@ def status_get():
     response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+@api_blueprint.route('/updateSettings', methods=['GET'])
+def update_settings_get():
+    settings = update_settings.get_settings()
+    return json_response.success({'settings': settings.as_dict()})
+
+
+@api_blueprint.route('/updateSettings', methods=['PUT'])
+def update_settings_put():
+    try:
+        settings_data = request_parsers.update_settings.parse_settings(
+            flask.request)
+        settings = update_settings.get_settings()
+        settings.update(settings_data)
+        update_settings.save_settings(settings)
+    except request_parsers.errors.Error as e:
+        return json_response.error(str(e)), 200
+    else:
+        return json_response.success({'settings': settings.as_dict()})
