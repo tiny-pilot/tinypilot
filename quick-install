@@ -133,16 +133,20 @@ python3 -m venv venv
 . venv/bin/activate
 # For some reason, wheel has to be installed before anything else.
 pip install wheel==0.34.2
-echo 'ansible==2.9.10
-cffi==1.14.4
+cat > requirements.txt <<EOF
+ansible==2.10.0
+ansible-base==2.10.7
+cffi==1.14.5
 cryptography==3.3.1
-Jinja2==2.11.2
+Jinja2==2.11.3
 MarkupSafe==1.1.1
+packaging==20.9
 pkg-resources==0.0.0
 pycparser==2.20
-pyOpenSSL==20.0.1
-PyYAML==5.3.1
-six==1.15.0' > requirements.txt
+pyparsing==2.4.7
+PyYAML==5.4.1
+six==1.15.0
+EOF
 pip install -r requirements.txt
 echo "[defaults]
 roles_path = $PWD
