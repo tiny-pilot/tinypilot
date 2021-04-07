@@ -3,22 +3,81 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    :host div {
+    #loading,
+    #edit,
+    #saving {
+      display: none;
+    }
+
+    :host([state="loading"]) #loading,
+    :host([state="edit"]) #edit,
+    :host([state="saving"]) #saving {
       display: block;
     }
+
+    .input-container label {
+      display: inline-block;
+      text-align: right;
+      width: 200px;
+    }
+    .input-container input {
+      display: inline-block;
+    }
   </style>
-  <div>
-    <h1>Update Video Settings</h1>
-    <p>Change video settings.</p>
-    <button class="btn-success" type="button">
+  <div id="loading">
+    <h3>Retrieving video settings</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+  <div id="edit">
+    <h3>Change video settings</h3>
+    <div id="ustreamer-fps-wrapper" class="input-container">
+      <label for="ustreamer-fps">uStreamer FPS:</label>
+      <input
+        type="text"
+        id="ustreamer-fps"
+        name="ustreamer_desired_fps"
+        type="number"
+        size="15"
+        class="monospace"
+      />
+      <p id="input-error"></p>
+    </div>
+    <div id="ustreamer-resolution-wrapper" class="input-container">
+      <label for="ustreamer-resolution">uStreamer resolution:</label>
+      <input
+        type="text"
+        id="ustreamer-resolution"
+        name="ustreamer_resolution"
+        size="15"
+        class="monospace"
+      />
+      <p id="input-error"></p>
+    </div>
+    <div id="ustreamer-jpeg-wrapper" class="input-container">
+      <label for="ustreamer-format">uStreamer format:</label>
+      <input
+        type="text"
+        id="ustreamer-format"
+        name="ustreamer_format"
+        size="15"
+        class="monospace"
+      />
+      <p id="input-error"></p>
+    </div>
+    <button class="save-btn btn-success" type="button">
       Save
     </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
+  <div id="saving">
+    <h3>Saving video settings</h3>
+    <progress-spinner></progress-spinner>
+  </div>
 </template>
 
+<script src="/js/controllers.js"></script>
 <script>
-  (function(){
+  (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#video-settings-template");
@@ -36,6 +95,9 @@
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () => this._close());
+          this.shadowRoot
+            .querySelector("#edit .save-btn")
+            .addEventListener("click", () => this.saveSettings());
         }
 
         get state() {
@@ -44,6 +106,48 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
+        }
+
+        getSettings() {
+          this.state = "loading";
+          return controllers
+            .getSettings()
+            .then((settingsData) => {
+              console.log(settingsData);
+              for (let key in settingsData) {
+                let inputElement = this.shadowRoot.querySelector(
+                  `#edit input[name=${key}]`
+                );
+                if (!inputElement) continue;
+                inputElement.value = settingsData[key];
+              }
+              this.state = "edit";
+            })
+            .catch((error) => {
+              console.error(error);
+              this.state = "edit";
+            });
+        }
+
+        saveSettings() {
+          let settingsData = {};
+          this.shadowRoot
+            .querySelectorAll("#edit input[name]")
+            .forEach((item) => {
+              settingsData[item.name] = item.value;
+            });
+          console.log("settingsData", settingsData);
+          this.state = "saving";
+          return controllers
+            .saveSettings(settingsData)
+            .then((response) => {
+              console.log(response);
+              this.state = "edit";
+            })
+            .catch((error) => {
+              console.error(error);
+              this.state = "edit";
+            });
         }
 
         _close() {
@@ -55,6 +159,6 @@
           );
         }
       }
-    )
-  })()
+    );
+  })();
 </script>

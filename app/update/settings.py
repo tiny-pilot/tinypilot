@@ -28,6 +28,9 @@ class Settings:
     def as_dict(self):
         return self._data
 
+    def update(self, data):
+        self._data.update(data)
+
     # Note: tinypilot_repo_branch is confusingly named. It should really be
     # tinypilot_repo_version, but this class just reflects the names in the
     # TinyPilot Ansible role.
@@ -65,3 +68,21 @@ def save(settings, settings_file):
     """Writes the current settings to the settings file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
+
+
+def get_settings():
+    """Get the current Settings object from the default settings file."""
+
+    try:
+        with open(DEFAULT_SETTINGS_FILE_PATH) as settings_file:
+            settings = load(settings_file)
+    except FileNotFoundError:
+        settings = Settings(data=None)
+    return settings
+
+
+def save_settings(settings):
+    """Save the Settings object to the default settings file."""
+
+    with open(DEFAULT_SETTINGS_FILE_PATH, 'w') as settings_file:
+        save(settings, settings_file)
