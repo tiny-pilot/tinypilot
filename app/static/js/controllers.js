@@ -323,6 +323,45 @@
       .then((data) => baseUrl + `/${data.id}`);
   }
 
+  function getSettings() {
+    return fetch("/api/updateSettings", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("settings")) {
+          return Promise.reject(new Error("Missing expected settings field"));
+        }
+        return Promise.resolve(data.settings);
+      });
+  }
+
+  function saveSettings(settings) {
+    return fetch("/api/updateSettings", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify(settings),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("settings")) {
+          return Promise.reject(new Error("Missing expected settings field"));
+        }
+        return Promise.resolve(data.settings);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -337,4 +376,6 @@
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
   window.controllers.textToShareableUrl = textToShareableUrl;
+  window.controllers.getSettings = getSettings;
+  window.controllers.saveSettings = saveSettings;
 })(window);
