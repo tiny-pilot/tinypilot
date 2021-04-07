@@ -1,6 +1,7 @@
 import flask
 
 import debug_logs
+import gpio
 import hostname
 import json_response
 import local_system
@@ -233,3 +234,21 @@ def status_get():
     response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+@api_blueprint.route('/gpio/on/<pin>', methods=['POST'])
+def gpio_on_post(pin):
+    try:
+        gpio.turn_pin_on(int(pin))
+        return json_response.success()
+    except gpio.Error as e:
+        return json_response.error(str(e)), 200
+
+
+@api_blueprint.route('/gpio/off/<pin>', methods=['POST'])
+def gpio_off_post(pin):
+    try:
+        gpio.turn_pin_off(int(pin))
+        return json_response.success()
+    except gpio.Error as e:
+        return json_response.error(str(e)), 200

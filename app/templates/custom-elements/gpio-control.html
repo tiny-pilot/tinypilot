@@ -1,0 +1,115 @@
+<template id="gpio-control-template">
+  <style>
+    .container {
+      border: 1px dotted black;
+      padding: 1rem;
+    }
+
+    .gpio-select {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    .gpio-select p {
+      margin: 0;
+    }
+
+    .gpio-select .select-wrapper {
+      margin-left: 1rem;
+      display: block;
+    }
+
+    button {
+      margin-top: 1rem;
+    }
+  </style>
+  <div class="container">
+    <div class="gpio-select">
+      <p>GPIO Pin</p>
+      <div class="select-wrapper">
+        <select id="gpio-pin">
+          <!-- JavaScript will add these values -->
+        </select>
+      </div>
+    </div>
+    <div>
+      <button>
+        <slot name="button-text"></slot>
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#gpio-control-template");
+
+    customElements.define(
+      "gpio-control",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          const gpioPinSelect = this.shadowRoot.getElementById("gpio-pin");
+          for (let pin = 0; pin <= 26; pin++) {
+            const pinOption = document.createElement("option");
+            pinOption.setAttribute("value", pin);
+            pinOption.innerText = pin;
+            gpioPinSelect.appendChild(pinOption);
+          }
+
+          const button = this.shadowRoot.querySelector("button");
+          button.addEventListener("mousedown", () => {
+            this._onMouseDown();
+          });
+          button.addEventListener("mouseup", () => {
+            this._onMouseUp();
+          });
+        }
+
+        _onMouseDown() {
+          return controllers
+            .turnGpioPinOn(this._getSelectedGpioPin())
+            .then(() => {})
+            .catch((error) => {
+              this._handleUpdateFailure({
+                title: "Failed to Set GPIO Pin",
+                details: error,
+              });
+            });
+        }
+
+        _onMouseUp() {
+          return controllers
+            .turnGpioPinOff(this._getSelectedGpioPin())
+            .then(() => {})
+            .catch((error) => {
+              this._handleUpdateFailure({
+                title: "Failed to Set GPIO Pin",
+                details: error,
+              });
+            });
+        }
+
+        _getSelectedGpioPin() {
+          return this.shadowRoot.getElementById("gpio-pin").value;
+        }
+
+        _handleFailure(errorInfo) {
+          this.dispatchEvent(
+            new CustomEvent("gpio-failure", {
+              detail: errorInfo,
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+      }
+    );
+  })();
+</script>

@@ -323,6 +323,48 @@
       .then((data) => baseUrl + `/${data.id}`);
   }
 
+  function turnGpioPinOn(pin) {
+    return fetch(`/api/gpio/on/${pin}`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  function turnGpioPinOff(pin) {
+    return fetch(`/api/gpio/off/${pin}`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then((response) => {
+        return readHttpJsonResponse(response);
+      })
+      .then((jsonResponse) => {
+        return checkJsonSuccess(jsonResponse);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -337,4 +379,6 @@
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
   window.controllers.textToShareableUrl = textToShareableUrl;
+  window.controllers.turnGpioPinOn = turnGpioPinOn;
+  window.controllers.turnGpioPinOff = turnGpioPinOff;
 })(window);

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import atexit
 import logging
 import os
 
@@ -8,6 +9,7 @@ import flask_wtf
 from werkzeug import exceptions
 
 import api
+import gpio
 import json_response
 import views
 from find_files import find as find_files
@@ -43,6 +45,8 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 
 app.register_blueprint(api.api_blueprint)
 app.register_blueprint(views.views_blueprint)
+
+atexit.register(gpio.cleanup)
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
