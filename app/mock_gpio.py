@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 LOW = 0
 HIGH = 1
 OUT = 1000
-BOARD = 100
+BCM = 100
 
 
 def setup(pin, pin_type):

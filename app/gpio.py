@@ -8,7 +8,7 @@ if 'DEBUG' in os.environ:
 else:
     import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 _OUTPUT_PINS = set()
 
 
