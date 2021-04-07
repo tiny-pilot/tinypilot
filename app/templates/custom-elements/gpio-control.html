@@ -77,7 +77,7 @@
             .turnGpioPinOn(this._getSelectedGpioPin())
             .then(() => {})
             .catch((error) => {
-              this._handleUpdateFailure({
+              this._handleFailure({
                 title: "Failed to Set GPIO Pin",
                 details: error,
               });
@@ -89,7 +89,7 @@
             .turnGpioPinOff(this._getSelectedGpioPin())
             .then(() => {})
             .catch((error) => {
-              this._handleUpdateFailure({
+              this._handleFailure({
                 title: "Failed to Set GPIO Pin",
                 details: error,
               });

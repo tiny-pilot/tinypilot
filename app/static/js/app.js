@@ -69,6 +69,7 @@ const errorEvents = [
   "update-failure",
   "change-hostname-failure",
   "shutdown-failure",
+  "gpio-failure",
 ];
 errorEvents.forEach((name) => {
   document.addEventListener(name, (evt) => {

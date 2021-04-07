@@ -21,7 +21,7 @@ def turn_pin_on(pin):
     try:
         GPIO.output(pin, GPIO.HIGH)
     except Exception as e:
-        raise Error(e.message) from e
+        raise Error(e) from e
 
 
 def turn_pin_off(pin):
