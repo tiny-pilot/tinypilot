@@ -152,6 +152,7 @@ interpreter_python = /usr/bin/python3
 TINYPILOT_ROLE_NAME="mtlynch.tinypilot"
 if [ -d "$TINYPILOT_ROLE_NAME" ]; then
   pushd "$TINYPILOT_ROLE_NAME"
+  git fetch
   git checkout experimental/dslr
   git pull origin experimental/dslr
   popd
