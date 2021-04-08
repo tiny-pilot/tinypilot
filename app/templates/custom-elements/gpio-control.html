@@ -1,7 +1,24 @@
 <template id="gpio-control-template">
   <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    button {
+      box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    button:active {
+      outline: 1px solid #fff;
+      outline-offset: -4px;
+      transform: scale(0.95);
+    }
+
     .container {
-      border: 1px dotted black;
+      border: 1px dotted rgb(92, 92, 92);
       padding: 1rem;
     }
 
@@ -26,6 +43,9 @@
     }
   </style>
   <div class="container">
+    <button>
+      <slot name="button-text"></slot>
+    </button>
     <div class="gpio-select">
       <p>GPIO Pin</p>
       <div class="select-wrapper">
@@ -34,16 +54,12 @@
         </select>
       </div>
     </div>
-    <div>
-      <button>
-        <slot name="button-text"></slot>
-      </button>
-    </div>
   </div>
 </template>
 
 <script>
   (function () {
+    const LEFT_MOUSE_BUTTON = 1;
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
     const template = doc.querySelector("#gpio-control-template");
@@ -64,15 +80,26 @@
           }
 
           const button = this.shadowRoot.querySelector("button");
-          button.addEventListener("mousedown", () => {
-            this._onMouseDown();
+          button.addEventListener("mousedown", (evt) => {
+            this._onMouseDown(evt);
           });
-          button.addEventListener("mouseup", () => {
-            this._onMouseUp();
+          button.addEventListener("mouseup", (evt) => {
+            this._onMouseUp(evt);
           });
         }
 
-        _onMouseDown() {
+        get buttonClass() {
+          return this.shadowRoot.querySelector("button").classList.item(0);
+        }
+
+        set buttonClass(newValue) {
+          this.shadowRoot.querySelector("button").classList.add(newValue);
+        }
+
+        _onMouseDown(evt) {
+          if (evt.which != LEFT_MOUSE_BUTTON) {
+            return;
+          }
           return controllers
             .turnGpioPinOn(this._getSelectedGpioPin())
             .then(() => {})
@@ -84,7 +111,10 @@
             });
         }
 
-        _onMouseUp() {
+        _onMouseUp(evt) {
+          if (evt.which != LEFT_MOUSE_BUTTON) {
+            return;
+          }
           return controllers
             .turnGpioPinOff(this._getSelectedGpioPin())
             .then(() => {})
