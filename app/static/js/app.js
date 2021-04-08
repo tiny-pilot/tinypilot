@@ -113,13 +113,6 @@ function onSocketConnect() {
   connectedToServer = true;
   document.getElementById("status-bar").connectionIndicator.connected = true;
   setCursor(settings.getScreenCursor());
-
-  // If we're restarting after an update, mark the update as finished.
-  const updateOverlay = document.getElementById("update-overlay");
-  const updateDialog = document.getElementById("update-dialog");
-  if (updateOverlay.isShown() && updateDialog.state === "restarting") {
-    updateDialog.state = "update-finished";
-  }
 }
 
 function onSocketDisconnect(reason) {
