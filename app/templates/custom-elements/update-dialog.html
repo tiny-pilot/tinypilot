@@ -118,16 +118,16 @@
             });
         }
 
-        get state() {
+        get _state() {
           return this.getAttribute("state");
         }
 
-        set state(newValue) {
+        set _state(newValue) {
           this.setAttribute("state", newValue);
         }
 
         checkVersion() {
-          this.state = "checking";
+          this._state = "checking";
 
           Promise.all([
             controllers.getVersion(),
@@ -138,9 +138,9 @@
               const latestRelease = versions[1];
 
               if (localVersion === latestRelease) {
-                this.state = "latest";
+                this._state = "latest";
               } else {
-                this.state = "update-available";
+                this._state = "update-available";
               }
             })
             .catch((error) => {
@@ -166,11 +166,33 @@
           return controllers
             .shutdown(/*restart*/ true)
             .then(() => {
-              this.state = "restarting";
+              this._state = "restarting";
             })
             .catch((error) => {
               this._handleUpdateFailure({
                 title: "Failed to Restart TinyPilot Device",
+                details: error,
+              });
+            });
+        }
+
+        _waitForReboot() {
+          return poll({
+            fn: () => controllers.checkStatus(),
+            validate: (isUpAndRunning) => isUpAndRunning === true,
+            interval: 3 * 1000,
+            timeout: 180 * 1000,
+          })
+            .then(() => {
+              this._state = "update-finished";
+            })
+            .catch((error) => {
+              this._handleUpdateFailure({
+                title: "Failed to Restart",
+                message:
+                  "Cannot reach TinyPilot after the update. The device " +
+                  "may have failed to reboot. Please manually reset your " +
+                  "device's power and try to connect again.",
                 details: error,
               });
             });
@@ -189,8 +211,12 @@
           }
         }
 
+        _sleep(milliseconds) {
+          return new Promise((resolve) => setTimeout(resolve, milliseconds));
+        }
+
         async _doUpdate() {
-          this.state = "updating";
+          this._state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
@@ -209,6 +235,10 @@
             // Updating causes the backend to restart, changing the CSRF token.
             await controllers.refreshCsrfToken();
             await this._performRestart();
+            // Wait at least 10 seconds to ensure reboot has started before
+            // checking whether the system is back up.
+            await this._sleep(10 * 1000);
+            await this._waitForReboot();
           } catch (error) {
             this._handleUpdateFailure({
               title: "Failed to Complete Update",

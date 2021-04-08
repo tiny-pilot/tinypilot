@@ -266,7 +266,7 @@
       });
   }
 
-  function checkStatus(baseURL) {
+  function checkStatus(baseURL = "") {
     const route = "/api/status";
     return fetch(baseURL + route, {
       method: "GET",
