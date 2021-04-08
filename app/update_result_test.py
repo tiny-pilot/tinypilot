@@ -42,14 +42,14 @@ class UpdateResultTest(unittest.TestCase):
                                      57,
                                      35,
                                      tzinfo=datetime.timezone.utc),
-                                 version_at_end=''),
+                                 version_at_end='1.4.1'),
             update_result.read(
                 io.StringIO("""
 {
   "success": false,
   "error": "dummy update error",
   "timestamp": "2021-02-10T085735Z",
-  "versionAtEnd": ""
+  "versionAtEnd": "1.4.1"
 }
 """)))
 
@@ -117,9 +117,9 @@ class UpdateResultTest(unittest.TestCase):
                                             57,
                                             35,
                                             tzinfo=datetime.timezone.utc),
-                version_at_end='',
+                version_at_end='1.4.1',
             ), mock_file)
         self.assertEqual(
             ('{"success": false, "error": "dummy update error", '
-             '"timestamp": "2021-02-10T085735Z", "versionAtEnd": ""}'),
+             '"timestamp": "2021-02-10T085735Z", "versionAtEnd": "1.4.1"}'),
             mock_file.getvalue())
