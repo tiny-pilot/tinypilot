@@ -174,5 +174,6 @@ ansible-playbook -i localhost, install.yml \
 
 # Copy the final install settings used in this installation back to the default
 # settings location.
+chmod +r "${TINYPILOT_SETTINGS_FILE}"
 sudo cp "${TINYPILOT_SETTINGS_FILE}" "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
 sudo chown tinypilot:tinypilot "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
