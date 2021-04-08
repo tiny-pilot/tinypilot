@@ -13,6 +13,7 @@ import subprocess
 import update
 import update_result
 import utc
+import version
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ def run_update_script():
         result.error = 'The update failed: %s' % str(e)
 
     result.timestamp = utc.now()
+    result.version_at_end = version.local_version()
     return result
 
 

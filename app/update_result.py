@@ -7,9 +7,15 @@ import iso8601
 
 @dataclasses.dataclass
 class Result:
+    # True if the update completed successfully.
     success: bool
+    # The error message for update failure (empty string on success).
     error: str
+    # Timestamp when the update process completes.
     timestamp: datetime.datetime
+    # The version of code in the TinyPilot directory at the end of the update
+    # process.
+    version_at_end: str
 
 
 def read(result_file):
@@ -22,6 +28,7 @@ def read(result_file):
         "success": true,
         "error": "",
         "timestamp": "2021-02-10T085735Z",
+        "versionAtEnd": "1.4.2"
       }
 
     Args:
@@ -34,7 +41,8 @@ def read(result_file):
     return Result(success=raw_result.get('success', False),
                   error=raw_result.get('error', ''),
                   timestamp=raw_result.get(
-                      'timestamp', datetime.datetime.utcfromtimestamp(0)))
+                      'timestamp', datetime.datetime.utcfromtimestamp(0)),
+                  version_at_end=raw_result.get('versionAtEnd', ''))
 
 
 def write(result, result_file):
@@ -44,7 +52,13 @@ def write(result, result_file):
         result: A Result object containing results of an update job.
         result_file: File handle to which to serialize the result object.
     """
-    json.dump(dataclasses.asdict(result), result_file, cls=_ResultEncoder)
+    # Convert snake_case members of dictionary to camelCase, as is convention
+    # in JSON.
+    result_dict = dataclasses.asdict(result)
+    result_dict['versionAtEnd'] = result_dict['version_at_end']
+    del result_dict['version_at_end']
+
+    json.dump(result_dict, result_file, cls=_ResultEncoder)
 
 
 class _ResultEncoder(json.JSONEncoder):

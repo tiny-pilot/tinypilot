@@ -7,6 +7,7 @@ import subprocess
 import iso8601
 import update_result
 import utc
+import version
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def get_current_state():
     if _is_update_process_running():
         return Status.IN_PROGRESS, None
 
-    recent_result = _get_latest_update_result()
+    recent_result = _get_update_result()
     if not recent_result:
         return Status.NOT_RUNNING, None
 
@@ -95,7 +96,15 @@ def _is_update_process_running():
     return False
 
 
-def _get_latest_update_result():
+def _get_update_result():
+    """Retrieves the update result for the update that most recently occurred.
+
+    Args:
+        None.
+
+    Returns:
+        TODO(mtlynch): Fill in.
+    """
     result_files = glob.glob(
         os.path.join(_RESULT_FILE_DIR, _UPDATE_RESULT_FILENAME_FORMAT % '*'))
     if not result_files:
@@ -107,9 +116,31 @@ def _get_latest_update_result():
     with open(most_recent_result_file) as result_file:
         most_recent_result = update_result.read(result_file)
 
-    # Ignore the result if it's too old.
-    delta = utc.now() - most_recent_result.timestamp
-    if delta.total_seconds() > _RECENT_UPDATE_THRESHOLD_SECONDS:
+    if not _is_result_for_latest_update(most_recent_result):
         return None
 
     return most_recent_result
+
+
+def _is_result_for_latest_update(result):
+    """foo
+
+    If the update process is not running, we check for a result file, but it's
+    possible for the update to not be running and the latest update file is not
+    yet available:
+        * We check for the update process before the process has launched
+        * The update script crashed without writing a result file
+
+    So we have to verify that the update result we find corresponds to the
+    update that we recently launched.
+    """
+    # Check for a version field, which may not be present depending on if the
+    # update is from a TinyPilot version
+    if result.version_at_end:
+        return result.version_at_end == version.local_version()
+
+    # We're checking the results of the update that just happened, so if it's
+    # older than the update threshold, ignore it, as it likely refers to a
+    # previous update.
+    delta = utc.now() - result.timestamp
+    return delta.total_seconds() <= _RECENT_UPDATE_THRESHOLD_SECONDS
