@@ -57,7 +57,7 @@ def run_update_script():
 
 
 def write_result(result):
-    result_path = update.get_result_path(result.timestamp)
+    result_path = update.RESULT_PATH
     os.makedirs(os.path.dirname(result_path), exist_ok=True)
     with open(result_path, 'w') as result_file:
         logger.info('Writing result file to %s', result_path)
