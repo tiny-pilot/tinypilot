@@ -1,4 +1,6 @@
+import datetime
 import enum
+import glob
 import logging
 import os
 import pathlib
@@ -28,7 +30,7 @@ class Status(enum.Enum):
 
 UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
 
-RESULT_PATH = os.path.expanduser('~/logs/last-update-result.json')
+RESULT_PATH = os.path.expanduser('~/logs/update-result.json')
 
 
 def start_async():
@@ -89,3 +91,35 @@ def _get_update_result():
             return update_result.read(result_file)
     except FileNotFoundError:
         return None
+
+
+def _get_legacy_update_result():
+    result_file_dir = pathlib.Path(RESULT_PATH).parent.absolute()
+    # Pattern for update result files prior to 1.4.2, when we consolidated to
+    # just a single update result file.
+    legacy_update_result_pattern = '*-update-result.json'
+    # Cutoff under which an update is considered "recently" completed. It should
+    # be just long enough that it's the one we see right after a device reboot
+    # but not so long that there's risk of it being confused with the result
+    # from a later update attempt.
+    legacy_update_threshold_seconds = 60 * 8
+
+    result_files = glob.glob(
+        os.path.join(result_file_dir, legacy_update_result_pattern))
+    if not result_files:
+        return None
+
+    # Filenames start with a timestamp, so the last one lexicographically is the
+    # most recently created file.
+    most_recent_result_file = sorted(result_files)[-1]
+
+    result_creation_time = datetime.datetime.fromtimestamp(
+        pathlib.Path(most_recent_result_file).stat().st_ctime)
+
+    # Ignore the result if it's too old.
+    delta = datetime.datetime.now() - result_creation_time
+    if delta.total_seconds() > legacy_update_threshold_seconds:
+        return None
+
+    with open(most_recent_result_file) as result_file:
+        return update_result.read(result_file)
