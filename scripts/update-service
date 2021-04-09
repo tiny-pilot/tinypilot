@@ -12,6 +12,7 @@ import subprocess
 
 import update
 import update_result
+import update_result_reader
 import utc
 
 logger = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ def run_update_script():
 
 
 def write_result(result):
-    result_path = update.get_result_path(result.timestamp)
+    result_path = update_result_reader.get_result_path(result.timestamp)
     os.makedirs(os.path.dirname(result_path), exist_ok=True)
     with open(result_path, 'w') as result_file:
         logger.info('Writing result file to %s', result_path)
