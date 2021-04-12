@@ -5,7 +5,6 @@ import logging
 import os
 
 import flask
-import flask_wtf
 from werkzeug import exceptions
 
 import api
@@ -37,21 +36,12 @@ app = flask.Flask(__name__, static_url_path='')
 app.config.update(
     SECRET_KEY=os.urandom(32),
     TEMPLATES_AUTO_RELOAD=True,
-    WTF_CSRF_TIME_LIMIT=None,
 )
-
-# Configure CSRF protection.
-csrf = flask_wtf.csrf.CSRFProtect(app)
 
 app.register_blueprint(api.api_blueprint)
 app.register_blueprint(views.views_blueprint)
 
 atexit.register(gpio.cleanup)
-
-
-@app.errorhandler(flask_wtf.csrf.CSRFError)
-def handle_csrf_error(error):
-    return json_response.error(error.description), 400
 
 
 @app.after_request

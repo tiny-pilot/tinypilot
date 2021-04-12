@@ -1,34 +1,6 @@
 "use strict";
 
 (function (windows) {
-  function getCsrfToken(doc = document) {
-    return getCsrfTokenElement(doc).getAttribute("content");
-  }
-
-  function getCsrfTokenElement(doc) {
-    return doc.querySelector("meta[name='csrf-token']");
-  }
-
-  function setCsrfToken(tokenValue) {
-    return getCsrfTokenElement(document).setAttribute("content", tokenValue);
-  }
-
-  function refreshCsrfToken() {
-    return fetch("/")
-      .then(function (response) {
-        return response.text();
-      })
-      .then(function (html) {
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const csrfToken = getCsrfToken(doc);
-        setCsrfToken(csrfToken);
-        return Promise.resolve();
-      })
-      .catch(function (error) {
-        return Promise.reject("Failed to refresh CSRF token: " + error);
-      });
-  }
-
   // Reads a response from an HTTP endpoint that we expect to contain a JSON
   // body. Verifies the HTTP response was successful and the response type is
   // JSON, but doesn't check anything beyond that.
@@ -131,9 +103,6 @@
     }
     return fetch(route, {
       method: "POST",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
@@ -171,9 +140,6 @@
     let route = "/api/update";
     return fetch(route, {
       method: "PUT",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
@@ -246,10 +212,6 @@
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCsrfToken(),
-      },
       body: JSON.stringify({ hostname: newHostname }),
     })
       .then((response) => {
@@ -326,9 +288,6 @@
   function turnGpioPinOn(pin) {
     return fetch(`/api/gpio/on/${pin}`, {
       method: "POST",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
@@ -347,9 +306,6 @@
   function turnGpioPinOff(pin) {
     return fetch(`/api/gpio/off/${pin}`, {
       method: "POST",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
@@ -368,7 +324,6 @@
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
-  window.controllers.refreshCsrfToken = refreshCsrfToken;
   window.controllers.getVersion = getVersion;
   window.controllers.getLatestRelease = getLatestRelease;
   window.controllers.shutdown = shutdown;
