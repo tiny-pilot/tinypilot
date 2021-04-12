@@ -24,7 +24,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
 
     @mock.patch.object(update.subprocess, 'check_output')
     @mock.patch.object(update.update_result_reader, 'read')
-    def test_returns_running_when_update_process_is_running(
+    def test_returns_in_progress_when_update_process_is_running(
             self, mock_read_update_result, mock_check_output):
         mock_check_output.return_value = """
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
