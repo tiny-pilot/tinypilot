@@ -29,33 +29,66 @@ class UpdateResultReaderTest(unittest.TestCase):
 
     @mock.patch.object(update_result_reader.glob, 'glob')
     @mock.patch.object(update_result_reader.utc, 'now')
-    def test_returns_latest(self, mock_now, mock_glob):
+    def test_returns_latest_if_it_is_within_last_eight_minutes(
+            self, mock_now, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
                 'foo.json', """
 {
   "success": true,
   "error": "",
-  "timestamp": "2021-02-10T085735Z"
+  "timestamp": "2020-12-31T000000Z"
+}
+            """),
+            self.make_mock_file(
+                'foo.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000000Z"
 }
             """)
         ]
         mock_now.return_value = datetime.datetime(2021,
-                                                  2,
-                                                  10,
-                                                  8,
-                                                  57,
-                                                  36,
+                                                  1,
+                                                  1,
+                                                  0,
+                                                  5,
+                                                  0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
             update_result.Result(success=True,
                                  error='',
                                  timestamp=datetime.datetime(
                                      2021,
-                                     2,
-                                     10,
-                                     8,
-                                     57,
-                                     35,
+                                     1,
+                                     1,
+                                     0,
+                                     0,
+                                     0,
                                      tzinfo=datetime.timezone.utc)),
             update_result_reader.read())
+
+    @mock.patch.object(update_result_reader.glob, 'glob')
+    @mock.patch.object(update_result_reader.utc, 'now')
+    def test_returns_none_if_all_results_are_older_than_eight_minutes(
+            self, mock_now, mock_glob):
+        mock_glob.return_value = [
+            self.make_mock_file(
+                'foo.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000000Z"
+}
+            """)
+        ]
+        # Set current time to be 8m01s after most recent result.
+        mock_now.return_value = datetime.datetime(2021,
+                                                  1,
+                                                  1,
+                                                  0,
+                                                  8,
+                                                  1,
+                                                  tzinfo=datetime.timezone.utc)
+        self.assertIsNone(update_result_reader.read())
