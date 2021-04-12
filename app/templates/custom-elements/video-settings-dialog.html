@@ -18,7 +18,7 @@
     .input-container label {
       display: inline-block;
       text-align: right;
-      width: 200px;
+      width: 100px;
     }
     .input-container input {
       display: inline-block;
@@ -30,11 +30,11 @@
   </div>
   <div id="edit">
     <h3>Change video settings</h3>
-    <div id="ustreamer-fps-wrapper" class="input-container">
-      <label for="ustreamer-fps">uStreamer FPS:</label>
+    <div class="input-container">
+      <label for="video-fps">FPS:</label>
       <input
         type="text"
-        id="ustreamer-fps"
+        id="video-fps"
         name="ustreamer_desired_fps"
         type="number"
         size="15"
@@ -42,23 +42,23 @@
       />
       <p id="input-error"></p>
     </div>
-    <div id="ustreamer-resolution-wrapper" class="input-container">
-      <label for="ustreamer-resolution">uStreamer resolution:</label>
+    <div class="input-container">
+      <label for="video-resolution">Resolution:</label>
       <input
         type="text"
-        id="ustreamer-resolution"
+        id="video-resolution"
         name="ustreamer_resolution"
         size="15"
         class="monospace"
       />
       <p id="input-error"></p>
     </div>
-    <div id="ustreamer-jpeg-wrapper" class="input-container">
-      <label for="ustreamer-format">uStreamer format:</label>
+    <div class="input-container">
+      <label for="video-jpeg-quality">JPEG Quality:</label>
       <input
         type="text"
-        id="ustreamer-format"
-        name="ustreamer_format"
+        id="video-jpeg-quality"
+        name="ustreamer_jpeg_quality"
         size="15"
         class="monospace"
       />
@@ -97,7 +97,7 @@
             .addEventListener("click", () => this._close());
           this.shadowRoot
             .querySelector("#edit .save-btn")
-            .addEventListener("click", () => this.saveSettings());
+            .addEventListener("click", () => this._saveSettings());
         }
 
         get state() {
@@ -129,25 +129,58 @@
             });
         }
 
-        saveSettings() {
-          let settingsData = {};
-          this.shadowRoot
-            .querySelectorAll("#edit input[name]")
-            .forEach((item) => {
-              settingsData[item.name] = item.value;
+        _saveVideoResolution() {
+          let videoResolution = this.shadowRoot
+            .querySelector("#edit input[name=ustreamer_resolution]")
+            .value;
+          return (
+            videoResolution === ""
+            ? controllers.unsetVideoResolution()
+            : controllers.setVideoResolution(videoResolution)
+          )
+            .catch((error) => {
+              console.error("_saveVideoResolution", error);
             });
-          console.log("settingsData", settingsData);
-          this.state = "saving";
-          return controllers
-            .saveSettings(settingsData)
-            .then((response) => {
-              console.log(response);
+        }
+
+        _saveVideoFps() {
+          let videoFps = this.shadowRoot
+            .querySelector("#edit input[name=ustreamer_desired_fps]")
+            .value;
+          return (
+            videoFps === ""
+            ? controllers.unsetVideoFps()
+            : controllers.setVideoFps(videoFps)
+          )
+            .catch((error) => {
+              console.error("_saveVideoFps", error);
+            });
+        }
+
+        _saveVideoJpegQuality() {
+          let videoJpegQuality = this.shadowRoot
+            .querySelector("#edit input[name=ustreamer_jpeg_quality]")
+            .value;
+          return (
+            videoJpegQuality === ""
+            ? controllers.unsetVideoJpegQuality()
+            : controllers.setVideoJpegQuality(videoJpegQuality)
+          )
+            .catch((error) => {
+              console.error("_saveVideoJpegQuality", error);
+            });
+        }
+
+        _saveSettings() {
+          Promise.all([
+            this._saveVideoResolution(),
+            this._saveVideoFps(),
+            this._saveVideoJpegQuality(),
+          ])
+            .then((results) => {
+              console.log(results);
               this.state = "edit";
             })
-            .catch((error) => {
-              console.error(error);
-              this.state = "edit";
-            });
         }
 
         _close() {
