@@ -47,6 +47,14 @@ class UpdateResultReaderTest(unittest.TestCase):
   "error": "",
   "timestamp": "2021-01-01T000000Z"
 }
+            """),
+            self.make_mock_file(
+                '2021-01-01T000300Z-update-result.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000300Z"
+}
             """)
         ]
         mock_now.return_value = datetime.datetime(2021,
@@ -64,7 +72,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      1,
                                      1,
                                      0,
-                                     0,
+                                     3,
                                      0,
                                      tzinfo=datetime.timezone.utc)),
             update_result_reader.read())
