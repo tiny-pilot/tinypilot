@@ -372,13 +372,15 @@
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
       },
-      body: JSON.stringify({video_resolution: videoResolution}),
+      body: JSON.stringify({ video_resolution: videoResolution }),
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
       .then((data) => {
         if (!data.hasOwnProperty("video_resolution")) {
-          return Promise.reject(new Error("Missing expected video_resolution field"));
+          return Promise.reject(
+            new Error("Missing expected video_resolution field")
+          );
         }
         return Promise.resolve(data.video_resolution);
       });
@@ -408,7 +410,7 @@
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
       },
-      body: JSON.stringify({video_fps: videoFps}),
+      body: JSON.stringify({ video_fps: videoFps }),
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
@@ -444,13 +446,15 @@
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
       },
-      body: JSON.stringify({video_jpeg_quality: videoJpegQuality}),
+      body: JSON.stringify({ video_jpeg_quality: videoJpegQuality }),
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
       .then((data) => {
         if (!data.hasOwnProperty("video_jpeg_quality")) {
-          return Promise.reject(new Error("Missing expected video_jpeg_quality field"));
+          return Promise.reject(
+            new Error("Missing expected video_jpeg_quality field")
+          );
         }
         return Promise.resolve(data.video_jpeg_quality);
       });
