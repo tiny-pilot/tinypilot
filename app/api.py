@@ -238,21 +238,73 @@ def status_get():
     return response
 
 
-@api_blueprint.route('/updateSettings', methods=['GET'])
-def update_settings_get():
+@api_blueprint.route('/settings', methods=['GET'])
+def settings_get():
     settings = update.settings.get_settings()
     return json_response.success({'settings': settings.as_dict()})
 
 
-@api_blueprint.route('/updateSettings', methods=['PUT'])
-def update_settings_put():
+@api_blueprint.route('/settings/video/resolution', methods=['PUT'])
+def settings_video_resolution_put():
     try:
-        settings_data = request_parsers.update_settings.parse_settings(
+        video_resolution = request_parsers.update_settings.parse_video_resolution(
             flask.request)
         settings = update.settings.get_settings()
-        settings.update(settings_data)
+        settings.ustreamer_resolution = video_resolution
         update.settings.save_settings(settings)
-    except request_parsers.errors.Error as e:
+    except request_parsers.errors.InvalidVideoResolutionError as e:
         return json_response.error(str(e)), 200
     else:
-        return json_response.success({'settings': settings.as_dict()})
+        return json_response.success({'video_resolution': video_resolution})
+
+
+@api_blueprint.route('/settings/video/resolution', methods=['DELETE'])
+def settings_video_resolution_delete():
+    settings = update.settings.get_settings()
+    del settings.ustreamer_resolution
+    update.settings.save_settings(settings)
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/video/fps', methods=['PUT'])
+def settings_video_fps_put():
+    try:
+        video_fps = request_parsers.update_settings.parse_video_fps(
+            flask.request)
+        settings = update.settings.get_settings()
+        settings.ustreamer_desired_fps = video_fps
+        update.settings.save_settings(settings)
+    except request_parsers.errors.InvalidVideoFpsError as e:
+        return json_response.error(str(e)), 200
+    else:
+        return json_response.success({'video_fps': video_fps})
+
+
+@api_blueprint.route('/settings/video/fps', methods=['DELETE'])
+def settings_video_fps_delete():
+    settings = update.settings.get_settings()
+    del settings.ustreamer_desired_fps
+    update.settings.save_settings(settings)
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
+def settings_video_jpeg_quality_put():
+    try:
+        video_jpeg_quality = request_parsers.update_settings.parse_video_jpeg_quality(
+            flask.request)
+        settings = update.settings.get_settings()
+        settings.ustreamer_jpeg_quality = video_jpeg_quality
+        update.settings.save_settings(settings)
+    except request_parsers.errors.InvalidVideoJpegQualityError as e:
+        return json_response.error(str(e)), 200
+    else:
+        return json_response.success({'video_jpeg_quality': video_jpeg_quality})
+
+
+@api_blueprint.route('/settings/video/jpeg_quality', methods=['DELETE'])
+def settings_video_jpeg_quality_delete():
+    settings = update.settings.get_settings()
+    del settings.ustreamer_jpeg_quality
+    update.settings.save_settings(settings)
+    return json_response.success()
