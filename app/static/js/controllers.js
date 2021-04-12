@@ -324,7 +324,7 @@
   }
 
   function getSettings() {
-    return fetch("/api/updateSettings", {
+    return fetch("/api/settings", {
       method: "GET",
       mode: "same-origin",
       cache: "no-cache",
@@ -362,6 +362,114 @@
       });
   }
 
+  function setVideoResolution(videoResolution) {
+    return fetch("/api/settings/video/resolution", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({video_resolution: videoResolution}),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("video_resolution")) {
+          return Promise.reject(new Error("Missing expected video_resolution field"));
+        }
+        return Promise.resolve(data.video_resolution);
+      });
+  }
+
+  function unsetVideoResolution() {
+    return fetch("/api/settings/video/resolution", {
+      method: "DELETE",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess);
+  }
+
+  function setVideoFps(videoFps) {
+    return fetch("/api/settings/video/fps", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({video_fps: videoFps}),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("video_fps")) {
+          return Promise.reject(new Error("Missing expected video_fps field"));
+        }
+        return Promise.resolve(data.video_fps);
+      });
+  }
+
+  function unsetVideoFps() {
+    return fetch("/api/settings/video/fps", {
+      method: "DELETE",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess);
+  }
+
+  function setVideoJpegQuality(videoJpegQuality) {
+    return fetch("/api/settings/video/jpeg_quality", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({video_jpeg_quality: videoJpegQuality}),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("video_jpeg_quality")) {
+          return Promise.reject(new Error("Missing expected video_jpeg_quality field"));
+        }
+        return Promise.resolve(data.video_jpeg_quality);
+      });
+  }
+
+  function unsetVideoJpegQuality() {
+    return fetch("/api/settings/video/jpeg_quality", {
+      method: "DELETE",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess);
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -378,4 +486,10 @@
   window.controllers.textToShareableUrl = textToShareableUrl;
   window.controllers.getSettings = getSettings;
   window.controllers.saveSettings = saveSettings;
+  window.controllers.setVideoResolution = setVideoResolution;
+  window.controllers.unsetVideoResolution = unsetVideoResolution;
+  window.controllers.setVideoFps = setVideoFps;
+  window.controllers.unsetVideoFps = unsetVideoFps;
+  window.controllers.setVideoJpegQuality = setVideoJpegQuality;
+  window.controllers.unsetVideoJpegQuality = unsetVideoJpegQuality;
 })(window);
