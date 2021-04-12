@@ -22,9 +22,9 @@ There are two interesting edge cases we have to handle:
      previous updates, so we have to recognize them as stale and not the result
      of the update the user just initiated.
 2. The update process crashed without ever writing a result file.
-      This should be rare, but similarly to (1), we have to make sure we don't
-      confuse the result of a previous update with the result of an update that
-      never wrote a result file because it crashed.
+     This should be rare, but similarly to (1), we have to make sure we don't
+     confuse the result of a previous update with the result of an update that
+     never wrote a result file because it crashed.
 
 The update result reader handles these edge cases by reading the timestamp of
 the update result. For TinyPilot versions < 1.4.1, the timestamp represents the
