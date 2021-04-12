@@ -33,7 +33,7 @@ class UpdateResultReaderTest(unittest.TestCase):
             self, mock_now, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
-                'foo.json', """
+                '2020-12-31T000000Z-update-result.json', """
 {
   "success": true,
   "error": "",
@@ -41,7 +41,7 @@ class UpdateResultReaderTest(unittest.TestCase):
 }
             """),
             self.make_mock_file(
-                'foo.json', """
+                '2021-01-01T000000Z-update-result.json', """
 {
   "success": true,
   "error": "",
@@ -75,7 +75,7 @@ class UpdateResultReaderTest(unittest.TestCase):
             self, mock_now, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
-                'foo.json', """
+                '2021-01-01T000000Z', """
 {
   "success": true,
   "error": "",
