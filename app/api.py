@@ -247,8 +247,8 @@ def settings_get():
 @api_blueprint.route('/settings/video/resolution', methods=['PUT'])
 def settings_video_resolution_put():
     try:
-        video_resolution = request_parsers.update_settings.parse_video_resolution(
-            flask.request)
+        video_resolution = request_parsers.update_settings \
+            .parse_video_resolution(flask.request)
         settings = update.settings.load()
         settings.ustreamer_resolution = video_resolution
         update.settings.save(settings)
@@ -291,8 +291,8 @@ def settings_video_fps_delete():
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
 def settings_video_jpeg_quality_put():
     try:
-        video_jpeg_quality = request_parsers.update_settings.parse_video_jpeg_quality(
-            flask.request)
+        video_jpeg_quality = request_parsers.update_settings \
+            .parse_video_jpeg_quality(flask.request)
         settings = update.settings.load()
         settings.ustreamer_jpeg_quality = video_jpeg_quality
         update.settings.save(settings)

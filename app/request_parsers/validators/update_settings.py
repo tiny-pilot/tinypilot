@@ -1,4 +1,4 @@
-# Source: https://en.wikipedia.org/wiki/Display_resolution#Common_display_resolutions
+# Source: https://en.wikipedia.org/wiki/Display_resolution#Common_display_resolutions # pylint: disable=line-too-long
 _COMMON_DISPLAY_RESOLUTIONS = {
     '800x600',
     '1024x768',

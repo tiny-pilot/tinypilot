@@ -130,45 +130,39 @@
         }
 
         _saveVideoResolution() {
-          let videoResolution = this.shadowRoot
-            .querySelector("#edit input[name=ustreamer_resolution]")
-            .value;
-          return (
-            videoResolution === ""
+          let videoResolution = this.shadowRoot.querySelector(
+            "#edit input[name=ustreamer_resolution]"
+          ).value;
+          return (videoResolution === ""
             ? controllers.unsetVideoResolution()
             : controllers.setVideoResolution(videoResolution)
-          )
-            .catch((error) => {
-              console.error("_saveVideoResolution", error);
-            });
+          ).catch((error) => {
+            console.error("_saveVideoResolution", error);
+          });
         }
 
         _saveVideoFps() {
-          let videoFps = this.shadowRoot
-            .querySelector("#edit input[name=ustreamer_desired_fps]")
-            .value;
-          return (
-            videoFps === ""
+          let videoFps = this.shadowRoot.querySelector(
+            "#edit input[name=ustreamer_desired_fps]"
+          ).value;
+          return (videoFps === ""
             ? controllers.unsetVideoFps()
             : controllers.setVideoFps(videoFps)
-          )
-            .catch((error) => {
-              console.error("_saveVideoFps", error);
-            });
+          ).catch((error) => {
+            console.error("_saveVideoFps", error);
+          });
         }
 
         _saveVideoJpegQuality() {
-          let videoJpegQuality = this.shadowRoot
-            .querySelector("#edit input[name=ustreamer_jpeg_quality]")
-            .value;
-          return (
-            videoJpegQuality === ""
+          let videoJpegQuality = this.shadowRoot.querySelector(
+            "#edit input[name=ustreamer_jpeg_quality]"
+          ).value;
+          return (videoJpegQuality === ""
             ? controllers.unsetVideoJpegQuality()
             : controllers.setVideoJpegQuality(videoJpegQuality)
-          )
-            .catch((error) => {
-              console.error("_saveVideoJpegQuality", error);
-            });
+          ).catch((error) => {
+            console.error("_saveVideoJpegQuality", error);
+          });
         }
 
         _saveSettings() {
@@ -176,11 +170,10 @@
             this._saveVideoResolution(),
             this._saveVideoFps(),
             this._saveVideoJpegQuality(),
-          ])
-            .then((results) => {
-              console.log(results);
-              this.state = "edit";
-            })
+          ]).then((results) => {
+            console.log(results);
+            this.state = "edit";
+          });
         }
 
         _close() {
