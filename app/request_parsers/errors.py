@@ -12,3 +12,15 @@ class MissingFieldError(Error):
 
 class InvalidHostnameError(Error):
     pass
+
+
+class InvalidVideoResolutionError(Error):
+    pass
+
+
+class InvalidVideoFpsError(Error):
+    pass
+
+
+class InvalidVideoJpegQualityError(Error):
+    pass
