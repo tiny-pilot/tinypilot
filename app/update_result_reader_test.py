@@ -57,23 +57,75 @@ class UpdateResultReaderTest(unittest.TestCase):
 }
             """)
         ]
-        mock_now.return_value = datetime.datetime(2021,
-                                                  1,
-                                                  1,
-                                                  0,
-                                                  5,
-                                                  0,
+        mock_now.return_value = datetime.datetime(year=2021,
+                                                  month=1,
+                                                  day=1,
+                                                  hour=0,
+                                                  minute=5,
+                                                  second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
             update_result.Result(success=True,
                                  error='',
                                  timestamp=datetime.datetime(
-                                     2021,
-                                     1,
-                                     1,
-                                     0,
-                                     3,
-                                     0,
+                                     year=2021,
+                                     month=1,
+                                     day=1,
+                                     hour=0,
+                                     minute=3,
+                                     second=0,
+                                     tzinfo=datetime.timezone.utc)),
+            update_result_reader.read())
+
+    @mock.patch.object(update_result_reader.glob, 'glob')
+    @mock.patch.object(update_result_reader.utc, 'now')
+    def test_returns_latest_if_it_is_in_the_future(self, mock_now, mock_glob):
+        """Due to NTP updates, the latest result might be from a later time."""
+        mock_glob.return_value = [
+            self.make_mock_file(
+                '2021-01-01T000000Z-update-result.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000000Z"
+}
+            """),
+            self.make_mock_file(
+                '2021-01-01T000300Z-update-result.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000300Z"
+}
+            """),
+            self.make_mock_file(
+                '2021-01-01T000600Z-update-result.json', """
+{
+  "success": true,
+  "error": "",
+  "timestamp": "2021-01-01T000600Z"
+}
+            """)
+        ]
+        # Set the current time to one minute *behind* the latest result
+        # timestamp to simulate a time adjustment after, e.g., an NTP update.
+        mock_now.return_value = datetime.datetime(year=2021,
+                                                  month=1,
+                                                  day=1,
+                                                  hour=0,
+                                                  minute=5,
+                                                  second=0,
+                                                  tzinfo=datetime.timezone.utc)
+        self.assertEqual(
+            update_result.Result(success=True,
+                                 error='',
+                                 timestamp=datetime.datetime(
+                                     year=2021,
+                                     month=1,
+                                     day=1,
+                                     hour=0,
+                                     minute=6,
+                                     second=0,
                                      tzinfo=datetime.timezone.utc)),
             update_result_reader.read())
 
@@ -92,11 +144,11 @@ class UpdateResultReaderTest(unittest.TestCase):
             """)
         ]
         # Set current time to be 8m01s after most recent result.
-        mock_now.return_value = datetime.datetime(2021,
-                                                  1,
-                                                  1,
-                                                  0,
-                                                  8,
-                                                  1,
+        mock_now.return_value = datetime.datetime(year=2021,
+                                                  month=1,
+                                                  day=1,
+                                                  hour=0,
+                                                  minute=8,
+                                                  second=1,
                                                   tzinfo=datetime.timezone.utc)
         self.assertIsNone(update_result_reader.read())
