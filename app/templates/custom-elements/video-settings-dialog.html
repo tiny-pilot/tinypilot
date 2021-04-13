@@ -18,10 +18,14 @@
     .input-container label {
       display: inline-block;
       text-align: right;
-      width: 100px;
     }
     .input-container input {
       display: inline-block;
+    }
+
+    #video-fps-display {
+      display: inline-block;
+      width: 50px;
     }
   </style>
   <div id="loading">
@@ -32,37 +36,8 @@
     <h3>Change video settings</h3>
     <div class="input-container">
       <label for="video-fps">FPS:</label>
-      <input
-        type="text"
-        id="video-fps"
-        name="ustreamer_desired_fps"
-        type="number"
-        size="15"
-        class="monospace"
-      />
-      <p id="input-error"></p>
-    </div>
-    <div class="input-container">
-      <label for="video-resolution">Resolution:</label>
-      <input
-        type="text"
-        id="video-resolution"
-        name="ustreamer_resolution"
-        size="15"
-        class="monospace"
-      />
-      <p id="input-error"></p>
-    </div>
-    <div class="input-container">
-      <label for="video-jpeg-quality">JPEG Quality:</label>
-      <input
-        type="text"
-        id="video-jpeg-quality"
-        name="ustreamer_jpeg_quality"
-        size="15"
-        class="monospace"
-      />
-      <p id="input-error"></p>
+      <input type="range" id="video-fps" min="0" max="30" />
+      <span id="video-fps-display"></span>
     </div>
     <button class="save-btn btn-success" type="button">
       Save
@@ -98,6 +73,11 @@
           this.shadowRoot
             .querySelector("#edit .save-btn")
             .addEventListener("click", () => this._saveSettings());
+          this.shadowRoot
+            .querySelector("#video-fps")
+            .addEventListener("input", (event) => {
+              this._setVideoFpsDisplay(event.target.value);
+            });
         }
 
         get state() {
@@ -108,44 +88,41 @@
           this.setAttribute("state", newValue);
         }
 
-        getSettings() {
-          this.state = "loading";
+        _setVideoFpsDisplay(videoFps) {
+          const videoFpsDisplayElement = this.shadowRoot.querySelector(
+            "#video-fps-display"
+          );
+          if (videoFps == 0) {
+            videoFpsDisplayElement.innerHTML = "Empty";
+          } else {
+            videoFpsDisplayElement.innerHTML = videoFps;
+          }
+        }
+
+        _getVideoFps() {
           return controllers
-            .getSettings()
-            .then((settingsData) => {
-              console.log(settingsData);
-              for (let key in settingsData) {
-                let inputElement = this.shadowRoot.querySelector(
-                  `#edit input[name=${key}]`
-                );
-                if (!inputElement) continue;
-                inputElement.value = settingsData[key];
-              }
-              this.state = "edit";
+            .getVideoFps()
+            .then((videoFps) => {
+              if (videoFps === null) videoFps = 0;
+              this.shadowRoot.querySelector("#video-fps").value = videoFps;
+              this._setVideoFpsDisplay(videoFps);
             })
             .catch((error) => {
-              console.error(error);
-              this.state = "edit";
+              console.error("_getVideoFps", error);
             });
         }
 
-        _saveVideoResolution() {
-          let videoResolution = this.shadowRoot.querySelector(
-            "#edit input[name=ustreamer_resolution]"
-          ).value;
-          return (videoResolution === ""
-            ? controllers.unsetVideoResolution()
-            : controllers.setVideoResolution(videoResolution)
-          ).catch((error) => {
-            console.error("_saveVideoResolution", error);
+        getSettings() {
+          this.state = "loading";
+          Promise.all([this._getVideoFps()]).then((results) => {
+            console.log(results);
+            this.state = "edit";
           });
         }
 
         _saveVideoFps() {
-          let videoFps = this.shadowRoot.querySelector(
-            "#edit input[name=ustreamer_desired_fps]"
-          ).value;
-          return (videoFps === ""
+          let videoFps = this.shadowRoot.querySelector("#video-fps").value;
+          return (videoFps == 0
             ? controllers.unsetVideoFps()
             : controllers.setVideoFps(videoFps)
           ).catch((error) => {
@@ -153,24 +130,8 @@
           });
         }
 
-        _saveVideoJpegQuality() {
-          let videoJpegQuality = this.shadowRoot.querySelector(
-            "#edit input[name=ustreamer_jpeg_quality]"
-          ).value;
-          return (videoJpegQuality === ""
-            ? controllers.unsetVideoJpegQuality()
-            : controllers.setVideoJpegQuality(videoJpegQuality)
-          ).catch((error) => {
-            console.error("_saveVideoJpegQuality", error);
-          });
-        }
-
         _saveSettings() {
-          Promise.all([
-            this._saveVideoResolution(),
-            this._saveVideoFps(),
-            this._saveVideoJpegQuality(),
-          ]).then((results) => {
+          Promise.all([this._saveVideoFps()]).then((results) => {
             console.log(results);
             this.state = "edit";
           });

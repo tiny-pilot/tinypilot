@@ -323,8 +323,8 @@
       .then((data) => baseUrl + `/${data.id}`);
   }
 
-  function getSettings() {
-    return fetch("/api/settings", {
+  function getVideoFps() {
+    return fetch("/api/settings/video/fps", {
       method: "GET",
       mode: "same-origin",
       cache: "no-cache",
@@ -333,71 +333,11 @@
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
       .then((data) => {
-        if (!data.hasOwnProperty("settings")) {
-          return Promise.reject(new Error("Missing expected settings field"));
+        if (!data.hasOwnProperty("video_fps")) {
+          return Promise.reject(new Error("Missing expected video_fps field"));
         }
-        return Promise.resolve(data.settings);
+        return Promise.resolve(data.video_fps);
       });
-  }
-
-  function saveSettings(settings) {
-    return fetch("/api/updateSettings", {
-      method: "PUT",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCsrfToken(),
-      },
-      body: JSON.stringify(settings),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then((data) => {
-        if (!data.hasOwnProperty("settings")) {
-          return Promise.reject(new Error("Missing expected settings field"));
-        }
-        return Promise.resolve(data.settings);
-      });
-  }
-
-  function setVideoResolution(videoResolution) {
-    return fetch("/api/settings/video/resolution", {
-      method: "PUT",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCsrfToken(),
-      },
-      body: JSON.stringify({ video_resolution: videoResolution }),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then((data) => {
-        if (!data.hasOwnProperty("video_resolution")) {
-          return Promise.reject(
-            new Error("Missing expected video_resolution field")
-          );
-        }
-        return Promise.resolve(data.video_resolution);
-      });
-  }
-
-  function unsetVideoResolution() {
-    return fetch("/api/settings/video/resolution", {
-      method: "DELETE",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess);
   }
 
   function setVideoFps(videoFps) {
@@ -433,45 +373,8 @@
       },
     })
       .then(readHttpJsonResponse)
-      .then(checkJsonSuccess);
-  }
-
-  function setVideoJpegQuality(videoJpegQuality) {
-    return fetch("/api/settings/video/jpeg_quality", {
-      method: "PUT",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCsrfToken(),
-      },
-      body: JSON.stringify({ video_jpeg_quality: videoJpegQuality }),
-    })
-      .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
-      .then((data) => {
-        if (!data.hasOwnProperty("video_jpeg_quality")) {
-          return Promise.reject(
-            new Error("Missing expected video_jpeg_quality field")
-          );
-        }
-        return Promise.resolve(data.video_jpeg_quality);
-      });
-  }
-
-  function unsetVideoJpegQuality() {
-    return fetch("/api/settings/video/jpeg_quality", {
-      method: "DELETE",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess);
+      .then(() => null);
   }
 
   if (!window.hasOwnProperty("controllers")) {
@@ -488,12 +391,7 @@
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
   window.controllers.textToShareableUrl = textToShareableUrl;
-  window.controllers.getSettings = getSettings;
-  window.controllers.saveSettings = saveSettings;
-  window.controllers.setVideoResolution = setVideoResolution;
-  window.controllers.unsetVideoResolution = unsetVideoResolution;
+  window.controllers.getVideoFps = getVideoFps;
   window.controllers.setVideoFps = setVideoFps;
   window.controllers.unsetVideoFps = unsetVideoFps;
-  window.controllers.setVideoJpegQuality = setVideoJpegQuality;
-  window.controllers.unsetVideoJpegQuality = unsetVideoJpegQuality;
 })(window);
