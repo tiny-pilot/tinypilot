@@ -48,5 +48,3 @@ def change(new_hostname):
             universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise HostnameChangeError(str(e.output).strip()) from e
-    except Exception as e:
-        raise HostnameChangeError(str(e)) from e
