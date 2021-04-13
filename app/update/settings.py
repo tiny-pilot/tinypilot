@@ -50,20 +50,10 @@ class Settings:
         self._data['tinypilot_repo_branch'] = value
 
     @property
-    def ustreamer_resolution(self):
-        return self._data['ustreamer_resolution']
-
-    @ustreamer_resolution.setter
-    def ustreamer_resolution(self, value):
-        self._data['ustreamer_resolution'] = value
-
-    @ustreamer_resolution.deleter
-    def ustreamer_resolution(self):
-        self._data.pop('ustreamer_resolution', None)
-
-    @property
     def ustreamer_desired_fps(self):
-        return self._data['ustreamer_desired_fps']
+        # Note: We use the get method here with a default value to avoid raising
+        # an exception for when the key doesn't yet exist.
+        return self._data.get('ustreamer_desired_fps', None)
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
@@ -71,19 +61,9 @@ class Settings:
 
     @ustreamer_desired_fps.deleter
     def ustreamer_desired_fps(self):
+        # Note: We use the pop method here with a default value to avoid raising
+        # an exception for when the key doesn't yet exist.
         self._data.pop('ustreamer_desired_fps', None)
-
-    @property
-    def ustreamer_jpeg_quality(self):
-        return self._data['ustreamer_jpeg_quality']
-
-    @ustreamer_jpeg_quality.setter
-    def ustreamer_jpeg_quality(self, value):
-        self._data['ustreamer_jpeg_quality'] = value
-
-    @ustreamer_jpeg_quality.deleter
-    def ustreamer_jpeg_quality(self):
-        self._data.pop('ustreamer_jpeg_quality', None)
 
 
 def load():
@@ -119,3 +99,20 @@ def _to_file(settings, settings_file):
     """Writes a Settings object to a file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
+
+
+def get_video_fps():
+    settings = load()
+    return settings.ustreamer_desired_fps
+
+
+def set_video_fps(video_fps):
+    settings = load()
+    settings.ustreamer_desired_fps = video_fps
+    save(settings)
+
+
+def unset_video_fps():
+    settings = load()
+    del settings.ustreamer_desired_fps
+    save(settings)
