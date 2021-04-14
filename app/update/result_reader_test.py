@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from unittest import mock
 
-import update_result
-import update_result_reader
+import update.result
+import update.result_reader
 
 
 class UpdateResultReaderTest(unittest.TestCase):
@@ -22,13 +22,13 @@ class UpdateResultReaderTest(unittest.TestCase):
             mock_file.write(contents)
         return full_path
 
-    @mock.patch.object(update_result_reader.glob, 'glob')
+    @mock.patch.object(update.result_reader.glob, 'glob')
     def test_returns_none_when_no_result_files_exist(self, mock_glob):
         mock_glob.return_value = []
-        self.assertIsNone(update_result_reader.read())
+        self.assertIsNone(update.result_reader.read())
 
-    @mock.patch.object(update_result_reader.glob, 'glob')
-    @mock.patch.object(update_result_reader.utc, 'now')
+    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_reader.utc, 'now')
     def test_returns_latest_if_it_is_within_last_eight_minutes(
             self, mock_now, mock_glob):
         mock_glob.return_value = [
@@ -62,7 +62,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(error='',
+            update.result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -71,10 +71,10 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      minute=3,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update_result_reader.read())
+            update.result_reader.read())
 
-    @mock.patch.object(update_result_reader.glob, 'glob')
-    @mock.patch.object(update_result_reader.utc, 'now')
+    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_reader.utc, 'now')
     def test_returns_latest_if_it_is_in_the_future(self, mock_now, mock_glob):
         """Due to NTP updates, the latest result might be from a later time."""
         mock_glob.return_value = [
@@ -110,7 +110,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(error='',
+            update.result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -119,10 +119,10 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      minute=6,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update_result_reader.read())
+            update.result_reader.read())
 
-    @mock.patch.object(update_result_reader.glob, 'glob')
-    @mock.patch.object(update_result_reader.utc, 'now')
+    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_reader.utc, 'now')
     def test_returns_none_if_all_results_are_older_than_eight_minutes(
             self, mock_now, mock_glob):
         mock_glob.return_value = [
@@ -142,4 +142,4 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   minute=8,
                                                   second=1,
                                                   tzinfo=datetime.timezone.utc)
-        self.assertIsNone(update_result_reader.read())
+        self.assertIsNone(update.result_reader.read())

@@ -57,7 +57,7 @@ def update_get():
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
     """
 
-    status, error = update.get_current_state()
+    status, error = update.update.get_current_state()
     if error:
         return json_response.error(error), 200
     return json_response.success({'status': str(status)})
@@ -78,11 +78,11 @@ def update_put():
         error: null if successful, str otherwise.
     """
     try:
-        update.start_async()
-    except update.AlreadyInProgressError:
+        update.update.start_async()
+    except update.update.AlreadyInProgressError:
         # If an update is already in progress, treat it as success.
         pass
-    except update.Error as e:
+    except update.update.Error as e:
         return json_response.error(str(e)), 200
     return json_response.success()
 
