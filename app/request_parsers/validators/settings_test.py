@@ -1,6 +1,6 @@
 import unittest
 
-from request_parsers.validators.update_settings import validate_video_fps
+from request_parsers.validators.settings import validate_video_fps
 
 
 class VideoFpsValidationTest(unittest.TestCase):
