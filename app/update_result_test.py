@@ -7,7 +7,7 @@ import update_result
 
 class UpdateResultTest(unittest.TestCase):
 
-    def test_returns_none_when_no_result_files_exist(self):
+    def test_reads_correct_values_for_successful_result(self):
         self.assertEqual(
             update_result.Result(
                 error='',
