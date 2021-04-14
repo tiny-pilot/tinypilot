@@ -1,7 +1,7 @@
 import io
 import unittest
 
-import update_settings
+import update.settings
 
 
 class UpdateSettingsTest(unittest.TestCase):
@@ -10,8 +10,8 @@ class UpdateSettingsTest(unittest.TestCase):
         mock_input_file = io.StringIO()
         mock_output_file = io.StringIO()
 
-        settings = update_settings.load(mock_input_file)
-        update_settings.save(settings, mock_output_file)
+        settings = update.settings.load(mock_input_file)
+        update.settings.save(settings, mock_output_file)
 
         self.assertEqual('', mock_output_file.getvalue())
 
@@ -19,9 +19,9 @@ class UpdateSettingsTest(unittest.TestCase):
         mock_input_file = io.StringIO()
         mock_output_file = io.StringIO()
 
-        settings = update_settings.load(mock_input_file)
+        settings = update.settings.load(mock_input_file)
         settings.tinypilot_repo_branch = 'dummy-branch-name'
-        update_settings.save(settings, mock_output_file)
+        update.settings.save(settings, mock_output_file)
 
         self.assertMultiLineEqual(
             """
@@ -34,9 +34,9 @@ tinypilot_repo_branch: branch-name-to-overwrite
 """.lstrip())
         mock_output_file = io.StringIO()
 
-        settings = update_settings.load(mock_input_file)
+        settings = update.settings.load(mock_input_file)
         settings.tinypilot_repo_branch = 'dummy-branch-name'
-        update_settings.save(settings, mock_output_file)
+        update.settings.save(settings, mock_output_file)
 
         self.assertMultiLineEqual(
             """
@@ -50,9 +50,9 @@ unrecognized_setting: dummyvalue
 """.lstrip())
         mock_output_file = io.StringIO()
 
-        settings = update_settings.load(mock_input_file)
+        settings = update.settings.load(mock_input_file)
         settings.tinypilot_repo_branch = 'dummy-branch-name'
-        update_settings.save(settings, mock_output_file)
+        update.settings.save(settings, mock_output_file)
 
         self.assertMultiLineEqual(
             """

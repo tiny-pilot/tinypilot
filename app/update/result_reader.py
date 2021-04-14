@@ -49,7 +49,7 @@ import glob
 import os
 
 import iso8601
-import update_result
+import update.result
 import utc
 
 _RESULT_FILE_DIR = os.path.expanduser('~/logs')
@@ -71,7 +71,7 @@ def read():
         None.
 
     Returns:
-        An update_result.Result based on the most recent update result file
+        An update.result.Result based on the most recent update result file
         within the time threshold or None if none exist.
     """
     result_files = glob.glob(
@@ -83,7 +83,7 @@ def read():
     # most recently created file.
     most_recent_result_file = sorted(result_files)[-1]
     with open(most_recent_result_file) as result_file:
-        most_recent_result = update_result.read(result_file)
+        most_recent_result = update.result.read(result_file)
 
     # Ignore the result if it's too old.
     delta = utc.now() - most_recent_result.timestamp

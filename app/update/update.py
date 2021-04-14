@@ -2,7 +2,7 @@ import enum
 import logging
 import subprocess
 
-import update_result_reader
+import update.result_reader
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def get_current_state():
     if _is_update_process_running():
         return Status.IN_PROGRESS, None
 
-    recent_result = update_result_reader.read()
+    recent_result = update.result_reader.read()
     if not recent_result:
         return Status.NOT_RUNNING, None
 
