@@ -35,7 +35,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2020-12-31T000000Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2020-12-31T000000Z"
 }
@@ -43,7 +42,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000000Z"
 }
@@ -51,7 +49,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000300Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000300Z"
 }
@@ -65,8 +62,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(success=True,
-                                 error='',
+            update_result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -85,7 +81,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000000Z"
 }
@@ -93,7 +88,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000300Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000300Z"
 }
@@ -101,7 +95,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000600Z-update-result.json', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000600Z"
 }
@@ -117,8 +110,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(success=True,
-                                 error='',
+            update_result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -137,7 +129,6 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000000Z', """
 {
-  "success": true,
   "error": "",
   "timestamp": "2021-01-01T000000Z"
 }

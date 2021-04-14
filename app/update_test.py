@@ -51,7 +51,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-
         # get_current_state should ignore this result because an update process
         # is currently running, which takes priority over the previous result.
         mock_read_update_result.return_value = update_result.Result(
-            success=True, error=None, timestamp='2021-02-10T085735Z')
+            error=None, timestamp='2021-02-10T085735Z')
 
         status_actual, error_actual = update.get_current_state()
         self.assertEqual(update.Status.IN_PROGRESS, status_actual)
@@ -67,7 +67,7 @@ root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
 root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
 """.lstrip().encode('utf-8')
         mock_read_update_result.return_value = update_result.Result(
-            success=True, error=None, timestamp='2021-02-10T085735Z')
+            error=None, timestamp='2021-02-10T085735Z')
 
         status_actual, error_actual = update.get_current_state()
         self.assertEqual(update.Status.DONE, status_actual)
@@ -83,9 +83,7 @@ root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
 root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
 """.lstrip().encode('utf-8')
         mock_read_update_result.return_value = update_result.Result(
-            success=False,
-            error='dummy update error',
-            timestamp='2021-02-10T085735Z')
+            error='dummy update error', timestamp='2021-02-10T085735Z')
 
         status_actual, error_actual = update.get_current_state()
         self.assertEqual(update.Status.DONE, status_actual)
