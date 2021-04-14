@@ -5,6 +5,7 @@
 # launched manually when the user requests an update.
 
 import argparse
+import datetime
 import logging
 import os
 import subprocess
@@ -36,14 +37,15 @@ def perform_update():
 
 
 def run_update_script():
-    result = update_result.Result(success=False, error='', timestamp=utc.now())
+    result = update_result.Result(
+        error='The update did not complete',
+        timestamp=datetime.datetime.utcfromtimestamp(0))
     try:
         logger.info('Launching update script: %s', update.UPDATE_SCRIPT_PATH)
         subprocess.run(['sudo', update.UPDATE_SCRIPT_PATH],
                        check=True,
                        timeout=_UPDATE_TIMEOUT_SECONDS)
         logger.info('Update completed successfully')
-        result.success = True
     except subprocess.TimeoutExpired:
         logger.error('Update process timed out')
         result.error = 'The update timed out'

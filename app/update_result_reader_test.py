@@ -65,8 +65,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(success=True,
-                                 error='',
+            update_result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -117,8 +116,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update_result.Result(success=True,
-                                 error='',
+            update_result.Result(error='',
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
