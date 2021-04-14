@@ -1,18 +1,8 @@
 import enum
-import logging
 import subprocess
 
+import update.launcher
 import update.result_reader
-
-logger = logging.getLogger(__name__)
-
-
-class Error(Exception):
-    pass
-
-
-class AlreadyInProgressError(Error):
-    pass
 
 
 class Status(enum.Enum):
@@ -24,27 +14,7 @@ class Status(enum.Enum):
         return str(self.name)
 
 
-UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
-
-
-def start_async():
-    """Launches the update service asynchronously.
-
-    Launches the tinypilot-update systemd service in the background. If the
-    service is already running, raises an exception.
-
-    Raises:
-        AlreadyInProgressError if the update process is already running.
-    """
-    current_state, _ = get_current_state()
-    if current_state == Status.IN_PROGRESS:
-        raise AlreadyInProgressError('An update is already in progress')
-
-    subprocess.Popen(
-        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
-
-
-def get_current_state():
+def get():
     """Retrieves the current state of the update process.
 
     Checks the state of any actively running update jobs or jobs that have
@@ -69,6 +39,6 @@ def _is_update_process_running():
     lines = subprocess.check_output(
         ('ps', '-auxwe')).decode('utf-8').splitlines()
     for line in lines:
-        if UPDATE_SCRIPT_PATH in line:
+        if update.launcher.UPDATE_SCRIPT_PATH in line:
             return True
     return False
