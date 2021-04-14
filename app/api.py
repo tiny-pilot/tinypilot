@@ -6,7 +6,7 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
-import update
+import update.update
 import version
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
