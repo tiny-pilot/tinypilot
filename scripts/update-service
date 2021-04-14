@@ -59,6 +59,7 @@ def run_update_script():
                      str(e))
         result.error = 'The update failed: %s' % str(e)
 
+    result.error = ''
     result.timestamp = utc.now()
     return result
 
