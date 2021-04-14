@@ -6,7 +6,7 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
-import request_parsers.update_settings
+import request_parsers.settings
 import update.launcher
 import update.status
 import update.settings
@@ -247,7 +247,7 @@ def settings_video_fps_get():
 @api_blueprint.route('/settings/video/fps', methods=['PUT'])
 def settings_video_fps_put():
     try:
-        video_fps = request_parsers.update_settings.parse_video_fps(
+        video_fps = request_parsers.settings.parse_video_fps(
             flask.request)
         update.settings.set_video_fps(video_fps)
     except request_parsers.errors.InvalidVideoFpsError as e:
