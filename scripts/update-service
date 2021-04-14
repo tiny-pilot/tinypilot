@@ -10,9 +10,9 @@ import logging
 import os
 import subprocess
 
+import update.launcher
 import update.result
 import update.result_reader
-import update.update
 import utc
 
 logger = logging.getLogger(__name__)
@@ -42,8 +42,8 @@ def run_update_script():
         timestamp=datetime.datetime.utcfromtimestamp(0))
     try:
         logger.info('Launching update script: %s',
-                    update.update.UPDATE_SCRIPT_PATH)
-        subprocess.run(['sudo', update.update.UPDATE_SCRIPT_PATH],
+                    update.launcher.UPDATE_SCRIPT_PATH)
+        subprocess.run(['sudo', update.launcher.UPDATE_SCRIPT_PATH],
                        check=True,
                        timeout=_UPDATE_TIMEOUT_SECONDS)
         logger.info('Update completed successfully')

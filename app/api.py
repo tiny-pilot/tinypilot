@@ -6,7 +6,8 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
-import update.update
+import update.launcher
+import update.status
 import version
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -57,7 +58,7 @@ def update_get():
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
     """
 
-    status, error = update.update.get_current_state()
+    status, error = update.status.get()
     if error:
         return json_response.error(error), 200
     return json_response.success({'status': str(status)})
@@ -78,11 +79,11 @@ def update_put():
         error: null if successful, str otherwise.
     """
     try:
-        update.update.start_async()
-    except update.update.AlreadyInProgressError:
+        update.launcher.start_async()
+    except update.launcher.AlreadyInProgressError:
         # If an update is already in progress, treat it as success.
         pass
-    except update.update.Error as e:
+    except update.launcher.Error as e:
         return json_response.error(str(e)), 200
     return json_response.success()
 
