@@ -106,7 +106,7 @@ To update to the latest version of TinyPilot, run the update script:
 
 ## Diagnostics
 
-If you're having trouble with TinyPilot, you can retrive logs from the web dashboard by clicking "View Logs" in the bottom of the main dashboard.
+If you're having trouble with TinyPilot, you can retrive logs from the web dashboard by clicking "Logs" in the bottom of the main dashboard.
 
 If you can't access the web dashboard, you can retrieve the logs by SSHing into the device and running the following command:
 
