@@ -5,7 +5,6 @@
 # launched manually when the user requests an update.
 
 import argparse
-import datetime
 import logging
 import os
 import subprocess
