@@ -377,6 +377,21 @@
       .then(() => null);
   }
 
+  function applyVideoSettings() {
+    return fetch("/api/settings/video/apply", {
+      method: "POST",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then(() => null);
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -394,4 +409,5 @@
   window.controllers.getVideoFps = getVideoFps;
   window.controllers.setVideoFps = setVideoFps;
   window.controllers.unsetVideoFps = unsetVideoFps;
+  window.controllers.applyVideoSettings = applyVideoSettings;
 })(window);

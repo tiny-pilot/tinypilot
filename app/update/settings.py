@@ -102,20 +102,3 @@ def save_default(settings):
 
     with open(DEFAULT_SETTINGS_FILE_PATH, 'w') as settings_file:
         save(settings, settings_file)
-
-
-def get_video_fps():
-    settings = load_default()
-    return settings.ustreamer_desired_fps
-
-
-def set_video_fps(video_fps):
-    settings = load_default()
-    settings.ustreamer_desired_fps = video_fps
-    save_default(settings)
-
-
-def unset_video_fps():
-    settings = load_default()
-    del settings.ustreamer_desired_fps
-    save_default(settings)

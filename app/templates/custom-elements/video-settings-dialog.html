@@ -40,12 +40,12 @@
       <span id="video-fps-display"></span>
     </div>
     <button class="save-btn btn-success" type="button">
-      Save
+      Save & Apply
     </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
-    <h3>Saving video settings</h3>
+    <h3>Saving & applying video settings</h3>
     <progress-spinner></progress-spinner>
   </div>
 </template>
@@ -131,10 +131,13 @@
         }
 
         _saveSettings() {
-          Promise.all([this._saveVideoFps()]).then((results) => {
-            console.log(results);
-            this.state = "edit";
-          });
+          this.state = "saving";
+          Promise.all([this._saveVideoFps()])
+            .then((results) => console.log(results))
+            .then(controllers.applyVideoSettings)
+            .then(() => {
+              this.state = "edit";
+            });
         }
 
         _close() {
