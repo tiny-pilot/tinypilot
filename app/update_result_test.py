@@ -67,8 +67,7 @@ class UpdateResultTest(unittest.TestCase):
                                             35,
                                             tzinfo=datetime.timezone.utc),
             ), mock_file)
-        self.assertEqual(('{"error": "", '
-                          '"timestamp": "2021-02-10T085735Z"}'),
+        self.assertEqual(('{"error": "", "timestamp": "2021-02-10T085735Z"}'),
                          mock_file.getvalue())
 
     def test_writes_error_result_accurately(self):
