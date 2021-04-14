@@ -4,6 +4,10 @@
 # to a file. This executable is meant to be run as a systemd one-shot service,
 # launched manually when the user requests an update.
 
+# Ignore pylint complaint that this filename has a dash instead of an
+# underscore.
+# pylint:disable=invalid-name
+
 import argparse
 import datetime
 import logging

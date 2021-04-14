@@ -12,8 +12,7 @@ set -u
 # Location of app source files.
 SOURCE_DIR="app"
 
-# Location of extra scripts that depend on app source.
-SCRIPTS_DIR="scripts"
+UPDATE_SCRIPT="scripts/update-service"
 
 # Location of virtualenv.
 VIRTUALENV_DIR=venv
@@ -51,7 +50,7 @@ isort \
   --skip-glob=venv/*
 
 # Run static analysis for Python bugs/cruft.
-pyflakes "${SOURCE_DIR}" "${SCRIPTS_DIR}"
+pyflakes "${SOURCE_DIR}/" "${UPDATE_SCRIPT}"
 
 # Check for other style violations.
-PYTHONPATH="${SOURCE_DIR}" pylint "${SOURCE_DIR}" "${SCRIPTS_DIR}"
+PYTHONPATH="${SOURCE_DIR}" pylint "${SOURCE_DIR}" "${UPDATE_SCRIPT}"
