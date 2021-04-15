@@ -1,21 +1,20 @@
-"""Manages a TinyPilot settings file.
+"""Manages a TinyPilot update settings file.
+
+TinyPilot currently manages most settings through Ansible. When TinyPilot
+launches ansible, it passes an extra YAML file that controls properties of the
+install and configuration. This module is a wrapper around the YAML file that
+allows TinyPilot code to modify it cleanly.
 
 Typical usage example:
 
-with open(update_settings.DEFAULT_SETTINGS_FILE_PATH) as settings_file:
-    settings = update_settings.load(settings_file)
-
-settings.tinypilot_repo_branch = '2.1.5'
-
-with open(update_settings.DEFAULT_SETTINGS_FILE_PATH, 'w') as settings_file:
-    update_settings.save(settings, settings_file)
+    settings = update_settings.load()
+    settings.tinypilot_repo_branch = '2.1.5'
+    update_settings.save(settings)
 """
 
 import os
 
 import yaml
-
-DEFAULT_SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
 
 class Settings:
@@ -46,22 +45,42 @@ class Settings:
         self._data['tinypilot_repo_branch'] = value
 
 
-def load(settings_file):
-    """Create a settings instance to manage the TinyPilot settings file.
+def load():
+    """Retrieves the current TinyPilot update settings
 
     Parses the contents of settings file and generates a settings object that
     represents the values in the settings file.
 
     Args:
-        settings_file: File containing TinyPilot settings in YAML format.
+        None
 
     Returns:
-        An object containing TinyPilot settings.
+        A Settings instance of the current update settings.
     """
+    try:
+        with open(_settings_file_path()) as settings_file:
+            return _from_file(settings_file)
+    except FileNotFoundError:
+        return Settings(data=None)
+
+
+def save(settings):
+    """Saves a Settings object to the settings file."""
+    with open(_settings_file_path(), 'w') as settings_file:
+        _to_file(settings, settings_file)
+
+
+def _from_file(settings_file):
     return Settings(yaml.safe_load(settings_file))
 
 
-def save(settings, settings_file):
-    """Writes the current settings to the settings file."""
+def _to_file(settings, settings_file):
+    """Writes a Settings object to a file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
+
+
+# This could be a constant, but we're doing it as a function so that we can mock
+# out the os.path.expanduser call for unit testing.
+def _settings_file_path():
+    return os.path.expanduser('~/settings.yml')
