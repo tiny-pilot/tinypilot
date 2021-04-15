@@ -59,7 +59,6 @@ def load():
     """
     try:
         with open(_settings_file_path()) as settings_file:
-            print('opened %s' % _settings_file_path())
             return _from_file(settings_file)
     except FileNotFoundError:
         return Settings(data=None)
