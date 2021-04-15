@@ -15,11 +15,10 @@ class UpdateSettingsTest(unittest.TestCase):
         self.settings_file_path = os.path.join(self.mock_settings_dir.name,
                                                'settings.yml')
 
-        expanduser_patch = mock.patch.object(update.settings.os.path,
-                                             'expanduser')
-        self.addCleanup(expanduser_patch.stop)
-        mock_expanduser = expanduser_patch.start()
-        mock_expanduser.return_value = self.settings_file_path
+        path_patch = mock.patch.object(update.settings, '_SETTINGS_FILE_PATH',
+                                       self.settings_file_path)
+        self.addCleanup(path_patch.stop)
+        path_patch.start()
 
     def tearDown(self):
         self.mock_settings_dir.cleanup()
