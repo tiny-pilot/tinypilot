@@ -1,8 +1,9 @@
 """Manages a TinyPilot update settings file.
 
-TinyPilot currently manages most settings through Ansible, and Ansible loads
-this settings file to control certain properties of the TinyPilot install and
-configuration.
+TinyPilot currently manages most settings through Ansible. When TinyPilot
+launches ansible, it passes an extra YAML file that controls properties of the
+install and configuration. This module is a wrapper around the YAML file that
+allows TinyPilot code to modify it cleanly.
 
 Typical usage example:
 
@@ -45,7 +46,17 @@ class Settings:
 
 
 def load():
-    """Gets the current Settings object from the TinyPilot settings file."""
+    """Retrieves the current TinyPilot update settings
+
+    Parses the contents of settings file and generates a settings object that
+    represents the values in the settings file.
+
+    Args:
+        None
+
+    Returns:
+        A Settings instance of the current update settings.
+    """
     try:
         with open(_settings_file_path()) as settings_file:
             print('opened %s' % _settings_file_path())
@@ -61,22 +72,11 @@ def save(settings):
 
 
 def _from_file(settings_file):
-    """Creates a settings instance to manage the TinyPilot settings file.
-
-    Parses the contents of settings file and generates a settings object that
-    represents the values in the settings file.
-
-    Args:
-        settings_file: File containing TinyPilot settings in YAML format.
-
-    Returns:
-        An object containing TinyPilot settings.
-    """
     return Settings(yaml.safe_load(settings_file))
 
 
 def _to_file(settings, settings_file):
-    """Writes the current settings to the settings file."""
+    """Writes a Settings object to a file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
 
