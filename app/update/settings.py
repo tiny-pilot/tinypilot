@@ -16,6 +16,8 @@ import os
 
 import yaml
 
+_SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
+
 
 class Settings:
 
@@ -58,7 +60,7 @@ def load():
         A Settings instance of the current update settings.
     """
     try:
-        with open(_settings_file_path()) as settings_file:
+        with open(_SETTINGS_FILE_PATH) as settings_file:
             return _from_file(settings_file)
     except FileNotFoundError:
         return Settings(data=None)
@@ -66,7 +68,7 @@ def load():
 
 def save(settings):
     """Saves a Settings object to the settings file."""
-    with open(_settings_file_path(), 'w') as settings_file:
+    with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
         _to_file(settings, settings_file)
 
 
@@ -78,9 +80,3 @@ def _to_file(settings, settings_file):
     """Writes a Settings object to a file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
-
-
-# This could be a constant, but we're doing it as a function so that we can mock
-# out the os.path.expanduser call for unit testing.
-def _settings_file_path():
-    return os.path.expanduser('~/settings.yml')
