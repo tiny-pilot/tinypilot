@@ -29,23 +29,23 @@
     }
   </style>
   <div id="loading">
-    <h3>Retrieving video settings</h3>
+    <h3>Retrieving Video Settings</h3>
     <progress-spinner></progress-spinner>
   </div>
   <div id="edit">
-    <h3>Change video settings</h3>
+    <h3>Change Video Settings</h3>
     <div class="input-container">
       <label for="video-fps">FPS:</label>
-      <input type="range" id="video-fps" min="0" max="30" />
+      <input type="range" id="video-fps" min="1" max="30" />
       <span id="video-fps-display"></span>
     </div>
     <button class="save-btn btn-success" type="button">
-      Save & Apply
+      Apply
     </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
-    <h3>Saving & applying video settings</h3>
+    <h3>Applying Video Settings</h3>
     <progress-spinner></progress-spinner>
   </div>
 </template>
@@ -92,18 +92,13 @@
           const videoFpsDisplayElement = this.shadowRoot.querySelector(
             "#video-fps-display"
           );
-          if (videoFps == 0) {
-            videoFpsDisplayElement.innerHTML = "Empty";
-          } else {
-            videoFpsDisplayElement.innerHTML = videoFps;
-          }
+          videoFpsDisplayElement.innerHTML = videoFps;
         }
 
         _getVideoFps() {
           return controllers
             .getVideoFps()
             .then((videoFps) => {
-              if (videoFps === null) videoFps = 0;
               this.shadowRoot.querySelector("#video-fps").value = videoFps;
               this._setVideoFpsDisplay(videoFps);
             })
@@ -122,10 +117,7 @@
 
         _saveVideoFps() {
           let videoFps = this.shadowRoot.querySelector("#video-fps").value;
-          return (videoFps == 0
-            ? controllers.unsetVideoFps()
-            : controllers.setVideoFps(videoFps)
-          ).catch((error) => {
+          return controllers.setVideoFps(videoFps).catch((error) => {
             console.error("_saveVideoFps", error);
           });
         }
@@ -133,16 +125,28 @@
         _saveSettings() {
           this.state = "saving";
           Promise.all([this._saveVideoFps()])
-            .then((results) => console.log(results))
             .then(controllers.applyVideoSettings)
             .then(() => {
-              this.state = "edit";
+              // Note: After the video stream stops, it doesn't try to
+              // reconnect. So in order to restart the video stream, we need to
+              // reload the page.
+              location.reload();
             });
         }
 
         _close() {
           this.dispatchEvent(
             new CustomEvent("dialog-closed", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        _displayErrorDialog(errorInfo) {
+          this.dispatchEvent(
+            new CustomEvent("video-settings-failure", {
+              detail: errorInfo,
               bubbles: true,
               composed: true,
             })
