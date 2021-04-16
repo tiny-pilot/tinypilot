@@ -29,9 +29,6 @@ class Settings:
     def as_dict(self):
         return self._data
 
-    def update(self, data):
-        self._data.update(data)
-
     # Note: tinypilot_repo_branch is confusingly named. It should really be
     # tinypilot_repo_version, but this class just reflects the names in the
     # TinyPilot Ansible role.
@@ -51,8 +48,6 @@ class Settings:
 
     @property
     def ustreamer_desired_fps(self):
-        # Note: We use the get method here with a default value to avoid raising
-        # an exception for when the key doesn't yet exist.
         return self._data.get('ustreamer_desired_fps', None)
 
     @ustreamer_desired_fps.setter
@@ -61,9 +56,8 @@ class Settings:
 
     @ustreamer_desired_fps.deleter
     def ustreamer_desired_fps(self):
-        # Note: We use the pop method here with a default value to avoid raising
-        # an exception for when the key doesn't yet exist.
-        self._data.pop('ustreamer_desired_fps', None)
+        if 'ustreamer_desired_fps' in self._data:
+            del self._data['ustreamer_desired_fps']
 
 
 def load():

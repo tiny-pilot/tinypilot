@@ -333,10 +333,10 @@
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
       .then((data) => {
-        if (!data.hasOwnProperty("video_fps")) {
-          return Promise.reject(new Error("Missing expected video_fps field"));
+        if (!data.hasOwnProperty("videoFps")) {
+          return Promise.reject(new Error("Missing expected videoFps field"));
         }
-        return Promise.resolve(data.video_fps);
+        return Promise.resolve(data.videoFps);
       });
   }
 
@@ -350,31 +350,11 @@
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
       },
-      body: JSON.stringify({ video_fps: videoFps }),
+      body: JSON.stringify({ videoFps }),
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
-      .then((data) => {
-        if (!data.hasOwnProperty("video_fps")) {
-          return Promise.reject(new Error("Missing expected video_fps field"));
-        }
-        return Promise.resolve(data.video_fps);
-      });
-  }
-
-  function unsetVideoFps() {
-    return fetch("/api/settings/video/fps", {
-      method: "DELETE",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-      headers: {
-        "X-CSRFToken": getCsrfToken(),
-      },
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => null);
+      .then(() => {});
   }
 
   function applyVideoSettings() {
@@ -389,7 +369,7 @@
     })
       .then(readHttpJsonResponse)
       .then(checkJsonSuccess)
-      .then(() => null);
+      .then(() => {});
   }
 
   if (!window.hasOwnProperty("controllers")) {
@@ -408,6 +388,5 @@
   window.controllers.textToShareableUrl = textToShareableUrl;
   window.controllers.getVideoFps = getVideoFps;
   window.controllers.setVideoFps = setVideoFps;
-  window.controllers.unsetVideoFps = unsetVideoFps;
   window.controllers.applyVideoSettings = applyVideoSettings;
 })(window);
