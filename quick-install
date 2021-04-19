@@ -69,8 +69,7 @@ if [[ "$USE_TC358743_DEFAULTS" == 'y' ]]; then
     add_setting_if_undefined "ustreamer_encoder" "omx"
     add_setting_if_undefined "ustreamer_format" "uyvy"
     add_setting_if_undefined "ustreamer_workers" "3"
-    add_setting_if_undefined "ustreamer_persistent" "True"
-    add_setting_if_undefined "ustreamer_use_dv_timings" "True"
+    add_setting_if_undefined "ustreamer_use_dv_timings" "true"
     add_setting_if_undefined "ustreamer_drop_same_frames" "30"
 else
   # If this system does not use a TC358743 capture chip, assume defaults for a
