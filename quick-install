@@ -71,7 +71,6 @@ if [ -z "$USE_TC358743_DEFAULTS" ]; then
   add_setting_if_undefined "ustreamer_format" "jpeg"
   add_setting_if_undefined "ustreamer_resolution" "1920x1080"
   add_setting_if_undefined "ustreamer_persistent" "true"
-  add_setting_if_undefined "ustreamer_desired_fps" "30"
 fi
 
 echo "Final install settings:"
