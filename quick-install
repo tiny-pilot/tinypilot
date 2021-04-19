@@ -51,6 +51,7 @@ readonly EXTRA_VARS_PATH="@${TINYPILOT_SETTINGS_FILE}"
 
 # Set default installation settings
 add_setting_if_undefined "ustreamer_port" "8001"
+add_setting_if_undefined "ustreamer_persistent" "true"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
 USE_TC358743_DEFAULTS=''
@@ -64,13 +65,19 @@ elif [ -f /home/ustreamer/config.yml ] && grep --silent 'capture_device: "tc3587
   USE_TC358743_DEFAULTS='y'
 fi
 
-# If this system does not use a TC358743 capture chip, set defaults for any
-# unset install variables.
-if [ -z "$USE_TC358743_DEFAULTS" ]; then
+if [[ "$USE_TC358743_DEFAULTS" == 'y' ]]; then
+    add_setting_if_undefined "ustreamer_encoder" "omx"
+    add_setting_if_undefined "ustreamer_format" "uyvy"
+    add_setting_if_undefined "ustreamer_workers" "3"
+    add_setting_if_undefined "ustreamer_persistent" "True"
+    add_setting_if_undefined "ustreamer_use_dv_timings" "True"
+    add_setting_if_undefined "ustreamer_drop_same_frames" "30"
+else
+  # If this system does not use a TC358743 capture chip, assume defaults for a
+  # MacroSilicon MS2109-based HDMI-to-USB capture dongle.
   add_setting_if_undefined "ustreamer_encoder" "hw"
   add_setting_if_undefined "ustreamer_format" "jpeg"
   add_setting_if_undefined "ustreamer_resolution" "1920x1080"
-  add_setting_if_undefined "ustreamer_persistent" "true"
 fi
 
 echo "Final install settings:"
