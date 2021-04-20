@@ -6,7 +6,7 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
-import request_parsers.settings
+import request_parsers.video_fps
 import update.launcher
 import update.settings
 import update.status
@@ -260,19 +260,17 @@ def settings_video_fps_get():
         Example of error:
         {
             'success': false,
-            'error': 'Failed to read from the settings file.'
+            'error': 'Failed to load settings'
         }
     """
     try:
-        settings = update.settings.load()
-        video_fps = settings.ustreamer_desired_fps
+        video_fps = update.settings.load().ustreamer_desired_fps
         # Note: Default values are not set in the settings file. So when the
         # values are unset, we must respond with the correct default value.
         if video_fps is None:
             video_fps = video_settings.DEFAULT_FPS
-    except IOError as e:
-        return json_response.error('Failed to read from the settings file: %s' %
-                                   str(e)), 200
+    except update.settings.LoadSettingsError as e:
+        return json_response.error(str(e)), 200
     return json_response.success({'videoFps': video_fps})
 
 
@@ -300,11 +298,11 @@ def settings_video_fps_put():
         Example of error:
         {
             'success': false,
-            'error': 'Failed to read/write to the settings file.'
+            'error': 'Failed to save settings'
         }
     """
     try:
-        video_fps = request_parsers.settings.parse_video_fps(flask.request)
+        video_fps = request_parsers.video_fps.parse(flask.request)
         settings = update.settings.load()
         # Note: To avoid polluting the settings file with unnecessay default
         # values, we unset them instead.
@@ -313,17 +311,15 @@ def settings_video_fps_put():
         else:
             settings.ustreamer_desired_fps = video_fps
         update.settings.save(settings)
-    except request_parsers.errors.InvalidVideoFpsError as e:
+    except (request_parsers.errors.InvalidVideoFpsError,
+            update.settings.SaveSettingsError) as e:
         return json_response.error(str(e)), 200
-    except IOError as e:
-        return json_response.error(
-            'Failed to read/write to the settings file: %s' % str(e)), 200
     return json_response.success()
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
 def settings_video_apply_post():
-    """Apply the current video settings found in the settings file.
+    """Applies the current video settings found in the settings file.
 
     Returns:
         A JSON string with two keys: success, error.

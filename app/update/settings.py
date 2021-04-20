@@ -19,6 +19,18 @@ import yaml
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
 
+class Error(Exception):
+    pass
+
+
+class LoadSettingsError(Error):
+    pass
+
+
+class SaveSettingsError(Error):
+    pass
+
+
 class Settings:
 
     def __init__(self, data):
@@ -77,12 +89,17 @@ def load():
             return _from_file(settings_file)
     except FileNotFoundError:
         return Settings(data=None)
+    except IOError as e:
+        raise LoadSettingsError('Failed to load settings') from e
 
 
 def save(settings):
     """Saves a Settings object to the settings file."""
-    with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
-        _to_file(settings, settings_file)
+    try:
+        with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
+            _to_file(settings, settings_file)
+    except IOError as e:
+        raise SaveSettingsError('Failed to save settings') from e
 
 
 def _from_file(settings_file):
@@ -93,20 +110,3 @@ def _to_file(settings, settings_file):
     """Writes a Settings object to a file."""
     if settings.as_dict():
         yaml.safe_dump(settings.as_dict(), settings_file)
-
-
-def get_video_fps():
-    settings = load()
-    return settings.ustreamer_desired_fps
-
-
-def set_video_fps(video_fps):
-    settings = load()
-    settings.ustreamer_desired_fps = video_fps
-    save(settings)
-
-
-def unset_video_fps():
-    settings = load()
-    del settings.ustreamer_desired_fps
-    save(settings)

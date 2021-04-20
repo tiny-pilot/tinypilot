@@ -3,7 +3,7 @@ from request_parsers import message as message_parser
 from request_parsers.validators import video_fps as video_fps_validator
 
 
-def parse_video_fps(request):
+def parse(request):
     message = message_parser.parse_message(request,
                                            required_fields=['videoFps'])
     try:
