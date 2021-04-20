@@ -23,7 +23,7 @@ def get():
     Returns:
         A two-tuple where the first value is a Status enum and the second is a
         string containing the error associated with a recently completed update
-        job. If the job completed successfully, the error string is empty.
+        job. If the job completed successfully, the second value is None.
     """
     if _is_update_process_running():
         return Status.IN_PROGRESS, None

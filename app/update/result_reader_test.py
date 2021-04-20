@@ -35,21 +35,21 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2020-12-31T000000Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2020-12-31T000000Z"
 }
             """),
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000000Z"
 }
             """),
             self.make_mock_file(
                 '2021-01-01T000300Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000300Z"
 }
             """)
@@ -62,7 +62,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update.result.Result(error='',
+            update.result.Result(error=None,
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -81,21 +81,21 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000000Z"
 }
             """),
             self.make_mock_file(
                 '2021-01-01T000300Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000300Z"
 }
             """),
             self.make_mock_file(
                 '2021-01-01T000600Z-update-result.json', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000600Z"
 }
             """)
@@ -110,7 +110,7 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   second=0,
                                                   tzinfo=datetime.timezone.utc)
         self.assertEqual(
-            update.result.Result(error='',
+            update.result.Result(error=None,
                                  timestamp=datetime.datetime(
                                      year=2021,
                                      month=1,
@@ -129,7 +129,7 @@ class UpdateResultReaderTest(unittest.TestCase):
             self.make_mock_file(
                 '2021-01-01T000000Z', """
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-01-01T000000Z"
 }
             """)
