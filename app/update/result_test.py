@@ -10,7 +10,7 @@ class UpdateResultTest(unittest.TestCase):
     def test_reads_correct_values_for_successful_result(self):
         self.assertEqual(
             update.result.Result(
-                error='',
+                error=None,
                 timestamp=datetime.datetime(2021,
                                             2,
                                             10,
@@ -22,7 +22,7 @@ class UpdateResultTest(unittest.TestCase):
             update.result.read(
                 io.StringIO("""
 {
-  "error": "",
+  "error": null,
   "timestamp": "2021-02-10T085735Z"
 }
 """)))
@@ -50,7 +50,7 @@ class UpdateResultTest(unittest.TestCase):
     def test_reads_default_values_for_empty_dict(self):
         self.assertEqual(
             update.result.Result(
-                error='',
+                error=None,
                 timestamp=datetime.datetime.utcfromtimestamp(0),
             ), update.result.read(io.StringIO('{}')))
 
@@ -58,7 +58,7 @@ class UpdateResultTest(unittest.TestCase):
         mock_file = io.StringIO()
         update.result.write(
             update.result.Result(
-                error='',
+                error=None,
                 timestamp=datetime.datetime(2021,
                                             2,
                                             10,
@@ -67,7 +67,7 @@ class UpdateResultTest(unittest.TestCase):
                                             35,
                                             tzinfo=datetime.timezone.utc),
             ), mock_file)
-        self.assertEqual(('{"error": "", "timestamp": "2021-02-10T085735Z"}'),
+        self.assertEqual(('{"error": null, "timestamp": "2021-02-10T085735Z"}'),
                          mock_file.getvalue())
 
     def test_writes_error_result_accurately(self):

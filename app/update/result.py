@@ -7,8 +7,8 @@ import iso8601
 
 @dataclasses.dataclass
 class Result:
-    # The error message for a failed update. An empty string implies that the
-    # update succeeded.
+    # The error message for a failed update. A value of None implies the update
+    # succeeded.
     error: str
     # Time at which the update completed.
     timestamp: datetime.datetime
@@ -21,7 +21,7 @@ def read(result_file):
     have a format like:
 
       {
-        "error": "",
+        "error": null,
         "timestamp": "2021-02-10T085735Z",
       }
 
@@ -32,7 +32,10 @@ def read(result_file):
         A Result object parsed from the file.
     """
     raw_result = json.load(result_file, cls=_ResultDecoder)
-    return Result(error=raw_result.get('error', ''),
+    error = raw_result.get('error', None)
+    if error == '':
+        error = None
+    return Result(error=error,
                   timestamp=raw_result.get(
                       'timestamp', datetime.datetime.utcfromtimestamp(0)))
 
