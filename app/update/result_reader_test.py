@@ -8,7 +8,7 @@ import update.result
 import update.result_reader
 
 
-class UpdateResultReaderTest(unittest.TestCase):
+class ResultReaderTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
@@ -28,9 +28,30 @@ class UpdateResultReaderTest(unittest.TestCase):
         self.assertIsNone(update.result_reader.read())
 
     @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
-    def test_returns_latest_if_it_is_within_last_eight_minutes(
-            self, mock_now, mock_glob):
+    def test_returns_value_from_result_file(self, mock_glob):
+        mock_glob.return_value = [
+            self.make_mock_file(
+                'latest-update-result.json', """
+{
+  "error": null,
+  "timestamp": "2021-01-01T000300Z"
+}
+            """)
+        ]
+        self.assertEqual(
+            update.result.Result(error=None,
+                                 timestamp=datetime.datetime(
+                                     year=2021,
+                                     month=1,
+                                     day=1,
+                                     hour=0,
+                                     minute=3,
+                                     second=0,
+                                     tzinfo=datetime.timezone.utc)),
+            update.result_reader.read())
+
+    @mock.patch.object(update.result_reader.glob, 'glob')
+    def test_returns_latest_legacy_result(self, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
                 '2020-12-31T000000Z-update-result.json', """
@@ -54,13 +75,6 @@ class UpdateResultReaderTest(unittest.TestCase):
 }
             """)
         ]
-        mock_now.return_value = datetime.datetime(year=2021,
-                                                  month=1,
-                                                  day=1,
-                                                  hour=0,
-                                                  minute=5,
-                                                  second=0,
-                                                  tzinfo=datetime.timezone.utc)
         self.assertEqual(
             update.result.Result(error=None,
                                  timestamp=datetime.datetime(
@@ -73,11 +87,35 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      tzinfo=datetime.timezone.utc)),
             update.result_reader.read())
 
+    @mock.patch.object(update.result_reader.os, 'remove')
     @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
-    def test_returns_latest_if_it_is_in_the_future(self, mock_now, mock_glob):
-        """Due to NTP updates, the latest result might be from a later time."""
-        mock_glob.return_value = [
+    def test_clear_removes_result_file(self, mock_glob, mock_remove):
+        mock_file_paths = [
+            self.make_mock_file(
+                'latest-update-result.json', """
+{
+  "error": null,
+  "timestamp": "2020-12-31T000000Z"
+}
+            """)
+        ]
+        mock_glob.return_value = mock_file_paths
+        update.result_reader.clear()
+        mock_remove.assert_has_calls([
+            mock.call(mock_file_paths[0]),
+        ])
+
+    @mock.patch.object(update.result_reader.os, 'remove')
+    @mock.patch.object(update.result_reader.glob, 'glob')
+    def test_clear_removes_legacy_files(self, mock_glob, mock_remove):
+        mock_file_paths = [
+            self.make_mock_file(
+                '2020-12-31T000000Z-update-result.json', """
+{
+  "error": null,
+  "timestamp": "2020-12-31T000000Z"
+}
+            """),
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
@@ -91,55 +129,25 @@ class UpdateResultReaderTest(unittest.TestCase):
   "error": null,
   "timestamp": "2021-01-01T000300Z"
 }
-            """),
-            self.make_mock_file(
-                '2021-01-01T000600Z-update-result.json', """
-{
-  "error": null,
-  "timestamp": "2021-01-01T000600Z"
-}
             """)
         ]
-        # Set the current time to one minute *behind* the latest result
-        # timestamp to simulate a time adjustment after, e.g., an NTP update.
-        mock_now.return_value = datetime.datetime(year=2021,
-                                                  month=1,
-                                                  day=1,
-                                                  hour=0,
-                                                  minute=5,
-                                                  second=0,
-                                                  tzinfo=datetime.timezone.utc)
-        self.assertEqual(
-            update.result.Result(error=None,
-                                 timestamp=datetime.datetime(
-                                     year=2021,
-                                     month=1,
-                                     day=1,
-                                     hour=0,
-                                     minute=6,
-                                     second=0,
-                                     tzinfo=datetime.timezone.utc)),
-            update.result_reader.read())
+        mock_glob.return_value = mock_file_paths
+        update.result_reader.clear()
+        mock_remove.assert_has_calls([
+            mock.call(mock_file_paths[0]),
+            mock.call(mock_file_paths[1]),
+            mock.call(mock_file_paths[2]),
+        ])
 
+    # pylint incorrectly complains that this could be a free function, but it
+    # needs to be part of unittest.TestCase.
+    # pylint: disable=no-self-use
+    @mock.patch.object(update.result_reader.os, 'remove')
     @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
-    def test_returns_none_if_all_results_are_older_than_eight_minutes(
-            self, mock_now, mock_glob):
-        mock_glob.return_value = [
-            self.make_mock_file(
-                '2021-01-01T000000Z', """
-{
-  "error": null,
-  "timestamp": "2021-01-01T000000Z"
-}
-            """)
-        ]
-        # Set current time to be 8m01s after most recent result.
-        mock_now.return_value = datetime.datetime(year=2021,
-                                                  month=1,
-                                                  day=1,
-                                                  hour=0,
-                                                  minute=8,
-                                                  second=1,
-                                                  tzinfo=datetime.timezone.utc)
-        self.assertIsNone(update.result_reader.read())
+    def test_clear_does_nothing_when_no_result_files_exist(
+            self, mock_glob, mock_remove):
+        mock_glob.return_value = []
+
+        update.result_reader.clear()
+
+        mock_remove.assert_not_called()
