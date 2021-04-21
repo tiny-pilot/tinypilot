@@ -5,10 +5,10 @@ import unittest
 from unittest import mock
 
 import update.result
-import update.result_reader
+import update.result_store
 
 
-class ResultReaderTest(unittest.TestCase):
+class ResultStoreTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
@@ -22,12 +22,12 @@ class ResultReaderTest(unittest.TestCase):
             mock_file.write(contents)
         return full_path
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_returns_none_when_no_result_files_exist(self, mock_glob):
         mock_glob.return_value = []
-        self.assertIsNone(update.result_reader.read())
+        self.assertIsNone(update.result_store.read())
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_returns_value_from_result_file(self, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
@@ -48,9 +48,9 @@ class ResultReaderTest(unittest.TestCase):
                                      minute=3,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update.result_reader.read())
+            update.result_store.read())
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_returns_latest_legacy_result(self, mock_glob):
         mock_glob.return_value = [
             self.make_mock_file(
@@ -85,10 +85,10 @@ class ResultReaderTest(unittest.TestCase):
                                      minute=3,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update.result_reader.read())
+            update.result_store.read())
 
-    @mock.patch.object(update.result_reader.os, 'remove')
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.os, 'remove')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_clear_removes_result_file(self, mock_glob, mock_remove):
         mock_file_paths = [
             self.make_mock_file(
@@ -100,13 +100,13 @@ class ResultReaderTest(unittest.TestCase):
             """)
         ]
         mock_glob.return_value = mock_file_paths
-        update.result_reader.clear()
+        update.result_store.clear()
         mock_remove.assert_has_calls([
             mock.call(mock_file_paths[0]),
         ])
 
-    @mock.patch.object(update.result_reader.os, 'remove')
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.os, 'remove')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_clear_removes_legacy_files(self, mock_glob, mock_remove):
         mock_file_paths = [
             self.make_mock_file(
@@ -132,7 +132,7 @@ class ResultReaderTest(unittest.TestCase):
             """)
         ]
         mock_glob.return_value = mock_file_paths
-        update.result_reader.clear()
+        update.result_store.clear()
         mock_remove.assert_has_calls([
             mock.call(mock_file_paths[0]),
             mock.call(mock_file_paths[1]),
@@ -142,12 +142,12 @@ class ResultReaderTest(unittest.TestCase):
     # pylint incorrectly complains that this could be a free function, but it
     # needs to be part of unittest.TestCase.
     # pylint: disable=no-self-use
-    @mock.patch.object(update.result_reader.os, 'remove')
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.os, 'remove')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_clear_does_nothing_when_no_result_files_exist(
             self, mock_glob, mock_remove):
         mock_glob.return_value = []
 
-        update.result_reader.clear()
+        update.result_store.clear()
 
         mock_remove.assert_not_called()

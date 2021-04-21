@@ -8,7 +8,7 @@ import update.status
 class StatusTest(unittest.TestCase):
 
     @mock.patch.object(update.status.subprocess, 'check_output')
-    @mock.patch.object(update.status.update.result_reader, 'read')
+    @mock.patch.object(update.status.update.result_store, 'read')
     def test_returns_not_running_when_there_is_no_process_nor_result_file(
             self, mock_read_update_result, mock_check_output):
         mock_check_output.return_value = """
@@ -23,7 +23,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
         self.assertIsNone(error_actual)
 
     @mock.patch.object(update.status.subprocess, 'check_output')
-    @mock.patch.object(update.status.update.result_reader, 'read')
+    @mock.patch.object(update.status.update.result_store, 'read')
     def test_returns_in_progress_when_update_process_is_running(
             self, mock_read_update_result, mock_check_output):
         mock_check_output.return_value = """
@@ -38,7 +38,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-
         self.assertIsNone(error_actual)
 
     @mock.patch.object(update.status.subprocess, 'check_output')
-    @mock.patch.object(update.status.update.result_reader, 'read')
+    @mock.patch.object(update.status.update.result_store, 'read')
     def test_ignores_update_result_if_update_is_running(self,
                                                         mock_read_update_result,
                                                         mock_check_output):
@@ -58,7 +58,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-
         self.assertIsNone(error_actual)
 
     @mock.patch.object(update.status.subprocess, 'check_output')
-    @mock.patch.object(update.status.update.result_reader, 'read')
+    @mock.patch.object(update.status.update.result_store, 'read')
     def test_returns_success_when_no_process_is_running_and_last_run_was_ok(
             self, mock_read_update_result, mock_check_output):
         mock_check_output.return_value = """
@@ -74,7 +74,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
         self.assertIsNone(error_actual)
 
     @mock.patch.object(update.status.subprocess, 'check_output')
-    @mock.patch.object(update.status.update.result_reader, 'read')
+    @mock.patch.object(update.status.update.result_store, 'read')
     def test_returns_error_when_no_process_is_running_and_last_run_had_error(
             self, mock_read_update_result, mock_check_output):
         mock_check_output.return_value = """

@@ -12,7 +12,7 @@ from update import launcher
 class LauncherTest(unittest.TestCase):
 
     @mock.patch.object(launcher.subprocess, 'Popen')
-    @mock.patch.object(launcher.update.result_reader, 'clear')
+    @mock.patch.object(launcher.update.result_store, 'clear')
     @mock.patch.object(launcher.update.status, 'get')
     def test_launches_update_when_no_update_is_running(self, mock_status_get,
                                                        mock_clear, mock_popen):
@@ -25,7 +25,7 @@ class LauncherTest(unittest.TestCase):
             ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
 
     @mock.patch.object(launcher.subprocess, 'Popen')
-    @mock.patch.object(launcher.update.result_reader, 'clear')
+    @mock.patch.object(launcher.update.result_store, 'clear')
     @mock.patch.object(launcher.update.status, 'get')
     def test_launches_update_when_previous_update_succeeded(
             self, mock_status_get, mock_clear, mock_popen):
@@ -38,7 +38,7 @@ class LauncherTest(unittest.TestCase):
             ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
 
     @mock.patch.object(launcher.subprocess, 'Popen')
-    @mock.patch.object(launcher.update.result_reader, 'clear')
+    @mock.patch.object(launcher.update.result_store, 'clear')
     @mock.patch.object(launcher.update.status, 'get')
     def test_launches_update_when_previous_update_failed(
             self, mock_status_get, mock_clear, mock_popen):
@@ -52,7 +52,7 @@ class LauncherTest(unittest.TestCase):
             ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
 
     @mock.patch.object(launcher.subprocess, 'Popen')
-    @mock.patch.object(launcher.update.result_reader, 'clear')
+    @mock.patch.object(launcher.update.result_store, 'clear')
     @mock.patch.object(launcher.update.status, 'get')
     def test_does_not_launch_if_update_is_already_running(
             self, mock_status_get, mock_clear, mock_popen):
