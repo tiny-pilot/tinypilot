@@ -1,9 +1,8 @@
-"""Reads result of the most recent TinyPilot update.
+"""Manages persistent data about the result of the most recent TinyPilot update.
 
-The update result reader fetches the result of the last update. Because the
-TinyPilot server holds no state in memory and may be checking the status of an
-update job just after restarting, it's tricky to identify the result of the
-update.
+The update result store saves and fetches the result of the last update. Because
+the TinyPilot server holds no state in memory, it relies on files stored in the
+~/logs directory to record the result of the most recent update.
 
 The happy path of the update is as follows:
 1. User initiates an update
@@ -46,11 +45,14 @@ update logic with a better solution.
 """
 
 import glob
+import logging
 import os
 
 import iso8601
 import update.result
 import utc
+
+logger = logging.getLogger(__name__)
 
 _RESULT_FILE_DIR = os.path.expanduser('~/logs')
 
@@ -93,8 +95,11 @@ def read():
     return most_recent_result
 
 
-def result_path(timestamp):
-    """Retrieves the associated file path for a result file for a timestamp."""
-    return os.path.join(
+def write(result):
+    result_path = os.path.join(
         _RESULT_FILE_DIR,
-        _UPDATE_RESULT_FILENAME_FORMAT % iso8601.to_string(timestamp))
+        _UPDATE_RESULT_FILENAME_FORMAT % iso8601.to_string(result.timestamp))
+    os.makedirs(_RESULT_FILE_DIR, exist_ok=True)
+    with open(result_path, 'w') as result_file:
+        logger.info('Writing result file to %s', result_path)
+        update.result.write(result, result_file)

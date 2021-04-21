@@ -2,7 +2,7 @@ import enum
 import subprocess
 
 import update.launcher
-import update.result_reader
+import update.result_store
 
 
 class Status(enum.Enum):
@@ -28,7 +28,7 @@ def get():
     if _is_update_process_running():
         return Status.IN_PROGRESS, None
 
-    recent_result = update.result_reader.read()
+    recent_result = update.result_store.read()
     if not recent_result:
         return Status.NOT_RUNNING, None
 
