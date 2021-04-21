@@ -32,14 +32,16 @@ _RESULT_PATH = os.path.join(_RESULT_FILE_DIR, 'latest-update-result.json')
 
 # Prior to 1.4.2, each update created its own separate result file, prefixed
 # with a UTC timestamp in ISO-8601. This glob pattern matches both the
-# legacy-style file naming and the new style naming.
+# legacy-style file naming and the new-style naming.
 _RESULT_GLOB_PATTERN = os.path.join(_RESULT_FILE_DIR, '*-update-result.json')
 
 
 def read():
     """Reads the most recent update result.
+
     Args:
         None.
+
     Returns:
         An update.result.Result based on the most recent update result file
         within the time threshold or None if none exist.
@@ -66,12 +68,14 @@ def _read_legacy():
 
 
 def clear():
+    """Clears the result store of all previous update results."""
     result_files = glob.glob(_RESULT_GLOB_PATTERN)
     for result_file in result_files:
         os.remove(result_file)
 
 
 def write(result):
+    """Writes an update result to the result store."""
     os.makedirs(_RESULT_FILE_DIR, exist_ok=True)
     with open(_RESULT_PATH, 'w') as result_file:
         print('Writing result file to %s' % _RESULT_PATH)
