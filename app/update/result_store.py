@@ -1,8 +1,8 @@
-"""Reads result of the most recent TinyPilot update.
+"""Manages persistent data about the result of the most recent TinyPilot update.
 
-The update result reader fetches the result of the last update. Because the
-TinyPilot server holds no state in memory, it relies on files stored in the
-~/logs directory to record the result of the most recent update.
+The update result store stores and fetches the result of the last update.
+Because the TinyPilot server holds no state in memory, it relies on files stored
+in the ~/logs directory to record the result of the most recent update.
 
 The flow of an update is as follows:
 
