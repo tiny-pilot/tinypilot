@@ -8,7 +8,7 @@ import update.result
 import update.result_store
 
 
-class UpdateResultStoreReadTest(unittest.TestCase):
+class ResultStoreReadTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
@@ -145,7 +145,7 @@ class UpdateResultStoreReadTest(unittest.TestCase):
         self.assertIsNone(update.result_store.read())
 
 
-class UpdateResultStoreSaveTest(unittest.TestCase):
+class ResultStoreWriteTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
