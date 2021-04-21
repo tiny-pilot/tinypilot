@@ -11,6 +11,9 @@ class Result:
     # succeeded.
     error: str
     # Time at which the update completed.
+    # Deprecated as of 1.4.2. We write this field but no longer read it. We're
+    # keeping it around in case we failed to anticipate something in the update
+    # logic and we end up needing it, but we can likely remove it after 1.4.2.
     timestamp: datetime.datetime
 
 
