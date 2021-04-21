@@ -76,8 +76,7 @@ def clear():
 
 def write(result):
     """Writes an update result to the result store."""
+    logger.info('Writing result file to %s', _RESULT_PATH)
     os.makedirs(_RESULT_FILE_DIR, exist_ok=True)
     with open(_RESULT_PATH, 'w') as result_file:
-        print('Writing result file to %s' % _RESULT_PATH)
-        logger.info('Writing result file to %s', _RESULT_PATH)
         update.result.write(result, result_file)
