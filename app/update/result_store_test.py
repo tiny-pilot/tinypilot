@@ -168,8 +168,8 @@ class ResultStoreClearTest(unittest.TestCase):
     # pylint: disable=no-self-use
     @mock.patch.object(update.result_store.os, 'remove')
     @mock.patch.object(update.result_store.glob, 'glob')
-    def test_clear_does_nothing_when_no_result_files_exist(
-            self, mock_glob, mock_remove):
+    def test_does_nothing_when_no_result_files_exist(self, mock_glob,
+                                                     mock_remove):
         mock_glob.return_value = []
 
         update.result_store.clear()
