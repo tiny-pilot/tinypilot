@@ -5,10 +5,10 @@ import unittest
 from unittest import mock
 
 import update.result
-import update.result_reader
+import update.result_store
 
 
-class UpdateResultReaderTest(unittest.TestCase):
+class UpdateResultStoreReadTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
@@ -22,13 +22,13 @@ class UpdateResultReaderTest(unittest.TestCase):
             mock_file.write(contents)
         return full_path
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
+    @mock.patch.object(update.result_store.glob, 'glob')
     def test_returns_none_when_no_result_files_exist(self, mock_glob):
         mock_glob.return_value = []
-        self.assertIsNone(update.result_reader.read())
+        self.assertIsNone(update.result_store.read())
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
+    @mock.patch.object(update.result_store.glob, 'glob')
+    @mock.patch.object(update.result_store.utc, 'now')
     def test_returns_latest_if_it_is_within_last_eight_minutes(
             self, mock_now, mock_glob):
         mock_glob.return_value = [
@@ -71,10 +71,10 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      minute=3,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update.result_reader.read())
+            update.result_store.read())
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
+    @mock.patch.object(update.result_store.glob, 'glob')
+    @mock.patch.object(update.result_store.utc, 'now')
     def test_returns_latest_if_it_is_in_the_future(self, mock_now, mock_glob):
         """Due to NTP updates, the latest result might be from a later time."""
         mock_glob.return_value = [
@@ -119,10 +119,10 @@ class UpdateResultReaderTest(unittest.TestCase):
                                      minute=6,
                                      second=0,
                                      tzinfo=datetime.timezone.utc)),
-            update.result_reader.read())
+            update.result_store.read())
 
-    @mock.patch.object(update.result_reader.glob, 'glob')
-    @mock.patch.object(update.result_reader.utc, 'now')
+    @mock.patch.object(update.result_store.glob, 'glob')
+    @mock.patch.object(update.result_store.utc, 'now')
     def test_returns_none_if_all_results_are_older_than_eight_minutes(
             self, mock_now, mock_glob):
         mock_glob.return_value = [
@@ -142,4 +142,39 @@ class UpdateResultReaderTest(unittest.TestCase):
                                                   minute=8,
                                                   second=1,
                                                   tzinfo=datetime.timezone.utc)
-        self.assertIsNone(update.result_reader.read())
+        self.assertIsNone(update.result_store.read())
+
+
+class UpdateResultStoreSaveTest(unittest.TestCase):
+
+    def setUp(self):
+        self.mock_result_dir = tempfile.TemporaryDirectory()
+
+        result_dir_patch = mock.patch.object(update.result_store,
+                                             '_RESULT_FILE_DIR',
+                                             self.mock_result_dir.name)
+        self.addCleanup(result_dir_patch.stop)
+        result_dir_patch.start()
+
+    def tearDown(self):
+        self.mock_result_dir.cleanup()
+
+    def read_result_file(self, result_filename):
+        full_path = os.path.join(self.mock_result_dir.name, result_filename)
+        with open(full_path) as result_file:
+            return result_file.read()
+
+    def test_saves_result_accurately(self):
+        update.result_store.write(
+            update.result.Result(error=None,
+                                 timestamp=datetime.datetime(
+                                     year=2021,
+                                     month=2,
+                                     day=3,
+                                     hour=4,
+                                     minute=5,
+                                     second=6,
+                                     tzinfo=datetime.timezone.utc)))
+        self.assertEqual(
+            '{"error": null, "timestamp": "2021-02-03T040506Z"}',
+            self.read_result_file('2021-02-03T040506Z-update-result.json'))

@@ -11,12 +11,11 @@
 import argparse
 import datetime
 import logging
-import os
 import subprocess
 
 import update.launcher
 import update.result
-import update.result_reader
+import update.result_store
 import utc
 
 logger = logging.getLogger(__name__)
@@ -37,7 +36,7 @@ def configure_logging():
 
 def perform_update():
     result = run_update_script()
-    write_result(result)
+    update.result_store.write(result)
 
 
 def run_update_script():
@@ -62,14 +61,6 @@ def run_update_script():
     result.error = ''
     result.timestamp = utc.now()
     return result
-
-
-def write_result(result):
-    result_path = update.result_reader.result_path(result.timestamp)
-    os.makedirs(os.path.dirname(result_path), exist_ok=True)
-    with open(result_path, 'w') as result_file:
-        logger.info('Writing result file to %s', result_path)
-        update.result.write(result, result_file)
 
 
 def main(_):
