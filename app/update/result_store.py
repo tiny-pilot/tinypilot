@@ -1,8 +1,11 @@
 """Manages persistent data about the result of the most recent TinyPilot update.
+
 The update result store stores and fetches the result of the last update.
 Because the TinyPilot server holds no state in memory, it relies on files stored
 in the ~/logs directory to record the result of the most recent update.
+
 The flow of an update is as follows:
+
 1. User initiates an update.
 2. Server clears result files of all previous updates.
 3. Server initiates the update process.
@@ -45,7 +48,8 @@ def read():
         with open(_RESULT_PATH) as result_file:
             return update.result.read(result_file)
     except FileNotFoundError:
-        # If the 1.4.2
+        # If we can't find a result file with >=1.4.2 style naming, check for
+        # legacy result files.
         return _read_legacy()
 
 
