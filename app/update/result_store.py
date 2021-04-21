@@ -60,8 +60,8 @@ def _read_legacy():
     if not result_files:
         return None
 
-    # Filenames start with a timestamp, so the last one lexicographically is the
-    # most recently created file.
+    # Legacy filenames start with a ISO-8601 timestamp, so the last one
+    # lexicographically is the most recently created file.
     most_recent_result_file = sorted(result_files)[-1]
     with open(most_recent_result_file) as result_file:
         return update.result.read(result_file)
