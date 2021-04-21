@@ -29,12 +29,12 @@ def apply():
     Raises:
         VideoSettingsUpdateError: If the script exits with a non-zero exit code.
     """
+    logger.info('Running update-video-settings')
     try:
-        logger.info('Running update-video-settings')
         output = subprocess.check_output(['sudo', _UPDATE_SCRIPT_PATH],
                                          stderr=subprocess.STDOUT,
                                          universal_newlines=True)
-        logger.info('update-video-settings output: %s', output.strip())
     except subprocess.CalledProcessError as e:
         raise VideoSettingsUpdateError(str(e.output).strip()) from e
+    logger.info('update-video-settings completed successfully')
     return output
