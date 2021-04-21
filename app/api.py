@@ -260,7 +260,7 @@ def settings_video_fps_get():
         Example of error:
         {
             'success': false,
-            'error': 'Failed to load settings'
+            'error': 'Failed to load settings from settings file'
         }
     """
     try:
@@ -298,7 +298,7 @@ def settings_video_fps_put():
         Example of error:
         {
             'success': false,
-            'error': 'Failed to save settings'
+            'error': 'Failed to save settings to settings file'
         }
     """
     try:

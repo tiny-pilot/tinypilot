@@ -103,22 +103,34 @@
               this._setVideoFpsDisplay(videoFps);
             })
             .catch((error) => {
-              console.error("_getVideoFps", error);
+              this._displayErrorDialog({
+                title: "Failed to Load Video FPS",
+                details: error,
+              });
+              return Promise.reject(error);
             });
         }
 
         getSettings() {
           this.state = "loading";
-          Promise.all([this._getVideoFps()]).then((results) => {
-            console.log(results);
-            this.state = "edit";
-          });
+          Promise.all([this._getVideoFps()])
+            .then(() => {
+              this.state = "edit";
+            })
+            .catch(() => {
+              // Ignore errors here because they have already been handled by
+              // their individual setting load function.
+            });
         }
 
         _saveVideoFps() {
           let videoFps = this.shadowRoot.querySelector("#video-fps").value;
           return controllers.setVideoFps(videoFps).catch((error) => {
-            console.error("_saveVideoFps", error);
+            this._displayErrorDialog({
+              title: "Failed to Save Video FPS",
+              details: error,
+            });
+            return Promise.reject(error);
           });
         }
 
@@ -131,6 +143,10 @@
               // reconnect. So in order to restart the video stream, we need to
               // reload the page.
               location.reload();
+            })
+            .catch(() => {
+              // Ignore errors here because they have already been handled by
+              // their individual setting save function.
             });
         }
 
@@ -144,6 +160,7 @@
         }
 
         _displayErrorDialog(errorInfo) {
+          this._close();
           this.dispatchEvent(
             new CustomEvent("video-settings-failure", {
               detail: errorInfo,
