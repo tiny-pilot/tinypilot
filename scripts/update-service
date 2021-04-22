@@ -9,7 +9,6 @@
 # pylint:disable=invalid-name
 
 import argparse
-import datetime
 import logging
 import subprocess
 
@@ -40,27 +39,26 @@ def perform_update():
 
 
 def run_update_script():
-    result = update.result.Result(
-        error='The update did not complete',
-        timestamp=datetime.datetime.utcfromtimestamp(0))
+    logger.info('Launching update script: %s',
+                update.launcher.UPDATE_SCRIPT_PATH)
     try:
-        logger.info('Launching update script: %s',
-                    update.launcher.UPDATE_SCRIPT_PATH)
         subprocess.run(['sudo', update.launcher.UPDATE_SCRIPT_PATH],
                        check=True,
                        timeout=_UPDATE_TIMEOUT_SECONDS)
-        logger.info('Update completed successfully')
     except subprocess.TimeoutExpired:
         logger.error('Update process timed out')
-        result.error = 'The update timed out'
+        return make_update_result(update_error='The update timed out')
     except subprocess.CalledProcessError as e:
         logger.error('Update process terminated with failing exit code: %s',
                      str(e))
-        result.error = 'The update failed: %s' % str(e)
+        return make_update_result(update_error='The update failed: %s' % str(e))
 
-    result.error = ''
-    result.timestamp = utc.now()
-    return result
+    logger.info('Update completed successfully')
+    return make_update_result(update_error=None)
+
+
+def make_update_result(update_error):
+    return update.result.Result(error=update_error, timestamp=utc.now())
 
 
 def main(_):
