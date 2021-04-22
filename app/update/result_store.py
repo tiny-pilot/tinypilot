@@ -43,8 +43,8 @@ def read():
         None.
 
     Returns:
-        An update.result.Result based on the most recent update result file
-        within the time threshold or None if none exist.
+        An update.result.Result based on the most recent update result file or
+        None if no update results exist.
     """
     try:
         with open(_RESULT_PATH) as result_file:
