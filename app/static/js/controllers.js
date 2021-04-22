@@ -357,6 +357,42 @@
       .then(() => {});
   }
 
+  function getVideoJpegQuality() {
+    return fetch("/api/settings/video/jpeg_quality", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("videoJpegQuality")) {
+          return Promise.reject(
+            new Error("Missing expected videoJpegQuality field")
+          );
+        }
+        return Promise.resolve(data.videoJpegQuality);
+      });
+  }
+
+  function setVideoJpegQuality(videoJpegQuality) {
+    return fetch("/api/settings/video/jpeg_quality", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({ videoJpegQuality }),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then(() => {});
+  }
+
   function applyVideoSettings() {
     return fetch("/api/settings/video/apply", {
       method: "POST",
@@ -388,5 +424,7 @@
   window.controllers.textToShareableUrl = textToShareableUrl;
   window.controllers.getVideoFps = getVideoFps;
   window.controllers.setVideoFps = setVideoFps;
+  window.controllers.getVideoJpegQuality = getVideoJpegQuality;
+  window.controllers.setVideoJpegQuality = setVideoJpegQuality;
   window.controllers.applyVideoSettings = applyVideoSettings;
 })(window);

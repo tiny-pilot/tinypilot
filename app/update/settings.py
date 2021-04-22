@@ -71,6 +71,19 @@ class Settings:
         if 'ustreamer_desired_fps' in self._data:
             del self._data['ustreamer_desired_fps']
 
+    @property
+    def ustreamer_quality(self):
+        return self._data.get('ustreamer_quality', None)
+
+    @ustreamer_quality.setter
+    def ustreamer_quality(self, value):
+        self._data['ustreamer_quality'] = value
+
+    @ustreamer_quality.deleter
+    def ustreamer_quality(self):
+        if 'ustreamer_quality' in self._data:
+            del self._data['ustreamer_quality']
+
 
 def load():
     """Retrieves the current TinyPilot update settings
