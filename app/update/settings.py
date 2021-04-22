@@ -19,6 +19,18 @@ import yaml
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
 
+class Error(Exception):
+    pass
+
+
+class LoadSettingsError(Error):
+    pass
+
+
+class SaveSettingsError(Error):
+    pass
+
+
 class Settings:
 
     def __init__(self, data):
@@ -46,6 +58,19 @@ class Settings:
         """
         self._data['tinypilot_repo_branch'] = value
 
+    @property
+    def ustreamer_desired_fps(self):
+        return self._data.get('ustreamer_desired_fps', None)
+
+    @ustreamer_desired_fps.setter
+    def ustreamer_desired_fps(self, value):
+        self._data['ustreamer_desired_fps'] = value
+
+    @ustreamer_desired_fps.deleter
+    def ustreamer_desired_fps(self):
+        if 'ustreamer_desired_fps' in self._data:
+            del self._data['ustreamer_desired_fps']
+
 
 def load():
     """Retrieves the current TinyPilot update settings
@@ -64,12 +89,19 @@ def load():
             return _from_file(settings_file)
     except FileNotFoundError:
         return Settings(data=None)
+    except IOError as e:
+        raise LoadSettingsError(
+            'Failed to load settings from settings file') from e
 
 
 def save(settings):
     """Saves a Settings object to the settings file."""
-    with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
-        _to_file(settings, settings_file)
+    try:
+        with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
+            _to_file(settings, settings_file)
+    except IOError as e:
+        raise SaveSettingsError(
+            'Failed to save settings to settings file') from e
 
 
 def _from_file(settings_file):

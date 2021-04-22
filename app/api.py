@@ -6,9 +6,12 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.video_fps
 import update.launcher
+import update.settings
 import update.status
 import version
+import video_settings
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -234,3 +237,109 @@ def status_get():
     response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+@api_blueprint.route('/settings/video/fps', methods=['GET'])
+def settings_video_fps_get():
+    """Retrieves the current video FPS setting.
+
+    Returns:
+        A JSON string with three keys when successful and two otherwise:
+        success, error and videoFps (if successful).
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+        videoFps: int.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null,
+            'videoFps': 30
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to load settings from settings file'
+        }
+    """
+    try:
+        video_fps = update.settings.load().ustreamer_desired_fps
+        # Note: Default values are not set in the settings file. So when the
+        # values are unset, we must respond with the correct default value.
+        if video_fps is None:
+            video_fps = video_settings.DEFAULT_FPS
+    except update.settings.LoadSettingsError as e:
+        return json_response.error(str(e)), 200
+    return json_response.success({'videoFps': video_fps})
+
+
+@api_blueprint.route('/settings/video/fps', methods=['PUT'])
+def settings_video_fps_put():
+    """Changes the current video FPS setting.
+
+    Expects a JSON data structure in the request body that contains the
+    new videoFps as an integer. Example:
+    {
+        'videoFps': 30
+    }
+
+    Returns:
+        A JSON string with two keys: success, error.
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to save settings to settings file'
+        }
+    """
+    try:
+        video_fps = request_parsers.video_fps.parse(flask.request)
+        settings = update.settings.load()
+        # Note: To avoid polluting the settings file with unnecessay default
+        # values, we unset them instead.
+        if video_fps == video_settings.DEFAULT_FPS:
+            del settings.ustreamer_desired_fps
+        else:
+            settings.ustreamer_desired_fps = video_fps
+        update.settings.save(settings)
+    except (request_parsers.errors.InvalidVideoFpsError,
+            update.settings.SaveSettingsError) as e:
+        return json_response.error(str(e)), 200
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/video/apply', methods=['POST'])
+def settings_video_apply_post():
+    """Applies the current video settings found in the settings file.
+
+    Returns:
+        A JSON string with two keys: success, error.
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to apply video settings.'
+        }
+    """
+    try:
+        video_settings.apply()
+    except video_settings.Error as e:
+        return json_response.error(str(e)), 200
+    return json_response.success()

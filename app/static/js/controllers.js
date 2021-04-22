@@ -323,6 +323,55 @@
       .then((data) => baseUrl + `/${data.id}`);
   }
 
+  function getVideoFps() {
+    return fetch("/api/settings/video/fps", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then((data) => {
+        if (!data.hasOwnProperty("videoFps")) {
+          return Promise.reject(new Error("Missing expected videoFps field"));
+        }
+        return Promise.resolve(data.videoFps);
+      });
+  }
+
+  function setVideoFps(videoFps) {
+    return fetch("/api/settings/video/fps", {
+      method: "PUT",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken(),
+      },
+      body: JSON.stringify({ videoFps }),
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then(() => {});
+  }
+
+  function applyVideoSettings() {
+    return fetch("/api/settings/video/apply", {
+      method: "POST",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+      headers: {
+        "X-CSRFToken": getCsrfToken(),
+      },
+    })
+      .then(readHttpJsonResponse)
+      .then(checkJsonSuccess)
+      .then(() => {});
+  }
+
   if (!window.hasOwnProperty("controllers")) {
     window.controllers = {};
   }
@@ -337,4 +386,7 @@
   window.controllers.checkStatus = checkStatus;
   window.controllers.getDebugLogs = getDebugLogs;
   window.controllers.textToShareableUrl = textToShareableUrl;
+  window.controllers.getVideoFps = getVideoFps;
+  window.controllers.setVideoFps = setVideoFps;
+  window.controllers.applyVideoSettings = applyVideoSettings;
 })(window);
