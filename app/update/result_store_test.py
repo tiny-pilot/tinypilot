@@ -102,6 +102,13 @@ class ResultStoreClearTest(unittest.TestCase):
     def setUp(self):
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
+        result_file_dir_patch = mock.patch.object(update.result_store,
+                                                  '_RESULT_FILE_DIR',
+                                                  self.mock_result_dir.name)
+
+        self.addCleanup(result_file_dir_patch.stop)
+        result_file_dir_patch.start()
+
     def tearDown(self):
         self.mock_result_dir.cleanup()
 
@@ -111,70 +118,59 @@ class ResultStoreClearTest(unittest.TestCase):
             mock_file.write(contents)
         return full_path
 
-    @mock.patch.object(update.result_store.os, 'remove')
     @mock.patch.object(update.result_store.glob, 'glob')
-    def test_removes_result_file(self, mock_glob, mock_remove):
-        mock_file_paths = [
+    def test_removes_result_file(self, mock_glob):
+        mock_glob.return_value = [
             self.make_mock_file(
                 'latest-update-result.json', """
 {
-  "error": null,
-  "timestamp": "2020-12-31T000000Z"
+"error": null,
+"timestamp": "2020-12-31T000000Z"
 }
-            """)
+        """)
         ]
-        mock_glob.return_value = mock_file_paths
-        update.result_store.clear()
-        mock_remove.assert_has_calls([
-            mock.call(mock_file_paths[0]),
-        ])
 
-    @mock.patch.object(update.result_store.os, 'remove')
+        update.result_store.clear()
+
+        self.assertEqual([], os.listdir(self.mock_result_dir.name))
+
     @mock.patch.object(update.result_store.glob, 'glob')
-    def test_removes_legacy_files(self, mock_glob, mock_remove):
-        mock_file_paths = [
+    def test_removes_legacy_files(self, mock_glob):
+        mock_glob.return_value = [
             self.make_mock_file(
                 '2020-12-31T000000Z-update-result.json', """
 {
-  "error": null,
-  "timestamp": "2020-12-31T000000Z"
+"error": null,
+"timestamp": "2020-12-31T000000Z"
 }
-            """),
+        """),
             self.make_mock_file(
                 '2021-01-01T000000Z-update-result.json', """
 {
-  "error": null,
-  "timestamp": "2021-01-01T000000Z"
+"error": null,
+"timestamp": "2021-01-01T000000Z"
 }
-            """),
+        """),
             self.make_mock_file(
                 '2021-01-01T000300Z-update-result.json', """
 {
-  "error": null,
-  "timestamp": "2021-01-01T000300Z"
+"error": null,
+"timestamp": "2021-01-01T000300Z"
 }
-            """)
+        """),
         ]
-        mock_glob.return_value = mock_file_paths
-        update.result_store.clear()
-        mock_remove.assert_has_calls([
-            mock.call(mock_file_paths[0]),
-            mock.call(mock_file_paths[1]),
-            mock.call(mock_file_paths[2]),
-        ])
 
-    # pylint incorrectly complains that this could be a free function, but it
-    # needs to be part of unittest.TestCase.
-    # pylint: disable=no-self-use
-    @mock.patch.object(update.result_store.os, 'remove')
+        update.result_store.clear()
+
+        self.assertEqual([], os.listdir(self.mock_result_dir.name))
+
     @mock.patch.object(update.result_store.glob, 'glob')
-    def test_does_nothing_when_no_result_files_exist(self, mock_glob,
-                                                     mock_remove):
+    def test_does_nothing_when_no_result_files_exist(self, mock_glob):
         mock_glob.return_value = []
 
         update.result_store.clear()
 
-        mock_remove.assert_not_called()
+        self.assertEqual([], os.listdir(self.mock_result_dir.name))
 
 
 class ResultStoreWriteTest(unittest.TestCase):
