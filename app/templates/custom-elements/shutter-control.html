@@ -22,17 +22,25 @@
     .spacer {
       min-width: 1rem;
     }
+
+    .options {
+      margin-top: 1rem;
+    }
   </style>
   <div class="container">
     <h2>Camera controls</h2>
     <div class="gpio-controls">
-      <gpio-control>
+      <gpio-control id="auto-focus">
         <span slot="button-text">Auto-Focus</span>
       </gpio-control>
       <div class="spacer"></div>
       <gpio-control id="shutter-control">
         <span slot="button-text">Shutter</span>
       </gpio-control>
+    </div>
+    <div class="options">
+      <input type="checkbox" id="focus-on-shutter" />
+      <label for="focus-on-shutter">Focus on Shutter</label>
     </div>
   </div>
 </template>
@@ -49,8 +57,88 @@
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.shadowRoot.getElementById("shutter-control").buttonClass =
-            "btn-success";
+          this.elements = {
+            autoFocus: this.shadowRoot.getElementById("auto-focus"),
+            shutter: this.shadowRoot.getElementById("shutter-control"),
+            focusOnShutter: this.shadowRoot.getElementById("focus-on-shutter"),
+          };
+          this.elements.shutter.buttonClass = "btn-success";
+          this.elements.autoFocus.addEventListener("set-pin-high", () => {
+            this._turnAutoFocusOn();
+          });
+          this.elements.autoFocus.addEventListener("set-pin-low", () => {
+            this._turnAutoFocusOff();
+          });
+          this.elements.shutter.addEventListener("set-pin-high", () => {
+            this._turnShutterOn();
+          });
+          this.elements.shutter.addEventListener("set-pin-low", () => {
+            this._turnShutterOff();
+          });
+        }
+
+        _turnAutoFocusOn() {
+          return this._turnGpioPinOn(this.elements.autoFocus.selectedPin);
+        }
+
+        _turnAutoFocusOff() {
+          return this._turnGpioPinOff(this.elements.autoFocus.selectedPin);
+        }
+
+        _turnShutterOn() {
+          if (this.elements.focusOnShutter.checked) {
+            return Promise.all([
+              this._turnAutoFocusOn(),
+              this._turnGpioPinOn(this.elements.shutter.selectedPin),
+            ]);
+          } else {
+            return this._turnGpioPinOn(this.elements.shutter.selectedPin);
+          }
+        }
+
+        _turnShutterOff() {
+          if (this.elements.focusOnShutter.checked) {
+            return Promise.all([
+              this._turnAutoFocusOff(),
+              this._turnGpioPinOff(this.elements.shutter.selectedPin),
+            ]);
+          } else {
+            return this._turnGpioPinOff(this.elements.shutter.selectedPin);
+          }
+        }
+
+        _turnGpioPinOn(pin) {
+          return controllers
+            .turnGpioPinOn(pin)
+            .then(() => {})
+            .catch((error) => {
+              this._handleFailure({
+                title: "Failed to Set GPIO Pin",
+                details: error,
+              });
+            });
+        }
+
+        _turnGpioPinOff(pin) {
+          return controllers
+            .turnGpioPinOff(pin)
+            .then(() => {})
+            .catch((error) => {
+              this._handleFailure({
+                title: "Failed to Set GPIO Pin",
+                details: error,
+              });
+            });
+        }
+
+        _handleFailure(errorInfo) {
+          this.dispatchEvent(
+            new CustomEvent("gpio-failure", {
+              detail: errorInfo,
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
       }
     );

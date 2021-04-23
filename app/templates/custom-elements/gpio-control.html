@@ -96,44 +96,40 @@
           this.shadowRoot.querySelector("button").classList.add(newValue);
         }
 
+        get selectedPin() {
+          return this.shadowRoot.getElementById("gpio-pin").value;
+        }
+
+        set selectedPin(newValue) {
+          this.shadowRoot.getElementById("gpio-pin").value = newValue;
+        }
+
         _onMouseDown(evt) {
           if (evt.which != LEFT_MOUSE_BUTTON) {
             return;
           }
-          return controllers
-            .turnGpioPinOn(this._getSelectedGpioPin())
-            .then(() => {})
-            .catch((error) => {
-              this._handleFailure({
-                title: "Failed to Set GPIO Pin",
-                details: error,
-              });
-            });
+          this._emitPinHigh();
         }
 
         _onMouseUp(evt) {
           if (evt.which != LEFT_MOUSE_BUTTON) {
             return;
           }
-          return controllers
-            .turnGpioPinOff(this._getSelectedGpioPin())
-            .then(() => {})
-            .catch((error) => {
-              this._handleFailure({
-                title: "Failed to Set GPIO Pin",
-                details: error,
-              });
-            });
+          this._emitPinLow();
         }
 
-        _getSelectedGpioPin() {
-          return this.shadowRoot.getElementById("gpio-pin").value;
-        }
-
-        _handleFailure(errorInfo) {
+        _emitPinHigh() {
           this.dispatchEvent(
-            new CustomEvent("gpio-failure", {
-              detail: errorInfo,
+            new CustomEvent("set-pin-high", {
+              bubbles: true,
+              composed: true,
+            })
+          );
+        }
+
+        _emitPinLow() {
+          this.dispatchEvent(
+            new CustomEvent("set-pin-low", {
               bubbles: true,
               composed: true,
             })
