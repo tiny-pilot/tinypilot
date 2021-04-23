@@ -266,12 +266,12 @@ def settings_video_fps_get():
     """
     try:
         video_fps = update.settings.load().ustreamer_desired_fps
-        # Note: Default values are not set in the settings file. So when the
-        # values are unset, we must respond with the correct default value.
-        if video_fps is None:
-            video_fps = video_settings.DEFAULT_FPS
     except update.settings.LoadSettingsError as e:
         return json_response.error(str(e)), 200
+    # Note: Default values are not set in the settings file. So when the
+    # values are unset, we must respond with the correct default value.
+    if video_fps is None:
+        video_fps = video_settings.DEFAULT_FPS
     return json_response.success({'videoFps': video_fps})
 
 
@@ -344,12 +344,12 @@ def settings_video_jpeg_quality_get():
     """
     try:
         video_jpeg_quality = update.settings.load().ustreamer_quality
-        # Note: Default values are not set in the settings file. So when the
-        # values are unset, we must respond with the correct default value.
-        if video_jpeg_quality is None:
-            video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
     except update.settings.LoadSettingsError as e:
         return json_response.error(str(e)), 200
+    # Note: Default values are not set in the settings file. So when the
+    # values are unset, we must respond with the correct default value.
+    if video_jpeg_quality is None:
+        video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
     return json_response.success({'videoJpegQuality': video_jpeg_quality})
 
 
