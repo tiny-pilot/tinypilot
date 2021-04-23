@@ -1,6 +1,7 @@
 import logging
 import subprocess
 
+import update.result_store
 import update.status
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,8 @@ def start_async():
     current_state, _ = update.status.get()
     if current_state == update.status.Status.IN_PROGRESS:
         raise AlreadyInProgressError('An update is already in progress')
+
+    update.result_store.clear()
 
     subprocess.Popen(
         ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
