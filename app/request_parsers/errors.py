@@ -16,3 +16,7 @@ class InvalidHostnameError(Error):
 
 class InvalidVideoFpsError(Error):
     pass
+
+
+class InvalidVideoJpegQualityError(Error):
+    pass

@@ -7,6 +7,7 @@ import local_system
 import request_parsers.errors
 import request_parsers.hostname
 import request_parsers.video_fps
+import request_parsers.video_jpeg_quality
 import update.launcher
 import update.settings
 import update.status
@@ -265,12 +266,12 @@ def settings_video_fps_get():
     """
     try:
         video_fps = update.settings.load().ustreamer_desired_fps
-        # Note: Default values are not set in the settings file. So when the
-        # values are unset, we must respond with the correct default value.
-        if video_fps is None:
-            video_fps = video_settings.DEFAULT_FPS
     except update.settings.LoadSettingsError as e:
         return json_response.error(str(e)), 200
+    # Note: Default values are not set in the settings file. So when the
+    # values are unset, we must respond with the correct default value.
+    if video_fps is None:
+        video_fps = video_settings.DEFAULT_FPS
     return json_response.success({'videoFps': video_fps})
 
 
@@ -312,6 +313,85 @@ def settings_video_fps_put():
             settings.ustreamer_desired_fps = video_fps
         update.settings.save(settings)
     except (request_parsers.errors.InvalidVideoFpsError,
+            update.settings.SaveSettingsError) as e:
+        return json_response.error(str(e)), 200
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
+def settings_video_jpeg_quality_get():
+    """Retrieves the current video JPEG quality setting.
+
+    Returns:
+        A JSON string with three keys when successful and two otherwise:
+        success, error and videoJpegQuality (if successful).
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+        videoJpegQuality: int.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null,
+            'videoJpegQuality': 80
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to load settings from settings file'
+        }
+    """
+    try:
+        video_jpeg_quality = update.settings.load().ustreamer_quality
+    except update.settings.LoadSettingsError as e:
+        return json_response.error(str(e)), 200
+    # Note: Default values are not set in the settings file. So when the
+    # values are unset, we must respond with the correct default value.
+    if video_jpeg_quality is None:
+        video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
+    return json_response.success({'videoJpegQuality': video_jpeg_quality})
+
+
+@api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
+def settings_video_jpeg_quality_put():
+    """Changes the current video JPEG quality setting.
+
+    Expects a JSON data structure in the request body that contains the
+    new videoJpegQuality as an integer. Example:
+    {
+        'videoJpegQuality': 80
+    }
+
+    Returns:
+        A JSON string with two keys: success, error.
+
+        success: true if successful.
+        error: null if successful, str otherwise.
+
+        Example of success:
+        {
+            'success': true,
+            'error': null
+        }
+        Example of error:
+        {
+            'success': false,
+            'error': 'Failed to save settings to settings file'
+        }
+    """
+    try:
+        video_jpeg_quality = request_parsers.video_jpeg_quality.parse(
+            flask.request)
+        settings = update.settings.load()
+        # Note: To avoid polluting the settings file with unnecessay default
+        # values, we unset them instead.
+        if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
+            del settings.ustreamer_quality
+        else:
+            settings.ustreamer_quality = video_jpeg_quality
+        update.settings.save(settings)
+    except (request_parsers.errors.InvalidVideoJpegQualityError,
             update.settings.SaveSettingsError) as e:
         return json_response.error(str(e)), 200
     return json_response.success()
