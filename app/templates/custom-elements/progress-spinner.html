@@ -2,14 +2,23 @@
   <style>
     @import "css/style.css";
 
+    :host {
+      --size: 5rem;
+      --thickness: 10px;
+      display: inline-block;
+    }
+
     .spinner {
       margin: auto;
-      border: 10px solid var(--brand-metallic-bright);
-      border-top: 10px solid var(--brand-blue);
+      width: var(--size);
+      height: var(--size);
+      border-width: var(--thickness);
+      border-style: solid;
+      border-color: var(--brand-metallic-bright);
+      border-top-color: var(--brand-blue);
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
       animation: spin 1.5s linear infinite;
+      box-sizing: border-box;
     }
 
     @keyframes spin {
