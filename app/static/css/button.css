@@ -1,6 +1,7 @@
 @import "style.css";
 
-button {
+button,
+.btn {
   display: inline-block;
   border: none;
   padding: 1rem 2rem;
@@ -18,28 +19,32 @@ button {
 }
 
 button:hover,
-button:focus {
+.btn:hover,
+button:focus,
+.btn:focus {
   background-color: var(--brand-metallic-bright);
 }
 
-button:focus {
+button:focus,
+.btn:focus {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-button:active {
+button:active,
+.btn:active {
   transform: scale(0.99);
 }
 
-button.btn-success {
+.btn-success {
   background-color: var(--brand-green);
 }
 
-button.btn-success:hover {
+.btn-success:hover {
   background-color: var(--brand-green-bright);
 }
 
-button.btn-success:disabled {
+.btn-success:disabled {
   background-color: var(--brand-green-light);
   cursor: not-allowed;
 }
