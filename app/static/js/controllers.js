@@ -61,6 +61,18 @@
     });
   }
 
+  class ControllerError extends Error {
+    /**
+     * @param details string with the original error message.
+     * @param code (optional) string with the error code, or `undefined` for
+     *             non-application errors.
+     */
+    constructor(details, code) {
+      super(details);
+      this.code = code;
+    }
+  }
+
   /**
    * Processes response from the backend API.
    * @param response An object as returned by `fetch`
@@ -68,30 +80,24 @@
    *    Success case: a JSON response with status 2xx. Promise resolves with
    *                  data from response body.
    *    Error case:   anything else, e.g. non-JSON or status 4xx/5xx. Promise
-   *                  rejects with an object containing two properties:
-   *                  - code: string, or undefined for non-application errors
-   *                  - details: string with the original error message
+   *                  rejects with a `ControllerError`.
+   *
    */
   async function processJsonResponse(response) {
-    const contentType = response.headers.get("content-type");
-    const isContentTypeJson =
-      contentType && contentType.indexOf("application/json") !== -1;
-
-    if (!isContentTypeJson) {
-      return Promise.reject({
-        code: undefined,
-        details: "Malformed API response, content type must be JSON",
-      });
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      throw new ControllerError(
+        "Malformed API response, content type must be JSON"
+      );
     }
 
     let jsonBody;
     try {
       jsonBody = await response.json();
     } catch (jsonParseError) {
-      throw {
-        code: undefined,
-        details: "Malformed API response, JSON body cannot be parsed",
-      };
+      throw new ControllerError(
+        "Malformed API response, JSON body cannot be parsed"
+      );
     }
 
     // Resolve on 2xx response:
@@ -99,10 +105,10 @@
       return jsonBody;
     }
     // Reject otherwise:
-    throw {
-      code: jsonBody.code || undefined,
-      details: jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
-    };
+    throw new ControllerError(
+      jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
+      jsonBody.code
+    );
   }
 
   // Checks TinyPilot-level details of the response. The standard TinyPilot
