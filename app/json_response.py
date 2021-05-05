@@ -1,6 +1,6 @@
 import flask
 
-# We are currently migration from success/error to success2/error2.
+# We are currently migrating from success/error to success2/error2.
 # The former will be eventually removed and the latter renamed.
 
 
