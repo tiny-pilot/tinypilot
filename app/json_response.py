@@ -46,11 +46,7 @@ def success2(data={}):
     return flask.jsonify(data)
 
 
-def error2(message_prefix, original_error):
-    error_message = str(original_error)
-    if message_prefix:
-        error_message = message_prefix + ': ' + error_message
+def error2(original_error):
     return flask.jsonify({
         'code': type(original_error).__name__,
-        'message': error_message,
     })

@@ -200,9 +200,9 @@ def hostname_set():
         hostname.change(new_hostname)
         return json_response.success2()
     except request_parsers.errors.Error as e:
-        return json_response.error2('Invalid input', e), 400
+        return json_response.error2(e), 400
     except hostname.Error as e:
-        return json_response.error2('Operation failed', e), 500
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/status', methods=['GET'])
