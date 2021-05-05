@@ -224,17 +224,20 @@
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
-              if (error.toString().toLowerCase().includes("invalid input")) {
+              if (error.code === "InvalidHostnameError") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
-                // TODO(jotaen): Rely on the HTTP status code once we have that
-                this.inputError = error.toString();
+                this.inputError =
+                  "Invalid hostname: it can only contain the " +
+                  "letters a-z, digits and dashes (it cannot start with a " +
+                  "dash, though). It must contain 1-63 characters and cannot " +
+                  'be "localhost".';
                 this.state = "prompt";
                 return;
               }
               this._handleHostnameChangeFailure({
                 title: "Failed to Change Hostname",
-                details: error,
+                details: error.details,
               });
             });
         }

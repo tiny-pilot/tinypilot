@@ -38,3 +38,19 @@ def error(message):
         'success': False,
         'error': message,
     })
+
+
+# The default dictionary is okay because we're not modifying it.
+# pylint: disable=dangerous-default-value
+def success2(data={}):
+    return flask.jsonify(data)
+
+
+def error2(message_prefix, original_error):
+    error_message = str(original_error)
+    if message_prefix:
+        error_message = message_prefix + ': ' + error_message
+    return flask.jsonify({
+        'code': type(original_error).__name__,
+        'message': error_message,
+    })

@@ -9,7 +9,5 @@ def parse_hostname(request):
     hostname = message['hostname']
     if not hostname_validator.validate(hostname):
         raise errors.InvalidHostnameError(
-            'Hostnames can only contain the letters a-z, digits and dashes'
-            ' (it cannot start with a dash, though). It must contain 1-63'
-            ' characters and cannot be "localhost".')
+            'The hostname contains invalid characters.')
     return hostname
