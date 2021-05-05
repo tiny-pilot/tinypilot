@@ -275,9 +275,9 @@
       .then(processJsonResponse)
       .then((hostnameResponse) => {
         if (!hostnameResponse.hasOwnProperty("hostname")) {
-          return Promise.reject(new Error("Missing expected hostname field"));
+          throw new ControllerError("Missing expected hostname field");
         }
-        return Promise.resolve(hostnameResponse.hostname);
+        return hostnameResponse.hostname;
       });
   }
 

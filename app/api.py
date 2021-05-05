@@ -177,9 +177,9 @@ def hostname_get():
         }
     """
     try:
-        return json_response.success({'hostname': hostname.determine()})
+        return json_response.success2({'hostname': hostname.determine()})
     except hostname.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/hostname', methods=['PUT'])
