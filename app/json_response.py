@@ -70,7 +70,7 @@ def error2(original_error):
             This property is only set for errors that are handled explicitly by
             the TinyPilot frontend.
     """
-    code = original_error.code if hasattr(original_error, 'code') else None
+    code = getattr(original_error, 'code', None)
     return flask.jsonify({
         'message': str(original_error),
         'code': code,
