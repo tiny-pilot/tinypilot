@@ -11,6 +11,7 @@ class MissingFieldError(Error):
 
 
 class InvalidHostnameError(Error):
+    code = "INVALID_HOSTNAME"
     pass
 
 

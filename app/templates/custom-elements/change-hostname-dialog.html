@@ -224,7 +224,7 @@
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
-              if (error.code === "InvalidHostnameError") {
+              if (error.code === "INVALID_HOSTNAME") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
                 this.inputError =

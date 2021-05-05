@@ -47,6 +47,8 @@ def success2(data={}):
 
 
 def error2(original_error):
+    code = original_error.code if hasattr(original_error, 'code') else None
     return flask.jsonify({
-        'code': type(original_error).__name__,
+        'message': str(original_error),
+        'code': code,
     })
