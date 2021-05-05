@@ -65,7 +65,7 @@
     /**
      * @param details string with the original error message.
      * @param code (optional) string with the error code, or `undefined` for
-     *             non-application errors.
+     *             non-application or unknown errors.
      */
     constructor(details, code) {
       super(details);
