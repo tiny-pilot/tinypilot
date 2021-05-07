@@ -64,12 +64,16 @@ def update_get():
     """Fetches the state of the latest update job.
 
     Returns:
-        A JSON string describing the latest update job.
-
-        success: true if we were able to fetch job.
-        error: null if successful, str otherwise.
+        On success, a JSON data structure with the following properties:
         status: str describing the status of the job. Can be one of
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
+
+        Example:
+        {
+            "status": "NOT_RUNNING"
+        }
+
+        Returns error object on failure.
     """
 
     status, error = update.status.get()
@@ -87,10 +91,7 @@ def update_put():
     /api/update to see the status of the update.
 
     Returns:
-        A JSON string with two keys: success and error.
-
-        success: true if update task was initiated successfully.
-        error: null if successful, str otherwise.
+        Empty response on success, error object otherwise.
     """
     try:
         update.launcher.start_async()
@@ -107,29 +108,20 @@ def version_get():
     """Retrieves the current installed version of TinyPilot.
 
     Returns:
-        A JSON string with three keys when successful and two otherwise:
-        success, error and version (if successful).
-
-        success: true if successful.
-        error: null if successful, str otherwise.
+        On success, a JSON data structure with the following properties:
         version: str.
 
-        Example of success:
+        Example:
         {
-            'success': true,
-            'error': null,
-            'version': 'bf07bfe72941457cf068ca0a44c6b0d62dd9ef05',
+            "version": "bf07bfe72941457cf068ca0a44c6b0d62dd9ef05",
         }
-        Example of error:
-        {
-            'success': false,
-            'error': 'git rev-parse HEAD failed.',
-        }
+
+        Returns error object on failure.
     """
     try:
-        return json_response.success({'version': version.local_version()})
+        return json_response.success2({'version': version.local_version()})
     except version.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/latestRelease', methods=['GET'])
@@ -137,29 +129,20 @@ def latest_release_get():
     """Retrieves the latest version of TinyPilot.
 
     Returns:
-        A JSON string with three keys when successful and two otherwise:
-        success, error and version (if successful).
-
-        success: true if successful.
-        error: null if successful, str otherwise.
+        On success, a JSON data structure with the following properties:
         version: str.
 
-        Example of success:
+        Example:
         {
-            'success': true,
-            'error': null,
-            'version': 'bf07bfe72941457cf068ca0a44c6b0d62dd9ef05',
+            "version": "bf07bfe72941457cf068ca0a44c6b0d62dd9ef05",
         }
-        Example of error:
-        {
-            'success': false,
-            'error': 'git rev-parse origin/master failed.',
-        }
+
+        Returns error object on failure.
     """
     try:
-        return json_response.success({'version': version.latest_version()})
+        return json_response.success2({'version': version.latest_version()})
     except version.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/hostname', methods=['GET'])
@@ -167,24 +150,15 @@ def hostname_get():
     """Determines the hostname of the machine.
 
     Returns:
-        A JSON string with three keys when successful and two otherwise:
-        success, error and hostname (if successful).
+        On success, a JSON data structure with the following properties:
+        hostname: the current hostname (string)
 
-        success: true if successful.
-        error: null if successful, str otherwise.
-        hostname: str if successful.
+        Example:
+        {
+            "hostname": "tinypilot"
+        }
 
-        Example of success:
-        {
-            'success': true,
-            'error': null,
-            'hostname': 'tinypilot'
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Cannot determine hostname.'
-        }
+        Returns an error object on failure.
     """
     try:
         return json_response.success2({'hostname': hostname.determine()})
@@ -199,7 +173,7 @@ def hostname_set():
     Expects a JSON data structure in the request body that contains the
     new hostname as string. Example:
     {
-        'hostname': 'grandpilot'
+        "hostname": "grandpilot"
     }
 
     Returns:
@@ -223,15 +197,9 @@ def status_get():
     in regards to CORS.
 
     Returns:
-        A JSON string with two keys: success, error.
-
-        Example:
-        {
-            'success': true,
-            'error': null
-        }
+        Empty response, which implies the server is up and running.
     """
-    response = json_response.success()
+    response = json_response.success2()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 

@@ -135,20 +135,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((httpResponse) => {
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((versionResponse) => {
         if (!versionResponse.hasOwnProperty("version")) {
-          return Promise.reject(new Error("Missing expected version field"));
+          throw new ControllerError("Missing expected version field");
         }
-        return Promise.resolve(versionResponse.version);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return versionResponse.version;
       });
   }
 
@@ -160,20 +152,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((httpResponse) => {
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((versionResponse) => {
         if (!versionResponse.hasOwnProperty("version")) {
-          return Promise.reject(new Error("Missing expected version field"));
+          throw new ControllerError("Missing expected version field");
         }
-        return Promise.resolve(versionResponse.version);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return versionResponse.version;
       });
   }
 
@@ -220,8 +204,7 @@
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
-    })
-      .then(processJsonResponse);
+    }).then(processJsonResponse);
   }
 
   function getUpdateStatus() {
@@ -283,18 +266,8 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .then(() => {
-        return Promise.resolve(true);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+      .then(processJsonResponse)
+      .then(() => true);
   }
 
   function getDebugLogs() {
@@ -306,9 +279,9 @@
     })
       .then((response) => {
         if (!response.ok) {
-          return Promise.reject(new Error(response.statusText));
+          throw new ControllerError(response.statusText);
         }
-        return Promise.resolve(response);
+        return response;
       })
       .then((response) => response.text());
   }
