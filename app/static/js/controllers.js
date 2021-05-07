@@ -221,15 +221,7 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+      .then(processJsonResponse);
   }
 
   function getUpdateStatus() {
@@ -240,20 +232,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((updateResponse) => {
         if (!updateResponse.hasOwnProperty("status")) {
-          return Promise.reject(new Error("Missing expected status field"));
+          throw new ControllerError("Missing expected status field");
         }
-        return Promise.resolve(updateResponse.status);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return updateResponse.status;
       });
   }
 

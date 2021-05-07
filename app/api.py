@@ -64,8 +64,8 @@ def update_get():
 
     status, error = update.status.get()
     if error:
-        return json_response.error(error), 200
-    return json_response.success({'status': str(status)})
+        return json_response.error2(error), 500
+    return json_response.success2({'status': str(status)})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
@@ -88,8 +88,8 @@ def update_put():
         # If an update is already in progress, treat it as success.
         pass
     except update.launcher.Error as e:
-        return json_response.error(str(e)), 200
-    return json_response.success()
+        return json_response.error(e), 500
+    return json_response.success2()
 
 
 @api_blueprint.route('/version', methods=['GET'])
