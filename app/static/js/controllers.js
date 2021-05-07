@@ -272,9 +272,7 @@
       body: JSON.stringify({ hostname: newHostname }),
     })
       .then(processJsonResponse)
-      .then(() => {
-        return Promise.resolve(newHostname);
-      });
+      .then(() => newHostname);
   }
 
   function checkStatus(baseURL = "") {
