@@ -33,6 +33,11 @@ def debug_logs_get():
 
 @api_blueprint.route('/shutdown', methods=['POST'])
 def shutdown_post():
+    """Triggers shutdown of the system.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
     try:
         local_system.shutdown()
         return json_response.success2()
@@ -42,6 +47,11 @@ def shutdown_post():
 
 @api_blueprint.route('/restart', methods=['POST'])
 def restart_post():
+    """Triggers restart of the system.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
     try:
         local_system.restart()
         return json_response.success2()
