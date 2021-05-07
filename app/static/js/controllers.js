@@ -29,9 +29,7 @@
       });
   }
 
-  // Reads a response from an HTTP endpoint that we expect to contain a JSON
-  // body. Verifies the HTTP response was successful and the response type is
-  // JSON, but doesn't check anything beyond that.
+  // DEPRECATED: delete once we have finished the migration in the pro repo.
   function readHttpJsonResponse(response) {
     const contentType = response.headers.get("content-type");
     const isJson =
@@ -114,9 +112,7 @@
     );
   }
 
-  // Checks TinyPilot-level details of the response. The standard TinyPilot
-  // response body contains two fields: "success" (bool) and "error" (string)
-  // A message indicates success if success is true and error is non-null.
+  // DEPRECATED: delete once we have finished the migration in the pro repo.
   function checkJsonSuccess(response) {
     if (response.hasOwnProperty("error") && response.error) {
       return Promise.reject(new Error(response.error));
