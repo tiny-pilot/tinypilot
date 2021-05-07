@@ -71,7 +71,7 @@ def handle_error(e):
     code = 500
     if isinstance(e, exceptions.HTTPException):
         code = e.code
-    return json_response.error(str(e)), code
+    return json_response.error2(e), code
 
 
 def main():
