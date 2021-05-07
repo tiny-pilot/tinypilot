@@ -298,9 +298,9 @@
       .then(readHttpJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("id")) {
-          return Promise.reject(new Error("Missing expected id field"));
+          throw new ControllerError("Missing expected id field");
         }
-        return Promise.resolve(data);
+        return data;
       })
       .then((data) => baseUrl + `/${data.id}`);
   }
@@ -312,13 +312,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("videoFps")) {
-          return Promise.reject(new Error("Missing expected videoFps field"));
+          throw new ControllerError("Missing expected videoFps field");
         }
-        return Promise.resolve(data.videoFps);
+        return data.videoFps;
       });
   }
 
@@ -333,10 +332,7 @@
         "X-CSRFToken": getCsrfToken(),
       },
       body: JSON.stringify({ videoFps }),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   function getVideoJpegQuality() {
@@ -346,15 +342,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("videoJpegQuality")) {
-          return Promise.reject(
-            new Error("Missing expected videoJpegQuality field")
-          );
+          throw new ControllerError("Missing expected videoJpegQuality field");
         }
-        return Promise.resolve(data.videoJpegQuality);
+        return data.videoJpegQuality;
       });
   }
 
@@ -369,10 +362,7 @@
         "X-CSRFToken": getCsrfToken(),
       },
       body: JSON.stringify({ videoJpegQuality }),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   function applyVideoSettings() {
@@ -384,10 +374,7 @@
       headers: {
         "X-CSRFToken": getCsrfToken(),
       },
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   if (!window.hasOwnProperty("controllers")) {

@@ -99,7 +99,7 @@ def update_put():
         # If an update is already in progress, treat it as success.
         pass
     except update.launcher.Error as e:
-        return json_response.error(e), 500
+        return json_response.error2(e), 500
     return json_response.success2()
 
 
@@ -151,7 +151,7 @@ def hostname_get():
 
     Returns:
         On success, a JSON data structure with the following properties:
-        hostname: the current hostname (string)
+        hostname: string.
 
         Example:
         {
@@ -209,34 +209,25 @@ def settings_video_fps_get():
     """Retrieves the current video FPS setting.
 
     Returns:
-        A JSON string with three keys when successful and two otherwise:
-        success, error and videoFps (if successful).
-
-        success: true if successful.
-        error: null if successful, str otherwise.
+        On success, a JSON data structure with the following properties:
         videoFps: int.
 
         Example of success:
         {
-            'success': true,
-            'error': null,
-            'videoFps': 30
+            "videoFps": 30
         }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Failed to load settings from settings file'
-        }
+
+        Returns an error object on failure.
     """
     try:
         video_fps = update.settings.load().ustreamer_desired_fps
     except update.settings.LoadSettingsError as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 200
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
     if video_fps is None:
         video_fps = video_settings.DEFAULT_FPS
-    return json_response.success({'videoFps': video_fps})
+    return json_response.success2({'videoFps': video_fps})
 
 
 @api_blueprint.route('/settings/video/fps', methods=['PUT'])
@@ -246,25 +237,11 @@ def settings_video_fps_put():
     Expects a JSON data structure in the request body that contains the
     new videoFps as an integer. Example:
     {
-        'videoFps': 30
+        "videoFps": 30
     }
 
     Returns:
-        A JSON string with two keys: success, error.
-
-        success: true if successful.
-        error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Failed to save settings to settings file'
-        }
+        Empty response on success, error object otherwise.
     """
     try:
         video_fps = request_parsers.video_fps.parse(flask.request)
@@ -276,10 +253,11 @@ def settings_video_fps_put():
         else:
             settings.ustreamer_desired_fps = video_fps
         update.settings.save(settings)
-    except (request_parsers.errors.InvalidVideoFpsError,
-            update.settings.SaveSettingsError) as e:
-        return json_response.error(str(e)), 200
-    return json_response.success()
+    except request_parsers.errors.InvalidVideoFpsError as e:
+        return json_response.error2(e), 400
+    except update.settings.SaveSettingsError as e:
+        return json_response.error2(e), 500
+    return json_response.success2()
 
 
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
@@ -287,34 +265,25 @@ def settings_video_jpeg_quality_get():
     """Retrieves the current video JPEG quality setting.
 
     Returns:
-        A JSON string with three keys when successful and two otherwise:
-        success, error and videoJpegQuality (if successful).
-
-        success: true if successful.
-        error: null if successful, str otherwise.
+        On success, a JSON data structure with the following properties:
         videoJpegQuality: int.
 
-        Example of success:
+        Example:
         {
-            'success': true,
-            'error': null,
-            'videoJpegQuality': 80
+            "videoJpegQuality": 80
         }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Failed to load settings from settings file'
-        }
+
+        Returns an error object on failure.
     """
     try:
         video_jpeg_quality = update.settings.load().ustreamer_quality
     except update.settings.LoadSettingsError as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
     if video_jpeg_quality is None:
         video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
-    return json_response.success({'videoJpegQuality': video_jpeg_quality})
+    return json_response.success2({'videoJpegQuality': video_jpeg_quality})
 
 
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
@@ -324,25 +293,11 @@ def settings_video_jpeg_quality_put():
     Expects a JSON data structure in the request body that contains the
     new videoJpegQuality as an integer. Example:
     {
-        'videoJpegQuality': 80
+        "videoJpegQuality": 80
     }
 
     Returns:
-        A JSON string with two keys: success, error.
-
-        success: true if successful.
-        error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Failed to save settings to settings file'
-        }
+        Empty response on success, error object otherwise.
     """
     try:
         video_jpeg_quality = request_parsers.video_jpeg_quality.parse(
@@ -355,10 +310,11 @@ def settings_video_jpeg_quality_put():
         else:
             settings.ustreamer_quality = video_jpeg_quality
         update.settings.save(settings)
-    except (request_parsers.errors.InvalidVideoJpegQualityError,
-            update.settings.SaveSettingsError) as e:
-        return json_response.error(str(e)), 200
-    return json_response.success()
+    except request_parsers.errors.InvalidVideoJpegQualityError as e:
+        return json_response.error2(e), 400
+    except update.settings.SaveSettingsError as e:
+        return json_response.error2(e), 500
+    return json_response.success2()
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
@@ -366,24 +322,10 @@ def settings_video_apply_post():
     """Applies the current video settings found in the settings file.
 
     Returns:
-        A JSON string with two keys: success, error.
-
-        success: true if successful.
-        error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Failed to apply video settings.'
-        }
+        Empty response on success, error object otherwise.
     """
     try:
         video_settings.apply()
     except video_settings.Error as e:
-        return json_response.error(str(e)), 200
-    return json_response.success()
+        return json_response.error2(e), 500
+    return json_response.success2()
