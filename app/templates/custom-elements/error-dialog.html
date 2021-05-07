@@ -55,11 +55,12 @@
 
         /**
          * @param title   A concise summary of the error.
-         * @param message (optional) A user-friendly and helpful message that
-         *                (ideally) gives the user some guidance what to do
+         * @param message (string, optional) A user-friendly and helpful message
+         *                that ideally gives the user some guidance what to do
          *                now. Defaults to a generic `DEFAULT_MESSAGE`.
-         * @param details (optional) The technical error details, e.g. the
-         *                original error message from the API or library call.
+         * @param details (string|Error, optional) The technical error details,
+         *                e.g. the original error message from the API or
+         *                library call.
          */
         setup({ title, message = this.DEFAULT_MESSAGE, details = "" }) {
           this.shadowRoot.getElementById("title").innerText = title;

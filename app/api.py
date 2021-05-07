@@ -177,9 +177,9 @@ def hostname_get():
         }
     """
     try:
-        return json_response.success({'hostname': hostname.determine()})
+        return json_response.success2({'hostname': hostname.determine()})
     except hostname.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/hostname', methods=['PUT'])
@@ -193,30 +193,16 @@ def hostname_set():
     }
 
     Returns:
-        A JSON string with two keys: success, error.
-
-        success: true if successful.
-        error: null if successful, str otherwise.
-
-        Example of success:
-        {
-            'success': true,
-            'error': null
-        }
-        Example of error:
-        {
-            'success': false,
-            'error': 'Invalid hostname.'
-        }
+        Empty response on success, error object otherwise.
     """
     try:
         new_hostname = request_parsers.hostname.parse_hostname(flask.request)
         hostname.change(new_hostname)
-        return json_response.success()
+        return json_response.success2()
     except request_parsers.errors.Error as e:
-        return json_response.error('Invalid input: %s' % str(e)), 200
+        return json_response.error2(e), 400
     except hostname.Error as e:
-        return json_response.error('Operation failed: %s' % str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/status', methods=['GET'])

@@ -61,6 +61,56 @@
     });
   }
 
+  class ControllerError extends Error {
+    /**
+     * @param details string with the original error message.
+     * @param code (optional) string with the error code, or `undefined` for
+     *             non-application or unknown errors.
+     */
+    constructor(details, code) {
+      super(details);
+      this.code = code;
+    }
+  }
+
+  /**
+   * Processes response from the backend API.
+   * @param response An object as returned by `fetch`
+   * @returns {Promise<Object>}
+   *    Success case: a JSON response with status 2xx. Promise resolves with
+   *                  data from response body.
+   *    Error case:   anything else, e.g. non-JSON or status 4xx/5xx. Promise
+   *                  rejects with a `ControllerError`.
+   *
+   */
+  async function processJsonResponse(response) {
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      throw new ControllerError(
+        "Malformed API response, content type must be JSON"
+      );
+    }
+
+    let jsonBody;
+    try {
+      jsonBody = await response.json();
+    } catch (jsonParseError) {
+      throw new ControllerError(
+        "Malformed API response, JSON body cannot be parsed"
+      );
+    }
+
+    // Resolve on 2xx response:
+    if (response.status >= 200 && response.status < 300) {
+      return jsonBody;
+    }
+    // Reject otherwise:
+    throw new ControllerError(
+      jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
+      jsonBody.code
+    );
+  }
+
   // Checks TinyPilot-level details of the response. The standard TinyPilot
   // response body contains two fields: "success" (bool) and "error" (string)
   // A message indicates success if success is true and error is non-null.
@@ -222,20 +272,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((hostnameResponse) => {
         if (!hostnameResponse.hasOwnProperty("hostname")) {
-          return Promise.reject(new Error("Missing expected hostname field"));
+          throw new ControllerError("Missing expected hostname field");
         }
-        return Promise.resolve(hostnameResponse.hostname);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return hostnameResponse.hostname;
       });
   }
 
@@ -252,17 +294,9 @@
       },
       body: JSON.stringify({ hostname: newHostname }),
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then(() => {
         return Promise.resolve(newHostname);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
       });
   }
 
