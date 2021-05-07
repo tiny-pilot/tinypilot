@@ -295,7 +295,7 @@
       redirect: "error",
       body: text,
     })
-      .then(readHttpJsonResponse)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("id")) {
           throw new ControllerError("Missing expected id field");
