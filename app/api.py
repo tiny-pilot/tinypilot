@@ -35,18 +35,18 @@ def debug_logs_get():
 def shutdown_post():
     try:
         local_system.shutdown()
-        return json_response.success()
+        return json_response.success2()
     except local_system.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/restart', methods=['POST'])
 def restart_post():
     try:
         local_system.restart()
-        return json_response.success()
+        return json_response.success2()
     except local_system.Error as e:
-        return json_response.error(str(e)), 200
+        return json_response.error2(e), 500
 
 
 @api_blueprint.route('/update', methods=['GET'])

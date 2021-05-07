@@ -195,28 +195,18 @@
         // A 502 usually means that nginx shutdown before it could process the
         // response. Treat this as success.
         if (httpResponse.status === 502) {
-          return Promise.resolve({
-            success: true,
-            error: null,
-          });
+          return;
         }
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .then(() => {
-        // The shutdown API has no details, so return an empty dict.
-        return Promise.resolve({});
+        return processJsonResponse(httpResponse);
       })
       .catch((error) => {
         // Depending on timing, the server may not respond to the shutdown
         // request because it's shutting down. If we get a NetworkError, assume
         // the shutdown succeeded.
         if (error.message.indexOf("NetworkError") >= 0) {
-          return Promise.resolve({});
+          return;
         }
-        return Promise.reject(error);
+        throw error;
       });
   }
 
