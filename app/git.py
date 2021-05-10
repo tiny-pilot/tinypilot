@@ -50,7 +50,7 @@ def remote_head_commit_id():
 
 def _fetch():
     logger.info('Performing git fetch')
-    _run(['git', 'fetch'])
+    _run(['git', 'fetch', '--force'])
     logger.info('git fetch complete')
 
 
