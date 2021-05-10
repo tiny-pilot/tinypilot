@@ -86,8 +86,11 @@
   async function processJsonResponse(response) {
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
+      const status = `${response.status} ${response.statusText}`;
+      const bodyText = await response.text();
       throw new ControllerError(
-        "Malformed API response, content type must be JSON"
+        "Malformed API response, content type must be JSON.\n" +
+          `Response status: ${status}\n\n${bodyText}`
       );
     }
 
@@ -96,7 +99,7 @@
       jsonBody = await response.json();
     } catch (jsonParseError) {
       throw new ControllerError(
-        "Malformed API response, JSON body cannot be parsed"
+        "Malformed API response, JSON body cannot be parsed.\n" + jsonParseError
       );
     }
 
