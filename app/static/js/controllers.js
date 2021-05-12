@@ -29,9 +29,7 @@
       });
   }
 
-  // Reads a response from an HTTP endpoint that we expect to contain a JSON
-  // body. Verifies the HTTP response was successful and the response type is
-  // JSON, but doesn't check anything beyond that.
+  // DEPRECATED: delete once we have finished the migration in the pro repo.
   function readHttpJsonResponse(response) {
     const contentType = response.headers.get("content-type");
     const isJson =
@@ -114,9 +112,7 @@
     );
   }
 
-  // Checks TinyPilot-level details of the response. The standard TinyPilot
-  // response body contains two fields: "success" (bool) and "error" (string)
-  // A message indicates success if success is true and error is non-null.
+  // DEPRECATED: delete once we have finished the migration in the pro repo.
   function checkJsonSuccess(response) {
     if (response.hasOwnProperty("error") && response.error) {
       return Promise.reject(new Error(response.error));
@@ -135,20 +131,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((httpResponse) => {
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((versionResponse) => {
         if (!versionResponse.hasOwnProperty("version")) {
-          return Promise.reject(new Error("Missing expected version field"));
+          throw new ControllerError("Missing expected version field");
         }
-        return Promise.resolve(versionResponse.version);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return versionResponse.version;
       });
   }
 
@@ -160,20 +148,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((httpResponse) => {
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((versionResponse) => {
         if (!versionResponse.hasOwnProperty("version")) {
-          return Promise.reject(new Error("Missing expected version field"));
+          throw new ControllerError("Missing expected version field");
         }
-        return Promise.resolve(versionResponse.version);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return versionResponse.version;
       });
   }
 
@@ -195,28 +175,18 @@
         // A 502 usually means that nginx shutdown before it could process the
         // response. Treat this as success.
         if (httpResponse.status === 502) {
-          return Promise.resolve({
-            success: true,
-            error: null,
-          });
+          return;
         }
-        return readHttpJsonResponse(httpResponse);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .then(() => {
-        // The shutdown API has no details, so return an empty dict.
-        return Promise.resolve({});
+        return processJsonResponse(httpResponse);
       })
       .catch((error) => {
         // Depending on timing, the server may not respond to the shutdown
         // request because it's shutting down. If we get a NetworkError, assume
         // the shutdown succeeded.
         if (error.message.indexOf("NetworkError") >= 0) {
-          return Promise.resolve({});
+          return;
         }
-        return Promise.reject(error);
+        throw error;
       });
   }
 
@@ -230,16 +200,7 @@
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
-    })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+    }).then(processJsonResponse);
   }
 
   function getUpdateStatus() {
@@ -250,20 +211,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
+      .then(processJsonResponse)
       .then((updateResponse) => {
         if (!updateResponse.hasOwnProperty("status")) {
-          return Promise.reject(new Error("Missing expected status field"));
+          throw new ControllerError("Missing expected status field");
         }
-        return Promise.resolve(updateResponse.status);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+        return updateResponse.status;
       });
   }
 
@@ -298,9 +251,7 @@
       body: JSON.stringify({ hostname: newHostname }),
     })
       .then(processJsonResponse)
-      .then(() => {
-        return Promise.resolve(newHostname);
-      });
+      .then(() => newHostname);
   }
 
   function checkStatus(baseURL = "") {
@@ -311,18 +262,8 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then((response) => {
-        return readHttpJsonResponse(response);
-      })
-      .then((jsonResponse) => {
-        return checkJsonSuccess(jsonResponse);
-      })
-      .then(() => {
-        return Promise.resolve(true);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+      .then(processJsonResponse)
+      .then(() => true);
   }
 
   function getDebugLogs() {
@@ -334,9 +275,9 @@
     })
       .then((response) => {
         if (!response.ok) {
-          return Promise.reject(new Error(response.statusText));
+          throw new ControllerError(response.statusText);
         }
-        return Promise.resolve(response);
+        return response;
       })
       .then((response) => response.text());
   }
@@ -350,12 +291,12 @@
       redirect: "error",
       body: text,
     })
-      .then(readHttpJsonResponse)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("id")) {
-          return Promise.reject(new Error("Missing expected id field"));
+          throw new ControllerError("Missing expected id field");
         }
-        return Promise.resolve(data);
+        return data;
       })
       .then((data) => baseUrl + `/${data.id}`);
   }
@@ -367,13 +308,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("videoFps")) {
-          return Promise.reject(new Error("Missing expected videoFps field"));
+          throw new ControllerError("Missing expected videoFps field");
         }
-        return Promise.resolve(data.videoFps);
+        return data.videoFps;
       });
   }
 
@@ -388,10 +328,7 @@
         "X-CSRFToken": getCsrfToken(),
       },
       body: JSON.stringify({ videoFps }),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   function getVideoJpegQuality() {
@@ -401,15 +338,12 @@
       cache: "no-cache",
       redirect: "error",
     })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
+      .then(processJsonResponse)
       .then((data) => {
         if (!data.hasOwnProperty("videoJpegQuality")) {
-          return Promise.reject(
-            new Error("Missing expected videoJpegQuality field")
-          );
+          throw new ControllerError("Missing expected videoJpegQuality field");
         }
-        return Promise.resolve(data.videoJpegQuality);
+        return data.videoJpegQuality;
       });
   }
 
@@ -424,10 +358,7 @@
         "X-CSRFToken": getCsrfToken(),
       },
       body: JSON.stringify({ videoJpegQuality }),
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   function applyVideoSettings() {
@@ -439,10 +370,7 @@
       headers: {
         "X-CSRFToken": getCsrfToken(),
       },
-    })
-      .then(readHttpJsonResponse)
-      .then(checkJsonSuccess)
-      .then(() => {});
+    }).then(processJsonResponse);
   }
 
   if (!window.hasOwnProperty("controllers")) {

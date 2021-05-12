@@ -51,7 +51,7 @@ app.register_blueprint(views.views_blueprint)
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
 def handle_csrf_error(error):
-    return json_response.error(error.description), 400
+    return json_response.error2(error), 403
 
 
 @app.after_request
@@ -71,7 +71,7 @@ def handle_error(e):
     code = 500
     if isinstance(e, exceptions.HTTPException):
         code = e.code
-    return json_response.error(str(e)), code
+    return json_response.error2(e), code
 
 
 def main():
