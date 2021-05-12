@@ -29,36 +29,6 @@
       });
   }
 
-  // DEPRECATED: delete once we have finished the migration in the pro repo.
-  function readHttpJsonResponse(response) {
-    const contentType = response.headers.get("content-type");
-    const isJson =
-      contentType && contentType.indexOf("application/json") !== -1;
-
-    // Success case is an HTTP 200 response and a JSON body.
-    if (response.status === 200 && isJson) {
-      return Promise.resolve(response.json());
-    }
-
-    // If this is JSON, try to read the error field.
-    if (isJson) {
-      return response.json().then((responseJson) => {
-        if (responseJson.hasOwnProperty("error")) {
-          return Promise.reject(new Error(responseJson.error));
-        }
-        return Promise.reject(new Error("Unknown error"));
-      });
-    }
-
-    return response.text().then((text) => {
-      if (text) {
-        return Promise.reject(new Error(text));
-      } else {
-        return Promise.reject(new Error(response.statusText));
-      }
-    });
-  }
-
   class ControllerError extends Error {
     /**
      * @param details string with the original error message.
@@ -110,17 +80,6 @@
       jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
       jsonBody.code
     );
-  }
-
-  // DEPRECATED: delete once we have finished the migration in the pro repo.
-  function checkJsonSuccess(response) {
-    if (response.hasOwnProperty("error") && response.error) {
-      return Promise.reject(new Error(response.error));
-    }
-    if (!response.hasOwnProperty("success") || !response.success) {
-      return Promise.reject(new Error("Unknown error"));
-    }
-    return Promise.resolve(response);
   }
 
   function getLatestRelease() {
