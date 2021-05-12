@@ -9,8 +9,6 @@ _MODIFIER_KEYCODES = [
 
 
 def send_keystroke(keyboard_path, control_keys, hid_keycode):
-    # First 8 bytes are for the first keystroke. Second 8 bytes are
-    # all zeroes to indicate release of keys.
     buf = [0] * 8
     buf[0] = control_keys
     buf[2] = hid_keycode
