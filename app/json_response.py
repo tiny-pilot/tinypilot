@@ -1,17 +1,6 @@
 import flask
 
 
-# TODO(jotaen) Only needed for compatibility with Pro. Remove eventually.
-# pylint: disable=dangerous-default-value
-def success2(data={}):
-    return success(data)
-
-
-# TODO(jotaen) Only needed for compatibility with Pro. Remove eventually.
-def error2(err):
-    return error(err)
-
-
 # The default dictionary is okay because we're not modifying it.
 # pylint: disable=dangerous-default-value
 def success(data={}):
