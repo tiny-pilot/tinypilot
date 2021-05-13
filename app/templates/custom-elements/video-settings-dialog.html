@@ -15,13 +15,26 @@
       display: block;
     }
 
+    .settings {
+      margin: 2.5rem 0;
+    }
+
+    .input-container {
+      display: inline-flex;
+      flex-direction: row;
+      margin-bottom: 1rem;
+    }
+
     .input-container label {
       display: inline-block;
       text-align: right;
+      margin-right: 0.5rem;
       width: 100px;
     }
+
     .input-container input {
       display: inline-block;
+      width: 350px;
     }
 
     #video-fps-display,
@@ -36,15 +49,17 @@
   </div>
   <div id="edit">
     <h3>Change Video Settings</h3>
-    <div class="input-container">
-      <label for="video-fps">FPS:</label>
-      <input type="range" id="video-fps" min="1" max="30" />
-      <span id="video-fps-display"></span>
-    </div>
-    <div class="input-container">
-      <label for="video-jpeg-quality">JPEG Quality:</label>
-      <input type="range" id="video-jpeg-quality" min="1" max="100" />
-      <span id="video-jpeg-quality-display"></span>
+    <div class="settings">
+      <div class="input-container">
+        <label for="video-fps-slider">FPS</label>
+        <input type="range" id="video-fps-slider" min="1" max="30" />
+        <span id="video-fps-display"></span>
+      </div>
+      <div class="input-container">
+        <label for="video-jpeg-quality-slider">JPEG Quality</label>
+        <input type="range" id="video-jpeg-quality-slider" min="1" max="100" />
+        <span id="video-jpeg-quality-display"></span>
+      </div>
     </div>
     <button class="save-btn btn-success" type="button">
       Apply
@@ -81,12 +96,12 @@
             .querySelector("#edit .save-btn")
             .addEventListener("click", () => this._saveSettings());
           this.shadowRoot
-            .querySelector("#video-fps")
+            .querySelector("#video-fps-slider")
             .addEventListener("input", (event) => {
               this._setVideoFpsDisplay(event.target.value);
             });
           this.shadowRoot
-            .querySelector("#video-jpeg-quality")
+            .querySelector("#video-jpeg-quality-slider")
             .addEventListener("input", (event) => {
               this._setVideoJpegQualityDisplay(event.target.value);
             });
@@ -118,7 +133,9 @@
           return controllers
             .getVideoFps()
             .then((videoFps) => {
-              this.shadowRoot.querySelector("#video-fps").value = videoFps;
+              this.shadowRoot.querySelector(
+                "#video-fps-slider"
+              ).value = videoFps;
               this._setVideoFpsDisplay(videoFps);
             })
             .catch((error) => {
@@ -135,7 +152,7 @@
             .getVideoJpegQuality()
             .then((videoJpegQuality) => {
               this.shadowRoot.querySelector(
-                "#video-jpeg-quality"
+                "#video-jpeg-quality-slider"
               ).value = videoJpegQuality;
               this._setVideoJpegQualityDisplay(videoJpegQuality);
             })
@@ -161,7 +178,8 @@
         }
 
         _saveVideoFps() {
-          let videoFps = this.shadowRoot.querySelector("#video-fps").value;
+          let videoFps = this.shadowRoot.querySelector("#video-fps-slider")
+            .value;
           return controllers.setVideoFps(videoFps).catch((error) => {
             this._displayErrorDialog({
               title: "Failed to Save Video FPS",
@@ -173,7 +191,7 @@
 
         _saveVideoJpegQuality() {
           let videoJpegQuality = this.shadowRoot.querySelector(
-            "#video-jpeg-quality"
+            "#video-jpeg-quality-slider"
           ).value;
           return controllers
             .setVideoJpegQuality(videoJpegQuality)
