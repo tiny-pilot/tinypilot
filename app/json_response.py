@@ -1,51 +1,20 @@
 import flask
 
-# We are currently migrating from success/error to success2/error2.
-# The former will be eventually removed and the latter renamed.
 
-
-# The default dictionary is okay because we're not modifying it.
-# pylint: disable=dangerous-default-value
-def success(fields={}):
-    """A JSON response for a successful request. (DEPRECATED, use `success2`)
-
-    Args:
-        fields: Dictionary with JSON properties to include.
-
-    Returns:
-        A `flask.Response` object with JSON body. The JSON structure contains a
-        `success` property (which is `true`) and an `error` property (which is
-        `null`). The additional fields given are merged into the JSON output.
-    """
-    response = {
-        'success': True,
-        'error': None,
-    }
-    for key, val in fields.items():
-        response[key] = val
-    return flask.jsonify(response)
-
-
-def error(message):
-    """A JSON response for a failed request. (DEPRECATED, use `error2`)
-
-    Args:
-        message: String containing the error message.
-
-    Returns:
-        A `flask.Response` object with JSON body. The JSON structure contains a
-        `success` property (which is `false`) and an `error` property (which is
-        a string containing the error message).
-    """
-    return flask.jsonify({
-        'success': False,
-        'error': message,
-    })
-
-
-# The default dictionary is okay because we're not modifying it.
+# TODO(jotaen) Only needed for compatibility with Pro. Remove eventually.
 # pylint: disable=dangerous-default-value
 def success2(data={}):
+    return success(data)
+
+
+# TODO(jotaen) Only needed for compatibility with Pro. Remove eventually.
+def error2(err):
+    return error(err)
+
+
+# The default dictionary is okay because we're not modifying it.
+# pylint: disable=dangerous-default-value
+def success(data={}):
     """A JSON response for a successful request.
 
     Args:
@@ -57,7 +26,7 @@ def success2(data={}):
     return flask.jsonify(data)
 
 
-def error2(original_error):
+def error(original_error):
     """A JSON response for a failed request.
 
     Args:

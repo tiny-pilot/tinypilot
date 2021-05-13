@@ -40,9 +40,9 @@ def shutdown_post():
     """
     try:
         local_system.shutdown()
-        return json_response.success2()
+        return json_response.success()
     except local_system.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/restart', methods=['POST'])
@@ -54,9 +54,9 @@ def restart_post():
     """
     try:
         local_system.restart()
-        return json_response.success2()
+        return json_response.success()
     except local_system.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/update', methods=['GET'])
@@ -78,8 +78,8 @@ def update_get():
 
     status, error = update.status.get()
     if error:
-        return json_response.error2(error), 500
-    return json_response.success2({'status': str(status)})
+        return json_response.error(error), 500
+    return json_response.success({'status': str(status)})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
@@ -99,8 +99,8 @@ def update_put():
         # If an update is already in progress, treat it as success.
         pass
     except update.launcher.Error as e:
-        return json_response.error2(e), 500
-    return json_response.success2()
+        return json_response.error(e), 500
+    return json_response.success()
 
 
 @api_blueprint.route('/version', methods=['GET'])
@@ -119,9 +119,9 @@ def version_get():
         Returns error object on failure.
     """
     try:
-        return json_response.success2({'version': version.local_version()})
+        return json_response.success({'version': version.local_version()})
     except version.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/latestRelease', methods=['GET'])
@@ -140,9 +140,9 @@ def latest_release_get():
         Returns error object on failure.
     """
     try:
-        return json_response.success2({'version': version.latest_version()})
+        return json_response.success({'version': version.latest_version()})
     except version.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/hostname', methods=['GET'])
@@ -161,9 +161,9 @@ def hostname_get():
         Returns an error object on failure.
     """
     try:
-        return json_response.success2({'hostname': hostname.determine()})
+        return json_response.success({'hostname': hostname.determine()})
     except hostname.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/hostname', methods=['PUT'])
@@ -182,11 +182,11 @@ def hostname_set():
     try:
         new_hostname = request_parsers.hostname.parse_hostname(flask.request)
         hostname.change(new_hostname)
-        return json_response.success2()
+        return json_response.success()
     except request_parsers.errors.Error as e:
-        return json_response.error2(e), 400
+        return json_response.error(e), 400
     except hostname.Error as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
 
 
 @api_blueprint.route('/status', methods=['GET'])
@@ -199,7 +199,7 @@ def status_get():
     Returns:
         Empty response, which implies the server is up and running.
     """
-    response = json_response.success2()
+    response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
@@ -222,12 +222,12 @@ def settings_video_fps_get():
     try:
         video_fps = update.settings.load().ustreamer_desired_fps
     except update.settings.LoadSettingsError as e:
-        return json_response.error2(e), 200
+        return json_response.error(e), 200
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
     if video_fps is None:
         video_fps = video_settings.DEFAULT_FPS
-    return json_response.success2({'videoFps': video_fps})
+    return json_response.success({'videoFps': video_fps})
 
 
 @api_blueprint.route('/settings/video/fps', methods=['PUT'])
@@ -254,10 +254,10 @@ def settings_video_fps_put():
             settings.ustreamer_desired_fps = video_fps
         update.settings.save(settings)
     except request_parsers.errors.InvalidVideoFpsError as e:
-        return json_response.error2(e), 400
+        return json_response.error(e), 400
     except update.settings.SaveSettingsError as e:
-        return json_response.error2(e), 500
-    return json_response.success2()
+        return json_response.error(e), 500
+    return json_response.success()
 
 
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
@@ -278,12 +278,12 @@ def settings_video_jpeg_quality_get():
     try:
         video_jpeg_quality = update.settings.load().ustreamer_quality
     except update.settings.LoadSettingsError as e:
-        return json_response.error2(e), 500
+        return json_response.error(e), 500
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
     if video_jpeg_quality is None:
         video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
-    return json_response.success2({'videoJpegQuality': video_jpeg_quality})
+    return json_response.success({'videoJpegQuality': video_jpeg_quality})
 
 
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
@@ -311,10 +311,10 @@ def settings_video_jpeg_quality_put():
             settings.ustreamer_quality = video_jpeg_quality
         update.settings.save(settings)
     except request_parsers.errors.InvalidVideoJpegQualityError as e:
-        return json_response.error2(e), 400
+        return json_response.error(e), 400
     except update.settings.SaveSettingsError as e:
-        return json_response.error2(e), 500
-    return json_response.success2()
+        return json_response.error(e), 500
+    return json_response.success()
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
@@ -327,5 +327,5 @@ def settings_video_apply_post():
     try:
         video_settings.apply()
     except video_settings.Error as e:
-        return json_response.error2(e), 500
-    return json_response.success2()
+        return json_response.error(e), 500
+    return json_response.success()
