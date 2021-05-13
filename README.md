@@ -12,6 +12,8 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 [![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo-800w.gif)](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo.gif)
 
+<https://tinypilotkvm.com>
+
 ## Features
 
 * Video capture (HDMI/DVI/VGA)
@@ -159,3 +161,12 @@ TinyPilot would not be possible without the excellent and generous work from man
 For news about major TinyPilot releases and other updates about the project, sign up for the TinyPilot mailing list:
 
 * [TinyPilot Mailing List](https://tinypilotkvm.com/about)
+
+## Upgrade to Pro
+
+TinyPilot Pro includes additional features for professional users, including:
+
+* [Virtual drive mounting and booting](https://tinypilotkvm.com/blog/whats-new-in-1-5#boot-into-a-virtual-disk-drive)
+* Password-based authentication
+
+Support the project and upgrade to Pro at <https://tinypilotkvm.com/product/tinypilot-pro>.
