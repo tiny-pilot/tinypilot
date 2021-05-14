@@ -1,6 +1,5 @@
 import tempfile
 import unittest
-from unittest import mock
 
 from hid import keyboard
 from hid import keycodes
@@ -8,8 +7,7 @@ from hid import keycodes
 
 class KeyboardTest(unittest.TestCase):
 
-    @mock.patch.object(keyboard, 'release_keys')
-    def test_send_hid_keycode_to_hid_interface(self, mock_release_keys):
+    def test_send_hid_keycode_to_hid_interface(self):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
@@ -17,12 +15,12 @@ class KeyboardTest(unittest.TestCase):
                 hid_keycode=keycodes.KEYCODE_A,
             )
             input_file.seek(0)
-            self.assertEqual(b'\x00\x00\x04\x00\x00\x00\x00\x00',
-                             input_file.read())
-            mock_release_keys.assert_called_once()
+            # Press the key then release the key.
+            self.assertEqual(
+                b'\x00\x00\x04\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00', input_file.read())
 
-    @mock.patch.object(keyboard, 'release_keys')
-    def test_send_control_key_to_hid_interface(self, mock_release_keys):
+    def test_send_control_key_to_hid_interface(self):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
@@ -30,13 +28,12 @@ class KeyboardTest(unittest.TestCase):
                 hid_keycode=keycodes.KEYCODE_NONE,
             )
             input_file.seek(0)
+            # Press the key, but do not release the key. This is to allow for
+            # shift+click type behavior.
             self.assertEqual(b'\x02\x00\x00\x00\x00\x00\x00\x00',
                              input_file.read())
-            mock_release_keys.assert_not_called()
 
-    @mock.patch.object(keyboard, 'release_keys')
-    def test_send_control_key_and_hid_keycode_to_hid_interface(
-            self, mock_release_keys):
+    def test_send_control_key_and_hid_keycode_to_hid_interface(self):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
@@ -44,9 +41,10 @@ class KeyboardTest(unittest.TestCase):
                 hid_keycode=keycodes.KEYCODE_A,
             )
             input_file.seek(0)
-            self.assertEqual(b'\x02\x00\x04\x00\x00\x00\x00\x00',
-                             input_file.read())
-            mock_release_keys.assert_called_once()
+            # Press the key then release the key.
+            self.assertEqual(
+                b'\x02\x00\x04\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00', input_file.read())
 
     def test_send_release_keys_to_hid_interface(self):
         with tempfile.NamedTemporaryFile() as input_file:
