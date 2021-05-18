@@ -17,7 +17,8 @@
   --brand-sand-light: hsl(var(--brand-hue-yellow), 59%, 92%);
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
 
-  --brand-blue: hsl(var(--brand-hue-blue), 80%, 60%);
+  --brand-blue: hsl(var(--brand-hue-blue), 55%, 55%);
+  --brand-blue-bright: hsl(var(--brand-hue-blue), 90%, 67%);
 
   --brand-red: hsl(var(--brand-hue-red), 55%, 40%);
   --brand-red-light: hsl(var(--brand-hue-red), 54%, 95%);
