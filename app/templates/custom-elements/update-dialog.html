@@ -154,11 +154,13 @@
         _waitForUpdateToFinish() {
           return poll({
             fn: controllers.getUpdateStatus,
-            validate: (status) => {
-              return status === "DONE";
-            },
+            validate: (data) => data.status === "DONE" || data.updateError,
             interval: 2 * 1000,
             timeout: 300 * 1000,
+          }).then((data) => {
+            if (data.updateError) {
+              return Promise.reject(data.updateError);
+            }
           });
         }
 

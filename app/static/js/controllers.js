@@ -171,11 +171,14 @@
       redirect: "error",
     })
       .then(processJsonResponse)
-      .then((updateResponse) => {
-        if (!updateResponse.hasOwnProperty("status")) {
+      .then((data) => {
+        if (!data.hasOwnProperty("status")) {
           throw new ControllerError("Missing expected status field");
         }
-        return updateResponse.status;
+        if (!data.hasOwnProperty("updateError")) {
+          throw new ControllerError("Missing expected updateError field");
+        }
+        return { status: data.status, updateError: data.updateError };
       });
   }
 

@@ -67,19 +67,18 @@ def update_get():
         On success, a JSON data structure with the following properties:
         status: str describing the status of the job. Can be one of
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
+        updateError: str of the error that occured while updating. If no error
+                     occured, then this will be null.
 
         Example:
         {
-            "status": "NOT_RUNNING"
+            "status": "NOT_RUNNING",
+            "updateError": null
         }
-
-        Returns error object on failure.
     """
 
     status, error = update.status.get()
-    if error:
-        return json_response.error(error), 500
-    return json_response.success({'status': str(status)})
+    return json_response.success({'status': str(status), 'updateError': error})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
