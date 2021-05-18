@@ -141,32 +141,34 @@
 
       <h2 class="section">Overlay</h2>
       <p>
-        There are multiple overlay variants to choose from, click on the buttons
-        to learn about them.
+        Click on the buttons to learn how the overlay is supposed to be
+        designed.
       </p>
-      <!-- Prompt overlay: -->
-      <button id="show-prompt-overlay-btn" class="btn-action">
-        Overlay with Prompt
+      <!-- Overlay with single call-to-action: -->
+      <button id="show-overlay-with-primary-action-btn" class="btn-action">
+        Overlay with Primary Action
       </button>
-      <overlay-panel id="prompt-overlay">
-        <h3>Overlay with Prompt</h3>
+      <overlay-panel id="overlay-with-primary-action">
+        <h3>Overlay with Primary Action</h3>
         <div>
           This overlay style is used for linear and straightforward flows that
-          have a single purpose or end state. It contains call-to-action
-          buttons and a cancel button (in that order) at the bottom. When
-          clicked, they also terminate the dialog.
+          have a single purpose or end state, like a prompt or confirmation. It
+          contains a call-to-action button and a cancel button (in that order)
+          at the bottom. When clicked, they also terminate the dialog.
         </div>
-        <button class="close-prompt-overlay btn-success">Confirm</button>
-        <button class="close-prompt-overlay">Cancel</button>
+        <button class="close-overlay-with-primary-action btn-success">
+          Confirm
+        </button>
+        <button class="close-overlay-with-primary-action">Cancel</button>
       </overlay-panel>
       <script>
         document
-          .getElementById("show-prompt-overlay-btn")
+          .getElementById("show-overlay-with-primary-action-btn")
           .addEventListener("click", () => {
-            document.getElementById("prompt-overlay").show();
+            document.getElementById("overlay-with-primary-action").show();
           });
         Array.from(
-          document.getElementsByClassName("close-prompt-overlay")
+          document.getElementsByClassName("close-overlay-with-primary-action")
         ).forEach((button) =>
           button.addEventListener("click", (evt) => {
             evt.target.dispatchEvent(
@@ -178,11 +180,11 @@
           })
         );
       </script>
-      <!-- Feature overlay: -->
-      <button id="show-feature-overlay-btn" class="btn-action">
+      <!-- Overlay with feature: -->
+      <button id="show-overlay-with-feature-btn" class="btn-action">
         Overlay with Feature
       </button>
-      <overlay-panel id="feature-overlay">
+      <overlay-panel id="overlay-with-feature">
         <h3>Overlay with Feature</h3>
         <div>
           <button class="btn-small btn-action" onclick="alert('Done.')">
@@ -197,20 +199,19 @@
         </div>
         <div>
           When the user can carry out “secondary” actions within the overlay
-          that don’t terminate the dialog like in a prompt, the blue action
-          buttons should be used.<br/>
-          At the bottom there is only a “Close” button and no other primary
-          buttons.
+          that don’t terminate the dialog itself, the blue action buttons should
+          be used for that. They also shouldn’t appear at the bottom.
         </div>
-        <button id="close-feature-overlay-btn">Close</button>
+        <button id="close-overlay-with-feature-btn">Close</button>
       </overlay-panel>
       <script>
         document
-          .getElementById("show-feature-overlay-btn")
+          .getElementById("show-overlay-with-feature-btn")
           .addEventListener("click", () => {
-            document.getElementById("feature-overlay").show();
+            document.getElementById("overlay-with-feature").show();
           });
-        document.getElementById("close-feature-overlay-btn")
+        document
+          .getElementById("close-overlay-with-feature-btn")
           .addEventListener("click", (evt) => {
             evt.target.dispatchEvent(
               new CustomEvent("dialog-closed", {
