@@ -44,7 +44,9 @@ button:active,
   background-color: var(--brand-blue);
 }
 
-.btn-action:hover {
+.btn-action:hover,
+.btn-action:active,
+.btn-action:focus {
   background-color: var(--brand-blue-bright);
 }
 
@@ -52,7 +54,9 @@ button:active,
   background-color: var(--brand-green);
 }
 
-.btn-success:hover {
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus {
   background-color: var(--brand-green-bright);
 }
 
@@ -65,6 +69,8 @@ button:active,
   background-color: var(--brand-red);
 }
 
-.btn-danger:hover {
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus {
   background-color: var(--brand-red-bright);
 }
