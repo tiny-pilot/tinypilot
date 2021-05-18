@@ -21,27 +21,10 @@
     }
 
     #panel {
-      position: relative;
       max-width: 800px;
       margin: 100px auto;
       padding: 2rem;
       text-align: center;
-    }
-
-    #close-button {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 2.3rem;
-      padding: 0;
-      margin: 0;
-      opacity: 0.7;
-    }
-
-    #close-button svg {
-      display: block;
-      margin: 0.3rem;
     }
 
     :host([variant="default"]) #panel,
@@ -58,14 +41,6 @@
   </style>
 
   <div id="panel">
-    <button id="close-button" title="Close Overlay">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
-        <path
-          fill="#fff"
-          d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
-        />
-      </svg>
-    </button>
     <slot></slot>
   </div>
 </template>
@@ -86,9 +61,6 @@
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
-          this.shadowRoot
-            .getElementById("close-button")
-            .addEventListener("click", () => this.show(false));
         }
 
         show(isShown = true) {

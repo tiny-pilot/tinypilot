@@ -152,7 +152,7 @@
         <h3>Overlay with Prompt</h3>
         <div>
           This overlay style is used for linear and straightforward flows that
-          have a single function or end state. It contains call-to-action
+          have a single purpose or end state. It contains call-to-action
           buttons and a cancel button (in that order) at the bottom. When
           clicked, they also terminate the dialog.
         </div>
@@ -185,11 +185,6 @@
       <overlay-panel id="feature-overlay">
         <h3>Overlay with Feature</h3>
         <div>
-          This overlay style is used for more complex features, where there is
-          no obvious terminative action. Instead, there are multiple things for
-          the user to see or do.
-        </div>
-        <div>
           <button class="btn-small btn-action" onclick="alert('Done.')">
             Action 1
           </button>
@@ -201,15 +196,28 @@
           </button>
         </div>
         <div>
-          There are no call-to-action buttons at the bottom. The overlay is
-          closed via the “×” icon in the top right corner.
+          When the user can carry out “secondary” actions within the overlay
+          that don’t terminate the dialog like in a prompt, the blue action
+          buttons should be used.<br/>
+          At the bottom there is only a “Close” button and no other primary
+          buttons.
         </div>
+        <button id="close-feature-overlay-btn">Close</button>
       </overlay-panel>
       <script>
         document
           .getElementById("show-feature-overlay-btn")
           .addEventListener("click", () => {
             document.getElementById("feature-overlay").show();
+          });
+        document.getElementById("close-feature-overlay-btn")
+          .addEventListener("click", (evt) => {
+            evt.target.dispatchEvent(
+              new CustomEvent("dialog-closed", {
+                bubbles: true,
+                composed: true,
+              })
+            );
           });
       </script>
       <!-- Error overlay: -->
