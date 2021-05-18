@@ -113,45 +113,62 @@
         </li>
         <li>Use <i>Title Case</i>.</li>
         <li>
-          If ever feasible, call-to-action buttons should only appear once.
+          If ever feasible, call-to-action buttons should only appear once. If
+          there are multiple regular actions side by side, the “regular” action
+          button should be used.
+        </li>
+        <li>
+          To make the button appear less prominent, a smaller variant can be
+          used.
         </li>
       </ul>
       <h3>Default Button</h3>
       <button>Default</button>
+      <button class="btn-small">Default (Small)</button>
       <p>For harmless operations like “close” or “cancel”.</p>
-      <h3>Danger Button</h3>
-      <button class="btn-danger">Danger</button>
-      <p>For destructive call-to-actions like “delete” or “shutdown”.</p>
-      <h3>Success Button</h3>
+      <h3>Action Button</h3>
+      <button class="btn-action">Action</button>
+      <p>
+        For operations that do or apply something. (Don’t use for the primary
+        call-to-action.)
+      </p>
+      <h3>Success Button (Primary Action)</h3>
       <button class="btn-success">Success</button>
       <p>For the main (and non-destructive) call-to-action.</p>
+      <h3>Danger Button (Primary Action)</h3>
+      <button class="btn-danger">Danger</button>
+      <p>For destructive call-to-actions like “delete” or “shutdown”.</p>
 
       <h2 class="section">Overlay</h2>
       <p>
-        There are two overlay variants to choose from.
+        Click on the buttons to learn how the overlay is supposed to be
+        designed.
       </p>
-      <!-- Default overlay: -->
-      <button id="show-default-overlay-btn" class="btn">
-        Open Default Overlay
+      <!-- Overlay with single call-to-action: -->
+      <button id="show-overlay-with-primary-action-btn" class="btn-action">
+        Overlay with Primary Action
       </button>
-      <overlay-panel id="default-overlay">
-        <h3>Default Overlay</h3>
+      <overlay-panel id="overlay-with-primary-action">
+        <h3>Overlay with Primary Action</h3>
         <div>
-          The default overlay displays dialogs or asks for user confirmation. It
-          contains call-to-action buttons and a cancel button (in that order).
-          Does that make sense?
+          This overlay style is used for linear and straightforward flows that
+          have a single purpose or end state, like a prompt or confirmation. It
+          contains a call-to-action button and a cancel button (in that order)
+          at the bottom. When clicked, they also terminate the dialog.
         </div>
-        <button class="close-default-overlay btn-success">Confirm</button>
-        <button class="close-default-overlay">Cancel</button>
+        <button class="close-overlay-with-primary-action btn-success">
+          Confirm
+        </button>
+        <button class="close-overlay-with-primary-action">Cancel</button>
       </overlay-panel>
       <script>
         document
-          .getElementById("show-default-overlay-btn")
+          .getElementById("show-overlay-with-primary-action-btn")
           .addEventListener("click", () => {
-            document.getElementById("default-overlay").show();
+            document.getElementById("overlay-with-primary-action").show();
           });
         Array.from(
-          document.getElementsByClassName("close-default-overlay")
+          document.getElementsByClassName("close-overlay-with-primary-action")
         ).forEach((button) =>
           button.addEventListener("click", (evt) => {
             evt.target.dispatchEvent(
@@ -162,6 +179,47 @@
             );
           })
         );
+      </script>
+      <!-- Overlay with feature: -->
+      <button id="show-overlay-with-feature-btn" class="btn-action">
+        Overlay with Feature
+      </button>
+      <overlay-panel id="overlay-with-feature">
+        <h3>Overlay with Feature</h3>
+        <div>
+          <button class="btn-small btn-action" onclick="alert('Done.')">
+            Action 1
+          </button>
+          <button class="btn-small btn-action" onclick="alert('Done.')">
+            Action 2
+          </button>
+          <button class="btn-small btn-action" onclick="alert('Done.')">
+            Action 3
+          </button>
+        </div>
+        <div>
+          When the user can carry out “secondary” actions within the overlay
+          that don’t terminate the dialog itself, the blue action buttons should
+          be used for that. They also shouldn’t appear at the bottom.
+        </div>
+        <button id="close-overlay-with-feature-btn">Close</button>
+      </overlay-panel>
+      <script>
+        document
+          .getElementById("show-overlay-with-feature-btn")
+          .addEventListener("click", () => {
+            document.getElementById("overlay-with-feature").show();
+          });
+        document
+          .getElementById("close-overlay-with-feature-btn")
+          .addEventListener("click", (evt) => {
+            evt.target.dispatchEvent(
+              new CustomEvent("dialog-closed", {
+                bubbles: true,
+                composed: true,
+              })
+            );
+          });
       </script>
       <!-- Error overlay: -->
       <overlay-panel id="error-overlay" variant="danger">

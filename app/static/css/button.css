@@ -36,11 +36,27 @@ button:active,
   transform: scale(0.99);
 }
 
+.btn-small {
+  padding: 0.5rem 1rem;
+}
+
+.btn-action {
+  background-color: var(--brand-blue);
+}
+
+.btn-action:hover,
+.btn-action:active,
+.btn-action:focus {
+  background-color: var(--brand-blue-bright);
+}
+
 .btn-success {
   background-color: var(--brand-green);
 }
 
-.btn-success:hover {
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus {
   background-color: var(--brand-green-bright);
 }
 
@@ -53,6 +69,8 @@ button:active,
   background-color: var(--brand-red);
 }
 
-.btn-danger:hover {
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus {
   background-color: var(--brand-red-bright);
 }
