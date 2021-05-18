@@ -37,7 +37,7 @@
     }
 
     #url-success .url-wrapper {
-      margin: 3rem 0;
+      margin: 1rem 0;
     }
 
     #url-success .url {
@@ -64,6 +64,7 @@
       </button>
     </div>
     <p class="logs monospace"></p>
+    <button class="close-btn" type="button">Close</button>
   </div>
 
   <!-- Get Shareable URL -->
@@ -80,6 +81,7 @@
         Copy to Clipboard
       </button>
     </div>
+    <button class="close-btn" type="button">Close</button>
   </div>
 </template>
 
@@ -105,6 +107,9 @@
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
+            el.addEventListener("click", this._close);
+          });
           this.shadowRoot
             .querySelector("#logs-success .share-btn")
             .addEventListener("click", this._getUrl);
