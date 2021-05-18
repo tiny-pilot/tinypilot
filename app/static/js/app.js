@@ -342,6 +342,7 @@ const errorEvents = [
   "change-hostname-failure",
   "shutdown-failure",
   "video-settings-failure",
+  "debug-logs-failure",
 ];
 errorEvents.forEach((name) => {
   document.addEventListener(name, (evt) => {

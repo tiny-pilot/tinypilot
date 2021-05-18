@@ -5,19 +5,15 @@
 
     #logs-loading,
     #logs-success,
-    #logs-fail,
     #url-loading,
-    #url-success,
-    #url-fail {
+    #url-success {
       display: none;
     }
 
     :host([state="logs-loading"]) #logs-loading,
     :host([state="logs-success"]) #logs-success,
-    :host([state="logs-fail"]) #logs-fail,
     :host([state="url-loading"]) #url-loading,
-    :host([state="url-success"]) #url-success,
-    :host([state="url-fail"]) #url-fail {
+    :host([state="url-success"]) #url-success {
       display: block;
     }
 
@@ -41,13 +37,6 @@
       background: #bdbdbd;
       padding: 1rem 2rem;
     }
-
-    .error {
-      color: var(--brand-red);
-      font-weight: bold;
-      user-select: text;
-      white-space: pre-wrap;
-    }
   </style>
 
   <!-- Get Debug Logs -->
@@ -68,12 +57,6 @@
     <button class="close-btn" type="button">Close</button>
   </div>
 
-  <div id="logs-fail">
-    <h3>Error Retrieving Debug Logs</h3>
-    <p class="error"></p>
-    <button class="close-btn" type="button">Close</button>
-  </div>
-
   <!-- Get Shareable URL -->
   <div id="url-loading">
     <h3>Retrieving Shareable URL</h3>
@@ -88,12 +71,6 @@
     <button class="copy-btn btn-success" type="button">
       Copy to clipboard
     </button>
-    <button class="close-btn" type="button">Close</button>
-  </div>
-
-  <div id="url-fail">
-    <h3>Error Retrieving Shareable URL</h3>
-    <p class="error"></p>
     <button class="close-btn" type="button">Close</button>
   </div>
 </template>
@@ -167,10 +144,10 @@
               this.state = "logs-success";
             })
             .catch((error) => {
-              this.shadowRoot.querySelector(
-                "#logs-fail .error"
-              ).textContent = error;
-              this.state = "logs-fail";
+              this._handleFailure({
+                title: "Error Retrieving Debug Logs",
+                details: error,
+              });
             });
         }
 
@@ -203,16 +180,27 @@
               this.state = "url-success";
             })
             .catch((error) => {
-              this.shadowRoot.querySelector(
-                "#url-fail .error"
-              ).textContent = error;
-              this.state = "url-fail";
+              this._handleFailure({
+                title: "Error Retrieving Shareable URL",
+                details: error,
+              });
             });
         }
 
         onPushCopyButton(buttonElement, sourceElement) {
           copyElementTextToClipboard(sourceElement);
           buttonElement.innerText = "Copied!";
+        }
+
+        _handleFailure(errorInfo) {
+          this._close();
+          this.dispatchEvent(
+            new CustomEvent("debug-logs-failure", {
+              detail: errorInfo,
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
       }
     );
