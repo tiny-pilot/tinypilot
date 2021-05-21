@@ -90,3 +90,11 @@ img {
 .question-icon {
   max-width: 20px;
 }
+
+input[type="text"],
+input[type="password"] {
+  padding: 0.5rem;
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #666;
+}
