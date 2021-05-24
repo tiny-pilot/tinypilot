@@ -1,14 +1,14 @@
 import unittest
 
+import js_to_hid
 from hid import keycodes as hid
-from js_to_hid import convert
 from request_parsers import keystroke
 
 
 class ConvertJsToHIDTest(unittest.TestCase):
 
     def test_converts_simple_keystroke(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=False,
                                 left_alt_modifier=False,
                                 left_shift_modifier=False,
@@ -20,7 +20,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.KEYCODE_A, hid_keycode)
 
     def test_converts_shifted_keystroke(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=False,
                                 left_alt_modifier=False,
                                 left_shift_modifier=True,
@@ -32,7 +32,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.KEYCODE_A, hid_keycode)
 
     def test_converts_keystroke_with_all_modifiers_pressed(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=True,
                                 left_alt_modifier=True,
                                 left_shift_modifier=True,
@@ -47,7 +47,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.KEYCODE_A, hid_keycode)
 
     def test_converts_left_ctrl_keystroke(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=False,
                                 left_alt_modifier=False,
                                 left_shift_modifier=False,
@@ -59,7 +59,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.KEYCODE_NONE, hid_keycode)
 
     def test_converts_right_ctrl_keystroke(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=False,
                                 left_alt_modifier=False,
                                 left_shift_modifier=False,
@@ -71,7 +71,7 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.KEYCODE_NONE, hid_keycode)
 
     def test_converts_left_ctrl_with_shift_left_keystroke(self):
-        modifier_bitmask, hid_keycode = convert(
+        modifier_bitmask, hid_keycode = js_to_hid.convert(
             keystroke.Keystroke(left_meta_modifier=False,
                                 left_alt_modifier=False,
                                 left_shift_modifier=True,
