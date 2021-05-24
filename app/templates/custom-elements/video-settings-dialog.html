@@ -64,6 +64,9 @@
     <button class="save-btn btn-success" type="button">
       Apply
     </button>
+    <button class="reset-btn btn-action" type="button">
+      Reset Defaults
+    </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
@@ -92,6 +95,9 @@
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () => this._close());
+          this.shadowRoot
+            .querySelector("#edit .reset-btn")
+            .addEventListener("click", () => this._resetSettings());
           this.shadowRoot
             .querySelector("#edit .save-btn")
             .addEventListener("click", () => this._saveSettings());
@@ -174,6 +180,54 @@
             .catch(() => {
               // Ignore errors here because they have already been handled by
               // their individual setting load function.
+            });
+        }
+
+        _resetVideoFps() {
+          return controllers
+            .getDefaultVideoFps()
+            .then((videoFps) => {
+              this.shadowRoot.querySelector(
+                "#video-fps-slider"
+              ).value = videoFps;
+              this._setVideoFpsDisplay(videoFps);
+            })
+            .catch((error) => {
+              this._displayErrorDialog({
+                title: "Failed to Reset Video FPS",
+                details: error,
+              });
+              return Promise.reject(error);
+            });
+        }
+
+        _resetVideoJpegQuality() {
+          return controllers
+            .getDefaultVideoJpegQuality()
+            .then((videoJpegQuality) => {
+              this.shadowRoot.querySelector(
+                "#video-jpeg-quality-slider"
+              ).value = videoJpegQuality;
+              this._setVideoJpegQualityDisplay(videoJpegQuality);
+            })
+            .catch((error) => {
+              this._displayErrorDialog({
+                title: "Failed to Reset Video JPEG Quality",
+                details: error,
+              });
+              return Promise.reject(error);
+            });
+        }
+
+        _resetSettings() {
+          this.state = "loading";
+          Promise.all([this._resetVideoFps(), this._resetVideoJpegQuality()])
+            .then(() => {
+              this.state = "edit";
+            })
+            .catch(() => {
+              // Ignore errors here because they have already been handled by
+              // their individual setting reset function.
             });
         }
 
