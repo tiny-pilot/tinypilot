@@ -32,13 +32,7 @@ coverage run \
 coverage report
 
 # Check that source has correct formatting.
-yapf \
-  --diff \
-  --recursive \
-  --style google \
-  ./ \
-  --exclude=third_party/* \
-  --exclude=venv/*
+yapf --diff --recursive ./
 
 # Check correct sorting for imports.
 isort \
