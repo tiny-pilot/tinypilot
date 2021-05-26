@@ -64,6 +64,9 @@
     <button class="save-btn btn-success" type="button">
       Apply
     </button>
+    <button class="restore-btn btn-action" type="button">
+      Restore Defaults
+    </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
@@ -92,6 +95,9 @@
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () => this._close());
+          this.shadowRoot
+            .querySelector("#edit .restore-btn")
+            .addEventListener("click", () => this._restoreSettings());
           this.shadowRoot
             .querySelector("#edit .save-btn")
             .addEventListener("click", () => this._saveSettings());
@@ -174,6 +180,57 @@
             .catch(() => {
               // Ignore errors here because they have already been handled by
               // their individual setting load function.
+            });
+        }
+
+        _restoreVideoFps() {
+          return controllers
+            .getDefaultVideoFps()
+            .then((videoFps) => {
+              this.shadowRoot.querySelector(
+                "#video-fps-slider"
+              ).value = videoFps;
+              this._setVideoFpsDisplay(videoFps);
+            })
+            .catch((error) => {
+              this._displayErrorDialog({
+                title: "Failed to Restore Video FPS",
+                details: error,
+              });
+              return Promise.reject(error);
+            });
+        }
+
+        _restoreVideoJpegQuality() {
+          return controllers
+            .getDefaultVideoJpegQuality()
+            .then((videoJpegQuality) => {
+              this.shadowRoot.querySelector(
+                "#video-jpeg-quality-slider"
+              ).value = videoJpegQuality;
+              this._setVideoJpegQualityDisplay(videoJpegQuality);
+            })
+            .catch((error) => {
+              this._displayErrorDialog({
+                title: "Failed to Restore Video JPEG Quality",
+                details: error,
+              });
+              return Promise.reject(error);
+            });
+        }
+
+        _restoreSettings() {
+          this.state = "loading";
+          Promise.all([
+            this._restoreVideoFps(),
+            this._restoreVideoJpegQuality(),
+          ])
+            .then(() => {
+              this.state = "edit";
+            })
+            .catch(() => {
+              // Ignore errors here because they have already been handled by
+              // their individual setting restore function.
             });
         }
 

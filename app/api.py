@@ -259,6 +259,22 @@ def settings_video_fps_put():
     return json_response.success()
 
 
+@api_blueprint.route('/settings/video/fps/default', methods=['GET'])
+def settings_video_fps_default_get():
+    """Retrieves the default video FPS setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoFps: int.
+
+        Example of success:
+        {
+            "videoFps": 30
+        }
+    """
+    return json_response.success({'videoFps': video_settings.DEFAULT_FPS})
+
+
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
 def settings_video_jpeg_quality_get():
     """Retrieves the current video JPEG quality setting.
@@ -314,6 +330,23 @@ def settings_video_jpeg_quality_put():
     except update.settings.SaveSettingsError as e:
         return json_response.error(e), 500
     return json_response.success()
+
+
+@api_blueprint.route('/settings/video/jpeg_quality/default', methods=['GET'])
+def settings_video_jpeg_quality_default_get():
+    """Retrieves the default video JPEG quality setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoJpegQuality: int.
+
+        Example:
+        {
+            "videoJpegQuality": 80
+        }
+    """
+    return json_response.success(
+        {'videoJpegQuality': video_settings.DEFAULT_JPEG_QUALITY})
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
