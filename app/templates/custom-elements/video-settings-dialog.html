@@ -64,8 +64,8 @@
     <button class="save-btn btn-success" type="button">
       Apply
     </button>
-    <button class="reset-btn btn-action" type="button">
-      Reset Defaults
+    <button class="restore-btn btn-action" type="button">
+      Restore Defaults
     </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
@@ -96,8 +96,8 @@
             .querySelector(".close-btn")
             .addEventListener("click", () => this._close());
           this.shadowRoot
-            .querySelector("#edit .reset-btn")
-            .addEventListener("click", () => this._resetSettings());
+            .querySelector("#edit .restore-btn")
+            .addEventListener("click", () => this._restoreSettings());
           this.shadowRoot
             .querySelector("#edit .save-btn")
             .addEventListener("click", () => this._saveSettings());
@@ -183,7 +183,7 @@
             });
         }
 
-        _resetVideoFps() {
+        _restoreVideoFps() {
           return controllers
             .getDefaultVideoFps()
             .then((videoFps) => {
@@ -194,14 +194,14 @@
             })
             .catch((error) => {
               this._displayErrorDialog({
-                title: "Failed to Reset Video FPS",
+                title: "Failed to Restore Video FPS",
                 details: error,
               });
               return Promise.reject(error);
             });
         }
 
-        _resetVideoJpegQuality() {
+        _restoreVideoJpegQuality() {
           return controllers
             .getDefaultVideoJpegQuality()
             .then((videoJpegQuality) => {
@@ -212,22 +212,25 @@
             })
             .catch((error) => {
               this._displayErrorDialog({
-                title: "Failed to Reset Video JPEG Quality",
+                title: "Failed to Restore Video JPEG Quality",
                 details: error,
               });
               return Promise.reject(error);
             });
         }
 
-        _resetSettings() {
+        _restoreSettings() {
           this.state = "loading";
-          Promise.all([this._resetVideoFps(), this._resetVideoJpegQuality()])
+          Promise.all([
+            this._restoreVideoFps(),
+            this._restoreVideoJpegQuality(),
+          ])
             .then(() => {
               this.state = "edit";
             })
             .catch(() => {
               // Ignore errors here because they have already been handled by
-              // their individual setting reset function.
+              // their individual setting restore function.
             });
         }
 
