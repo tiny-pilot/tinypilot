@@ -3,23 +3,8 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    #initializing,
-    #prompt,
-    #changing,
     #input-error {
       display: none;
-    }
-
-    :host([state="initializing"]) #initializing {
-      display: block;
-    }
-
-    :host([state="prompt"]) #prompt {
-      display: block;
-    }
-
-    :host([state="changing"]) #changing {
-      display: block;
     }
 
     :host([has-input-error="true"]) #input-error {
@@ -40,15 +25,7 @@
     }
   </style>
 
-  <div id="initializing">
-    <h3>Retrieving Current Hostname</h3>
-    <div>
-      <progress-spinner></progress-spinner>
-    </div>
-    <button id="cancel-initialization" type="button">Cancel</button>
-  </div>
-
-  <div id="prompt">
+  <div>
     <h3>Change Hostname</h3>
     <p>
       Enter a new hostname for TinyPilot.
@@ -63,17 +40,15 @@
     </button>
     <button id="cancel-hostname-change" type="button">Cancel</button>
   </div>
+</template>
 
-  <div id="changing">
-    <h3>Changing Hostname</h3>
-    <p>
-      Waiting for TinyPilot to reboot at
-      <a href="" id="future-location"><!-- Filled programmatically --></a>
-      <br />
-      You will be redirected automatically.
-    </p>
-    <progress-spinner></progress-spinner>
-  </div>
+<template id="hostname-change-in-progress-template">
+  <p>
+    Waiting for TinyPilot to reboot at
+    <a href="" id="future-location"><!-- Filled programmatically --></a>
+    <br />
+    You will be redirected automatically.
+  </p>
 </template>
 
 <script src="/js/util/poll.js"></script>
@@ -122,9 +97,6 @@
             changeAndRestart: this.shadowRoot.getElementById(
               "change-and-restart"
             ),
-            cancelInitialization: this.shadowRoot.getElementById(
-              "cancel-initialization"
-            ),
             cancelHostnameChange: this.shadowRoot.getElementById(
               "cancel-hostname-change"
             ),
@@ -137,20 +109,9 @@
           this.elements.changeAndRestart.addEventListener("click", () => {
             this._doChangeHostname();
           });
-          this.elements.cancelInitialization.addEventListener("click", () => {
-            this._close();
-          });
           this.elements.cancelHostnameChange.addEventListener("click", () => {
-            this._close();
+            this.dispatchEvent(new DialogClosedEvent());
           });
-        }
-
-        get state() {
-          return this.getAttribute("state");
-        }
-
-        set state(newValue) {
-          this.setAttribute("state", newValue);
         }
 
         get initialHostname() {
@@ -178,20 +139,27 @@
 
         initialize() {
           this.inputError = null;
-          this.state = "initializing";
+          this.dispatchEvent(
+            new DialogProgressStartedEvent({
+              title: "Retrieving Current Hostname",
+              isCancellable: true,
+            })
+          );
           controllers
             .determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
-              this.state = "prompt";
+              this.dispatchEvent(new DialogProgressFinishedEvent());
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure({
-                title: "Failed to Determine Hostname",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogErrorEvent({
+                  title: "Failed to Determine Hostname",
+                  details: error,
+                })
+              );
             });
         }
 
@@ -202,6 +170,11 @@
         }
 
         _doChangeHostname() {
+          this.dispatchEvent(
+            new DialogProgressStartedEvent({
+              title: "Changing Hostname",
+            })
+          );
           controllers
             .changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
@@ -217,9 +190,19 @@
               );
             })
             .then((redirectURL) => {
-              this.elements.futureLocation.innerText = redirectURL;
-              this.elements.futureLocation.href = redirectURL;
-              this.state = "changing";
+              const progress = document
+                .getElementById("hostname-change-in-progress-template")
+                .content.cloneNode(true);
+              progress.getElementById(
+                "future-location"
+              ).innerText = redirectURL;
+              progress.getElementById("future-location").href = redirectURL;
+              this.dispatchEvent(
+                new DialogProgressStartedEvent({
+                  title: "Changing Hostname",
+                  info: progress,
+                })
+              );
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
@@ -231,13 +214,16 @@
                   "letters a-z, digits and dashes (it cannot start with a " +
                   "dash, though). It must contain 1-63 characters and cannot " +
                   'be "localhost".';
-                this.state = "prompt";
+                this.dispatchEvent(new DialogProgressFinishedEvent());
                 return;
               }
-              this._handleHostnameChangeFailure({
-                title: "Failed to Change Hostname",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogErrorEvent({
+                  title: "Failed to Change Hostname",
+                  details: error,
+                  canGoBack: true,
+                })
+              );
             });
         }
 
@@ -259,35 +245,17 @@
               window.location = futureLocation;
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure({
-                title: "Failed to Redirect",
-                message:
-                  "Cannot reach TinyPilot under the new hostname. The device" +
-                  "may have failed to reboot, or your browser is failing to " +
-                  " resolve the new hostname.",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogErrorEvent({
+                  title: "Failed to Redirect",
+                  message:
+                    "Cannot reach TinyPilot under the new hostname. The device" +
+                    " may have failed to reboot, or your browser is failing to" +
+                    " resolve the new hostname.",
+                  details: error,
+                })
+              );
             });
-        }
-
-        _handleHostnameChangeFailure(errorInfo) {
-          this._close();
-          this.dispatchEvent(
-            new CustomEvent("change-hostname-failure", {
-              detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
       }
     );

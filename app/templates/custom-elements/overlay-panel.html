@@ -27,25 +27,114 @@
       text-align: center;
     }
 
-    :host([variant="default"]) #panel,
-    :host([variant=""]) #panel,
-    :host(:not([variant])) #panel {
+    #main-dialog,
+    #error-dialog,
+    #progress-dialog {
+      display: none;
+    }
+
+    :host([state="main"]) #main-dialog {
+      display: block;
+    }
+
+    :host([state="main"]) #panel {
       border-top: none;
       background-color: var(--brand-creme-light);
     }
 
-    :host([variant="danger"]) #panel {
+    :host([state="error"]) #error-dialog {
+      display: block;
+    }
+
+    :host([state="error"]) #panel {
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-light);
+    }
+
+    :host([state="progress"]) #progress-dialog {
+      display: block;
+    }
+
+    :host([state="progress"]) #panel {
+      border-top: 0.4rem solid var(--brand-blue);
+      background-color: var(--brand-blue-light);
     }
   </style>
 
   <div id="panel">
-    <slot></slot>
+    <slot id="main-dialog"></slot>
+    <error-dialog id="error-dialog"></error-dialog>
+    <progress-dialog id="progress-dialog"></progress-dialog>
   </div>
 </template>
 
 <script>
+  class DialogErrorEvent extends CustomEvent {
+    /**
+     * Event that causes the error dialog to be shown.
+     * @param errorInfo object with the following properties:
+     * - title (string) A concise summary of the error.
+     * - message (string, optional) A user-friendly and helpful message that
+     *   ideally gives the user some guidance what to do now. Defaults to a
+     *   generic message.
+     * - details (string|Error, optional) The technical error details, e.g. the
+     *   original error message from the API or library call.
+     * - canGoBack (boolean, optional) Whether or not to show a back button that
+     *   re-initialized the dialog via the callback specified in the `onShow`
+     *   attribute of the enclosing overlay panel.
+     */
+    constructor(errorInfo) {
+      super("dialog-error", {
+        detail: errorInfo,
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  class DialogClosedEvent extends CustomEvent {
+    /**
+     * Event that will close the overlay.
+     */
+    constructor() {
+      super("dialog-closed", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  class DialogProgressStartedEvent extends CustomEvent {
+    /**
+     * Event that will transition the overlay into the progress state.
+     * @param errorInfo object with the following properties:
+     * - title (string, optional) The title in title-case
+     * - isCancellable (bool, optional) Whether or not to display cancel button
+     * - info (DOMElement, optional) Additional info to display along with the
+     *   spinner.
+     */
+    constructor(progressInfo) {
+      super("dialog-progress-started", {
+        detail: progressInfo,
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  class DialogProgressFinishedEvent extends CustomEvent {
+    /**
+     * Event that will finish the progress state and reveal the original
+     * dialog again.
+     */
+    constructor() {
+      super("dialog-progress-finished", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
@@ -57,14 +146,44 @@
         connectedCallback() {
           this.attachShadow({ mode: "open" });
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.onShowCallback = () => {};
+          this.elements = {
+            mainDialog: this.shadowRoot.getElementById("main-dialog"),
+            errorDialog: this.shadowRoot.getElementById("error-dialog"),
+            progressDialog: this.shadowRoot.getElementById("progress-dialog"),
+          };
           this.show = this.show.bind(this);
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
+          this.shadowRoot.addEventListener("dialog-error", (evt) =>
+            this.error(evt.detail)
+          );
+          this.shadowRoot.addEventListener("dialog-progress-started", (evt) =>
+            this.progressStart(evt.detail)
+          );
+          this.shadowRoot.addEventListener("dialog-progress-finished", () =>
+            this.progressFinished()
+          );
+        }
+
+        onShow(callbackFn) {
+          this.onShowCallback = callbackFn;
+        }
+
+        /**
+         * @param newValue string One of: main, error, progress
+         */
+        setState(newValue) {
+          this.setAttribute("state", newValue);
         }
 
         show(isShown = true) {
+          this.setState("main");
           this.setAttribute("show", isShown ? "true" : "false");
+          if (isShown) {
+            this.onShowCallback();
+          }
           this.dispatchEvent(
             new CustomEvent("overlay-toggled", {
               detail: { isShown },
@@ -76,6 +195,20 @@
 
         isShown() {
           return this.getAttribute("show") === "true";
+        }
+
+        error(errorInfo) {
+          this.elements.errorDialog.setup(errorInfo, () => this.show());
+          this.setState("error");
+        }
+
+        progressStart(progressInfo) {
+          this.elements.progressDialog.setup(progressInfo);
+          this.setState("progress");
+        }
+
+        progressFinished() {
+          this.setState("main");
         }
       }
     );

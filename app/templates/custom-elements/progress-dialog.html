@@ -1,0 +1,58 @@
+<template id="progress-dialog-template">
+  <style>
+    @import "css/style.css";
+
+    #cancel-button {
+      margin-top: 2rem;
+    }
+  </style>
+
+  <h3 id="title"></h3>
+  <div id="info-container"></div>
+  <div>
+    <progress-spinner></progress-spinner>
+  </div>
+  <button id="cancel-button">Cancel</button>
+</template>
+
+<script>
+  (function () {
+    const doc = (document._currentScript || document.currentScript)
+      .ownerDocument;
+    const template = doc.querySelector("#progress-dialog-template");
+
+    customElements.define(
+      "progress-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.elements = {
+            title: this.shadowRoot.getElementById("title"),
+            infoContainer: this.shadowRoot.getElementById("info-container"),
+            cancelButton: this.shadowRoot.getElementById("cancel-button"),
+          };
+          this.shadowRoot
+            .getElementById("cancel-button")
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
+        }
+
+        /**
+         * @params See DialogProgressStartedEvent.
+         */
+        setup({ title = "Please Wait", isCancellable = false, info }) {
+          this.elements.title.innerText = title;
+          this.elements.cancelButton.style.display = isCancellable
+            ? "inline"
+            : "none";
+          this.elements.infoContainer.innerText = "";
+          if (info) {
+            this.elements.infoContainer.append(info);
+          }
+        }
+      }
+    );
+  })();
+</script>

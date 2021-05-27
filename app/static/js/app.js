@@ -34,10 +34,11 @@ function isElementShown(id) {
 /**
  * @see the `setup` method in error-dialog.html for the `errorInfo` param
  */
+const errorOverlay = document.getElementById("error-overlay");
 function showError(errorInfo) {
   console.error(`${errorInfo.title}:\n${errorInfo.details}`);
-  document.getElementById("error-dialog").setup(errorInfo);
-  document.getElementById("error-overlay").show();
+  errorOverlay.show();
+  errorOverlay.error(errorInfo);
 }
 
 function isKeyPressed(code) {
@@ -304,9 +305,11 @@ menuBar.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-overlay").show();
   document.getElementById("update-dialog").checkVersion();
 });
+document
+  .getElementById("change-hostname-overlay")
+  .onShow(() => document.getElementById("change-hostname-dialog").initialize());
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
-  document.getElementById("change-hostname-dialog").initialize();
 });
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
@@ -339,7 +342,6 @@ document
 
 const errorEvents = [
   "update-failure",
-  "change-hostname-failure",
   "shutdown-failure",
   "video-settings-failure",
   "debug-logs-failure",
