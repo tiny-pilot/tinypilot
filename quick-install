@@ -140,7 +140,7 @@ python3 -m venv venv
 pip install wheel==0.34.2
 echo 'ansible==2.9.10
 cffi==1.14.4
-cryptography==3.3.1
+cryptography==3.3.2
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 pkg-resources==0.0.0
