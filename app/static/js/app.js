@@ -32,7 +32,7 @@ function isElementShown(id) {
 }
 
 /**
- * @see the `setup` method in error-dialog.html for the `errorInfo` param
+ * @see `DialogFailedEvent` for parameter `errorInfo`
  */
 function showError(errorInfo) {
   console.error(`${errorInfo.title}:\n${errorInfo.details}`);
@@ -337,13 +337,13 @@ document
     );
   });
 
-const errorEvents = [
-  "update-failure",
-  "change-hostname-failure",
-  "shutdown-failure",
-  "video-settings-failure",
-  "debug-logs-failure",
-];
+document.addEventListener("dialog-failed", (evt) => {
+  showError(evt.detail);
+});
+
+// TODO(jotaen) Keep this code to maintain compatibility with Pro; clean up
+//              eventually.
+const errorEvents = [];
 errorEvents.forEach((name) => {
   document.addEventListener(name, (evt) => {
     showError(evt.detail);
