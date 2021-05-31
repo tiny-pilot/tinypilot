@@ -138,10 +138,10 @@
             this._doChangeHostname();
           });
           this.elements.cancelInitialization.addEventListener("click", () => {
-            this._close();
+            this.dispatchEvent(new DialogClosedEvent());
           });
           this.elements.cancelHostnameChange.addEventListener("click", () => {
-            this._close();
+            this.dispatchEvent(new DialogClosedEvent());
           });
         }
 
@@ -271,19 +271,10 @@
         }
 
         _handleHostnameChangeFailure(errorInfo) {
-          this._close();
+          this.dispatchEvent(new DialogClosedEvent());
           this.dispatchEvent(
             new CustomEvent("change-hostname-failure", {
               detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })

@@ -94,7 +94,9 @@
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.shadowRoot
             .querySelector(".close-btn")
-            .addEventListener("click", () => this._close());
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
           this.shadowRoot
             .querySelector("#edit .restore-btn")
             .addEventListener("click", () => this._restoreSettings());
@@ -277,17 +279,8 @@
             });
         }
 
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
         _displayErrorDialog(errorInfo) {
-          this._close();
+          this.dispatchEvent(new DialogClosedEvent());
           this.dispatchEvent(
             new CustomEvent("video-settings-failure", {
               detail: errorInfo,

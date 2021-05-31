@@ -104,12 +104,12 @@
           this.shadowRoot
             .getElementById("cancel-update")
             .addEventListener("click", () => {
-              this._close();
+              this.dispatchEvent(new DialogClosedEvent());
             });
           this.shadowRoot
             .getElementById("ok-latest")
             .addEventListener("click", () => {
-              this._close();
+              this.dispatchEvent(new DialogClosedEvent());
             });
           this.shadowRoot
             .getElementById("ok-finished")
@@ -251,19 +251,10 @@
         }
 
         _handleUpdateFailure(errorInfo) {
-          this._close();
+          this.dispatchEvent(new DialogClosedEvent());
           this.dispatchEvent(
             new CustomEvent("update-failure", {
               detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })

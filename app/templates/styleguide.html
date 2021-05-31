@@ -171,12 +171,7 @@
           document.getElementsByClassName("close-overlay-with-primary-action")
         ).forEach((button) =>
           button.addEventListener("click", (evt) => {
-            evt.target.dispatchEvent(
-              new CustomEvent("dialog-closed", {
-                bubbles: true,
-                composed: true,
-              })
-            );
+            evt.target.dispatchEvent(new DialogClosedEvent());
           })
         );
       </script>
@@ -213,12 +208,7 @@
         document
           .getElementById("close-overlay-with-feature-btn")
           .addEventListener("click", (evt) => {
-            evt.target.dispatchEvent(
-              new CustomEvent("dialog-closed", {
-                bubbles: true,
-                composed: true,
-              })
-            );
+            evt.target.dispatchEvent(new DialogClosedEvent());
           });
       </script>
       <!-- Error overlay: -->
