@@ -89,7 +89,7 @@
           this.shadowRoot
             .getElementById("cancel-shutdown")
             .addEventListener("click", () => {
-              this._close();
+              this.dispatchEvent(new DialogClosedEvent());
             });
         }
 
@@ -143,19 +143,10 @@
         }
 
         _handleShutdownFailure(errorInfo) {
-          this._close();
+          this.dispatchEvent(new DialogClosedEvent());
           this.dispatchEvent(
             new CustomEvent("shutdown-failure", {
               detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })

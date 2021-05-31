@@ -100,15 +100,15 @@
           // Ensure that these methods always refer to the correct "this",
           // regardless of where they are called.
           this.getLogs = this.getLogs.bind(this);
-          this._close = this._close.bind(this);
-          this._reset = this._reset.bind(this);
           this._getUrl = this._getUrl.bind(this);
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
-            el.addEventListener("click", this._close);
+            el.addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
           });
           this.shadowRoot
             .querySelector("#logs-success .share-btn")
@@ -161,20 +161,6 @@
             });
         }
 
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
-              bubbles: true,
-              composed: true,
-            })
-          );
-          this._reset();
-        }
-
-        _reset() {
-          this.state = null;
-        }
-
         _getUrl() {
           this.state = "url-loading";
           const text = this.shadowRoot.querySelector("#logs-success .logs")
@@ -203,7 +189,7 @@
         }
 
         _handleFailure(errorInfo) {
-          this._close();
+          this.dispatchEvent(new DialogClosedEvent());
           this.dispatchEvent(
             new CustomEvent("debug-logs-failure", {
               detail: errorInfo,

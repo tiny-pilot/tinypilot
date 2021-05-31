@@ -46,6 +46,18 @@
 </template>
 
 <script>
+  class DialogClosedEvent extends CustomEvent {
+    /**
+     * Event that will close the overlay.
+     */
+    constructor() {
+      super("dialog-closed", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;
