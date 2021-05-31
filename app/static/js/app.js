@@ -341,15 +341,6 @@ document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
 });
 
-// TODO(jotaen) Keep this code to maintain compatibility with Pro; clean up
-//              eventually.
-const errorEvents = [];
-errorEvents.forEach((name) => {
-  document.addEventListener(name, (evt) => {
-    showError(evt.detail);
-  });
-});
-
 document
   .getElementById("paste-overlay")
   .addEventListener("paste-text", (evt) => {
