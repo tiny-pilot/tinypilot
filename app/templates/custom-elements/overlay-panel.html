@@ -58,9 +58,9 @@
     }
   }
 
-  class DialogErrorEvent extends CustomEvent {
+  class DialogFailedEvent extends CustomEvent {
     /**
-     * Event that causes the error dialog to be shown.
+     * Event that closes the dialog and displays the error dialog instead.
      * @param errorInfo object with the following properties:
      * - title (string) A concise summary of the error.
      * - message (string, optional) A user-friendly and helpful message that
@@ -70,7 +70,7 @@
      *   original error message from the API or library call.
      */
     constructor(errorInfo) {
-      super("dialog-error", {
+      super("dialog-failed", {
         detail: errorInfo,
         bubbles: true,
         composed: true,
@@ -91,6 +91,10 @@
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.show = this.show.bind(this);
           this.shadowRoot.addEventListener("dialog-closed", () =>
+            this.show(false)
+          );
+          this.shadowRoot.addEventListener("dialog-failed", () =>
+            // This event is further handled in `app.js`.
             this.show(false)
           );
         }

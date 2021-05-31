@@ -188,10 +188,12 @@
               this.state = "prompt";
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure({
-                title: "Failed to Determine Hostname",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Determine Hostname",
+                  details: error,
+                })
+              );
             });
         }
 
@@ -234,10 +236,12 @@
                 this.state = "prompt";
                 return;
               }
-              this._handleHostnameChangeFailure({
-                title: "Failed to Change Hostname",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Change Hostname",
+                  details: error,
+                })
+              );
             });
         }
 
@@ -259,20 +263,17 @@
               window.location = futureLocation;
             })
             .catch((error) => {
-              this._handleHostnameChangeFailure({
-                title: "Failed to Redirect",
-                message:
-                  "Cannot reach TinyPilot under the new hostname. The device " +
-                  "may have failed to reboot, or your browser is failing to " +
-                  "resolve the new hostname.",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Redirect",
+                  message:
+                    "Cannot reach TinyPilot under the new hostname. The device " +
+                    "may have failed to reboot, or your browser is failing to " +
+                    "resolve the new hostname.",
+                  details: error,
+                })
+              );
             });
-        }
-
-        _handleHostnameChangeFailure(errorInfo) {
-          this.dispatchEvent(new DialogClosedEvent());
-          this.dispatchEvent(new DialogErrorEvent(errorInfo));
         }
       }
     );

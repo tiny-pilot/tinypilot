@@ -147,10 +147,12 @@
               this._setVideoFpsDisplay(videoFps);
             })
             .catch((error) => {
-              this._displayErrorDialog({
-                title: "Failed to Load Video FPS",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Load Video FPS",
+                  details: error,
+                })
+              );
               return Promise.reject(error);
             });
         }
@@ -165,10 +167,12 @@
               this._setVideoJpegQualityDisplay(videoJpegQuality);
             })
             .catch((error) => {
-              this._displayErrorDialog({
-                title: "Failed to Load Video JPEG Quality",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Load Video JPEG Quality",
+                  details: error,
+                })
+              );
               return Promise.reject(error);
             });
         }
@@ -195,10 +199,12 @@
               this._setVideoFpsDisplay(videoFps);
             })
             .catch((error) => {
-              this._displayErrorDialog({
-                title: "Failed to Restore Video FPS",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Restore Video FPS",
+                  details: error,
+                })
+              );
               return Promise.reject(error);
             });
         }
@@ -213,10 +219,12 @@
               this._setVideoJpegQualityDisplay(videoJpegQuality);
             })
             .catch((error) => {
-              this._displayErrorDialog({
-                title: "Failed to Restore Video JPEG Quality",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Restore Video JPEG Quality",
+                  details: error,
+                })
+              );
               return Promise.reject(error);
             });
         }
@@ -240,10 +248,12 @@
           let videoFps = this.shadowRoot.querySelector("#video-fps-slider")
             .value;
           return controllers.setVideoFps(videoFps).catch((error) => {
-            this._displayErrorDialog({
-              title: "Failed to Save Video FPS",
-              details: error,
-            });
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Save Video FPS",
+                details: error,
+              })
+            );
             return Promise.reject(error);
           });
         }
@@ -255,10 +265,12 @@
           return controllers
             .setVideoJpegQuality(videoJpegQuality)
             .catch((error) => {
-              this._displayErrorDialog({
-                title: "Failed to Save Video JPEG Quality",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Save Video JPEG Quality",
+                  details: error,
+                })
+              );
               return Promise.reject(error);
             });
         }
@@ -277,11 +289,6 @@
               // Ignore errors here because they have already been handled by
               // their individual setting save function.
             });
-        }
-
-        _displayErrorDialog(errorInfo) {
-          this.dispatchEvent(new DialogClosedEvent());
-          this.dispatchEvent(new DialogErrorEvent(errorInfo));
         }
       }
     );

@@ -119,15 +119,19 @@
             })
             .catch((error) => {
               if (restart) {
-                this._handleShutdownFailure({
-                  title: "Failed to Restart TinyPilot Device",
-                  details: error,
-                });
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Failed to Restart TinyPilot Device",
+                    details: error,
+                  })
+                );
               } else {
-                this._handleShutdownFailure({
-                  title: "Failed to Shut Down TinyPilot Device",
-                  details: error,
-                });
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Failed to Shut Down TinyPilot Device",
+                    details: error,
+                  })
+                );
               }
             });
         }
@@ -140,11 +144,6 @@
               composed: true,
             })
           );
-        }
-
-        _handleShutdownFailure(errorInfo) {
-          this.dispatchEvent(new DialogClosedEvent());
-          this.dispatchEvent(new DialogErrorEvent(errorInfo));
         }
       }
     );

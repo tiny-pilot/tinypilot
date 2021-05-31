@@ -154,10 +154,12 @@
               this.state = "logs-success";
             })
             .catch((error) => {
-              this._handleFailure({
-                title: "Error Retrieving Debug Logs",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Error Retrieving Debug Logs",
+                  details: error,
+                })
+              );
             });
         }
 
@@ -176,21 +178,18 @@
               this.state = "url-success";
             })
             .catch((error) => {
-              this._handleFailure({
-                title: "Error Retrieving Shareable URL",
-                details: error,
-              });
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Error Retrieving Shareable URL",
+                  details: error,
+                })
+              );
             });
         }
 
         onPushCopyButton(buttonElement, sourceElement) {
           copyElementTextToClipboard(sourceElement);
           buttonElement.innerText = "Copied!";
-        }
-
-        _handleFailure(errorInfo) {
-          this.dispatchEvent(new DialogClosedEvent());
-          this.dispatchEvent(new DialogErrorEvent(errorInfo));
         }
       }
     );

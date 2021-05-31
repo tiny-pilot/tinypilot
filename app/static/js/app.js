@@ -32,7 +32,7 @@ function isElementShown(id) {
 }
 
 /**
- * @see the `setup` method in error-dialog.html for the `errorInfo` param
+ * @see `DialogFailedEvent` for parameter `errorInfo`
  */
 function showError(errorInfo) {
   console.error(`${errorInfo.title}:\n${errorInfo.details}`);
@@ -337,7 +337,7 @@ document
     );
   });
 
-document.addEventListener("dialog-error", (evt) => {
+document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
 });
 
