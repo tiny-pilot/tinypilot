@@ -58,6 +58,26 @@
     }
   }
 
+  class DialogErrorEvent extends CustomEvent {
+    /**
+     * Event that causes the error dialog to be shown.
+     * @param errorInfo object with the following properties:
+     * - title (string) A concise summary of the error.
+     * - message (string, optional) A user-friendly and helpful message that
+     *   ideally gives the user some guidance what to do now. Defaults to a
+     *   generic message.
+     * - details (string|Error, optional) The technical error details, e.g. the
+     *   original error message from the API or library call.
+     */
+    constructor(errorInfo) {
+      super("dialog-error", {
+        detail: errorInfo,
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
   (function () {
     const doc = (document._currentScript || document.currentScript)
       .ownerDocument;

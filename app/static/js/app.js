@@ -337,13 +337,13 @@ document
     );
   });
 
-const errorEvents = [
-  "update-failure",
-  "change-hostname-failure",
-  "shutdown-failure",
-  "video-settings-failure",
-  "debug-logs-failure",
-];
+document.addEventListener("dialog-error", (evt) => {
+  showError(evt.detail);
+});
+
+// TODO(jotaen) Keep this code to maintain compatibility with Pro; clean up
+//              eventually.
+const errorEvents = [];
 errorEvents.forEach((name) => {
   document.addEventListener(name, (evt) => {
     showError(evt.detail);

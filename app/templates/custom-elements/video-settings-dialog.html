@@ -281,13 +281,7 @@
 
         _displayErrorDialog(errorInfo) {
           this.dispatchEvent(new DialogClosedEvent());
-          this.dispatchEvent(
-            new CustomEvent("video-settings-failure", {
-              detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
+          this.dispatchEvent(new DialogErrorEvent(errorInfo));
         }
       }
     );
