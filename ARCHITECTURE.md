@@ -37,7 +37,7 @@ TinyPilot impersonates keyboard and mouse input using the Linux [USB Gadget API]
 
 To use the USB Gadget API, a device needs a USB port that operates in either device mode or supports USB OTG (which allows the port to switch between host mode and device mode). The Raspberry Pi 4B's USB-C port is the only port on the device capable of USB OTG, so this is the port that TinyPilot uses.
 
-TinyPilot [presents itself](https://github.com/mtlynch/ansible-role-tinypilot/blob/594be69c86fcdeaa9488690b2aef951acaf3bf64/files/init-usb-gadget) to the target computer as a USB Multifunction Composite Gadget (i.e., a USB hub) with a USB keyboard and mouse attached. This allows TinyPilot to send both keyboard and mouse input through a single USB connection.
+TinyPilot [presents itself](https://github.com/tiny-pilot/ansible-role-tinypilot/blob/594be69c86fcdeaa9488690b2aef951acaf3bf64/files/init-usb-gadget) to the target computer as a USB Multifunction Composite Gadget (i.e., a USB hub) with a USB keyboard and mouse attached. This allows TinyPilot to send both keyboard and mouse input through a single USB connection.
 
 ## nginx
 
@@ -64,6 +64,6 @@ As of Feb. 2021, uStreamer's maintainer is working on a H264 option, expected to
 
 ## Installation
 
-TinyPilot's installation process is somewhat unusual in that it depends on Ansible. The [`quick-install`](./quick-install) script bootstraps an Ansible environment on a Raspberry Pi and then uses [`ansible-role-tinypilot`](https://github.com/mtlynch/ansible-role-tinypilot) to install itself locally. `ansible-role-tinypilot` transitively includes other roles that TinyPilot depends on such as [`ansible-role-ustreamer`](https://github.com/mtlynch/ansible-role-ustreamer) and [`ansible-role-nginx`](https://github.com/geerlingguy/ansible-role-nginx).
+TinyPilot's installation process is somewhat unusual in that it depends on Ansible. The [`quick-install`](./quick-install) script bootstraps an Ansible environment on a Raspberry Pi and then uses [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot) to install itself locally. `ansible-role-tinypilot` transitively includes other roles that TinyPilot depends on such as [`ansible-role-ustreamer`](https://github.com/mtlynch/ansible-role-ustreamer) and [`ansible-role-nginx`](https://github.com/geerlingguy/ansible-role-nginx).
 
 The `quick-install` script is also responsible for version-to-version updates and configuration changes.
