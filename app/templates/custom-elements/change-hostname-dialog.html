@@ -114,8 +114,7 @@
       "change-hostname-dialog",
       class extends HTMLElement {
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
           this.elements = {
             inputError: this.shadowRoot.getElementById("input-error"),
             hostnameInput: this.shadowRoot.getElementById("hostname-input"),

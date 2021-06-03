@@ -45,8 +45,7 @@
         DEFAULT_MESSAGE = "Please refresh the page and try again.";
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
           this.shadowRoot
             .getElementById("close")
             .addEventListener("click", () =>
