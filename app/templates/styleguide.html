@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <style>
+    @import "css/icons.css";
+
     main {
       margin: 1rem auto;
       width: 40rem;
@@ -138,6 +140,27 @@
       <h3>Danger Button (Primary Action)</h3>
       <button class="btn-danger">Danger</button>
       <p>For destructive call-to-actions like “delete” or “shutdown”.</p>
+      <h3>Dropdown button</h3>
+      <p>
+        A button that groups multiple related actions.
+      </p>
+      <dropdown-button>
+        <button slot="button" class="btn-small btn-action">
+          Dropdown
+          <span class="icon-arrow"></span>
+        </button>
+        <li slot="item">Action 1</li>
+        <li slot="item">Action 2</li>
+        <li slot="item">Action 3</li>
+      </dropdown-button>
+      <dropdown-button>
+        <button slot="button" class="btn-small">
+          <span class="icon-arrow"></span>
+        </button>
+        <li slot="item">Action 1</li>
+        <li slot="item">Action 2</li>
+        <li slot="item">Action 3</li>
+      </dropdown-button>
 
       <h2 class="section">Overlay</h2>
       <p>

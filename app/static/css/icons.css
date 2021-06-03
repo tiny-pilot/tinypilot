@@ -1,0 +1,20 @@
+.icon-arrow {
+  --width: 0.35rem;
+  --height: 0.55rem;
+  position: relative;
+  display: inline-block;
+  width: calc(var(--width) * 2);
+  height: 0;
+}
+
+.icon-arrow:after {
+  content: "";
+  position: absolute;
+  top: -0.55rem;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: var(--width) solid transparent;
+  border-right: var(--width) solid transparent;
+  border-top: var(--height) solid var(--brand-creme-light);
+}
