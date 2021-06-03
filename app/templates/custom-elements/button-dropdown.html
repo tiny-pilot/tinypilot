@@ -99,8 +99,8 @@
         _handleCloseOnOutsideClick(evt) {
           const target = evt.composedPath()[0];
           // Skip if the user has clicked on the main button of this component.
-          // In this case the click event is already handled by the event
-          // handler of the button.
+          // In this case, the event handler of the button will already handle
+          // the click event.
           if (
             this.contains(target) &&
             (target.slot === "button" || target.parentElement.slot === "button")
