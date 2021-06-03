@@ -73,12 +73,15 @@
         }
 
         _toggleDropdown() {
-          const isShown = this.elements.dropdownItems.style.display === "block";
-          if (isShown) {
+          if (this._isDropdownShowing()) {
             this._closeDropdown();
           } else {
             this._showDropdown();
           }
+        }
+
+        _isDropdownShowing() {
+          return this.elements.dropdownItems.style.display === "block";
         }
 
         _showDropdown() {
