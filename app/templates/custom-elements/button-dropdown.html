@@ -83,6 +83,8 @@
 
         _showDropdown() {
           this.elements.dropdownItems.style.display = "block";
+          // `addEventListener` will only register a function once, so it’s safe
+          // to call this method multiple times.
           doc.addEventListener("click", this._handleCloseOnOutsideClick);
         }
 
