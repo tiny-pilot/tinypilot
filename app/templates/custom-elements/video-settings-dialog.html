@@ -88,6 +88,7 @@
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
+          this.defaultSettings = {};
         }
 
         connectedCallback() {
@@ -179,7 +180,12 @@
 
         getSettings() {
           this.state = "loading";
-          Promise.all([this._getVideoFps(), this._getVideoJpegQuality()])
+          Promise.all([
+            this._getVideoFps(),
+            this._getVideoJpegQuality(),
+            this._getDefaultVideoFps(),
+            this._getDefaultVideoJpegQuality(),
+          ])
             .then(() => {
               this.state = "edit";
             })
@@ -189,19 +195,16 @@
             });
         }
 
-        _restoreVideoFps() {
+        _getDefaultVideoFps() {
           return controllers
             .getDefaultVideoFps()
             .then((videoFps) => {
-              this.shadowRoot.querySelector(
-                "#video-fps-slider"
-              ).value = videoFps;
-              this._setVideoFpsDisplay(videoFps);
+              this.defaultSettings.videoFps = videoFps;
             })
             .catch((error) => {
               this.dispatchEvent(
                 new DialogFailedEvent({
-                  title: "Failed to Restore Video FPS",
+                  title: "Failed to Load Default Video FPS",
                   details: error,
                 })
               );
@@ -209,19 +212,16 @@
             });
         }
 
-        _restoreVideoJpegQuality() {
+        _getDefaultVideoJpegQuality() {
           return controllers
             .getDefaultVideoJpegQuality()
             .then((videoJpegQuality) => {
-              this.shadowRoot.querySelector(
-                "#video-jpeg-quality-slider"
-              ).value = videoJpegQuality;
-              this._setVideoJpegQualityDisplay(videoJpegQuality);
+              this.defaultSettings.videoJpegQuality = videoJpegQuality;
             })
             .catch((error) => {
               this.dispatchEvent(
                 new DialogFailedEvent({
-                  title: "Failed to Restore Video JPEG Quality",
+                  title: "Failed to Load Default Video JPEG Quality",
                   details: error,
                 })
               );
@@ -229,19 +229,25 @@
             });
         }
 
+        _restoreVideoFps() {
+          this.shadowRoot.querySelector(
+            "#video-fps-slider"
+          ).value = this.defaultSettings.videoFps;
+          this._setVideoFpsDisplay(this.defaultSettings.videoFps);
+        }
+
+        _restoreVideoJpegQuality() {
+          this.shadowRoot.querySelector(
+            "#video-jpeg-quality-slider"
+          ).value = this.defaultSettings.videoJpegQuality;
+          this._setVideoJpegQualityDisplay(
+            this.defaultSettings.videoJpegQuality
+          );
+        }
+
         _restoreSettings() {
-          this.state = "loading";
-          Promise.all([
-            this._restoreVideoFps(),
-            this._restoreVideoJpegQuality(),
-          ])
-            .then(() => {
-              this.state = "edit";
-            })
-            .catch(() => {
-              // Ignore errors here because they have already been handled by
-              // their individual setting restore function.
-            });
+          this._restoreVideoFps();
+          this._restoreVideoJpegQuality();
         }
 
         _saveVideoFps() {
