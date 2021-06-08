@@ -1,8 +1,8 @@
 # TinyPilot
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/mtlynch/tinypilot)](https://github.com/mtlynch/tinypilot/graphs/contributors)
-[![CircleCI](https://circleci.com/gh/mtlynch/tinypilot.svg?style=svg)](https://circleci.com/gh/mtlynch/tinypilot)
+[![Contributors](https://img.shields.io/github/contributors/tiny-pilot/tinypilot)](https://github.com/tiny-pilot/tinypilot/graphs/contributors)
+[![CircleCI](https://circleci.com/gh/tiny-pilot/tinypilot.svg?style=svg)](https://circleci.com/gh/tiny-pilot/tinypilot)
 [![Reddit](https://img.shields.io/badge/reddit-join-orange?logo=reddit)](https://www.reddit.com/r/tinypilot)
 [![Twitter](https://img.shields.io/twitter/follow/tinypilotkvm?label=Twitter&style=social)](https://twitter.com/tinypilotkvm)
 
@@ -10,7 +10,7 @@
 
 Turn your Raspberry Pi into a browser-based KVM.
 
-[![TinyPilot demo](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo-800w.gif)](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/demo.gif)
+[![TinyPilot demo](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/demo-800w.gif)](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/demo.gif)
 
 <https://tinypilotkvm.com>
 
@@ -28,13 +28,13 @@ TinyPilot official hardware packages give you everything you need to run TinyPil
 
 ### [TinyPilot Voyager](https://tinypilotkvm.com/product/tinypilot-voyager)
 
-[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/voyager-side-cables.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager)
+[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager-side-cables.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager)
 
 Voyager is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
 ### [TinyPilot Hobbyist Kit](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
 
-[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/mtlynch/tinypilot/master/readme-assets/hobbyist-kit.jpg)](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
+[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/hobbyist-kit.jpg)](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
 
 The TinyPilot Hobbyist Kit is a great fit for home users who want a low-cost, DIY KVM over IP device.
 
@@ -56,7 +56,7 @@ All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/o
   * Requires two additional [USB-A to microUSB cables](https://smile.amazon.com/dp/B01JPDTZXK/) and a [3 Amp power adapter](https://smile.amazon.com/dp/B0728HB18G).
   * If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://smile.amazon.com/dp/B012V56D2A/) to minimize voltage drop along the cable.
 * (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/)
-  * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/mtlynch/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
+  * If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/tiny-pilot/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
 
 See ["TinyPilot: Build a KVM Over IP for Under $100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
 
@@ -73,7 +73,7 @@ You can install TinyPilot on a compatible Raspberry Pi in just two commands.
 curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/mtlynch/tinypilot/master/quick-install | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/quick-install | \
     bash - && \
   sudo reboot
 ```
@@ -95,8 +95,8 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## Other installation options
 
-* [Advanced installation options](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#advanced-installation)
-* [Remote installation via Ansible](https://github.com/mtlynch/tinypilot/wiki/Installation-Options#remote-installation)
+* [Advanced installation options](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#advanced-installation)
+* [Remote installation via Ansible](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#remote-installation)
 
 ## Updates
 
@@ -116,9 +116,9 @@ If you can't access the web dashboard, you can retrieve the logs by SSHing into 
 /opt/tinypilot/dev-scripts/dump-logs
 ```
 
-This log is useful if you [file a bug report](https://github.com/mtlynch/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
+This log is useful if you [file a bug report](https://github.com/tiny-pilot/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
-You can read more details about the logs [in the wiki](https://github.com/mtlynch/tinypilot/wiki/Troubleshooting-and-Diagnostics).
+You can read more details about the logs [in the wiki](https://github.com/tiny-pilot/tinypilot/wiki/Troubleshooting-and-Diagnostics).
 
 ## Security considerations
 
@@ -142,7 +142,7 @@ If you're interested in seeing what's happening with the project at a granular l
 
 ## See also
 
-* [TinyPilot Wiki](https://github.com/mtlynch/tinypilot/wiki): Guides for tasks related to TinyPilot.
+* [TinyPilot Wiki](https://github.com/tiny-pilot/tinypilot/wiki): Guides for tasks related to TinyPilot.
 * [TinyPilot Ansible Role](https://github.com/tiny-pilot/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
 
 ## Acknowledgments

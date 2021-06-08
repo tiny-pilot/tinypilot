@@ -88,7 +88,7 @@ TinyPilot uses automated linters and formatters as much as possible to automate 
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
-* If you're making a large change (over 100 LOC or three hours of dev time), [file an issue](https://github.com/mtlynch/tinypilot/issues/new/choose) first to talk through the proposed change. This prevents you from wasting time on a change that has a low chance of being accepted.
+* If you're making a large change (over 100 LOC or three hours of dev time), [file an issue](https://github.com/tiny-pilot/tinypilot/issues/new/choose) first to talk through the proposed change. This prevents you from wasting time on a change that has a low chance of being accepted.
 
 ## How to get your PR merged quickly
 

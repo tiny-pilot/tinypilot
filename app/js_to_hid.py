@@ -169,7 +169,7 @@ def _map_modifier_keys(keystroke):
     # limited information about which modifiers are pressed. We can't detect
     # left + right, so if the current key press is a right modifier, we assume
     # its righthand modifier is not also pressed.
-    # https://github.com/mtlynch/tinypilot/issues/364
+    # https://github.com/tiny-pilot/tinypilot/issues/364
     if keystroke.code == 'ControlRight':
         modifier_bitmask &= ~hid.MODIFIER_LEFT_CTRL
         modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
