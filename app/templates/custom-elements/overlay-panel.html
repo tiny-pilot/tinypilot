@@ -87,7 +87,9 @@
       "overlay-panel",
       class extends HTMLElement {
         connectedCallback() {
-          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.show = this.show.bind(this);
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)

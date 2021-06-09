@@ -93,7 +93,9 @@
       "update-dialog",
       class extends HTMLElement {
         connectedCallback() {
-          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
 
           this.shadowRoot
             .getElementById("confirm-update")

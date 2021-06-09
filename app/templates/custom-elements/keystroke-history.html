@@ -38,7 +38,9 @@
         DISPLAY_THRESHOLD_MS = 4000;
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.history = this.shadowRoot.getElementById("history");
           this.isEnabled = true;
         }

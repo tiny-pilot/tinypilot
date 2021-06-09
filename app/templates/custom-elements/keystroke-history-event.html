@@ -75,7 +75,9 @@
         STATUSES = ["pending", "succeeded", "failed"];
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.keystroke = this.shadowRoot.getElementById("keystroke");
           this.status = "pending";
         }
