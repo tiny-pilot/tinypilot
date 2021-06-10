@@ -63,4 +63,7 @@ workflows:
       - check_bash
       - build_python
       - format_frontend
-      - e2e
+      - e2e:
+          filters:
+            branches:
+              only: master
