@@ -65,5 +65,5 @@ workflows:
       - format_frontend
       - e2e:
           filters:
-            tags:
+            branches:
               only: master
