@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Ensure we are running as root user.
+if [[ "$(whoami)" != "root" ]]; then
+  echo "Script must be run as root user."
+  exit 1
+fi
+
+# Set BRANCH variable, use either input argument or default.
+REVISION="HEAD"
+if (( $# > 0 )); then
+  REVISION="$1"
+fi
+
+# Pull requested branch.
+# The `--session-command` option is needed should git ask for username/password.
+cd /opt/tinypilot
+su tinypilot --session-command "git fetch"
+su tinypilot --session-command "git reset --hard ${REVISION}"
+
+# Apply changes by restarting server.
+systemctl restart tinypilot
