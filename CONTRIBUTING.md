@@ -79,7 +79,7 @@ Host tinypilot
 
 ### Remote scripts
 
-For carrying out common procedures on the device, see [here](/dev-scripts/remote-scripts/README.md).
+For carrying out common procedures on the device, see [here](dev-scripts/remote-scripts/README.md).
 
 ## Architecture
 
