@@ -15,7 +15,7 @@ if [[ "$(whoami)" != "root" ]]; then
   exit 1
 fi
 
-# Set BRANCH variable, use either input argument or default.
+# Set REVISION variable, use either input argument or default.
 REVISION="HEAD"
 if (( $# > 0 )); then
   REVISION="$1"
@@ -23,10 +23,17 @@ fi
 
 cd /opt/tinypilot
 
+# Abort in case the repository is not clean.
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "There are uncommitted changes."
+  exit 1
+fi
+
 # Pull requested branch. We can’t execute this as the user `tinypilot` in order
 # to be able to use SSH agent forwarding, which only works for the user `root`.
 git fetch
 git reset --hard "${REVISION}"
 chown -R tinypilot:tinypilot .
+
 # Apply changes by restarting server.
 systemctl restart tinypilot
