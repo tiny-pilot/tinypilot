@@ -21,11 +21,12 @@ if (( $# > 0 )); then
   REVISION="$1"
 fi
 
-# Pull requested branch.
-# The `--session-command` option is needed should git ask for username/password.
 cd /opt/tinypilot
-su tinypilot --session-command "git fetch"
-su tinypilot --session-command "git reset --hard ${REVISION}"
 
+# Pull requested branch. We can’t execute this as the user `tinypilot` in order
+# to be able to use SSH agent forwarding, which only works for the user `root`.
+git fetch
+git reset --hard "${REVISION}"
+chown -R tinypilot:tinypilot .
 # Apply changes by restarting server.
 systemctl restart tinypilot
