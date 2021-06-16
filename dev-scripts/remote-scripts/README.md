@@ -1,6 +1,8 @@
 # Remote scripts
 
-## Pull
+Please setup the SSH configuration on your device as described in [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## `pull`
 
 Run a specific git revision of the backend server.
 

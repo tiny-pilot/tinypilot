@@ -66,11 +66,11 @@ For more complex changes it is useful to test your feature branch on a Raspberry
 
 1. [Generate SSH keys and upload your public key](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) to your device. Please use strong keys, e.g., ED25519 or RSA 4096+.
 2. Verify that you can login with your SSH keys.
-3. On the device, disable password-based login by specifying `PasswordAuthentication no` in `/etc/ssh/sshd_config`.
+3. On the device, disable password-based login by specifying `PasswordAuthentication no` in `/etc/ssh/sshd_config`. Reboot afterwards.
 
 ### SSH agent forwarding
 
-In case you need SSH keys for accessing the Git repositories (e.g., for testing TinyPilot's Pro version), please enable SSH agent forwarding.
+In case you need SSH keys for accessing the Git repositories (e.g., for testing TinyPilot's Pro version), please enable SSH agent forwarding in your local `~/.ssh/config`.
 
 ```
 Host tinypilot
