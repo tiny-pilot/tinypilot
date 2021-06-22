@@ -9,7 +9,7 @@ class UnrecognizedKeyCodeError(Error):
     pass
 
 
-_MODIFIER_KEYCODES = [
+MODIFIER_KEYCODES = [
     'AltLeft',
     'AltRight',
     'ControlLeft',
@@ -156,32 +156,23 @@ def _map_modifier_keys(keystroke):
 
     if keystroke.left_ctrl_modifier:
         modifier_bitmask |= hid.MODIFIER_LEFT_CTRL
+    if keystroke.right_ctrl_modifier:
+        modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
+
     if keystroke.left_shift_modifier:
         modifier_bitmask |= hid.MODIFIER_LEFT_SHIFT
+    if keystroke.right_shift_modifier:
+        modifier_bitmask |= hid.MODIFIER_RIGHT_SHIFT
+
     if keystroke.left_alt_modifier:
         modifier_bitmask |= hid.MODIFIER_LEFT_ALT
-    if keystroke.left_meta_modifier:
-        modifier_bitmask |= hid.MODIFIER_LEFT_META
     if keystroke.right_alt_modifier:
         modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
 
-    # This is a workaround for the fact that the frontend currently sends only
-    # limited information about which modifiers are pressed. We can't detect
-    # left + right, so if the current key press is a right modifier, we assume
-    # its righthand modifier is not also pressed.
-    # https://github.com/tiny-pilot/tinypilot/issues/364
-    if keystroke.code == 'ControlRight':
-        modifier_bitmask &= ~hid.MODIFIER_LEFT_CTRL
-        modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
-    elif keystroke.code == 'ShiftRight':
-        modifier_bitmask &= ~hid.MODIFIER_LEFT_SHIFT
-        modifier_bitmask |= hid.MODIFIER_RIGHT_SHIFT
-    elif keystroke.code == 'MetaRight':
-        modifier_bitmask &= ~hid.MODIFIER_RIGHT_META
+    if keystroke.left_meta_modifier:
+        modifier_bitmask |= hid.MODIFIER_LEFT_META
+    if keystroke.right_meta_modifier:
         modifier_bitmask |= hid.MODIFIER_RIGHT_META
-    elif keystroke.code == 'AltRight':
-        modifier_bitmask &= ~hid.MODIFIER_LEFT_ALT
-        modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
 
     return modifier_bitmask
 
@@ -192,7 +183,7 @@ def _map_keycode(keystroke):
     # KEYCODE_NONE. This is based on a report that certain KVMs only recognize
     # a modifier keystroke if the HID code is KEYCODE_NONE, but we should verify
     # that it matches behavior from normal USB keyboards.
-    if (keystroke.code in _MODIFIER_KEYCODES and
+    if (keystroke.code in MODIFIER_KEYCODES and
             _count_modifiers(keystroke) == 1):
         return hid.KEYCODE_NONE
 
@@ -205,7 +196,10 @@ def _map_keycode(keystroke):
 
 def _count_modifiers(keystroke):
     return (int(keystroke.left_ctrl_modifier) +
+            int(keystroke.right_ctrl_modifier) +
             int(keystroke.left_shift_modifier) +
+            int(keystroke.right_shift_modifier) +
             int(keystroke.left_alt_modifier) +
+            int(keystroke.right_alt_modifier) +
             int(keystroke.left_meta_modifier) +
-            int(keystroke.right_alt_modifier))
+            int(keystroke.right_meta_modifier))

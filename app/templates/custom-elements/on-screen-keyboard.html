@@ -177,7 +177,7 @@
         <keyboard-key
           code="ShiftLeft"
           modifier="true"
-          class="shift-modifier key-extend-full-half accented"
+          class="modifier key-extend-full-half accented"
           >Shift</keyboard-key
         >
 
@@ -203,7 +203,7 @@
         <keyboard-key
           code="ShiftRight"
           modifier="true"
-          class="shift-modifier key-extend-full-half accented"
+          class="modifier key-extend-full-half accented"
           >Shift</keyboard-key
         >
       </div>
@@ -213,32 +213,26 @@
         <keyboard-key
           code="ControlLeft"
           modifier="true"
-          class="ctrl-modifier key-extend-full accented"
+          class="modifier key-extend-full accented"
           >Control</keyboard-key
         >
         <keyboard-key
           code="MetaLeft"
           modifier="true"
-          class="meta-modifier key-extend-half accented"
+          class="modifier key-extend-half accented"
           >Meta</keyboard-key
         >
-        <keyboard-key
-          code="AltLeft"
-          modifier="true"
-          class="alt-modifier accented"
+        <keyboard-key code="AltLeft" modifier="true" class="modifier accented"
           >Alt</keyboard-key
         >
         <keyboard-key code="32" class="key-space">Space</keyboard-key>
-        <keyboard-key
-          code="AltRight"
-          modifier="true"
-          class="alt-modifier accented"
+        <keyboard-key code="AltRight" modifier="true" class="modifier accented"
           >Alt</keyboard-key
         >
         <keyboard-key
           code="MetaRight"
           modifier="true"
-          class="meta-modifier key-extend-half accented"
+          class="modifier key-extend-half accented"
           >Meta</keyboard-key
         >
         <keyboard-key
@@ -250,7 +244,7 @@
         <keyboard-key
           code="ControlRight"
           modifier="true"
-          class="ctrl-modifier key-extend-full accented"
+          class="modifier key-extend-full accented"
           >Control</keyboard-key
         >
       </div>
@@ -258,9 +252,7 @@
     </div>
     <div id="keyboard-block-right" class="keyboard-block">
       <div class="keyboard-row keyboard-row-bump">
-        <keyboard-key code="PrintScreen" modifier="true" class="sysrq-modifier"
-          >Print</keyboard-key
-        >
+        <keyboard-key code="PrintScreen">Print</keyboard-key>
         <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
         <keyboard-key code="Pause">Pause</keyboard-key>
       </div>
@@ -324,13 +316,20 @@
         }
 
         onKeyClick(key, code, isModifier) {
+          // Make uppercase when shift is active – but only if no other modifier
+          // is pressed at the same time.
           if (
-            this.isShiftKeyPressed &&
-            !this.isMetaKeyPressed &&
-            !this.isLeftAltKeyPressed &&
-            !this.isRightAltKeyPressed &&
-            !this.isCtrlKeyPressed &&
-            !this.isSysrqKeyPressed
+            ["ShiftLeft", "ShiftRight"].some((m) =>
+              this.isModifierKeyPressed(m)
+            ) &&
+            [
+              "MetaLeft",
+              "MetaRight",
+              "AltLeft",
+              "AltRight",
+              "ControlLeft",
+              "ControlRight",
+            ].every((m) => !this.isModifierKeyPressed(m))
           ) {
             key = this.getShiftedKeyValue(key);
           }
@@ -346,42 +345,10 @@
           }
         }
 
-        get isMetaKeyPressed() {
-          return this.isModifierKeyPressed("meta");
-        }
-
-        get isLeftAltKeyPressed() {
+        isModifierKeyPressed(keyCode) {
           return (
             this.shadowRoot.querySelectorAll(
-              '.alt-modifier[code="AltLeft"][pressed=true]'
-            ).length > 0
-          );
-        }
-
-        get isRightAltKeyPressed() {
-          return (
-            this.shadowRoot.querySelectorAll(
-              '.alt-modifier[code="AltRight"][pressed=true]'
-            ).length > 0
-          );
-        }
-
-        get isShiftKeyPressed() {
-          return this.isModifierKeyPressed("shift");
-        }
-
-        get isCtrlKeyPressed() {
-          return this.isModifierKeyPressed("ctrl");
-        }
-
-        get isSysrqKeyPressed() {
-          return this.isModifierKeyPressed("sysrq");
-        }
-
-        isModifierKeyPressed(modifier) {
-          return (
-            this.shadowRoot.querySelectorAll(
-              `.${modifier}-modifier[pressed=true]`
+              `.modifier[code=${keyCode}][pressed=true]`
             ).length > 0
           );
         }
@@ -393,10 +360,6 @@
               composed: true,
               key: key,
               code: code,
-              metaKey: this.isMetaKeyPressed,
-              altKey: this.isLeftAltKeyPressed,
-              shiftKey: this.isShiftKeyPressed,
-              ctrlKey: this.isCtrlKeyPressed,
             })
           );
         }
@@ -408,10 +371,6 @@
               composed: true,
               key: key,
               code: code,
-              metaKey: this.isMetaKeyPressed,
-              altKey: this.isLeftAltKeyPressed,
-              shiftKey: this.isShiftKeyPressed,
-              ctrlKey: this.isCtrlKeyPressed,
             })
           );
         }

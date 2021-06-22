@@ -71,13 +71,25 @@ const commonKeyCodes = {
   "'": "Quote",
 };
 
-export function keystrokeToCanonicalCode(keystroke) {
+/**
+ * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ */
+export function keystrokeToCanonicalCode(evt) {
   // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
   // Alt key has a blank code.
-  if (keystroke.key === "Alt" && keystroke.code === "") {
+  if (evt.key === "Alt" && evt.code === "") {
     return "AltRight";
   }
-  return keystroke.code;
+
+  // Firefox calls it `OS...` instead of `Meta...`.
+  if (evt.code === "OSLeft") {
+    return "MetaLeft";
+  }
+  if (evt.code === "OSRight") {
+    return "MetaRight";
+  }
+
+  return evt.code;
 }
 
 // Given a character and a browser language, finds the matching code.
