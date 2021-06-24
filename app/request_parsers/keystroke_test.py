@@ -176,6 +176,21 @@ class KeystrokeWithInvalidValuesTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
+    def test_rejects_invalid_right_alt_modifier(self):
+        with self.assertRaises(keystroke.InvalidModifierKeyError):
+            keystroke.parse_keystroke({
+                'metaLeft': False,
+                'metaRight': False,
+                'shiftLeft': False,
+                'shiftRight': False,
+                'altLeft': False,
+                'altRight': 'banana',
+                'ctrlLeft': False,
+                'ctrlRight': False,
+                'key': 'A',
+                'code': 'KeyA',
+            })
+
     def test_rejects_invalid_shift_modifier(self):
         with self.assertRaises(keystroke.InvalidModifierKeyError):
             keystroke.parse_keystroke({
@@ -201,21 +216,6 @@ class KeystrokeWithInvalidValuesTest(unittest.TestCase):
                 'altLeft': False,
                 'altRight': False,
                 'ctrlLeft': 'banana',
-                'ctrlRight': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_invalid_right_graph_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaLeft': False,
-                'metaRight': False,
-                'shiftLeft': False,
-                'shiftRight': False,
-                'altLeft': False,
-                'altRight': 'banana',
-                'ctrlLeft': False,
                 'ctrlRight': False,
                 'key': 'A',
                 'code': 'KeyA',
@@ -252,7 +252,7 @@ class KeystrokeWithMissingFieldsTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_missing_right_graph_key_value(self):
+    def test_rejects_missing_right_alt_key_value(self):
         with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaLeft': False,
