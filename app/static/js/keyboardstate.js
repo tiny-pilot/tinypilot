@@ -52,7 +52,8 @@ export class KeyboardState {
    * Fixes the internal modifiers’ state according to the information in the key
    * event. The internal state may have gotten out of sync in case the modifier
    * keys have been pressed or released while the browser window didn’t have
-   * focus. In doubt, the event object is authoritative.
+   * focus. The information in the event object takes precedence over this
+   * class's cached state.
    * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
    */
   _fixInternalModifierStates(evt) {
@@ -67,7 +68,7 @@ export class KeyboardState {
       }
 
       // In case the event reports the modifier to be pressed, check whether the
-      // the current internal state is inline with that. If not, adjust the
+      // the current internal state is in line with that. If not, adjust the
       // internal state; for the lack of information about left/right, we just
       // go for the left one as best guess.
       else if (isModifierPressed && !possibleCodes.some((c) => this._isKeyPressed[c])) {
