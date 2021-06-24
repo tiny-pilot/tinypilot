@@ -10,7 +10,11 @@ const modifierPropToKeyCodesMapping = {
 };
 
 /**
- * This class is for keeping track internally of the keyboard state.
+ * KeyboardState keeps track of which buttons on the user's keyboard are
+ * pressed. We can't rely on keyboard events (KeyboardEvent) alone because they
+ * don't distinguish between left vs. right modifier keys. By tracking the full
+ * keyboard state, we can send keystrokes to the remote system that more
+ * faithfully match the buttons the user pressed in their browser.
  */
 export class KeyboardState {
   constructor() {
