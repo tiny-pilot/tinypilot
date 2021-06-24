@@ -2,6 +2,14 @@ import unittest
 
 from request_parsers import keystroke
 
+_MODIFIER_PROPS = [
+    'metaKey',
+    'altKey',
+    'shiftKey',
+    'ctrlKey',
+    'altGraphKey',
+]
+
 
 class KeystrokeTest(unittest.TestCase):
 
@@ -93,65 +101,37 @@ class KeystrokeTest(unittest.TestCase):
                 'code': 'ControlRight',
             }))
 
-    def test_rejects_invalid_meta_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaKey': 'banana',
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
+    def test_rejects_invalid_properties(self):
+        for invalid_prop in _MODIFIER_PROPS:
+            with self.subTest(invalid_prop), self.assertRaises(
+                    keystroke.InvalidModifierKeyError):
+                props = {
+                    'metaKey': False,
+                    'altKey': False,
+                    'shiftKey': False,
+                    'ctrlKey': False,
+                    'altGraphKey': False,
+                    'key': 'A',
+                    'code': 'KeyA',
+                }
+                props[invalid_prop] = 'banana'
+                keystroke.parse_keystroke(props)
 
-    def test_rejects_invalid_alt_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': 'banana',
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_invalid_shift_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': 'banana',
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_invalid_ctrl_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': 'banana',
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_invalid_alt_graph_modifier(self):
-        with self.assertRaises(keystroke.InvalidModifierKeyError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': 'banana',
-                'key': 'A',
-                'code': 'KeyA',
-            })
+    def test_rejects_missing_value(self):
+        for missing_prop in _MODIFIER_PROPS + ['code', 'key']:
+            with self.subTest(missing_prop), self.assertRaises(
+                    keystroke.MissingFieldErrorError):
+                props = {
+                    'metaKey': False,
+                    'altKey': False,
+                    'shiftKey': False,
+                    'ctrlKey': False,
+                    'altGraphKey': False,
+                    'key': 'A',
+                    'code': 'KeyA',
+                }
+                del props[missing_prop]
+                keystroke.parse_keystroke(props)
 
     def test_rejects_float_keycode_value(self):
         with self.assertRaises(keystroke.InvalidKeyCodeError):
@@ -163,83 +143,6 @@ class KeystrokeTest(unittest.TestCase):
                 'altGraphKey': False,
                 'key': 'A',
                 'code': 1.25,
-            })
-
-    def test_rejects_missing_meta_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_alt_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_alt_graph_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'altKey': False,
-                'metaKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_shift_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_ctrl_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_key_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'code': 'KeyA',
-            })
-
-    def test_rejects_missing_code_value(self):
-        with self.assertRaises(keystroke.MissingFieldErrorError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
             })
 
     def test_rejects_too_long_code_value(self):
