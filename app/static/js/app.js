@@ -40,6 +40,14 @@ function showError(errorInfo) {
   document.getElementById("error-overlay").show();
 }
 
+function isIgnoredKeystroke(code) {
+  // Ignore the keystroke if this is a modifier keycode and the modifier was
+  // already pressed. Otherwise, something like holding down the Shift key
+  // is sent as multiple Shift key presses, which has special meaning on
+  // certain OSes.
+  return isModifierCode(code) && keyboardState.isKeyPressed(code);
+}
+
 function recalculateMouseEventThrottle(
   currentThrottle,
   lastRtt,
@@ -72,7 +80,6 @@ function browserLanguage() {
 }
 
 const keystrokeHistory = document.getElementById("status-bar").keystrokeHistory;
-const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 
 // Send a keystroke message to the backend, and add a key card to the web UI.
 function processKeystroke(keystroke) {
@@ -124,14 +131,7 @@ function onKeyDown(evt) {
 
   const canonicalCode = keystrokeToCanonicalCode(evt);
 
-  // Ignore the keystroke if this is a modifier keycode and the modifier was
-  // already pressed. Otherwise, something like holding down the Shift key is
-  // sent as multiple Shift key presses, which has special meaning on certain
-  // OSes.
-  if (
-    isModifierCode(canonicalCode) &&
-    keyboardState.isKeyPressed(canonicalCode)
-  ) {
+  if (isIgnoredKeystroke(canonicalCode)) {
     return;
   }
 
@@ -143,6 +143,8 @@ function onKeyDown(evt) {
   if (!evt.metaKey) {
     evt.preventDefault();
   }
+
+  const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 
   processKeystroke({
     metaLeft:
@@ -215,13 +217,13 @@ function onKeyUp(evt) {
     return;
   }
 
+  const canonicalCode = keystrokeToCanonicalCode(evt);
   keyboardState.onKeyUp(evt);
 
   if (!connectedToServer) {
     return;
   }
 
-  const canonicalCode = keystrokeToCanonicalCode(evt);
   if (isModifierCode(canonicalCode)) {
     socket.emit("keyRelease");
   }

@@ -99,7 +99,7 @@ class KeystrokeTest(unittest.TestCase):
                                 left_ctrl_modifier=False,
                                 right_ctrl_modifier=True,
                                 key='Control',
-                                code='ControlLeft'),
+                                code='ControlRight'),
             keystroke.parse_keystroke({
                 'metaLeft': False,
                 'metaRight': False,
@@ -110,7 +110,7 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlLeft': False,
                 'ctrlRight': True,
                 'key': 'Control',
-                'code': 'ControlLeft',
+                'code': 'ControlRight',
             }))
 
     def test_rejects_float_keycode_value(self):

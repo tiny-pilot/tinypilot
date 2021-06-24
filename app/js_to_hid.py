@@ -9,7 +9,7 @@ class UnrecognizedKeyCodeError(Error):
     pass
 
 
-MODIFIER_KEYCODES = [
+_MODIFIER_KEYCODES = [
     'AltLeft',
     'AltRight',
     'ControlLeft',
@@ -183,7 +183,7 @@ def _map_keycode(keystroke):
     # KEYCODE_NONE. This is based on a report that certain KVMs only recognize
     # a modifier keystroke if the HID code is KEYCODE_NONE, but we should verify
     # that it matches behavior from normal USB keyboards.
-    if (keystroke.code in MODIFIER_KEYCODES and
+    if (keystroke.code in _MODIFIER_KEYCODES and
             _count_modifiers(keystroke) == 1):
         return hid.KEYCODE_NONE
 
