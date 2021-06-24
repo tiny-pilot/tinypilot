@@ -9,11 +9,9 @@ set -x
 # Exit on unset variable.
 set -u
 
-# Ensure we are running as root user.
-if [[ "$(whoami)" != "root" ]]; then
-  echo "Script must be run as root user."
-  exit 1
-fi
+# Check and ensure we have passwordless sudo permissions. (The following command
+# would exit with non-zero otherwise and make this script abort.)
+sudo -n true
 
 # Set REVISION variable, use either input argument or default.
 REVISION="HEAD"
@@ -30,7 +28,9 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 
 # Pull requested branch. We can’t execute this as the user `tinypilot` in order
-# to be able to use SSH agent forwarding, which only works for the user `root`.
+# to be able to use SSH agent forwarding, which only works for the user we are
+# logged in as.
+sudo chown -R "$(whoami)":"$(whoami)" .
 git fetch --all
 git reset --hard "${REVISION}"
 chown -R tinypilot:tinypilot .
