@@ -26,7 +26,9 @@ export class KeyboardState {
    * @returns boolean
    */
   isKeyPressed(canonicalCode) {
-    return canonicalCode in this._isKeyPressed && this._isKeyPressed[canonicalCode];
+    return (
+      canonicalCode in this._isKeyPressed && this._isKeyPressed[canonicalCode]
+    );
   }
 
   /**
@@ -71,7 +73,10 @@ export class KeyboardState {
       // the current internal state is in line with that. If not, adjust the
       // internal state; for the lack of information about left/right, we just
       // go for the left one as best guess.
-      else if (isModifierPressed && !possibleCodes.some((c) => this._isKeyPressed[c])) {
+      else if (
+        isModifierPressed &&
+        !possibleCodes.some((c) => this._isKeyPressed[c])
+      ) {
         this._isKeyPressed[possibleCodes[0]] = true;
       }
     }
