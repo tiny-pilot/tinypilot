@@ -2,7 +2,7 @@
 
 import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 
-const modifierProp2KeyCodes = {
+const modifierPropToKeyCodesMapping = {
   altKey: ["AltLeft", "AltRight"],
   metaKey: ["MetaLeft", "MetaRight"],
   ctrlKey: ["CtrlLeft", "CtrlRight"],
@@ -53,7 +53,7 @@ export class KeyboardState {
    */
   _fixInternalModifierStates(evt) {
     for (const [modifierProp, possibleCodes] of Object.entries(
-      modifierProp2KeyCodes
+      modifierPropToKeyCodesMapping
     )) {
       const isModifierPressed = evt[modifierProp];
       // In case the event reports the modifier to be released, we can just take
