@@ -93,6 +93,33 @@ class KeystrokeTest(unittest.TestCase):
                 'code': 'ControlRight',
             }))
 
+    def test_rejects_float_keycode_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCodeError):
+            keystroke.parse_keystroke({
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'altGraphKey': False,
+                'key': 'A',
+                'code': 1.25,
+            })
+
+    def test_rejects_too_long_code_value(self):
+        with self.assertRaises(keystroke.InvalidKeyCodeError):
+            keystroke.parse_keystroke({
+                'metaKey': False,
+                'altKey': False,
+                'shiftKey': False,
+                'ctrlKey': False,
+                'altGraphKey': False,
+                'key': 'A',
+                'code': 'A' * 31,
+            })
+
+
+class KeystrokeWithInvalidValuesTest(unittest.TestCase):
+
     def test_rejects_invalid_meta_modifier(self):
         with self.assertRaises(keystroke.InvalidModifierKeyError):
             keystroke.parse_keystroke({
@@ -153,17 +180,8 @@ class KeystrokeTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_float_keycode_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCodeError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 1.25,
-            })
+
+class KeystrokeWithMissingFieldsTest(unittest.TestCase):
 
     def test_rejects_missing_meta_key_value(self):
         with self.assertRaises(keystroke.MissingFieldErrorError):
@@ -240,16 +258,4 @@ class KeystrokeTest(unittest.TestCase):
                 'ctrlKey': False,
                 'altGraphKey': False,
                 'key': 'A',
-            })
-
-    def test_rejects_too_long_code_value(self):
-        with self.assertRaises(keystroke.InvalidKeyCodeError):
-            keystroke.parse_keystroke({
-                'metaKey': False,
-                'altKey': False,
-                'shiftKey': False,
-                'ctrlKey': False,
-                'altGraphKey': False,
-                'key': 'A',
-                'code': 'A' * 31,
             })
