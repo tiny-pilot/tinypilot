@@ -23,11 +23,16 @@ class InvalidLocationError(Error):
 
 @dataclasses.dataclass
 class Keystroke:
+    # TODO(jotaen) Rename all modifiers to `ctrl_left_...` etc. instead of
+    #              `left_ctrl_...` to make the naming consistent.
     left_ctrl_modifier: bool
+    right_ctrl_modifier: bool
     left_shift_modifier: bool
+    right_shift_modifier: bool
     left_alt_modifier: bool
-    left_meta_modifier: bool
     right_alt_modifier: bool
+    left_meta_modifier: bool
+    right_meta_modifier: bool
     key: str
     code: str
 
@@ -39,22 +44,28 @@ def parse_keystroke(message):
     required_fields = (
         'key',
         'code',
-        'ctrlKey',
-        'shiftKey',
-        'altKey',
-        'metaKey',
-        'altGraphKey',
+        'ctrlLeft',
+        'ctrlRight',
+        'shiftLeft',
+        'shiftRight',
+        'altLeft',
+        'altRight',
+        'metaLeft',
+        'metaRight',
     )
     for field in required_fields:
         if field not in message:
             raise MissingFieldErrorError(
                 'Keystroke request is missing required field: %s' % field)
     return Keystroke(
-        left_ctrl_modifier=_parse_modifier_key(message['ctrlKey']),
-        left_shift_modifier=_parse_modifier_key(message['shiftKey']),
-        left_alt_modifier=_parse_modifier_key(message['altKey']),
-        left_meta_modifier=_parse_modifier_key(message['metaKey']),
-        right_alt_modifier=_parse_modifier_key(message['altGraphKey']),
+        left_ctrl_modifier=_parse_modifier_key(message['ctrlLeft']),
+        right_ctrl_modifier=_parse_modifier_key(message['ctrlRight']),
+        left_shift_modifier=_parse_modifier_key(message['shiftLeft']),
+        right_shift_modifier=_parse_modifier_key(message['shiftRight']),
+        left_alt_modifier=_parse_modifier_key(message['altLeft']),
+        right_alt_modifier=_parse_modifier_key(message['altRight']),
+        left_meta_modifier=_parse_modifier_key(message['metaLeft']),
+        right_meta_modifier=_parse_modifier_key(message['metaRight']),
         key=message['key'],
         code=_parse_code(message['code']))
 
