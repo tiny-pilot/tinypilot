@@ -120,7 +120,8 @@ class KeystrokeTest(unittest.TestCase):
 
     def test_rejects_invalid_properties(self):
         for invalid_prop in _MODIFIER_PROPS:
-            with self.assertRaises(keystroke.InvalidModifierKeyError):
+            with self.subTest(invalid_prop), self.assertRaises(
+                    keystroke.InvalidModifierKeyError):
                 props = {
                     'metaLeft': False,
                     'metaRight': False,
@@ -153,7 +154,8 @@ class KeystrokeTest(unittest.TestCase):
 
     def test_rejects_missing_value(self):
         for missing_prop in _MODIFIER_PROPS + ['code', 'key']:
-            with self.assertRaises(keystroke.MissingFieldErrorError):
+            with self.subTest(missing_prop), self.assertRaises(
+                    keystroke.MissingFieldErrorError):
                 props = {
                     'metaLeft': False,
                     'metaRight': False,
