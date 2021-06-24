@@ -311,7 +311,7 @@
             );
           });
           this.addEventListener("keyrelease", (evt) => {
-            this.emitKeyUpEvent(evt.detail.key, evt.detail.code);
+            this.emitKeyEvent("keyup", evt.detail.key, evt.detail.code);
           });
         }
 
@@ -334,10 +334,10 @@
             key = this.getShiftedKeyValue(key);
           }
 
-          this.emitKeyDownEvent(key, code);
+          this.emitKeyEvent("keydown", key, code);
 
           if (!isModifier) {
-            this.emitKeyUpEvent(key, code);
+            this.emitKeyEvent("keyup", key, code);
 
             // Remove pressed state from all modifier keys if non-modifier key
             // was pressed.
@@ -353,24 +353,25 @@
           );
         }
 
-        emitKeyDownEvent(key, code) {
+        emitKeyEvent(eventType, key, code) {
           this.dispatchEvent(
-            new KeyboardEvent("keydown", {
+            new KeyboardEvent(eventType, {
               bubbles: true,
               composed: true,
               key: key,
               code: code,
-            })
-          );
-        }
-
-        emitKeyUpEvent(key, code) {
-          this.dispatchEvent(
-            new KeyboardEvent("keyup", {
-              bubbles: true,
-              composed: true,
-              key: key,
-              code: code,
+              metaKey:
+                this.isModifierKeyPressed("MetaLeft") ||
+                this.isModifierKeyPressed("MetaRight"),
+              ctrlKey:
+                this.isModifierKeyPressed("CtrlLeft") ||
+                this.isModifierKeyPressed("CtrlRight"),
+              shiftKey:
+                this.isModifierKeyPressed("ShiftLeft") ||
+                this.isModifierKeyPressed("ShiftRight"),
+              altKey:
+                this.isModifierKeyPressed("AltLeft") ||
+                this.isModifierKeyPressed("AltRight"),
             })
           );
         }
@@ -380,7 +381,7 @@
             .querySelectorAll("[modifier=true][pressed=true]")
             .forEach((key) => {
               key.isPressed = false;
-              this.emitKeyUpEvent(key.key, key.code);
+              this.emitKeyEvent("keyup", key.key, key.code);
             });
         }
 
