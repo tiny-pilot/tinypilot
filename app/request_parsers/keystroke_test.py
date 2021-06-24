@@ -161,7 +161,7 @@ class KeystrokeWithInvalidValuesTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_invalid_alt_modifier(self):
+    def test_rejects_invalid_alt_left_modifier(self):
         with self.assertRaises(keystroke.InvalidModifierKeyError):
             keystroke.parse_keystroke({
                 'metaLeft': False,
@@ -176,7 +176,7 @@ class KeystrokeWithInvalidValuesTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_invalid_right_alt_modifier(self):
+    def test_rejects_invalid_alt_right_modifier(self):
         with self.assertRaises(keystroke.InvalidModifierKeyError):
             keystroke.parse_keystroke({
                 'metaLeft': False,
@@ -238,7 +238,7 @@ class KeystrokeWithMissingFieldsTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_missing_alt_key_value(self):
+    def test_rejects_missing_alt_left_key_value(self):
         with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaLeft': False,
@@ -252,7 +252,7 @@ class KeystrokeWithMissingFieldsTest(unittest.TestCase):
                 'code': 'KeyA',
             })
 
-    def test_rejects_missing_right_alt_key_value(self):
+    def test_rejects_missing_alt_right_key_value(self):
         with self.assertRaises(keystroke.MissingFieldErrorError):
             keystroke.parse_keystroke({
                 'metaLeft': False,
