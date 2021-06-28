@@ -33,7 +33,7 @@ class Keystroke:
     right_alt_modifier: bool
     left_meta_modifier: bool
     right_meta_modifier: bool
-    key: str
+    key: str  # This property is only used for debugging purpose.
     code: str
 
 
@@ -41,33 +41,37 @@ def parse_keystroke(message):
     if not isinstance(message, dict):
         raise MissingFieldErrorError(
             'Keystroke parameter is invalid, expecting a dictionary data type')
-    required_fields = (
-        'key',
-        'code',
-        'ctrlLeft',
-        'ctrlRight',
-        'shiftLeft',
-        'shiftRight',
-        'altLeft',
-        'altRight',
-        'metaLeft',
-        'metaRight',
-    )
-    for field in required_fields:
-        if field not in message:
-            raise MissingFieldErrorError(
-                'Keystroke request is missing required field: %s' % field)
+    if 'code' not in message:
+        raise MissingFieldErrorError(
+            'Keystroke request is missing required field: code')
+    keystroke_props = _merge_message_with_defaults(message)
     return Keystroke(
-        left_ctrl_modifier=_parse_modifier_key(message['ctrlLeft']),
-        right_ctrl_modifier=_parse_modifier_key(message['ctrlRight']),
-        left_shift_modifier=_parse_modifier_key(message['shiftLeft']),
-        right_shift_modifier=_parse_modifier_key(message['shiftRight']),
-        left_alt_modifier=_parse_modifier_key(message['altLeft']),
-        right_alt_modifier=_parse_modifier_key(message['altRight']),
-        left_meta_modifier=_parse_modifier_key(message['metaLeft']),
-        right_meta_modifier=_parse_modifier_key(message['metaRight']),
-        key=message['key'],
-        code=_parse_code(message['code']))
+        left_ctrl_modifier=_parse_modifier_key(keystroke_props['ctrlLeft']),
+        right_ctrl_modifier=_parse_modifier_key(keystroke_props['ctrlRight']),
+        left_shift_modifier=_parse_modifier_key(keystroke_props['shiftLeft']),
+        right_shift_modifier=_parse_modifier_key(keystroke_props['shiftRight']),
+        left_alt_modifier=_parse_modifier_key(keystroke_props['altLeft']),
+        right_alt_modifier=_parse_modifier_key(keystroke_props['altRight']),
+        left_meta_modifier=_parse_modifier_key(keystroke_props['metaLeft']),
+        right_meta_modifier=_parse_modifier_key(keystroke_props['metaRight']),
+        key=keystroke_props['key'],
+        code=_parse_code(keystroke_props['code']))
+
+
+def _merge_message_with_defaults(message):
+    defaults = {
+        'ctrlLeft': False,
+        'ctrlRight': False,
+        'shiftLeft': False,
+        'shiftRight': False,
+        'altLeft': False,
+        'altRight': False,
+        'metaLeft': False,
+        'metaRight': False,
+        'key': '',
+    }
+    defaults.update(message)
+    return defaults
 
 
 def _parse_modifier_key(modifier_key):
