@@ -5,7 +5,7 @@ try {
 
 const defaults = {
   isKeyHistoryEnabled: true,
-  cursor: "crosshair",
+  cursor: "default",
   isKeyboardVisible: true,
 };
 
