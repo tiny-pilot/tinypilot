@@ -39,6 +39,27 @@
     .updating-spinner {
       margin: 1rem 0;
     }
+
+    #updating details {
+      display: none;
+    }
+
+    #updating summary {
+      cursor: pointer;
+    }
+
+    #updating .logs {
+      padding: 0.25rem 0.5rem;
+      background-color: white;
+      border: 1px solid var(--brand-metallic-dark);
+      user-select: text;
+      text-align: left;
+      overflow-y: scroll;
+      max-height: 400px;
+      white-space: pre-wrap;
+      display: flex;
+      flex-direction: column-reverse;
+    }
   </style>
 
   <div id="checking">
@@ -69,6 +90,10 @@
       <progress-spinner></progress-spinner>
     </div>
     <countdown-timer id="timer" seconds="300"></countdown-timer>
+    <details>
+      <summary>More details</summary>
+      <div class="logs"></div>
+    </details>
   </div>
 
   <div id="restarting">
@@ -91,6 +116,13 @@
     customElements.define(
       "update-dialog",
       class extends HTMLElement {
+        constructor() {
+          super();
+          // Ensure that the _getUpdateStatus method always refers to the
+          // correct "this" while being called via the poll function.
+          this._getUpdateStatus = this._getUpdateStatus.bind(this);
+        }
+
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
@@ -153,9 +185,21 @@
             });
         }
 
+        _getUpdateStatus() {
+          return controllers.getUpdateStatus().then((data) => {
+            if (data.updateLogs) {
+              this.shadowRoot.querySelector("#updating details").style.display =
+                "block";
+              this.shadowRoot.querySelector("#updating .logs").textContent =
+                data.updateLogs;
+            }
+            return data;
+          });
+        }
+
         _waitForUpdateToFinish() {
           return poll({
-            fn: controllers.getUpdateStatus,
+            fn: this._getUpdateStatus,
             validate: (data) => data.status === "DONE" || data.updateError,
             interval: 2 * 1000,
             timeout: 300 * 1000,

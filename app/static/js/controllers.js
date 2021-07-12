@@ -178,7 +178,14 @@
         if (!data.hasOwnProperty("updateError")) {
           throw new ControllerError("Missing expected updateError field");
         }
-        return { status: data.status, updateError: data.updateError };
+        if (!data.hasOwnProperty("updateLogs")) {
+          throw new ControllerError("Missing expected updateLogs field");
+        }
+        return {
+          status: data.status,
+          updateError: data.updateError,
+          updateLogs: data.updateLogs,
+        };
       });
   }
 

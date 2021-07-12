@@ -11,6 +11,7 @@ import request_parsers.video_jpeg_quality
 import update.launcher
 import update.settings
 import update.status
+import update_logs
 import version
 import video_settings
 
@@ -84,6 +85,7 @@ def update_get():
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
         updateError: str of the error that occured while updating. If no error
                      occured, then this will be null.
+        updateLogs: str
         success: true for backwards compatibility.
         error: null for backwards compatibility.
 
@@ -91,6 +93,7 @@ def update_get():
         {
             "status": "NOT_RUNNING",
             "updateError": null,
+            "updateLogs": "",
             "success": true,
             "error": null
         }
@@ -100,6 +103,7 @@ def update_get():
     return json_response.success({
         'status': str(status),
         'updateError': error,
+        'updateLogs': update_logs.read(),
         'success': True,
         'error': None
     })
