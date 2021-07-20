@@ -43,6 +43,12 @@ def read():
 
 
 class Namespace(flask_socketio.Namespace):
+    """Stream the TinyPilot update logs via SocketIO.
+
+    Once a `read` event is receieved within this SocketIO Namespace, all the
+    update logs are sent to the client. While the client remains connected, the
+    newly written update logs are streamed to the client every 500ms.
+    """
 
     def on_connect(self):  # pylint: disable=no-self-use
         session['update_logs'] = {
