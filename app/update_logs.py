@@ -44,20 +44,29 @@ def read():
 
 class Namespace(flask_socketio.Namespace):
 
-    def on_connect(self):
-        session['update_logs'] = ''
+    def on_connect(self):  # pylint: disable=no-self-use
+        session['update_logs'] = {
+            'prev_logs': '',
+            'is_reading': False,
+        }
 
-    def on_disconnect(self):
-        del session['update_logs']
+    def on_disconnect(self):  # pylint: disable=no-self-use
+        session['update_logs'] = {
+            'prev_logs': '',
+            'is_reading': False,
+        }
 
-    def on_read(self):
-        logger.info('read event in update_logs namespace')
-        while 'update_logs' in session:
+    def on_read(self):  # pylint: disable=no-self-use
+        session['update_logs']['is_reading'] = True
+        while session['update_logs']['is_reading']:
+            # Get the current update logs
             logs = read()
-            common_logs = os.path.commonprefix([session['update_logs'], logs])
+            # Determine where the current logs overlap with the previous logs
+            common_logs = os.path.commonprefix(
+                [session['update_logs']['prev_logs'], logs])
+            # Determine the newly added logs
             new_logs = logs[len(common_logs):]
             if new_logs:
-                logger.info('new_logs: %s', new_logs)
                 flask_socketio.emit('read_response', new_logs)
-                session['update_logs'] = logs
+                session['update_logs']['prev_logs'] = logs
             eventlet.sleep(0.5)

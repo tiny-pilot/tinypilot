@@ -8,7 +8,8 @@
     #latest,
     #updating,
     #update-finished,
-    #restarting {
+    #restarting,
+    #update-container {
       display: none;
     }
 
@@ -24,14 +25,17 @@
       display: block;
     }
 
+    :host([state="updating"]) #update-container,
     :host([state="updating"]) #updating {
       display: block;
     }
 
+    :host([state="update-finished"]) #update-container,
     :host([state="update-finished"]) #update-finished {
       display: block;
     }
 
+    :host([state="restarting"]) #update-container,
     :host([state="restarting"]) #restarting {
       display: block;
     }
@@ -40,15 +44,11 @@
       margin: 1rem 0;
     }
 
-    #updating details {
-      display: none;
-    }
-
-    #updating summary {
+    #update-container summary {
       cursor: pointer;
     }
 
-    #updating .logs {
+    #update-container .logs {
       padding: 0.25rem 0.5rem;
       background-color: white;
       border: 1px solid var(--brand-metallic-dark);
@@ -84,26 +84,29 @@
     <button id="ok-latest" type="button">OK</button>
   </div>
 
-  <div id="updating">
-    <h3>Please Wait While TinyPilot Updates</h3>
-    <div class="updating-spinner">
+  <div id="update-container">
+    <div id="updating">
+      <h3>Please Wait While TinyPilot Updates</h3>
+      <div class="updating-spinner">
+        <progress-spinner></progress-spinner>
+      </div>
+      <countdown-timer id="timer" seconds="300"></countdown-timer>
+    </div>
+
+    <div id="restarting">
+      <h3>Restarting to Complete Update</h3>
       <progress-spinner></progress-spinner>
     </div>
-    <countdown-timer id="timer" seconds="300"></countdown-timer>
+
+    <div id="update-finished">
+      <h3>Update Complete</h3>
+      <button id="ok-finished" type="button">OK</button>
+    </div>
+
     <details>
       <summary>More details</summary>
       <div class="logs"></div>
     </details>
-  </div>
-
-  <div id="restarting">
-    <h3>Restarting to Complete Update</h3>
-    <progress-spinner></progress-spinner>
-  </div>
-
-  <div id="update-finished">
-    <h3>Update Complete</h3>
-    <button id="ok-finished" type="button">OK</button>
   </div>
 </template>
 
@@ -248,25 +251,36 @@
           return new Promise((resolve) => setTimeout(resolve, milliseconds));
         }
 
+        _initUpdateLogsSocket() {
+          // Initilize a Socket on the "/updateLogs" namespace and
+          // automatically establish a connection.
+          const socket = io("/updateLogs");
+          // Register event listeners
+          socket.on("read_response", (text) => {
+            this.shadowRoot.querySelector(
+              "#update-container .logs"
+            ).textContent += text;
+          });
+          return socket;
+        }
+
         async _doUpdate() {
           this._state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
-          const socket = io("/updateLogs");
-          socket.on("read_response", (data) => {
-            console.log("recv:", data);
-            this.shadowRoot.querySelector("#updating details").style.display =
-              "block";
-            this.shadowRoot.querySelector(
-              "#updating .logs"
-            ).textContent += data;
-          });
-          socket.emit("read", (data) => console.log("cb:", data));
+          const updateLogsSocket = this._initUpdateLogsSocket();
+          // Let the user know that the update logs are loading.
+          this.shadowRoot.querySelector("#update-container .logs").textContent =
+            "Retrieving update logs from TinyPilot device...";
+          // Start streaming the update logs.
+          updateLogsSocket.emit("read");
 
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
+            // Stop streaming the update logs.
+            updateLogsSocket.disconnect();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Start Update",
@@ -286,6 +300,8 @@
             await this._sleep(10 * 1000);
             await this._waitForReboot();
           } catch (error) {
+            // Stop streaming the update logs.
+            updateLogsSocket.disconnect();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Complete Update",
@@ -294,7 +310,8 @@
             );
             return;
           }
-          socket.disconnect();
+          // Stop streaming the update logs.
+          updateLogsSocket.disconnect();
         }
       }
     );
