@@ -3,7 +3,7 @@
 button,
 .btn {
   display: inline-block;
-  padding: 0.5rem 1.5rem;
+  padding: 0.4rem 1.25rem;
   margin: 1rem;
   text-decoration: none;
   color: #ffffff;
@@ -40,7 +40,7 @@ button:active,
 
 /** DEPRECATED */
 .btn-small {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
 }
 
 .btn-action {
