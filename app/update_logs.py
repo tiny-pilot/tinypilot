@@ -66,6 +66,7 @@ class Namespace(flask_socketio.Namespace):
         super().__init__(*args, **kwargs)
         self.is_streaming = False
         self.prev_logs = ''
+        self.client_count = 0
 
     def on_start(self):
         # Only stream the update logs once.
@@ -83,3 +84,12 @@ class Namespace(flask_socketio.Namespace):
 
     def on_stop(self):
         self.is_streaming = False
+
+    def on_connect(self):
+        self.client_count += 1
+
+    def on_disconnect(self):
+        self.client_count -= 1
+        # Stop streaming when the last client disconnects.
+        if self.client_count == 0:
+            self.is_streaming = False
