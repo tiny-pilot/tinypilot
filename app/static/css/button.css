@@ -3,8 +3,8 @@
 button,
 .btn {
   display: inline-block;
-  padding: 0.5rem 1.5rem;
-  margin: 1rem;
+  padding: 0.3rem 1rem;
+  margin: 1rem 0.5rem;
   text-decoration: none;
   color: #ffffff;
   font-size: 1rem;
@@ -24,7 +24,7 @@ button:hover,
 .btn:hover,
 button:focus,
 .btn:focus {
-  background-color: var(--brand-metallic-bright);
+  background-color: var(--brand-metallic-medium);
 }
 
 button:focus,
