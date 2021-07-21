@@ -44,19 +44,16 @@
       margin: 1rem 0;
     }
 
+    #update-container details {
+      margin-top: 1rem;
+    }
+
     #update-container summary {
       cursor: pointer;
     }
 
     #update-container .logs {
-      padding: 0.25rem 0.5rem;
-      background-color: white;
-      border: 1px solid var(--brand-metallic-dark);
-      user-select: text;
-      text-align: left;
-      overflow-y: scroll;
       max-height: 400px;
-      white-space: pre-wrap;
       display: flex;
       flex-direction: column-reverse;
     }
@@ -105,12 +102,13 @@
 
     <details>
       <summary>More details</summary>
-      <div class="logs"></div>
+      <div class="logs logs-output monospace"></div>
     </details>
   </div>
 </template>
 
 <script src="/js/util/poll.js"></script>
+<script src="/js/updatelogs.js"></script>
 <script>
   (function () {
     const doc = (document._currentScript || document.currentScript)
@@ -125,6 +123,11 @@
             template.content.cloneNode(true)
           );
 
+          this.elements = {
+            updateLogs: this.shadowRoot.querySelector(
+              "#update-container .logs"
+            ),
+          };
           this.shadowRoot
             .getElementById("confirm-update")
             .addEventListener("click", () => {
@@ -252,36 +255,25 @@
           return new Promise((resolve) => setTimeout(resolve, milliseconds));
         }
 
-        _initUpdateLogsSocket() {
-          // Initilize a Socket on the "/updateLogs" namespace and
-          // automatically establish a connection.
-          const socket = io("/updateLogs");
-          // Register event listeners
-          socket.on("read_response", (text) => {
-            this.shadowRoot.querySelector(
-              "#update-container .logs"
-            ).textContent += text;
-          });
-          return socket;
-        }
-
         async _doUpdate() {
           this._state = "updating";
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
-          const updateLogsSocket = this._initUpdateLogsSocket();
+          const updateLogsStreamer = new UpdateLogsStreamer();
           // Let the user know that the update logs are loading.
-          this.shadowRoot.querySelector("#update-container .logs").textContent =
-            "Retrieving update logs from TinyPilot device...";
-          // Start streaming the update logs.
-          updateLogsSocket.emit("read");
+          this.elements.updateLogs.textContent =
+            "Retrieving update logs from TinyPilot device...\n";
+          // Display new update logs as they come in.
+          updateLogsStreamer.onNewLogs((logs) => {
+            this.elements.updateLogs.textContent += logs;
+          });
+          updateLogsStreamer.start();
 
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
-            // Stop streaming the update logs.
-            updateLogsSocket.disconnect();
+            updateLogsStreamer.stop();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Start Update",
@@ -301,8 +293,7 @@
             await this._sleep(10 * 1000);
             await this._waitForReboot();
           } catch (error) {
-            // Stop streaming the update logs.
-            updateLogsSocket.disconnect();
+            updateLogsStreamer.stop();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Complete Update",
@@ -311,8 +302,7 @@
             );
             return;
           }
-          // Stop streaming the update logs.
-          updateLogsSocket.disconnect();
+          updateLogsStreamer.stop();
         }
       }
     );

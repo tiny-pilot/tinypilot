@@ -98,3 +98,14 @@ input[type="password"] {
   font-size: inherit;
   border: 1px solid #666;
 }
+
+.logs-output {
+  /* Note: don't forget to also add the monospace class when using this class */
+  padding: 0.25rem 0.5rem;
+  background-color: white;
+  border: 1px solid var(--brand-metallic-dark);
+  user-select: text;
+  text-align: left;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+}

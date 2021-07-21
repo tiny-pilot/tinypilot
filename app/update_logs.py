@@ -4,7 +4,6 @@ import subprocess
 
 import eventlet
 import flask_socketio
-from flask import session
 
 _READ_SCRIPT_PATH = '/opt/tinypilot-privileged/read-update-log'
 logger = logging.getLogger(__name__)
@@ -42,37 +41,45 @@ def read():
     return output
 
 
+def get_new_logs(prev_logs, next_logs):
+    """Determine the newly appended logs.
+
+    Args:
+        prev_logs: A string of the previously captured logs.
+        next_logs: A string of the subsequently captured logs.
+    """
+    common_logs = os.path.commonprefix([prev_logs, next_logs])
+    new_logs = next_logs[len(common_logs):]
+    return new_logs
+
+
 class Namespace(flask_socketio.Namespace):
     """Stream the TinyPilot update logs via SocketIO.
 
-    Once a `read` event is receieved within this SocketIO Namespace, all the
-    update logs are sent to the client. While the client remains connected, the
-    newly written update logs are streamed to the client every 500ms.
+    Once a `start` event is receieved within this SocketIO Namespace, the newly
+    written update logs are streamed to all connected clients via a `logs`
+    event. The update logs stop streaming once a `stop` event is receieved from
+    any of the connected clients.
     """
 
-    def on_connect(self):  # pylint: disable=no-self-use
-        session['update_logs'] = {
-            'prev_logs': '',
-            'is_reading': False,
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.is_streaming = False
+        self.prev_logs = ''
 
-    def on_disconnect(self):  # pylint: disable=no-self-use
-        session['update_logs'] = {
-            'prev_logs': '',
-            'is_reading': False,
-        }
-
-    def on_read(self):  # pylint: disable=no-self-use
-        session['update_logs']['is_reading'] = True
-        while session['update_logs']['is_reading']:
-            # Get the current update logs
+    def on_start(self):
+        # Only stream the update logs once.
+        if self.is_streaming:
+            return
+        self.is_streaming = True
+        while self.is_streaming:
             logs = read()
-            # Determine where the current logs overlap with the previous logs
-            common_logs = os.path.commonprefix(
-                [session['update_logs']['prev_logs'], logs])
-            # Determine the newly added logs
-            new_logs = logs[len(common_logs):]
+            new_logs = get_new_logs(self.prev_logs, logs)
             if new_logs:
-                flask_socketio.emit('read_response', new_logs)
-                session['update_logs']['prev_logs'] = logs
+                # Send the update logs to all connected clients.
+                flask_socketio.emit('logs', new_logs, broadcast=True)
+                self.prev_logs = logs
             eventlet.sleep(0.5)
+
+    def on_stop(self):
+        self.is_streaming = False
