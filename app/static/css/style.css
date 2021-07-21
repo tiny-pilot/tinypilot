@@ -31,7 +31,7 @@
   --brand-green-light: hsl(var(--brand-hue-green), 42%, 73%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
-  --border-radius: 0.2rem;
+  --border-radius: 0.25rem;
 
   --z-index-bar: 1;
   --z-index-overlay: 2;
