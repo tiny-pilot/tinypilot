@@ -18,15 +18,20 @@
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
 
   --brand-blue: hsl(var(--brand-hue-blue), 55%, 55%);
+  --brand-blue-dark: hsl(var(--brand-hue-blue), 51%, 30%);
   --brand-blue-bright: hsl(var(--brand-hue-blue), 90%, 67%);
 
-  --brand-red: hsl(var(--brand-hue-red), 55%, 40%);
+  --brand-red: hsl(var(--brand-hue-red), 57%, 44%);
+  --brand-red-dark: hsl(var(--brand-hue-red), 72%, 29%);
   --brand-red-light: hsl(var(--brand-hue-red), 54%, 95%);
   --brand-red-bright: hsl(var(--brand-hue-red), 85%, 46%);
 
   --brand-green: hsl(var(--brand-hue-green), 40%, 45%);
+  --brand-green-dark: hsl(var(--brand-hue-green), 46%, 33%);
   --brand-green-light: hsl(var(--brand-hue-green), 42%, 73%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
+
+  --border-radius: 0.2rem;
 
   --z-index-bar: 1;
   --z-index-overlay: 2;
@@ -97,4 +102,6 @@ input[type="password"] {
   font-family: inherit;
   font-size: inherit;
   border: 1px solid #666;
+  border-radius: var(--border-radius);
+  box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
 }
