@@ -38,11 +38,6 @@ button:active,
   transform: scale(0.99);
 }
 
-/** DEPRECATED */
-.btn-small {
-  padding: 0.4rem 1rem;
-}
-
 .btn-action {
   background-color: var(--brand-blue);
   border-color: var(--brand-blue-dark);
