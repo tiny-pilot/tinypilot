@@ -12,7 +12,7 @@
   --brand-metallic-dark: hsl(var(--brand-hue-blue), 33%, 33%);
   --brand-metallic-medium: hsl(var(--brand-hue-metallic), 18%, 45%);
   --brand-metallic-light: hsl(var(--brand-hue-metallic), 16%, 55%);
-  --brand-metallic-bright: hsl(var(--brand-hue-metallic), 18%, 71%);
+  --brand-metallic-bright: hsl(var(--brand-hue-metallic), 18%, 65%);
 
   --brand-sand-light: hsl(var(--brand-hue-yellow), 59%, 92%);
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
