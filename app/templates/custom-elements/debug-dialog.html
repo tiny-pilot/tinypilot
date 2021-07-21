@@ -34,6 +34,7 @@
       overflow-y: scroll;
       max-height: 600px;
       white-space: pre-wrap;
+      border-radius: var(--border-radius);
     }
 
     #url-success .url-wrapper {
@@ -43,7 +44,8 @@
     #url-success .url {
       user-select: text;
       background: #bdbdbd;
-      padding: 1rem 2rem;
+      padding: 0.6rem 2rem;
+      border-radius: var(--border-radius);
     }
   </style>
 
@@ -56,10 +58,10 @@
   <div id="logs-success">
     <h3>Debug Logs</h3>
     <div class="action-buttons">
-      <button class="share-btn btn-action btn-small" type="button">
+      <button class="share-btn btn-action" type="button">
         Get Shareable URL
       </button>
-      <button class="copy-btn btn-action btn-small" type="button">
+      <button class="copy-btn btn-action" type="button">
         Copy to Clipboard
       </button>
     </div>

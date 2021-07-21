@@ -79,9 +79,17 @@
         <br style="clear: both;" />
         <div
           class="colorcard"
+          style="background-color: var(--brand-blue-dark);"
+        ></div>
+        <div
+          class="colorcard"
           style="background-color: var(--brand-blue);"
         ></div>
         <br style="clear: both;" />
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-red-dark);"
+        ></div>
         <div
           class="colorcard"
           style="background-color: var(--brand-red);"
@@ -91,6 +99,10 @@
           style="background-color: var(--brand-red-light);"
         ></div>
         <br style="clear: both;" />
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-green-dark);"
+        ></div>
         <div
           class="colorcard"
           style="background-color: var(--brand-green);"
@@ -120,14 +132,9 @@
           there are multiple regular actions side by side, the “regular” action
           button should be used.
         </li>
-        <li>
-          To make the button appear less prominent, a smaller variant can be
-          used.
-        </li>
       </ul>
       <h3>Default Button</h3>
       <button>Default</button>
-      <button class="btn-small">Default (Small)</button>
       <p>For harmless operations like “close” or “cancel”.</p>
       <h3>Action Button</h3>
       <button class="btn-action">Action</button>
@@ -146,7 +153,7 @@
         A button that groups multiple related actions.
       </p>
       <dropdown-button>
-        <button slot="button" class="btn-small btn-action">
+        <button slot="button" class="btn-action">
           Dropdown
           <span class="icon-arrow"></span>
         </button>
@@ -155,7 +162,7 @@
         <li slot="item">Action 3</li>
       </dropdown-button>
       <dropdown-button>
-        <button slot="button" class="btn-small">
+        <button slot="button">
           <span class="icon-arrow"></span>
         </button>
         <li slot="item">Action 1</li>
@@ -172,6 +179,12 @@
         <input type="checkbox" />
         <span class="toggle-slider"></span>
       </label>
+
+      <h2 class="section">Input</h2>
+      <div>
+        Input Text:&nbsp;
+        <input type="text" />
+      </div>
 
       <h2 class="section">Overlay</h2>
       <p>
@@ -216,13 +229,13 @@
       <overlay-panel id="overlay-with-feature">
         <h3>Overlay with Feature</h3>
         <div>
-          <button class="btn-small btn-action" onclick="alert('Done.')">
+          <button class="btn-action" onclick="alert('Done.')">
             Action 1
           </button>
-          <button class="btn-small btn-action" onclick="alert('Done.')">
+          <button class="btn-action" onclick="alert('Done.')">
             Action 2
           </button>
-          <button class="btn-small btn-action" onclick="alert('Done.')">
+          <button class="btn-action" onclick="alert('Done.')">
             Action 3
           </button>
         </div>
