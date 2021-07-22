@@ -2,8 +2,9 @@ import logging
 import os.path
 import subprocess
 
-import eventlet
 import flask_socketio
+
+import threads
 
 _READ_SCRIPT_PATH = '/opt/tinypilot-privileged/read-update-log'
 logger = logging.getLogger(__name__)
@@ -80,7 +81,7 @@ class Namespace(flask_socketio.Namespace):
                 # Send the update logs to all connected clients.
                 flask_socketio.emit('logs', new_logs, broadcast=True)
                 self.prev_logs = logs
-            eventlet.sleep(0.5)
+            threads.reschedule(seconds=0.5)
 
     def on_stop(self):
         self.is_streaming = False
