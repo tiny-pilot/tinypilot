@@ -4,6 +4,7 @@ import os
 import flask_socketio
 
 import js_to_hid
+import update_logs
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
 from hid import write as hid_write
@@ -20,6 +21,7 @@ keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
 mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 
 socketio = flask_socketio.SocketIO()
+socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 
 
 @socketio.on('keystroke')

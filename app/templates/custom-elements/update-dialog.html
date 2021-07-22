@@ -8,7 +8,8 @@
     #latest,
     #updating,
     #update-finished,
-    #restarting {
+    #restarting,
+    #update-container {
       display: none;
     }
 
@@ -24,20 +25,37 @@
       display: block;
     }
 
+    :host([state="updating"]) #update-container,
     :host([state="updating"]) #updating {
       display: block;
     }
 
+    :host([state="update-finished"]) #update-container,
     :host([state="update-finished"]) #update-finished {
       display: block;
     }
 
+    :host([state="restarting"]) #update-container,
     :host([state="restarting"]) #restarting {
       display: block;
     }
 
     .updating-spinner {
       margin: 1rem 0;
+    }
+
+    #update-container details {
+      margin-top: 1rem;
+    }
+
+    #update-container summary {
+      cursor: pointer;
+    }
+
+    #update-container .logs {
+      max-height: 400px;
+      display: flex;
+      flex-direction: column-reverse;
     }
   </style>
 
@@ -63,22 +81,29 @@
     <button id="ok-latest" type="button">OK</button>
   </div>
 
-  <div id="updating">
-    <h3>Please Wait While TinyPilot Updates</h3>
-    <div class="updating-spinner">
+  <div id="update-container">
+    <div id="updating">
+      <h3>Please Wait While TinyPilot Updates</h3>
+      <div class="updating-spinner">
+        <progress-spinner></progress-spinner>
+      </div>
+      <countdown-timer id="timer" seconds="300"></countdown-timer>
+    </div>
+
+    <div id="restarting">
+      <h3>Restarting to Complete Update</h3>
       <progress-spinner></progress-spinner>
     </div>
-    <countdown-timer id="timer" seconds="300"></countdown-timer>
-  </div>
 
-  <div id="restarting">
-    <h3>Restarting to Complete Update</h3>
-    <progress-spinner></progress-spinner>
-  </div>
+    <div id="update-finished">
+      <h3>Update Complete</h3>
+      <button id="ok-finished" type="button">OK</button>
+    </div>
 
-  <div id="update-finished">
-    <h3>Update Complete</h3>
-    <button id="ok-finished" type="button">OK</button>
+    <details>
+      <summary>More details</summary>
+      <div class="logs logs-output monospace"></div>
+    </details>
   </div>
 </template>
 
@@ -96,6 +121,11 @@
             template.content.cloneNode(true)
           );
 
+          this.elements = {
+            updateLogs: this.shadowRoot.querySelector(
+              "#update-container .logs"
+            ),
+          };
           this.shadowRoot
             .getElementById("confirm-update")
             .addEventListener("click", () => {
@@ -228,9 +258,20 @@
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
+          const updateLogsStreamer = new UpdateLogsStreamer();
+          // Let the user know that the update logs are loading.
+          this.elements.updateLogs.textContent =
+            "Retrieving update logs from TinyPilot device...\n";
+          // Display new update logs as they come in.
+          updateLogsStreamer.onNewLogs((logs) => {
+            this.elements.updateLogs.textContent += logs;
+          });
+          updateLogsStreamer.start();
+
           try {
             await this._startUpdateWithRetries();
           } catch (error) {
+            updateLogsStreamer.stop();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Start Update",
@@ -250,6 +291,7 @@
             await this._sleep(10 * 1000);
             await this._waitForReboot();
           } catch (error) {
+            updateLogsStreamer.stop();
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Complete Update",
@@ -258,6 +300,7 @@
             );
             return;
           }
+          updateLogsStreamer.stop();
         }
       }
     );

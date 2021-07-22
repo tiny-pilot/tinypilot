@@ -105,3 +105,15 @@ input[type="password"] {
   border-radius: var(--border-radius);
   box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
 }
+
+.logs-output {
+  /* Note: don't forget to also add the monospace class when using this class */
+  padding: 0.25rem 0.5rem;
+  background-color: white;
+  border: 1px solid var(--brand-metallic-dark);
+  border-radius: var(--border-radius);
+  user-select: text;
+  text-align: left;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+}
