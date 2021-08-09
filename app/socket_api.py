@@ -1,6 +1,6 @@
 import logging
-import os
 
+import flask
 import flask_socketio
 
 import js_to_hid
@@ -13,15 +13,32 @@ from request_parsers import mouse_event as mouse_event_request
 
 logger = logging.getLogger(__name__)
 
-# TODO(mtlynch): Move these environment variables to a config file.
-
-# Location of file path at which to write keyboard HID input.
-keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
-# Location of file path at which to write mouse HID input.
-mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
-
 socketio = flask_socketio.SocketIO()
 socketio.on_namespace(update_logs.Namespace('/updateLogs'))
+
+
+def _get_keyboard_path():
+    """Get the file path at which to write keyboard HID input.
+
+    Returns:
+        A string of the keyboard file path.
+
+    Raises:
+        RuntimeError: If called outside of the Flask application context.
+    """
+    return flask.current_app.config.get('KEYBOARD_PATH')
+
+
+def _get_mouse_path():
+    """Get the file path at which to write mouse HID input.
+
+    Returns:
+        A string of the mouse file path.
+
+    Raises:
+        RuntimeError: If called outside of the Flask application context.
+    """
+    return flask.current_app.config.get('MOUSE_PATH')
 
 
 @socketio.on('keystroke')
@@ -43,7 +60,8 @@ def socket_keystroke(message):
                     keystroke.code)
         return {'success': False}
     try:
-        fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
+        fake_keyboard.send_keystroke(_get_keyboard_path(), control_keys,
+                                     hid_keycode)
     except hid_write.WriteError as e:
         logger.error('Failed to write key: %s (keycode=%s). %s', keystroke.key,
                      keystroke.code, e)
@@ -59,7 +77,7 @@ def socket_mouse_event(message):
         logger.error('Failed to parse mouse event request: %s', e)
         return {'success': False}
     try:
-        fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
+        fake_mouse.send_mouse_event(_get_mouse_path(), mouse_move_event.buttons,
                                     mouse_move_event.relative_x,
                                     mouse_move_event.relative_y,
                                     mouse_move_event.vertical_wheel_delta,
@@ -73,7 +91,7 @@ def socket_mouse_event(message):
 @socketio.on('keyRelease')
 def socket_key_release():
     try:
-        fake_keyboard.release_keys(keyboard_path)
+        fake_keyboard.release_keys(_get_keyboard_path())
     except hid_write.WriteError as e:
         logger.error('Failed to release keys: %s', e)
 

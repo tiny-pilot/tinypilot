@@ -41,6 +41,7 @@ app.config.update(
     TEMPLATES_AUTO_RELOAD=True,
     WTF_CSRF_TIME_LIMIT=None,
 )
+app.config.from_envvar('APP_SETTINGS_FILE')
 
 # Configure CSRF protection.
 csrf = flask_wtf.csrf.CSRFProtect(app)
