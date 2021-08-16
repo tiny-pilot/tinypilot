@@ -208,7 +208,9 @@
         </button>
         <button class="close-overlay-with-primary-action">Cancel</button>
       </overlay-panel>
-      <script>
+      <script type="module">
+        import { DialogClosedEvent } from "/js/events.js";
+
         document
           .getElementById("show-overlay-with-primary-action-btn")
           .addEventListener("click", () => {
@@ -246,7 +248,9 @@
         </div>
         <button id="close-overlay-with-feature-btn">Close</button>
       </overlay-panel>
-      <script>
+      <script type="module">
+        import { DialogClosedEvent } from "/js/events.js";
+
         document
           .getElementById("show-overlay-with-feature-btn")
           .addEventListener("click", () => {
@@ -265,7 +269,7 @@
       <button id="show-error-overlay-btn" class="btn-danger">
         Open Error Overlay
       </button>
-      <script>
+      <script type="module">
         document
           .getElementById("show-error-overlay-btn")
           .addEventListener("click", () => {
