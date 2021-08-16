@@ -76,11 +76,12 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+  import { poll } from "/js/util/poll.js";
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#change-hostname-template");
+    const template = document.querySelector("#change-hostname-template");
 
     /**
      * Figure out the new URL under which TinyPilot will become

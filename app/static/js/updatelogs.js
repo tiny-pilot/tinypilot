@@ -2,7 +2,7 @@
  * Streams the TinyPilot update logs via a SocketIO connection.
  * @requires socketio
  */
-class UpdateLogsStreamer {
+export class UpdateLogsStreamer {
   constructor() {
     // Initilize a Socket on the "/updateLogs" namespace and automatically
     // establish a connection.

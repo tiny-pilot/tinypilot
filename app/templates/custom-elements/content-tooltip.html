@@ -42,11 +42,9 @@
   </div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#content-tooltip-template");
+    const template = document.querySelector("#content-tooltip-template");
 
     customElements.define(
       "content-tooltip",

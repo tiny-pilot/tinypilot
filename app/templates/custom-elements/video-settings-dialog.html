@@ -75,11 +75,11 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#video-settings-template");
+    const template = document.querySelector("#video-settings-template");
 
     customElements.define(
       "video-settings-dialog",

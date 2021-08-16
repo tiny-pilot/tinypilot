@@ -289,11 +289,9 @@
   </div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#on-screen-keyboard-template");
+    const template = document.querySelector("#on-screen-keyboard-template");
 
     customElements.define(
       "on-screen-keyboard",

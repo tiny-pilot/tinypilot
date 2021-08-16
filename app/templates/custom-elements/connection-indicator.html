@@ -64,11 +64,9 @@
   </div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#connection-indicator-template");
+    const template = document.querySelector("#connection-indicator-template");
 
     customElements.define(
       "connection-indicator",

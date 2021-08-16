@@ -18,11 +18,9 @@
   <div id="history"></div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#keystroke-history-template");
+    const template = document.querySelector("#keystroke-history-template");
 
     customElements.define(
       "keystroke-history",
