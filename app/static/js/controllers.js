@@ -1,3 +1,5 @@
+"use strict";
+
 (function (windows) {
   function getCsrfToken(doc = document) {
     return getCsrfTokenElement(doc).getAttribute("content");
