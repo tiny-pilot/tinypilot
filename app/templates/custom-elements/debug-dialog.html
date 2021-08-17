@@ -82,6 +82,7 @@
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
+  import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#debug-dialog-template");
@@ -139,8 +140,7 @@
 
         getLogs() {
           this.state = "logs-loading";
-          controllers
-            .getDebugLogs()
+          getDebugLogs()
             .then((text) => {
               this.shadowRoot.querySelector(
                 "#logs-success .logs"
@@ -161,8 +161,7 @@
           this.state = "url-loading";
           const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
-          controllers
-            .textToShareableUrl(text)
+          textToShareableUrl(text)
             .then((url) => {
               const urlElement = this.shadowRoot.querySelector(
                 "#url-success .url"

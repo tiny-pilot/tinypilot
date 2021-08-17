@@ -111,6 +111,15 @@
   import { poll } from "/js/poll.js";
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
   import { UpdateLogsStreamer } from "/js/updatelogs.js";
+  import {
+    checkStatus,
+    getLatestRelease,
+    getUpdateStatus,
+    getVersion,
+    refreshCsrfToken,
+    shutdown,
+    update,
+  } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#update-dialog-template");
@@ -161,10 +170,7 @@
         checkVersion() {
           this._state = "checking";
 
-          Promise.all([
-            controllers.getVersion(),
-            controllers.getLatestRelease(),
-          ])
+          Promise.all([getVersion(), getLatestRelease()])
             .then((versions) => {
               const localVersion = versions[0];
               const latestRelease = versions[1];
@@ -187,7 +193,7 @@
 
         _waitForUpdateToFinish() {
           return poll({
-            fn: controllers.getUpdateStatus,
+            fn: getUpdateStatus,
             validate: (data) => data.status === "DONE" || data.updateError,
             interval: 2 * 1000,
             timeout: 300 * 1000,
@@ -199,8 +205,7 @@
         }
 
         _performRestart() {
-          return controllers
-            .shutdown(/*restart*/ true)
+          return shutdown(/*restart*/ true)
             .then(() => {
               this._state = "restarting";
             })
@@ -216,7 +221,7 @@
 
         _waitForReboot() {
           return poll({
-            fn: () => controllers.checkStatus(),
+            fn: () => checkStatus(),
             validate: (isUpAndRunning) => isUpAndRunning === true,
             interval: 3 * 1000,
             timeout: 180 * 1000,
@@ -242,7 +247,7 @@
           const maxAttempts = 3;
           for (let i = 1; i <= maxAttempts; i++) {
             try {
-              return await controllers.update();
+              return await update();
             } catch (error) {
               if (i === maxAttempts) {
                 throw error;
@@ -286,7 +291,7 @@
           try {
             await this._waitForUpdateToFinish();
             // Updating causes the backend to restart, changing the CSRF token.
-            await controllers.refreshCsrfToken();
+            await refreshCsrfToken();
             await this._performRestart();
             // Wait at least 10 seconds to ensure reboot has started before
             // checking whether the system is back up.

@@ -59,6 +59,7 @@
 
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { shutdown } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#shutdown-dialog-template");
@@ -102,8 +103,7 @@
         }
 
         _doShutdown(restart) {
-          controllers
-            .shutdown(restart)
+          shutdown(restart)
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {

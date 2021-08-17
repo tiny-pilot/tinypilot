@@ -79,6 +79,12 @@
 <script type="module">
   import { poll } from "/js/poll.js";
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    changeHostname,
+    checkStatus,
+    determineHostname,
+    shutdown,
+  } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#change-hostname-template");
@@ -180,8 +186,7 @@
         initialize() {
           this.inputError = null;
           this.state = "initializing";
-          controllers
-            .determineHostname()
+          determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
@@ -205,12 +210,9 @@
         }
 
         _doChangeHostname() {
-          controllers
-            .changeHostname(this.elements.hostnameInput.value)
+          changeHostname(this.elements.hostnameInput.value)
             .then((newHostname) => {
-              return controllers
-                .shutdown(/*restart=*/ true)
-                .then(() => newHostname);
+              return shutdown(/*restart=*/ true).then(() => newHostname);
             })
             .then((newHostname) => {
               return futureLocation(
@@ -255,7 +257,7 @@
           //   from everywhere (due to CORS), so it’s safe to request from
           //   the “old” location.
           return poll({
-            fn: () => controllers.checkStatus(futureLocation),
+            fn: () => checkStatus(futureLocation),
             validate: (isUpAndRunning) => isUpAndRunning === true,
             interval: 3 * 1000,
             timeout: 180 * 1000,
