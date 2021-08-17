@@ -77,6 +77,15 @@
 
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    getVideoFps,
+    setVideoFps,
+    getDefaultVideoFps,
+    getVideoJpegQuality,
+    setVideoJpegQuality,
+    getDefaultVideoJpegQuality,
+    applyVideoSettings,
+  } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#video-settings-template");
@@ -138,8 +147,7 @@
         }
 
         _getVideoFps() {
-          return controllers
-            .getVideoFps()
+          return getVideoFps()
             .then((videoFps) => {
               this.shadowRoot.querySelector(
                 "#video-fps-slider"
@@ -158,8 +166,7 @@
         }
 
         _getVideoJpegQuality() {
-          return controllers
-            .getVideoJpegQuality()
+          return getVideoJpegQuality()
             .then((videoJpegQuality) => {
               this.shadowRoot.querySelector(
                 "#video-jpeg-quality-slider"
@@ -195,8 +202,7 @@
         }
 
         _getDefaultVideoFps() {
-          return controllers
-            .getDefaultVideoFps()
+          return getDefaultVideoFps()
             .then((videoFps) => {
               this.defaultSettings.videoFps = videoFps;
             })
@@ -212,8 +218,7 @@
         }
 
         _getDefaultVideoJpegQuality() {
-          return controllers
-            .getDefaultVideoJpegQuality()
+          return getDefaultVideoJpegQuality()
             .then((videoJpegQuality) => {
               this.defaultSettings.videoJpegQuality = videoJpegQuality;
             })
@@ -252,7 +257,7 @@
         _saveVideoFps() {
           let videoFps = this.shadowRoot.querySelector("#video-fps-slider")
             .value;
-          return controllers.setVideoFps(videoFps).catch((error) => {
+          return setVideoFps(videoFps).catch((error) => {
             this.dispatchEvent(
               new DialogFailedEvent({
                 title: "Failed to Save Video FPS",
@@ -267,23 +272,21 @@
           let videoJpegQuality = this.shadowRoot.querySelector(
             "#video-jpeg-quality-slider"
           ).value;
-          return controllers
-            .setVideoJpegQuality(videoJpegQuality)
-            .catch((error) => {
-              this.dispatchEvent(
-                new DialogFailedEvent({
-                  title: "Failed to Save Video JPEG Quality",
-                  details: error,
-                })
-              );
-              return Promise.reject(error);
-            });
+          return setVideoJpegQuality(videoJpegQuality).catch((error) => {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Save Video JPEG Quality",
+                details: error,
+              })
+            );
+            return Promise.reject(error);
+          });
         }
 
         _saveSettings() {
           this.state = "saving";
           Promise.all([this._saveVideoFps(), this._saveVideoJpegQuality()])
-            .then(controllers.applyVideoSettings)
+            .then(applyVideoSettings)
             .then(() => {
               // Note: After the video stream stops, it doesn't try to
               // reconnect. So in order to restart the video stream, we need to
