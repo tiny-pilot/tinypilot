@@ -146,7 +146,7 @@
           videoJpegQualityDisplayElement.innerHTML = videoJpegQuality;
         }
 
-        _getVideoFps() {
+        _fetchVideoFps() {
           return getVideoFps()
             .then((videoFps) => {
               this.shadowRoot.querySelector(
@@ -165,7 +165,7 @@
             });
         }
 
-        _getVideoJpegQuality() {
+        _fetchVideoJpegQuality() {
           return getVideoJpegQuality()
             .then((videoJpegQuality) => {
               this.shadowRoot.querySelector(
@@ -187,10 +187,10 @@
         getSettings() {
           this.state = "loading";
           Promise.all([
-            this._getVideoFps(),
-            this._getVideoJpegQuality(),
-            this._getDefaultVideoFps(),
-            this._getDefaultVideoJpegQuality(),
+            this._fetchVideoFps(),
+            this._fetchVideoJpegQuality(),
+            this._fetchDefaultVideoFps(),
+            this._fetchDefaultVideoJpegQuality(),
           ])
             .then(() => {
               this.state = "edit";
@@ -201,7 +201,7 @@
             });
         }
 
-        _getDefaultVideoFps() {
+        _fetchDefaultVideoFps() {
           return getDefaultVideoFps()
             .then((videoFps) => {
               this.defaultSettings.videoFps = videoFps;
@@ -217,7 +217,7 @@
             });
         }
 
-        _getDefaultVideoJpegQuality() {
+        _fetchDefaultVideoJpegQuality() {
           return getDefaultVideoJpegQuality()
             .then((videoJpegQuality) => {
               this.defaultSettings.videoJpegQuality = videoJpegQuality;
