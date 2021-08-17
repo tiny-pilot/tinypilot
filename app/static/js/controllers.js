@@ -1,5 +1,3 @@
-"use strict";
-
 function getCsrfToken(doc = document) {
   return getCsrfTokenElement(doc).getAttribute("content");
 }
