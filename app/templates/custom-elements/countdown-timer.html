@@ -7,11 +7,9 @@
   <span id="timer"></span>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#countdown-timer-template");
+    const template = document.querySelector("#countdown-timer-template");
 
     customElements.define(
       "countdown-timer",

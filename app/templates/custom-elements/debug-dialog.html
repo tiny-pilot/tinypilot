@@ -79,11 +79,12 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { copyElementTextToClipboard } from "/js/clipboard.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#debug-dialog-template");
+    const template = document.querySelector("#debug-dialog-template");
     customElements.define(
       "debug-dialog",
       class DebugDialog extends HTMLElement {

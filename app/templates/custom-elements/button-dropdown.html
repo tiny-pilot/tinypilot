@@ -43,11 +43,9 @@
   </ul>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#dropdown-button-template");
+    const template = document.querySelector("#dropdown-button-template");
 
     customElements.define(
       "dropdown-button",
@@ -70,7 +68,10 @@
         }
 
         disconnectedCallback() {
-          doc.removeEventListener("click", this._handleCloseOnOutsideClick);
+          document.removeEventListener(
+            "click",
+            this._handleCloseOnOutsideClick
+          );
         }
 
         _toggleDropdown() {
@@ -89,12 +90,15 @@
           this.elements.dropdownItems.style.display = "block";
           // `addEventListener` will only register a function once, so it’s safe
           // to call this method multiple times.
-          doc.addEventListener("click", this._handleCloseOnOutsideClick);
+          document.addEventListener("click", this._handleCloseOnOutsideClick);
         }
 
         _closeDropdown() {
           this.elements.dropdownItems.style.display = "none";
-          doc.removeEventListener("click", this._handleCloseOnOutsideClick);
+          document.removeEventListener(
+            "click",
+            this._handleCloseOnOutsideClick
+          );
         }
 
         _handleCloseOnOutsideClick(evt) {

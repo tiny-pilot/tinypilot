@@ -34,11 +34,11 @@
   <button id="close">Close</button>
 </template>
 
-<script>
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#error-dialog-template");
+    const template = document.querySelector("#error-dialog-template");
 
     customElements.define(
       "error-dialog",

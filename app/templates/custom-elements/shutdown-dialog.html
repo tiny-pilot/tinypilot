@@ -57,11 +57,11 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#shutdown-dialog-template");
+    const template = document.querySelector("#shutdown-dialog-template");
 
     customElements.define(
       "shutdown-dialog",

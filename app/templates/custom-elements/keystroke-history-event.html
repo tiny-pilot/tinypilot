@@ -62,11 +62,11 @@
   <div id="keystroke"></div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#keystroke-history-event-template");
+    const template = document.querySelector(
+      "#keystroke-history-event-template"
+    );
 
     customElements.define(
       "keystroke-history-event",

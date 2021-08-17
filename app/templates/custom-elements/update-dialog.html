@@ -107,11 +107,13 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+  import { poll } from "/js/poll.js";
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { UpdateLogsStreamer } from "/js/updatelogs.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#update-dialog-template");
+    const template = document.querySelector("#update-dialog-template");
 
     customElements.define(
       "update-dialog",
