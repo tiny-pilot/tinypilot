@@ -1,3 +1,5 @@
+"use strict";
+
 import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 
 const modifierPropToKeyCodesMapping = {

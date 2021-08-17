@@ -1,3 +1,5 @@
+"use strict";
+
 //TODO: Fix these mappings.
 
 // Mappings of characters to codes that are shared among different keyboard
