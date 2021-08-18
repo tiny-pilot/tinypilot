@@ -21,12 +21,18 @@ function hidePasteOverlay() {
 
 function onPasteOverlayKeyDown(evt) {
   evt.stopPropagation();
-  // Return false on Ctrl or V because otherwise we capture the
+  // Return false on Ctrl/Meta or V because otherwise we capture the
   // event before the paste event can occur.
   if (
-    evt.code === "ControlLeft" ||
-    evt.code === "ControlRight" ||
-    evt.code === "KeyV"
+    [
+      "ControlLeft",
+      "ControlRight",
+      "MetaLeft", // Chrome on MacOS
+      "MetaRight", // Chrome on MacOS
+      "OSLeft", // Firefox on MacOS
+      "OSRight", // Firefox on MacOS
+      "KeyV",
+    ].includes(evt.code)
   ) {
     return false;
   }
