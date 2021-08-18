@@ -29,8 +29,7 @@ WorkingDirectory=/opt/tinypilot
 ExecStart=/opt/tinypilot/venv/bin/python app/main.py
 Environment=HOST=127.0.0.1
 Environment=PORT=8000
-Environment=KEYBOARD_PATH=/dev/hidg0
-Environment=MOUSE_PATH=/dev/hidg1
+Environment=APP_SETTINGS_FILE=/opt/tinypilot/app_settings.cfg
 Restart=always
 
 [Install]

@@ -93,8 +93,6 @@ TinyPilot accepts various options through environment variables:
 |----------------------|--------------|-------------|
 | `HOST`               | `127.0.0.1`  | Network interface to listen for incoming connections. |
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
-| `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
-| `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
 | `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
 
 ## Code style conventions

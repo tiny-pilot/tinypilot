@@ -1,6 +1,6 @@
 import logging
-import os
 
+import flask
 import flask_socketio
 
 import js_to_hid
@@ -12,13 +12,6 @@ from request_parsers import keystroke as keystroke_request
 from request_parsers import mouse_event as mouse_event_request
 
 logger = logging.getLogger(__name__)
-
-# TODO(mtlynch): Move these environment variables to a config file.
-
-# Location of file path at which to write keyboard HID input.
-keyboard_path = os.environ.get('KEYBOARD_PATH', '/dev/hidg0')
-# Location of file path at which to write mouse HID input.
-mouse_path = os.environ.get('MOUSE_PATH', '/dev/hidg1')
 
 socketio = flask_socketio.SocketIO()
 socketio.on_namespace(update_logs.Namespace('/updateLogs'))
@@ -42,6 +35,7 @@ def socket_keystroke(message):
         logger.info('Ignoring %s key (keycode=%s)', keystroke.key,
                     keystroke.code)
         return {'success': False}
+    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
@@ -58,6 +52,7 @@ def socket_mouse_event(message):
     except mouse_event_request.Error as e:
         logger.error('Failed to parse mouse event request: %s', e)
         return {'success': False}
+    mouse_path = flask.current_app.config.get('MOUSE_PATH')
     try:
         fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
                                     mouse_move_event.relative_x,
@@ -72,6 +67,7 @@ def socket_mouse_event(message):
 
 @socketio.on('keyRelease')
 def socket_key_release():
+    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.release_keys(keyboard_path)
     except hid_write.WriteError as e:
