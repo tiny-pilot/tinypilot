@@ -23,6 +23,31 @@ class ControllerError extends Error {
 }
 
 /**
+ * Adds retry functionality to the Fetch API.
+ * If the HTTP request fails due to a stale CSRF token, then refresh the CSRF
+ * token and retry the original request once more.
+ * @param {string} resource The path to the resource you want to fetch. See the
+ *                          Request object constructor for more information.
+ * @param {Object} [init] An options object containing any custom settings that
+ *                        you want to apply to the request. See the Request
+ *                        object constructor for more information.
+ * @returns {Promise}
+ */
+async function fetchWithRetry(resource, init) {
+  let response = await fetch(resource, init);
+  // Only retry a request when the original request has a CSRF token header.
+  // This is to avoid programmers from getting lazy and never including a CSRF
+  // token header in their requests.
+  let csrfTokenHeader = init?.headers?.["X-CSRFToken"] || null;
+  if (!csrfTokenHeader || response.status != 403) {
+    return response;
+  }
+  await refreshCsrfToken();
+  init.headers["X-CSRFToken"] = getCsrfToken();
+  return fetch(resource, init);
+}
+
+/**
  * Processes response from the backend API.
  * @param response An object as returned by `fetch`
  * @returns {Promise<Object>}
@@ -118,7 +143,7 @@ export async function shutdown(restart) {
   if (restart) {
     route = "/api/restart";
   }
-  return fetch(route, {
+  return fetchWithRetry(route, {
     method: "POST",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -148,7 +173,7 @@ export async function shutdown(restart) {
 
 export async function update() {
   let route = "/api/update";
-  return fetch(route, {
+  return fetchWithRetry(route, {
     method: "PUT",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -198,7 +223,7 @@ export async function determineHostname() {
 
 export async function changeHostname(newHostname) {
   const route = "/api/hostname";
-  return fetch(route, {
+  return fetchWithRetry(route, {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -277,7 +302,7 @@ export async function getVideoFps() {
 }
 
 export async function setVideoFps(videoFps) {
-  return fetch("/api/settings/video/fps", {
+  return fetchWithRetry("/api/settings/video/fps", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -323,7 +348,7 @@ export async function getVideoJpegQuality() {
 }
 
 export async function setVideoJpegQuality(videoJpegQuality) {
-  return fetch("/api/settings/video/jpeg_quality", {
+  return fetchWithRetry("/api/settings/video/jpeg_quality", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -353,7 +378,7 @@ export async function getDefaultVideoJpegQuality() {
 }
 
 export async function applyVideoSettings() {
-  return fetch("/api/settings/video/apply", {
+  return fetchWithRetry("/api/settings/video/apply", {
     method: "POST",
     mode: "same-origin",
     cache: "no-cache",
