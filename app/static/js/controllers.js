@@ -42,9 +42,34 @@ async function fetchWithRetry(resource, init) {
   if (!csrfTokenHeader || response.status != 403) {
     return response;
   }
-  await refreshCsrfToken();
+
+  if (getCsrfToken() !== "_REFRESH_IN_PROGRESS_") {
+    // Only obtain a fresh token if there is no refresh in progress currently.
+    await refreshCsrfToken();
+  } else {
+    // Otherwise we wait until the current refresh is done. Obtaining a fresh
+    // CSRF token is one round trip to the server that we have to wait out, so
+    // we delay the retry to give a bit of time for that to happen.
+    await delayWhile(() => getCsrfToken() === "_REFRESH_IN_PROGRESS_", 20)
+  }
+
   init.headers["X-CSRFToken"] = getCsrfToken();
   return fetch(resource, init);
+}
+
+/**
+ * Periodically checks a predicate and eventually resolves once the condition
+ * is false.
+ */
+async function delayWhile(predicate, intervalMs) {
+  return await new Promise(resolve => {
+    setTimeout(async () => {
+      if (predicate()) {
+        await delayWhile(predicate);
+      }
+      resolve();
+    }, intervalMs)
+  });
 }
 
 /**
@@ -89,6 +114,7 @@ async function processJsonResponse(response) {
 }
 
 export async function refreshCsrfToken() {
+  setCsrfToken("_REFRESH_IN_PROGRESS_"); // “Lock” token refresh
   return fetch("/")
     .then(function (response) {
       return response.text();
@@ -100,6 +126,7 @@ export async function refreshCsrfToken() {
       return Promise.resolve();
     })
     .catch(function (error) {
+      setCsrfToken(""); // Release “lock”
       return Promise.reject("Failed to refresh CSRF token: " + error);
     });
 }
