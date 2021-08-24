@@ -121,7 +121,8 @@ if [ "$HAS_PRO_INSTALLED" = 1 ]; then
   fi
 fi
 
-sudo apt-get update
+readonly DEBIAN_RELEASE="buster"
+sudo apt-get update --target-release "${DEBIAN_RELEASE}"
 sudo apt-get install -y \
   git \
   libffi-dev \
