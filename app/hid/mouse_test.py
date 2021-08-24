@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 
-from app.hid import mouse
+from hid import mouse
 
 
 class MouseTest(unittest.TestCase):
