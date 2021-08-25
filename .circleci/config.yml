@@ -37,17 +37,17 @@ jobs:
             pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
-  format_frontend:
+  build_javascript:
     docker:
-      - image: circleci/node:13.2.0-stretch
+      - image: circleci/node:14.17.5-stretch
     steps:
       - checkout
       - run:
-          name: Install prettier globally
-          command: npm install prettier@2.0.5
+          name: Install dependencies
+          command: npm install
       - run:
-          name: Check frontend formatting
-          command: ./dev-scripts/check-frontend-format
+          name: Run build script
+          command: ./dev-scripts/build-javascript
   e2e:
     machine:
       image: ubuntu-2004:202010-01
@@ -62,7 +62,7 @@ workflows:
       - check_whitespace
       - check_bash
       - build_python
-      - format_frontend
+      - build_javascript
       - e2e:
           filters:
             branches:

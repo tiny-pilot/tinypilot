@@ -9,7 +9,7 @@ The steps below show you how to quickly set up a development environment for Tin
 ### Requirements
 
 * Python 3.7 or higher
-* Node.js 13.x or higher
+* Node.js 14.17.5 or higher
 * [shellcheck](https://github.com/koalaman/shellcheck#installing)
 
 ### Install packages
@@ -21,7 +21,7 @@ python3.7 -m venv venv && \
   . venv/bin/activate && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
-  npm install prettier@2.0.5
+  npm install
 ```
 
 ### Run automated tests

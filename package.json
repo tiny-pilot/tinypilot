@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "mocha": "9.1.0",
+    "prettier": "2.0.5"
+  }
+}
