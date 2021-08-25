@@ -21,7 +21,7 @@ python3.7 -m venv venv && \
   . venv/bin/activate && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
-  npm install prettier@2.0.5
+  npm install
 ```
 
 ### Run automated tests

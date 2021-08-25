@@ -44,7 +44,7 @@ jobs:
       - checkout
       - run:
           name: Install prettier globally
-          command: npm install prettier@2.0.5
+          command: npm install
       - run:
           name: Check frontend formatting
           command: ./dev-scripts/check-frontend-format
