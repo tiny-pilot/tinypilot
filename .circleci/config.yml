@@ -39,7 +39,7 @@ jobs:
             ./dev-scripts/build-python
   build_javascript:
     docker:
-      - image: circleci/node:13.2.0-stretch
+      - image: circleci/node:14.17.5-stretch
     steps:
       - checkout
       - run:
