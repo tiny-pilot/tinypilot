@@ -20,15 +20,17 @@
   --brand-blue: hsl(var(--brand-hue-blue), 55%, 55%);
   --brand-blue-dark: hsl(var(--brand-hue-blue), 51%, 30%);
   --brand-blue-bright: hsl(var(--brand-hue-blue), 90%, 67%);
+  --brand-blue-light: hsl(var(--brand-hue-blue), 74%, 79%);
 
   --brand-red: hsl(var(--brand-hue-red), 57%, 44%);
   --brand-red-dark: hsl(var(--brand-hue-red), 72%, 29%);
-  --brand-red-light: hsl(var(--brand-hue-red), 54%, 95%);
+  --brand-red-light: hsl(var(--brand-hue-red), 64%, 77%);
   --brand-red-bright: hsl(var(--brand-hue-red), 85%, 46%);
+  --brand-red-background: hsl(var(--brand-hue-red), 54%, 95%);
 
   --brand-green: hsl(var(--brand-hue-green), 40%, 45%);
   --brand-green-dark: hsl(var(--brand-hue-green), 46%, 33%);
-  --brand-green-light: hsl(var(--brand-hue-green), 42%, 73%);
+  --brand-green-light: hsl(var(--brand-hue-green), 34%, 70%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
   --border-radius: 0.25rem;

@@ -38,6 +38,11 @@ button:active,
   transform: scale(0.99);
 }
 
+button:disabled,
+.btn:disabled {
+  cursor: not-allowed;
+}
+
 .btn-action {
   background-color: var(--brand-blue);
   border-color: var(--brand-blue-dark);
@@ -47,6 +52,10 @@ button:active,
 .btn-action:active,
 .btn-action:focus {
   background-color: var(--brand-blue-bright);
+}
+
+.btn-action:disabled {
+  background-color: var(--brand-blue-light);
 }
 
 .btn-success {
@@ -62,7 +71,6 @@ button:active,
 
 .btn-success:disabled {
   background-color: var(--brand-green-light);
-  cursor: not-allowed;
 }
 
 .btn-danger {
@@ -74,4 +82,8 @@ button:active,
 .btn-danger:active,
 .btn-danger:focus {
   background-color: var(--brand-red-bright);
+}
+
+.btn-danger:disabled {
+  background-color: var(--brand-red-light);
 }
