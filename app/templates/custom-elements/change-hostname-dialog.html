@@ -192,6 +192,7 @@
               this.elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
               this.state = "prompt";
+              this.elements.hostnameInput.focus();
             })
             .catch((error) => {
               this.dispatchEvent(
