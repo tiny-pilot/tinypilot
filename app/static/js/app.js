@@ -298,6 +298,15 @@ function setKeystrokeHistoryStatus(isEnabled) {
   document.getElementById("menu-bar").isInputIndicatorEnabled = isEnabled;
 }
 
+function sendCtrlAltDel() {
+    processKeystroke({
+        ctrlLeft: true,
+        altRight: true,
+        key: "Delete",
+        code: "Delete",
+      });
+}
+
 document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
@@ -343,6 +352,9 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
 });
 menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
+});
+menuBar.addEventListener("ctrl-alt-del-requested", () => {
+  sendCtrlAltDel();
 });
 setKeyboardVisibility(settings.isKeyboardVisible());
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
