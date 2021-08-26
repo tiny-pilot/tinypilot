@@ -299,12 +299,12 @@ function setKeystrokeHistoryStatus(isEnabled) {
 }
 
 function sendCtrlAltDel() {
-    processKeystroke({
-        ctrlLeft: true,
-        altRight: true,
-        key: "Delete",
-        code: "Delete",
-      });
+  processKeystroke({
+    ctrlLeft: true,
+    altRight: true,
+    key: "Delete",
+    code: "Delete",
+  });
 }
 
 document.onload = document.getElementById("app").focus();
