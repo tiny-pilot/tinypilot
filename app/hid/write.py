@@ -19,6 +19,9 @@ class ProcessResult:
     return_value: typing.Any = None
     exception: Exception = None
 
+    def was_successful(self) -> bool:
+        return self.exception is None
+
 
 class ProcessWithResult(multiprocessing.Process):
     """A multiprocessing.Process object that keeps track of the child process'
@@ -86,7 +89,7 @@ def write_to_hid_interface(hid_path, buffer):
         _wait_for_process_exit(write_process)
     result = write_process.result()
     # If the result is None, it means the write failed to complete in time.
-    if result is None or result.exception:
+    if result is None or not result.was_successful():
         raise WriteError(
             'Failed to write to HID interface: %s. Is USB cable connected?' %
             hid_path)
