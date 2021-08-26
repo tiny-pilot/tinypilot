@@ -1,5 +1,7 @@
+import dataclasses
 import logging
 import multiprocessing
+import typing
 
 logger = logging.getLogger(__name__)
 
@@ -10,6 +12,12 @@ class Error(Exception):
 
 class WriteError(Error):
     pass
+
+
+@dataclasses.dataclass
+class ProcessResult:
+    return_value: typing.Any = None
+    exception: Exception = None
 
 
 class ProcessWithResult(multiprocessing.Process):
@@ -28,13 +36,12 @@ class ProcessWithResult(multiprocessing.Process):
 
     def run(self):
         """Method to be run in sub-process."""
-        result = {'return_value': None, 'exception': None}
+        result = ProcessResult()
         try:
             if self._target:
-                result['return_value'] = self._target(*self._args,
-                                                      **self._kwargs)
+                result.return_value = self._target(*self._args, **self._kwargs)
         except Exception as e:
-            result['exception'] = e
+            result.exception = e
             raise
         finally:
             self.child_conn.send(result)
@@ -43,20 +50,8 @@ class ProcessWithResult(multiprocessing.Process):
         """Get the result from the child process.
 
         Returns:
-            If the child process has completed, a dictionay with the following
-            keys are returned:
-            return_value: Any object. If no object was returned, this will be
-                None.
-            exception: Exception object. If no exception was raised, then this
-                will be None.
-
-            Example:
-            {
-                'return_value': None,
-                'exception': WriteError('Failed to write to HID interface')
-            }
-
-            If the child process has not yet completed, returns None.
+            If the child process has completed, a ProcessResult object.
+            Otherwise, a None object.
         """
         return self.parent_conn.recv() if self.parent_conn.poll() else None
 
@@ -91,7 +86,7 @@ def write_to_hid_interface(hid_path, buffer):
         _wait_for_process_exit(write_process)
     result = write_process.result()
     # If the result is None, it means the write failed to complete in time.
-    if result is None or result['exception']:
+    if result is None or result.exception:
         raise WriteError(
             'Failed to write to HID interface: %s. Is USB cable connected?' %
             hid_path)

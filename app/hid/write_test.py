@@ -16,10 +16,9 @@ class WriteTest(unittest.TestCase):
         process = hid.write.ProcessWithResult(target=target, daemon=True)
         process.start()
         process.join()
-        self.assertEqual({
-            'return_value': None,
-            'exception': None
-        }, process.result())
+        self.assertEqual(
+            hid.write.ProcessResult(return_value=None, exception=None),
+            process.result())
 
     def test_process_with_result_child_not_completed(self):
 
@@ -28,8 +27,11 @@ class WriteTest(unittest.TestCase):
 
         process = hid.write.ProcessWithResult(target=target, daemon=True)
         process.start()
-        process.kill()
+        # Get the result before the child process has completed.
         self.assertIsNone(process.result())
+
+        # Clean up the running child process.
+        process.kill()
 
     def test_process_with_result_child_exception(self):
 
@@ -43,5 +45,19 @@ class WriteTest(unittest.TestCase):
             process.start()
             process.join()
         result = process.result()
-        self.assertEqual({'return_value': None, 'exception': mock.ANY}, result)
-        self.assertEqual('Child exception', str(result['exception']))
+        self.assertEqual(
+            hid.write.ProcessResult(return_value=None, exception=mock.ANY),
+            result)
+        self.assertEqual('Child exception', str(result.exception))
+
+    def test_process_with_result_return_value(self):
+
+        def target():
+            return 'Done!'
+
+        process = hid.write.ProcessWithResult(target=target, daemon=True)
+        process.start()
+        process.join()
+        self.assertEqual(
+            hid.write.ProcessResult(return_value='Done!', exception=None),
+            process.result())
