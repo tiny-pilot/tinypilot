@@ -344,6 +344,14 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
 menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
+menuBar.addEventListener("ctrl-alt-del-requested", () => {
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Delete",
+    code: "Delete",
+  });
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
