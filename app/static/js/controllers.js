@@ -1,14 +1,4 @@
-function getCsrfToken(doc = document) {
-  return getCsrfTokenElement(doc).getAttribute("content");
-}
-
-function getCsrfTokenElement(doc) {
-  return doc.querySelector("meta[name='csrf-token']");
-}
-
-function setCsrfToken(tokenValue) {
-  return getCsrfTokenElement(document).setAttribute("content", tokenValue);
-}
+import { fetchWithCsrfRetry, getCsrfToken } from "./csrf.js";
 
 class ControllerError extends Error {
   /**
@@ -20,31 +10,6 @@ class ControllerError extends Error {
     super(details);
     this.code = code;
   }
-}
-
-/**
- * Adds retry functionality to the Fetch API.
- * If the HTTP request fails due to a stale CSRF token, then refresh the CSRF
- * token and retry the original request once more.
- * @param {string} resource The path to the resource you want to fetch. See the
- *                          Request object constructor for more information.
- * @param {Object} [init] An options object containing any custom settings that
- *                        you want to apply to the request. See the Request
- *                        object constructor for more information.
- * @returns {Promise}
- */
-async function fetchWithRetry(resource, init) {
-  let response = await fetch(resource, init);
-  // Only retry a request when the original request has a CSRF token header.
-  // This is to avoid programmers from getting lazy and never including a CSRF
-  // token header in their requests.
-  let csrfTokenHeader = init?.headers?.["X-CSRFToken"] || null;
-  if (!csrfTokenHeader || response.status != 403) {
-    return response;
-  }
-  await refreshCsrfToken();
-  init.headers["X-CSRFToken"] = getCsrfToken();
-  return fetch(resource, init);
 }
 
 /**
@@ -88,22 +53,6 @@ async function processJsonResponse(response) {
   );
 }
 
-export async function refreshCsrfToken() {
-  return fetch("/")
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (html) {
-      const doc = new DOMParser().parseFromString(html, "text/html");
-      const csrfToken = getCsrfToken(doc);
-      setCsrfToken(csrfToken);
-      return Promise.resolve();
-    })
-    .catch(function (error) {
-      return Promise.reject("Failed to refresh CSRF token: " + error);
-    });
-}
-
 export async function getLatestRelease() {
   let route = "/api/latestRelease";
   return fetch(route, {
@@ -143,7 +92,7 @@ export async function shutdown(restart) {
   if (restart) {
     route = "/api/restart";
   }
-  return fetchWithRetry(route, {
+  return fetchWithCsrfRetry(route, {
     method: "POST",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -173,7 +122,7 @@ export async function shutdown(restart) {
 
 export async function update() {
   let route = "/api/update";
-  return fetchWithRetry(route, {
+  return fetchWithCsrfRetry(route, {
     method: "PUT",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -223,7 +172,7 @@ export async function determineHostname() {
 
 export async function changeHostname(newHostname) {
   const route = "/api/hostname";
-  return fetchWithRetry(route, {
+  return fetchWithCsrfRetry(route, {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -302,7 +251,7 @@ export async function getVideoFps() {
 }
 
 export async function setVideoFps(videoFps) {
-  return fetchWithRetry("/api/settings/video/fps", {
+  return fetchWithCsrfRetry("/api/settings/video/fps", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -348,7 +297,7 @@ export async function getVideoJpegQuality() {
 }
 
 export async function setVideoJpegQuality(videoJpegQuality) {
-  return fetchWithRetry("/api/settings/video/jpeg_quality", {
+  return fetchWithCsrfRetry("/api/settings/video/jpeg_quality", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -378,7 +327,7 @@ export async function getDefaultVideoJpegQuality() {
 }
 
 export async function applyVideoSettings() {
-  return fetchWithRetry("/api/settings/video/apply", {
+  return fetchWithCsrfRetry("/api/settings/video/apply", {
     method: "POST",
     mode: "same-origin",
     cache: "no-cache",
