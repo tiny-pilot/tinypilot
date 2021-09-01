@@ -39,9 +39,24 @@
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-background);
     }
+
+    #close-dialog {
+      position: relative;
+      float: right;
+      margin-top: -2rem;
+      margin-right: -1rem;
+      opacity: 0.3;
+      font-size: 2rem;
+      color: black;
+    }
+
+    #close-dialog:hover {
+      opacity: 1;
+    }
   </style>
 
   <div id="panel">
+    <a href="#" id="close-dialog">×</a>
     <slot></slot>
   </div>
 </template>
@@ -58,6 +73,9 @@
             template.content.cloneNode(true)
           );
           this.show = this.show.bind(this);
+          this.elements = {
+            closeDialog: this.shadowRoot.getElementById("close-dialog"),
+          };
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
@@ -65,6 +83,9 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
+          this.elements.closeDialog.addEventListener("click", () => {
+            this.show(false);
+          });
         }
 
         show(isShown = true) {
