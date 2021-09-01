@@ -101,3 +101,31 @@ class ConvertJsToHIDTest(unittest.TestCase):
         self.assertEqual(hid.MODIFIER_LEFT_CTRL | hid.MODIFIER_LEFT_SHIFT,
                          modifier_bitmask)
         self.assertEqual(hid.KEYCODE_LEFT_CTRL, hid_keycode)
+
+    def test_raises_exception_on_unrecognized_code(self):
+        with self.assertRaises(js_to_hid.UnrecognizedKeyCodeError):
+            js_to_hid.convert(
+                keystroke.Keystroke(left_meta_modifier=False,
+                                    right_meta_modifier=False,
+                                    left_alt_modifier=False,
+                                    right_alt_modifier=False,
+                                    left_shift_modifier=False,
+                                    right_shift_modifier=False,
+                                    left_ctrl_modifier=False,
+                                    right_ctrl_modifier=False,
+                                    key='a',
+                                    code='MadeUpInvalidCode'))
+
+    def test_raises_exception_on_blank_code(self):
+        with self.assertRaises(js_to_hid.UnrecognizedKeyCodeError):
+            js_to_hid.convert(
+                keystroke.Keystroke(left_meta_modifier=False,
+                                    right_meta_modifier=False,
+                                    left_alt_modifier=False,
+                                    right_alt_modifier=False,
+                                    left_shift_modifier=False,
+                                    right_shift_modifier=False,
+                                    left_ctrl_modifier=False,
+                                    right_ctrl_modifier=False,
+                                    key='a',
+                                    code=''))
