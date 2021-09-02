@@ -9,7 +9,7 @@ The steps below show you how to quickly set up a development environment for Tin
 ### Requirements
 
 * Python 3.7 or higher
-* Node.js 13.x or higher
+* Node.js 14.17.5 or higher
 * [shellcheck](https://github.com/koalaman/shellcheck#installing)
 
 ### Install packages
@@ -21,7 +21,7 @@ python3.7 -m venv venv && \
   . venv/bin/activate && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
-  npm install prettier@2.0.5
+  npm install
 ```
 
 ### Run automated tests
@@ -42,7 +42,7 @@ If you're planning to contribute code to TinyPilot, it's a good idea to enable t
 
 ### Enable mock scripts
 
-The TinyPilot server backend uses several privileged scripts (created in [ansible-role-tinypilot](https://github.com/mtlynch/ansible-role-tinypilot)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
+The TinyPilot server backend uses several privileged scripts (created in [ansible-role-tinypilot](https://github.com/tiny-pilot/ansible-role-tinypilot)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
 
 To set up symlinks that mock out those scripts and facilitate development, run the following command:
 
@@ -58,6 +58,29 @@ To run TinyPilot on a non-Pi machine, run:
 ./dev-scripts/serve-dev
 ```
 
+## Setting up a device for QA/testing
+
+For more complex changes it is useful to test your feature branch on a Raspberry Pi, in order to verify them in the real production environment.
+
+### Setup SSH keys for login
+
+1. [Generate SSH keys and upload your public key](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) to your device. Please use strong keys, e.g., ED25519 or RSA 4096+.
+2. Verify that you can login with your SSH keys.
+3. On the device, disable password-based login by specifying `PasswordAuthentication no` in `/etc/ssh/sshd_config`. Reboot afterwards.
+
+### SSH agent forwarding
+
+In case you need SSH keys for accessing the Git repositories (e.g., for testing TinyPilot's Pro version), please enable SSH agent forwarding in your local `~/.ssh/config`.
+
+```
+Host tinypilot
+  ForwardAgent yes
+```
+
+### Remote scripts
+
+For carrying out common procedures on the device, see [here](dev-scripts/remote-scripts/README.md).
+
 ## Architecture
 
 For a high-level view of TinyPilot's architecture, see the [ARCHITECTURE](ARCHITECTURE.md) file.
@@ -70,8 +93,6 @@ TinyPilot accepts various options through environment variables:
 |----------------------|--------------|-------------|
 | `HOST`               | `127.0.0.1`  | Network interface to listen for incoming connections. |
 | `PORT`               | `8000`       | HTTP port to listen for incoming connections. |
-| `KEYBOARD_PATH`      | `/dev/hidg0` | Path to keyboard HID interface. |
-| `MOUSE_PATH`         | `/dev/hidg1` | Path to mouse HID interface. |
 | `DEBUG`              | undefined    | Set to `1` to enable debug logging. |
 
 ## Code style conventions
@@ -88,7 +109,7 @@ TinyPilot uses automated linters and formatters as much as possible to automate 
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
-* If you're making a large change (over 100 LOC or three hours of dev time), [file an issue](https://github.com/mtlynch/tinypilot/issues/new/choose) first to talk through the proposed change. This prevents you from wasting time on a change that has a low chance of being accepted.
+* If you're making a large change (over 100 LOC or three hours of dev time), [file an issue](https://github.com/tiny-pilot/tinypilot/issues/new/choose) first to talk through the proposed change. This prevents you from wasting time on a change that has a low chance of being accepted.
 
 ## How to get your PR merged quickly
 

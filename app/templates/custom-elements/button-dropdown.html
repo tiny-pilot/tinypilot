@@ -1,0 +1,120 @@
+<template id="dropdown-button-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      --offset-top: 1rem;
+      --offset-right: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    #dropdown-items {
+      display: none;
+      position: absolute;
+      min-width: 8em;
+      right: var(--offset-right);
+      padding: 0;
+      margin: calc(-1 * var(--offset-top)) 0 0 0;
+      z-index: var(--z-index-overlay);
+      background-color: var(--brand-metallic-light);
+      box-shadow: 0 0.2em 0.3rem rgba(0, 0, 0, 0.3);
+      text-align: right;
+      border-radius: var(--border-radius);
+    }
+
+    slot[name="item"]::slotted(li) {
+      display: block;
+      position: relative;
+      list-style: none;
+      padding: 0.3em 0.6em;
+      color: white;
+      cursor: pointer;
+    }
+
+    slot[name="item"]::slotted(li:hover) {
+      background-color: var(--brand-metallic-bright);
+    }
+  </style>
+
+  <slot name="button" id="dropdown-button"></slot>
+  <ul id="dropdown-items">
+    <slot name="item"></slot>
+  </ul>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector("#dropdown-button-template");
+
+    customElements.define(
+      "dropdown-button",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this._handleCloseOnOutsideClick = this._handleCloseOnOutsideClick.bind(
+            this
+          );
+
+          this.elements = {
+            dropdownButton: this.shadowRoot.getElementById("dropdown-button"),
+            dropdownItems: this.shadowRoot.getElementById("dropdown-items"),
+          };
+          this.elements.dropdownButton.addEventListener("click", () =>
+            this._toggleDropdown()
+          );
+        }
+
+        disconnectedCallback() {
+          document.removeEventListener(
+            "click",
+            this._handleCloseOnOutsideClick
+          );
+        }
+
+        _toggleDropdown() {
+          if (this._isDropdownShowing()) {
+            this._closeDropdown();
+          } else {
+            this._showDropdown();
+          }
+        }
+
+        _isDropdownShowing() {
+          return this.elements.dropdownItems.style.display === "block";
+        }
+
+        _showDropdown() {
+          this.elements.dropdownItems.style.display = "block";
+          // `addEventListener` will only register a function once, so it’s safe
+          // to call this method multiple times.
+          document.addEventListener("click", this._handleCloseOnOutsideClick);
+        }
+
+        _closeDropdown() {
+          this.elements.dropdownItems.style.display = "none";
+          document.removeEventListener(
+            "click",
+            this._handleCloseOnOutsideClick
+          );
+        }
+
+        _handleCloseOnOutsideClick(evt) {
+          const target = evt.composedPath()[0];
+          // Skip if the user has clicked on the main button of this component.
+          // In this case, the event handler of the button will already handle
+          // the click event.
+          if (
+            this.contains(target) &&
+            (target.slot === "button" || target.parentElement.slot === "button")
+          ) {
+            return;
+          }
+          this._closeDropdown();
+        }
+      }
+    );
+  })();
+</script>

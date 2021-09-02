@@ -57,12 +57,12 @@
   </div>
 </template>
 
-<script src="/js/controllers.js"></script>
-<script>
+<script type="module">
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { shutdown } from "/js/controllers.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#shutdown-dialog-template");
+    const template = document.querySelector("#shutdown-dialog-template");
 
     customElements.define(
       "shutdown-dialog",
@@ -72,8 +72,9 @@
         }
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.state = "prompt";
 
           this.shadowRoot
@@ -89,7 +90,7 @@
           this.shadowRoot
             .getElementById("cancel-shutdown")
             .addEventListener("click", () => {
-              this._close();
+              this.dispatchEvent(new DialogClosedEvent());
             });
         }
 
@@ -102,8 +103,7 @@
         }
 
         _doShutdown(restart) {
-          controllers
-            .shutdown(restart)
+          shutdown(restart)
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {
@@ -119,15 +119,19 @@
             })
             .catch((error) => {
               if (restart) {
-                this._handleShutdownFailure({
-                  title: "Failed to Restart TinyPilot Device",
-                  details: error,
-                });
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Failed to Restart TinyPilot Device",
+                    details: error,
+                  })
+                );
               } else {
-                this._handleShutdownFailure({
-                  title: "Failed to Shut Down TinyPilot Device",
-                  details: error,
-                });
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Failed to Shut Down TinyPilot Device",
+                    details: error,
+                  })
+                );
               }
             });
         }
@@ -136,26 +140,6 @@
           this.dispatchEvent(
             new CustomEvent("shutdown-started", {
               detail: { restart },
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _handleShutdownFailure(errorInfo) {
-          this._close();
-          this.dispatchEvent(
-            new CustomEvent("shutdown-failure", {
-              detail: errorInfo,
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-
-        _close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
               bubbles: true,
               composed: true,
             })

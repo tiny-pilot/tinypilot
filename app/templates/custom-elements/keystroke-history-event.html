@@ -62,11 +62,11 @@
   <div id="keystroke"></div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#keystroke-history-event-template");
+    const template = document.querySelector(
+      "#keystroke-history-event-template"
+    );
 
     customElements.define(
       "keystroke-history-event",
@@ -75,8 +75,9 @@
         STATUSES = ["pending", "succeeded", "failed"];
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.keystroke = this.shadowRoot.getElementById("keystroke");
           this.status = "pending";
         }

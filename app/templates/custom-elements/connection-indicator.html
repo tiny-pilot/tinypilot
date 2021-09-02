@@ -64,18 +64,17 @@
   </div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#connection-indicator-template");
+    const template = document.querySelector("#connection-indicator-template");
 
     customElements.define(
       "connection-indicator",
       class extends HTMLElement {
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
         }
 
         get connected() {

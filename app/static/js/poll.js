@@ -8,7 +8,7 @@
  * @param {number} [timeout] Time in milliseconds after which to abort.
  * @returns {Promise<T>}
  */
-async function poll({ fn, validate, interval, timeout }) {
+export async function poll({ fn, validate, interval, timeout }) {
   const start = new Date().getTime();
   let lastError = null;
 

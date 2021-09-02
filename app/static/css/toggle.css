@@ -1,0 +1,48 @@
+.toggle {
+  --height: 1.7em;
+  --spacing: 4px;
+  position: relative;
+  display: inline-block;
+  width: calc(2 * var(--height));
+  height: calc(var(--height) + var(--spacing));
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: calc(var(--height) + var(--spacing));
+  transition: 0.5s;
+  box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: calc(var(--height) - var(--spacing));
+  width: calc(var(--height) - var(--spacing));
+  left: var(--spacing);
+  bottom: var(--spacing);
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.5s;
+  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--brand-blue);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(calc(var(--height) - var(--spacing)));
+}

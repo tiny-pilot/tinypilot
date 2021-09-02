@@ -72,11 +72,9 @@
   ></script>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#remote-screen-template");
+    const template = document.querySelector("#remote-screen-template");
 
     // Different browsers produce wildly different values for wheel scroll
     // delta, so just reduce it to -1, 0, or 1.
@@ -113,8 +111,9 @@
 
         connectedCallback() {
           super.connectedCallback && super.connectedCallback();
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
 
           this.shadowRoot
             .getElementById("underscore-library")

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Location of app source files.
+SOURCE_DIR="app"
+
+# Check code style with the Prettier libary.
+if ! ./node_modules/.bin/prettier --check "${SOURCE_DIR}" ; then
+  echo "Try running ./dev-scripts/fix-frontend-format to fix formatting" >&2
+  exit 1
+fi
+
+# Run unit tests.
+./node_modules/.bin/mocha \
+  --recursive \
+  "${SOURCE_DIR}/**/*.test.js"

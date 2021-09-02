@@ -201,6 +201,14 @@
         <li class="item">
           <a id="screenshot-btn" href="/snapshot">Screenshot</a>
         </li>
+        <li class="item subgroup">
+          <a>Keyboard Shortcuts</a>
+          <ul class="items">
+            <li class="item">
+              <a id="ctrl-alt-del-btn">Ctrl + Alt + Del</a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </li>
 
@@ -228,24 +236,23 @@
 
   <div class="spacer"></div>
   <div class="header-item nav-icon">
-    <a href="https://github.com/mtlynch/tinypilot" target="_blank">
+    <a href="https://github.com/tiny-pilot/tinypilot" target="_blank">
       <img src="/img/GitHub-Mark-Light-120px-plus.png" />
     </a>
   </div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#menu-bar-template");
+    const template = document.querySelector("#menu-bar-template");
 
     customElements.define(
       "menu-bar",
       class extends HTMLElement {
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
 
           // All “simple”/standard menu items, that just emit a custom
           // event without any further ado.
@@ -259,6 +266,7 @@
             "change-hostname-btn": "change-hostname-dialog-requested",
             "debug-dialog-btn": "debug-logs-dialog-requested",
             "video-settings-btn": "video-settings-dialog-requested",
+            "ctrl-alt-del-btn": "ctrl-alt-del-requested",
           };
           for (const [buttonId, eventId] of Object.entries(
             menuButtonIdToEventId

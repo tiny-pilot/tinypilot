@@ -13,6 +13,7 @@
       font-size: 0.8em;
       white-space: pre-wrap;
       overflow-wrap: break-word;
+      border-radius: var(--border-radius);
     }
 
     .details-label {
@@ -33,11 +34,11 @@
   <button id="close">Close</button>
 </template>
 
-<script>
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#error-dialog-template");
+    const template = document.querySelector("#error-dialog-template");
 
     customElements.define(
       "error-dialog",
@@ -45,22 +46,18 @@
         DEFAULT_MESSAGE = "Please refresh the page and try again.";
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.close = this.close.bind(this);
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
           this.shadowRoot
             .getElementById("close")
-            .addEventListener("click", this.close);
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
         }
 
         /**
-         * @param title   A concise summary of the error.
-         * @param message (string, optional) A user-friendly and helpful message
-         *                that ideally gives the user some guidance what to do
-         *                now. Defaults to a generic `DEFAULT_MESSAGE`.
-         * @param details (string|Error, optional) The technical error details,
-         *                e.g. the original error message from the API or
-         *                library call.
+         * @see `DialogFailedEvent` for description of parameters.
          */
         setup({ title, message = this.DEFAULT_MESSAGE, details = "" }) {
           this.shadowRoot.getElementById("title").innerText = title;
@@ -69,15 +66,6 @@
           this.shadowRoot.getElementById(
             "details-container"
           ).style.display = details ? "block" : "none";
-        }
-
-        close() {
-          this.dispatchEvent(
-            new CustomEvent("dialog-closed", {
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
       }
     );

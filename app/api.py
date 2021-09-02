@@ -49,12 +49,22 @@ def shutdown_post():
 def restart_post():
     """Triggers restart of the system.
 
+    For backwards compatibility, we must include the now deprecated `success`
+    and `error` properties in the response. This is needed for when TinyPilot
+    updates from a version before our migration to using conventional HTTP
+    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
+
     Returns:
-        Empty response on success, error object otherwise.
+        No additional properties on success.
+
+        success: true for backwards compatibility.
+        error: null for backwards compatibility.
+
+        Returns error object otherwise.
     """
     try:
         local_system.restart()
-        return json_response.success()
+        return json_response.success({'success': True, 'error': None})
     except local_system.Error as e:
         return json_response.error(e), 500
 
@@ -63,23 +73,36 @@ def restart_post():
 def update_get():
     """Fetches the state of the latest update job.
 
+    For backwards compatibility, we must include the now deprecated `success`
+    and `error` properties in the response. This is needed for when TinyPilot
+    updates from a version before our migration to using conventional HTTP
+    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
+
     Returns:
         On success, a JSON data structure with the following properties:
         status: str describing the status of the job. Can be one of
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
+        updateError: str of the error that occured while updating. If no error
+                     occured, then this will be null.
+        success: true for backwards compatibility.
+        error: null for backwards compatibility.
 
         Example:
         {
-            "status": "NOT_RUNNING"
+            "status": "NOT_RUNNING",
+            "updateError": null,
+            "success": true,
+            "error": null
         }
-
-        Returns error object on failure.
     """
 
     status, error = update.status.get()
-    if error:
-        return json_response.error(error), 500
-    return json_response.success({'status': str(status)})
+    return json_response.success({
+        'status': str(status),
+        'updateError': error,
+        'success': True,
+        'error': None
+    })
 
 
 @api_blueprint.route('/update', methods=['PUT'])
@@ -196,10 +219,18 @@ def status_get():
     This endpoint may be called from all locations, so there is no restriction
     in regards to CORS.
 
+    For backwards compatibility, we must include the now deprecated `success`
+    and `error` properties in the response. This is needed for when TinyPilot
+    updates from a version before our migration to using conventional HTTP
+    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
+
     Returns:
-        Empty response, which implies the server is up and running.
+        No additional properties implies the server is up and running.
+
+        success: true for backwards compatibility.
+        error: null for backwards compatibility.
     """
-    response = json_response.success()
+    response = json_response.success({'success': True, 'error': None})
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
@@ -260,6 +291,22 @@ def settings_video_fps_put():
     return json_response.success()
 
 
+@api_blueprint.route('/settings/video/fps/default', methods=['GET'])
+def settings_video_fps_default_get():
+    """Retrieves the default video FPS setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoFps: int.
+
+        Example of success:
+        {
+            "videoFps": 30
+        }
+    """
+    return json_response.success({'videoFps': video_settings.DEFAULT_FPS})
+
+
 @api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
 def settings_video_jpeg_quality_get():
     """Retrieves the current video JPEG quality setting.
@@ -315,6 +362,23 @@ def settings_video_jpeg_quality_put():
     except update.settings.SaveSettingsError as e:
         return json_response.error(e), 500
     return json_response.success()
+
+
+@api_blueprint.route('/settings/video/jpeg_quality/default', methods=['GET'])
+def settings_video_jpeg_quality_default_get():
+    """Retrieves the default video JPEG quality setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoJpegQuality: int.
+
+        Example:
+        {
+            "videoJpegQuality": 80
+        }
+    """
+    return json_response.success(
+        {'videoJpegQuality': video_settings.DEFAULT_JPEG_QUALITY})
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])

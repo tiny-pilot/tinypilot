@@ -1,5 +1,3 @@
-"use strict";
-
 //TODO: Fix these mappings.
 
 // Mappings of characters to codes that are shared among different keyboard
@@ -71,12 +69,24 @@ const commonKeyCodes = {
   "'": "Quote",
 };
 
+/**
+ * @param keystroke https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ */
 export function keystrokeToCanonicalCode(keystroke) {
   // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
   // Alt key has a blank code.
   if (keystroke.key === "Alt" && keystroke.code === "") {
     return "AltRight";
   }
+
+  // Firefox calls it `OS...` instead of `Meta...`.
+  if (keystroke.code === "OSLeft") {
+    return "MetaLeft";
+  }
+  if (keystroke.code === "OSRight") {
+    return "MetaRight";
+  }
+
   return keystroke.code;
 }
 

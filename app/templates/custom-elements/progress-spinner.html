@@ -33,11 +33,9 @@
   <div class="spinner"></div>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#progress-spinner-template");
+    const template = document.querySelector("#progress-spinner-template");
 
     customElements.define(
       "progress-spinner",
@@ -47,8 +45,9 @@
         }
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
         }
       }
     );

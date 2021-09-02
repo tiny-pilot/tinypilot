@@ -7,7 +7,7 @@ pyyaml==5.4.1
 # Indirect dependencies
 bidict==0.21.2
 click==7.1.2
-dnspython==2.1.0
+dnspython==1.16.0
 greenlet==1.0.0
 itsdangerous==1.1.0
 Jinja2==2.11.3

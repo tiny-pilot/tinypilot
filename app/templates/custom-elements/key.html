@@ -82,11 +82,9 @@
   </button>
 </template>
 
-<script>
+<script type="module">
   (function () {
-    const doc = (document._currentScript || document.currentScript)
-      .ownerDocument;
-    const template = doc.querySelector("#key-template");
+    const template = document.querySelector("#key-template");
 
     customElements.define(
       "keyboard-key",
@@ -127,8 +125,9 @@
         }
 
         connectedCallback() {
-          this.attachShadow({ mode: "open" });
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
         }
 
         get code() {

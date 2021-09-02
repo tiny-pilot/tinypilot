@@ -1,11 +1,10 @@
-"use strict";
-
 import {
   isModifierCode,
   findKeyCode,
   keystrokeToCanonicalCode,
   requiresShiftKey,
 } from "./keycodes.js";
+import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
@@ -13,8 +12,7 @@ import { OverlayTracker } from "./overlays.js";
 const socket = io();
 let connectedToServer = false;
 
-// A map of keycodes to booleans indicating whether the key is currently pressed.
-let keyState = {};
+const keyboardState = new KeyboardState();
 
 // Keep track of overlays, in order to properly deactivate keypress forwarding.
 const overlayTracker = new OverlayTracker();
@@ -32,7 +30,7 @@ function isElementShown(id) {
 }
 
 /**
- * @see the `setup` method in error-dialog.html for the `errorInfo` param
+ * @see `DialogFailedEvent` for parameter `errorInfo`
  */
 function showError(errorInfo) {
   console.error(`${errorInfo.title}:\n${errorInfo.details}`);
@@ -40,16 +38,12 @@ function showError(errorInfo) {
   document.getElementById("error-overlay").show();
 }
 
-function isKeyPressed(code) {
-  return code in keyState && keyState[code];
-}
-
 function isIgnoredKeystroke(code) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
   // already pressed. Otherwise, something like holding down the Shift key
   // is sent as multiple Shift key presses, which has special meaning on
   // certain OSes.
-  return isModifierCode(code) && isKeyPressed(code);
+  return isModifierCode(code) && keyboardState.isKeyPressed(code);
 }
 
 function recalculateMouseEventThrottle(
@@ -125,18 +119,21 @@ function onSocketDisconnect(reason) {
   document.getElementById("app").focus();
 }
 
+/**
+ * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ */
 function onKeyDown(evt) {
   if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
     return;
   }
 
-  const code = keystrokeToCanonicalCode(evt);
+  const canonicalCode = keystrokeToCanonicalCode(evt);
 
-  if (isIgnoredKeystroke(code)) {
+  if (isIgnoredKeystroke(canonicalCode)) {
     return;
   }
 
-  keyState[code] = true;
+  keyboardState.onKeyDown(evt);
 
   if (!connectedToServer) {
     return;
@@ -148,15 +145,32 @@ function onKeyDown(evt) {
   const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 
   processKeystroke({
-    metaKey: evt.metaKey || onScreenKeyboard.isMetaKeyPressed,
-    altKey: evt.altKey || onScreenKeyboard.isLeftAltKeyPressed,
-    shiftKey: evt.shiftKey || onScreenKeyboard.isShiftKeyPressed,
-    ctrlKey: evt.ctrlKey || onScreenKeyboard.isCtrlKeyPressed,
-    altGraphKey:
-      isKeyPressed("AltRight") || onScreenKeyboard.isRightAltKeyPressed,
-    sysrqKey: onScreenKeyboard.isSysrqKeyPressed,
+    metaLeft:
+      keyboardState.isKeyPressed("MetaLeft") ||
+      onScreenKeyboard.isModifierKeyPressed("MetaLeft"),
+    metaRight:
+      keyboardState.isKeyPressed("MetaRight") ||
+      onScreenKeyboard.isModifierKeyPressed("MetaRight"),
+    altLeft:
+      keyboardState.isKeyPressed("AltLeft") ||
+      onScreenKeyboard.isModifierKeyPressed("AltLeft"),
+    altRight:
+      keyboardState.isKeyPressed("AltRight") ||
+      onScreenKeyboard.isModifierKeyPressed("AltRight"),
+    shiftLeft:
+      keyboardState.isKeyPressed("ShiftLeft") ||
+      onScreenKeyboard.isModifierKeyPressed("ShiftLeft"),
+    shiftRight:
+      keyboardState.isKeyPressed("ShiftRight") ||
+      onScreenKeyboard.isModifierKeyPressed("ShiftRight"),
+    ctrlLeft:
+      keyboardState.isKeyPressed("ControlLeft") ||
+      onScreenKeyboard.isModifierKeyPressed("ControlLeft"),
+    ctrlRight:
+      keyboardState.isKeyPressed("ControlRight") ||
+      onScreenKeyboard.isModifierKeyPressed("ControlRight"),
     key: evt.key,
-    code: code,
+    code: canonicalCode,
   });
 }
 
@@ -193,16 +207,22 @@ function sendMouseEvent(
   );
 }
 
+/**
+ * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ */
 function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {
     return;
   }
-  const code = keystrokeToCanonicalCode(evt);
-  keyState[code] = false;
+
+  const canonicalCode = keystrokeToCanonicalCode(evt);
+  keyboardState.onKeyUp(evt);
+
   if (!connectedToServer) {
     return;
   }
-  if (isModifierCode(code)) {
+
+  if (isModifierCode(canonicalCode)) {
     socket.emit("keyRelease");
   }
 }
@@ -224,12 +244,14 @@ function processTextCharacter(textCharacter, language) {
   }
 
   processKeystroke({
-    metaKey: false,
-    altKey: false,
-    shiftKey: requiresShiftKey(textCharacter),
-    ctrlKey: false,
-    altGraphKey: false,
-    sysrqKey: false,
+    metaLeft: false,
+    metaRight: false,
+    altLeft: false,
+    altRight: false,
+    shiftLeft: requiresShiftKey(textCharacter),
+    shiftRight: false,
+    ctrlLeft: false,
+    ctrlRight: false,
     key: friendlyName,
     code: code,
   });
@@ -322,6 +344,14 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
 menuBar.addEventListener("paste-requested", () => {
   showPasteOverlay();
 });
+menuBar.addEventListener("ctrl-alt-del-requested", () => {
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Delete",
+    code: "Delete",
+  });
+});
 setKeyboardVisibility(settings.isKeyboardVisible());
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
@@ -337,17 +367,8 @@ document
     );
   });
 
-const errorEvents = [
-  "update-failure",
-  "change-hostname-failure",
-  "shutdown-failure",
-  "video-settings-failure",
-  "debug-logs-failure",
-];
-errorEvents.forEach((name) => {
-  document.addEventListener(name, (evt) => {
-    showError(evt.detail);
-  });
+document.addEventListener("dialog-failed", (evt) => {
+  showError(evt.detail);
 });
 
 document

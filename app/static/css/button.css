@@ -3,11 +3,9 @@
 button,
 .btn {
   display: inline-block;
-  border: none;
-  padding: 1rem 2rem;
+  padding: 0.4rem 1.25rem;
   margin: 1rem;
   text-decoration: none;
-  background: var(--brand-metallic-light);
   color: #ffffff;
   font-size: 1rem;
   font-family: inherit;
@@ -16,6 +14,10 @@ button,
   transition: background 250ms ease-in-out, transform 150ms ease;
   -webkit-appearance: none;
   -moz-appearance: none;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--brand-metallic-medium);
+  background: var(--brand-metallic-light)
+    linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 60%);
 }
 
 button:hover,
@@ -36,23 +38,52 @@ button:active,
   transform: scale(0.99);
 }
 
-.btn-success {
-  background-color: var(--brand-green);
+button:disabled,
+.btn:disabled {
+  cursor: not-allowed;
 }
 
-.btn-success:hover {
+.btn-action {
+  background-color: var(--brand-blue);
+  border-color: var(--brand-blue-dark);
+}
+
+.btn-action:hover,
+.btn-action:active,
+.btn-action:focus {
+  background-color: var(--brand-blue-bright);
+}
+
+.btn-action:disabled {
+  background-color: var(--brand-blue-light);
+}
+
+.btn-success {
+  background-color: var(--brand-green);
+  border-color: var(--brand-green-dark);
+}
+
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus {
   background-color: var(--brand-green-bright);
 }
 
 .btn-success:disabled {
   background-color: var(--brand-green-light);
-  cursor: not-allowed;
 }
 
 .btn-danger {
   background-color: var(--brand-red);
+  border-color: var(--brand-red-dark);
 }
 
-.btn-danger:hover {
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus {
   background-color: var(--brand-red-bright);
+}
+
+.btn-danger:disabled {
+  background-color: var(--brand-red-light);
 }
