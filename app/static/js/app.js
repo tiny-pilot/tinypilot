@@ -322,10 +322,6 @@ menuBar.addEventListener("keyboard-visibility-toggled", () => {
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
-menuBar.addEventListener("update-dialog-requested", () => {
-  document.getElementById("update-overlay").show();
-  document.getElementById("update-dialog").checkVersion();
-});
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
   document.getElementById("change-hostname-dialog").initialize();
@@ -336,6 +332,9 @@ menuBar.addEventListener("fullscreen-requested", () => {
 menuBar.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-dialog").getLogs();
   document.getElementById("debug-overlay").show();
+});
+menuBar.addEventListener("mass-storage-dialog-requested", () => {
+  document.getElementById("feature-pro-overlay").show();
 });
 menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-dialog").getSettings();
