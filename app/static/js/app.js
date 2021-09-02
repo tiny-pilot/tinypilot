@@ -322,6 +322,10 @@ menuBar.addEventListener("keyboard-visibility-toggled", () => {
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
+menuBar.addEventListener("update-dialog-requested", () => {
+  document.getElementById("update-overlay").show();
+  document.getElementById("update-dialog").checkVersion();
+});
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
   document.getElementById("change-hostname-dialog").initialize();

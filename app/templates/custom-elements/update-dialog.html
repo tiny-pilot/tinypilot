@@ -1,0 +1,315 @@
+<template id="update-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    #checking,
+    #update-available,
+    #latest,
+    #updating,
+    #update-finished,
+    #restarting,
+    #update-container {
+      display: none;
+    }
+
+    :host([state="checking"]) #checking {
+      display: block;
+    }
+
+    :host([state="update-available"]) #update-available {
+      display: block;
+    }
+
+    :host([state="latest"]) #latest {
+      display: block;
+    }
+
+    :host([state="updating"]) #update-container,
+    :host([state="updating"]) #updating {
+      display: block;
+    }
+
+    :host([state="update-finished"]) #update-container,
+    :host([state="update-finished"]) #update-finished {
+      display: block;
+    }
+
+    :host([state="restarting"]) #update-container,
+    :host([state="restarting"]) #restarting {
+      display: block;
+    }
+
+    .updating-spinner {
+      margin: 1rem 0;
+    }
+
+    #update-container details {
+      margin-top: 1rem;
+    }
+
+    #update-container summary {
+      cursor: pointer;
+    }
+
+    #update-container .logs {
+      max-height: 400px;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+  </style>
+
+  <div id="checking">
+    <h3>Checking for updates</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="update-available">
+    <h3>Update TinyPilot</h3>
+    <p>
+      An update is available. Would you like to install the latest version?
+    </p>
+    <button id="confirm-update" class="btn-success" type="button">
+      Update
+    </button>
+    <button id="cancel-update" type="button">Cancel</button>
+  </div>
+
+  <div id="latest">
+    <h3>No Updates Available</h3>
+    <p>You are running the latest version of TinyPilot.</p>
+    <button id="ok-latest" type="button">OK</button>
+  </div>
+
+  <div id="update-container">
+    <div id="updating">
+      <h3>Please Wait While TinyPilot Updates</h3>
+      <div class="updating-spinner">
+        <progress-spinner></progress-spinner>
+      </div>
+      <countdown-timer id="timer" seconds="300"></countdown-timer>
+    </div>
+
+    <div id="restarting">
+      <h3>Restarting to Complete Update</h3>
+      <progress-spinner></progress-spinner>
+    </div>
+
+    <div id="update-finished">
+      <h3>Update Complete</h3>
+      <button id="ok-finished" type="button">OK</button>
+    </div>
+
+    <details>
+      <summary>More details</summary>
+      <div class="logs logs-output monospace"></div>
+    </details>
+  </div>
+</template>
+
+<script type="module">
+  import { poll } from "/js/poll.js";
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { UpdateLogsStreamer } from "/js/updatelogs.js";
+  import {
+    checkStatus,
+    getLatestRelease,
+    getUpdateStatus,
+    getVersion,
+    refreshCsrfToken,
+    shutdown,
+    update,
+  } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#update-dialog-template");
+
+    customElements.define(
+      "update-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+
+          this.elements = {
+            updateLogs: this.shadowRoot.querySelector(
+              "#update-container .logs"
+            ),
+          };
+          this.shadowRoot
+            .getElementById("confirm-update")
+            .addEventListener("click", () => {
+              this._doUpdate();
+            });
+          this.shadowRoot
+            .getElementById("cancel-update")
+            .addEventListener("click", () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            });
+          this.shadowRoot
+            .getElementById("ok-latest")
+            .addEventListener("click", () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            });
+          this.shadowRoot
+            .getElementById("ok-finished")
+            .addEventListener("click", () => {
+              location.reload();
+            });
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+        }
+
+        checkVersion() {
+          this._state = "checking";
+
+          Promise.all([getVersion(), getLatestRelease()])
+            .then((versions) => {
+              const localVersion = versions[0];
+              const latestRelease = versions[1];
+
+              if (localVersion === latestRelease) {
+                this._state = "latest";
+              } else {
+                this._state = "update-available";
+              }
+            })
+            .catch((error) => {
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Retrieve Version Information",
+                  details: error,
+                })
+              );
+            });
+        }
+
+        _waitForUpdateToFinish() {
+          return poll({
+            fn: getUpdateStatus,
+            validate: (data) => data.status === "DONE" || data.updateError,
+            interval: 2 * 1000,
+            timeout: 300 * 1000,
+          }).then((data) => {
+            if (data.updateError) {
+              return Promise.reject(data.updateError);
+            }
+          });
+        }
+
+        _performRestart() {
+          return shutdown(/*restart*/ true)
+            .then(() => {
+              this._state = "restarting";
+            })
+            .catch((error) => {
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Restart TinyPilot Device",
+                  details: error,
+                })
+              );
+            });
+        }
+
+        _waitForReboot() {
+          return poll({
+            fn: () => checkStatus(),
+            validate: (isUpAndRunning) => isUpAndRunning === true,
+            interval: 3 * 1000,
+            timeout: 180 * 1000,
+          })
+            .then(() => {
+              this._state = "update-finished";
+            })
+            .catch((error) => {
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Restart",
+                  message:
+                    "Cannot reach TinyPilot after the update. The device " +
+                    "may have failed to reboot. Please manually reset your " +
+                    "device's power and try to connect again.",
+                  details: error,
+                })
+              );
+            });
+        }
+
+        async _startUpdateWithRetries() {
+          const maxAttempts = 3;
+          for (let i = 1; i <= maxAttempts; i++) {
+            try {
+              return await update();
+            } catch (error) {
+              if (i === maxAttempts) {
+                throw error;
+              }
+            }
+          }
+        }
+
+        _sleep(milliseconds) {
+          return new Promise((resolve) => setTimeout(resolve, milliseconds));
+        }
+
+        async _doUpdate() {
+          this._state = "updating";
+          const timer = this.shadowRoot.getElementById("timer");
+          timer.start();
+
+          const updateLogsStreamer = new UpdateLogsStreamer();
+          // Let the user know that the update logs are loading.
+          this.elements.updateLogs.textContent =
+            "Retrieving update logs from TinyPilot device...\n";
+          // Display new update logs as they come in.
+          updateLogsStreamer.onNewLogs((logs) => {
+            this.elements.updateLogs.textContent += logs;
+          });
+          updateLogsStreamer.start();
+
+          try {
+            await this._startUpdateWithRetries();
+          } catch (error) {
+            updateLogsStreamer.stop();
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Start Update",
+                details: error,
+              })
+            );
+            return;
+          }
+
+          try {
+            await this._waitForUpdateToFinish();
+            // Updating causes the backend to restart, changing the CSRF token.
+            await refreshCsrfToken();
+            await this._performRestart();
+            // Wait at least 10 seconds to ensure reboot has started before
+            // checking whether the system is back up.
+            await this._sleep(10 * 1000);
+            await this._waitForReboot();
+          } catch (error) {
+            updateLogsStreamer.stop();
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Complete Update",
+                details: error,
+              })
+            );
+            return;
+          }
+          updateLogsStreamer.stop();
+        }
+      }
+    );
+  })();
+</script>
