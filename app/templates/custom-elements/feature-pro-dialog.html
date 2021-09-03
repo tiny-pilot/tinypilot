@@ -1,0 +1,47 @@
+<template id="feature-pro-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+  </style>
+
+  <div id="feature-pro">
+    <h3>This feature is available in TinyPilot Pro.</h3>
+    <button id="upgrade-to-pro" class="btn-success" type="button">
+      Upgrade to Pro
+    </button>
+    <button id="cancel-upgrade-to-pro" type="button">Cancel</button>
+  </div>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
+  const template = document.querySelector("#feature-pro-template");
+
+  customElements.define(
+    "feature-pro-dialog",
+    class extends HTMLElement {
+      connectedCallback() {
+        this.attachShadow({ mode: "open" }).appendChild(
+          template.content.cloneNode(true)
+        );
+        this.elements = {
+          upgradeToPro: this.shadowRoot.getElementById("upgrade-to-pro"),
+          cancelUpgradeToPro: this.shadowRoot.getElementById(
+            "cancel-upgrade-to-pro"
+          ),
+        };
+
+        this.elements.upgradeToPro.addEventListener("click", () => {
+          window.open(
+            "https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app",
+            "_blank"
+          );
+        });
+        this.elements.cancelUpgradeToPro.addEventListener("click", () => {
+          this.dispatchEvent(new DialogClosedEvent());
+        });
+      }
+    }
+  );
+</script>

@@ -337,6 +337,9 @@ menuBar.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-dialog").getLogs();
   document.getElementById("debug-overlay").show();
 });
+menuBar.addEventListener("mass-storage-dialog-requested", () => {
+  document.getElementById("feature-pro-overlay").show();
+});
 menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-dialog").getSettings();
   document.getElementById("video-settings-overlay").show();
