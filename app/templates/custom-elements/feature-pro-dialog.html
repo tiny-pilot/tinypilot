@@ -16,34 +16,32 @@
 <script type="module">
   import { DialogClosedEvent } from "/js/events.js";
 
-  (function () {
-    const template = document.querySelector("#feature-pro-template");
+  const template = document.querySelector("#feature-pro-template");
 
-    customElements.define(
-      "feature-pro-dialog",
-      class extends HTMLElement {
-        connectedCallback() {
-          this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+  customElements.define(
+    "feature-pro-dialog",
+    class extends HTMLElement {
+      connectedCallback() {
+        this.attachShadow({ mode: "open" }).appendChild(
+          template.content.cloneNode(true)
+        );
+        this.elements = {
+          upgradeToPro: this.shadowRoot.getElementById("upgrade-to-pro"),
+          cancelUpgradeToPro: this.shadowRoot.getElementById(
+            "cancel-upgrade-to-pro"
+          ),
+        };
+
+        this.elements.upgradeToPro.addEventListener("click", () => {
+          window.open(
+            "https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app",
+            "_blank"
           );
-          this.elements = {
-            upgradeToPro: this.shadowRoot.getElementById("upgrade-to-pro"),
-            cancelUpgradeToPro: this.shadowRoot.getElementById(
-              "cancel-upgrade-to-pro"
-            ),
-          };
-
-          this.elements.upgradeToPro.addEventListener("click", () => {
-            window.open(
-              "https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app",
-              "_blank"
-            );
-          });
-          this.elements.cancelUpgradeToPro.addEventListener("click", () => {
-            this.dispatchEvent(new DialogClosedEvent());
-          });
-        }
+        });
+        this.elements.cancelUpgradeToPro.addEventListener("click", () => {
+          this.dispatchEvent(new DialogClosedEvent());
+        });
       }
-    );
-  })();
+    }
+  );
 </script>
