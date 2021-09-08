@@ -1,3 +1,6 @@
+// This variable indicates if the CSRF token has been locked and in the process
+// of being refreshed. The value is either a Promise when locked or null
+// otherwise.
 let csrfRefreshLock = null;
 
 export function getCsrfToken(doc = document) {
@@ -35,7 +38,7 @@ async function refreshCsrfToken() {
  * API as the global fetch function.
  */
 export async function fetchWithCsrfRetry(resource, init) {
-  let response = await fetch(resource, init);
+  const response = await fetch(resource, init);
   // Only retry a request when the original request has a CSRF token header.
   // This is to avoid programmers from getting lazy and never including a CSRF
   // token header in their requests.
