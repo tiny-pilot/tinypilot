@@ -87,7 +87,7 @@
       <div class="updating-spinner">
         <progress-spinner></progress-spinner>
       </div>
-      <countdown-timer id="timer" seconds="300"></countdown-timer>
+      <countdown-timer id="timer" seconds="480"></countdown-timer>
     </div>
 
     <div id="restarting">
@@ -195,7 +195,7 @@
             fn: getUpdateStatus,
             validate: (data) => data.status === "DONE" || data.updateError,
             interval: 2 * 1000,
-            timeout: 300 * 1000,
+            timeout: 480 * 1000,
           }).then((data) => {
             if (data.updateError) {
               return Promise.reject(data.updateError);
