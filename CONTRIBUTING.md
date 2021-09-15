@@ -106,6 +106,91 @@ TinyPilot follows Google code style conventions:
 
 TinyPilot uses automated linters and formatters as much as possible to automate style conventions.
 
+## Web Components Conventions
+
+TinyPilot doesn't rely on any frontend frameworks or heavy libraries like jQuery. Intead, most of TinyPilot implements most of its UI components through standard JavaScript, using web components. For a good introduction to web components, see, Caleb Williams' ["An Introduction to Web Components"](https://css-tricks.com/an-introduction-to-web-components/).
+
+Strangely, it's uncommon for web applications to use web components directly as opposed to through a framework, so TinyPilot's developers have created their own conventions for implementing UI elements through web components.
+
+### State changes
+
+Often, a component should change its appearance based on its current logical state. For example, a dialog might be in an "initializing" state when it first opens and then reach a "ready state" when it's ready for user input.
+
+In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. This isn't possible with bare web components. Instead, our convention is to add a `state` attribute to the root element with getter and setter methods that look like this:
+
+```javascript
+get state() {
+  return this.getAttribute("state");
+}
+
+set state(newValue) {
+  this.setAttribute("state", newValue);
+}
+```
+
+We then use CSS rules based on the `state` attribute to control the component's appearance:
+
+```html
+<style>
+  #initializing,
+  #fetch-from-url {
+    display: none;
+  }
+
+  :host([state="initializing"]) #initializing {
+    display: block;
+  }
+
+  :host([state="fetch-from-url"]) #fetch-from-url {
+    display: block;
+  }
+</style>
+
+<div id="initializing">
+  <h3>Retrieving Information</h3>
+  <progress-spinner></progress-spinner>
+</div>
+
+<div id="fetch-from-url">
+  <h3>Manage Virtual Media: Fetch from URL</h3>
+  ...
+</div>
+```
+
+This ensures that the elements in the `<div id="initializing">` only appear when the component's state is `initializing`.
+
+Prefer to change appearance based on attributes and CSS rules as opposed to using JavaScript to manipulate the `.style` attributes of elements within the component.
+
+### Create element references in `connectedCallback()`
+
+If the component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this.elements`
+
+```javascript
+this.elements = {
+  noFilesText: this.shadowRoot.getElementById("no-backing-files"),
+  table: this.shadowRoot.getElementById("backing-files-table"),
+  tableBody: this.shadowRoot.getElementById("table-body"),
+  uploadFromUrlInput: this.shadowRoot.getElementById(
+    "fetch-from-url-input"
+  ),
+  uploadFromUrlInputError: this.shadowRoot.getElementById(
+    "fetch-from-url-input-error"
+  ),
+};
+```
+
+### Use underscore to represent private methods
+
+Most of the functions in a web component are only intended for usage within the component. For these functions, prepend the function name with an underscore like `_upload() { ... }`. Functions that accept input from external callers should be prefix-free like `show()`.
+
+### Use free functions where possible
+
+If a function does not reference any of the web component's member variables through `this`, convert it to a free function outside of the `HTMLElement` subclass.
+
+If a function only requires access to one or two member variables, consider making it a free function anyway and accessing those values through function parameters.
+
+Free functions are easier to reason about than functions that have acccess to all of the web components members.
+
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
