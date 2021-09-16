@@ -106,6 +106,117 @@ TinyPilot follows Google code style conventions:
 
 TinyPilot uses automated linters and formatters as much as possible to automate style conventions.
 
+## Web Components Conventions
+
+TinyPilot implements most of its UI components through standard JavaScript, using [web components](https://css-tricks.com/an-introduction-to-web-components/). TinyPilot does not use any heavy frontend frameworks like Angular or React, nor does it use any broad libraries such as jQuery.
+
+Strangely, it's uncommon for web applications to use web components directly as opposed to through a framework, so TinyPilot's developers have created their own conventions for implementing UI elements through web components.
+
+### State changes
+
+It's common for a component to change its appearance based on its internal state. For example, a dialog might be in an "initializing" state when it first opens and then reach a "ready" state when it's ready for user input.
+
+In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. With raw web components, conditional rendering is not possible. Instead, TinyPilot's convention is to add a `state` attribute to the root element with getter and setter methods that look like this:
+
+```javascript
+get state() {
+  return this.getAttribute("state");
+}
+
+set state(newValue) {
+  this.setAttribute("state", newValue);
+}
+```
+
+We then use CSS rules based on the `state` attribute to control the component's appearance:
+
+```html
+<style>
+  #initializing,
+  #fetch-from-url {
+    display: none;
+  }
+
+  :host([state="initializing"]) #initializing {
+    display: block;
+  }
+
+  :host([state="fetch-from-url"]) #fetch-from-url {
+    display: block;
+  }
+</style>
+
+<div id="initializing">
+  <h3>Retrieving Information</h3>
+  <progress-spinner></progress-spinner>
+</div>
+
+<div id="fetch-from-url">
+  <h3>Manage Virtual Media: Fetch from URL</h3>
+  ...
+</div>
+```
+
+This ensures that the elements in the `<div id="initializing">` only appear when the component's state is `initializing`.
+
+Prefer to change a web component's appearance based on attributes and CSS rules as opposed to JavaScript that manipulates the `.style` attributes of elements within the component.
+
+### Create element references in `connectedCallback()`
+
+If a component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this.elements`
+
+```javascript
+connectedCallback() {
+  this.attachShadow({ mode: "open" });
+  this.shadowRoot.appendChild(template.content.cloneNode(true));
+  this.elements = {
+    noFilesText: this.shadowRoot.getElementById("no-backing-files"),
+    table: this.shadowRoot.getElementById("backing-files-table"),
+    tableBody: this.shadowRoot.getElementById("table-body"),
+    uploadFromUrlInput: this.shadowRoot.getElementById(
+      "fetch-from-url-input"
+    ),
+    uploadFromUrlInputError: this.shadowRoot.getElementById(
+      "fetch-from-url-input-error"
+    ),
+  };
+};
+```
+
+### Use underscore to represent private methods
+
+Most of the functions in a web component are only intended for usage within the component. For these functions, prepend the function name with an underscore like `_upload() { ... }`. Functions that accept input from external callers should be prefix-free like `show()`.
+
+### Use free functions where possible
+
+If a function does not reference any of the web component's member variables through `this`, convert it to a free function outside of the `HTMLElement` subclass.
+
+If a function only requires access to one or two member variables, consider making it a free function anyway and accessing those values through function parameters.
+
+Free functions are easier to reason about than member functions, as free functions have access to fewer variables and functions that can change an object's state.
+
+### Parameterizing style rules
+
+Web components have a separate ["shadow DOM,"](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) which means that they don't inherit most CSS rules from their parent elements. In some cases, it's useful for a web component to accept style customization through the parent element's HTML.
+
+TinyPilot's convention for this is to define CSS variables in the `:host` section like so:
+
+```css
+:host {
+    --offset-top: 1rem;
+}
+
+h2 {
+  margin-top: var(--offset-top);
+}
+```
+
+Using CSS variables means that we can parameterize these values via the `style` attribute when we include instances of the component in HTML:
+
+```html
+<my-component style="--offset-top: 3rem">
+```
+
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
