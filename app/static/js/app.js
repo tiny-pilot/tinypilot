@@ -349,8 +349,8 @@ menuBar.addEventListener("paste-requested", () => {
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
-  // better match real user behavior, and so that the keystroke history shows
-  // the Control, Alt, Delete sequence clearly.
+  // better match real user behavior. This ensures that the keystroke history
+  // shows the Control, Alt, Delete sequence clearly.
   processKeystroke({
     key: "Control",
     code: "ControlLeft",
