@@ -209,7 +209,7 @@ TinyPilot's convention for this is to define CSS variables in the `:host` sectio
 h2 {
   margin-top: var(--offset-top);
 }
-``
+```
 
 Using CSS variables means that we can parameterize these values via the `style` attribute when we include instances of the component in HTML:
 
