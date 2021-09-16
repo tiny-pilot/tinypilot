@@ -197,7 +197,7 @@ Free functions are easier to reason about than member functions, as free functio
 
 ### Parameterizing style rules
 
-Web components have their own "shadow DOM," which means that they don't inherit most CSS rules from their parent elements. In some cases, a web component wants to accept style customization from its parent.
+Web components have a separate ["shadow DOM,"](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) which means that they don't inherit most CSS rules from their parent elements. In some cases, it's useful for a web component to accept style customization through the parent element's HTML.
 
 TinyPilot's convention for this is to define CSS variables in the `:host` section like so:
 
