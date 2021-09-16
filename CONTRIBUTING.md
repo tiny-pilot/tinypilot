@@ -163,7 +163,7 @@ Prefer to change a web component's appearance based on attributes and CSS rules 
 
 ### Create element references in `connectedCallback()`
 
-If the component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this.elements`
+If a component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this.elements`
 
 ```javascript
 connectedCallback() {
