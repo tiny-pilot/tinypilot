@@ -195,6 +195,28 @@ If a function only requires access to one or two member variables, consider maki
 
 Free functions are easier to reason about than member functions, as free functions have access to fewer variables and functions that can change an object's state.
 
+### Parameterizing style rules
+
+Web components have their own "shadow DOM," which means that they don't inherit most CSS rules from their parent elements. In some cases, a web component wants to accept style customization from its parent.
+
+TinyPilot's convention for this is to define CSS variables in the `:host` section like so:
+
+```css
+:host {
+    --offset-top: 1rem;
+}
+
+h2 {
+  margin-top: var(--offset-top);
+}
+``
+
+Using CSS variables means that we can parameterize these values via the `style` attribute when we include instances of the component in HTML:
+
+```html
+<my-component style="--offset-top: 3rem">
+```
+
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
