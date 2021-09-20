@@ -352,11 +352,13 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // better match real user behavior. This ensures that the keystroke history
   // shows the Control, Alt, Delete sequence clearly.
   processKeystroke({
+    ctrlLeft: true,
     key: "Control",
     code: "ControlLeft",
   });
   processKeystroke({
     ctrlLeft: true,
+    altLeft: true,
     key: "Alt",
     code: "AltLeft",
   });
