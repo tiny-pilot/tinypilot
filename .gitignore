@@ -52,6 +52,7 @@ coverage.xml
 
 # Flask
 app_settings.cfg
+.secret_key
 
 # Sphinx documentation
 docs/_build/
