@@ -116,6 +116,7 @@
     getLatestRelease,
     getUpdateStatus,
     getVersion,
+    refreshCsrfToken,
     shutdown,
     update,
   } from "/js/controllers.js";
@@ -289,6 +290,8 @@
 
           try {
             await this._waitForUpdateToFinish();
+            // Updating causes the backend to restart, changing the CSRF token.
+            await refreshCsrfToken();
             await this._performRestart();
             // Wait at least 10 seconds to ensure reboot has started before
             // checking whether the system is back up.
