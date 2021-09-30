@@ -267,8 +267,8 @@
         }
 
         queueMouseEvent(evt) {
-          // If there is no queue, send the event immediately but queue events
-          // within the rate-limit time window.
+          // If there is no queue, send the event immediately but queue any
+          // subsequent events that appear within the rate-limit time window.
           if (this.mouseEventTimer === null) {
             this.sendMouseEvent(evt);
             this.mouseEventTimer = setTimeout(
