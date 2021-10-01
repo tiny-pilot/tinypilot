@@ -1,3 +1,52 @@
+/**
+ * A mechanism to rate-limit mouse events so that they don't flood the network
+ * channel or generate a long queue of stale events.
+ *
+ * Considerations:
+ *  - We want to send the first mouse event as quickly as possible to minimize
+ *      latency when the user begins moving the mouse.
+ *  - We never want to drop the last mouse movement in a sequence because it
+ *      determines the mouse's final position. If we drop the final mouse event,
+ *      the user can see a mismatch between their local cursor and their remote
+ *      cursor.
+ *  - We can drop some mouse events with a low probability of affecting the
+ *      user's experience. For example, if the mouse moves in the following
+ *      sequence:
+ *
+ *        t=0ms (0, 0)
+ *        t=1ms (5, 5)
+ *        t=2ms (10, 10)
+ *
+ *      The mouse event at t=1ms is mostly irrelevant because it doesn't matter
+ *      to the user whether the mouse stopped at point (5, 5) on the way to
+ *      (10, 10).
+ *  - Some intermediate mouse events do affect user experience. Consider the
+ *      following sequence:
+ *
+ *        t=0ms   (100, 100)
+ *        t=20ms  (500, 100)
+ *        t=100ms (100, 100)
+ *
+ *      The mouse ultimately lands in position (100, 100), but dropping the
+ *      event at t=20ms might impact user experience if they meant to send a
+ *      right-and-left gesture to the target computer.
+ *  - We assume that mouse clicks and releases are high-priority. We should
+ *      never drop a mouse click or release event.
+ *  - Mouse wheel events have the same priority as mouse move events. It's okay
+ *      to drop mouse wheel events if the event queue is too long.
+ *
+ * Implementation:
+ *  The current implementation maintains a queue of mouse events. When the queue
+ *  is empty, we send the event immediately but wait a minimum timeout period
+ *  before sending more mouse events. If more events arrive within the timeout
+ *  period, we queue them for sending until the timeout has elapsed. The queue
+ *  is limited to a fixed length of the last N mouse events to avoid creating a
+ *  long backlog of mouse events.
+ *
+ *  If the event is a mouse click or release, we clear the queue and send the
+ *  event immediately to minimize latency on click events.
+ */
+
 export class RateLimitedMouse {
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
     this.millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
