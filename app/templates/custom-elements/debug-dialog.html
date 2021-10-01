@@ -80,9 +80,26 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    StateDisablingCloseEvent,
+    StateAllowingCloseEvent,
+  } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
+
+  const states = {
+    LOGS_LOADING: "logs-loading",
+    LOGS_SUCCESS: "logs-success",
+    URL_LOADING: "url-loading",
+    URL_SUCCESS: "url-success",
+  };
+  // the states in statesDisablingClose requires to disable the eventual close buttons
+  const statesDisablingClose = {
+    [states.LOGS_LOADING]: true,
+    [states.URL_LOADING]: true,
+  };
 
   (function () {
     const template = document.querySelector("#debug-dialog-template");
@@ -136,16 +153,21 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
+          if (statesDisablingClose[newValue]) {
+            this.dispatchEvent(new StateDisablingCloseEvent());
+          } else {
+            this.dispatchEvent(new StateAllowingCloseEvent());
+          }
         }
 
         getLogs() {
-          this.state = "logs-loading";
+          this.state = states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
               this.shadowRoot.querySelector(
                 "#logs-success .logs"
               ).textContent = text;
-              this.state = "logs-success";
+              this.state = states.LOGS_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -158,7 +180,7 @@
         }
 
         _getUrl() {
-          this.state = "url-loading";
+          this.state = states.URL_LOADING;
           const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
           textToShareableUrl(text)
@@ -168,7 +190,7 @@
               );
               urlElement.textContent = url;
               urlElement.href = url;
-              this.state = "url-success";
+              this.state = states.URL_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(

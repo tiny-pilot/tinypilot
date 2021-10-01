@@ -40,6 +40,9 @@
       border: 1px solid black;
       opacity: 0.55;
     }
+    :host([hide-close-button="true"]) #close-button {
+      display: none;
+    }
 
     #close-button svg {
       display: block;
@@ -91,6 +94,12 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
+          this.shadowRoot.addEventListener("state-disabling-close", () => {
+            this.setAttribute("hide-close-button", "true");
+          });
+          this.shadowRoot.addEventListener("state-allowing-close", () => {
+            this.setAttribute("hide-close-button", "false");
+          });
           this.shadowRoot
             .getElementById("close-button")
             .addEventListener("click", () => this.show(false));

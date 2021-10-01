@@ -29,3 +29,27 @@ export class DialogFailedEvent extends CustomEvent {
     });
   }
 }
+
+export class StateDisablingCloseEvent extends CustomEvent {
+  /**
+   * Event warning that we enter a state that disables the close behavior.
+   */
+  constructor() {
+    super("state-disabling-close", {
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
+export class StateAllowingCloseEvent extends CustomEvent {
+  /**
+   * Event warning that we enter a state that allows the close behavior.
+   */
+  constructor() {
+    super("state-allowing-close", {
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
