@@ -56,7 +56,7 @@ export class RateLimitedMouse {
   }
 
   onMouseDown(evt) {
-    // Treat mouse down events as high priority. Clear the event queue
+    // Treat mouse down events as high-priority. Clear the event queue
     // so that we can process the mouse click immediately. This drops
     // other events, but presumably the mouse click event makes those
     // other events irrelevant, as they hadn't occurred on the target
@@ -66,6 +66,7 @@ export class RateLimitedMouse {
   }
 
   onMouseUp(evt) {
+    // Treat mouse up events as high-priority. See onMouseDown for rationale.
     this._clearEventQueue();
     this._queueMouseEvent(evt);
   }
