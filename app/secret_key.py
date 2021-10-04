@@ -30,7 +30,8 @@ def read():
 
 def create():
     """
-    Generate and save a secret key to the filesystem.
+    Generate and save a secret key to the filesystem with a file permission of
+    600.
 
     Args:
         None
@@ -39,6 +40,7 @@ def create():
         A string of 32 random bytes suitable for cryptographic use.
     """
     with open(SECRET_KEY_FILE, 'wb') as f:  # pylint: disable=invalid-name
+        os.chmod(SECRET_KEY_FILE, 0o600)
         secret_key = os.urandom(32)
         f.write(secret_key)
         return secret_key

@@ -1,4 +1,5 @@
 import os
+import stat
 import tempfile
 import unittest
 from unittest import mock
@@ -14,6 +15,8 @@ class SecretKeyTest(unittest.TestCase):
 
     def assertSecretKeyFile(self, value):  # pylint: disable=invalid-name
         self.assertTrue(os.path.exists(secret_key.SECRET_KEY_FILE))
+        file_perms = stat.S_IMODE(os.stat(secret_key.SECRET_KEY_FILE).st_mode)
+        self.assertEqual(0o600, file_perms)
         with open(secret_key.SECRET_KEY_FILE, 'rb') as f:  # pylint: disable=invalid-name
             self.assertEqual(value, f.read())
 
