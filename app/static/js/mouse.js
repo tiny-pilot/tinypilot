@@ -3,11 +3,16 @@
  * channel or generate a long queue of stale events.
  *
  * Considerations:
+ *  - Normal mouse movement can generate hundreds of mouse move events in a few
+ *      seconds. Sending this many mouse events over the network can clog the
+ *      network link or the server's emulated mouse USB interface.
+ *  - We want to send mouse events in the same order they occurred to prevent
+ *      unexpected behavior on the target system.
  *  - We want to send the first mouse event as quickly as possible to minimize
  *      latency when the user begins moving the mouse.
  *  - We never want to drop the last mouse movement in a sequence because it
  *      determines the mouse's final position. If we drop the final mouse event,
- *      the user can see a mismatch between their local cursor and their remote
+ *      the user might see an offset between their local cursor and their remote
  *      cursor.
  *  - We can drop some mouse events with a low probability of affecting the
  *      user's experience. For example, if the mouse moves in the following
@@ -33,41 +38,51 @@
  *  - We assume that mouse clicks and releases are high-priority. We should
  *      never drop a mouse click or release event.
  *  - Mouse wheel events have the same priority as mouse move events. It's okay
- *      to drop mouse wheel events if the event queue is too long.
+ *      to drop mouse wheel events if we're rate-limited.
+ *  - The more mouse events we queue for transmission after a rate-limit window,
+ *      the more latency the user will perceive because we're creating a backlog
+ *      of mouse move events for the browser to process.
  *
  * Implementation:
- *  The current implementation maintains a queue of mouse events. When the queue
- *  is empty, we send the event immediately but wait a minimum timeout period
- *  before sending more mouse events. If more events arrive within the timeout
- *  period, we queue them for sending until the timeout has elapsed. The queue
- *  is limited to a fixed length of the last N mouse events to avoid creating a
- *  long backlog of mouse events.
+ *  The current implementation fires mouse events immediately but maintains a
+ *  timeout window to prevent any low-priority mouse events from firing until
+ *  the timeout expires. If any low-priority mouse events occur within the
+ *  timeout window, we save them to fire after the timeout window. We only queue
+ *  a single event, so we drop all low-priority mouse events during the timeout
+ *  window except for the final event.
  *
- *  If the event is a mouse click or release, we clear the queue and send the
- *  event immediately to minimize latency on click events.
+ *  We consider mouse click and release events to be high-priority and mouse
+ *  move or wheel events to be low priority. We never drop high-priority events,
+ *  and we send them immediately, ignoring the timeout window.
  */
 
 export class RateLimitedMouse {
+  /**
+   * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
+   * wait between sending low-priority mouse events to the backend.
+   * @param {function({Object})} sendEventFn Function that sends parsed mouse
+   * event to the backend server.
+   */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
     this.millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
     this._sendEventFn = sendEventFn;
-    this._eventQueue = [];
+    this._queuedEvent = null;
     this._eventTimer = null;
   }
 
   onMouseDown(evt) {
-    // Treat mouse down events as high-priority. Clear the event queue
-    // so that we can process the mouse click immediately. This drops
-    // other events, but presumably the mouse click event makes those
-    // other events irrelevant, as they hadn't occurred on the target
-    // computer at the time the user clicked the mouse.
-    this._clearEventQueue();
+    // Treat mouse down events as high-priority. Clear the timeout window so
+    // that we can process the mouse click immediately. This drops other events,
+    // but presumably the mouse click event makes those other events irrelevant,
+    // as they hadn't occurred on the target computer at the time the user
+    // clicked the mouse.
+    this._clearTimeoutWindow();
     this._queueMouseEvent(evt);
   }
 
   onMouseUp(evt) {
     // Treat mouse up events as high-priority. See onMouseDown for rationale.
-    this._clearEventQueue();
+    this._clearTimeoutWindow();
     this._queueMouseEvent(evt);
   }
 
@@ -80,53 +95,40 @@ export class RateLimitedMouse {
   }
 
   _queueMouseEvent(evt) {
-    const parsedEvent = parseMouseEvent(evt);
+    this._queuedEvent = parseMouseEvent(evt);
 
-    // If there is no timer, send the event immediately but queue any
-    // subsequent events that appear within the rate-limit time window.
+    // If we're not in a timeout window, dequeue the event immediately.
     if (this._eventTimer === null) {
-      this._sendEventFn(parsedEvent);
-      this._eventTimer = setTimeout(() => {
-        this._dequeueMouseEvent();
-      }, this.millisecondsBetweenMouseEvents);
-    } else {
-      this._eventQueue.push(parsedEvent);
-      // Reduce queue to last MAX_MOUSE_EVENT_QUEUE_LENGTH elements.
-      this._eventQueue.splice(
-        0,
-        this._eventQueue.length - MAX_MOUSE_EVENT_QUEUE_LENGTH
-      );
+      this._dequeueMouseEvent();
     }
   }
 
   _dequeueMouseEvent() {
-    const evt = this._eventQueue.shift();
-    if (evt) {
-      this._sendEventFn(evt);
+    // If there are no events waiting, clear the timeout window.
+    if (!this._queuedEvent) {
+      this._clearTimeoutWindow();
+      return;
     }
 
-    // If we processed the last event in the queue, clear the timer.
-    if (this._eventQueue.length === 0) {
-      this._eventTimer = null;
-    }
-    // If there are more events in the queue, process the next event after
-    // waiting the rate limit duration.
-    else {
-      this._eventTimer = setTimeout(() => {
-        this._dequeueMouseEvent();
-      }, this.millisecondsBetweenMouseEvents);
-    }
+    this._sendEventFn(this._queuedEvent);
+    this._queuedEvent = null;
+
+    // Start a timer to process any new events that arrive during the timeout
+    // window.
+    this._eventTimer = setTimeout(() => {
+      this._dequeueMouseEvent();
+    }, this.millisecondsBetweenMouseEvents);
   }
 
-  _clearEventQueue() {
+  _clearTimeoutWindow() {
+    if (!this._eventTimer) {
+      return;
+    }
+
     clearTimeout(this._eventTimer);
     this._eventTimer = null;
-    this._eventQueue.length = 0;
   }
 }
-
-// TODO(mtlynch): Figure out ideal queue length.
-const MAX_MOUSE_EVENT_QUEUE_LENGTH = 1;
 
 // Different browsers produce wildly different values for wheel scroll
 // delta, so just reduce it to -1, 0, or 1.
@@ -137,6 +139,26 @@ function normalizeWheelDelta(delta) {
   return Math.sign(delta);
 }
 
+/**
+ * Parses a raw mouse event from the browser into a TinyPilot-specific object
+ * containing information about the mouse event.
+ *
+ * @param {Object} evt A browser-generated event, such as mousedown or
+ * mousemove.
+ * @returns {Object} The mouse event data in TinyPilot-specific format with the
+ * following properties:
+ * - buttons (number) A bitmask representing which mouse buttons are pressed,
+ *   in the same format as the buttons property from the browser's native mouse
+ *   events.
+ * - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
+ *   relative x-offset from the left edge of the screen.
+ * - relativeY (number) A value between 0.0 and 1.0 representing the mouse's
+ *   relative y-offset from the top edge of the screen.
+ * - verticalWheelDelta (number) A -1, 0, or 1 representing movement of the
+ *   mouse's vertical scroll wheel.
+ * - horizontalWheelDelta (number) A -1, 0, or 1 representing movement of the
+ *   mouse's horizontal scroll wheel.
+ */
 function parseMouseEvent(evt) {
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
