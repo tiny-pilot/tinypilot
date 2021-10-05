@@ -40,7 +40,7 @@
       border: 1px solid black;
       opacity: 0.55;
     }
-    :host([hide-close-button="true"]) #close-button {
+    :host([hide-close-button=""]) #close-button {
       display: none;
     }
 
@@ -94,11 +94,12 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
-          this.shadowRoot.addEventListener("state-disabling-close", () => {
-            this.setAttribute("hide-close-button", "true");
-          });
-          this.shadowRoot.addEventListener("state-allowing-close", () => {
-            this.setAttribute("hide-close-button", "false");
+          this.shadowRoot.addEventListener("state-changed", (e) => {
+            if (e.detail.stateAllowingClose === false) {
+              this.setAttribute("hide-close-button", "");
+            } else {
+              this.removeAttribute("hide-close-button");
+            }
           });
           this.shadowRoot
             .getElementById("close-button")
