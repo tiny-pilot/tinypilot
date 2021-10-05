@@ -158,15 +158,15 @@ function normalizeWheelDelta(delta) {
 }
 
 /**
- * Parses a raw mouse event from the browser into a TinyPilot-specific object
+ * Parses a standard JavaScript mouse event into a TinyPilot-specific object
  * containing information about the mouse event.
  *
- * @param {Object} evt A browser-generated event, such as mousedown or
+ * @param {Object} evt A standard JavaScript mouse event, such as mousedown or
  * mousemove.
  * @returns {Object} The mouse event data in TinyPilot-specific format with the
  * following properties:
  * - buttons (number) A bitmask representing which mouse buttons are pressed,
- *   in the same format as the buttons property from the browser's native mouse
+ *   in the same format as the buttons property from the native JavaScript mouse
  *   events.
  * - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
  *   relative x-offset from the left edge of the screen.
