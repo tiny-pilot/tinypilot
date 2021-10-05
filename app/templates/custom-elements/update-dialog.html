@@ -109,7 +109,11 @@
 
 <script type="module">
   import { poll } from "/js/poll.js";
-  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    StateChangedEvent,
+  } from "/js/events.js";
   import { UpdateLogsStreamer } from "/js/updatelogs.js";
   import {
     checkStatus,
@@ -120,6 +124,21 @@
     shutdown,
     update,
   } from "/js/controllers.js";
+
+  const states = {
+    CHECKING: "checking",
+    UPDATE_AVAILABLE: "update-available",
+    LATEST: "latest",
+    UPDATING: "updating",
+    RESTARTING: "restarting",
+    UPDATE_FINISHED: "update-finished",
+  };
+  // the states in statesDisablingClose requires to disable the eventual close buttons
+  const statesDisablingClose = new Set([
+    states.CHECKING,
+    states.UPDATING,
+    states.RESTARTING,
+  ]);
 
   (function () {
     const template = document.querySelector("#update-dialog-template");
@@ -165,10 +184,17 @@
 
         set _state(newValue) {
           this.setAttribute("state", newValue);
+          if (statesDisablingClose.has(newValue)) {
+            this.dispatchEvent(
+              new StateChangedEvent({ stateAllowingClose: false })
+            );
+          } else {
+            this.dispatchEvent(new StateChangedEvent());
+          }
         }
 
         checkVersion() {
-          this._state = "checking";
+          this._state = states.CHECKING;
 
           Promise.all([getVersion(), getLatestRelease()])
             .then((versions) => {
@@ -176,9 +202,9 @@
               const latestRelease = versions[1];
 
               if (localVersion === latestRelease) {
-                this._state = "latest";
+                this._state = states.LATEST;
               } else {
-                this._state = "update-available";
+                this._state = states.UPDATE_AVAILABLE;
               }
             })
             .catch((error) => {
@@ -207,7 +233,7 @@
         _performRestart() {
           return shutdown(/*restart*/ true)
             .then(() => {
-              this._state = "restarting";
+              this._state = states.RESTARTING;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -227,7 +253,7 @@
             timeout: 180 * 1000,
           })
             .then(() => {
-              this._state = "update-finished";
+              this._state = states.UPDATE_FINISHED;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -261,7 +287,7 @@
         }
 
         async _doUpdate() {
-          this._state = "updating";
+          this._state = states.UPDATING;
           const timer = this.shadowRoot.getElementById("timer");
           timer.start();
 
