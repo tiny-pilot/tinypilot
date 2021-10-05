@@ -109,7 +109,10 @@ export class RateLimitedMouse {
 
     this._sendEventFn(this._queuedEvent);
     this._queuedEvent = null;
+    this._startTimeoutWindow();
+  }
 
+  _startTimeoutWindow() {
     // Start a timer to process any new events that arrive during the timeout
     // window.
     this._eventTimer = setTimeout(() => {
@@ -118,7 +121,7 @@ export class RateLimitedMouse {
   }
 
   _isInTimeoutWindow() {
-    return this._eventTimer === null;
+    return this._eventTimer !== null;
   }
 
   _clearTimeoutWindow() {
