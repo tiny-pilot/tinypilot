@@ -38,7 +38,7 @@ logger.info('Starting app')
 
 app = flask.Flask(__name__, static_url_path='')
 app.config.update(
-    SECRET_KEY=secret_key.get(),
+    SECRET_KEY=secret_key.get_or_create(),
     TEMPLATES_AUTO_RELOAD=True,
     WTF_CSRF_TIME_LIMIT=None,
 )
