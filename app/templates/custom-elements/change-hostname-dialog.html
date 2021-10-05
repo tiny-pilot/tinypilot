@@ -204,13 +204,13 @@
 
         initialize() {
           this.inputError = null;
-          this.state = "initializing";
+          this.state = states.INITIALIZING;
           determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
-              this.state = "prompt";
+              this.state = states.PROMPT;
               this.elements.hostnameInput.focus();
             })
             .catch((error) => {
@@ -244,7 +244,7 @@
             .then((redirectURL) => {
               this.elements.futureLocation.innerText = redirectURL;
               this.elements.futureLocation.href = redirectURL;
-              this.state = "changing";
+              this.state = states.CHANGING;
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
@@ -256,7 +256,7 @@
                   "letters a-z, digits and dashes (it cannot start with a " +
                   "dash, though). It must contain 1-63 characters and cannot " +
                   'be "localhost".';
-                this.state = "prompt";
+                this.state = states.PROMPT;
                 return;
               }
               this.dispatchEvent(
