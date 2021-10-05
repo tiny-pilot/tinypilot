@@ -107,9 +107,15 @@ export class RateLimitedMouse {
       return;
     }
 
+    // Send the event and start a timeout window to prevent subsequent events
+    // from going out too quickly.
+    this._sendQueuedMouseEvent();
+    this._startTimeoutWindow();
+  }
+
+  _sendQueuedMouseEvent() {
     this._sendEventFn(this._queuedEvent);
     this._queuedEvent = null;
-    this._startTimeoutWindow();
   }
 
   _startTimeoutWindow() {
