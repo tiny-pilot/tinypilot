@@ -60,7 +60,7 @@ export class RateLimitedMouse {
   /**
    * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
    * wait between sending low-priority mouse events to the backend.
-   * @param {function({Object})} sendEventFn Function that sends parsed mouse
+   * @param {function(Object)} sendEventFn Function that sends parsed mouse
    * event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
@@ -72,16 +72,14 @@ export class RateLimitedMouse {
 
   onMouseDown(evt) {
     // Treat mouse down events as high-priority. Clear the timeout window so
-    // that we can process the mouse click immediately. This drops other events,
-    // but presumably the mouse click event makes those other events irrelevant,
-    // as they hadn't occurred on the target computer at the time the user
-    // clicked the mouse.
+    // that we can process the mouse click immediately.
     this._clearTimeoutWindow();
     this._queueMouseEvent(evt);
   }
 
   onMouseUp(evt) {
-    // Treat mouse up events as high-priority. See onMouseDown for rationale.
+    // Treat mouse up events as high-priority. Clear the timeout window so that
+    // we can process the mouse click release immediately.
     this._clearTimeoutWindow();
     this._queueMouseEvent(evt);
   }
@@ -97,8 +95,7 @@ export class RateLimitedMouse {
   _queueMouseEvent(evt) {
     this._queuedEvent = parseMouseEvent(evt);
 
-    // If we're not in a timeout window, dequeue the event immediately.
-    if (this._eventTimer === null) {
+    if (!this._isInTimeoutWindow()) {
       this._dequeueMouseEvent();
     }
   }
@@ -120,8 +117,12 @@ export class RateLimitedMouse {
     }, this.millisecondsBetweenMouseEvents);
   }
 
+  _isInTimeoutWindow() {
+    return this._eventTimer === null;
+  }
+
   _clearTimeoutWindow() {
-    if (!this._eventTimer) {
+    if (!this._isInTimeoutWindow()) {
       return;
     }
 
@@ -130,8 +131,16 @@ export class RateLimitedMouse {
   }
 }
 
-// Different browsers produce wildly different values for wheel scroll
-// delta, so just reduce it to -1, 0, or 1.
+/**
+ * Normalize mouse wheel delta to a value that's consistent across browsers.
+ * Different browsers use different values for the delta, so we reduce it to a
+ * simple -1, 0, or 1.
+ *
+ * @param {number} delta The mouse wheel delta value from the browser's mouse
+ * event.
+ * @returns {number} A value of -1, 0, or 1 representing whether the delta is
+ * negative, zero, or positive, respectively.
+ */
 function normalizeWheelDelta(delta) {
   if (!delta) {
     return 0;
