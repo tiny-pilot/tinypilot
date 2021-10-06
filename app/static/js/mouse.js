@@ -70,73 +70,52 @@ export class RateLimitedMouse {
     this._eventTimer = null;
   }
 
-  onMouseDown(evt) {
-    // Treat mouse down events as high-priority. Clear the timeout window so
-    // that we can process the mouse click immediately.
-    this._clearTimeoutWindow();
-    this._queueMouseEvent(evt);
+  onMouseDown(jsMouseEvt) {
+    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
   }
 
-  onMouseUp(evt) {
-    // Treat mouse up events as high-priority. Clear the timeout window so that
-    // we can process the mouse click release immediately.
-    this._clearTimeoutWindow();
-    this._queueMouseEvent(evt);
+  onMouseUp(jsMouseEvt) {
+    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
   }
 
-  onMouseMove(evt) {
-    this._queueMouseEvent(evt);
+  onMouseMove(jsMouseEvt) {
+    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
   }
 
-  onWheel(evt) {
-    this._queueMouseEvent(evt);
+  onWheel(jsMouseEvt) {
+    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
   }
 
-  _queueMouseEvent(evt) {
-    this._queuedEvent = parseMouseEvent(evt);
+  _processHighPriorityEvent(mouseInfo) {
+    this._emitEvent(mouseInfo);
+  }
 
-    if (!this._isInTimeoutWindow()) {
-      this._dequeueMouseEvent();
+  _processLowPriorityEvent(mouseInfo) {
+    if (this._isInTimeoutWindow()) {
+      this._queuedEvent = mouseInfo;
+    } else {
+      this._emitEvent(mouseInfo);
     }
   }
 
-  _dequeueMouseEvent() {
-    // If there are no events waiting, clear the timeout window.
-    if (!this._queuedEvent) {
-      this._clearTimeoutWindow();
-      return;
-    }
-
-    // Send the event and start a timeout window to prevent subsequent events
-    // from going out too quickly.
-    this._sendQueuedMouseEvent();
-    this._startTimeoutWindow();
-  }
-
-  _sendQueuedMouseEvent() {
-    this._sendEventFn(this._queuedEvent);
+  /**
+   * This will emit an event right away. A potentially ongoing timeout window is
+   * discarded and a fresh timeout window will be started afterwards.
+   */
+  _emitEvent(mouseInfo) {
+    clearTimeout(this._eventTimer); // This is a no-op if `_eventTimer` is null.
+    this._eventTimer = null;
     this._queuedEvent = null;
-  }
 
-  _startTimeoutWindow() {
-    // Start a timer to process any new events that arrive during the timeout
-    // window.
+    this._sendEventFn(mouseInfo);
+
     this._eventTimer = setTimeout(() => {
-      this._dequeueMouseEvent();
+      this._emitEvent(this._queuedEvent);
     }, this.millisecondsBetweenMouseEvents);
   }
 
   _isInTimeoutWindow() {
     return this._eventTimer !== null;
-  }
-
-  _clearTimeoutWindow() {
-    if (!this._isInTimeoutWindow()) {
-      return;
-    }
-
-    clearTimeout(this._eventTimer);
-    this._eventTimer = null;
   }
 }
 
