@@ -94,8 +94,8 @@
     URL_LOADING: "url-loading",
     URL_SUCCESS: "url-success",
   };
-  // the states in statesDisablingClose requires to disable the eventual close buttons
-  const statesDisablingClose = new Set([
+  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
+  const statesWithoutDialogClose = new Set([
     states.LOGS_LOADING,
     states.URL_LOADING,
   ]);
@@ -154,7 +154,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesDisablingClose.has(newValue)
+              !statesWithoutDialogClose.has(newValue)
             )
           );
         }

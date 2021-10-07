@@ -133,8 +133,8 @@
     RESTARTING: "restarting",
     UPDATE_FINISHED: "update-finished",
   };
-  // the states in statesDisablingClose requires to disable the eventual close buttons
-  const statesDisablingClose = new Set([
+  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
+  const statesWithoutDialogClose = new Set([
     states.CHECKING,
     states.UPDATING,
     states.RESTARTING,
@@ -186,7 +186,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesDisablingClose.has(newValue)
+              !statesWithoutDialogClose.has(newValue)
             )
           );
         }

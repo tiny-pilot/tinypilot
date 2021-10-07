@@ -96,8 +96,8 @@
     EDIT: "edit",
     SAVING: "saving",
   };
-  // the states in statesDisablingClose requires to disable the eventual close buttons
-  const statesDisablingClose = new Set([states.LOADING, states.SAVING]);
+  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
+  const statesWithoutDialogClose = new Set([states.LOADING, states.SAVING]);
 
   (function () {
     const template = document.querySelector("#video-settings-template");
@@ -144,7 +144,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesDisablingClose.has(newValue)
+              !statesWithoutDialogClose.has(newValue)
             )
           );
         }

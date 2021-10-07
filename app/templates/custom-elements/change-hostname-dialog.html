@@ -95,8 +95,8 @@
     PROMPT: "prompt",
     CHANGING: "changing",
   };
-  // the states in statesDisablingClose requires to disable the eventual close buttons
-  const statesDisablingClose = new Set([states.CHANGING]);
+  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
+  const statesWithoutDialogClose = new Set([states.CHANGING]);
 
   (function () {
     const template = document.querySelector("#change-hostname-template");
@@ -172,7 +172,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesDisablingClose.has(newValue)
+              !statesWithoutDialogClose.has(newValue)
             )
           );
         }
