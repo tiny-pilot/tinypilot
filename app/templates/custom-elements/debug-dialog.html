@@ -83,7 +83,7 @@
   import {
     DialogClosedEvent,
     DialogFailedEvent,
-    StateChangedEvent,
+    DialogCloseStateChangedEvent,
   } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
@@ -152,13 +152,11 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
-          if (statesDisablingClose.has(newValue)) {
-            this.dispatchEvent(
-              new StateChangedEvent({ stateAllowingClose: false })
-            );
-          } else {
-            this.dispatchEvent(new StateChangedEvent());
-          }
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              !statesDisablingClose.has(newValue)
+            )
+          );
         }
 
         getLogs() {

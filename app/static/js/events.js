@@ -30,17 +30,17 @@ export class DialogFailedEvent extends CustomEvent {
   }
 }
 
-export class StateChangedEvent extends CustomEvent {
+export class DialogCloseStateChangedEvent extends CustomEvent {
   /**
    * Event that advises a state change when potentially interesting
    * information comes with the new state, currently one information:
    * - `stateAllowingClose`: defaults to true, informs that the new state
    * requires allowing or disabling the close behavior
    */
-  constructor(newStateInfo = { stateAllowingClose: true }) {
-    super("state-changed", {
+  constructor(canBeClosed = true) {
+    super("dialog-close-state-changed", {
       detail: {
-        stateAllowingClose: newStateInfo.stateAllowingClose ?? true,
+        canBeClosed,
       },
       bubbles: true,
       composed: true,

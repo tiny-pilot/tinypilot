@@ -94,13 +94,16 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
-          this.shadowRoot.addEventListener("state-changed", (e) => {
-            if (e.detail.stateAllowingClose === false) {
-              this.setAttribute("hide-close-button", "");
-            } else {
-              this.removeAttribute("hide-close-button");
+          this.shadowRoot.addEventListener(
+            "dialog-close-state-changed",
+            (e) => {
+              if (e.detail.canBeClosed === false) {
+                this.setAttribute("hide-close-button", "");
+              } else {
+                this.removeAttribute("hide-close-button");
+              }
             }
-          });
+          );
           this.shadowRoot
             .getElementById("close-button")
             .addEventListener("click", () => this.show(false));
