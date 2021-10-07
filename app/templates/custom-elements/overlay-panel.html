@@ -40,7 +40,7 @@
       border: 1px solid black;
       opacity: 0.55;
     }
-    :host([hide-close-button=""]) #close-button {
+    :host(:not([show-close-button])) #close-button {
       display: none;
     }
 
@@ -94,13 +94,15 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
+
+          this.setAttribute("show-close-button", "");
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
             (e) => {
-              if (e.detail.canBeClosed === false) {
-                this.setAttribute("hide-close-button", "");
+              if (e.detail.canBeClosed) {
+                this.setAttribute("show-close-button", "");
               } else {
-                this.removeAttribute("hide-close-button");
+                this.removeAttribute("show-close-button");
               }
             }
           );
