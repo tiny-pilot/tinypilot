@@ -2,7 +2,24 @@
  * A mechanism to rate-limit mouse events so that they don't flood the network
  * channel or generate a long queue of stale events.
  *
- * Considerations:
+ *  The current implementation fires mouse events immediately but maintains a
+ *  timeout window to prevent any low-priority mouse events from firing until
+ *  the timeout expires. If any low-priority mouse events occur within the
+ *  timeout window, we save them to fire after the timeout window. We only queue
+ *  a single event, so we drop all low-priority mouse events during the timeout
+ *  window except for the final event. We never drop high-priority events,
+ *  and we send them immediately, ignoring the timeout window.
+ *
+ *  Here is how we classify the types of mouse events:
+ *
+ *    | Event type | Priority |
+ *    |------------|----------|
+ *    | Click      | High     |
+ *    | Release    | High     |
+ *    | Move       | Low      |
+ *    | Wheel      | Low      |
+ *
+ * Considerations
  *  - Normal mouse movement can generate hundreds of mouse move events in a few
  *      seconds. Sending this many mouse events over the network can clog the
  *      network link or the server's emulated mouse USB interface.
@@ -14,6 +31,47 @@
  *      determines the mouse's final position. If we drop the final mouse event,
  *      the user might see an offset between their local cursor and their remote
  *      cursor.
+ *
+ * Behavior
+ *
+ * - Example 1
+ *
+ * If we have mouse movement events W, X, Y, and Z, here is how the rate-limited
+ * mouse will handle them:
+ *
+ * W[         X   ]
+ *                 X[   Y        Z  ]
+ *                                   Z
+ *
+ * The rate limited mouse would process them as follows:
+ *
+ * - W: Fires immediately because no events are queued.
+ * - X: Fires after W's timeout window expires.
+ * - Y: Gets queued but never fires because Z bumps it.
+ * - Z: Replaces Y in the queue and fires at the end of X's timeout window.
+ *
+ * - Example 2
+ *
+ * If we mouse movement events X, Y, and Z, and a mouse click C, here is how the
+ * rate-limited mouse will handle them:
+ *
+ * X[         C  ]
+ *            C[     Y      ]
+ *                           Y[   Z        ]
+ *                                          Z
+ *
+ * - X: Fires immediately because no events are queued.
+ * - C: Fires immediately because clicks are high-priority. It ends the tiemout
+ *      and starts a new one.
+ * - Y: Fires at the end of C's timeout window.
+ * - Z: Fires at the end of Y's timeout window.
+ *
+ * Future improvements
+ *
+ * There is room for improvement if we wanted to further optimize latency or
+ * bandwidth. We could potentially queue more elements and use more
+ * optimizations to drop unnecessary events:
+ *
  *  - We can drop some mouse events with a low probability of affecting the
  *      user's experience. For example, if the mouse moves in the following
  *      sequence:
@@ -35,25 +93,9 @@
  *      The mouse ultimately lands in position (100, 100), but dropping the
  *      event at t=20ms might impact user experience if they meant to send a
  *      right-and-left gesture to the target computer.
- *  - We assume that mouse clicks and releases are high-priority. We should
- *      never drop a mouse click or release event.
- *  - Mouse wheel events have the same priority as mouse move events. It's okay
- *      to drop mouse wheel events if we're rate-limited.
  *  - The more mouse events we queue for transmission after a rate-limit window,
  *      the more latency the user will perceive because we're creating a backlog
  *      of mouse move events for the browser to process.
- *
- * Implementation:
- *  The current implementation fires mouse events immediately but maintains a
- *  timeout window to prevent any low-priority mouse events from firing until
- *  the timeout expires. If any low-priority mouse events occur within the
- *  timeout window, we save them to fire after the timeout window. We only queue
- *  a single event, so we drop all low-priority mouse events during the timeout
- *  window except for the final event.
- *
- *  We consider mouse click and release events to be high-priority and mouse
- *  move or wheel events to be low priority. We never drop high-priority events,
- *  and we send them immediately, ignoring the timeout window.
  */
 
 export class RateLimitedMouse {
@@ -64,66 +106,66 @@ export class RateLimitedMouse {
    * event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
-    this.millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
+    this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
     this._sendEventFn = sendEventFn;
     this._queuedEvent = null;
     this._eventTimer = null;
   }
 
-  onMouseDown(evt) {
-    // Treat mouse down events as high-priority. Clear the timeout window so
-    // that we can process the mouse click immediately.
+  onMouseDown(jsMouseEvt) {
+    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
+  }
+
+  onMouseUp(jsMouseEvt) {
+    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
+  }
+
+  onMouseMove(jsMouseEvt) {
+    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
+  }
+
+  onWheel(jsMouseEvt) {
+    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
+  }
+
+  setTimeoutWindow(millisecondsBetweenMouseEvents) {
+    this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
+  }
+
+  _processHighPriorityEvent(mouseInfo) {
+    this._emitEvent(mouseInfo);
+
+    // Cancel any pending events.
     this._clearTimeoutWindow();
-    this._queueMouseEvent(evt);
-  }
-
-  onMouseUp(evt) {
-    // Treat mouse up events as high-priority. Clear the timeout window so that
-    // we can process the mouse click release immediately.
-    this._clearTimeoutWindow();
-    this._queueMouseEvent(evt);
-  }
-
-  onMouseMove(evt) {
-    this._queueMouseEvent(evt);
-  }
-
-  onWheel(evt) {
-    this._queueMouseEvent(evt);
-  }
-
-  _queueMouseEvent(evt) {
-    this._queuedEvent = parseMouseEvent(evt);
-
-    if (!this._isInTimeoutWindow()) {
-      this._dequeueMouseEvent();
-    }
-  }
-
-  _dequeueMouseEvent() {
-    // If there are no events waiting, clear the timeout window.
-    if (!this._queuedEvent) {
-      this._clearTimeoutWindow();
-      return;
-    }
-
-    // Send the event and start a timeout window to prevent subsequent events
-    // from going out too quickly.
-    this._sendQueuedMouseEvent();
-    this._startTimeoutWindow();
-  }
-
-  _sendQueuedMouseEvent() {
-    this._sendEventFn(this._queuedEvent);
     this._queuedEvent = null;
   }
 
-  _startTimeoutWindow() {
-    // Start a timer to process any new events that arrive during the timeout
-    // window.
+  _processLowPriorityEvent(mouseInfo) {
+    if (this._isInTimeoutWindow()) {
+      this._queuedEvent = mouseInfo;
+    } else {
+      this._emitEvent(mouseInfo);
+    }
+  }
+
+  /**
+   * Emit a mouse event immediately and start a timeout window to gate the next
+   * mouse event to send.
+   *
+   * @param {Object} mouseInfo Mouse information object, parsed from
+   * parseMouseEvent. If mouseInfo is null, this is a no-op.
+   */
+  _emitEvent(mouseInfo) {
+    this._sendEventFn(mouseInfo);
+
+    // Start the timeout window to gate subsequent low-priority events.
     this._eventTimer = setTimeout(() => {
-      this._dequeueMouseEvent();
-    }, this.millisecondsBetweenMouseEvents);
+      if (this._queuedEvent) {
+        this._emitEvent(this._queuedEvent);
+      }
+      this._queuedEvent = null;
+      this._eventTimer = null;
+    }, this._millisecondsBetweenMouseEvents);
   }
 
   _isInTimeoutWindow() {
@@ -131,10 +173,6 @@ export class RateLimitedMouse {
   }
 
   _clearTimeoutWindow() {
-    if (!this._isInTimeoutWindow()) {
-      return;
-    }
-
     clearTimeout(this._eventTimer);
     this._eventTimer = null;
   }

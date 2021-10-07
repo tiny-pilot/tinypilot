@@ -224,9 +224,7 @@
               .querySelector(".screen-wrapper")
               .requestFullscreen();
           } else if (name === "milliseconds-between-mouse-events") {
-            this.rateLimitedMouse.millisecondsBetweenMouseEvents = parseInt(
-              newValue
-            );
+            this.rateLimitedMouse.setTimeoutWindow(parseInt(newValue));
           }
         }
 
