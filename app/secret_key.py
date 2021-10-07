@@ -1,28 +1,27 @@
-"""Manage a static secret key on the filesystem to be used by Flask.
+"""Manage a key file that Flask uses as a secret key.
 
-Flask uses the SECRET_KEY config value to securely sign the session cookie. The
-secret key can also be used for any other security related needs by other Flask
-extensions or by your application.
+Flask and Flask extensions use the SECRET_KEY config value to securely sign
+security-sensitive tokens. In the context of TinyPilot, Flask uses the
+SECRET_KEY to sign the session cookie and the CSRF token.
 
-For example, the popular Flask-WTF extension uses the Flask app’s SECRET_KEY to
-securely sign the CSRF token.
+We persist the SECRET_KEY to the disk so that Flask's tokens stay valid across
+server restarts or reboots.
 
-To avoid the session cookie (or CSRF token) from expiring when the Flask server
-restarts, it is necessary to maintain a static SECRET_KEY value.
-
-    Typical usage example:
+Typical usage example:
 
     app.config.update(
         SECRET_KEY=secret_key.get_or_create()
     )
 
 """
-
+import logging
 import os
 import stat
 
-_SECRET_KEY_DIR = os.path.expanduser('~')
-_SECRET_KEY_FILE = os.path.join(_SECRET_KEY_DIR, '.flask_secret_key')
+_SECRET_KEY_FILE = os.path.expanduser('~/.flask-secret-key')
+_SECRET_KEY_FILE_PERMS = 0o600
+_SECRET_KEY_BYTE_LENGTH = 32
+logger = logging.getLogger(__name__)
 
 
 class Error(Exception):
@@ -50,19 +49,18 @@ def _get():
     """
     with open(_SECRET_KEY_FILE, 'rb') as key_file:
         file_perms = stat.S_IMODE(os.stat(key_file.name).st_mode)
-        if file_perms != 0o600:
+        if file_perms != _SECRET_KEY_FILE_PERMS:
             raise InvalidSecretKeyError(
                 'The secret key file must have a file permission of 600.')
         secret_key = key_file.read()
-        if len(secret_key) != 32:
+        if len(secret_key) != _SECRET_KEY_BYTE_LENGTH:
             raise InvalidSecretKeyError(
                 'The secret key value must be a string of 32 bytes.')
         return secret_key
 
 
 def _create():
-    """Generate and save a secret key to the filesystem with a file permission
-    of 600.
+    """Generate and save a secret key file with a file permission of 600.
 
     Args:
         None
@@ -73,9 +71,10 @@ def _create():
     Raises:
         IOError: If an error occured while accessing the secret key file.
     """
+    logger.info('Creating new flask secret key at %s', _SECRET_KEY_FILE)
     with open(_SECRET_KEY_FILE, 'wb') as key_file:
-        os.chmod(key_file.name, 0o600)
-        secret_key = os.urandom(32)
+        os.chmod(key_file.name, _SECRET_KEY_FILE_PERMS)
+        secret_key = os.urandom(_SECRET_KEY_BYTE_LENGTH)
         key_file.write(secret_key)
         return secret_key
 
@@ -96,5 +95,5 @@ def get_or_create():
     """
     try:
         return _get()
-    except (IOError, InvalidSecretKeyError):
+    except IOError:
         return _create()
