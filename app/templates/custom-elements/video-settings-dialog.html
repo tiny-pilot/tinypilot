@@ -91,20 +91,22 @@
     setVideoJpegQuality,
   } from "/js/controllers.js";
 
-  const states = {
-    LOADING: "loading",
-    EDIT: "edit",
-    SAVING: "saving",
-  };
-  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
-  const statesWithoutDialogClose = new Set([states.LOADING, states.SAVING]);
-
   (function () {
     const template = document.querySelector("#video-settings-template");
 
     customElements.define(
       "video-settings-dialog",
       class extends HTMLElement {
+        states = {
+          LOADING: "loading",
+          EDIT: "edit",
+          SAVING: "saving",
+        };
+        statesWithoutDialogClose = new Set([
+          this.states.LOADING,
+          this.states.SAVING,
+        ]);
+
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
@@ -144,7 +146,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesWithoutDialogClose.has(newValue)
+              !this.statesWithoutDialogClose.has(newValue)
             )
           );
         }
@@ -202,7 +204,7 @@
         }
 
         getSettings() {
-          this.state = states.LOADING;
+          this.state = this.states.LOADING;
           Promise.all([
             this._fetchVideoFps(),
             this._fetchVideoJpegQuality(),
@@ -210,7 +212,7 @@
             this._fetchDefaultVideoJpegQuality(),
           ])
             .then(() => {
-              this.state = states.EDIT;
+              this.state = this.states.EDIT;
             })
             .catch(() => {
               // Ignore errors here because they have already been handled by
@@ -301,7 +303,7 @@
         }
 
         _saveSettings() {
-          this.state = states.SAVING;
+          this.state = this.states.SAVING;
           Promise.all([this._saveVideoFps(), this._saveVideoJpegQuality()])
             .then(applyVideoSettings)
             .then(() => {

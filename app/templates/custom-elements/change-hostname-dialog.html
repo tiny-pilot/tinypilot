@@ -90,14 +90,6 @@
     shutdown,
   } from "/js/controllers.js";
 
-  const states = {
-    INITIALIZING: "initializing",
-    PROMPT: "prompt",
-    CHANGING: "changing",
-  };
-  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
-  const statesWithoutDialogClose = new Set([states.CHANGING]);
-
   (function () {
     const template = document.querySelector("#change-hostname-template");
 
@@ -131,6 +123,13 @@
     customElements.define(
       "change-hostname-dialog",
       class extends HTMLElement {
+        states = {
+          INITIALIZING: "initializing",
+          PROMPT: "prompt",
+          CHANGING: "changing",
+        };
+        statesWithoutDialogClose = new Set([this.states.CHANGING]);
+
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
@@ -172,7 +171,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesWithoutDialogClose.has(newValue)
+              !this.statesWithoutDialogClose.has(newValue)
             )
           );
         }
@@ -202,13 +201,13 @@
 
         initialize() {
           this.inputError = null;
-          this.state = states.INITIALIZING;
+          this.state = this.states.INITIALIZING;
           determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this.elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
-              this.state = states.PROMPT;
+              this.state = this.states.PROMPT;
               this.elements.hostnameInput.focus();
             })
             .catch((error) => {
@@ -242,7 +241,7 @@
             .then((redirectURL) => {
               this.elements.futureLocation.innerText = redirectURL;
               this.elements.futureLocation.href = redirectURL;
-              this.state = states.CHANGING;
+              this.state = this.states.CHANGING;
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
@@ -254,7 +253,7 @@
                   "letters a-z, digits and dashes (it cannot start with a " +
                   "dash, though). It must contain 1-63 characters and cannot " +
                   'be "localhost".';
-                this.state = states.PROMPT;
+                this.state = this.states.PROMPT;
                 return;
               }
               this.dispatchEvent(

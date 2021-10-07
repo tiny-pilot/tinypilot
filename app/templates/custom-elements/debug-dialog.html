@@ -88,23 +88,22 @@
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
 
-  const states = {
-    LOGS_LOADING: "logs-loading",
-    LOGS_SUCCESS: "logs-success",
-    URL_LOADING: "url-loading",
-    URL_SUCCESS: "url-success",
-  };
-  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
-  const statesWithoutDialogClose = new Set([
-    states.LOGS_LOADING,
-    states.URL_LOADING,
-  ]);
-
   (function () {
     const template = document.querySelector("#debug-dialog-template");
     customElements.define(
       "debug-dialog",
       class DebugDialog extends HTMLElement {
+        states = {
+          LOGS_LOADING: "logs-loading",
+          LOGS_SUCCESS: "logs-success",
+          URL_LOADING: "url-loading",
+          URL_SUCCESS: "url-success",
+        };
+        statesWithoutDialogClose = new Set([
+          this.states.LOGS_LOADING,
+          this.states.URL_LOADING,
+        ]);
+
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
@@ -154,19 +153,19 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesWithoutDialogClose.has(newValue)
+              !this.statesWithoutDialogClose.has(newValue)
             )
           );
         }
 
         getLogs() {
-          this.state = states.LOGS_LOADING;
+          this.state = this.states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
               this.shadowRoot.querySelector(
                 "#logs-success .logs"
               ).textContent = text;
-              this.state = states.LOGS_SUCCESS;
+              this.state = this.states.LOGS_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -179,7 +178,7 @@
         }
 
         _getUrl() {
-          this.state = states.URL_LOADING;
+          this.state = this.states.URL_LOADING;
           const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
           textToShareableUrl(text)
@@ -189,7 +188,7 @@
               );
               urlElement.textContent = url;
               urlElement.href = url;
-              this.state = states.URL_SUCCESS;
+              this.state = this.states.URL_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(

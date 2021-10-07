@@ -65,24 +65,23 @@
   } from "/js/events.js";
   import { shutdown } from "/js/controllers.js";
 
-  const states = {
-    PROMPT: "prompt",
-    RESTARTING: "restarting",
-    SHUTTING_DOWN: "shutting-down",
-    SHUTDOWN_COMPLETE: "shutdown-complete",
-  };
-  // the states in statesWithoutDialogClose requires to disable the eventual close buttons
-  const statesWithoutDialogClose = new Set([
-    states.RESTARTING,
-    states.SHUTTING_DOWN,
-  ]);
-
   (function () {
     const template = document.querySelector("#shutdown-dialog-template");
 
     customElements.define(
       "shutdown-dialog",
       class extends HTMLElement {
+        states = {
+          PROMPT: "prompt",
+          RESTARTING: "restarting",
+          SHUTTING_DOWN: "shutting-down",
+          SHUTDOWN_COMPLETE: "shutdown-complete",
+        };
+        statesWithoutDialogClose = new Set([
+          this.states.RESTARTING,
+          this.states.SHUTTING_DOWN,
+        ]);
+
         constructor() {
           super();
         }
@@ -91,7 +90,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.state = states.PROMPT;
+          this.state = this.states.PROMPT;
 
           this.shadowRoot
             .getElementById("confirm-shutdown")
@@ -118,7 +117,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !statesWithoutDialogClose.has(newValue)
+              !this.statesWithoutDialogClose.has(newValue)
             )
           );
         }
@@ -128,13 +127,13 @@
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {
-                this.state = states.RESTARTING;
+                this.state = this.states.RESTARTING;
               } else {
-                this.state = states.SHUTTING_DOWN;
+                this.state = this.states.SHUTTING_DOWN;
                 // We can't tell when the system has fully shut down, but assume
                 // that it's done after 30 seconds.
                 setTimeout(() => {
-                  this.state = states.SHUTDOWN_COMPLETE;
+                  this.state = this.states.SHUTDOWN_COMPLETE;
                 }, 30 * 1000);
               }
             })
