@@ -133,11 +133,11 @@ export class RateLimitedMouse {
   }
 
   _processHighPriorityEvent(mouseInfo) {
-    this._emitEvent(mouseInfo);
-
     // Cancel any pending events.
     this._clearTimeoutWindow();
     this._queuedEvent = null;
+
+    this._emitEvent(mouseInfo);
   }
 
   _processLowPriorityEvent(mouseInfo) {
@@ -160,11 +160,11 @@ export class RateLimitedMouse {
 
     // Start the timeout window to gate subsequent low-priority events.
     this._eventTimer = setTimeout(() => {
+      this._eventTimer = null;
       if (this._queuedEvent) {
         this._emitEvent(this._queuedEvent);
       }
       this._queuedEvent = null;
-      this._eventTimer = null;
     }, this._millisecondsBetweenMouseEvents);
   }
 
