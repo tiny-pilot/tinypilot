@@ -9,6 +9,7 @@ from werkzeug import exceptions
 
 import api
 import json_response
+import secret_key
 import socket_api
 import views
 from find_files import find as find_files
@@ -37,7 +38,7 @@ logger.info('Starting app')
 
 app = flask.Flask(__name__, static_url_path='')
 app.config.update(
-    SECRET_KEY=os.urandom(32),
+    SECRET_KEY=secret_key.get_or_create(),
     TEMPLATES_AUTO_RELOAD=True,
     WTF_CSRF_TIME_LIMIT=None,
 )

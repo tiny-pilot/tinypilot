@@ -6,10 +6,6 @@ function getCsrfTokenElement(doc) {
   return doc.querySelector("meta[name='csrf-token']");
 }
 
-function setCsrfToken(tokenValue) {
-  return getCsrfTokenElement(document).setAttribute("content", tokenValue);
-}
-
 class ControllerError extends Error {
   /**
    * @param details string with the original error message.
@@ -61,22 +57,6 @@ async function processJsonResponse(response) {
     jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
     jsonBody.code
   );
-}
-
-export async function refreshCsrfToken() {
-  return fetch("/")
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (html) {
-      const doc = new DOMParser().parseFromString(html, "text/html");
-      const csrfToken = getCsrfToken(doc);
-      setCsrfToken(csrfToken);
-      return Promise.resolve();
-    })
-    .catch(function (error) {
-      return Promise.reject("Failed to refresh CSRF token: " + error);
-    });
 }
 
 export async function getLatestRelease() {
