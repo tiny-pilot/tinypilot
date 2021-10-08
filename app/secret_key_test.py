@@ -9,44 +9,34 @@ import secret_key
 
 class SecretKeyTest(unittest.TestCase):
 
-    # Intentionally violating style conventions so that we can parallel the
-    # self.assertEqual method.
-    def assertValidSecretKeyValue(self, value):  # pylint: disable=invalid-name
-        self.assertIs(bytes, type(value))
-        self.assertEqual(32, len(value))
-
     def test_get_or_create_will_get_when_valid_file_exists(self):
-        with tempfile.NamedTemporaryFile() as temp_file:
-            mock_secret_key_file = temp_file.name
-            temp_file.write(b'0' * 32)
-            temp_file.flush()
+        with tempfile.NamedTemporaryFile() as mock_secret_key_file:
+            mock_secret_key_file.write(b'0' * 32)
+            mock_secret_key_file.flush()
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
-                                   mock_secret_key_file):
+                                   mock_secret_key_file.name):
                 secret_key_value = secret_key.get_or_create()
                 self.assertEqual(b'0' * 32, secret_key_value)
-                self.assertValidSecretKeyValue(secret_key_value)
 
     def test_get_or_create_will_raise_error_when_file_has_invalid_perms(self):
-        with tempfile.NamedTemporaryFile() as temp_file:
-            mock_secret_key_file = temp_file.name
-            temp_file.write(b'0' * 32)
-            temp_file.flush()
-            os.chmod(mock_secret_key_file, 0o700)
+        with tempfile.NamedTemporaryFile() as mock_secret_key_file:
+            mock_secret_key_file.write(b'0' * 32)
+            mock_secret_key_file.flush()
+            os.chmod(mock_secret_key_file.name, 0o700)
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
-                                   mock_secret_key_file):
+                                   mock_secret_key_file.name):
                 with self.assertRaises(secret_key.InvalidSecretKeyError):
                     secret_key.get_or_create()
 
     def test_get_or_create_will_raise_error_when_file_has_invalid_content(self):
-        with tempfile.NamedTemporaryFile() as temp_file:
-            mock_secret_key_file = temp_file.name
-            temp_file.write(b'invalid')
-            temp_file.flush()
+        with tempfile.NamedTemporaryFile() as mock_secret_key_file:
+            mock_secret_key_file.write(b'dummy key data with incorrect size')
+            mock_secret_key_file.flush()
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
-                                   mock_secret_key_file):
+                                   mock_secret_key_file.name):
                 with self.assertRaises(secret_key.InvalidSecretKeyError):
                     secret_key.get_or_create()
 
@@ -62,4 +52,5 @@ class SecretKeyTest(unittest.TestCase):
                 self.assertTrue(os.path.exists(mock_secret_key_file))
                 file_perms = stat.S_IMODE(os.stat(mock_secret_key_file).st_mode)
                 self.assertEqual(0o600, file_perms)
-                self.assertValidSecretKeyValue(secret_key_value)
+                self.assertIs(bytes, type(secret_key_value))
+                self.assertEqual(32, len(secret_key_value))

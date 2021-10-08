@@ -91,6 +91,10 @@ def get_or_create():
         A string of 32 bytes.
 
     Raises:
+        InvalidSecretKeyError:
+            * If an existing secret key file doesn't have a file permission of
+              600.
+            * If an existing secret key value isn't a string of 32 bytes.
         IOError: If an error occured while creating the secret key file.
     """
     try:
