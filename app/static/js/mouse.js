@@ -2,15 +2,16 @@
  * A mechanism to rate-limit mouse events so that they don't flood the network
  * channel or generate a long queue of stale events.
  *
- *  The current implementation fires mouse events immediately but maintains a
- *  timeout window to prevent any low-priority mouse events from firing until
- *  the timeout expires. If any low-priority mouse events occur within the
- *  timeout window, we save them to fire after the timeout window. We only queue
- *  a single event, so we drop all low-priority mouse events during the timeout
- *  window except for the final event. We never drop high-priority events,
- *  and we send them immediately, ignoring the timeout window.
+ * The current implementation fires mouse events immediately but maintains a
+ * timeout window to prevent any low-priority mouse events from firing until the
+ * timeout expires. If any low-priority mouse events occur within the timeout
+ * window, we save them to fire after the timeout window. We only queue a single
+ * event, so we drop all low-priority mouse events during the timeout window
+ * except for the final event. We never drop high-priority events - we send them
+ * them immediately, discarding any previous timeout window and replacing it
+ * with a fresh window.
  *
- *  Here is how we classify the types of mouse events:
+ * Here is how we classify the types of mouse events:
  *
  *    | Event type | Priority |
  *    |------------|----------|
@@ -19,7 +20,8 @@
  *    | Move       | Low      |
  *    | Wheel      | Low      |
  *
- * Considerations
+ * # Considerations
+ *
  *  - Normal mouse movement can generate hundreds of mouse move events in a few
  *      seconds. Sending this many mouse events over the network can clog the
  *      network link or the server's emulated mouse USB interface.
@@ -32,9 +34,9 @@
  *      the user might see an offset between their local cursor and their remote
  *      cursor.
  *
- * Behavior
+ * # Behavior
  *
- * - Example 1
+ * ## Example 1
  *
  * If we have mouse movement events W, X, Y, and Z, here is how the rate-limited
  * mouse will handle them:
@@ -50,7 +52,7 @@
  * - Y: Gets queued but never fires because Z bumps it.
  * - Z: Replaces Y in the queue and fires at the end of X's timeout window.
  *
- * - Example 2
+ * ## Example 2
  *
  * If we mouse movement events X, Y, and Z, and a mouse click C, here is how the
  * rate-limited mouse will handle them:
@@ -66,43 +68,43 @@
  * - Y: Fires at the end of C's timeout window.
  * - Z: Fires at the end of Y's timeout window.
  *
- * Future improvements
+ * # Future improvements
  *
  * There is room for improvement if we wanted to further optimize latency or
  * bandwidth. We could potentially queue more elements and use more
  * optimizations to drop unnecessary events:
  *
- *  - We can drop some mouse events with a low probability of affecting the
- *      user's experience. For example, if the mouse moves in the following
- *      sequence:
+ * - We can drop some mouse events with a low probability of affecting the
+ *     user's experience. For example, if the mouse moves in the following
+ *     sequence:
  *
- *        t=0ms (0, 0)
- *        t=1ms (5, 5)
- *        t=2ms (10, 10)
+ *       t=0ms (0, 0)
+ *       t=1ms (5, 5)
+ *       t=2ms (10, 10)
  *
- *      The mouse event at t=1ms is mostly irrelevant because it doesn't matter
- *      to the user whether the mouse stopped at point (5, 5) on the way to
- *      (10, 10).
- *  - Some intermediate mouse events do affect user experience. Consider the
- *      following sequence:
+ *     The mouse event at t=1ms is mostly irrelevant because it doesn't matter
+ *     to the user whether the mouse stopped at point (5, 5) on the way to
+ *     (10, 10).
+ * - Some intermediate mouse events do affect user experience. Consider the
+ *     following sequence:
  *
- *        t=0ms   (100, 100)
- *        t=20ms  (500, 100)
- *        t=100ms (100, 100)
+ *       t=0ms   (100, 100)
+ *       t=20ms  (500, 100)
+ *       t=100ms (100, 100)
  *
- *      The mouse ultimately lands in position (100, 100), but dropping the
- *      event at t=20ms might impact user experience if they meant to send a
- *      right-and-left gesture to the target computer.
- *  - The more mouse events we queue for transmission after a rate-limit window,
- *      the more latency the user will perceive because we're creating a backlog
- *      of mouse move events for the browser to process.
+ *     The mouse ultimately lands in position (100, 100), but dropping the
+ *     event at t=20ms might impact user experience if they meant to send a
+ *     right-and-left gesture to the target computer.
+ * - The more mouse events we queue for transmission after a rate-limit window,
+ *     the more latency the user will perceive because we're creating a backlog
+ *     of mouse move events for the browser to process.
  */
 
 export class RateLimitedMouse {
   /**
    * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
    * wait between sending low-priority mouse events to the backend.
-   * @param {function(Object)} sendEventFn Function that sends parsed mouse
+   * @param {function(Object)} sendEventFn Function that sends a parsed mouse
    * event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
@@ -133,8 +135,7 @@ export class RateLimitedMouse {
   }
 
   _processHighPriorityEvent(mouseInfo) {
-    // Cancel any pending events.
-    this._clearTimeoutWindow();
+    // Cancel pending event, if one exists.
     this._queuedEvent = null;
 
     this._emitEvent(mouseInfo);
@@ -153,10 +154,17 @@ export class RateLimitedMouse {
    * mouse event to send.
    *
    * @param {Object} mouseInfo Mouse information object, parsed from
-   * parseMouseEvent. If mouseInfo is null, this is a no-op.
+   * parseMouseEvent.
    */
   _emitEvent(mouseInfo) {
     this._sendEventFn(mouseInfo);
+    this._startTimeoutWindow();
+  }
+
+  _startTimeoutWindow() {
+    // Clear any existing timeout window, if one is set.
+    clearTimeout(this._eventTimer); // This is a no-op if _eventTimer is null.
+    this._eventTimer = null;
 
     // Start the timeout window to gate subsequent low-priority events.
     this._eventTimer = setTimeout(() => {
@@ -170,11 +178,6 @@ export class RateLimitedMouse {
 
   _isInTimeoutWindow() {
     return this._eventTimer !== null;
-  }
-
-  _clearTimeoutWindow() {
-    clearTimeout(this._eventTimer);
-    this._eventTimer = null;
   }
 }
 
@@ -227,6 +230,9 @@ function parseMouseEvent(evt) {
     relativeX: Math.min(1.0, Math.max(0.0, cursorX / width)),
     relativeY: Math.min(1.0, Math.max(0.0, cursorY / height)),
     // Negate y-delta so that negative number means scroll down.
+    // TODO(mtlynch): We should move the negation to the server because it's
+    // part of converting JS semantics to HID semantics, which is the server's
+    // job.
     verticalWheelDelta: normalizeWheelDelta(evt.deltaY) * -1,
     horizontalWheelDelta: normalizeWheelDelta(evt.deltaX),
   };
