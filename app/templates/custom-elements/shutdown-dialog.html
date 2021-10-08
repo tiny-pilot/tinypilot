@@ -58,7 +58,11 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+  } from "/js/events.js";
   import { shutdown } from "/js/controllers.js";
 
   (function () {
@@ -67,6 +71,17 @@
     customElements.define(
       "shutdown-dialog",
       class extends HTMLElement {
+        states = {
+          PROMPT: "prompt",
+          RESTARTING: "restarting",
+          SHUTTING_DOWN: "shutting-down",
+          SHUTDOWN_COMPLETE: "shutdown-complete",
+        };
+        statesWithoutDialogClose = new Set([
+          this.states.RESTARTING,
+          this.states.SHUTTING_DOWN,
+        ]);
+
         constructor() {
           super();
         }
@@ -75,7 +90,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.state = "prompt";
+          this.state = this.states.PROMPT;
 
           this.shadowRoot
             .getElementById("confirm-shutdown")
@@ -100,6 +115,11 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              !this.statesWithoutDialogClose.has(newValue)
+            )
+          );
         }
 
         _doShutdown(restart) {
@@ -107,13 +127,13 @@
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {
-                this.state = "restarting";
+                this.state = this.states.RESTARTING;
               } else {
-                this.state = "shutting-down";
+                this.state = this.states.SHUTTING_DOWN;
                 // We can't tell when the system has fully shut down, but assume
                 // that it's done after 30 seconds.
                 setTimeout(() => {
-                  this.state = "shutdown-complete";
+                  this.state = this.states.SHUTDOWN_COMPLETE;
                 }, 30 * 1000);
               }
             })

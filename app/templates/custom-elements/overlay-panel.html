@@ -41,6 +41,10 @@
       opacity: 0.55;
     }
 
+    :host(:not([show-close-button])) #close-button {
+      display: none;
+    }
+
     #close-button svg {
       display: block;
       margin: 0.3rem;
@@ -90,6 +94,18 @@
           this.shadowRoot.addEventListener("dialog-failed", () =>
             // This event is further handled in `app.js`.
             this.show(false)
+          );
+
+          this.setAttribute("show-close-button", "");
+          this.shadowRoot.addEventListener(
+            "dialog-close-state-changed",
+            (e) => {
+              if (e.detail.canBeClosed) {
+                this.setAttribute("show-close-button", "");
+              } else {
+                this.removeAttribute("show-close-button");
+              }
+            }
           );
           this.shadowRoot
             .getElementById("close-button")

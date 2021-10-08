@@ -80,7 +80,11 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+  } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
 
@@ -89,6 +93,17 @@
     customElements.define(
       "debug-dialog",
       class DebugDialog extends HTMLElement {
+        states = {
+          LOGS_LOADING: "logs-loading",
+          LOGS_SUCCESS: "logs-success",
+          URL_LOADING: "url-loading",
+          URL_SUCCESS: "url-success",
+        };
+        statesWithoutDialogClose = new Set([
+          this.states.LOGS_LOADING,
+          this.states.URL_LOADING,
+        ]);
+
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
@@ -136,16 +151,21 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              !this.statesWithoutDialogClose.has(newValue)
+            )
+          );
         }
 
         getLogs() {
-          this.state = "logs-loading";
+          this.state = this.states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
               this.shadowRoot.querySelector(
                 "#logs-success .logs"
               ).textContent = text;
-              this.state = "logs-success";
+              this.state = this.states.LOGS_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -158,7 +178,7 @@
         }
 
         _getUrl() {
-          this.state = "url-loading";
+          this.state = this.states.URL_LOADING;
           const text = this.shadowRoot.querySelector("#logs-success .logs")
             .textContent;
           textToShareableUrl(text)
@@ -168,7 +188,7 @@
               );
               urlElement.textContent = url;
               urlElement.href = url;
-              this.state = "url-success";
+              this.state = this.states.URL_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(
