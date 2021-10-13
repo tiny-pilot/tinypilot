@@ -128,6 +128,23 @@ set state(newValue) {
 }
 ```
 
+We define the different states in the JavaScript component through the class attribute `states`. The states names need to be identical to the CSS states names that we define later.
+
+```javascript
+class extends HTMLElement {
+    states = {
+        INITIALIZING: "initializing",
+        FETCH_FROM_URL: "fetch-from-url",
+        VIEW: "view",
+    };
+```
+
+ The class attribute `states` can then be used in the JavaScript component code:
+
+```javascript
+this.state = this.states.FETCH_FROM_URL;
+```
+
 We then use CSS rules based on the `state` attribute to control the component's appearance:
 
 ```html
@@ -160,6 +177,39 @@ We then use CSS rules based on the `state` attribute to control the component's 
 This ensures that the elements in the `<div id="initializing">` only appear when the component's state is `initializing`.
 
 Prefer to change a web component's appearance based on attributes and CSS rules as opposed to JavaScript that manipulates the `.style` attributes of elements within the component.
+
+### Disable closing a dialog
+
+For a component embedded in a dialog (using `overlay-panel`), we might want in some states to prevent the user from closing the dialog, typically when we are waiting for an action to complete (for example loading logs).
+
+We define the states that require preventing the user from closing the dialog in the `statesWithoutDialogClose` component attribute:
+
+```javascript
+class extends HTMLElement {
+    states = {
+        INITIALIZING: "initializing",
+        FETCH_FROM_URL: "fetch-from-url",
+        VIEW: "view",
+    };
+    statesWithoutDialogClose = new Set([this.states.INITIALIZING]);
+```
+
+Note: even if there is only one state, we use the attribute `statesWithoutDialogClose` as a `Set` with only one element, for consistency.
+
+Then we update the state setter to emit an event when the state changes, giving the information whether we should allow, or not, the user to close the dialog:
+
+```javascript
+set state(newValue) {
+    this.setAttribute("state", newValue);
+    this.dispatchEvent(
+    new DialogCloseStateChangedEvent(
+        !this.statesWithoutDialogClose.has(newValue)
+    )
+    );
+}
+```
+
+This event will be picked up by the `overlay-panel` which will hide the X close button.
 
 ### Create element references in `connectedCallback()`
 

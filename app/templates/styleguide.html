@@ -217,6 +217,7 @@
       </div>
 
       <h2 class="section">Overlay</h2>
+      <h3>Design</h3>
       <p>
         Click on the buttons to learn how the overlay is supposed to be
         designed.
@@ -323,6 +324,20 @@
             document.getElementById("error-overlay").show();
           });
       </script>
+      <h3>Loading states</h3>
+      <p>
+        When the overlay is in a loading state, in general we do not want the
+        user to close it. In that case we should disable the closing behavior,
+        by not showing any close button and by disabling the overlay panel's X
+        close button (see in the
+        <a
+          href="https://github.com/tiny-pilot/tinypilot/blob/master/CONTRIBUTING.md#web-components-conventions"
+          target="_blank"
+        >
+          Contributing Guidelines
+        </a>
+        for implementation details).
+      </p>
 
       <h2 class="section">Progress indicator</h2>
       <p>
