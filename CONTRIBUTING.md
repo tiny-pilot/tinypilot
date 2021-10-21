@@ -128,7 +128,7 @@ set state(newValue) {
 }
 ```
 
-We define the different states in the JavaScript component through the class attribute `states`. The states names need to be identical to the CSS states names that we define later.
+We enumerate all possible state values in the states property on the web component class, like so:
 
 ```javascript
 class extends HTMLElement {
@@ -180,9 +180,9 @@ Prefer to change a web component's appearance based on attributes and CSS rules 
 
 ### Disable closing a dialog
 
-For a component embedded in a dialog (using `overlay-panel`), we might want in some states to prevent the user from closing the dialog, typically when we are waiting for an action to complete (for example loading logs).
+For a component that is used within an overlay, there might be certain states that should prevent the user from closing the dialog. That’s typically the case when we are waiting for an action to complete (for example when loading something).
 
-We define the states that require preventing the user from closing the dialog in the `statesWithoutDialogClose` component attribute:
+These particular states are listed in the `statesWithoutDialogClose` class property, like so:
 
 ```javascript
 class extends HTMLElement {
@@ -194,9 +194,9 @@ class extends HTMLElement {
     statesWithoutDialogClose = new Set([this.states.INITIALIZING]);
 ```
 
-Note: even if there is only one state, we use the attribute `statesWithoutDialogClose` as a `Set` with only one element, for consistency.
+Note: for consistency, we always use a `Set` here, even if it only contains a single element.
 
-Then we update the state setter to emit an event when the state changes, giving the information whether we should allow, or not, the user to close the dialog:
+In the state setter, we emit an event to inform the enclosing overlay whether or not to show the `x` close button.
 
 ```javascript
 set state(newValue) {
