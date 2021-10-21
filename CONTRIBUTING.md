@@ -128,6 +128,23 @@ set state(newValue) {
 }
 ```
 
+We enumerate all possible state values in the states property on the web component class, like so:
+
+```javascript
+class extends HTMLElement {
+    states = {
+        INITIALIZING: "initializing",
+        FETCH_FROM_URL: "fetch-from-url",
+        VIEW: "view",
+    };
+```
+
+ The class attribute `states` can then be used in the JavaScript component code:
+
+```javascript
+this.state = this.states.FETCH_FROM_URL;
+```
+
 We then use CSS rules based on the `state` attribute to control the component's appearance:
 
 ```html
@@ -160,6 +177,39 @@ We then use CSS rules based on the `state` attribute to control the component's 
 This ensures that the elements in the `<div id="initializing">` only appear when the component's state is `initializing`.
 
 Prefer to change a web component's appearance based on attributes and CSS rules as opposed to JavaScript that manipulates the `.style` attributes of elements within the component.
+
+### Disable closing a dialog
+
+For a component that is used within an overlay, there might be certain states that should prevent the user from closing the dialog. That’s typically the case when we are waiting for an action to complete (for example when loading something).
+
+These particular states are listed in the `statesWithoutDialogClose` class property, like so:
+
+```javascript
+class extends HTMLElement {
+    states = {
+        INITIALIZING: "initializing",
+        FETCH_FROM_URL: "fetch-from-url",
+        VIEW: "view",
+    };
+    statesWithoutDialogClose = new Set([this.states.INITIALIZING]);
+```
+
+Note: for consistency, we always use a `Set` here, even if it only contains a single element.
+
+In the state setter, we emit an event to inform the enclosing overlay whether or not to show the `x` close button.
+
+```javascript
+set state(newValue) {
+    this.setAttribute("state", newValue);
+    this.dispatchEvent(
+    new DialogCloseStateChangedEvent(
+        !this.statesWithoutDialogClose.has(newValue)
+    )
+    );
+}
+```
+
+This event will be picked up by the `overlay-panel` which will hide the X close button.
 
 ### Create element references in `connectedCallback()`
 
