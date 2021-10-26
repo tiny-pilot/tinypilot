@@ -9,15 +9,9 @@ set -x
 # Exit on unset variable.
 set -u
 
-CHECK_INIT_FILE_EXISTS=$(find . -type f -name '*.py' -not -path "./venv/*" | sed -r 's|/[^/]+$||' | sort | uniq | xargs -I % bash -c """
-  if [ ! -f %/__init__.py ]; then
-    echo 1
-  else
-    echo 0
-  fi
-""" | tr -d '\n')
-
-[[ "$CHECK_INIT_FILE_EXISTS" =~ "1" ]] && exit 1
+SCRIPT_DIR=$(dirname "$0")
+# shellcheck source=dev-scripts/check-for-init-py-files
+. "${SCRIPT_DIR}/check-for-init-py-files"
 
 # Location of app source files.
 SOURCE_DIR="app"
