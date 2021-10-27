@@ -1,15 +1,28 @@
 #!/bin/bash
 
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
 # test if __init__.py file exists in directory containing .py files
-CHECK_INIT_FILE_EXISTS=$(find . -type f -name '*.py' -not -path "./venv/*" -exec dirname {} \; | sort | uniq | xargs -I % bash -c """
-  f=%/__init__.py
-  if [ ! -f \$f ]; then
-    echo ' - '%
-  fi
-""")
+CHECK_INIT_FILE_EXISTS=$(
+  find . -type f -name '*.py' -not -path "./venv/*" -exec dirname {} \; \
+    | sort \
+    | uniq \
+    | xargs -I % bash -c "
+      if [ ! -f %/__init__.py ]; then
+        echo ' - '%
+      fi
+    "
+)
 
 if [ -n "$CHECK_INIT_FILE_EXISTS" ]; then
-  HELP_TEXT="Directories missing __init__ file"
+  HELP_TEXT="Directories missing __init__.py file"
   printf "\n%s\n%s\n" "$HELP_TEXT" "$CHECK_INIT_FILE_EXISTS"
   exit 1
 fi
