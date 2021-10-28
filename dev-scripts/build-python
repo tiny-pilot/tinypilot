@@ -9,10 +9,6 @@ set -x
 # Exit on unset variable.
 set -u
 
-SCRIPT_DIR=$(dirname "$0")
-# shellcheck source=dev-scripts/check-for-init-py-files
-. "${SCRIPT_DIR}/check-for-init-py-files"
-
 # Location of app source files.
 SOURCE_DIR="app"
 
