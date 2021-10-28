@@ -11,12 +11,11 @@ set -u
 
 # test if __init__.py file exists in directory containing .py files
 CHECK_INIT_FILE_EXISTS=$(
-  find . -type f -name '*.py' -not -path "./venv/*" -exec dirname {} \; \
-    | sort \
-    | uniq \
+  find . -type f -name '*.py' -not -path "./venv/*" -printf "%h\n" \
+    | sort -u \
     | xargs -I % bash -c "
       if [ ! -f %/__init__.py ]; then
-        echo ' - '%
+        echo ' - %'
       fi
     "
 )
