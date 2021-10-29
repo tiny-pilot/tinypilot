@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Test if __init__.py file exists in directory containing .py files.
+
+# Exit build script on first failure.
+set -e
+# Exit on unset variable.
+set -u
+
+success=0
+
+while read -r directory; do
+  if [[ ! -f "${directory}/__init__.py" ]]; then
+    printf "Directory missing __init__.py file: %s\n" "${directory}" >&2
+    success=255
+  fi
+done < <(
+  find . \
+    -type f \
+    -name '*.py' \
+    -not -path "./venv/*" \
+    -not -path "./.git/*" \
+    -exec dirname {} \; \
+    | sort --unique
+)
+
+exit "${success}"

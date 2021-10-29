@@ -17,6 +17,8 @@ UPDATE_SCRIPT="scripts/update-service"
 # Location of virtualenv.
 VIRTUALENV_DIR=venv
 
+./dev-scripts/check-for-init-py-files
+
 # Delete pyc files from previous builds.
 find . \
   -name "*.pyc" \
