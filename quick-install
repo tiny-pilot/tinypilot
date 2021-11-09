@@ -136,11 +136,12 @@ pushd "$INSTALLER_DIR"
 
 python3 -m venv venv
 . venv/bin/activate
-# For some reason, wheel has to be installed before anything else.
-pip install wheel==0.34.2
+# Upgrade to a recent version of pip so that we can use binary wheels where
+# available instead of building the packages locally.
+pip install pip==21.3.1
 echo 'ansible==2.9.10
 cffi==1.14.4
-cryptography==3.3.2
+cryptography==35.0.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 pkg-resources==0.0.0
