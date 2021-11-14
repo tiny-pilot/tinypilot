@@ -215,10 +215,10 @@ Mar 01 10:05:14 tinypilot systemd[1]: Started TinyPilot - RPi-based virtual KVM.
 Mar 01 10:05:16 tinypilot python[573]: [2021-03-01 10:05:16,336] INFO in main: Starting app
 Mar 01 10:05:16 tinypilot python[573]: [2021-03-01 10:05:16,402] INFO in _internal:  * Restarting with stat
 Mar 01 10:05:17 tinypilot python[573]: [2021-03-01 10:05:17,303] INFO in main: Starting app
-Mar 01 10:06:36 tinypilot python[573]: [2021-03-01 10:06:36,775] INFO in _internal:  * Detected change in '/opt/tinypilot/app/main.py', reloading
+Mar 01 10:06:36 tinypilot python[573]: [2021-03-01 10:06:36,775] INFO in _internal:  [SENSITIVE] * Detected change in '/opt/tinypilot/app/main.py', reloading
 Mar 01 10:06:36 tinypilot python[573]: [2021-03-01 10:06:36,926] INFO in _internal:  * Restarting with stat
 Mar 01 10:06:37 tinypilot python[573]: [2021-03-01 10:06:37,897] INFO in main: Starting app
-Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,008] INFO in _internal:  * Detected change in '/opt/tinypilot/app/api.py', reloading
+Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,008] INFO in _internal:  [SENSITIVE] * Detected change in '/opt/tinypilot/app/api.py', reloading
 Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,170] INFO in _internal:  * Restarting with stat
 Mar 01 10:06:41 tinypilot python[573]: [2021-03-01 10:06:41,114] INFO in main: Starting app
 Mar 01 10:06:43 tinypilot python[573]: [2021-03-01 10:06:43,133] INFO in socket_api: Client connected
