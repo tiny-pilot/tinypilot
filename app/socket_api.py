@@ -19,6 +19,7 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 
 @socketio.on('keystroke')
 def socket_keystroke(message):
+    logger.debug('received keystroke message: %s', message)
     try:
         keystroke = keystroke_request.parse_keystroke(message)
     except keystroke_request.Error as e:
