@@ -122,6 +122,14 @@
         <br style="clear: both;" />
         <div
           class="colorcard"
+          style="background-color: var(--brand-orange-dark);"
+        ></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-orange-light);"
+        ></div>
+        <div
+          class="colorcard"
           style="background-color: var(--brand-sand-light);"
         ></div>
       </div>
@@ -215,6 +223,35 @@
         />
         <button>Send</button>
       </div>
+
+      <h2 class="section">Inline message</h2>
+      <p>
+        When we want to display a feedback message (error or warning), we can
+        use the inline-message component:
+      </p>
+      <inline-message variant="error" show>
+        <strong>Error:</strong> We use inline errors for “minor” issues that the
+        user can fix right away. For example, validation errors of input fields.
+      </inline-message>
+      <br />
+      <inline-message variant="warning" show>
+        <strong>Warning:</strong> We use warnings to raise attention about
+        potential problems. In contrast to errors, these don’t necessarily
+        require fixing for the user to proceed.
+      </inline-message>
+      <p>Some notes about usage:</p>
+      <ul>
+        <li>
+          The text should be left-aligned, even in an otherwise centered
+          context.
+        </li>
+        <li>
+          If sensible, the text should be prefaced with a short error headword
+          (set in bold) that concisely summarizes what the message is about. For
+          example: <strong>Invalid Input</strong>, or (for generic messages)
+          just <strong>Error</strong> or <strong>Warning</strong>.
+        </li>
+      </ul>
 
       <h2 class="section">Overlay</h2>
       <h3>Design</h3>
