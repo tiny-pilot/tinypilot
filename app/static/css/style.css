@@ -6,6 +6,7 @@
   --brand-hue-metallic: 230;
   --brand-hue-blue: 230;
   --brand-hue-yellow: 35;
+  --brand-hue-orange: 28;
   --brand-hue-red: 5;
   --brand-hue-green: 135;
 
@@ -16,6 +17,9 @@
 
   --brand-sand-light: hsl(var(--brand-hue-yellow), 59%, 92%);
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
+
+  --brand-orange-light: hsl(var(--brand-hue-orange), 100%, 80%);
+  --brand-orange-dark: hsl(var(--brand-hue-orange), 50%, 50%);
 
   --brand-blue: hsl(var(--brand-hue-blue), 55%, 55%);
   --brand-blue-dark: hsl(var(--brand-hue-blue), 51%, 30%);

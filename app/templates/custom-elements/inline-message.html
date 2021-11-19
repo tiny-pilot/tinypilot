@@ -1,0 +1,51 @@
+<template id="inline-message-template">
+  <style>
+    :host {
+      display: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: var(--border-radius);
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    :host([show=""]) {
+      display: block;
+    }
+
+    :host([variant="warning"]) {
+      background-color: var(--brand-orange-light);
+      border-color: var(--brand-orange-dark);
+    }
+
+    :host([variant="error"]) {
+      background-color: var(--brand-red-light);
+      border-color: var(--brand-red-dark);
+    }
+  </style>
+  <slot></slot>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector("#inline-message-template");
+
+    customElements.define(
+      "inline-message",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+        }
+
+        show() {
+          this.setAttribute("show", "");
+        }
+
+        hide() {
+          this.removeAttribute("show");
+        }
+      }
+    );
+  })();
+</script>
