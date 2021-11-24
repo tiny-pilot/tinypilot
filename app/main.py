@@ -7,9 +7,11 @@ import flask
 import flask_wtf
 from werkzeug import exceptions
 
+import log
+logging.setLoggerClass(log.SensitiveLogger)
+
 import api
 import json_response
-import log
 import secret_key
 import socket_api
 import views
@@ -20,11 +22,12 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 
-root_logger = log.create_root_logger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
     '%(asctime)s %(name)-15s %(levelname)-4s %(message)s', '%Y-%m-%d %H:%M:%S')
 handler.setFormatter(formatter)
+
+root_logger = logging.getLogger()
 root_logger.addHandler(flask.logging.default_handler)
 if debug:
     root_logger.setLevel(logging.DEBUG)
