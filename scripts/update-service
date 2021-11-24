@@ -12,6 +12,7 @@ import argparse
 import logging
 import subprocess
 
+import log
 import update.launcher
 import update.result
 import update.result_store
@@ -23,7 +24,7 @@ _UPDATE_TIMEOUT_SECONDS = 60 * 10
 
 
 def configure_logging():
-    root_logger = logging.getLogger()
+    root_logger = log.create_root_logger()
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
         '%(asctime)s %(name)-15s %(levelname)-4s %(message)s',
