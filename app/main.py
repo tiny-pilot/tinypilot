@@ -19,11 +19,12 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 
+flask.logging.default_handler.setFormatter(
+    logging.Formatter(
+        '%(asctime)s.%(msecs)03d %(name)-15s %(levelname)-4s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'))
+
 root_logger = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter(
-    '%(asctime)s %(name)-15s %(levelname)-4s %(message)s', '%Y-%m-%d %H:%M:%S')
-handler.setFormatter(formatter)
 root_logger.addHandler(flask.logging.default_handler)
 if debug:
     root_logger.setLevel(logging.DEBUG)
