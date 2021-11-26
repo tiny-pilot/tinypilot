@@ -1,11 +1,7 @@
 import logging
 
 
-def create_root_logger():
-    return logging.getLogger()
-
-
-class SensitiveLogger(logging.getLoggerClass()):
+class Logger(logging.getLoggerClass()):
     """Provides additional log methods for logging out sensitive data.
     """
 
@@ -28,6 +24,3 @@ class SensitiveLogger(logging.getLoggerClass()):
 
     def error_sensitive(self, message, *args, **kws):
         self.log_sensitive(logging.ERROR, message, *args, **kws)
-
-
-logging.setLoggerClass(SensitiveLogger)

@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+isort:skip_file
+"""
+# pylint:disable=wrong-import-position
 
 import logging
 import os
@@ -7,9 +11,12 @@ import flask
 import flask_wtf
 from werkzeug import exceptions
 
+# It’s crucial to import the logger before importing anything else, because
+# our custom logger is only available in modules imported _after_ it’s set up.
+import log.root_logger
+
 import api
 import json_response
-import log
 import secret_key
 import socket_api
 import views
@@ -20,13 +27,7 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 
-flask.logging.default_handler.setFormatter(
-    logging.Formatter(
-        '%(asctime)s.%(msecs)03d %(name)-15s %(levelname)-4s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'))
-
-root_logger = log.create_root_logger()
-root_logger.addHandler(flask.logging.default_handler)
+root_logger = log.root_logger.create(flask.logging.default_handler)
 if debug:
     root_logger.setLevel(logging.DEBUG)
 else:
