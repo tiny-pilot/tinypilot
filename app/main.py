@@ -9,6 +9,7 @@ from werkzeug import exceptions
 
 import api
 import json_response
+import log_sensitive
 import secret_key
 import socket_api
 import views
@@ -26,6 +27,7 @@ flask.logging.default_handler.setFormatter(
 
 root_logger = logging.getLogger()
 root_logger.addHandler(flask.logging.default_handler)
+log_sensitive.register_levels()
 if debug:
     root_logger.setLevel(logging.DEBUG)
 else:
@@ -35,7 +37,7 @@ else:
     logging.getLogger('engineio').setLevel(logging.ERROR)
 
 logger = logging.getLogger(__name__)
-logger.info('Starting app')
+logger.log(log_sensitive.INFO, 'Starting app')
 
 app = flask.Flask(__name__, static_url_path='')
 app.config.update(

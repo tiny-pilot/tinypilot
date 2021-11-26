@@ -4,6 +4,7 @@ import flask
 import flask_socketio
 
 import js_to_hid
+import log_sensitive
 import update_logs
 from hid import keyboard as fake_keyboard
 from hid import mouse as fake_mouse
@@ -19,7 +20,7 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 
 @socketio.on('keystroke')
 def socket_keystroke(message):
-    logger.debug('received keystroke message: %s', message)
+    logger.log(log_sensitive.DEBUG, 'received keystroke message: %s', message)
     try:
         keystroke = keystroke_request.parse_keystroke(message)
     except keystroke_request.Error as e:
