@@ -40,6 +40,7 @@ yapf --diff --recursive ./
 isort \
   --recursive \
   --force-single-line-imports \
+  --top log.root_logger \
   --diff \
   --check-only \
   --skip-glob=third_party/* \
