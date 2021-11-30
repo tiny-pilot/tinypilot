@@ -18,7 +18,6 @@ class Logger(logging.getLoggerClass()):
             # Since we do string concatenation here, we cast the message to
             # string explicitly, just to avoid potential type errors if someone
             # passes an Error object for example.
-            # pylint: disable=protected-access
             self._log(level, '[SENSITIVE] ' + str(message) + ' [/SENSITIVE]',
                       args, **kws)
 
