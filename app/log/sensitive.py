@@ -19,7 +19,8 @@ class Logger(logging.getLoggerClass()):
             # string explicitly, just to avoid potential type errors if someone
             # passes an Error object for example.
             # pylint: disable=protected-access
-            self._log(level, '[SENSITIVE] ' + str(message), args, **kws)
+            self._log(level, '[SENSITIVE] ' + str(message) + ' [/SENSITIVE]',
+                      args, **kws)
 
     def debug_sensitive(self, message, *args, **kws):
         self.log_sensitive(logging.DEBUG, message, *args, **kws)
