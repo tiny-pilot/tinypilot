@@ -2,7 +2,7 @@ import logging
 
 
 class Logger(logging.getLoggerClass()):
-    """Provides additional log methods for logging out sensitive data.
+    """A logger with additional methods for flagging log data as sensitive.
     """
 
     def __init__(self, name):
