@@ -67,7 +67,8 @@ def after_request(response):
 
 @app.errorhandler(Exception)
 def handle_error(e):
-    logger.exception(e)
+    logger.error('Aborting request due to unhandled error')
+    logger.exception_sensitive(e)
     code = 500
     if isinstance(e, exceptions.HTTPException):
         code = e.code
