@@ -18,6 +18,9 @@ class Logger(logging.getLoggerClass()):
             # Since we do string concatenation here, we cast the message to
             # string explicitly, just to avoid potential type errors if someone
             # passes an Error object for example.
+            # The closing marker is needed, because a log message might contain
+            # newlines. Otherwise, we wouldn’t be able to tell in hindsight how
+            # many lines a log message consists of.
             self._log(level, '[SENSITIVE] ' + str(message) + ' [/SENSITIVE]',
                       args, **kws)
 
