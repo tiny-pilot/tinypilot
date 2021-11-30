@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-"""
-isort:skip_file
-"""
-# pylint:disable=wrong-import-position
 
 import logging
 import os
@@ -14,7 +10,6 @@ from werkzeug import exceptions
 # It’s crucial to import the logger before importing anything else, because
 # our custom logger is only available in modules imported _after_ it’s set up.
 import log.root_logger
-
 import api
 import json_response
 import secret_key

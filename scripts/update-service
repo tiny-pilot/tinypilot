@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-isort:skip_file
-"""
 
 # Standalone executable for running the TinyPilot updater and saving the result
 # to a file. This executable is meant to be run as a systemd one-shot service,
@@ -19,7 +16,6 @@ import subprocess
 # It’s crucial to import the logger before importing anything else, because
 # our custom logger is only available in modules imported _after_ it’s set up.
 import log.root_logger
-
 import update.launcher
 import update.result
 import update.result_store
