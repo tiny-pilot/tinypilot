@@ -84,6 +84,9 @@ disable=fixme,
   too-many-public-methods,
   missing-class-docstring,
   superfluous-parens,
+  multiple-imports,     # We're using isort to lint imports
+  ungrouped-imports,    # We're using isort to lint imports
+  wrong-import-order,   # We're using isort to lint imports
   wrong-import-position # We're using isort to lint imports
 
 [REPORTS]
