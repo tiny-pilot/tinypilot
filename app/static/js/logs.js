@@ -9,6 +9,8 @@ const REDACTED_MESSAGE = "[SENSITIVE DATA REDACTED]";
  * - the entire last line that contains the `[/SENSITIVE]` end marker
  * - all lines in between those markers
  *
+ * All affected log lines are replaced by `[SENSITIVE DATA REDACTED]`.
+ *
  * This function doesn’t make any other assumptions on how the log lines are
  * formatted.
  *
