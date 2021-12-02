@@ -7,8 +7,8 @@ import flask
 import flask_wtf
 from werkzeug import exceptions
 
-# It’s crucial to import the logger before importing anything else, because
-# our custom logger is only available in modules imported _after_ it’s set up.
+# We’re importing the log package first because it needs to overwrite the
+# app-wide logger class before any other module loads it.
 import log
 import api
 import json_response
