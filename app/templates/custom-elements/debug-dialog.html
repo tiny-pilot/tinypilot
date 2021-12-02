@@ -229,10 +229,19 @@
             });
         }
 
+        /**
+         * Returns the log text as it is displayed to the user.
+         * @return {string}
+         */
         _getLogDisplayText() {
           return this.elements.logsText.textContent;
         }
 
+        /**
+         * (Re-)renders the log text panel, taking into account the current
+         * sensitivity settings into account.
+         * @param isSensitiveDataHidden {boolean}
+         */
         _renderLogDisplayText(isSensitiveDataHidden) {
           this.elements.logsText.textContent = isSensitiveDataHidden
             ? this._logText.filtered
