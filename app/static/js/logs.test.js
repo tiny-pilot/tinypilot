@@ -1,8 +1,8 @@
 import { describe, it } from "mocha";
 import assert from "assert";
-import { filterSensitiveData } from "./logs.js";
+import { redactSensitiveData } from "./logs.js";
 
-describe("filterSensitiveData", () => {
+describe("redactSensitiveData", () => {
   it("returns the logs as is if there is no sensitive data", () => {
     const logTextWithoutSensitiveData = `
 2020-01-01T00:00:01Z INFO Something happened
@@ -10,12 +10,12 @@ describe("filterSensitiveData", () => {
 2020-01-01T00:00:03Z ERROR Something else happened
 2020-01-01T00:00:04Z INFO Some regular message
 `;
-    const filteredLogs = filterSensitiveData(logTextWithoutSensitiveData);
-    assert.strictEqual(filteredLogs, logTextWithoutSensitiveData);
+    const redactedLogs = redactSensitiveData(logTextWithoutSensitiveData);
+    assert.strictEqual(redactedLogs, logTextWithoutSensitiveData);
   });
 
   it("removes all lines that are flagged as sensitive", () => {
-    const filteredLogs = filterSensitiveData(`
+    const redactedLogs = redactSensitiveData(`
 2020-01-01T00:00:01Z INFO Something happened
 2020-01-01T00:00:02Z INFO Some other thing happened
 2020-01-01T00:00:03Z INFO [SENSITIVE] This message contains sensitive data [/SENSITIVE]
@@ -28,9 +28,13 @@ of the log text [/SENSITIVE]
     const expectedOutput = `
 2020-01-01T00:00:01Z INFO Something happened
 2020-01-01T00:00:02Z INFO Some other thing happened
+[SENSITIVE DATA REDACTED]
 2020-01-01T00:00:04Z ERROR Something else happened
+[SENSITIVE DATA REDACTED]
+[SENSITIVE DATA REDACTED]
+[SENSITIVE DATA REDACTED]
 2020-01-01T00:00:06Z INFO Some regular message
 `;
-    assert.strictEqual(filteredLogs, expectedOutput);
+    assert.strictEqual(redactedLogs, expectedOutput);
   });
 });

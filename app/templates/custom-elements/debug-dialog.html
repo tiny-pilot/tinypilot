@@ -120,7 +120,7 @@
   } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
-  import { filterSensitiveData } from "/js/logs.js";
+  import { redactSensitiveData } from "/js/logs.js";
 
   (function () {
     const template = document.querySelector("#debug-dialog-template");
@@ -152,7 +152,7 @@
 
           this._logText = {
             original: null,
-            filtered: null,
+            redacted: null,
           };
 
           this.elements = {
@@ -223,7 +223,7 @@
             .then((text) => {
               this._logText = {
                 original: text,
-                filtered: filterSensitiveData(text),
+                redacted: redactSensitiveData(text),
               };
               this._renderLogDisplayText();
               this.state = this.states.LOGS_SUCCESS;
@@ -248,7 +248,7 @@
          */
         _renderLogDisplayText() {
           this.elements.logsText.textContent = this.hideSensitiveData
-            ? this._logText.filtered
+            ? this._logText.redacted
             : this._logText.original;
         }
 
