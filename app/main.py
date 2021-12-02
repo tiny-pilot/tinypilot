@@ -9,7 +9,7 @@ from werkzeug import exceptions
 
 # It’s crucial to import the logger before importing anything else, because
 # our custom logger is only available in modules imported _after_ it’s set up.
-import log.root_logger
+import log
 import api
 import json_response
 import secret_key
@@ -22,7 +22,7 @@ port = int(os.environ.get('PORT', 8000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 
-root_logger = log.root_logger.create(flask.logging.default_handler)
+root_logger = log.create_root_logger(flask.logging.default_handler)
 if debug:
     root_logger.setLevel(logging.DEBUG)
 else:

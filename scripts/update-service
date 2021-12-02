@@ -14,7 +14,7 @@ import subprocess
 
 # It’s crucial to import the logger before importing anything else, because
 # our custom logger is only available in modules imported _after_ it’s set up.
-import log.root_logger
+import log
 import update.launcher
 import update.result
 import update.result_store
@@ -54,7 +54,7 @@ def make_update_result(update_error):
 
 
 def main(_):
-    root_logger = log.root_logger.create(logging.StreamHandler())
+    root_logger = log.create_root_logger(logging.StreamHandler())
     root_logger.setLevel(logging.INFO)
     logger.info('Starting TinyPilot update')
     perform_update()
