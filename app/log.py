@@ -1,8 +1,10 @@
 """Contains the configuration for our custom logging setup.
 
-This module must be the first of the local imports in the file that contains the
-`main` function. It overrides the default logger class, so that a call to
+This package overrides the default logger class, so that a call to
 `logging.getLogger(__name__)` returns an instance of `_SensitiveLogger`.
+
+The file that contains the `main` function must load this module before any
+of the other local imports.
 """
 import logging
 
@@ -10,9 +12,8 @@ import logging
 def create_root_logger(handler):
     """Creates a pre-configured root logger.
 
-    The logger is set up with custom formatting, and the provided handler is
-    attached to it. Note that importing this package has a side-effect, which
-    is described in the `__init__.py` file.
+    It sets up the logger with custom formatting and attaches the provided
+    handler.
 
     Args:
         handler: The log handler that shall be used (type `logging.Handler`).
@@ -67,4 +68,5 @@ class _SensitiveLogger(logging.getLoggerClass()):
         self.log_sensitive(logging.ERROR, message, *args, exc_info=True, **kws)
 
 
+# Register the sensitive logger globally.
 logging.setLoggerClass(_SensitiveLogger)
