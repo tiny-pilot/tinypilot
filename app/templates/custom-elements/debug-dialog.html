@@ -120,6 +120,7 @@
   } from "/js/events.js";
   import { copyElementTextToClipboard } from "/js/clipboard.js";
   import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
+  import { filterSensitiveData } from "/js/logs.js";
 
   (function () {
     const template = document.querySelector("#debug-dialog-template");
@@ -144,14 +145,16 @@
           // regardless of where they are called.
           this.retrieveLogs = this.retrieveLogs.bind(this);
           this._getUrl = this._getUrl.bind(this);
-
-          // This variable contains the original logs as they are retrieved from
-          // the server, e.g. without sensitive data being filtered out.
-          this._originalUnfilteredLogText = null;
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this._logText = {
+            original: null,
+            filtered: null,
+          };
+
           this.elements = {
             hideSensitiveData: this.shadowRoot.getElementById(
               "hide-sensitive-data"
@@ -209,8 +212,11 @@
           this.state = this.states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
-              this._setLogText(text);
-              this._originalUnfilteredLogText = text;
+              this._logText = {
+                original: text,
+                filtered: filterSensitiveData(text),
+              };
+              this._renderLogDisplayText(this._isSensitiveDataHidden());
               this.state = this.states.LOGS_SUCCESS;
             })
             .catch((error) => {
@@ -223,21 +229,19 @@
             });
         }
 
-        /**
-         * Returns the log text as it is displayed to the user (according to
-         * their sensitive data settings).
-         */
-        _getLogText() {
+        _getLogDisplayText() {
           return this.elements.logsText.textContent;
         }
 
-        _setLogText(newText) {
-          this.elements.logsText.textContent = newText;
+        _renderLogDisplayText(isSensitiveDataHidden) {
+          this.elements.logsText.textContent = isSensitiveDataHidden
+            ? this._logText.filtered
+            : this._logText.original;
         }
 
         _getUrl() {
           this.state = this.states.URL_LOADING;
-          textToShareableUrl(this._getLogText())
+          textToShareableUrl(this._getLogDisplayText())
             .then((url) => {
               this.elements.shareUrl.textContent = url;
               this.elements.shareUrl.href = url;
@@ -254,21 +258,17 @@
         }
 
         _hideSensitiveData() {
-          const NEWLINE = "\n";
-          const SENSITIVE_MARKER = "[SENSITIVE]";
-
-          const redactedLogs = this._getLogText()
-            .split(NEWLINE)
-            .filter((logLine) => !logLine.includes(SENSITIVE_MARKER))
-            .join(NEWLINE);
-          this._setLogText(redactedLogs);
-
           this.setAttribute("hide-sensitive-data", "");
+          this._renderLogDisplayText(/*isSensitiveDataHidden=*/ true);
         }
 
         _showSensitiveData() {
-          this._setLogText(this._originalUnfilteredLogText);
           this.removeAttribute("hide-sensitive-data");
+          this._renderLogDisplayText(/*isSensitiveDataHidden=*/ false);
+        }
+
+        _isSensitiveDataHidden() {
+          return this.hasAttribute("hide-sensitive-data");
         }
 
         onPushCopyButton(buttonElement, sourceElement) {
