@@ -168,6 +168,7 @@
             } else {
               this._showSensitiveData();
             }
+            this._renderLogDisplayText();
           });
           this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
             el.addEventListener("click", () =>
@@ -216,7 +217,7 @@
                 original: text,
                 filtered: filterSensitiveData(text),
               };
-              this._renderLogDisplayText(this._isSensitiveDataHidden());
+              this._renderLogDisplayText();
               this.state = this.states.LOGS_SUCCESS;
             })
             .catch((error) => {
@@ -229,28 +230,23 @@
             });
         }
 
-        /**
-         * Returns the log text as it is displayed to the user.
-         * @return {string}
-         */
-        _getLogDisplayText() {
+        _getLogTextAsDisplayed() {
           return this.elements.logsText.textContent;
         }
 
         /**
          * (Re-)renders the log text panel, taking into account the current
          * sensitivity settings into account.
-         * @param isSensitiveDataHidden {boolean}
          */
-        _renderLogDisplayText(isSensitiveDataHidden) {
-          this.elements.logsText.textContent = isSensitiveDataHidden
+        _renderLogDisplayText() {
+          this.elements.logsText.textContent = this._isSensitiveDataHidden()
             ? this._logText.filtered
             : this._logText.original;
         }
 
         _getUrl() {
           this.state = this.states.URL_LOADING;
-          textToShareableUrl(this._getLogDisplayText())
+          textToShareableUrl(this._getLogTextAsDisplayed())
             .then((url) => {
               this.elements.shareUrl.textContent = url;
               this.elements.shareUrl.href = url;
@@ -268,12 +264,10 @@
 
         _hideSensitiveData() {
           this.setAttribute("hide-sensitive-data", "");
-          this._renderLogDisplayText(/*isSensitiveDataHidden=*/ true);
         }
 
         _showSensitiveData() {
           this.removeAttribute("hide-sensitive-data");
-          this._renderLogDisplayText(/*isSensitiveDataHidden=*/ false);
         }
 
         _isSensitiveDataHidden() {
