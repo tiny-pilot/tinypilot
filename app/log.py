@@ -40,9 +40,6 @@ class _SensitiveLogger(logging.getLoggerClass()):
     revealed when sharing the logs for troubleshooting purposes.
     """
 
-    def __init__(self, name):
-        super().__init__(name)
-
     def log_sensitive(self, level, message, *args, **kws):
         if self.isEnabledFor(level):
             # Since we do string concatenation here, we cast the message to
