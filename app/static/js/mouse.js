@@ -229,11 +229,7 @@ function parseMouseEvent(evt) {
     buttons: evt.buttons,
     relativeX: Math.min(1.0, Math.max(0.0, cursorX / width)),
     relativeY: Math.min(1.0, Math.max(0.0, cursorY / height)),
-    // Negate y-delta so that negative number means scroll down.
-    // TODO(mtlynch): We should move the negation to the server because it's
-    // part of converting JS semantics to HID semantics, which is the server's
-    // job.
-    verticalWheelDelta: normalizeWheelDelta(evt.deltaY) * -1,
+    verticalWheelDelta: normalizeWheelDelta(evt.deltaY),
     horizontalWheelDelta: normalizeWheelDelta(evt.deltaX),
   };
 }

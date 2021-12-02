@@ -12,6 +12,9 @@ import argparse
 import logging
 import subprocess
 
+# We’re importing the log package first because it needs to overwrite the
+# app-wide logger class before any other module loads it.
+import log
 import update.launcher
 import update.result
 import update.result_store
@@ -20,17 +23,6 @@ import utc
 logger = logging.getLogger(__name__)
 
 _UPDATE_TIMEOUT_SECONDS = 60 * 10
-
-
-def configure_logging():
-    root_logger = logging.getLogger()
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter(
-        '%(asctime)s %(name)-15s %(levelname)-4s %(message)s',
-        '%Y-%m-%d %H:%M:%S')
-    handler.setFormatter(formatter)
-    root_logger.addHandler(handler)
-    root_logger.setLevel(logging.INFO)
 
 
 def perform_update():
@@ -62,7 +54,8 @@ def make_update_result(update_error):
 
 
 def main(_):
-    configure_logging()
+    root_logger = log.create_root_logger(logging.StreamHandler())
+    root_logger.setLevel(logging.INFO)
     logger.info('Starting TinyPilot update')
     perform_update()
 
