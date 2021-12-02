@@ -11,7 +11,7 @@ class Logger(logging.getLoggerClass()):
     """
 
     def __init__(self, name):
-        logging.Logger.__init__(self, name)
+        super().__init__(name)
 
     def log_sensitive(self, level, message, *args, **kws):
         if self.isEnabledFor(level):
