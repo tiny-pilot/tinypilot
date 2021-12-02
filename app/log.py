@@ -32,6 +32,8 @@ def create_root_logger(handler):
     return root_logger
 
 
+# Deriving dynamically via `getLoggerClass()` to ensure that our custom logger
+# will not undo customizations already applied by other code.
 class _SensitiveLogger(logging.getLoggerClass()):
     """A logger with additional methods for flagging log data as sensitive.
 
