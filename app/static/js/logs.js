@@ -11,6 +11,7 @@ const SENSITIVE_MARKER_END = "[/SENSITIVE]";
  * This function doesn’t make any other assumptions on how the log lines are
  * formatted.
  * @param logText {string}
+ * @returns {string}
  */
 export function filterSensitiveData(logText) {
   // Note: this implementation is not perfectly accurate in regards to certain
