@@ -64,9 +64,6 @@ class _SensitiveLogger(logging.getLoggerClass()):
     def error_sensitive(self, message, *args, **kws):
         self.log_sensitive(logging.ERROR, message, *args, **kws)
 
-    def exception_sensitive(self, message, *args, **kws):
-        self.log_sensitive(logging.ERROR, message, *args, exc_info=True, **kws)
-
 
 # Register the sensitive logger globally.
 logging.setLoggerClass(_SensitiveLogger)
