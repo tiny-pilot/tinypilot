@@ -21,8 +21,15 @@ jobs:
         with:
           token: ${{ secrets.PR_BOT_PAT }}
           branch: community-changes-${{ github.sha }}
+          delete-branch: true
+          # If the committer to the community repo (github.actor) has no access
+          # to the pro repo, the PR will be unassigned.
           assignees: ${{ github.actor }}
           title: Merge changes from community repository
           body: |
             Merge the last changes from community repository :
+
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
+
+            **Do not use "Squash and merge" !**
+            Merge this PR with a merge commit, keeping the commit history.
