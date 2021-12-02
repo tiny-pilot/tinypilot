@@ -4,10 +4,10 @@ import logging
 class Logger(logging.getLoggerClass()):
     """A logger with additional methods for flagging log data as sensitive.
 
-    Use these sensitive log messages whenever the log message might contain
+    Use these sensitive log methods whenever the log message might contain
     security-related information (even if it’s just fragments), such as secrets,
     personal data, or anything else that a user likely doesn’t want to be
-    revealed when sharing the logs for trouble-shooting purposes.
+    revealed when sharing the logs for troubleshooting purposes.
     """
 
     def __init__(self, name):
