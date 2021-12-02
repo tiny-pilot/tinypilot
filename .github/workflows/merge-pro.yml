@@ -21,7 +21,7 @@ jobs:
         with:
           token: ${{ secrets.PR_BOT_PAT }}
           branch: community-changes-${{ github.sha }}
-          assignees: ${{ github.actor }}
+          assignees: air1one
           title: Merge changes from community - ${{ github.sha }}
           body: |
             Merge changes from community :
