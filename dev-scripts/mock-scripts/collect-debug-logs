@@ -221,7 +221,11 @@ Mar 01 10:06:37 tinypilot python[573]: [2021-03-01 10:06:37,897] INFO in main: S
 Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,008] INFO in _internal:  * Detected change in '/opt/tinypilot/app/api.py', reloading
 Mar 01 10:06:40 tinypilot python[573]: [2021-03-01 10:06:40,170] INFO in _internal:  * Restarting with stat
 Mar 01 10:06:41 tinypilot python[573]: [2021-03-01 10:06:41,114] INFO in main: Starting app
+Mar 01 10:06:42 tinypilot python[573]: [2021-03-01 10:06:42,159] INFO in main: [SENSITIVE] This log message contains sensitive data [/SENSITIVE]
 Mar 01 10:06:43 tinypilot python[573]: [2021-03-01 10:06:43,133] INFO in socket_api: Client connected
+Mar 01 10:06:44 tinypilot python[573]: [2021-03-01 10:06:44,467] INFO in main: [SENSITIVE] There is more sensitive data here,
+and it even spans
+multiple lines! [/SENSITIVE]
 Mar 01 10:06:47 tinypilot sudo[791]: tinypilot : TTY=unknown ; PWD=/opt/tinypilot ; USER=root ; COMMAND=/opt/tinypilot-privileged/collect-debug-logs -q
 Mar 01 10:06:47 tinypilot sudo[791]: pam_unix(sudo:session): session opened for user root by (uid=0)
 Mar 01 10:06:47 tinypilot python[573]: Writing diagnostic logs to /tmp/tmp.EvctHesve7

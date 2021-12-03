@@ -334,7 +334,7 @@ menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
 menuBar.addEventListener("debug-logs-dialog-requested", () => {
-  document.getElementById("debug-dialog").getLogs();
+  document.getElementById("debug-dialog").retrieveLogs();
   document.getElementById("debug-overlay").show();
 });
 menuBar.addEventListener("mass-storage-dialog-requested", () => {
