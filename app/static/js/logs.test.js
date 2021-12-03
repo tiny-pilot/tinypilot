@@ -14,7 +14,7 @@ describe("redactSensitiveData", () => {
     assert.strictEqual(redactedLogs, logTextWithoutSensitiveData);
   });
 
-  it("removes all lines that are flagged as sensitive", () => {
+  it("redacts all lines that are flagged as sensitive", () => {
     const redactedLogs = redactSensitiveData(`
 2020-01-01T00:00:01Z INFO Something happened
 2020-01-01T00:00:02Z INFO Some other thing happened
