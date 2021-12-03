@@ -21,22 +21,21 @@ export function redactSensitiveData(logText) {
   // Note: this implementation is not perfectly accurate in regards to certain
   // edge cases (e.g. multiple redundant markers on the same line). For our
   // purposes, it’s good enough, though.
+  const resultingLines = [];
   let isWithinMarkers = false;
-  return logText
-    .split(NEWLINE)
-    .map((logLine) => {
-      const containsStartMarker = logLine.includes(SENSITIVE_MARKER_START);
-      const containsEndMarker = logLine.includes(SENSITIVE_MARKER_END);
-      if (containsStartMarker) {
-        isWithinMarkers = true;
-      }
-      if (containsEndMarker) {
-        isWithinMarkers = false;
-      }
+  for (const logLine of logText.split(NEWLINE)) {
+    const containsStartMarker = logLine.includes(SENSITIVE_MARKER_START);
+    const containsEndMarker = logLine.includes(SENSITIVE_MARKER_END);
+    if (containsStartMarker) {
+      isWithinMarkers = true;
+    }
+    if (containsEndMarker) {
+      isWithinMarkers = false;
+    }
 
-      const isRedacted =
-        containsStartMarker || containsEndMarker || isWithinMarkers;
-      return isRedacted ? REDACTED_MESSAGE : logLine;
-    })
-    .join(NEWLINE);
+    const isRedacted =
+      containsStartMarker || containsEndMarker || isWithinMarkers;
+    resultingLines.push(isRedacted ? REDACTED_MESSAGE : logLine);
+  }
+  return resultingLines.join(NEWLINE);
 }
