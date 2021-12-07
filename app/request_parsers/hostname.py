@@ -1,6 +1,7 @@
+import re
+
 from request_parsers import errors
 from request_parsers import message as message_parser
-import re
 
 _HOSTNAME_PATTERN = re.compile(r'^[-0-9a-z]{1,63}$')
 
@@ -16,7 +17,7 @@ def parse_hostname(request):
 
     Returns:
         The parsed hostname.
-    
+
     Raises:
         InvalidHostnameError: If the hostname is invalid.
     """
