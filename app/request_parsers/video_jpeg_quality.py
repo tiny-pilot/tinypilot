@@ -1,7 +1,5 @@
 from request_parsers import errors
 from request_parsers import message as message_parser
-from request_parsers.validators import \
-    video_jpeg_quality as video_jpeg_quality_validator
 
 
 def parse(request):
@@ -13,7 +11,7 @@ def parse(request):
         # fractional part. This results in the value being incorrectly
         # validated as an integer.
         video_jpeg_quality = int(str(message['videoJpegQuality']))
-        if not video_jpeg_quality_validator.validate(video_jpeg_quality):
+        if not 1 <= video_jpeg_quality <= 100:
             raise ValueError
     except ValueError as e:
         raise errors.InvalidVideoJpegQualityError(
