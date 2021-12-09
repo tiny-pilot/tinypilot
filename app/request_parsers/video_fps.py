@@ -3,14 +3,15 @@ from request_parsers import message as message_parser
 
 
 def parse(request):
-    message = message_parser.parse_message(request,
-                                           required_fields=['videoFps'])
+    # pylint: disable=unbalanced-tuple-unpacking
+    (video_fps,) = message_parser.parse_json_body(request,
+                                                  required_fields=['videoFps'])
     try:
         # Note: We need to cast the value to a string first otherwise the int
         # function forces floats into integers by simply cutting off the
         # fractional part. This results in the value being incorrectly
         # validated as an integer.
-        video_fps = int(str(message['videoFps']))
+        video_fps = int(str(video_fps))
         if not 1 <= video_fps <= 30:
             raise ValueError
     except ValueError as e:
