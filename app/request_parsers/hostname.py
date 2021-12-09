@@ -16,7 +16,7 @@ def parse_hostname(request):
         request: Flask request with the hostname field as string.
 
     Returns:
-        The parsed hostname.
+        The parsed and validated hostname (as string).
 
     Raises:
         InvalidHostnameError: If the hostname is invalid.
