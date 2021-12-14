@@ -6,8 +6,7 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
-import request_parsers.video_fps
-import request_parsers.video_jpeg_quality
+import request_parsers.video_settings
 import update.launcher
 import update.settings
 import update.status
@@ -275,7 +274,7 @@ def settings_video_fps_put():
         Empty response on success, error object otherwise.
     """
     try:
-        video_fps = request_parsers.video_fps.parse(flask.request)
+        video_fps = request_parsers.video_settings.parse_fps(flask.request)
         settings = update.settings.load()
         # Note: To avoid polluting the settings file with unnecessay default
         # values, we unset them instead.
@@ -347,7 +346,7 @@ def settings_video_jpeg_quality_put():
         Empty response on success, error object otherwise.
     """
     try:
-        video_jpeg_quality = request_parsers.video_jpeg_quality.parse(
+        video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
             flask.request)
         settings = update.settings.load()
         # Note: To avoid polluting the settings file with unnecessay default
