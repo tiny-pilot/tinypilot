@@ -27,11 +27,13 @@ find . \
   -delete
 
 # Run unit tests and calculate code coverage.
+# Load module `app.log` to initialize our custom logger.
 coverage run \
   --source "$SOURCE_DIR" \
   --omit "*_test.py" \
-  --module app.log \
-  --module unittest discover --pattern "*_test.py"
+  --module \
+    unittest discover --pattern "*_test.py" \
+    app.log
 coverage report
 
 # Check that source has correct formatting.
