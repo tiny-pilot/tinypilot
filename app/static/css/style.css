@@ -8,7 +8,7 @@
   --brand-hue-yellow: 35;
   --brand-hue-orange: 28;
   --brand-hue-red: 5;
-  --brand-hue-green: 135;
+  --brand-hue-green: 149;
 
   --brand-metallic-dark: hsl(var(--brand-hue-blue), 33%, 33%);
   --brand-metallic-medium: hsl(var(--brand-hue-metallic), 18%, 45%);
@@ -32,8 +32,8 @@
   --brand-red-bright: hsl(var(--brand-hue-red), 85%, 46%);
   --brand-red-background: hsl(var(--brand-hue-red), 54%, 95%);
 
-  --brand-green: hsl(var(--brand-hue-green), 40%, 45%);
-  --brand-green-dark: hsl(var(--brand-hue-green), 46%, 33%);
+  --brand-green: hsl(var(--brand-hue-green), 50%, 44%);
+  --brand-green-dark: hsl(var(--brand-hue-green), 43%, 33%);
   --brand-green-light: hsl(var(--brand-hue-green), 34%, 70%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
