@@ -26,21 +26,13 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
 
-### [TinyPilot Voyager](https://tinypilotkvm.com/product/tinypilot-voyager)
+### [TinyPilot Voyager 2](https://tinypilotkvm.com/product/tinypilot-voyager2)
 
-[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager-side-cables.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager)
+[![Photo of TinyPilot Voyager 2](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2-white-475px.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager2)
 
-Voyager is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
-
-### [TinyPilot Hobbyist Kit](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
-
-[![Photo of TinyPilot Voyager](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/hobbyist-kit.jpg)](https://tinypilotkvm.com/product/tinypilot-hobbyist-kit)
-
-The TinyPilot Hobbyist Kit is a great fit for home users who want a low-cost, DIY KVM over IP device.
+Voyager 2 is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
 ## Build your own
-
-All-in-one kits are available from [tinypilotkvm.com](https://tinypilotkvm.com/order).
 
 * [Raspberry Pi 4](https://smile.amazon.com/dp/B07TD42S27) (all variants work)
 * [HDMI to USB dongle](https://smile.amazon.com/dp/B08CXWPYQ8/)
