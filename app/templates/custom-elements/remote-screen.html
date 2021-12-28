@@ -69,10 +69,58 @@
 </template>
 
 <script type="module">
+  import '/js/janus.js';
   import { RateLimitedMouse } from "/js/mouse.js";
 
   (function () {
     const template = document.querySelector("#remote-screen-template");
+
+    var janus_handle = null;
+    Janus.init({debug: "all"});
+    var janus = new Janus({
+      server: `wss://${location.host}/janus/ws`,
+      success: function(){
+        console.info("success");
+        attachToJanusPlugin();
+      },
+      error: function(error) {
+        console.info("error " + error);
+      },
+    });
+
+    function attachToJanusPlugin() {
+      janus.attach({
+        plugin: "janus.plugin.ustreamer",
+        opaqueId: "tinypilot-" + Janus.randomString(8),
+        iceState: function(state) {
+          console.info("ICE Connection State changed to: " + state);
+        },
+        onmessage: function(msg, jesp) {
+          if (jsep) {
+            console.info("Webrtc SDP:\n" + jsep);
+            janus_handle.createAnswer({
+              jsep: jsep,
+              // client only receives media and does not interact with datachannels
+              media: {audioSend: false, videoSend: false, data: false},
+              success: function(jsep) {
+                // TODO send answer SDP back to Janus
+              },
+              error: function(error) {
+                console.error("failed to create answer SDP: " + error);
+              }
+            });
+          }
+        },
+        success: function(handle) {
+          janus_handle = handle;
+          console.info("tinypilot attached to ustreamer plugin");
+          // TODO Request video stream here
+        },
+        error: function(error) {
+          console.error("failed to attach to ustreamer plugin: " + error);
+        }
+      });
+    }
 
     customElements.define(
       "remote-screen",
