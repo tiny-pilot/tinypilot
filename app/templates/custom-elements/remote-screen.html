@@ -217,9 +217,16 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            this.shadowRoot
-              .querySelector(".screen-wrapper")
-              .requestFullscreen();
+            let e = this.shadowRoot.querySelector(".screen-wrapper");
+            if (e.requestFullscreen) {
+              e.requestFullscreen();
+            } else if (e.mozRequestFullScreen) {
+              e.mozRequestFullScreen();
+            } else if (e.webkitRequestFullscreen) {
+              e.webkitRequestFullscreen();
+            } else if (e.msRequestFullscreen) {
+              e.msRequestFullscreen();
+            }
           } else if (name === "milliseconds-between-mouse-events") {
             this.rateLimitedMouse.setTimeoutWindow(parseInt(newValue));
           }
