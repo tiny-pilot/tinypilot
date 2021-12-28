@@ -217,7 +217,9 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            const screenWrapper = this.shadowRoot.querySelector(".screen-wrapper");
+            const screenWrapper = this.shadowRoot.querySelector(
+              ".screen-wrapper"
+            );
             if (screenWrapper.requestFullscreen) {
               screenWrapper.requestFullscreen();
             } else if (screenWrapper.mozRequestFullScreen) {
