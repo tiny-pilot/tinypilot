@@ -44,6 +44,48 @@
       }
     }
 
+    @media screen and (min-height: 0px) {
+      #remote-screen-img {
+        max-height: 40vh;
+      }
+    }
+
+    @media screen and (min-height: 250px) {
+      #remote-screen-img {
+        max-height: 60vh;
+      }
+    }
+
+    @media screen and (min-height: 350px) {
+      #remote-screen-img {
+        max-height: 70vh;
+      }
+    }
+
+    @media screen and (min-height: 450px) {
+      #remote-screen-img {
+        max-height: 80vh;
+      }
+    }
+
+    @media screen and (min-height: 600px) {
+      #remote-screen-img {
+        max-height: 85vh;
+      }
+    }
+
+    @media screen and (min-height: 900px) {
+      #remote-screen-img {
+        max-height: 90vh;
+      }
+    }
+
+    @media screen and (min-height: 1180px) {
+      #remote-screen-img {
+        max-height: 1080px;
+      }
+    }
+
     :host([fullscreen="true"]) .screen-wrapper {
       display: grid;
       overflow: auto;
@@ -147,10 +189,6 @@
 
           window.addEventListener("resize", this.onWindowResize);
 
-          this.shadowRoot.getElementById("remote-screen-img").onload = () => {
-            this.verticalSpace();
-          };
-
           // Detect whether this is a touchscreen device.
           let isTouchScreen = false;
           this.shadowRoot.addEventListener("touchend", () => {
@@ -247,8 +285,6 @@
         onWindowResize() {
           if (this.fullscreen) {
             this.fillSpace();
-          } else {
-            this.verticalSpace();
           }
         }
 
@@ -259,21 +295,12 @@
           const screenImg = this.shadowRoot.getElementById("remote-screen-img");
           screenImg.classList.remove("full-width");
           screenImg.classList.remove("full-height");
-          screenImg.removeAttribute("height");
           const windowRatio = window.innerWidth / window.innerHeight;
           const screenRatio = screenImg.width / screenImg.height;
           if (screenRatio > windowRatio) {
             screenImg.classList.add("full-width");
           } else {
             screenImg.classList.add("full-height");
-          }
-        }
-
-        verticalSpace() {
-          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
-          screenImg.removeAttribute("height");
-          if (screenImg.height >= window.innerHeight - 100) {
-            screenImg.height = window.innerHeight - 100;
           }
         }
       }
