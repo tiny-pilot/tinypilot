@@ -76,10 +76,10 @@ def socket_key_release():
 
 
 @socketio.on('connect')
-def test_connect():
+def on_connect():
     logger.info('Client connected')
 
 
 @socketio.on('disconnect')
-def test_disconnect():
+def on_disconnect():
     logger.info('Client disconnected')
