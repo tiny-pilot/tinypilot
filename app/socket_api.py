@@ -18,7 +18,7 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 
 
 @socketio.on('keystroke')
-def socket_keystroke(message):
+def on_keystroke(message):
     logger.debug_sensitive('received keystroke message: %s', message)
     try:
         keystroke = keystroke_request.parse_keystroke(message)
@@ -47,7 +47,7 @@ def socket_keystroke(message):
 
 
 @socketio.on('mouse-event')
-def socket_mouse_event(message):
+def on_mouse_event(message):
     try:
         mouse_move_event = mouse_event_request.parse_mouse_event(message)
     except mouse_event_request.Error as e:
@@ -67,7 +67,7 @@ def socket_mouse_event(message):
 
 
 @socketio.on('keyRelease')
-def socket_key_release():
+def on_key_release():
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.release_keys(keyboard_path)
@@ -76,10 +76,10 @@ def socket_key_release():
 
 
 @socketio.on('connect')
-def test_connect():
+def on_connect():
     logger.info('Client connected')
 
 
 @socketio.on('disconnect')
-def test_disconnect():
+def on_disconnect():
     logger.info('Client disconnected')
