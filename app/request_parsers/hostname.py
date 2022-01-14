@@ -21,9 +21,9 @@ def parse_hostname(request):
     Raises:
         InvalidHostnameError: If the hostname is invalid.
     """
-    message = message_parser.parse_message(request,
-                                           required_fields=['hostname'])
-    hostname = message['hostname']
+    # pylint: disable=unbalanced-tuple-unpacking
+    (hostname,) = message_parser.parse_json_body(request,
+                                                 required_fields=['hostname'])
 
     if not isinstance(hostname, str):
         raise errors.InvalidHostnameError('The hostname is not a string.')

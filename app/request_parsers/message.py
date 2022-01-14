@@ -1,7 +1,7 @@
 from request_parsers import errors
 
 
-def parse_message(request, required_fields):
+def parse_json_body(request, required_fields):
     """Parse a message with a JSON payload.
 
     Args:
@@ -10,7 +10,7 @@ def parse_message(request, required_fields):
       required_fields: A list of required fields in the message dictionary.
 
     Returns:
-      The parsed message as a dictionary of its JSON payload.
+      The required fields as a tuple.
     """
     message = request.get_json()
 
@@ -18,8 +18,10 @@ def parse_message(request, required_fields):
         raise errors.MalformedRequestError(
             'Request is invalid, expecting a JSON dictionary')
 
+    result = []
     for field in required_fields:
         if field not in message:
             raise errors.MissingFieldError('Missing required field: %s' % field)
+        result.append(message[field])
 
-    return message
+    return tuple(result)
