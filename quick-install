@@ -132,7 +132,9 @@ if [ -d "$TINYPILOT_ROLE_NAME" ]; then
 else
   TINYPILOT_ROLE_REPO="https://github.com/tiny-pilot/ansible-role-tinypilot.git"
   git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
+  pushd "$TINYPILOT_ROLE_NAME"
   git checkout experimental/h264
+  popd
 fi
 
 ansible-galaxy install \
