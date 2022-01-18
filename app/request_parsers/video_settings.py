@@ -1,11 +1,10 @@
 from request_parsers import errors
-from request_parsers import message as message_parser
+from request_parsers import json
 
 
 def parse_fps(request):
     # pylint: disable=unbalanced-tuple-unpacking
-    (video_fps,) = message_parser.parse_json_body(request,
-                                                  required_fields=['videoFps'])
+    (video_fps,) = json.parse_json_body(request, required_fields=['videoFps'])
     try:
         # Note: We need to cast the value to a string first otherwise the int
         # function forces floats into integers by simply cutting off the
@@ -22,7 +21,7 @@ def parse_fps(request):
 
 def parse_jpeg_quality(request):
     # pylint: disable=unbalanced-tuple-unpacking
-    (video_jpeg_quality,) = message_parser.parse_json_body(
+    (video_jpeg_quality,) = json.parse_json_body(
         request, required_fields=['videoJpegQuality'])
     try:
         # Note: We need to cast the value to a string first otherwise the int

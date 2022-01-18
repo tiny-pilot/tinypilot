@@ -10,7 +10,8 @@ def parse_json_body(request, required_fields):
       required_fields: A list of required fields in the message dictionary.
 
     Returns:
-      The required fields as a tuple.
+      The parsed field values as tuple. The arity and order of the tuple
+      matches that of the `required_fields` argument.
     """
     message = request.get_json()
 
