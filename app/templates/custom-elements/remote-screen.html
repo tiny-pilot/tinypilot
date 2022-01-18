@@ -2,63 +2,39 @@
   <style>
     @import "css/cursors.css";
 
-    #remote-screen-img {
+    #remote-screen-vid {
       max-width: 100%;
-      max-height: 70vh;
+      max-height: 1080px;
       object-fit: contain;
     }
 
     @media screen and (min-width: 800px) {
-      #remote-screen-img {
+      #remote-screen-vid {
         max-width: 99%;
       }
     }
 
     @media screen and (min-width: 1000px) {
-      #remote-screen-img {
+      #remote-screen-vid {
         max-width: 97%;
       }
     }
 
     @media screen and (min-width: 1200px) {
-      #remote-screen-img {
+      #remote-screen-vid {
         max-width: 96%;
       }
     }
 
     @media screen and (min-width: 1300px) {
-      #remote-screen-img {
+      #remote-screen-vid {
         max-width: 93%;
       }
     }
 
     @media screen and (min-width: 1400px) {
-      #remote-screen-img {
+      #remote-screen-vid {
         max-width: 90%;
-      }
-    }
-
-    @media screen and (min-height: 450px) {
-      #remote-screen-img {
-        max-height: 80vh;
-      }
-    }
-
-    @media screen and (min-height: 600px) {
-      #remote-screen-img {
-        max-height: 85vh;
-      }
-    }
-
-    @media screen and (min-height: 900px) {
-      #remote-screen-img {
-        max-height: 90vh;
-      }
-    }
-
-    @media screen and (min-height: 1180px) {
-      #remote-screen-img {
-        max-height: 100vh;
       }
     }
 
@@ -67,17 +43,17 @@
       overflow: auto;
     }
 
-    :host([fullscreen="true"]) #remote-screen-img {
+    :host([fullscreen="true"]) #remote-screen-vid {
       margin: auto;
       max-width: 100vw;
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"]) #remote-screen-img.full-width {
+    :host([fullscreen="true"]) #remote-screen-vid.full-width {
       width: 100%;
     }
 
-    :host([fullscreen="true"]) #remote-screen-img.full-height {
+    :host([fullscreen="true"]) #remote-screen-vid.full-height {
       height: 100%;
     }
 
@@ -88,26 +64,29 @@
   </style>
   <div class="screen-wrapper">
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
-    <img id="remote-screen-img" src="/stream?advance_headers=1" />
+    <!--
+      <img id="remote-screen-vid" src="/stream?advance_headers=1" />
+    -->
+    <video id="remote-screen-vid" autoplay playsinline muted></video>
   </div>
 </template>
 
 <script type="module">
-  import '/js/janus.js';
+  import "/js/janus.js";
   import { RateLimitedMouse } from "/js/mouse.js";
 
   (function () {
     const template = document.querySelector("#remote-screen-template");
 
     var janus_handle = null;
-    Janus.init({debug: "all"});
+    Janus.init({ debug: "all" });
     var janus = new Janus({
       server: `wss://${location.host}/janus/ws`,
-      success: function(){
+      success: function () {
         console.info("success");
         attachToJanusPlugin();
       },
-      error: function(error) {
+      error: function (error) {
         console.info("error " + error);
       },
     });
@@ -116,33 +95,45 @@
       janus.attach({
         plugin: "janus.plugin.ustreamer",
         opaqueId: "tinypilot-" + Janus.randomString(8),
-        iceState: function(state) {
+        iceState: function (state) {
           console.info("ICE Connection State changed to: " + state);
         },
-        onmessage: function(msg, jesp) {
+        success: function (handle) {
+          janus_handle = handle;
+          console.info("tinypilot attached to ustreamer plugin");
+
+          // makes ustreamer plugin generate a webrtc offer (apparently called jsep in janus)
+          // that will be received in the onmessage handler
+          janus_handle.send({ message: { request: "watch" } });
+        },
+        error: function (error) {
+          console.error("failed to attach to ustreamer plugin: " + error);
+        },
+        onmessage: function (msg, jsep) {
           if (jsep) {
-            console.info("Webrtc SDP:\n" + jsep);
             janus_handle.createAnswer({
               jsep: jsep,
               // client only receives media and does not interact with datachannels
-              media: {audioSend: false, videoSend: false, data: false},
-              success: function(jsep) {
-                // TODO send answer SDP back to Janus
+              media: { audioSend: false, videoSend: false, data: false },
+              success: function (jsep) {
+                // sends back the generated webrtc response
+                janus_handle.send({
+                  message: { request: "start" },
+                  jsep: jsep,
+                });
               },
-              error: function(error) {
+              error: function (error) {
                 console.error("failed to create answer SDP: " + error);
-              }
+              },
             });
           }
         },
-        success: function(handle) {
-          janus_handle = handle;
-          console.info("tinypilot attached to ustreamer plugin");
-          // TODO Request video stream here
+        onremotestream: function (stream) {
+          var videoElement = document
+            .getElementById("remote-screen")
+            .shadowRoot.getElementById("remote-screen-vid");
+          Janus.attachMediaStream(videoElement, stream);
         },
-        error: function(error) {
-          console.error("failed to attach to ustreamer plugin: " + error);
-        }
       });
     }
 
@@ -187,7 +178,7 @@
           );
 
           // Forward all mouse activity that occurs over the image of the remote screen.
-          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
+          const screenImg = this.shadowRoot.getElementById("remote-screen-vid");
           screenImg.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
@@ -289,18 +280,9 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            const screenWrapper = this.shadowRoot.querySelector(
-              ".screen-wrapper"
-            );
-            if (screenWrapper.requestFullscreen) {
-              screenWrapper.requestFullscreen();
-            } else if (screenWrapper.mozRequestFullScreen) {
-              screenWrapper.mozRequestFullScreen();
-            } else if (screenWrapper.webkitRequestFullscreen) {
-              screenWrapper.webkitRequestFullscreen();
-            } else if (screenWrapper.msRequestFullscreen) {
-              screenWrapper.msRequestFullscreen();
-            }
+            this.shadowRoot
+              .querySelector(".screen-wrapper")
+              .requestFullscreen();
           } else if (name === "milliseconds-between-mouse-events") {
             this.rateLimitedMouse.setTimeoutWindow(parseInt(newValue));
           }
@@ -316,7 +298,7 @@
         // depending on which better maximizes space for the remote screen's
         // aspect ratio.
         fillSpace() {
-          const screenImg = this.shadowRoot.getElementById("remote-screen-img");
+          const screenImg = this.shadowRoot.getElementById("remote-screen-vid");
           screenImg.classList.remove("full-width");
           screenImg.classList.remove("full-height");
           const windowRatio = window.innerWidth / window.innerHeight;
