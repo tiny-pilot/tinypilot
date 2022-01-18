@@ -1,16 +1,16 @@
 from request_parsers import errors
-from request_parsers import message as message_parser
+from request_parsers import json
 
 
 def parse_fps(request):
-    message = message_parser.parse_message(request,
-                                           required_fields=['videoFps'])
+    # pylint: disable=unbalanced-tuple-unpacking
+    (video_fps,) = json.parse_json_body(request, required_fields=['videoFps'])
     try:
         # Note: We need to cast the value to a string first otherwise the int
         # function forces floats into integers by simply cutting off the
         # fractional part. This results in the value being incorrectly
         # validated as an integer.
-        video_fps = int(str(message['videoFps']))
+        video_fps = int(str(video_fps))
         if not 1 <= video_fps <= 30:
             raise ValueError
     except ValueError as e:
@@ -20,14 +20,15 @@ def parse_fps(request):
 
 
 def parse_jpeg_quality(request):
-    message = message_parser.parse_message(request,
-                                           required_fields=['videoJpegQuality'])
+    # pylint: disable=unbalanced-tuple-unpacking
+    (video_jpeg_quality,) = json.parse_json_body(
+        request, required_fields=['videoJpegQuality'])
     try:
         # Note: We need to cast the value to a string first otherwise the int
         # function forces floats into integers by simply cutting off the
         # fractional part. This results in the value being incorrectly
         # validated as an integer.
-        video_jpeg_quality = int(str(message['videoJpegQuality']))
+        video_jpeg_quality = int(str(video_jpeg_quality))
         if not 1 <= video_jpeg_quality <= 100:
             raise ValueError
     except ValueError as e:

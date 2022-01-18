@@ -1,7 +1,7 @@
 import re
 
 from request_parsers import errors
-from request_parsers import message as message_parser
+from request_parsers import json
 
 _HOSTNAME_PATTERN = re.compile(r'^[-0-9a-z]{1,63}$')
 
@@ -21,9 +21,8 @@ def parse_hostname(request):
     Raises:
         InvalidHostnameError: If the hostname is invalid.
     """
-    message = message_parser.parse_message(request,
-                                           required_fields=['hostname'])
-    hostname = message['hostname']
+    # pylint: disable=unbalanced-tuple-unpacking
+    (hostname,) = json.parse_json_body(request, required_fields=['hostname'])
 
     if not isinstance(hostname, str):
         raise errors.InvalidHostnameError('The hostname is not a string.')
