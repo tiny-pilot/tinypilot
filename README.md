@@ -13,10 +13,18 @@
 * Raspberry Pi OS Stretch or later
 * python3-venv
 
-## Install TinyPilot
+## Install
+
+### Docker
 
 ```bash
-sudo sed -i '/^tinypilot_repo_branch/d' /home/tinypilot/settings.yml && \
+curl -fsSL https://get.docker.com | sudo sh && \
+  sudo usermod -aG docker $(whoami)
+```
+
+### TinyPilot
+
+```bash
   curl \
   --silent \
   --show-error \
@@ -25,17 +33,9 @@ sudo sed -i '/^tinypilot_repo_branch/d' /home/tinypilot/settings.yml && \
   sudo reboot
 ```
 
-## Install uStreamer and Janus
+## Run
 
-Install Docker and log out for permissions to take effect:
-
-```bash
-curl -fsSL https://get.docker.com | sudo sh && \
-  sudo usermod -aG docker $(whoami) &&
-  logout
-```
-
-Then run Janus and uStreamer under Docker:
+You need to start Janus and uStreamer manually every time the device reboots:
 
 ```bash
 docker run \
