@@ -271,7 +271,7 @@ Using CSS variables means that we can parameterize these values via the `style` 
 
 In order to select a DOM element using JavaScript, we need to first name the element using the `id` or `class` attribute.
 
-For example, say we have a component that creates of a user:
+For example, say we have a component that creates a user:
 
 ```html
 <div class="btn-container">
@@ -311,9 +311,10 @@ const confirmDeleteButtonContainer = document.querySelector("#delete .btn-contai
 ```
 
 Notice how we needed to rename both our button IDs to distinguish between the create and delete buttons.
+
 Also notice how we did not need to rename our button container classes because their query selector can be scoped to a specific component state.
 
-In order to avoid namespacing individual element IDs, as we expand a component, we prefer to name an element using the `class` attribute and namespace the query selector instead. 
+In order to avoid namespacing individual element IDs, as we expand a component, we prefer to name an element using the `class` attribute and namespace the query selector instead.
 
 So instead of this:
 
