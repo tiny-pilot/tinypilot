@@ -267,6 +267,91 @@ Using CSS variables means that we can parameterize these values via the `style` 
 <my-component style="--offset-top: 3rem">
 ```
 
+### Naming DOM elements
+
+In order to select a DOM element using JavaScript, we need to first name the element using the `id` or `class` attribute.
+
+For example, say we have a component that creates of a user:
+
+```html
+<div class="btn-container">
+  <button id="confirm-btn">Confirm Create<button>
+</div>
+```
+
+```javascript
+const confirmButton = document.querySelector("#confirm-btn");
+const buttonContainer = document.querySelector(".btn-container");
+```
+
+The above example is a rather straightforward way of naming and selecting DOM elements. However, things can get complicated when the component has multiple [states](#state-changes).
+
+For example, say that we expand our component to also delete a user:
+
+```html
+<div id="create">
+  <div class="btn-container">
+    <button id="confirm-create-btn">Confirm Create<button>
+  </div>
+</div>
+
+<div id="delete">
+  <div class="btn-container">
+    <button id="confirm-delete-btn">Confirm Delete<button>
+  </div>
+</div>
+```
+
+```javascript
+const confirmCreateButton = document.querySelector("#confirm-create-btn");
+const confirmDeleteButton = document.querySelector("#confirm-delete-btn");
+
+const confirmCreateButtonContainer = document.querySelector("#create .btn-container");
+const confirmDeleteButtonContainer = document.querySelector("#delete .btn-container");
+```
+
+Notice how we needed to rename both our button IDs to distinguish between the create and delete buttons.
+Also notice how we did not need to rename our button container classes because their query selector can be scoped to a specific component state.
+
+In order to avoid namespacing individual element IDs, as we expand a component, we prefer to name an element using the `class` attribute and namespace the query selector instead. 
+
+So instead of this:
+
+```javascript
+document.querySelector("#confirm-create-btn");
+document.querySelector("#confirm-delete-btn");
+```
+
+we do this:
+
+```javascript
+document.querySelector("#create .confirm-btn");
+document.querySelector("#delete .confirm-btn");
+```
+
+Let's complete our example by pulling it altogether:
+
+```html
+<div id="create">
+  <div class="btn-container">
+    <button class="confirm-btn">Confirm Create<button>
+  </div>
+</div>
+
+<div id="delete">
+  <div class="btn-container">
+    <button class="confirm-btn">Confirm Delete<button>
+  </div>
+</div>
+```
+
+```javascript
+const confirmCreateButton = document.querySelector("#create .confirm-btn");
+const confirmDeleteButton = document.querySelector("#delete .confirm-btn");
+```
+
+In short, prefer to name your elements using the `class` attribute instead of the `id` attribute.
+
 ## Proposing changes
 
 * If you're making a small change, submit a PR to show your proposal.
