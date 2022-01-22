@@ -8,6 +8,27 @@
 
 ## Overview
 
+This branch has changes mainly in the `remote-screen.html` file where we connect to Janus to get the uStreamer stream in h264 format over webrtc.
+
+Currently all it does is connect to the Janus instance and fetch and display the stream.
+
+### Notes
+
+To fetch the stream one must "talk" to the uStreamer plugin. Apparently it only receives 3 messages: `watch`, `start` and `stop`.
+This can be checked here: https://github.com/pikvm/ustreamer/blob/master/janus/src/plugin.c#L475
+This commit only shows usage of the `watch` and `start` commands.
+
+The `watch` command is used to ask the plugin to perform the initial WebRTC connection flow.
+This is essentially exchanging the offer and answer (called jsep for some reason  by Janus, usually called SDP for session description protocol) and exchanging webrtc candidates for connection.
+
+The plugin also sends messages back when its status changes. Usually you'd just get `started` and `stopped` after sending `start`and `stop` commands respectively.
+
+But there is also an error that is worth catching and reacting to. This error can come after the `watch` command and happens when the plugin hasn't seen any SPS/PPS frames.
+These are special h264 frames with meta information abbout the video (like the video dimensions for example). You can see the error is pushed by the plugin here: https://github.com/pikvm/ustreamer/blob/master/janus/src/plugin.c#L484
+
+Currently the code doesn't react to it but I guess the way to go would be attempting to send the `watch` command shortly after.
+Usually the SPS/PPS frames are sent along with the keyframes and usually these are configured to be sent once every second.
+
 ## Pre-requisites
 
 * Raspberry Pi OS Stretch or later
