@@ -81,7 +81,7 @@
     var janus_handle = null;
     Janus.init({ debug: "all" });
     var janus = new Janus({
-      server: `wss://${location.host}/janus/ws`,
+      server: `ws://${location.host}/janus/ws`,
       success: function () {
         console.info("success");
         attachToJanusPlugin();
