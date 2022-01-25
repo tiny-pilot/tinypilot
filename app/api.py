@@ -201,12 +201,10 @@ def hostname_set():
     Returns:
         Empty response on success, error object otherwise.
     """
+    new_hostname = request_parsers.hostname.parse_hostname(flask.request)
     try:
-        new_hostname = request_parsers.hostname.parse_hostname(flask.request)
         hostname.change(new_hostname)
         return json_response.success()
-    except request_parsers.errors.Error as e:
-        return json_response.error(e), 400
     except hostname.Error as e:
         return json_response.error(e), 500
 

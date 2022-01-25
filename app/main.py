@@ -12,6 +12,7 @@ from werkzeug import exceptions
 import log
 import api
 import json_response
+import request_parsers.errors
 import secret_key
 import socket_api
 import views
@@ -69,6 +70,8 @@ def after_request(response):
 def handle_error(e):
     logger.exception(e)
     code = 500
+    if isinstance(e, request_parsers.errors.Error):
+        code = 400
     if isinstance(e, exceptions.HTTPException):
         code = e.code
     return json_response.error(e), code
