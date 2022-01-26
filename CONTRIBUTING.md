@@ -267,9 +267,11 @@ Using CSS variables means that we can parameterize these values via the `style` 
 <my-component style="--offset-top: 3rem">
 ```
 
-### Naming DOM elements
+### Referencing DOM elements
 
-In order to select a DOM element using JavaScript, we need to first name the element using the `id` or `class` attribute.
+In short, if your component has multiple [states](#state-changes) then prefer to reference an element using the `class` attribute to avoid naming conflicts. Otherwise, reference an element using the `id` attribute as needed.
+
+More verbosely, in order to reference a DOM element using JavaScript, we need to first name the element using the `id` or `class` attribute.
 
 For example, say we have a component that creates a user:
 
@@ -350,8 +352,6 @@ Let's complete our example by pulling it altogether:
 const confirmCreateButton = document.querySelector("#create .confirm-btn");
 const confirmDeleteButton = document.querySelector("#delete .confirm-btn");
 ```
-
-In short, prefer to name your elements using the `class` attribute instead of the `id` attribute.
 
 ## Proposing changes
 
