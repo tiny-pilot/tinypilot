@@ -8,75 +8,70 @@
 
 ## Overview
 
-This branch has changes mainly in the `remote-screen.html` file where we connect to Janus to get the uStreamer stream in h264 format over webrtc.
+This branch has changes mainly in the `remote-screen.html` file where we connect to Janus to get the uStreamer stream in H264 format over WebRTC.
 
 Currently all it does is connect to the Janus instance and fetch and display the stream.
 
 ## Technical Overview
 
-There are 3 entities at play here. The tinypilot frontend client, Janus and uStreamer.
+There are five entities at play:
 
-It is important to remember that Janus only serves as a WebRTC Gateway.
-This means plugins have to be developed for it in order to have some actual functionality.
-The plugins can then make use of features that Janus provides to control the flow of communication while the connection flow and the media exchange are abstracted away.
+* uStreamer
+* Janus uStreamer plugin
+* Janus
+* Janus JS client library
+* TinyPilot frontend client
 
-In this case we are loading Janus with a plugin for uStreamer.
-The uStreamer plugin primarily makes use of the websocket functionality of Janus.
-This is used to easily exchange messages with the frontend client.
-The websocket communication in the frontend client is abstracted away by client provided in the Janus repository.
-With this in mind we can consider that talking to "Janus" or the "uStreamer plugin" to be the same thing.
-The only differentiation to be had is that Janus provides all the communication framework but it is the plugin that listens for and sends the messages.
+Janus serves as a WebRTC Gateway. To integrate with Janus for WebRTC communication, applications like uStreamer create custom Janus plugins to serve data over websockets and WebRTC. Janus provides the communication framework, and the plugin listens for and sends the messages from WebRTC clients.
 
-When the frontend client communicates with the uStreamer plugin it will be able to request the video stream.
-This is when the uStreamer plugin actually communicates with uStreamer, however only indirectly.
-The uStreamer application, when started, provides the stream over shared memory. The uStreamer plugin attaches to that shared memory and parses the frames from there.
+uStreamer and the Janus uStreamer plugin communicate over shared memory. uStreamer writes the video stream to shared memory, and the uStreamer Janus plugin parses the video stream from the shared memory location.
 
-The communication always flows like this: (frontend client) <-> (Janus) <-> (uStreamer)
+The TinyPilot frontend client requests uStreamer's video stream by establishing a WebRTC connection to the uStreamer Janus plugin. The plugin serves the video stream from the shared memory it reads from uStreamer.
 
+The communication flows like this: (TinyPilot frontend client) <-> (Janus) <-> (uStreamer)
 
 ### Technical Details
 
-The details of the below described flow are considering that Janus is up and running with the uStreamer
-plugin loaded and also that uStreamer itself is running and providing the h264 stream over shared memory.
+The details of the below described flow assumes the following setup:
 
-When the tinypilot page is loaded the Janus client is loaded as well and tries to connect to the Jaus websocket server.
+* uStreamer is running
+* uStreamer is providing an H264 stream over shared memory
+* Janus is running with the uStreamer plugin loaded
 
-Upon success we must explicitly attach to a plugin (since different plugins can provide different streams and api altogether).
+When the user loads TinyPilot's web app, the frontend connects to the Janus websockets server using the [Janus JS client library](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/static/js/janus.js).
 
-Upon success of attaching to the uStreamer plugin we get a handle object with which we can communicate with the uStreamer plugin specifically.
-The `attach` call also sets up a couple more callbacks like `success` for when the "attaching" succeeds,
-`onmessage` for handling messages sent by the plugin and `onremotestream` for when we receive a new video stream.
-The uStreamer plugin apparently only handles 3 different messages:  `watch`, `start` and `stop`.
-This can be checked here: https://github.com/pikvm/ustreamer/blob/v4.11/janus/src/plugin.c#L475
-Messages are strictly exchanged between the frontend code and the plugin code while Janus itself only provides the communication framework.
-This commit only shows usage of the `watch` and `start` commands.
+Upon successful connection to Janus, TinyPilot attaches [to the uStreamer plugin](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L94). Different plugins can provide different streams, so TinyPilot has to specify uStreamer explicitly.
 
-The `watch` command is used to ask the plugin to perform the initial WebRTC connection flow. It is sent in the success handler for the `attach` call.
-This is essentially exchanging the offer and answer (called jsep for some reason by Janus, usually called SDP for session description protocol) and exchanging webrtc candidates for connection.
+If TinyPilot atttaches successfully to the uStreamer plugin, it gets a [handle object](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L102), which allows TinyPilot to communicate directly to the uStreamer plugin.
 
-After that it is expected that we get a message that will be handled by the `onmessage` callback.
-Here we check if there is this "jsep" in the message to generate a webrtc response.
-It is important to note that up until now, even though we are connected via websockets we did not yet establish a webrtc peer-to-peer connection.
-The messages are still sent over the websocket channel while the webrtc connection is used for media (e.g. video).
-It might also happen that we actually receive an error message (still over this `onmessage` channel), I believe it comes from here: https://github.com/pikvm/ustreamer/blob/v4.11/janus/src/plugin.c#L484
-It says it hasn't found any SPS/PPS frames in the stream yet. These are special h264 frames with meta information about the video (like the video dimensions for example).
-I believe here one can simply retry sending the `watch` command. (Personally I've only tried refreshing the page and that usually is enough).
+The `attach` call also sets up a couple more callbacks like `success` for when the "attaching" succeeds, `onmessage` for handling messages sent by the plugin and `onremotestream` for when we receive a new video stream.
 
-When there is no error and there is actually a "jsep" present (the webrtc offer) in the message we can create a webrtc answer.
-The `createAnswer` call used for creating the webrtc answer also has a callback for when the webrtc connection succeeds.
-It is here where we send the `start` message. This will trigger the plugin to start sending the video stream.
+The uStreamer plugin apparently only handles [three message types](https://github.com/pikvm/ustreamer/blob/v4.11/janus/src/plugin.c#L475):  `watch`, `start` and `stop`.
 
-When the video stream is created from the plugin side it will trigger a call of the `onremotestream` handler defined earlier.
-This handler gets the stream which it can then attach to an existing `<video>` element.
+As of 3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c, the `experimental/H264` branch only implements of the `watch` and `start` commands.
 
-Now the stream is connected and we should be seeing the remote screen.
+The `watch` command asks the plugin to initialize the WebRTC connection flow. TinyPilot sends the `watch` command in the success handler for the `attach` call. This command exchanges the offer and answer (called "jsep" for some reason by Janus, usually called SDP for session description protocol) and exchanges WebRTC candidates for connection.
 
-Finally, usage of the `stop` command. This command tells the plugin code to "detach" from the shared memory provided by uStreamer.
-This means that the plugin won't be parsing anymore h264 frames from the uStreamer.
-To restart we must send the `watch` command again in order for the plugin to reattach to the shared memory.
-Only then can we send the `start`command again.
-I would probably recommend sending this command when the user leaves the page somehow for a cleaner shutdown/disconnect.
-However I haven't noticed any problem with just reloading the page which just breaks the websocket connection.
+After TinyPilot initializes the WebRTC connection, it expects to receive a message through the `onmessage` callback. TinyPilot checks if "jsep" is in the message to generate a WebRTC response.
+
+If the WebRTC initialization fails, TinyPilot will receive an error message through the `onmessage` callback. The error message says [uStreamer hasn't found any SPS/PPS frames in the stream yet](https://github.com/pikvm/ustreamer/blob/v4.11/janus/src/plugin.c#L484). SPS/PPS frames are special H264 frames with meta information about the video (like the video dimensions for example). The only thing to do in this case is to retry sending the `watch` command. (refreshing the page also works, but is not a good solution for end-users)
+
+It is important to note that up until now, even though we are connected via websockets we did not yet establish a WebRTC peer-to-peer connection.
+TinyPilot and Janus are still exchanging messages over the Websockets channel.
+
+When there is no error and there is actually a "jsep" present (the WebRTC offer) in the message, TinyPilot creates a WebRTC answer. The [`createAnswer` call](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L114) creates the WebRTC answer and has a callback for when the WebRTC connection succeeds.
+
+If the `createAnswer` call succeeds, TinyPilot sends a [`start` message](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L121), which triggers the plugin to begin streaming the video to the browser.
+
+When the Janus uStreamer plugin begins the video stream, it triggers a call of the `onremotestream` callback. This handler receives the stream, which it can then attach to an existing `<video>` element.
+
+Now the stream is connected and the remote screen's display should be visible in the browser.
+
+The `stop` command tells the plugin code to "detach" from the shared memory provided by uStreamer. After receiving `stop` command, the Janus uStreamer plugin stops parsing H264 frames from uStreamer.
+
+To restart a stream after TinyPilot has sent the `stop` command, TinyPilot must send the `watch` command again in order for the plugin to reattach to the shared memory. Only then can we send the `start`command again.
+
+Note from Andre: I would probably recommend sending this command when the user leaves the page somehow for a cleaner shutdown/disconnect. However I haven't noticed any problem with just reloading the page which just breaks the websocket connection.
 
 ## Pre-requisites
 
