@@ -107,5 +107,5 @@ docker run \
   --privileged \
   --network host \
   --name janus-ustreamer \
-  mtlynch/ustreamer-janus:2022-01-17
+  mtlynch/ustreamer-janus:2022-02-02
 ```
