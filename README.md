@@ -42,7 +42,7 @@ When the user loads TinyPilot's web app, the frontend connects to the Janus webs
 
 Upon successful connection to Janus, TinyPilot attaches [to the uStreamer plugin](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L94). Different plugins can provide different streams, so TinyPilot has to specify uStreamer explicitly.
 
-If TinyPilot atttaches successfully to the uStreamer plugin, it gets a [handle object](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L102), which allows TinyPilot to communicate directly to the uStreamer plugin.
+If TinyPilot attaches successfully to the uStreamer plugin, it gets a [handle object](https://github.com/tiny-pilot/tinypilot/blob/3a3290c46c03280a31c9c3bae1bd267c3f4c7c2c/app/templates/custom-elements/remote-screen.html#L102), which allows TinyPilot to communicate directly to the uStreamer plugin.
 
 The `attach` call also sets up a couple more callbacks like `success` for when the "attaching" succeeds, `onmessage` for handling messages sent by the plugin and `onremotestream` for when we receive a new video stream.
 
