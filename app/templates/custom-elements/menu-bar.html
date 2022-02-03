@@ -152,6 +152,21 @@
     .spacer {
       flex: 1;
     }
+
+    .pro-badge:after {
+      position: absolute;
+      display: block;
+      z-index: var(--z-index-bar);
+      content: "PRO";
+      font-size: 0.8em; /* Equivalent of the x-height of the parent font size */
+      top: 0.75em;
+      right: 0.9em;
+      padding: 0 0.4em;
+      color: var(--brand-logo-accent-color);
+      border: 1px solid var(--brand-logo-accent-color);
+      border-radius: 0.8em;
+      pointer-events: none; /* “Click-through” to underlying menu item */
+    }
   </style>
 
   <div class="logo"><img src="/img/logo.svg" alt="TinyPilot logo" /></div>
@@ -159,7 +174,7 @@
     <li class="group">
       <a>System</a>
       <ul class="items">
-        <li class="item">
+        <li class="item pro-badge">
           <a id="mass-storage-btn">Virtual Media</a>
         </li>
         <li class="item">

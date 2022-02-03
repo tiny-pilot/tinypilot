@@ -37,6 +37,11 @@
   --brand-green-light: hsl(var(--brand-hue-green), 34%, 70%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
 
+  /* This is the green color that is used in the logo. It should only be
+     scarcely used outside the logo, for example for brand- or marketing-related
+     things. */
+  --brand-logo-accent-color: #3df91e;
+
   --border-radius: 0.25rem;
 
   --z-index-bar: 1;
