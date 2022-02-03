@@ -75,7 +75,7 @@ Note from Andre: I would probably recommend sending this command when the user l
 
 ## Pre-requisites
 
-* Raspberry Pi OS Stretch or later
+* Raspberry Pi OS Buster
 * python3-venv
 
 ## Install
