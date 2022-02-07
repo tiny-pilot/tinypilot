@@ -3,7 +3,7 @@ import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 const modifierPropToKeyCodesMapping = {
   altKey: ["AltLeft", "AltRight"],
   metaKey: ["MetaLeft", "MetaRight"],
-  ctrlKey: ["CtrlLeft", "CtrlRight"],
+  ctrlKey: ["ControlLeft", "ControlRight"],
   shiftKey: ["ShiftLeft", "ShiftRight"],
 };
 
