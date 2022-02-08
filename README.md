@@ -73,6 +73,11 @@ To restart a stream after TinyPilot has sent the `stop` command, TinyPilot must 
 
 Note from Andre: I would probably recommend sending this command when the user leaves the page somehow for a cleaner shutdown/disconnect. However I haven't noticed any problem with just reloading the page which just breaks the websocket connection.
 
+### Network Specifics
+
+The basic setup will only work if we are on the same network local network as the tinypilot voyager.
+For more details about WebRTC and the required network setup please refer to [this](WEBRTC.md) document.
+
 ## Pre-requisites
 
 * Raspberry Pi OS Buster
