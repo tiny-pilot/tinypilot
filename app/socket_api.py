@@ -77,9 +77,9 @@ def on_key_release():
 
 @socketio.on('connect')
 def on_connect():
-    logger.info('Client connected')
+    logger.info('Client %s connected', flask.request.sid)
 
 
 @socketio.on('disconnect')
 def on_disconnect():
-    logger.info('Client disconnected')
+    logger.info('Client %s disconnected', flask.request.sid)
