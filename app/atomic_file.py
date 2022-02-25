@@ -14,7 +14,7 @@ _TEMP_FOLDER = None
 
 
 @contextlib.contextmanager
-def create(file_path):
+def create(file_path, chmod_mode=None):
     """Creates a new file in an atomic way.
 
     It creates the file in the temporary folder first until the caller has
@@ -22,7 +22,10 @@ def create(file_path):
     destination. It always will clean up the temporary file properly.
 
     Args:
-        file_path: The absolute path of the file (str)
+        file_path: The absolute path of the file (str).
+        chmod_mode: File permissions as bitfield, as used by `os.chmod`. If not
+            specified (None), it falls back to the default permissions of the
+            system/process.
 
     Raises:
         OSError if disk operations fail.
@@ -34,6 +37,8 @@ def create(file_path):
     try:
         with open(temp_file, 'bw') as file:
             yield file
+        if chmod_mode is not None:
+            os.chmod(temp_file, chmod_mode)
         shutil.move(temp_file, file_path)
     finally:
         os.close(file_descriptor)
