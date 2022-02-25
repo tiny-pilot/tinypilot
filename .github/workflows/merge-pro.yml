@@ -17,8 +17,9 @@ jobs:
           git config --global user.name "Your Name"
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream master:upstream-master
-          git checkout -b community-changes
+          git checkout -b community-changes-${{ github.sha }}-merge
           git merge upstream-master --allow-unrelated-histories || git merge --abort
+          git push origin community-changes-${{ github.sha }}-merge
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
