@@ -13,6 +13,8 @@ jobs:
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Reset the default branch with upstream changes
         run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream master:upstream-master
           git checkout -b community-changes-${{ github.sha }}
