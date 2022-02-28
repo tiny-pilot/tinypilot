@@ -52,39 +52,21 @@ class AtomicFileTest(unittest.TestCase):
         self.assertFileContainsData(saved_path, bytes('hello world', 'utf-8'))
         self.assertFolderIsEmpty(self.temp_dir.name)
 
-    def test_chmod_sets_desired_permissions(self):
-        file_path_1 = os.path.join(self.destination_dir.name, 'test1.txt')
-        with atomic_file.create(file_path_1, chmod_mode=0o770) as file:
-            file.write(bytes('hello world', 'utf-8'))
-
-        permissions_1 = stat.S_IMODE(os.stat(file_path_1).st_mode)
-        self.assertEqual(0o770, permissions_1)
-
-        # Run the test a second time with different permissions, so that we can
-        # rule out the case where the specified permissions would accidentally
-        # happen to match the system default.
-        file_path_2 = os.path.join(self.destination_dir.name, 'test2.txt')
-        with atomic_file.create(file_path_2, chmod_mode=0o666) as file:
-            file.write(bytes('hello world', 'utf-8'))
-
-        permissions = stat.S_IMODE(os.stat(file_path_2).st_mode)
-        self.assertEqual(0o666, permissions)
-
-    def test_chmod_falls_back_to_system_default(self):
+    def test_chmod_uses_0600_as_default(self):
         file_path = os.path.join(self.destination_dir.name, 'test.txt')
-
         with atomic_file.create(file_path) as file:
             file.write(bytes('hello world', 'utf-8'))
-        atomic_file_permissions = stat.S_IMODE(os.stat(file_path).st_mode)
 
-        # Create a temporary dummy file, to find out what chmod value new files
-        # are created with by default. Default file permissions depend on the
-        # umask setting of the system/process.
-        with tempfile.NamedTemporaryFile() as tmp:
-            tmp.write(bytes('', 'utf-8'))
-            default_permissions = stat.S_IMODE(os.stat(tmp.name).st_mode)
+        permissions = stat.S_IMODE(os.stat(file_path).st_mode)
+        self.assertEqual(0o600, permissions)
 
-        self.assertEqual(default_permissions, atomic_file_permissions)
+    def test_chmod_sets_desired_permissions(self):
+        file_path = os.path.join(self.destination_dir.name, 'test1.txt')
+        with atomic_file.create(file_path, chmod_mode=0o770) as file:
+            file.write(bytes('hello world', 'utf-8'))
+
+        permissions = stat.S_IMODE(os.stat(file_path).st_mode)
+        self.assertEqual(0o770, permissions)
 
     def test_cleans_up_temp_file_on_os_error(self):
         file_path = os.path.join(self.destination_dir.name, 'test.txt')
