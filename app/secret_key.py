@@ -18,6 +18,8 @@ import logging
 import os
 import stat
 
+import atomic_file
+
 _SECRET_KEY_FILE = os.path.expanduser('~/.flask-secret-key')
 _SECRET_KEY_FILE_PERMS = 0o600
 _SECRET_KEY_BYTE_LENGTH = 32
@@ -72,11 +74,12 @@ def _create():
         IOError: If an error occured while accessing the secret key file.
     """
     logger.info('Creating new flask secret key at %s', _SECRET_KEY_FILE)
-    with open(_SECRET_KEY_FILE, 'wb') as key_file:
-        os.chmod(key_file.name, _SECRET_KEY_FILE_PERMS)
-        secret_key = os.urandom(_SECRET_KEY_BYTE_LENGTH)
-        key_file.write(secret_key)
-        return secret_key
+    secret_key = os.urandom(_SECRET_KEY_BYTE_LENGTH)
+    with atomic_file.create(_SECRET_KEY_FILE,
+                            chmod_mode=_SECRET_KEY_FILE_PERMS) as file:
+        file.write(secret_key)
+
+    return secret_key
 
 
 def get_or_create():
