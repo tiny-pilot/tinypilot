@@ -98,7 +98,7 @@ curl -fsSL https://get.docker.com | sudo sh && \
   curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/experimental/h264/quick-install | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/demo-remove-ustreamer-service-h264-docker-image/quick-install | \
     bash - && \
   sudo reboot
 ```

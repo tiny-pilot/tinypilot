@@ -126,14 +126,14 @@ interpreter_python = /usr/bin/python3
 TINYPILOT_ROLE_NAME="ansible-role-tinypilot"
 if [ -d "$TINYPILOT_ROLE_NAME" ]; then
   pushd "$TINYPILOT_ROLE_NAME"
-  git checkout experimental/h264
-  git pull origin experimental/h264
+  git checkout demo-remove-ustreamer-service-h264-docker-image
+  git pull origin demo-remove-ustreamer-service-h264-docker-image
   popd
 else
   TINYPILOT_ROLE_REPO="https://github.com/tiny-pilot/ansible-role-tinypilot.git"
   git clone "$TINYPILOT_ROLE_REPO" "$TINYPILOT_ROLE_NAME"
   pushd "$TINYPILOT_ROLE_NAME"
-  git checkout experimental/h264
+  git checkout demo-remove-ustreamer-service-h264-docker-image
   popd
 fi
 
