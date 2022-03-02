@@ -1,4 +1,5 @@
 import os
+import stat
 import tempfile
 import unittest
 from unittest import mock
@@ -50,6 +51,22 @@ class AtomicFileTest(unittest.TestCase):
         saved_path = os.path.join(self.destination_dir.name, 'test.txt')
         self.assertFileContainsData(saved_path, bytes('hello world', 'utf-8'))
         self.assertFolderIsEmpty(self.temp_dir.name)
+
+    def test_chmod_uses_0600_as_default_mode(self):
+        file_path = os.path.join(self.destination_dir.name, 'test.txt')
+        with atomic_file.create(file_path) as file:
+            file.write(bytes('hello world', 'utf-8'))
+
+        permissions = stat.S_IMODE(os.stat(file_path).st_mode)
+        self.assertEqual(0o600, permissions)
+
+    def test_chmod_sets_desired_permissions(self):
+        file_path = os.path.join(self.destination_dir.name, 'test.txt')
+        with atomic_file.create(file_path, chmod_mode=0o770) as file:
+            file.write(bytes('hello world', 'utf-8'))
+
+        permissions = stat.S_IMODE(os.stat(file_path).st_mode)
+        self.assertEqual(0o770, permissions)
 
     def test_cleans_up_temp_file_on_os_error(self):
         file_path = os.path.join(self.destination_dir.name, 'test.txt')
