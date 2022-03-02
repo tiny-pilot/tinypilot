@@ -23,6 +23,7 @@ import atomic_file
 _SECRET_KEY_FILE = os.path.expanduser('~/.flask-secret-key')
 _SECRET_KEY_FILE_PERMS = 0o600
 _SECRET_KEY_BYTE_LENGTH = 32
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,9 +84,13 @@ def _create():
 
 
 def get_or_create():
-    """Get or create a secret key.
+    """Get or (re-)create a secret key.
 
     If a secret key doesn't exist, a new one will be created and returned.
+
+    If it finds the key file to be corrupted (see error cases of `_get`), it
+    tries to recreate it (once). Note, this will cause all existing sessions to
+    be invalidated.
 
     Args:
         None
@@ -94,13 +99,16 @@ def get_or_create():
         A string of 32 bytes.
 
     Raises:
-        InvalidSecretKeyError:
-            * If an existing secret key file doesn't have a file permission of
-              600.
-            * If an existing secret key value isn't a string of 32 bytes.
         IOError: If an error occured while creating the secret key file.
     """
     try:
         return _get()
     except IOError:
-        return _create()
+        # The file doesn’t exist, so we need to create it.
+        logger.info('No flask secret key found')
+    except InvalidSecretKeyError:
+        # The existing file is corrupt, so we first remove and then recreate it.
+        logger.info('Flask secret key invalid or not readable')
+        os.remove(_SECRET_KEY_FILE)
+
+    return _create()
