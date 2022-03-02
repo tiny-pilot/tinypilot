@@ -22,7 +22,7 @@ class SecretKeyTest(unittest.TestCase):
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
                                    mock_secret_key_file.name):
                 secret_key_value = secret_key.get_or_create()
-                self.assertIsValidKeyValue(secret_key_value)
+                self.assertEqual(b'0' * 32, secret_key_value)
 
     def test_get_or_create_will_recreate_if_file_has_invalid_perms(self):
         initial_key = b'0' * 32
