@@ -9,8 +9,7 @@ import secret_key
 
 class SecretKeyTest(unittest.TestCase):
 
-    # pylint: disable=invalid-name
-    def assertIsValidKeyValue(self, secret_key_value):
+    def assertIsValidKeyValue(self, secret_key_value):  # pylint: disable=invalid-name
         self.assertIs(bytes, type(secret_key_value))
         self.assertEqual(32, len(secret_key_value))
 
