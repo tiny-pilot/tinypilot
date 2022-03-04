@@ -9,6 +9,10 @@ import secret_key
 
 class SecretKeyTest(unittest.TestCase):
 
+    def assertIsValidKeyValue(self, secret_key_value):  # pylint: disable=invalid-name
+        self.assertIs(bytes, type(secret_key_value))
+        self.assertEqual(32, len(secret_key_value))
+
     def test_get_or_create_will_get_when_valid_file_exists(self):
         with tempfile.NamedTemporaryFile() as mock_secret_key_file:
             mock_secret_key_file.write(b'0' * 32)
@@ -19,7 +23,7 @@ class SecretKeyTest(unittest.TestCase):
                 secret_key_value = secret_key.get_or_create()
                 self.assertEqual(b'0' * 32, secret_key_value)
 
-    def test_get_or_create_will_raise_error_when_file_has_invalid_perms(self):
+    def test_get_or_create_will_recreate_if_file_has_invalid_perms(self):
         with tempfile.NamedTemporaryFile() as mock_secret_key_file:
             mock_secret_key_file.write(b'0' * 32)
             mock_secret_key_file.flush()
@@ -27,18 +31,23 @@ class SecretKeyTest(unittest.TestCase):
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
                                    mock_secret_key_file.name):
-                with self.assertRaises(secret_key.InvalidSecretKeyError):
-                    secret_key.get_or_create()
+                secret_key_value = secret_key.get_or_create()
+                self.assertIsValidKeyValue(secret_key_value)
+                self.assertNotEqual(b'0' * 32, secret_key_value)
+                file_perms = stat.S_IMODE(
+                    os.stat(mock_secret_key_file.name).st_mode)
+                self.assertEqual(0o600, file_perms)
 
-    def test_get_or_create_will_raise_error_when_file_has_invalid_content(self):
+    def test_get_or_create_will_recreate_file_if_content_is_corrupt(self):
         with tempfile.NamedTemporaryFile() as mock_secret_key_file:
-            mock_secret_key_file.write(b'dummy key data with incorrect size')
+            mock_secret_key_file.write(b'invalid key')
             mock_secret_key_file.flush()
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
                                    mock_secret_key_file.name):
-                with self.assertRaises(secret_key.InvalidSecretKeyError):
-                    secret_key.get_or_create()
+                secret_key_value = secret_key.get_or_create()
+                self.assertIsValidKeyValue(secret_key_value)
+                self.assertNotEqual(b'invalid key', secret_key_value)
 
     def test_get_or_create_will_create_when_file_does_not_exist(self):
         with tempfile.TemporaryDirectory() as mock_secret_key_dir:
@@ -52,5 +61,9 @@ class SecretKeyTest(unittest.TestCase):
                 self.assertTrue(os.path.exists(mock_secret_key_file))
                 file_perms = stat.S_IMODE(os.stat(mock_secret_key_file).st_mode)
                 self.assertEqual(0o600, file_perms)
-                self.assertIs(bytes, type(secret_key_value))
-                self.assertEqual(32, len(secret_key_value))
+                self.assertIsValidKeyValue(secret_key_value)
+
+                # Verify that the file was actually persisted by retrieving it
+                # again and then checking that the value is still the same.
+                reread_secret_key_value = secret_key.get_or_create()
+                self.assertEqual(secret_key_value, reread_secret_key_value)
