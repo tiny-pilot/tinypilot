@@ -113,6 +113,6 @@ docker run \
   --privileged \
   --network host \
   --volume /dev/shm:/dev/shm \
-  --name janus-ustreamer \
-  jdeanwallace/janus-ustreamer:2022-02-25
+  --name janus \
+  tinypilotkvm/janus:2022-03-07
 ```
