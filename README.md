@@ -105,49 +105,14 @@ curl -fsSL https://get.docker.com | sudo sh && \
 
 ## Run
 
-You need to start Janus and uStreamer manually every time the device reboots.
-
-### Hobbyist
-
-On a Hobbyist device using a MacroSilicon MS2109-based HDMI-to-USB capture
-dongle, run the following command:
+You need to start Janus manually every time the device reboots, by running the
+following command:
 
 ```bash
 docker run \
   --privileged \
   --network host \
-  --name janus-ustreamer \
-  jdeanwallace/janus-ustreamer:2022-02-19 \
-  --host 127.0.0.1 \
-  --port 8001 \
-  --persistent \
-  --h264-sink tinypilot::ustreamer::h264 \
-  --h264-sink-rm \
-  --h264-sink-mode 777 \
-  --encoder hw \
-  --format jpeg \
-  --resolution 1920x1080
-```
-
-### Voyager
-
-On a Voyager device using a TC358743 capture chip, run the following command:
-
-```bash
-docker run \
-  --privileged \
-  --network host \
-  --name janus-ustreamer \
-  jdeanwallace/janus-ustreamer:2022-02-19 \
-  --host 127.0.0.1 \
-  --port 8001 \
-  --persistent \
-  --h264-sink tinypilot::ustreamer::h264 \
-  --h264-sink-rm \
-  --h264-sink-mode 777 \
-  --encoder omx \
-  --format uyvy \
-  --workers 3 \
-  --drop-same-frames 30 \
-  --dv-timings
+  --volume /dev/shm:/dev/shm \
+  --name janus \
+  tinypilotkvm/janus:2022-03-07
 ```
