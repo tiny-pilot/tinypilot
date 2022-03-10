@@ -19,6 +19,7 @@ jobs:
           git fetch upstream master:upstream-master
           git checkout -b community-changes-${{ github.sha }}-merge
           git reset --hard upstream-master
+          git config pull.rebase false
           git pull origin master || { git add * && git -c core.editor=true merge --continue; }
           git push origin community-changes-${{ github.sha }}-merge
       - name: Create Pull Request
