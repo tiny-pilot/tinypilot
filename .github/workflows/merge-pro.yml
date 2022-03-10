@@ -20,7 +20,7 @@ jobs:
           git checkout -b community-changes-${{ github.sha }}-merge
           git reset --hard upstream-master
           git config pull.rebase false
-          git pull origin master || { git add * && git -c core.editor=true merge --continue; }
+          git pull origin master --allow-unrelated-histories || { git add * && git -c core.editor=true merge --continue; }
           git push origin community-changes-${{ github.sha }}-merge
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
