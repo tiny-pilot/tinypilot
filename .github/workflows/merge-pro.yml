@@ -18,7 +18,7 @@ jobs:
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream master:upstream-master
           git checkout -b community-changes-${{ github.sha }}-merge
-          EDITOR=true
+          GIT_MERGE_AUTOEDIT=no
           git merge upstream-master --allow-unrelated-histories || { git add * && git merge --continue; }
           git push origin community-changes-${{ github.sha }}-merge
       - name: Create Pull Request
