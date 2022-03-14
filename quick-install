@@ -35,6 +35,14 @@ fi
 # Treat undefined environment variables as errors.
 set -u
 
+# Prevent installation on the 64-bit version of Raspberry Pi OS.
+# https://github.com/tiny-pilot/tinypilot/issues/929
+if [[ "$(uname -m)" == 'aarch64' ]]; then
+  echo '64-bit Raspberry Pi OS is not yet supported.' >&2
+  echo 'Please use the 32-bit version of Raspberry Pi OS.' >&2
+  exit 1
+fi
+
 # Create a temporary settings file that will be used throughout this script to
 # avoid repeatedly using sudo.
 # HACK: If we let mktemp use the default /tmp directory, the system purges the file
