@@ -35,11 +35,11 @@ fi
 # Treat undefined environment variables as errors.
 set -u
 
-# Prevent installation on the 64bit version of Raspberry Pi OS.
-# TODO: Add support for 64bit Raspberry Pi OS.
-if [[ "$(uname -m)" == 'aarch64' ]];then
-  echo '64bit Raspberry Pi OS is not yet supported.' >&2
-  echo 'Please use the 32bit version of Raspberry Pi OS.' >&2
+# Prevent installation on the 64-bit version of Raspberry Pi OS.
+# https://github.com/tiny-pilot/tinypilot/issues/929
+if [[ "$(uname -m)" == 'aarch64' ]]; then
+  echo '64-bit Raspberry Pi OS is not yet supported.' >&2
+  echo 'Please use the 32-bit version of Raspberry Pi OS.' >&2
   exit 1
 fi
 
