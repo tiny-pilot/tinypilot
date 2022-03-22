@@ -91,7 +91,7 @@ For more details about WebRTC and the required network setup please refer to [th
 curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/experimental/h264/quick-install | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/demo-tinypilot-janus-integration/quick-install | \
     bash - && \
   sudo reboot
 ```
