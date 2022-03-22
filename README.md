@@ -85,34 +85,13 @@ For more details about WebRTC and the required network setup please refer to [th
 
 ## Install
 
-### Docker
-
-```bash
-curl -fsSL https://get.docker.com | sudo sh && \
-  sudo usermod -aG docker $(whoami)
-```
-
 ### TinyPilot
 
 ```bash
-  curl \
+curl \
   --silent \
   --show-error \
   https://raw.githubusercontent.com/tiny-pilot/tinypilot/experimental/h264/quick-install | \
     bash - && \
   sudo reboot
-```
-
-## Run
-
-You need to start Janus manually every time the device reboots, by running the
-following command:
-
-```bash
-docker run \
-  --privileged \
-  --network host \
-  --volume /dev/shm:/dev/shm \
-  --name janus \
-  tinypilotkvm/janus:2022-03-07
 ```
