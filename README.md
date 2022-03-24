@@ -100,7 +100,6 @@ On a Voyager device using a TC358743 capture chip, run the following command:
 TINYPILOT_SETTINGS="/home/tinypilot/settings.yml" && \
   (sudo useradd --create-home --system --user-group tinypilot || true) && \
   echo 'ustreamer_capture_device: tc358743' | sudo tee "${TINYPILOT_SETTINGS}" && \
-  echo 'ustreamer_format: jpeg' | sudo tee --append "${TINYPILOT_SETTINGS}" && \
   sudo chown tinypilot:tinypilot "${TINYPILOT_SETTINGS}"
 ```
 
