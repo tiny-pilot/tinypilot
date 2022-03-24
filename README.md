@@ -83,19 +83,35 @@ For more details about WebRTC and the required network setup please refer to [th
 * Raspberry Pi OS Buster
 * python3-venv
 
-## Install
-
-### Docker
+## Install Docker
 
 ```bash
 curl -fsSL https://get.docker.com | sudo sh && \
   sudo usermod -aG docker $(whoami)
 ```
 
-### TinyPilot
+## Configure TinyPilot
+
+### Voyager
+
+On a Voyager device using a TC358743 capture chip, run the following command:
 
 ```bash
-  curl \
+TINYPILOT_SETTINGS="/home/tinypilot/settings.yml" && \
+  (sudo useradd --create-home --system --user-group tinypilot || true) && \
+  echo 'ustreamer_capture_device: tc358743' | sudo tee "${TINYPILOT_SETTINGS}" && \
+  sudo chown tinypilot:tinypilot "${TINYPILOT_SETTINGS}"
+```
+
+### Hobbyist
+
+On a Hobbyist device using a MacroSilicon MS2109-based HDMI-to-USB capture
+dongle, there are no additional configurations needed.
+
+## Install TinyPilot
+
+```bash
+curl \
   --silent \
   --show-error \
   https://raw.githubusercontent.com/tiny-pilot/tinypilot/experimental/h264/quick-install | \
@@ -103,7 +119,7 @@ curl -fsSL https://get.docker.com | sudo sh && \
   sudo reboot
 ```
 
-## Run
+## Run Janus Docker Container
 
 You need to start Janus manually every time the device reboots, by running the
 following command:
