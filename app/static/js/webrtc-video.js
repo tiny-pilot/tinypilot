@@ -3,10 +3,10 @@
  *
  * Import this as `type="module"`, to avoid polluting the global namespace.
  *
- * This file implicitly depends on the following libraries to be present in the
- * global namespace:
- * - Janus Gateway 1.0.0
+ * This file implicitly depends on the following libraries to be loaded into the
+ * global namespace, in this order:
  * - WebRTC Adapter 8.1.1
+ * - Janus Gateway 1.0.0
  *
  * See here for the Janus Gateway API reference:
  * https://janus.conf.meetecho.com/docs/JS.html
