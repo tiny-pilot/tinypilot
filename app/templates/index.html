@@ -58,7 +58,11 @@
           id="remote-screen"
           milliseconds-between-mouse-events="600"
         >
+          {% if is_remote_screen_webrtc %}
+          <video id="webrtc-output" autoplay playsinline muted></video>
+          {% else %}
           <img src="/stream?advance_headers=1" />
+          {% endif %}
         </remote-screen>
 
         <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
@@ -68,6 +72,18 @@
     <script src="/third-party/socket.io/3.1.3/socket.io.min.js"></script>
     <script src="/js/paste.js"></script>
     <script type="module" src="/js/app.js"></script>
+
+    {% if is_remote_screen_webrtc %}
+    <script
+      type="text/javascript"
+      src="/third-party/webrtc-adapter/8.1.1/adapter.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/third-party/janus-gateway/0.12.0/janus.js"
+    ></script>
+    <script type="text/javascript" src="/js/webrtc-video.js"></script>
+    {% endif %}
 
     <div style="opacity: 0;">
       <!-- Force browser to preload font variants in order to
