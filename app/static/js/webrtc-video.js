@@ -1,28 +1,40 @@
 /**
+ * The initialization of the WebRTC Video stream from the Janus plugin.
+ *
+ * Import this as `type="module"`, to avoid polluting the global namespace.
+ *
+ * This file implicitly depends on the following libraries to be present in the
+ * global namespace:
+ * - Janus Gateway 1.0.0
+ * - WebRTC Adapter 8.1.1
+ *
  * See here for the Janus Gateway API reference:
  * https://janus.conf.meetecho.com/docs/JS.html
- *
- * Tip for easier local development:
- * - Call `Janus.init` with `{debug: "all"}` to turn on all internal logging.
- *   Make sure to set the log level in your browser to debug/verbose.
- * - Change the server URL to the address of your real device. (Friendly
- *   reminder, just in case: that doesn’t forward mouse and keyboard.)
  */
 
+// Parameters for the setup.
+const config = {
+  // Set to `true` to turn on all internal Janus logging. Make sure to set the
+  // log level in your browser to debug/verbose.
+  isDebug: false,
+
+  // The hostname of the device. For development, you can replace this with the
+  // hostname of your testing device.
+  deviceHostname: location.host,
+
+  // Whether the connection should be established with SSL.
+  useSSL: location.protocol === "https:",
+};
+
+// Initialize library.
 Janus.init({
-  debug: "all", // TODO(jotaen) Set this to false when development done.
+  debug: config.isDebug ? "all" : false,
 });
 
-const WEBRTC_VIDEO_ELEMENT = document.getElementById("webrtc-output");
-
-// TODO(jotaen) Change to real URL. Also, account for https (wss) on Pro.
-const JANUS_URL = `ws://raspberrypi/janus/ws`;
-
+// Establish connection to the server.
 const janus = new Janus({
-  server: JANUS_URL,
-  success: function () {
-    attachToJanusPlugin();
-  },
+  server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
+  success: attachToJanusPlugin,
   error: function (error) {
     console.error("Failed to connect to Janus: " + error);
   },
@@ -94,16 +106,19 @@ function attachToJanusPlugin() {
      */
     onremotetrack: function (track, mid, added) {
       console.debug(`Remote track changed. mid:"${mid}" added:"${added}`);
+      const videoElement = document.getElementById("webrtc-output");
+
       if (!added) {
-        WEBRTC_VIDEO_ELEMENT.srcObject = null;
+        videoElement.srcObject = null;
         return;
       }
+
       // According to the examples/tests in the Janus repository, the track
       // object should be cloned.
       // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
       const stream = new MediaStream();
       stream.addTrack(track.clone());
-      WEBRTC_VIDEO_ELEMENT.srcObject = stream;
+      videoElement.srcObject = stream;
     },
   });
 }

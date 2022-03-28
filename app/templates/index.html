@@ -58,7 +58,7 @@
           id="remote-screen"
           milliseconds-between-mouse-events="600"
         >
-          {% if is_remote_screen_webrtc %}
+          {% if use_webrtc_remote_screen %}
           <video id="webrtc-output" autoplay playsinline muted></video>
           {% else %}
           <img src="/stream?advance_headers=1" />
@@ -73,7 +73,7 @@
     <script src="/js/paste.js"></script>
     <script type="module" src="/js/app.js"></script>
 
-    {% if is_remote_screen_webrtc %}
+    {% if use_webrtc_remote_screen %}
     <script
       type="text/javascript"
       src="/third-party/webrtc-adapter/8.1.1/adapter.min.js"
