@@ -88,7 +88,11 @@
   </style>
   <div class="screen-wrapper">
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
-    <slot id="screen"></slot>
+
+    <slot id="screen">
+      <!-- The slot must be filled with a single, non-nested element. Otherwise
+           the CSS sizing settings cannot be correctly applied. -->
+    </slot>
   </div>
 </template>
 
