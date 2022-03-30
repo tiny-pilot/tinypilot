@@ -142,28 +142,31 @@
             template.content.cloneNode(true)
           );
 
+          this.elements = {
+            screen: this.shadowRoot.getElementById("screen"),
+          };
+
           // Forward all mouse activity that occurs over the image of the remote screen.
-          const screenImg = this.shadowRoot.getElementById("screen");
-          screenImg.addEventListener("mousemove", (evt) => {
+          this.elements.screen.addEventListener("mousemove", (evt) => {
             // Ensure that mouse drags don't attempt to drag the image on the screen.
             evt.preventDefault();
 
             this.rateLimitedMouse.onMouseMove(evt);
           });
-          screenImg.addEventListener("mousedown", (evt) => {
+          this.elements.screen.addEventListener("mousedown", (evt) => {
             this.rateLimitedMouse.onMouseDown(evt);
           });
-          screenImg.addEventListener("mouseup", (evt) => {
+          this.elements.screen.addEventListener("mouseup", (evt) => {
             this.rateLimitedMouse.onMouseUp(evt);
           });
-          screenImg.addEventListener("wheel", (evt) => {
+          this.elements.screen.addEventListener("wheel", (evt) => {
             evt.preventDefault();
             this.rateLimitedMouse.onWheel(evt);
           });
 
           // Ignore the context menu so that it doesn't block the screen when the user
           // right-clicks.
-          screenImg.addEventListener("contextmenu", (evt) => {
+          this.elements.screen.addEventListener("contextmenu", (evt) => {
             evt.preventDefault();
           });
 
@@ -272,15 +275,15 @@
         // depending on which better maximizes space for the remote screen's
         // aspect ratio.
         fillSpace() {
-          const screenImg = this.shadowRoot.getElementById("screen");
-          screenImg.classList.remove("full-width");
-          screenImg.classList.remove("full-height");
+          this.elements.screen.classList.remove("full-width");
+          this.elements.screen.classList.remove("full-height");
           const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio = screenImg.width / screenImg.height;
+          const screenRatio =
+            this.elements.screen.width / this.elements.screen.height;
           if (screenRatio > windowRatio) {
-            screenImg.classList.add("full-width");
+            this.elements.screen.classList.add("full-width");
           } else {
-            screenImg.classList.add("full-height");
+            this.elements.screen.classList.add("full-height");
           }
         }
       }
