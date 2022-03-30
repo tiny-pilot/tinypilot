@@ -13,6 +13,8 @@ _DEFAULT_HOSTNAME = 'tinypilot'
 def index_get():
     return flask.render_template(
         'index.html',
+        use_webrtc_remote_screen=flask.current_app.config.get(
+            'USE_WEBRTC_REMOTE_SCREEN', False),
         page_title_prefix=_page_title_prefix(),
         custom_elements_files=find_files.custom_elements_files())
 
