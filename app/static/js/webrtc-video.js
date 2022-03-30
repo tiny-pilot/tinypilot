@@ -59,22 +59,28 @@ function attachToJanusPlugin() {
     },
 
     /**
+     * The plugin handle was successfully created and is ready to be used.
      * @param {object} pluginHandle The Janus plugin handle.
      */
     success: function (pluginHandle) {
       janusPluginHandle = pluginHandle;
-      console.debug("TinyPilot successfully attached uStreamer plugin");
+      console.debug("Successfully created Janus plugin handle.");
 
       // This makes the uStreamer plugin generate a webrtc offer that will be
       // received in the onmessage handler.
       janusPluginHandle.send({ message: { request: "watch" } });
     },
 
+    /**
+     * The plugin handle was NOT successfully created
+     * @param error
+     */
     error: function (error) {
-      console.error("Failed to attach to uStreamer plugin: " + error);
+      console.error("Failed to create Janus plugin handle: " + error);
     },
 
     /**
+     * A message/event has been received from the plugin.
      * @param {object} msg
      * @param {object|null} jsep JSEP = JavaScript Session Establishment Protocol
      */
@@ -100,6 +106,7 @@ function attachToJanusPlugin() {
     },
 
     /**
+     * A remote media track is available and ready to be consumed.
      * @param {MediaStreamTrack} track https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
      * @param {string} mid The Media-ID.
      * @param {boolean} added Whether a track was added or removed.
