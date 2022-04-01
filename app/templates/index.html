@@ -59,9 +59,18 @@
           milliseconds-between-mouse-events="600"
         >
           {% if use_webrtc_remote_screen %}
-          <video id="webrtc-output" autoplay playsinline muted></video>
+          <!-- When WebRTC streaming fails to establish a connection, we use
+            the `poster` attribute of the video element to silently fallback to
+            the MJPEG stream. -->
+          <video
+            id="webrtc-output"
+            autoplay
+            playsinline
+            muted
+            poster="{{ mjpeg_stream_path }}"
+          ></video>
           {% else %}
-          <img src="/stream?advance_headers=1" />
+          <img src="{{ mjpeg_stream_path }}" />
           {% endif %}
         </remote-screen>
 
