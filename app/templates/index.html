@@ -58,16 +58,11 @@
           id="remote-screen"
           milliseconds-between-mouse-events="600"
         >
-          <!-- When WebRTC streaming is not enabled or fails to establish a
-            connection, we use the `poster` attribute of the video element to
-            silently fallback to the MJPEG stream. -->
-          <video
-            id="webrtc-output"
-            autoplay
-            playsinline
-            muted
-            poster="/stream?advance_headers=1"
-          ></video>
+          {% if use_webrtc_remote_screen %}
+          <video id="webrtc-output" autoplay playsinline muted></video>
+          {% else %}
+          <img src="/stream?advance_headers=1" />
+          {% endif %}
         </remote-screen>
 
         <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
