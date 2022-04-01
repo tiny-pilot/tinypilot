@@ -67,10 +67,10 @@
             autoplay
             playsinline
             muted
-            poster="{{ mjpeg_stream_path }}"
+            poster="{{ mjpeg_stream_url }}"
           ></video>
           {% else %}
-          <img src="{{ mjpeg_stream_path }}" />
+          <img src="{{ mjpeg_stream_url }}" />
           {% endif %}
         </remote-screen>
 
