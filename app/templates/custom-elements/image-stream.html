@@ -1,0 +1,44 @@
+<template id="image-stream-template">
+  <style>
+    :host(:not([is-enabled])) {
+      display: none;
+    }
+    :host {
+      width: 100%;
+      height: 100%;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <img id="mjpeg-output" />
+</template>
+
+<script type="module">
+  const template = document.querySelector("#image-stream-template");
+  customElements.define(
+    "image-stream",
+    class extends HTMLElement {
+      mjpegUrl = "/stream?advance_headers=1";
+      connectedCallback() {
+        this.attachShadow({ mode: "open" }).appendChild(
+          template.content.cloneNode(true)
+        );
+        this.elements = {
+          image: this.shadowRoot.querySelector("#mjpeg-output"),
+        };
+        this.isEnabled = this.hasAttribute("is-enabled");
+      }
+      set isEnabled(enabled) {
+        if (enabled) {
+          this.elements.image.src = this.mjpegUrl;
+          this.setAttribute("is-enabled", "");
+        } else {
+          this.elements.image.removeAttribute("src");
+          this.removeAttribute("is-enabled");
+        }
+      }
+    }
+  );
+</script>
