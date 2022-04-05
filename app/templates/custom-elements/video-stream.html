@@ -1,0 +1,44 @@
+<template id="video-stream-template">
+  <style>
+    :host(:not([is-enabled])) {
+      display: none;
+    }
+    :host {
+      width: 100%;
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <video id="webrtc-output" autoplay playsinline muted></video>
+</template>
+
+<script type="module">
+  const template = document.querySelector("#video-stream-template");
+  customElements.define(
+    "video-stream",
+    class extends HTMLElement {
+      connectedCallback() {
+        this.attachShadow({ mode: "open" }).appendChild(
+          template.content.cloneNode(true)
+        );
+        this.elements = {
+          video: this.shadowRoot.querySelector("#webrtc-output"),
+        };
+        this.isEnabled = this.hasAttribute("is-enabled");
+      }
+      set isEnabled(enabled) {
+        if (enabled) {
+          this.setAttribute("is-enabled", "");
+        } else {
+          this.removeAttribute("is-enabled");
+        }
+      }
+      set mediaStream(mediaStream) {
+        this.elements.video.srcObject = mediaStream;
+      }
+    }
+  );
+</script>
