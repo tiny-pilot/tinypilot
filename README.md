@@ -28,7 +28,7 @@ TinyPilot official hardware packages give you everything you need to run TinyPil
 
 ### [TinyPilot Voyager 2](https://tinypilotkvm.com/product/tinypilot-voyager2)
 
-[![Photo of TinyPilot Voyager 2](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2-white-475px.jpg)](https://tinypilotkvm.com/product/tinypilot-voyager2)
+[![Photo of TinyPilot Voyager 2](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2-600px.png)](https://tinypilotkvm.com/product/tinypilot-voyager2)
 
 Voyager 2 is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
