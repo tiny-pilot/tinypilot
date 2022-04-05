@@ -8,8 +8,6 @@ views_blueprint = flask.Blueprint('views', __name__, url_prefix='')
 # Default hostname of TinyPilot device.
 _DEFAULT_HOSTNAME = 'tinypilot'
 
-_MJPEG_STREAM_PATH = '/stream?advance_headers=1'
-
 
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
@@ -17,7 +15,6 @@ def index_get():
         'index.html',
         use_webrtc_remote_screen=flask.current_app.config.get(
             'USE_WEBRTC_REMOTE_SCREEN', False),
-        mjpeg_stream_path=_MJPEG_STREAM_PATH,
         page_title_prefix=_page_title_prefix(),
         custom_elements_files=find_files.custom_elements_files())
 
