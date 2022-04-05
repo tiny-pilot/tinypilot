@@ -58,11 +58,8 @@
           id="remote-screen"
           milliseconds-between-mouse-events="600"
         >
-          {% if use_webrtc_remote_screen %}
-          <video id="webrtc-output" autoplay playsinline muted></video>
-          {% else %}
-          <img src="/stream?advance_headers=1" />
-          {% endif %}
+          <image-stream id="image-stream" is-enabled></image-stream>
+          <video-stream id="video-stream"></video-stream>
         </remote-screen>
 
         <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>

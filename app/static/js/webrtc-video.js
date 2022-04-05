@@ -113,10 +113,13 @@ function attachToJanusPlugin() {
      */
     onremotetrack: function (track, mid, added) {
       console.debug(`Remote track changed. mid:"${mid}" added:"${added}`);
-      const videoElement = document.getElementById("webrtc-output");
+      const videoStreamElement = document.getElementById("video-stream");
+      const imageStreamElement = document.getElementById("image-stream");
 
       if (!added) {
-        videoElement.srcObject = null;
+        videoStreamElement.isEnabled = false;
+        videoStreamElement.mediaStream = null;
+        imageStreamElement.isEnabled = true;
         return;
       }
 
@@ -125,7 +128,9 @@ function attachToJanusPlugin() {
       // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
       const stream = new MediaStream();
       stream.addTrack(track.clone());
-      videoElement.srcObject = stream;
+      videoStreamElement.mediaStream = stream;
+      imageStreamElement.isEnabled = false;
+      videoStreamElement.isEnabled = true;
     },
   });
 }
