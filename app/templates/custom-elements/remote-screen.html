@@ -73,11 +73,11 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"]) #screen.full-width::slotted(*) {
+    :host([fullscreen="true"]) ::slotted(.full-width) {
       width: 100%;
     }
 
-    :host([fullscreen="true"]) #screen.full-height::slotted(*) {
+    :host([fullscreen="true"]) ::slotted(.full-height) {
       height: 100%;
     }
 
@@ -275,15 +275,16 @@
         // depending on which better maximizes space for the remote screen's
         // aspect ratio.
         fillSpace() {
-          this.elements.screen.classList.remove("full-width");
-          this.elements.screen.classList.remove("full-height");
+          const slottedScreen = this.elements.screen.assignedElements()[0];
+          slottedScreen.classList.remove("full-width");
+          slottedScreen.classList.remove("full-height");
           const windowRatio = window.innerWidth / window.innerHeight;
           const screenRatio =
-            this.elements.screen.width / this.elements.screen.height;
+            slottedScreen.width / slottedScreen.height;
           if (screenRatio > windowRatio) {
-            this.elements.screen.classList.add("full-width");
+            slottedScreen.classList.add("full-width");
           } else {
-            this.elements.screen.classList.add("full-height");
+            slottedScreen.classList.add("full-height");
           }
         }
       }
