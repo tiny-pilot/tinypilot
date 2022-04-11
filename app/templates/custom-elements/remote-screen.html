@@ -71,13 +71,7 @@
       margin: auto;
       max-width: 100vw;
       max-height: 100vh;
-    }
-
-    :host([fullscreen="true"]) #screen.full-width::slotted(*) {
       width: 100%;
-    }
-
-    :host([fullscreen="true"]) #screen.full-height::slotted(*) {
       height: 100%;
     }
 
@@ -107,7 +101,6 @@
       class extends HTMLElement {
         constructor() {
           super();
-          this.onWindowResize = this.onWindowResize.bind(this);
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -170,8 +163,6 @@
             evt.preventDefault();
           });
 
-          window.addEventListener("resize", this.onWindowResize);
-
           // Detect whether this is a touchscreen device.
           let isTouchScreen = false;
           this.shadowRoot.addEventListener("touchend", () => {
@@ -208,7 +199,6 @@
         }
 
         disconnectedCallback() {
-          window.removeEventListener("resize", this.onWindowResize);
           super.disconnectedCallback && super.disconnectedCallback();
         }
 
@@ -262,28 +252,6 @@
             }
           } else if (name === "milliseconds-between-mouse-events") {
             this.rateLimitedMouse.setTimeoutWindow(parseInt(newValue));
-          }
-        }
-
-        onWindowResize() {
-          if (this.fullscreen) {
-            this.fillSpace();
-          }
-        }
-
-        // Adjust style so that the screen is either full-width or full-height,
-        // depending on which better maximizes space for the remote screen's
-        // aspect ratio.
-        fillSpace() {
-          this.elements.screen.classList.remove("full-width");
-          this.elements.screen.classList.remove("full-height");
-          const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio =
-            this.elements.screen.width / this.elements.screen.height;
-          if (screenRatio > windowRatio) {
-            this.elements.screen.classList.add("full-width");
-          } else {
-            this.elements.screen.classList.add("full-height");
           }
         }
       }
