@@ -85,6 +85,12 @@ function attachToJanusPlugin() {
      * @param {object|null} jsep JSEP = JavaScript Session Establishment Protocol
      */
     onmessage: function (msg, jsep) {
+      // `503` indicates that the plugin is not ready to stream yet. Retry
+      // the watch request, until the H.264 stream is available.
+      if (msg.error_code === 503) {
+        janusPluginHandle.send({ message: { request: "watch" } });
+        return;
+      }
       if (!jsep) {
         return;
       }
