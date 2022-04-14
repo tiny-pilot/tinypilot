@@ -73,13 +73,11 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="width"])
-      #screen::slotted(*) {
+    :host([fullscreen="true"]) #screen.full-width::slotted(*) {
       width: 100%;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="height"])
-      #screen::slotted(*) {
+    :host([fullscreen="true"]) #screen.full-height::slotted(*) {
       height: 100%;
     }
 
@@ -110,7 +108,6 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          this.fillSpace = this.fillSpace.bind(this);
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -245,19 +242,6 @@
             .setAttribute("cursor", newValue);
         }
 
-        set fullscreenMaximize(newValue) {
-          if (newValue === null) {
-            this.removeAttribute("fullscreen-maximize");
-            return;
-          }
-          if (!["width", "height"].includes(newValue)) {
-            throw new Error(
-              "Invalid value. Can only maximize either 'width' or 'height' in fullscreen."
-            );
-          }
-          this.setAttribute("fullscreen-maximize", newValue);
-        }
-
         static get observedAttributes() {
           return ["fullscreen", "milliseconds-between-mouse-events"];
         }
@@ -284,24 +268,22 @@
         onWindowResize() {
           if (this.fullscreen) {
             this.fillSpace();
-          } else {
-            this.fullscreenMaximize = null;
           }
         }
 
-        // Adjust the screen size so that it is either full-width or
-        // full-height in fullscreen mode, depending on which better maximizes
-        // space for the remote screen's aspect ratio. This is needed in order
-        // to matchup the coordinates of the mouse events on the browser and
-        // remote screen.
+        // Adjust style so that the screen is either full-width or full-height,
+        // depending on which better maximizes space for the remote screen's
+        // aspect ratio.
         fillSpace() {
-          const slottedScreen = this.elements.screen.assignedElements()[0];
+          this.elements.screen.classList.remove("full-width");
+          this.elements.screen.classList.remove("full-height");
           const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio = slottedScreen.width / slottedScreen.height;
+          const screenRatio =
+            this.elements.screen.width / this.elements.screen.height;
           if (screenRatio > windowRatio) {
-            this.fullscreenMaximize = "width";
+            this.elements.screen.classList.add("full-width");
           } else {
-            this.fullscreenMaximize = "height";
+            this.elements.screen.classList.add("full-height");
           }
         }
       }
