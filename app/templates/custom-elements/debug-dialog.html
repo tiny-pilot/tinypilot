@@ -75,9 +75,6 @@
       <button class="share-btn btn-action" type="button">
         Get Shareable URL
       </button>
-      <button class="copy-btn btn-action" type="button">
-        Copy to Clipboard
-      </button>
       <div style="flex: 1;"><!-- Spacer --></div>
       <div class="toggle-container">
         Hide Sensitive Data
@@ -180,14 +177,6 @@
           this.shadowRoot
             .querySelector("#logs-success .share-btn")
             .addEventListener("click", this._getUrl);
-          this.shadowRoot
-            .querySelector("#logs-success .copy-btn")
-            .addEventListener("click", (event) => {
-              this.onPushCopyButton(
-                /*buttonElement=*/ event.target,
-                /*sourceElement=*/ this.elements.logsText
-              );
-            });
           this.shadowRoot
             .querySelector("#url-success .copy-btn")
             .addEventListener("click", (event) => {

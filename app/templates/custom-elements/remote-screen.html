@@ -73,11 +73,13 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"]) #screen.full-width::slotted(*) {
+    :host([fullscreen="true"][fullscreen-maximize="width"])
+      #screen::slotted(*) {
       width: 100%;
     }
 
-    :host([fullscreen="true"]) #screen.full-height::slotted(*) {
+    :host([fullscreen="true"][fullscreen-maximize="height"])
+      #screen::slotted(*) {
       height: 100%;
     }
 
@@ -108,6 +110,7 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
+          this.fillSpace = this.fillSpace.bind(this);
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -242,6 +245,23 @@
             .setAttribute("cursor", newValue);
         }
 
+        get fullscreenMaximize() {
+          return this.getAttribute("fullscreen-maximize");
+        }
+
+        /**
+         * Maximize either the width or height of the screen element in
+         * fullscreen mode.
+         * @param {('width'|'height')} dimension
+         */
+        set fullscreenMaximize(dimension) {
+          if (dimension === null) {
+            this.removeAttribute("fullscreen-maximize");
+            return;
+          }
+          this.setAttribute("fullscreen-maximize", dimension);
+        }
+
         static get observedAttributes() {
           return ["fullscreen", "milliseconds-between-mouse-events"];
         }
@@ -268,22 +288,25 @@
         onWindowResize() {
           if (this.fullscreen) {
             this.fillSpace();
+          } else {
+            this.fullscreenMaximize = null;
           }
         }
 
-        // Adjust style so that the screen is either full-width or full-height,
-        // depending on which better maximizes space for the remote screen's
-        // aspect ratio.
+        // Adjust the screen size so that it is either full-width or
+        // full-height in fullscreen mode, depending on which better maximizes
+        // space for the remote screen's aspect ratio. This is needed, because
+        // otherwise the calculation of the mouse coordinates in fullscreen mode
+        // does not yield correct results, and hence the mouse cursor position
+        // appears to be slightly off.
         fillSpace() {
-          this.elements.screen.classList.remove("full-width");
-          this.elements.screen.classList.remove("full-height");
+          const slottedScreen = this.elements.screen.assignedElements()[0];
           const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio =
-            this.elements.screen.width / this.elements.screen.height;
+          const screenRatio = slottedScreen.width / slottedScreen.height;
           if (screenRatio > windowRatio) {
-            this.elements.screen.classList.add("full-width");
+            this.fullscreenMaximize = "width";
           } else {
-            this.elements.screen.classList.add("full-height");
+            this.fullscreenMaximize = "height";
           }
         }
       }

@@ -37,7 +37,7 @@ set -u
 
 # Prevent installation on the 64-bit version of Raspberry Pi OS.
 # https://github.com/tiny-pilot/tinypilot/issues/929
-if [[ "$(uname -m)" == 'aarch64' ]]; then
+if [[ "$(uname -m)" == 'aarch64' && "$(lsb_release --id --short)" == 'Debian' ]]; then
   echo '64-bit Raspberry Pi OS is not yet supported.' >&2
   echo 'Please use the 32-bit version of Raspberry Pi OS.' >&2
   exit 1
