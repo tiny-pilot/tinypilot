@@ -118,6 +118,9 @@
           this._addScreenEventListeners = this._addScreenEventListeners.bind(
             this
           );
+          this._getCurrentScreenElement = this._getCurrentScreenElement.bind(
+            this
+          );
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -328,12 +331,7 @@
         // does not yield correct results, and hence the mouse cursor position
         // appears to be slightly off.
         fillSpace() {
-          let screen;
-          if (this.webrtcEnabled) {
-            screen = this.elements.video;
-          } else {
-            screen = this.elements.image;
-          }
+          const screen = this._getCurrentScreenElement();
           const windowRatio = window.innerWidth / window.innerHeight;
           const screenRatio = screen.width / screen.height;
           if (screenRatio > windowRatio) {
@@ -360,6 +358,14 @@
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
           this.elements.video.srcObject = null;
+        }
+
+        _getCurrentScreenElement() {
+          if (this.webrtcEnabled) {
+            return this.elements.video;
+          } else {
+            return this.elements.image;
+          }
         }
       }
     );
