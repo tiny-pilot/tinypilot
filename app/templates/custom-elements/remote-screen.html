@@ -289,12 +289,14 @@
           }
         }
 
-        // Adjust the screen size so that it is either full-width or
-        // full-height in fullscreen mode, depending on which better maximizes
-        // space for the remote screen's aspect ratio. This is needed, because
-        // otherwise the calculation of the mouse coordinates in fullscreen mode
-        // does not yield correct results, and hence the mouse cursor position
-        // appears to be slightly off.
+        /**
+         * Adjust the screen size so that it is either full-width or
+         * full-height in fullscreen mode, depending on which better maximizes
+         * space for the remote screen's aspect ratio. This is needed, because
+         * otherwise the calculation of the mouse coordinates in fullscreen mode
+         * does not yield correct results, and hence the mouse cursor position
+         * appears to be slightly off.
+         */
         fillSpace() {
           const slottedScreen = this.elements.screen.assignedElements()[0];
           const windowRatio = window.innerWidth / window.innerHeight;
