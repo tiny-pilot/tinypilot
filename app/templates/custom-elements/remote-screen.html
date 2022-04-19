@@ -115,6 +115,9 @@
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
           this.fillSpace = this.fillSpace.bind(this);
+          this._addScreenEventListeners = this._addScreenEventListeners.bind(
+            this
+          );
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -150,37 +153,12 @@
           );
 
           this.elements = {
-            screens: this.shadowRoot.querySelectorAll(".screen"),
             video: this.shadowRoot.getElementById("webrtc-output"),
             image: this.shadowRoot.getElementById("mjpeg-output"),
           };
 
-          // Forward all mouse activity that occurs over each of the screen
-          // elements.
-          for (let screen of this.elements.screens) {
-            screen.addEventListener("mousemove", (evt) => {
-              // Ensure that mouse drags don't attempt to drag the image on the screen.
-              evt.preventDefault();
-
-              this.rateLimitedMouse.onMouseMove(evt);
-            });
-            screen.addEventListener("mousedown", (evt) => {
-              this.rateLimitedMouse.onMouseDown(evt);
-            });
-            screen.addEventListener("mouseup", (evt) => {
-              this.rateLimitedMouse.onMouseUp(evt);
-            });
-            screen.addEventListener("wheel", (evt) => {
-              evt.preventDefault();
-              this.rateLimitedMouse.onWheel(evt);
-            });
-
-            // Ignore the context menu so that it doesn't block the screen when the user
-            // right-clicks.
-            screen.addEventListener("contextmenu", (evt) => {
-              evt.preventDefault();
-            });
-          }
+          this._addScreenEventListeners(this.elements.video);
+          this._addScreenEventListeners(this.elements.image);
 
           window.addEventListener("resize", this.onWindowResize);
 
@@ -225,6 +203,32 @@
         disconnectedCallback() {
           window.removeEventListener("resize", this.onWindowResize);
           super.disconnectedCallback && super.disconnectedCallback();
+        }
+
+        _addScreenEventListeners(screenElement) {
+          // Forward all mouse activity that occurs over the screen element.
+          screenElement.addEventListener("mousemove", (evt) => {
+            // Ensure that mouse drags don't attempt to drag the screen element.
+            evt.preventDefault();
+
+            this.rateLimitedMouse.onMouseMove(evt);
+          });
+          screenElement.addEventListener("mousedown", (evt) => {
+            this.rateLimitedMouse.onMouseDown(evt);
+          });
+          screenElement.addEventListener("mouseup", (evt) => {
+            this.rateLimitedMouse.onMouseUp(evt);
+          });
+          screenElement.addEventListener("wheel", (evt) => {
+            evt.preventDefault();
+            this.rateLimitedMouse.onWheel(evt);
+          });
+
+          // Ignore the context menu so that it doesn't block the screen when
+          // the user right-clicks.
+          screenElement.addEventListener("contextmenu", (evt) => {
+            evt.preventDefault();
+          });
         }
 
         get fullscreen() {
