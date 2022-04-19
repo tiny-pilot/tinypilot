@@ -1,5 +1,7 @@
 #!/bin/bash
 
+{ # this ensures the entire script is downloaded #
+
 # Exit on first error.
 set -e
 
@@ -191,3 +193,6 @@ ansible-playbook -i localhost, install.yml \
 chmod +r "${TINYPILOT_SETTINGS_FILE}"
 sudo cp "${TINYPILOT_SETTINGS_FILE}" "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
 sudo chown tinypilot:tinypilot "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
+
+
+} # this ensures the entire script is downloaded #
