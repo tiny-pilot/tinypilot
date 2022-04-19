@@ -73,13 +73,11 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="width"])
-      #screen::slotted(*) {
+    :host([fullscreen="true"][fullscreen-is-full-width]) #screen::slotted(*) {
       width: 100%;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="height"])
-      #screen::slotted(*) {
+    :host([fullscreen="true"][fullscreen-is-full-height]) #screen::slotted(*) {
       height: 100%;
     }
 
@@ -123,6 +121,8 @@
           this.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement) {
               this.fullscreen = false;
+              this.fullscreenIsFullWidth = false;
+              this.fullscreenIsFullHeight = false;
             }
           });
           this.rateLimitedMouse = new RateLimitedMouse(
@@ -245,17 +245,20 @@
             .setAttribute("cursor", newValue);
         }
 
-        /**
-         * Maximize either the width or height of the screen element in
-         * fullscreen mode.
-         * @param {('width'|'height')} dimension (optional)
-         */
-        set fullscreenMaximize(dimension) {
-          if (dimension === null) {
-            this.removeAttribute("fullscreen-maximize");
-            return;
+        set fullscreenIsFullWidth(enabled) {
+          if (enabled) {
+            this.setAttribute("fullscreen-is-full-width", "");
+          } else {
+            this.removeAttribute("fullscreen-is-full-width");
           }
-          this.setAttribute("fullscreen-maximize", dimension);
+        }
+
+        set fullscreenIsFullHeight(enabled) {
+          if (enabled) {
+            this.setAttribute("fullscreen-is-full-height", "");
+          } else {
+            this.removeAttribute("fullscreen-is-full-height");
+          }
         }
 
         static get observedAttributes() {
@@ -284,8 +287,6 @@
         onWindowResize() {
           if (this.fullscreen) {
             this.fillSpace();
-          } else {
-            this.fullscreenMaximize = null;
           }
         }
 
@@ -302,9 +303,11 @@
           const windowRatio = window.innerWidth / window.innerHeight;
           const screenRatio = slottedScreen.width / slottedScreen.height;
           if (screenRatio > windowRatio) {
-            this.fullscreenMaximize = "width";
+            this.fullscreenIsFullHeight = false;
+            this.fullscreenIsFullWidth = true;
           } else {
-            this.fullscreenMaximize = "height";
+            this.fullscreenIsFullWidth = false;
+            this.fullscreenIsFullHeight = true;
           }
         }
       }
