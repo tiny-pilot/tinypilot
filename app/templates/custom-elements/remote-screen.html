@@ -218,8 +218,8 @@
             mobileKeyboard.focus();
           });
 
-          // Set the intial state of WebRTC based on DOM attributes.
-          this.webrtcEnabled = this.webrtcEnabled;
+          // Initialize the MJPEG stream.
+          this.enableMjpeg();
         }
 
         disconnectedCallback() {
@@ -280,20 +280,10 @@
 
         set webrtcEnabled(enabled) {
           if (enabled) {
-            this._toggleMjpegStream(/*enabled=*/ false);
             this.setAttribute("webrtc-enabled", "");
           } else {
             this.removeAttribute("webrtc-enabled");
-            this._toggleMjpegStream(/*enabled=*/ true);
           }
-        }
-
-        get webrtcStream() {
-          return this.elements.video.srcObject;
-        }
-
-        set webrtcStream(mediaStream) {
-          this.elements.video.srcObject = mediaStream;
         }
 
         static get observedAttributes() {
@@ -349,12 +339,23 @@
           }
         }
 
-        _toggleMjpegStream(enabled) {
-          if (enabled) {
-            this.elements.image.src = "/stream?advance_headers=1";
-          } else {
-            this.elements.image.removeAttribute("src");
-          }
+        /**
+         * Enable the WebRTC stream while disabling the MJPEG stream.
+         * @param {MediaStream} mediaStream https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+         */
+        enableWebrtc(mediaStream) {
+          this.elements.video.srcObject = mediaStream;
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+        }
+
+        /**
+         * Enable the MJPEG stream while disabling the WebRTC stream.
+         */
+        enableMjpeg() {
+          this.elements.image.src = "/stream?advance_headers=1";
+          this.webrtcEnabled = false;
+          this.elements.video.srcObject = null;
         }
       }
     );

@@ -31,12 +31,16 @@ Janus.init({
   debug: config.isDebug ? "all" : false,
 });
 
+// Get a handle on the global remote-screen element.
+const remoteScreen = document.getElementById("remote-screen");
+
 // Establish connection to the server.
 const janus = new Janus({
   server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
   success: attachToJanusPlugin,
   error: function (error) {
     console.error("Failed to connect to Janus: " + error);
+    remoteScreen.enableMjpeg();
   },
 });
 
@@ -113,11 +117,9 @@ function attachToJanusPlugin() {
      */
     onremotetrack: function (track, mid, added) {
       console.debug(`Remote track changed. mid:"${mid}" added:"${added}`);
-      const remoteScreen = document.getElementById("remote-screen");
 
       if (!added) {
-        remoteScreen.webrtcEnabled = false;
-        remoteScreen.webrtcStream = null;
+        remoteScreen.enableMjpeg();
         return;
       }
 
@@ -126,8 +128,7 @@ function attachToJanusPlugin() {
       // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
       const stream = new MediaStream();
       stream.addTrack(track.clone());
-      remoteScreen.webrtcStream = stream;
-      remoteScreen.webrtcEnabled = true;
+      remoteScreen.enableWebrtc(stream);
     },
   });
 }
