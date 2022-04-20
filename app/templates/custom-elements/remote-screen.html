@@ -73,11 +73,11 @@
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="width"]) .screen {
+    :host([fullscreen="true"][fullscreen-is-full-width]) .screen {
       width: 100%;
     }
 
-    :host([fullscreen="true"][fullscreen-maximize="height"]) .screen {
+    :host([fullscreen="true"][fullscreen-is-full-height]) .screen {
       height: 100%;
     }
 
@@ -133,6 +133,8 @@
           this.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement) {
               this.fullscreen = false;
+              this.fullscreenIsFullWidth = false;
+              this.fullscreenIsFullHeight = false;
             }
           });
           this.rateLimitedMouse = new RateLimitedMouse(
@@ -264,21 +266,20 @@
             .setAttribute("cursor", newValue);
         }
 
-        get fullscreenMaximize() {
-          return this.getAttribute("fullscreen-maximize");
+        set fullscreenIsFullWidth(enabled) {
+          if (enabled) {
+            this.setAttribute("fullscreen-is-full-width", "");
+          } else {
+            this.removeAttribute("fullscreen-is-full-width");
+          }
         }
 
-        /**
-         * Maximize either the width or height of the screen element in
-         * fullscreen mode.
-         * @param {('width'|'height')} dimension
-         */
-        set fullscreenMaximize(dimension) {
-          if (dimension === null) {
-            this.removeAttribute("fullscreen-maximize");
-            return;
+        set fullscreenIsFullHeight(enabled) {
+          if (enabled) {
+            this.setAttribute("fullscreen-is-full-height", "");
+          } else {
+            this.removeAttribute("fullscreen-is-full-height");
           }
-          this.setAttribute("fullscreen-maximize", dimension);
         }
 
         get webrtcEnabled() {
@@ -324,20 +325,24 @@
           }
         }
 
-        // Adjust the screen size so that it is either full-width or
-        // full-height in fullscreen mode, depending on which better maximizes
-        // space for the remote screen's aspect ratio. This is needed, because
-        // otherwise the calculation of the mouse coordinates in fullscreen mode
-        // does not yield correct results, and hence the mouse cursor position
-        // appears to be slightly off.
+        /**
+         * Adjust the screen size so that it is either full-width or
+         * full-height in fullscreen mode, depending on which better maximizes
+         * space for the remote screen's aspect ratio. This is needed, because
+         * otherwise the calculation of the mouse coordinates in fullscreen mode
+         * does not yield correct results, and hence the mouse cursor position
+         * appears to be slightly off.
+         */
         fillSpace() {
           const screen = this._getCurrentScreenElement();
           const windowRatio = window.innerWidth / window.innerHeight;
           const screenRatio = screen.width / screen.height;
           if (screenRatio > windowRatio) {
-            this.fullscreenMaximize = "width";
+            this.fullscreenIsFullHeight = false;
+            this.fullscreenIsFullWidth = true;
           } else {
-            this.fullscreenMaximize = "height";
+            this.fullscreenIsFullWidth = false;
+            this.fullscreenIsFullHeight = true;
           }
         }
 

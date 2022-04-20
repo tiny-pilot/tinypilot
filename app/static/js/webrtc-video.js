@@ -24,6 +24,9 @@ const config = {
 
   // Whether the connection should be established with SSL.
   useSSL: location.protocol === "https:",
+
+  // The number of seconds within which the watch request can be retried.
+  watchRequestRetryTimeoutSeconds: 60,
 };
 
 // Initialize library.
@@ -45,6 +48,7 @@ const janus = new Janus({
 });
 
 function attachToJanusPlugin() {
+  let watchRequestRetryExpiryTimestamp = null;
   let janusPluginHandle = null;
 
   janus.attach({
@@ -70,6 +74,8 @@ function attachToJanusPlugin() {
       janusPluginHandle = pluginHandle;
       console.debug("Successfully created Janus plugin handle.");
 
+      watchRequestRetryExpiryTimestamp =
+        Date.now() + config.watchRequestRetryTimeoutSeconds * 1000;
       // This makes the uStreamer plugin generate a webrtc offer that will be
       // received in the onmessage handler.
       janusPluginHandle.send({ message: { request: "watch" } });
@@ -89,6 +95,16 @@ function attachToJanusPlugin() {
      * @param {object|null} jsep JSEP = JavaScript Session Establishment Protocol
      */
     onmessage: function (msg, jsep) {
+      // `503` indicates that the plugin is not ready to stream yet. Retry
+      // the watch request, until the H.264 stream is available or the watch
+      // request timeout has been reached.
+      if (
+        msg.error_code === 503 &&
+        watchRequestRetryExpiryTimestamp > Date.now()
+      ) {
+        janusPluginHandle.send({ message: { request: "watch" } });
+        return;
+      }
       if (!jsep) {
         return;
       }
