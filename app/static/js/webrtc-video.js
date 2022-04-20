@@ -43,6 +43,10 @@ const janus = new Janus({
   success: attachToJanusPlugin,
   error: function (error) {
     console.error("Failed to connect to Janus: " + error);
+    // When the connection to the Janus server fails, we need to re-enable the
+    // MJPEG stream. We can't rely on the `onremotetrack` callback to do this
+    // because it seems like Firefox doesn't call `onremotetrack` when the
+    // server connection is severed.
     remoteScreen.enableMjpeg();
   },
 });
