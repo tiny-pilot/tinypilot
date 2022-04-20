@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{ # this ensures the entire script is downloaded #
+{ # Prevent the script from executing until the client downloads the full file.
 
 # Exit on first error.
 set -e
@@ -195,4 +195,4 @@ sudo cp "${TINYPILOT_SETTINGS_FILE}" "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
 sudo chown tinypilot:tinypilot "${DEFAULT_TINYPILOT_SETTINGS_FILE}"
 
 
-} # this ensures the entire script is downloaded #
+} # Prevent the script from executing until the client downloads the full file.
