@@ -338,7 +338,9 @@
         fillSpace() {
           const screen = this._getCurrentScreenElement();
           const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio = screen.width / screen.height;
+          // Get the content dimensions of either the video or image element.
+          // https://developer.mozilla.org/en-US/docs/Web/API/CSS_Object_Model/Determining_the_dimensions_of_elements#whats_the_size_of_the_displayed_content
+          const screenRatio = screen.clientWidth / screen.clientHeight;
           if (screenRatio > windowRatio) {
             this.fullscreenIsFullHeight = false;
             this.fullscreenIsFullWidth = true;
