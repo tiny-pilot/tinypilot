@@ -110,6 +110,10 @@
 
     customElements.define(
       "remote-screen",
+      /**
+       * Displays the remote screen content using an MJPEG stream by default.
+       * The content stream can be toggled to either MJPEG or WebRTC.
+       */
       class extends HTMLElement {
         constructor() {
           super();
@@ -201,7 +205,7 @@
             mobileKeyboard.focus();
           });
 
-          // Initialize the MJPEG stream.
+          // Initialize the remote screen content and use MJPEG by default.
           this.enableMjpeg();
         }
 
