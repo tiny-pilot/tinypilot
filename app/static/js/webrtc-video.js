@@ -36,20 +36,41 @@ Janus.init({
 
 // Get a handle on the global remote-screen element.
 const remoteScreen = document.getElementById("remote-screen");
+let janus;
 
 // Establish connection to the server.
-const janus = new Janus({
-  server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
-  success: attachToJanusPlugin,
-  error: function (error) {
-    console.error("Failed to connect to Janus: " + error);
-    // When the connection to the Janus server fails, we need to re-enable the
-    // MJPEG stream. We can't rely on the `onremotetrack` callback to do this
-    // because it seems like Firefox doesn't call `onremotetrack` when the
-    // server connection is severed.
-    remoteScreen.enableMjpeg();
-  },
-});
+connectJanus();
+
+function connectJanus() {
+  // Prevent duplicate connections.
+  if (janus) {
+    return;
+  }
+
+  janus = new Janus({
+    server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
+    success: attachToJanusPlugin,
+
+    /**
+     * This callback is triggered if a) the initial connection couldn’t be
+     * established, or b) if an established connection fails.
+     */
+    error: function (error) {
+      console.error("Failed to connect to Janus: " + error);
+      // When the connection to the Janus server fails, we need to re-enable the
+      // MJPEG stream. We can't rely on the `onremotetrack` callback to do this
+      // because it seems like Firefox doesn't call `onremotetrack` when the
+      // server connection is severed.
+      remoteScreen.enableMjpeg();
+      setTimeout(connectJanus, 1000);
+      janus = undefined;
+    },
+
+    destroyed: function () {
+      console.log("==DESTROYED==")
+    },
+  });
+}
 
 function attachToJanusPlugin() {
   let watchRequestRetryExpiryTimestamp = null;
