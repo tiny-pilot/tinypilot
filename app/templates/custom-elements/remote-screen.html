@@ -2,62 +2,62 @@
   <style>
     @import "css/cursors.css";
 
-    #screen::slotted(*) {
+    .screen {
       max-width: 100%;
       max-height: 70vh;
       object-fit: contain;
     }
 
     @media screen and (min-width: 800px) {
-      #screen::slotted(*) {
+      .screen {
         max-width: 99%;
       }
     }
 
     @media screen and (min-width: 1000px) {
-      #screen::slotted(*) {
+      .screen {
         max-width: 97%;
       }
     }
 
     @media screen and (min-width: 1200px) {
-      #screen::slotted(*) {
+      .screen {
         max-width: 96%;
       }
     }
 
     @media screen and (min-width: 1300px) {
-      #screen::slotted(*) {
+      .screen {
         max-width: 93%;
       }
     }
 
     @media screen and (min-width: 1400px) {
-      #screen::slotted(*) {
+      .screen {
         max-width: 90%;
       }
     }
 
     @media screen and (min-height: 450px) {
-      #screen::slotted(*) {
+      .screen {
         max-height: 80vh;
       }
     }
 
     @media screen and (min-height: 600px) {
-      #screen::slotted(*) {
+      .screen {
         max-height: 85vh;
       }
     }
 
     @media screen and (min-height: 900px) {
-      #screen::slotted(*) {
+      .screen {
         max-height: 90vh;
       }
     }
 
     @media screen and (min-height: 1180px) {
-      #screen::slotted(*) {
+      .screen {
         max-height: 100vh;
       }
     }
@@ -67,18 +67,26 @@
       overflow: auto;
     }
 
-    :host([fullscreen="true"]) #screen::slotted(*) {
+    :host([fullscreen="true"]) .screen {
       margin: auto;
       max-width: 100vw;
       max-height: 100vh;
     }
 
-    :host([fullscreen="true"][fullscreen-is-full-width]) #screen::slotted(*) {
+    :host([fullscreen="true"][fullscreen-is-full-width]) .screen {
       width: 100%;
     }
 
-    :host([fullscreen="true"][fullscreen-is-full-height]) #screen::slotted(*) {
+    :host([fullscreen="true"][fullscreen-is-full-height]) .screen {
       height: 100%;
+    }
+
+    :host([webrtc-enabled]) #mjpeg-output {
+      display: none;
+    }
+
+    :host(:not([webrtc-enabled])) #webrtc-output {
+      display: none;
     }
 
     #mobile-keyboard-input {
@@ -89,10 +97,8 @@
   <div class="screen-wrapper">
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
 
-    <slot id="screen">
-      <!-- The slot must be filled with a single, non-nested element. Otherwise
-           the CSS sizing settings cannot be correctly applied. -->
-    </slot>
+    <img class="screen" id="mjpeg-output" />
+    <video class="screen" id="webrtc-output" autoplay playsinline muted></video>
   </div>
 </template>
 
@@ -104,11 +110,21 @@
 
     customElements.define(
       "remote-screen",
+      /**
+       * Displays the remote screen content using an MJPEG stream by default.
+       * The content stream can be toggled to either MJPEG or WebRTC.
+       */
       class extends HTMLElement {
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
           this.fillSpace = this.fillSpace.bind(this);
+          this._addScreenEventListeners = this._addScreenEventListeners.bind(
+            this
+          );
+          this._getCurrentScreenElement = this._getCurrentScreenElement.bind(
+            this
+          );
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -146,32 +162,12 @@
           );
 
           this.elements = {
-            screen: this.shadowRoot.getElementById("screen"),
+            video: this.shadowRoot.getElementById("webrtc-output"),
+            image: this.shadowRoot.getElementById("mjpeg-output"),
           };
 
-          // Forward all mouse activity that occurs over the image of the remote screen.
-          this.elements.screen.addEventListener("mousemove", (evt) => {
-            // Ensure that mouse drags don't attempt to drag the image on the screen.
-            evt.preventDefault();
-
-            this.rateLimitedMouse.onMouseMove(evt);
-          });
-          this.elements.screen.addEventListener("mousedown", (evt) => {
-            this.rateLimitedMouse.onMouseDown(evt);
-          });
-          this.elements.screen.addEventListener("mouseup", (evt) => {
-            this.rateLimitedMouse.onMouseUp(evt);
-          });
-          this.elements.screen.addEventListener("wheel", (evt) => {
-            evt.preventDefault();
-            this.rateLimitedMouse.onWheel(evt);
-          });
-
-          // Ignore the context menu so that it doesn't block the screen when the user
-          // right-clicks.
-          this.elements.screen.addEventListener("contextmenu", (evt) => {
-            evt.preventDefault();
-          });
+          this._addScreenEventListeners(this.elements.video);
+          this._addScreenEventListeners(this.elements.image);
 
           window.addEventListener("resize", this.onWindowResize);
 
@@ -208,11 +204,40 @@
             mobileKeyboard.value = "";
             mobileKeyboard.focus();
           });
+
+          // Initialize the remote screen content and use MJPEG by default.
+          this.enableMjpeg();
         }
 
         disconnectedCallback() {
           window.removeEventListener("resize", this.onWindowResize);
           super.disconnectedCallback && super.disconnectedCallback();
+        }
+
+        _addScreenEventListeners(screenElement) {
+          // Forward all mouse activity that occurs over the screen element.
+          screenElement.addEventListener("mousemove", (evt) => {
+            // Ensure that mouse drags don't attempt to drag the screen element.
+            evt.preventDefault();
+
+            this.rateLimitedMouse.onMouseMove(evt);
+          });
+          screenElement.addEventListener("mousedown", (evt) => {
+            this.rateLimitedMouse.onMouseDown(evt);
+          });
+          screenElement.addEventListener("mouseup", (evt) => {
+            this.rateLimitedMouse.onMouseUp(evt);
+          });
+          screenElement.addEventListener("wheel", (evt) => {
+            evt.preventDefault();
+            this.rateLimitedMouse.onWheel(evt);
+          });
+
+          // Ignore the context menu so that it doesn't block the screen when
+          // the user right-clicks.
+          screenElement.addEventListener("contextmenu", (evt) => {
+            evt.preventDefault();
+          });
         }
 
         get fullscreen() {
@@ -261,6 +286,18 @@
           }
         }
 
+        get webrtcEnabled() {
+          return this.hasAttribute("webrtc-enabled");
+        }
+
+        set webrtcEnabled(enabled) {
+          if (enabled) {
+            this.setAttribute("webrtc-enabled", "");
+          } else {
+            this.removeAttribute("webrtc-enabled");
+          }
+        }
+
         static get observedAttributes() {
           return ["fullscreen", "milliseconds-between-mouse-events"];
         }
@@ -299,15 +336,42 @@
          * appears to be slightly off.
          */
         fillSpace() {
-          const slottedScreen = this.elements.screen.assignedElements()[0];
+          const screen = this._getCurrentScreenElement();
           const windowRatio = window.innerWidth / window.innerHeight;
-          const screenRatio = slottedScreen.width / slottedScreen.height;
+          const screenRatio = screen.width / screen.height;
           if (screenRatio > windowRatio) {
             this.fullscreenIsFullHeight = false;
             this.fullscreenIsFullWidth = true;
           } else {
             this.fullscreenIsFullWidth = false;
             this.fullscreenIsFullHeight = true;
+          }
+        }
+
+        /**
+         * Enable the WebRTC stream while disabling the MJPEG stream.
+         * @param {MediaStream} mediaStream https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+         */
+        enableWebrtc(mediaStream) {
+          this.elements.video.srcObject = mediaStream;
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+        }
+
+        /**
+         * Enable the MJPEG stream while disabling the WebRTC stream.
+         */
+        enableMjpeg() {
+          this.elements.image.src = "/stream?advance_headers=1";
+          this.webrtcEnabled = false;
+          this.elements.video.srcObject = null;
+        }
+
+        _getCurrentScreenElement() {
+          if (this.webrtcEnabled) {
+            return this.elements.video;
+          } else {
+            return this.elements.image;
           }
         }
       }

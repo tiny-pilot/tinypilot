@@ -34,12 +34,20 @@ Janus.init({
   debug: config.isDebug ? "all" : false,
 });
 
+// Get a handle on the global remote-screen element.
+const remoteScreen = document.getElementById("remote-screen");
+
 // Establish connection to the server.
 const janus = new Janus({
   server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
   success: attachToJanusPlugin,
   error: function (error) {
     console.error("Failed to connect to Janus: " + error);
+    // When the connection to the Janus server fails, we need to re-enable the
+    // MJPEG stream. We can't rely on the `onremotetrack` callback to do this
+    // because it seems like Firefox doesn't call `onremotetrack` when the
+    // server connection is severed.
+    remoteScreen.enableMjpeg();
   },
 });
 
@@ -129,10 +137,9 @@ function attachToJanusPlugin() {
      */
     onremotetrack: function (track, mid, added) {
       console.debug(`Remote track changed. mid:"${mid}" added:"${added}`);
-      const videoElement = document.getElementById("webrtc-output");
 
       if (!added) {
-        videoElement.srcObject = null;
+        remoteScreen.enableMjpeg();
         return;
       }
 
@@ -141,7 +148,7 @@ function attachToJanusPlugin() {
       // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
       const stream = new MediaStream();
       stream.addTrack(track.clone());
-      videoElement.srcObject = stream;
+      remoteScreen.enableWebrtc(stream);
     },
   });
 }
