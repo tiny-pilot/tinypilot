@@ -10,6 +10,9 @@
  *
  * See here for the Janus Gateway API reference:
  * https://janus.conf.meetecho.com/docs/JS.html
+ *
+ * See here for a high-level overview of the control flow:
+ * https://github.com/tiny-pilot/ustreamer/blob/master/docs/h264.md
  */
 
 // Parameters for the setup.
@@ -41,16 +44,26 @@ const remoteScreen = document.getElementById("remote-screen");
 const janus = new Janus({
   server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
   success: attachToJanusPlugin,
+
+  /**
+   * This callback is triggered if either the initial connection couldn’t be
+   * established, or if an established connection is interrupted.
+   */
   error: function (error) {
-    console.error("Failed to connect to Janus: " + error);
-    // When the connection to the Janus server fails, we need to re-enable the
-    // MJPEG stream. We can't rely on the `onremotetrack` callback to do this
-    // because it seems like Firefox doesn't call `onremotetrack` when the
-    // server connection is severed.
+    console.error("Connection to Janus failed: " + error);
     remoteScreen.enableMjpeg();
   },
 });
 
+/**
+ * Asks the Janus server to initialize the uStreamer Janus plugin and to start
+ * streaming the remote screen video.
+ *
+ * After the Janus server was started up, the uStreamer Janus plugin is NOT
+ * loaded yet. Janus doesn’t initialize the plugin right away, but this will
+ * only happen when the first client asks for it. After the plugin was loaded
+ * for the first time, the server state is permanently altered.
+ */
 function attachToJanusPlugin() {
   let watchRequestRetryExpiryTimestamp = null;
   let janusPluginHandle = null;
@@ -80,13 +93,16 @@ function attachToJanusPlugin() {
 
       watchRequestRetryExpiryTimestamp =
         Date.now() + config.watchRequestRetryTimeoutSeconds * 1000;
-      // This makes the uStreamer plugin generate a webrtc offer that will be
-      // received in the onmessage handler.
+      // Sending a `watch` request makes the uStreamer plugin generate a webRTC
+      // offer that will be received in the `onmessage` handler.
+      // Note, that the plugin will automatically start streaming when it
+      // receives this request, so it’s technically not required to issue
+      // another `start` request afterwards. (See below.)
       janusPluginHandle.send({ message: { request: "watch" } });
     },
 
     /**
-     * The plugin handle was NOT successfully created
+     * The plugin handle was NOT successfully created.
      * @param error
      */
     error: function (error) {
@@ -99,9 +115,10 @@ function attachToJanusPlugin() {
      * @param {object|null} jsep JSEP = JavaScript Session Establishment Protocol
      */
     onmessage: function (msg, jsep) {
-      // `503` indicates that the plugin is not ready to stream yet. Retry
-      // the watch request, until the H.264 stream is available or the watch
-      // request timeout has been reached.
+      // `503` indicates that the plugin was not initialized yet and therefore
+      // isn’t ready to stream yet. We retry the watch request, until either the
+      // H.264 stream is available, or the watch request timeout has been
+      // reached.
       if (
         msg.error_code === 503 &&
         watchRequestRetryExpiryTimestamp > Date.now()
@@ -114,29 +131,42 @@ function attachToJanusPlugin() {
       }
       janusPluginHandle.createAnswer({
         jsep: jsep,
-        // Client only receives media and does not interact with data channels.
-        media: { audioSend: false, videoSend: false, data: false },
+        // Disable sending audio and video (which would otherwise default to
+        // `true`), to prevent the browser from presenting a permission dialog
+        // to the user.
+        media: { audioSend: false, videoSend: false },
         success: function (jsep) {
-          // Send back the generated webrtc response.
+          // Send back the generated webRTC response. We technically don’t have
+          // to send a `start` request for starting the stream, as the plugin
+          // already starts streaming after the `watch` request. However,
+          // without a `start` request, the server complains about the request
+          // being malformed, which we want to avoid out of “good practice”.
           janusPluginHandle.send({
             message: { request: "start" },
             jsep: jsep,
           });
         },
         error: function (error) {
-          console.error("failed to create answer SDP: " + error);
+          console.error("Failed to create JSEP answer: " + error);
         },
       });
     },
 
     /**
-     * A remote media track is available and ready to be consumed.
+     * The availability of a remote media track has changed – i.e. it was either
+     * added or removed.
+     *
+     * Note: for the case that the media track was removed (e.g. due to a
+     * network interruption, or the Janus backend server having failed), it’s
+     * not safe to assume that this callback will be invoked reliably. We have
+     * also observed different behavior in Chrome and Firefox.
+     *
      * @param {MediaStreamTrack} track https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
      * @param {string} mid The Media-ID.
-     * @param {boolean} added Whether a track was added or removed.
+     * @param {boolean} added Whether the track was added or removed.
      */
     onremotetrack: function (track, mid, added) {
-      console.debug(`Remote track changed. mid:"${mid}" added:"${added}`);
+      console.debug(`Remote track changed. mid:"${mid}" added:"${added}"`);
 
       if (!added) {
         remoteScreen.enableMjpeg();
@@ -144,8 +174,11 @@ function attachToJanusPlugin() {
       }
 
       // According to the examples/tests in the Janus repository, the track
-      // object should be cloned.
+      // object is supposed to be cloned:
       // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
+      // That way, the track is assigned a new and globally unique id. This
+      // helps to avoid potential interferences with other JS code that might
+      // also deal with media tracks.
       const stream = new MediaStream();
       stream.addTrack(track.clone());
       remoteScreen.enableWebrtc(stream);
