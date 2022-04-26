@@ -175,22 +175,26 @@
       <a>System</a>
       <ul class="items">
         <li class="item pro-badge">
-          <a id="mass-storage-btn">Virtual Media</a>
+          <a data-onclick-event="mass-storage-dialog-requested"
+            >Virtual Media</a
+          >
         </li>
         <li class="item">
-          <a id="update-btn">Update</a>
+          <a data-onclick-event="update-dialog-requested">Update</a>
         </li>
         <li class="item">
-          <a id="change-hostname-btn">Hostname</a>
+          <a data-onclick-event="change-hostname-dialog-requested">Hostname</a>
         </li>
         <li class="item">
-          <a id="video-settings-btn">Video Settings</a>
+          <a data-onclick-event="video-settings-dialog-requested"
+            >Video Settings</a
+          >
         </li>
         <li class="item">
-          <a id="debug-dialog-btn">Logs</a>
+          <a data-onclick-event="debug-logs-dialog-requested">Logs</a>
         </li>
         <li class="item">
-          <a id="power-btn">Power</a>
+          <a data-onclick-event="shutdown-dialog-requested">Power</a>
         </li>
       </ul>
     </li>
@@ -199,19 +203,21 @@
       <a>Actions</a>
       <ul class="items">
         <li class="item">
-          <a id="paste-btn">Paste</a>
+          <a data-onclick-event="paste-requested">Paste</a>
         </li>
         <li class="item">
           <a id="screenshot-btn" href="/snapshot">Screenshot</a>
         </li>
         <li class="item pro-badge">
-          <a id="wake-on-lan-btn">Wake on LAN</a>
+          <a data-onclick-event="wake-on-lan-dialog-requested">Wake on LAN</a>
         </li>
         <li class="item subgroup">
           <a>Keyboard Shortcuts</a>
           <ul class="items">
             <li class="item">
-              <a id="ctrl-alt-del-btn">Ctrl + Alt + Del</a>
+              <a data-onclick-event="ctrl-alt-del-requested"
+                >Ctrl + Alt + Del</a
+              >
             </li>
           </ul>
         </li>
@@ -228,13 +234,15 @@
           </ul>
         </li>
         <li class="item" id="keyboard-menu-item">
-          <a id="keyboard-btn">Show Keyboard</a>
+          <a data-onclick-event="keyboard-visibility-toggled">Show Keyboard</a>
         </li>
         <li class="item" id="keystroke-history-menu-item">
-          <a id="keystroke-history-btn">Enable Key History</a>
+          <a data-onclick-event="keystroke-history-toggled"
+            >Enable Key History</a
+          >
         </li>
         <li class="item">
-          <a id="fullscreen-btn">Full Screen</a>
+          <a data-onclick-event="fullscreen-requested">Full Screen</a>
         </li>
       </ul>
     </li>
@@ -260,32 +268,16 @@
             template.content.cloneNode(true)
           );
 
-          // All “simple”/standard menu items, that just emit a custom
-          // event without any further ado.
-          const menuButtonIdToEventId = {
-            "power-btn": "shutdown-dialog-requested",
-            "keyboard-btn": "keyboard-visibility-toggled",
-            "keystroke-history-btn": "keystroke-history-toggled",
-            "mass-storage-btn": "mass-storage-dialog-requested",
-            "wake-on-lan-btn": "wake-on-lan-dialog-requested",
-            "fullscreen-btn": "fullscreen-requested",
-            "paste-btn": "paste-requested",
-            "update-btn": "update-dialog-requested",
-            "change-hostname-btn": "change-hostname-dialog-requested",
-            "debug-dialog-btn": "debug-logs-dialog-requested",
-            "video-settings-btn": "video-settings-dialog-requested",
-            "ctrl-alt-del-btn": "ctrl-alt-del-requested",
-          };
-          for (const [buttonId, eventId] of Object.entries(
-            menuButtonIdToEventId
-          )) {
-            this.shadowRoot
-              .getElementById(buttonId)
-              .addEventListener("click", (evt) => {
-                this.emitCustomEvent(eventId);
+          // Handle “simple”/standard menu items that just emit a custom event
+          // without further ado.
+          this.shadowRoot
+            .querySelectorAll("[data-onclick-event]")
+            .forEach((el) => {
+              el.addEventListener("click", (evt) => {
+                this.emitCustomEvent(el.getAttribute("data-onclick-event"));
                 evt.preventDefault();
               });
-          }
+            });
 
           // Setup screenshot button.
           this.shadowRoot
