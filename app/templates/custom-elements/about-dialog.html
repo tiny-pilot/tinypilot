@@ -1,0 +1,64 @@
+<template id="about-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    #version-number {
+      font-size: 1rem;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div>
+    <h3>About</h3>
+    <p>TinyPilot v<span id="version-number" class="monospace"></span></p>
+    <a href="https://tinypilotkvm.com">https://tinypilotkvm.com</a>
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+  } from "/js/events.js";
+  import { getVersion } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#about-dialog-template");
+
+    customElements.define(
+      "about-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.checkVersion();
+        }
+
+        checkVersion() {
+          getVersion()
+            .then((version) => {
+              this.shadowRoot.getElementById(
+                "version-number"
+              ).innerText = this._formatVersion(version);
+            })
+            .catch((error) => {
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Retrieve Version Information",
+                  details: error,
+                })
+              );
+            });
+        }
+
+        _formatVersion(version) {
+          return version.substr(0, 6);
+        }
+      }
+    );
+  })();
+</script>

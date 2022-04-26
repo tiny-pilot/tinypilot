@@ -337,6 +337,9 @@ menuBar.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-dialog").retrieveLogs();
   document.getElementById("debug-overlay").show();
 });
+menuBar.addEventListener("about-dialog-requested", () => {
+  document.getElementById("about-overlay").show();
+});
 menuBar.addEventListener("mass-storage-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
