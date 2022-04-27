@@ -1,3 +1,6 @@
+# When adding dependencies, update the credit in
+# app/templates/custom-elements/about-dialog.html
+
 eventlet==0.31.0
 Flask==1.1.1
 Flask-SocketIO==5.0.1
