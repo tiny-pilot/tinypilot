@@ -8,11 +8,52 @@
       overflow: hidden;
       white-space: nowrap;
     }
+
+    .credits {
+      max-height: 300px;
+      overflow: auto;
+    }
   </style>
 
   <h3>About TinyPilot</h3>
-  <p>TinyPilot v<span id="version-number" class="monospace"></span></p>
+  <p>TinyPilot version <span id="version-number" class="monospace"></span></p>
   <p><a href="https://tinypilotkvm.com">https://tinypilotkvm.com</a></p>
+  <p>
+    TinyPilot would not be possible without the help of these open-source
+    projects.
+  </p>
+  <div class="credits">
+    <!-- Include everything from ./requirements.txt -->
+    <!-- Include everything from ./static/third-party -->
+    <p>TinyPilot Community Edition</p>
+    <p>Pi Linux Kernel?</p>
+    <p>uStreamer</p>
+    <p>nginx</p>
+    <p>Ansible</p>
+    <p>Janus</p>
+    <p>webrtc-adapter</p>
+    <p>socket.io</p>
+    <p>eventlet</p>
+    <p>
+      Flask <a href="/licenses/flask">License</a>,
+      <a href="https://flask.palletsprojects.com/">homepage</a>.
+    </p>
+    <p>Flask-SocketIO</p>
+    <p>Flask-WTF</p>
+    <p>pyyaml</p>
+    <p>bidict</p>
+    <p>click</p>
+    <p>dnspython</p>
+    <p>greenlet</p>
+    <p>itsdangerous</p>
+    <p>Jinja2</p>
+    <p>MarkupSafe</p>
+    <p>python-engineio</p>
+    <p>python-socketio</p>
+    <p>six</p>
+    <p>Werkzeug</p>
+    <p>WTForms</p>
+  </div>
 
   <button class="close-btn" type="button">Close</button>
 </template>
@@ -36,6 +77,11 @@
             template.content.cloneNode(true)
           );
           this.checkVersion();
+          this.shadowRoot
+            .querySelector(".close-btn")
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
         }
 
         checkVersion() {
