@@ -14,6 +14,29 @@
       max-height: 300px;
       overflow: auto;
     }
+
+    .project {
+      background-color: lightgreen;
+      display: flex;
+      flex-direction: row;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .project + .project {
+      margin: 1rem 0;
+    }
+
+    .project .title {
+      font-weight: bold;
+    }
+
+    .project .links {
+      margin-left: auto;
+    }
+
+    .project .separator {
+      margin: 0 0.5rem;
+    }
   </style>
 
   <h3>About TinyPilot</h3>
@@ -27,49 +50,11 @@
     TinyPilot is released under the
     <a href="/py-license/tinypilot" target="_blank">MIT license</a>.
   </p>
-  <p>
-    TinyPilot would not be possible without the help of these open-source
-    projects.
-  </p>
   <div class="credits">
-    <!--
-      This list should include everything from ./requirements.txt and
-      ./static/third-part
-     -->
-
-    <p>TODO: for each project, include a link to license and homepage</p>
-    <p>TODO: add routes in Flask to each Python project's license in ./venv</p>
-    <p>TODO: add routes in nginx to each non-Python project's license</p>
-    <p>Pi Linux Kernel?</p>
-    <p>uStreamer</p>
     <p>
-      nginx <a href="/licenses/nginx">License</a>,
-      <a href="https://nginx.org">homepage</a>.
+      TinyPilot would not be possible without the help of these open-source
+      projects:
     </p>
-    <p>Ansible</p>
-    <p>Janus</p>
-    <p>webrtc-adapter</p>
-    <p>socket.io</p>
-    <p>eventlet</p>
-    <p>
-      Flask <a href="/py-licenses/flask">License</a>,
-      <a href="https://flask.palletsprojects.com/">homepage</a>.
-    </p>
-    <p>Flask-SocketIO</p>
-    <p>Flask-WTF</p>
-    <p>pyyaml</p>
-    <p>bidict</p>
-    <p>click</p>
-    <p>dnspython</p>
-    <p>greenlet</p>
-    <p>itsdangerous</p>
-    <p>Jinja2</p>
-    <p>MarkupSafe</p>
-    <p>python-engineio</p>
-    <p>python-socketio</p>
-    <p>six</p>
-    <p>Werkzeug</p>
-    <p>WTForms</p>
   </div>
 
   <button class="close-btn" type="button">Close</button>
@@ -81,6 +66,61 @@
 
   (function () {
     const template = document.querySelector("#about-dialog-template");
+
+    // TODO: for each project, include a link to license and homepage
+    // TODO: add routes in Flask to each Python project's license in ./venv
+    // TODO: add routes in nginx to each non-Python project's license
+    // TODO: Add the indirect projects we get through Janus
+    const creditedProjects = {
+      uStreamer: {
+        license:
+          "https://raw.githubusercontent.com/tiny-pilot/ustreamer/v4.13/LICENSE",
+        homepage: "https://github.com/pikvm/ustreamer",
+      },
+      nginx: {
+        license: "https://nginx.org/LICENSE",
+        homepage: "https://nginx.org",
+      },
+      Ansible: {
+        license:
+          "https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING",
+        homepage: "https://www.ansible.com/",
+      },
+      Python: {
+        license: "",
+        homepage: "https://python.org",
+      },
+      Janus: {
+        license:
+          "https://raw.githubusercontent.com/tiny-pilot/janus-gateway/v1.0.0/COPYING",
+        homepage: "https://janus.conf.meetecho.com/",
+      },
+      "webrtc-adapter": {},
+      "socket.io": {},
+      eventlet: {},
+      Flask: {
+        license: "/py-licenses/flask",
+        homepage: "https://flask.palletsprojects.com/",
+      },
+      "Flask-SocketIO": {
+        license: "/py-licenses/flask-socketio",
+        homepage: "https://flask-socketio.readthedocs.io/",
+      },
+      "Flask-WTF": { license: "", homepage: "" },
+      pyyaml: { license: "", homepage: "" },
+      bidict: { license: "", homepage: "" },
+      click: { license: "", homepage: "" },
+      dnspython: { license: "", homepage: "" },
+      greenlet: { license: "", homepage: "" },
+      itsdangerous: { license: "", homepage: "" },
+      Jinja2: { license: "", homepage: "" },
+      MarkupSafe: { license: "", homepage: "" },
+      "python-engineio": { license: "", homepage: "" },
+      "python-socketio": { license: "", homepage: "" },
+      six: { license: "", homepage: "" },
+      Werkzeug: { license: "", homepage: "" },
+      WTForms: { license: "", homepage: "" },
+    };
 
     customElements.define(
       "about-dialog",
@@ -94,14 +134,16 @@
             .addEventListener("click", () =>
               this.dispatchEvent(new DialogClosedEvent())
             );
+
           // We're doing this at page load time rather than dialog load time,
           // but that should be fine, as we don't expect the version to change
           // without a page reload.
-          this.checkVersion();
+          this._checkVersion();
+
+          this._populateCredits();
         }
 
-        checkVersion() {
-          console.log("checking version");
+        _checkVersion() {
           getVersion()
             .then((version) => {
               this.shadowRoot.getElementById(
@@ -116,6 +158,44 @@
                 })
               );
             });
+        }
+
+        _populateCredits() {
+          const creditsDiv = this.shadowRoot.querySelector(".credits");
+          for (const [projectName, props] of Object.entries(creditedProjects)) {
+            const projectDiv = document.createElement("div");
+            projectDiv.className = "project";
+
+            const titleSpan = document.createElement("span");
+            titleSpan.className = "title";
+            titleSpan.innerText = projectName;
+            projectDiv.appendChild(titleSpan);
+
+            const linksDiv = document.createElement("div");
+            linksDiv.className = "links";
+            projectDiv.appendChild(linksDiv);
+
+            const licenseLink = document.createElement("a");
+            licenseLink.className = "license";
+            licenseLink.innerText = "License";
+            licenseLink.href = props.license;
+            licenseLink.target = "_blank";
+            linksDiv.appendChild(licenseLink);
+
+            const separatorSpan = document.createElement("span");
+            separatorSpan.className = "separator";
+            separatorSpan.innerText = "•";
+            linksDiv.appendChild(separatorSpan);
+
+            const homepageLink = document.createElement("a");
+            homepageLink.className = "homepage";
+            homepageLink.innerText = "Homepage";
+            homepageLink.href = props.homepage;
+            homepageLink.target = "_blank";
+            linksDiv.appendChild(homepageLink);
+
+            creditsDiv.appendChild(projectDiv);
+          }
         }
 
         _formatVersion(version) {
