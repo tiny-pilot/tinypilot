@@ -85,15 +85,19 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.checkVersion();
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () =>
               this.dispatchEvent(new DialogClosedEvent())
             );
+          // We're doing this at page load time rather than dialog load time,
+          // but that should be fine, as we don't expect the version to change
+          // without a page reload.
+          this.checkVersion();
         }
 
         checkVersion() {
+          console.log("checking version");
           getVersion()
             .then((version) => {
               this.shadowRoot.getElementById(
