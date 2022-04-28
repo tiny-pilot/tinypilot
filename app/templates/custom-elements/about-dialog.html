@@ -68,8 +68,6 @@
     const template = document.querySelector("#about-dialog-template");
 
     // TODO: for each project, include a link to license and homepage
-    // TODO: add routes in Flask to each Python project's license in ./venv
-    // TODO: add routes in nginx to each non-Python project's license
     // TODO: Add the indirect projects we get through Janus
     const creditedProjects = {
       uStreamer: {
@@ -107,7 +105,10 @@
         homepage: "https://flask-socketio.readthedocs.io/",
       },
       "Flask-WTF": { license: "/py-license/Flask-WTF", homepage: "" },
-      pyyaml: { license: "/py-license/pyyaml", homepage: "" },
+      pyyaml: {
+        license: "https://raw.githubusercontent.com/yaml/pyyaml/5.4.1/LICENSE",
+        homepage: "https://pyyaml.org/",
+      },
       bidict: { license: "/py-license/bidict", homepage: "" },
       click: { license: "/py-license/click", homepage: "" },
       dnspython: { license: "/py-license/dnspython", homepage: "" },
@@ -115,6 +116,10 @@
       itsdangerous: { license: "/py-license/itsdangerous", homepage: "" },
       Jinja2: { license: "/py-license/Jinja2", homepage: "" },
       MarkupSafe: { license: "/py-license/MarkupSafe", homepage: "" },
+      monotonic: {
+        license: "https://raw.githubusercontent.com/atdt/monotonic/1.5/LICENSE",
+        homepage: "https://github.com/atdt/monotonic",
+      },
       "python-engineio": {
         license: "/py-license/python-engineio",
         homepage: "",
