@@ -49,7 +49,16 @@
     </p>
     <div class="input-container">
       <label for="hostname-input">Hostname:</label>
-      <input type="text" id="hostname-input" size="30" class="monospace" />
+      <input
+        type="text"
+        id="hostname-input"
+        size="30"
+        class="monospace"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+      />
       <inline-message variant="error" id="input-error">
         <strong>Invalid hostname:</strong> it can only contain the letters a-z,
         digits and dashes (it cannot start with a dash, though). It must contain
