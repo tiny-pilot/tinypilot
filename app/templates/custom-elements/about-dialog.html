@@ -177,6 +177,7 @@
         _populateCredits() {
           const creditsDiv = this.shadowRoot.querySelector(".credits");
           for (const [projectName, props] of Object.entries(creditedProjects)) {
+            // TODO: Reimplement this as an HTML custom element.
             const projectDiv = document.createElement("div");
             projectDiv.className = "project";
 
