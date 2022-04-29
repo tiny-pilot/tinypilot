@@ -4,7 +4,7 @@
     @import "css/button.css";
 
     #version-number {
-      font-size: 1rem;
+      font-size: 1rem 0;
       overflow: hidden;
       white-space: nowrap;
     }
@@ -13,12 +13,15 @@
       text-align: left;
       max-height: 300px;
       overflow: auto;
+      padding: 1rem;
     }
 
     .project {
-      background-color: var(--brand-green-light);
       display: flex;
       flex-direction: row;
+      background-color: var(--brand-green-light);
+      border: 1px solid var(--brand-green-dark);
+      border-radius: var(--border-radius);
       padding: 0.25rem 0.5rem;
     }
 
