@@ -10,9 +10,14 @@ set -u
 
 BASH_SCRIPTS=()
 
-while read -r line; do
-  if head -n 1 "${line}" | grep --quiet "#!/bin/bash"; then
-    BASH_SCRIPTS+=("${line}")
+while read -r filepath; do
+  if head -n 1 "${filepath}" | grep --quiet \
+    --regexp '#!/bin/bash' \
+    --regexp '#!/usr/bin/env bash' \
+    --regexp '#!/usr/sh' \
+    --regexp '#!/usr/bin/env sh' \
+    ; then
+      BASH_SCRIPTS+=("${filepath}")
   fi
 done < <(git ls-files)
 
