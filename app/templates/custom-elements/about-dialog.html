@@ -14,31 +14,12 @@
       max-height: 300px;
       overflow: auto;
       padding: 1rem;
-    }
-
-    .project {
       display: flex;
-      flex-direction: row;
-      background-color: var(--brand-green-light);
-      border: 1px solid var(--brand-green-dark);
-      border-radius: var(--border-radius);
-      padding: 0.25rem 0.5rem;
+      flex-direction: column;
     }
 
-    .project + .project {
-      margin: 1rem 0;
-    }
-
-    .project .title {
-      font-weight: bold;
-    }
-
-    .project .links {
-      margin-left: auto;
-    }
-
-    .project .separator {
-      margin: 0 0.5rem;
+    credit-box {
+      margin: 0.5rem 0;
     }
   </style>
 
@@ -177,39 +158,11 @@
         _populateCredits() {
           const creditsDiv = this.shadowRoot.querySelector(".credits");
           for (const [projectName, props] of Object.entries(creditedProjects)) {
-            // TODO: Reimplement this as an HTML custom element.
-            const projectDiv = document.createElement("div");
-            projectDiv.className = "project";
-
-            const titleSpan = document.createElement("span");
-            titleSpan.className = "title";
-            titleSpan.innerText = projectName;
-            projectDiv.appendChild(titleSpan);
-
-            const linksDiv = document.createElement("div");
-            linksDiv.className = "links";
-            projectDiv.appendChild(linksDiv);
-
-            const licenseLink = document.createElement("a");
-            licenseLink.className = "license";
-            licenseLink.innerText = "License";
-            licenseLink.href = props.license;
-            licenseLink.target = "_blank";
-            linksDiv.appendChild(licenseLink);
-
-            const separatorSpan = document.createElement("span");
-            separatorSpan.className = "separator";
-            separatorSpan.innerText = "•";
-            linksDiv.appendChild(separatorSpan);
-
-            const homepageLink = document.createElement("a");
-            homepageLink.className = "homepage";
-            homepageLink.innerText = "Homepage";
-            homepageLink.href = props.homepage;
-            homepageLink.target = "_blank";
-            linksDiv.appendChild(homepageLink);
-
-            creditsDiv.appendChild(projectDiv);
+            const credit = document.createElement("credit-box");
+            creditsDiv.appendChild(credit);
+            credit.title = projectName;
+            credit.licenseUrl = props.license;
+            credit.homepageUrl = props.homepage;
           }
         }
 
