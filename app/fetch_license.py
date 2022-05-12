@@ -3,10 +3,10 @@ import glob
 import flask
 
 _LICENSE_PATTERNS = {
-    'python':
-        '/usr/lib/python3.7/LICENSE.txt',
     'tinypilot':
         'LICENSE',
+    'python':
+        '/usr/lib/python3.7/LICENSE.txt',
     'eventlet':
         'venv/lib/python3.7/site-packages/eventlet-*.dist-info/LICENSE*',
     'Flask':
