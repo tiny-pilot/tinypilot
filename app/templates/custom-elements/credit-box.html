@@ -2,36 +2,23 @@
   <style>
     @import "css/style.css";
 
-    .project {
-      display: flex;
-      flex-direction: row;
-      background-color: var(--brand-green-light);
-      border: 1px solid var(--brand-green-dark);
-      border-radius: var(--border-radius);
-      padding: 0.25rem 0.5rem;
-    }
-
     .project .title {
       font-weight: bold;
     }
 
-    .project .links {
-      margin-left: auto;
-    }
-
-    .project .separator {
-      margin: 0 0.5rem;
+    .project {
+      margin-bottom: 0.2rem;
     }
   </style>
 
-  <div class="project">
-    <span class="title"></span>
-    <div class="links">
-      <a class="license" target="_blank" rel="noopener noreferrer">License</a>
-      <span class="separator">•</span>
-      <a class="homepage" target="_blank" rel="noopener noreferrer">Homepage</a>
-    </div>
-  </div>
+  <li class="project">
+    <a class="homepage" target="_blank" rel="noopener noreferrer">
+      <span class="title"></span>
+    </a>&nbsp;
+   <span style="font-size: 14px;">
+     (<a class="license" target="_blank" rel="noopener noreferrer">License</a>)
+   </span>
+  </li>
 </template>
 
 <script type="module">
