@@ -48,6 +48,14 @@ blueprint = flask.Blueprint('py_license', __name__, url_prefix='/py-license')
 
 @blueprint.route('/<project>', methods=['GET'])
 def python_project_license_get(project):
+    """Retrieves license text for a given Python project.
+
+    Args:
+        project: The name of the Python project to retrieve.
+
+    Returns:
+        The contents of the project's license file with text/plain content type.
+    """
     try:
         return _make_plaintext_response(_get_license_path(project))
     except KeyError:
