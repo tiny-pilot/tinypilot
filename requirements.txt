@@ -1,4 +1,4 @@
-# When adding dependencies, update the credit in
+# When modifying dependencies, update the credit in
 # app/templates/custom-elements/about-dialog.html
 
 eventlet==0.31.0
