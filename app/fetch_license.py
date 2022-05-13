@@ -51,7 +51,7 @@ def python_project_license_get(project):
     """Retrieves license text for a given Python project.
 
     Args:
-        project: The name of the Python project to retrieve.
+        project: The name of the Python project's license to retrieve.
 
     Returns:
         The contents of the project's license file with text/plain content type.
