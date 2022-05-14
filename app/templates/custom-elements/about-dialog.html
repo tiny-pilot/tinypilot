@@ -16,10 +16,12 @@
       white-space: nowrap;
     }
 
-    .credits {
-      text-align: left;
+    .credits-container {
+      overflow-y: scroll;
       max-height: 300px;
-      overflow: auto;
+    }
+
+    .credits {
     }
 
     credit-box {
@@ -28,6 +30,8 @@
 
     ul {
       margin-top: 0;
+      columns: 3;
+      padding-left: 1rem;
     }
   </style>
 
@@ -39,11 +43,11 @@
     ><br>
     <strong>License:</strong> <a href="/py-license/tinypilot" target="_blank">MIT license</a>
   </p>
-  <div>
-    <p style="margin-bottom: 0.5rem; margin-top: 1.5rem;">
+  <p style="margin-bottom: 0.5rem; margin-top: 1.5rem;">
       TinyPilot would not be possible without the help of these open-source
       projects:
     </p>
+  <div class="credits-container">
     <ul class="credits">
 
     </ul>
