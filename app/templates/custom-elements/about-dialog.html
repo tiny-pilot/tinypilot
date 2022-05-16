@@ -3,33 +3,47 @@
     @import "css/style.css";
     @import "css/button.css";
 
+    :host {
+      text-align: left;
+    }
+
+    :host > *:not(button) {
+      padding: 0 4rem;
+    }
+
     #version-number {
       overflow: hidden;
       white-space: nowrap;
     }
 
-    .credits {
-      text-align: left;
+    .credits-container {
+      overflow-y: scroll;
       max-height: 300px;
-      overflow: auto;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
+    }
+
+    .credits {
     }
 
     credit-box {
       margin: 0.5rem 0;
     }
+
+    ul {
+      margin-top: 0;
+      columns: 3;
+      padding-left: 1rem;
+    }
   </style>
 
-  <h3>About TinyPilot</h3>
-  <p>TinyPilot version <span id="version-number" class="monospace"></span></p>
+  <h3 style="text-align: center">About TinyPilot</h3>
   <p>
-    <a href="https://tinypilotkvm.com" target="_blank"
+    <strong>Version:</strong> <span id="version-number" class="monospace"></span><br>
+    <strong>Website:</strong> <a href="https://tinypilotkvm.com" target="_blank"
       >https://tinypilotkvm.com</a
-    >
+    ><br>
+    <strong>License:</strong> <a href="/py-license/tinypilot" target="_blank">MIT license</a>
   </p>
-  <p>
+  <p style="margin-bottom: 0.5rem; margin-top: 1.5rem;">
     TinyPilot is released under the
     <a href="/license/tinypilot" target="_blank">MIT license</a>.
   </p>
@@ -38,6 +52,10 @@
       TinyPilot would not be possible without the help of these open-source
       projects:
     </p>
+  <div class="credits-container">
+    <ul class="credits">
+
+    </ul>
   </div>
 
   <button class="close-btn" type="button">Close</button>
@@ -68,7 +86,8 @@
           // without a page reload.
           this._checkVersion();
 
-          this._populateCredits();
+          // Hack to fix init order issue, by arbitrarily deferring the rendering.
+          setTimeout(() => this._populateCredits(), 500);
         }
 
         _checkVersion() {
