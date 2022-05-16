@@ -3,132 +3,186 @@ import glob
 import flask
 
 # pylint: disable=line-too-long
-_PROJECTS_METADATA = {
-    'TinyPilot': {
+_PROJECTS_METADATA = [
+    {
+        'name': 'TinyPilot',
         'license_glob_pattern': './LICENSE',
     },
-    'Python': {
+    {
+        'name': 'Python',
         'license_glob_pattern': '/usr/lib/python3.7/LICENSE.txt',
     },
-    'uStreamer': {
+    {
+        'name':
+            'uStreamer',
         'license_url':
             'https://raw.githubusercontent.com/tiny-pilot/ustreamer/v4.13/LICENSE',
     },
-    'nginx': {
+    {
+        'name': 'nginx',
         'license_url': 'https://nginx.org/LICENSE',
     },
-    'Ansible': {
+    {
+        'name':
+            'Ansible',
         'license_url':
             'https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING',
     },
-    'Janus': {
+    {
+        'name':
+            'Janus',
         'license_url':
             'https://raw.githubusercontent.com/tiny-pilot/janus-gateway/v1.0.0/COPYING',
     },
 
     # JavaScript dependencies.
-    'webrtc-adapter': {
+    {
+        'name':
+            'webrtc-adapter',
         'license_url':
             'https://github.com/webrtcHacks/adapter/blob/18a8b4127cbc1376320cac5742d817b5b7dd0085/LICENSE.md',
     },
-    'socket.io': {
+    {
+        'name':
+            'socket.io',
         'license_url':
             'https://github.com/socketio/socket.io/blob/3.1.2/LICENSE',
     },
 
     # Python dependencies, from requirements.txt.
-    'eventlet': {
+    {
+        'name':
+            'eventlet',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/eventlet-*.dist-info/LICENSE*',
     },
-    'Flask': {
+    {
+        'name':
+            'Flask',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/Flask-*.dist-info/LICENSE*',
     },
-    'Flask-SocketIO': {
+    {
+        'name':
+            'Flask-SocketIO',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/Flask_SocketIO-*.dist-info/LICENSE*',
     },
-    'Flask-WTF': {
+    {
+        'name':
+            'Flask-WTF',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/Flask_WTF-*.dist-info/LICENSE*',
     },
-    # pyyaml's PyPI package does not include a license, so we have to link to
-    # the Github version.
-    'pyyaml': {
+    {
+        'name':
+            'pyyaml',
+        # pyyaml's PyPI package does not include a license, so we have to link
+        # to the Github version.
         'license_url':
             'https://raw.githubusercontent.com/yaml/pyyaml/5.4.1/LICENSE',
     },
-    'bidict': {
+    {
+        'name':
+            'bidict',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/bidict-*.dist-info/LICENSE*',
     },
-    'click': {
+    {
+        'name':
+            'click',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/click-*.dist-info/LICENSE*',
     },
-    'dnspython': {
+    {
+        'name':
+            'dnspython',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/dnspython-*.dist-info/LICENSE*',
     },
-    'greenlet': {
+    {
+        'name':
+            'greenlet',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/greenlet-*.dist-info/LICENSE*',
     },
-    'itsdangerous': {
+    {
+        'name':
+            'itsdangerous',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/itsdangerous-*.dist-info/LICENSE*',
     },
-    'Jinja2': {
+    {
+        'name':
+            'Jinja2',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/Jinja2-*.dist-info/LICENSE*',
     },
-    'MarkupSafe': {
+    {
+        'name':
+            'MarkupSafe',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/MarkupSafe-*.dist-info/LICENSE*',
     },
-    # monotonic's PyPI package does not include a license, so we have to link to
-    # the Github version.
-    'monotonic': {
+    {
+        'name': 'monotonic',
+        # monotonic's PyPI package does not include a license, so we have to
+        # link to the Github version.
         'license_url': 'https://github.com/atdt/monotonic',
     },
-    'python-engineio': {
+    {
+        'name':
+            'python-engineio',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/python_engineio-*.dist-info/LICENSE*',
     },
-    'python-socketio': {
+    {
+        'name':
+            'python-socketio',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/python_socketio-*.dist-info/LICENSE*',
     },
-    'six': {
+    {
+        'name':
+            'six',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/six-*.dist-info/LICENSE*',
     },
-    'Werkzeug': {
+    {
+        'name':
+            'Werkzeug',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/Werkzeug-*.dist-info/LICENSE*',
     },
-    'WTForms': {
+    {
+        'name':
+            'WTForms',
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/WTForms-*.dist-info/LICENSE*',
     },
 
     # Indirect dependencies through Janus.
-    'libnice': {
+    {
+        'name':
+            'libnice',
         'license_url':
             'https://gitlab.freedesktop.org/libnice/libnice/-/blob/0.1.18/COPYING',
     },
-    'librtsp': {
+    {
+        'name':
+            'librtsp',
         'license_url':
             'https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable',
     },
 
     # Fonts
-    'Overpass': {
+    {
+        'name':
+            'Overpass',
         'license_glob_pattern':
             './app/static/third-party/fonts/Overpass-License.txt',
     }
-}
+]
 
 blueprint = flask.Blueprint('licensing', __name__, url_prefix='/licensing')
 
@@ -143,10 +197,8 @@ def python_project_license_get(project):
     Returns:
         The contents of the project's license file with text/plain content type.
     """
-
-    try:
-        project_metadata = _get_project_metadata(project)
-    except KeyError:
+    project_metadata = _get_project_metadata(project)
+    if not project_metadata:
         return flask.make_response('Unknown project', 404)
 
     if 'license_url' in project_metadata:
@@ -156,8 +208,11 @@ def python_project_license_get(project):
     return _make_plaintext_response(license_path)
 
 
-def _get_project_metadata(project):
-    return _PROJECTS_METADATA[project]
+def _get_project_metadata(project_name):
+    for project in _PROJECTS_METADATA:
+        if project['name'] == project_name:
+            return project
+    return None
 
 
 def _make_plaintext_response(license_pattern):
