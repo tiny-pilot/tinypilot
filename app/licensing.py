@@ -130,7 +130,7 @@ _PROJECTS_METADATA = {
     }
 }
 
-blueprint = flask.Blueprint('py_license', __name__, url_prefix='/projects')
+blueprint = flask.Blueprint('licensing', __name__, url_prefix='/licensing')
 
 
 @blueprint.route('/<project>/license', methods=['GET'])
