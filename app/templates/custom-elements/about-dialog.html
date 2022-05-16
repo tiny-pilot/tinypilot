@@ -208,8 +208,8 @@
         }
 
         _formatVersion(version) {
-          // Truncate git version hash.
-          return version.substr(0, 6);
+          // Truncate git commit hash to same length as git's short hash format.
+          return version.substr(0, 7);
         }
       }
     );
