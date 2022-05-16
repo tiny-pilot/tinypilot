@@ -271,10 +271,10 @@ def project_metadata_get():
 
 @blueprint.route('/<project>/license', methods=['GET'])
 def project_license_get(project):
-    """Retrieves license text for a given Python project.
+    """Retrieves license text for a given project.
 
     Args:
-        project: The name of the Python project's license to retrieve.
+        project: The name of the project's license to retrieve.
 
     Returns:
         The contents of the project's license file with text/plain content type.
