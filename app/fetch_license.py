@@ -36,7 +36,7 @@ _PROJECTS_METADATA = {
             'https://github.com/socketio/socket.io/blob/3.1.2/LICENSE',
     },
 
-    # From requirements.txt
+    # Python dependencies, from requirements.txt.
     'eventlet': {
         'license_glob_pattern':
             './venv/lib/python3.7/site-packages/eventlet-*.dist-info/LICENSE*',
@@ -122,6 +122,12 @@ _PROJECTS_METADATA = {
         'license_url':
             'https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable',
     },
+
+    # Fonts
+    'Overpass': {
+        'license_glob_pattern':
+            './app/static/third-party/fonts/Overpass-License.txt',
+    }
 }
 
 blueprint = flask.Blueprint('py_license', __name__, url_prefix='/projects')
