@@ -343,3 +343,12 @@ export async function applyVideoSettings() {
     },
   }).then(processJsonResponse);
 }
+
+export async function getLicensingMetadata() {
+  return fetch("/licensing", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  }).then(processJsonResponse);
+}

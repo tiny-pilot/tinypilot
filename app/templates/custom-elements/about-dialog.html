@@ -57,7 +57,7 @@
 
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
-  import { getVersion } from "/js/controllers.js";
+  import { getLicensingMetadata, getVersion } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#about-dialog-template");
@@ -102,109 +102,16 @@
         }
 
         _populateCredits() {
-          // For code where the source or license is on the local device, prefer
-          // linking to the locally-available copy instead of the remote URL so
-          // that the license ties tightly to the version we're using. When
-          // that's not possible, look for permalink versions of the license
-          // that match what we're using.
-          const creditedProjects = {
-            uStreamer: {
-              homepage: "https://github.com/pikvm/ustreamer",
-            },
-            nginx: {
-              homepage: "https://nginx.org",
-            },
-            Ansible: {
-              homepage: "https://www.ansible.com",
-            },
-            Python: {
-              homepage: "https://python.org",
-            },
-            Janus: {
-              homepage: "https://janus.conf.meetecho.com",
-            },
-            // JavaScript dependencies.
-            "webrtc-adapter": {
-              homepage: "https://github.com/webrtcHacks/adapter",
-            },
-            "socket.io": {
-              homepage: "https://socket.io",
-            },
-            // Python dependencies.
-            eventlet: {
-              homepage: "https://eventlet.net",
-            },
-            Flask: {
-              homepage: "https://flask.palletsprojects.com",
-            },
-            "Flask-SocketIO": {
-              homepage: "https://flask-socketio.readthedocs.io",
-            },
-            "Flask-WTF": {
-              homepage: "https://flask-wtf.readthedocs.io",
-            },
-            pyyaml: {
-              homepage: "https://pyyaml.org",
-            },
-            bidict: {
-              homepage: "https://bidict.readthedocs.io/en/main",
-            },
-            click: {
-              license: "/license/click",
-              homepage: "https://palletsprojects.com/p/click",
-            },
-            dnspython: {
-              homepage: "https://www.dnspython.org",
-            },
-            greenlet: {
-              homepage: "https://greenlet.readthedocs.io",
-            },
-            itsdangerous: {
-              homepage: "https://palletsprojects.com/p/itsdangerous/",
-            },
-            Jinja2: {
-              homepage: "https://palletsprojects.com/p/jinja/",
-            },
-            MarkupSafe: {
-              homepage: "https://palletsprojects.com/p/markupsafe/",
-            },
-            monotonic: {
-              homepage: "https://github.com/atdt/monotonic",
-            },
-            "python-engineio": {
-              homepage: "https://github.com/miguelgrinberg/python-engineio",
-            },
-            "python-socketio": {
-              homepage: "https://github.com/miguelgrinberg/python-socketio",
-            },
-            six: {
-              homepage: "https://github.com/benjaminp/six",
-            },
-            Werkzeug: {
-              homepage: "https://palletsprojects.com/p/werkzeug/",
-            },
-            WTForms: {
-              homepage: "https://wtforms.readthedocs.io",
-            },
-            // Indirect dependencies through Janus.
-            libnice: {
-              homepage: "https://gitlab.freedesktop.org/libnice/libnice",
-            },
-            librtsp: {
-              homepage: "https://libwebsockets.org",
-            },
-            Overpass: {
-              homepage: "https://overpassfont.org/",
-            },
-          };
-          const creditsDiv = this.shadowRoot.querySelector(".credits");
-          for (const [projectName, props] of Object.entries(creditedProjects)) {
-            const credit = document.createElement("credit-box");
-            creditsDiv.appendChild(credit);
-            credit.title = projectName;
-            credit.licenseUrl = `/licensing/${projectName}/license`;
-            credit.homepageUrl = props.homepage;
-          }
+          getLicensingMetadata().then((metadata) => {
+            const creditsDiv = this.shadowRoot.querySelector(".credits");
+            for (const project of metadata) {
+              const credit = document.createElement("credit-box");
+              creditsDiv.appendChild(credit);
+              credit.title = project.name;
+              credit.licenseUrl = project.licenseUrl;
+              credit.homepageUrl = project.homepageUrl;
+            }
+          });
         }
 
         _formatVersion(version) {
