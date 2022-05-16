@@ -186,7 +186,7 @@
             const credit = document.createElement("credit-box");
             creditsDiv.appendChild(credit);
             credit.title = projectName;
-            credit.licenseUrl = `/license/` + projectName;
+            credit.licenseUrl = `/projects/${projectName}/license`;
             credit.homepageUrl = props.homepage;
           }
         }

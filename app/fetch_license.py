@@ -124,10 +124,10 @@ _PROJECTS_METADATA = {
     },
 }
 
-blueprint = flask.Blueprint('py_license', __name__, url_prefix='/license')
+blueprint = flask.Blueprint('py_license', __name__, url_prefix='/projects')
 
 
-@blueprint.route('/<project>', methods=['GET'])
+@blueprint.route('/<project>/license', methods=['GET'])
 def python_project_license_get(project):
     """Retrieves license text for a given Python project.
 
