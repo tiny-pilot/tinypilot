@@ -44,6 +44,11 @@
     <strong>License:</strong> <a href="/py-license/tinypilot" target="_blank">MIT license</a>
   </p>
   <p style="margin-bottom: 0.5rem; margin-top: 1.5rem;">
+    TinyPilot is released under the
+    <a href="/license/tinypilot" target="_blank">MIT license</a>.
+  </p>
+  <div class="credits">
+    <p>
       TinyPilot would not be possible without the help of these open-source
       projects:
     </p>
@@ -110,128 +115,92 @@
           // that match what we're using.
           const creditedProjects = {
             uStreamer: {
-              license:
-                "https://raw.githubusercontent.com/tiny-pilot/ustreamer/v4.13/LICENSE",
               homepage: "https://github.com/pikvm/ustreamer",
             },
             nginx: {
-              license: "https://nginx.org/LICENSE",
               homepage: "https://nginx.org",
             },
             Ansible: {
-              license:
-                "https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING",
               homepage: "https://www.ansible.com",
             },
             Python: {
-              license: "/py-license/python",
               homepage: "https://python.org",
             },
             Janus: {
-              license:
-                "https://raw.githubusercontent.com/tiny-pilot/janus-gateway/v1.0.0/COPYING",
               homepage: "https://janus.conf.meetecho.com",
             },
             // JavaScript dependencies.
             "webrtc-adapter": {
-              license:
-                "https://github.com/webrtcHacks/adapter/blob/18a8b4127cbc1376320cac5742d817b5b7dd0085/LICENSE.md",
               homepage: "https://github.com/webrtcHacks/adapter",
             },
             "socket.io": {
-              license:
-                "https://github.com/socketio/socket.io/blob/3.1.2/LICENSE",
               homepage: "https://socket.io",
             },
             // Python dependencies.
             eventlet: {
-              license: "/py-license/eventlet",
               homepage: "https://eventlet.net",
             },
             Flask: {
-              license: "/py-license/flask",
               homepage: "https://flask.palletsprojects.com",
             },
             "Flask-SocketIO": {
-              license: "/py-license/flask-socketio",
               homepage: "https://flask-socketio.readthedocs.io",
             },
             "Flask-WTF": {
-              license: "/py-license/Flask-WTF",
               homepage: "https://flask-wtf.readthedocs.io",
             },
             pyyaml: {
-              // pyyaml's PyPI package omits its license file, so we have to
-              // link to the Github version.
-              license:
-                "https://raw.githubusercontent.com/yaml/pyyaml/5.4.1/LICENSE",
               homepage: "https://pyyaml.org",
             },
             bidict: {
-              license: "/py-license/bidict",
               homepage: "https://bidict.readthedocs.io/en/main",
             },
             click: {
-              license: "/py-license/click",
+              license: "/license/click",
               homepage: "https://palletsprojects.com/p/click",
             },
             dnspython: {
-              license: "/py-license/dnspython",
               homepage: "https://www.dnspython.org",
             },
             greenlet: {
-              license: "/py-license/greenlet",
               homepage: "https://greenlet.readthedocs.io",
             },
             itsdangerous: {
-              license: "/py-license/itsdangerous",
               homepage: "https://palletsprojects.com/p/itsdangerous/",
             },
             Jinja2: {
-              license: "/py-license/Jinja2",
               homepage: "https://palletsprojects.com/p/jinja/",
             },
             MarkupSafe: {
-              license: "/py-license/MarkupSafe",
               homepage: "https://palletsprojects.com/p/markupsafe/",
             },
             monotonic: {
-              // Monotonic's PyPI package omits its license file, so we have to
-              // link to the Github version.
-              license:
-                "https://raw.githubusercontent.com/atdt/monotonic/1.5/LICENSE",
               homepage: "https://github.com/atdt/monotonic",
             },
             "python-engineio": {
-              license: "/py-license/python-engineio",
               homepage: "https://github.com/miguelgrinberg/python-engineio",
             },
             "python-socketio": {
-              license: "/py-license/python-socketio",
               homepage: "https://github.com/miguelgrinberg/python-socketio",
             },
             six: {
-              license: "/py-license/six",
               homepage: "https://github.com/benjaminp/six",
             },
             Werkzeug: {
-              license: "/py-license/Werkzeug",
               homepage: "https://palletsprojects.com/p/werkzeug/",
             },
             WTForms: {
-              license: "/py-license/WTForms",
               homepage: "https://wtforms.readthedocs.io",
             },
             // Indirect dependencies through Janus.
             libnice: {
-              license:
-                "https://gitlab.freedesktop.org/libnice/libnice/-/blob/0.1.18/COPYING",
               homepage: "https://gitlab.freedesktop.org/libnice/libnice",
             },
             librtsp: {
-              license:
-                "https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable",
               homepage: "https://libwebsockets.org",
+            },
+            Overpass: {
+              homepage: "https://overpassfont.org/",
             },
           };
           const creditsDiv = this.shadowRoot.querySelector(".credits");
@@ -239,7 +208,7 @@
             const credit = document.createElement("credit-box");
             creditsDiv.appendChild(credit);
             credit.title = projectName;
-            credit.licenseUrl = props.license;
+            credit.licenseUrl = `/projects/${projectName}/license`;
             credit.homepageUrl = props.homepage;
           }
         }
