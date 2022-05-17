@@ -264,7 +264,7 @@ def project_license_get(project):
         return flask.make_response('Project license not found', 404)
 
     license_path = matches[0]
-    return _make_plaintext_response(license_path)
+    return _make_plaintext_response(_read_file(license_path))
 
 
 def _get_project_metadata(project_name):
@@ -274,8 +274,8 @@ def _get_project_metadata(project_name):
     return None
 
 
-def _make_plaintext_response(license_path):
-    response = flask.make_response(_read_file(license_path), 200)
+def _make_plaintext_response(response_body):
+    response = flask.make_response(response_body, 200)
     response.mimetype = 'text/plain'
     return response
 
