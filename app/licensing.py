@@ -286,4 +286,6 @@ def _read_file(license_path):
 
 
 def _make_redirect_response(license_url):
+    # We intentionally use a 302 temporary redirect, as the license URL will
+    # change when software versions change.
     return flask.redirect(license_url, code=302)
