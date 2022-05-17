@@ -207,7 +207,28 @@ blueprint = flask.Blueprint('licensing', __name__, url_prefix='/licensing')
 
 
 @blueprint.route('', methods=['GET'])
-def project_metadata_get():
+def all_licensing_get():
+    """Retrieves licensing metadata for TinyPilot and its dependencies.
+
+    Returns:
+        A JSON-formatted list of licensing information about TinyPilot and its
+        third-party dependencies.
+
+        Example:
+        [
+            {
+                "name": "TinyPilot",
+                "homepageUrl": "https://tinypilotkvm.com",
+                "licenseUrl": "/licensing/TinyPilot/license"
+            },
+            {
+                "name": "uStreamer",
+                "homepageUrl": "https://github.com/pikvm/ustreamer",
+                "licenseUrl": "/licensing/uStreamer/license"
+            },
+            ...
+        ]
+    """
     response = []
     for license_data in _LICENSE_METADATA:
         response.append({
