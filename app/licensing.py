@@ -17,7 +17,8 @@ class LicenseMetadata:
 # For code where the source or license is on the local device, prefer linking to
 # the locally-available copy instead of the remote URL so that the license ties
 # tightly to the version we're using. When that's not possible, look for
-# permalink versions of the license that match what we're using.
+# permalink versions of the license that match what the version of software
+# we're using.
 
 # pylint: disable=line-too-long
 _LICENSE_METADATA = [
@@ -207,9 +208,6 @@ blueprint = flask.Blueprint('licensing', __name__, url_prefix='/licensing')
 def project_metadata_get():
     response = []
     for license_data in _LICENSE_METADATA:
-        if license_data.name == 'TinyPilot':
-            continue
-
         response.append({
             'name': license_data.name,
             'licenseUrl': '/licensing/%s/license' % license_data.name,

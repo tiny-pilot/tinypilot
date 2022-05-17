@@ -105,6 +105,11 @@
           getLicensingMetadata().then((metadata) => {
             const creditsDiv = this.shadowRoot.querySelector(".credits");
             for (const project of metadata) {
+              // Skip displaying TinyPilot in the list of dependencies, since we
+              // display the TinyPilot license in a special way.
+              if (project.name === "TinyPilot") {
+                continue;
+              }
               const credit = document.createElement("credit-box");
               creditsDiv.appendChild(credit);
               credit.title = project.name;
