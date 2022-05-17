@@ -81,14 +81,11 @@
             .addEventListener("click", () =>
               this.dispatchEvent(new DialogClosedEvent())
             );
+        }
 
-          // We're doing this at page load time rather than dialog load time,
-          // but that should be fine, as we don't expect the version to change
-          // without a page reload.
+        initialize() {
           this._checkVersion();
-
-          // Hack to fix init order issue, by arbitrarily deferring the rendering.
-          setTimeout(() => this._populateCredits(), 500);
+          this._populateCredits();
         }
 
         _checkVersion() {
