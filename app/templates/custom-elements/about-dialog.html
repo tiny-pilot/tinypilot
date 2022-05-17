@@ -3,12 +3,12 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    :host {
+    .content {
       text-align: left;
-      padding: 0 4rem;
+      margin: 0 4rem;
     }
 
-    h3 {
+    .content h3 {
       text-align: center;
     }
 
@@ -37,31 +37,33 @@
     }
   </style>
 
-  <h3>About TinyPilot</h3>
-  <p>
-    <strong>Version:</strong>
-    <span id="version-number" class="monospace"></span><br />
-    <strong>Source:</strong>
-    <a href="https://github.com/tiny-pilot/tinypilot" target="_blank"
-      >github.com/tiny-pilot/tinypilot</a
-    ><br />
-    <strong>Website:</strong>
-    <a href="https://tinypilotkvm.com" target="_blank"
-      >https://tinypilotkvm.com</a
-    ><br />
-    <strong>License:</strong>
-    <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
-  </p>
+  <div class="content">
+    <h3>About TinyPilot</h3>
+    <p>
+      <strong>Version:</strong>
+      <span id="version-number" class="monospace"></span><br />
+      <strong>Source:</strong>
+      <a href="https://github.com/tiny-pilot/tinypilot" target="_blank"
+        >github.com/tiny-pilot/tinypilot</a
+      ><br />
+      <strong>Website:</strong>
+      <a href="https://tinypilotkvm.com" target="_blank"
+        >https://tinypilotkvm.com</a
+      ><br />
+      <strong>License:</strong>
+      <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
+    </p>
 
-  <p>
-    TinyPilot would not be possible without the help of these open-source
-    projects:
-  </p>
-  <div class="credits-container">
-    <ul class="credits"></ul>
+    <p>
+      TinyPilot would not be possible without the help of these open-source
+      projects:
+    </p>
+    <div class="credits-container">
+      <ul class="credits"></ul>
+    </div>
+
+    <button class="close-btn" type="button">Close</button>
   </div>
-
-  <button class="close-btn" type="button">Close</button>
 </template>
 
 <!-- Template for entries in the .credits element -->
