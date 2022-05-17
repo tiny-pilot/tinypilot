@@ -3,12 +3,18 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    :host {
+    .content {
       text-align: left;
+      margin: 0 4rem;
     }
 
-    :host > *:not(button) {
-      padding: 0 4rem;
+    .content h3 {
+      text-align: center;
+    }
+
+    .close-btn {
+      display: block;
+      margin: 1rem auto;
     }
 
     #version-number {
@@ -17,7 +23,7 @@
     }
 
     .credits-container {
-      overflow-y: scroll;
+      overflow-y: auto;
       max-height: 300px;
     }
 
@@ -28,31 +34,32 @@
     ul {
       margin-top: 0;
       columns: 3;
-      padding-left: 1rem;
     }
   </style>
 
-  <h3 style="text-align: center;">About TinyPilot</h3>
-  <p>
-    <strong>Version:</strong> <span id="version-number" class="monospace"></span
-    ><br />
-    <strong>Website:</strong>
-    <a href="https://tinypilotkvm.com" target="_blank"
-      >https://tinypilotkvm.com</a
-    ><br />
-    <strong>License:</strong>
-    <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
-  </p>
+  <div class="content">
+    <h3>About TinyPilot</h3>
+    <p>
+      <strong>Version:</strong>
+      <span id="version-number" class="monospace"></span><br />
+      <strong>Website:</strong>
+      <a href="https://tinypilotkvm.com" target="_blank"
+        >https://tinypilotkvm.com</a
+      ><br />
+      <strong>License:</strong>
+      <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
+    </p>
 
-  <div class="credits-container">
     <p>
       TinyPilot would not be possible without the help of these open-source
       projects:
     </p>
-    <ul class="credits"></ul>
-  </div>
+    <div class="credits-container">
+      <ul class="credits"></ul>
+    </div>
 
-  <button class="close-btn" type="button">Close</button>
+    <button class="close-btn" type="button">Close</button>
+  </div>
 </template>
 
 <script type="module">

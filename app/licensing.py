@@ -10,8 +10,10 @@ import json_response
 class LicenseMetadata:
     name: str
     homepage_url: str
-    license_url: str = ''
+    # Glob pattern that points to the license file on the local system.
     license_glob_pattern: str = ''
+    # URL of license file if it's not available on the local system.
+    license_url: str = ''
 
 
 # For code where the source or license is on the local device, prefer linking to
