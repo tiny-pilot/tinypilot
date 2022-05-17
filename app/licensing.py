@@ -274,8 +274,7 @@ def _get_project_metadata(project_name):
     return None
 
 
-def _make_plaintext_response(license_pattern):
-    license_path = glob.glob(license_pattern)[0]
+def _make_plaintext_response(license_path):
     response = flask.make_response(_read_file(license_path), 200)
     response.mimetype = 'text/plain'
     return response
