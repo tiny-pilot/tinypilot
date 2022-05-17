@@ -259,7 +259,11 @@ def project_license_get(project):
     if project_metadata.license_url:
         return _make_redirect_response(project_metadata.license_url)
 
-    license_path = glob.glob(project_metadata.license_glob_pattern)[0]
+    matches = glob.glob(project_metadata.license_glob_pattern)
+    if not matches:
+        return flask.make_response('Project license not found', 404)
+
+    license_path = matches[0]
     return _make_plaintext_response(license_path)
 
 
