@@ -3,7 +3,7 @@
     @import "css/style.css";
     @import "css/button.css";
 
-    .content {
+    :host {
       text-align: left;
       margin: 0 4rem;
     }
@@ -37,60 +37,57 @@
     }
   </style>
 
-  <div class="content">
-    <h3>About TinyPilot</h3>
-    <p>
-      <strong>Version:</strong>
-      <span id="version-number" class="monospace"></span><br />
-      <strong>Source:</strong>
-      <a href="https://github.com/tiny-pilot/tinypilot" target="_blank"
-        >github.com/tiny-pilot/tinypilot</a
-      ><br />
-      <strong>Website:</strong>
-      <a href="https://tinypilotkvm.com" target="_blank"
-        >https://tinypilotkvm.com</a
-      ><br />
-      <strong>License:</strong>
-      <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
-    </p>
+  <h3>About TinyPilot</h3>
+  <p>
+    <strong>Version:</strong>
+    <span id="version-number" class="monospace"></span><br />
+    <strong>Source:</strong>
+    <a href="https://github.com/tiny-pilot/tinypilot" target="_blank"
+      >github.com/tiny-pilot/tinypilot</a
+    ><br />
+    <strong>Website:</strong>
+    <a href="https://tinypilotkvm.com" target="_blank"
+      >https://tinypilotkvm.com</a
+    ><br />
+    <strong>License:</strong>
+    <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
+  </p>
 
-    <p>
-      TinyPilot would not be possible without the help of these open-source
-      projects:
-    </p>
-    <div class="credits-container">
-      <ul class="credits">
-        <template id="credit-box-template">
-          <style>
-            .project .title {
-              font-weight: bold;
-            }
-
-            .project {
-              margin-bottom: 0.2rem;
-            }
-
-            .license {
-              font-size: 10pt;
-            }
-          </style>
-
-          <li class="project">
-            <a class="homepage" target="_blank" rel="noopener noreferrer">
-              <span class="title"></span> </a
-            >&nbsp;
-            <span>
-              (<a class="license" target="_blank" rel="noopener noreferrer"
-                >License</a
-              >)
-            </span>
-          </li>
-        </template>
-      </ul>
-    </div>
-
-    <button class="close-btn" type="button">Close</button>
+  <p>
+    TinyPilot would not be possible without the help of these open-source
+    projects:
+  </p>
+  <div class="credits-container">
+    <ul class="credits"></ul>
   </div>
+
+  <button class="close-btn" type="button">Close</button>
+</template>
+
+<!-- Template for entries in the .credits element -->
+<template id="credit-box-template">
+  <style>
+    .project .title {
+      font-weight: bold;
+    }
+
+    .project {
+      margin-bottom: 0.2rem;
+    }
+
+    .license {
+      font-size: 10pt;
+    }
+  </style>
+
+  <li class="project">
+    <a class="homepage" target="_blank" rel="noopener noreferrer">
+      <span class="title"></span> </a
+    >&nbsp;
+    <span>
+      (<a class="license" target="_blank" rel="noopener noreferrer">License</a>)
+    </span>
+  </li>
 </template>
 
 <script type="module">
