@@ -10,6 +10,8 @@ import json_response
 class LicenseMetadata:
     name: str
     homepage_url: str
+    # The license_glob_pattern and license_url properties are mutually
+    # exclusive.
     # Glob pattern that points to the license file on the local system.
     license_glob_pattern: str = ''
     # URL of license file if it's not available on the local system.
@@ -19,8 +21,8 @@ class LicenseMetadata:
 # For code where the source or license is on the local device, prefer linking to
 # the locally-available copy instead of the remote URL so that the license ties
 # tightly to the version we're using. When that's not possible, look for
-# permalink versions of the license that match what the version of software
-# we're using.
+# permalink versions of the license that match the version of the software we're
+# using.
 
 # pylint: disable=line-too-long
 _LICENSE_METADATA = [
@@ -39,17 +41,18 @@ _LICENSE_METADATA = [
                     license_url='https://nginx.org/LICENSE',
                     homepage_url='https://nginx.org'),
     LicenseMetadata(
-        name='Ansible',
-        homepage_url='https://www.ansible.com',
-        license_url=
-        'https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING'),
-    LicenseMetadata(
         name='Janus',
         homepage_url='https://janus.conf.meetecho.com',
         license_url=
         'https://raw.githubusercontent.com/tiny-pilot/janus-gateway/v1.0.0/COPYING'
     ),
+
     # JavaScript dependencies.
+    LicenseMetadata(
+        name='janus.js',
+        homepage_url='https://janus.conf.meetecho.com',
+        license_glob_pattern='./app/static/third-party/janus-gateway/*/janus.js',
+    ),
     LicenseMetadata(
         name='webrtc-adapter',
         homepage_url='https://github.com/webrtcHacks/adapter',
@@ -90,8 +93,6 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='pyyaml',
         homepage_url='https://pyyaml.org',
-        # pyyaml's PyPI package does not include a license, so we have to link
-        # to the Github version.
         license_url=
         'https://raw.githubusercontent.com/yaml/pyyaml/5.4.1/LICENSE',
     ),
@@ -140,9 +141,8 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='monotonic',
         homepage_url='https://github.com/atdt/monotonic',
-        # monotonic's PyPI package does not include a license, so we have to
-        # link to the Github version.
-        license_url='https://github.com/atdt/monotonic',
+        license_url=
+        'https://raw.githubusercontent.com/atdt/monotonic/1.5/LICENSE',
     ),
     LicenseMetadata(
         name='python-engineio',
@@ -175,6 +175,45 @@ _LICENSE_METADATA = [
         './venv/lib/python3.7/site-packages/WTForms-*.dist-info/LICENSE*',
     ),
 
+    # Ansible dependencies.
+    # These licenses are technically available on the device, but the tinypilot
+    # web app user doesn't have read access to them.
+    LicenseMetadata(
+        name='Ansible',
+        homepage_url='https://www.ansible.com',
+        license_url=
+        'https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING'),
+    LicenseMetadata(
+        name='cffi',
+        homepage_url='http://cffi.readthedocs.org/',
+        license_glob_pattern=
+        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/cffi-*.dist-info/LICENSE'
+    ),
+    LicenseMetadata(
+        name='cryptography',
+        homepage_url='https://cryptography.io',
+        license_glob_pattern=
+        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/cryptography-*.dist-info/LICENSE.BSD'
+    ),
+    LicenseMetadata(
+        name='MarkupSafe',
+        homepage_url='https://palletsprojects.com/p/markupsafe/',
+        license_glob_pattern=
+        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/MarkupSafe-*.dist-info/LICENSE.rst'
+    ),
+    LicenseMetadata(
+        name='pycparser',
+        homepage_url='https://github.com/eliben/pycparser',
+        license_glob_pattern=
+        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/pycparser-*.dist-info/LICENSE'
+    ),
+    LicenseMetadata(
+        name='pyOpenSSL',
+        homepage_url='https://pyopenssl.org',
+        license_glob_pattern=
+        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/pyOpenSSL-*.dist-info/LICENSE'
+    ),
+
     # Indirect dependencies through Janus.
     LicenseMetadata(
         name='libnice',
@@ -183,7 +222,7 @@ _LICENSE_METADATA = [
         'https://gitlab.freedesktop.org/libnice/libnice/-/blob/0.1.18/COPYING',
     ),
     LicenseMetadata(
-        name='librtsp',
+        name='libsrtp',
         homepage_url='https://github.com/cisco/libsrtp',
         license_url='https://github.com/cisco/libsrtp/blob/v2.2.0/LICENSE',
     ),
@@ -194,7 +233,7 @@ _LICENSE_METADATA = [
         'https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable',
     ),
 
-    # Fonts
+    # Fonts.
     LicenseMetadata(
         name='Overpass',
         homepage_url='https://overpassfont.org/',
