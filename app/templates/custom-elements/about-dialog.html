@@ -1,0 +1,166 @@
+<template id="about-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    .content {
+      text-align: left;
+      margin: 0 4rem;
+    }
+
+    .content h3 {
+      text-align: center;
+    }
+
+    .close-btn {
+      display: block;
+      margin: 1rem auto;
+    }
+
+    #version-number {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .credits-container {
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    credit-box {
+      margin: 0.5rem 0;
+    }
+
+    ul {
+      margin-top: 0;
+      columns: 3;
+    }
+  </style>
+
+  <div class="content">
+    <h3>About TinyPilot</h3>
+    <p>
+      <strong>Version:</strong>
+      <span id="version-number" class="monospace"></span><br />
+      <strong>Source:</strong>
+      <a href="https://github.com/tiny-pilot/tinypilot" target="_blank"
+        >github.com/tiny-pilot/tinypilot</a
+      ><br />
+      <strong>Website:</strong>
+      <a href="https://tinypilotkvm.com" target="_blank"
+        >https://tinypilotkvm.com</a
+      ><br />
+      <strong>License:</strong>
+      <a href="/licensing/TinyPilot/license" target="_blank">MIT license</a>
+    </p>
+
+    <p>
+      TinyPilot would not be possible without the help of these open-source
+      projects:
+    </p>
+    <div class="credits-container">
+      <ul class="credits"></ul>
+    </div>
+
+    <button class="close-btn" type="button">Close</button>
+  </div>
+</template>
+
+<!-- Template for entries in the .credits element -->
+<template id="credit-box-template">
+  <style>
+    .project {
+      margin-bottom: 0.2rem;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+
+    .license-wrapper {
+      margin-left: 0.2em;
+      font-size: 0.85em;
+    }
+  </style>
+
+  <li class="project">
+    <a class="homepage" target="_blank" rel="noopener noreferrer">
+      <span class="title"></span>
+    </a>
+    <span class="license-wrapper">
+      (<a class="license" target="_blank" rel="noopener noreferrer">License</a>)
+    </span>
+  </li>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { getLicensingMetadata, getVersion } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#about-dialog-template");
+    const creditBoxTemplate = document.querySelector("#credit-box-template");
+
+    customElements.define(
+      "about-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.shadowRoot
+            .querySelector(".close-btn")
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
+        }
+
+        initialize() {
+          this._checkVersion();
+          this._populateCredits();
+        }
+
+        _checkVersion() {
+          getVersion()
+            .then((version) => {
+              this.shadowRoot.getElementById(
+                "version-number"
+              ).innerText = this._formatVersion(version);
+            })
+            .catch((error) => {
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Retrieve Version Information",
+                  details: error,
+                })
+              );
+            });
+        }
+
+        _populateCredits() {
+          getLicensingMetadata().then((metadata) => {
+            const creditsDiv = this.shadowRoot.querySelector(".credits");
+            for (const project of metadata) {
+              // Skip displaying TinyPilot in the list of dependencies, since we
+              // display the TinyPilot license in a special way.
+              if (project.name === "TinyPilot") {
+                continue;
+              }
+
+              const credit = creditBoxTemplate.content.cloneNode(true);
+              credit.querySelector(".title").innerText = project.name;
+              credit.querySelector(".license").href = project.licenseUrl;
+              credit.querySelector(".homepage").href = project.homepageUrl;
+              creditsDiv.appendChild(credit);
+            }
+          });
+        }
+
+        _formatVersion(version) {
+          // Truncate git commit hash to same length as git's short hash format.
+          return version.substr(0, 7);
+        }
+      }
+    );
+  })();
+</script>

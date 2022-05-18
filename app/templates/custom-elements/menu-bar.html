@@ -138,19 +138,10 @@
       text-transform: capitalize;
     }
 
-    .nav-icon img {
-      margin-top: 5px;
-      max-height: 22px;
-    }
-
     .nav-selected a:after {
       content: "✓";
       position: absolute;
       right: 10px;
-    }
-
-    .spacer {
-      flex: 1;
     }
 
     .pro-badge:after {
@@ -192,6 +183,9 @@
         </li>
         <li class="item">
           <a data-onclick-event="debug-logs-dialog-requested">Logs</a>
+        </li>
+        <li class="item">
+          <a data-onclick-event="about-dialog-requested">About</a>
         </li>
         <li class="item">
           <a data-onclick-event="shutdown-dialog-requested">Power</a>
@@ -247,13 +241,6 @@
       </ul>
     </li>
   </ul>
-
-  <div class="spacer"></div>
-  <div class="header-item nav-icon">
-    <a href="https://github.com/tiny-pilot/tinypilot" target="_blank">
-      <img src="/img/GitHub-Mark-Light-120px-plus.png" />
-    </a>
-  </div>
 </template>
 
 <script type="module">
