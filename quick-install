@@ -150,7 +150,7 @@ python3 -m venv venv
 # available instead of building the packages locally.
 pip install pip==21.3.1
 
-# When modifying dependencies, update the credit in app/licensing.py.
+# When modifying dependencies, update the credit in app/license_notice.py.
 echo 'ansible==2.9.10
 cffi==1.14.4
 cryptography==35.0.0
