@@ -66,33 +66,6 @@
   </div>
 </template>
 
-<!-- Template for entries in the .credits element -->
-<template id="credit-box-template">
-  <style>
-    .project {
-      margin-bottom: 0.2rem;
-    }
-
-    .title {
-      font-weight: bold;
-    }
-
-    .license-wrapper {
-      margin-left: 0.2em;
-      font-size: 0.85em;
-    }
-  </style>
-
-  <li class="project">
-    <a class="homepage" target="_blank" rel="noopener noreferrer">
-      <span class="title"></span>
-    </a>
-    <span class="license-wrapper">
-      (<a class="license" target="_blank" rel="noopener noreferrer">License</a>)
-    </span>
-  </li>
-</template>
-
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
   import { getLicensingMetadata, getVersion } from "/js/controllers.js";
@@ -147,11 +120,11 @@
                 continue;
               }
 
-              const credit = creditBoxTemplate.content.cloneNode(true);
-              credit.querySelector(".title").innerText = project.name;
-              credit.querySelector(".license").href = project.licenseUrl;
-              credit.querySelector(".homepage").href = project.homepageUrl;
+              const credit = document.createElement("credit-entry");
               creditsDiv.appendChild(credit);
+              credit.title = project.name;
+              credit.licenseUrl = project.licenseUrl;
+              credit.homepageUrl = project.homepageUrl;
             }
           });
         }
