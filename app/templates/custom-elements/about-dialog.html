@@ -122,9 +122,11 @@
 
               const credit = document.createElement("credit-entry");
               creditsDiv.appendChild(credit);
-              credit.title = project.name;
-              credit.licenseUrl = project.licenseUrl;
-              credit.homepageUrl = project.homepageUrl;
+              credit.populate(
+                project.name,
+                project.licenseUrl,
+                project.homepageUrl
+              );
             }
           });
         }

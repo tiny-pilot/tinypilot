@@ -40,16 +40,10 @@
           );
         }
 
-        set title(newValue) {
-          this.shadowRoot.querySelector(".title").innerText = newValue;
-        }
-
-        set licenseUrl(newValue) {
-          this.shadowRoot.querySelector(".license").href = newValue;
-        }
-
-        set homepageUrl(newValue) {
-          this.shadowRoot.querySelector(".homepage").href = newValue;
+        populate(title, licenseUrl, homepageUrl) {
+          this.shadowRoot.querySelector(".title").innerText = title;
+          this.shadowRoot.querySelector(".license").href = licenseUrl;
+          this.shadowRoot.querySelector(".homepage").href = homepageUrl;
         }
       }
     );
