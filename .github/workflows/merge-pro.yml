@@ -14,8 +14,15 @@ jobs:
       - name: Reset the default branch with upstream changes
         run: |
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
-          git fetch upstream master:upstream-master
-          git reset --hard upstream-master
+          git checkout -b community-changes-${{ github.sha }}
+          git fetch upstream master
+          git merge upstream/master --no-edit
+          if [[ $? -eq 0 ]]; then
+            HAS_CONFLICTS='No'
+          else
+            HAS_CONFLICTS='Yes'
+          fi
+          echo "has_conflicts="${HAS_CONFLICTS}"" >> "${GITHUB_ENV}"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -30,6 +37,8 @@ jobs:
             Merge the last changes from community repository :
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
+
+            Conflicts: ${{ env.has_conflicts }}
 
             **Do not use "Squash and merge" !**
             Merge this PR with a merge commit, keeping the commit history.
