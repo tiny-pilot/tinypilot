@@ -100,7 +100,7 @@ jobs:
               .
       # TODO: Push the .deb file to Backblaze.
       - store_artifacts:
-          path: "releases/tinypilot-${PKG_VERSION}-1-armhf.deb"
+          path: releases/
 workflows:
   test:
     jobs:
