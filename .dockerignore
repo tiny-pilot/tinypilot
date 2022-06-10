@@ -1,0 +1,17 @@
+**/__pycache__
+**/*_test.py
+
+dev_app_settings.cfg
+dev_requirements.txt
+dev-scripts/
+hooks/
+
+package*.json
+
+node_modules/
+venv/
+.circleci/
+
+Dockerfile
+.coverage*
+*.env
