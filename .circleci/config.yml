@@ -106,6 +106,7 @@ workflows:
       - check_bash
       - build_python
       - build_javascript
+      - build_deb_pkg # TODO: Limit this to master
       - e2e:
           filters:
             branches:
