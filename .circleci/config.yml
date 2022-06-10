@@ -60,7 +60,9 @@ jobs:
     docker:
       - image: cimg/base:stable
     environment:
-      PKG_VERSION: "${CIRCLE_SHA1}"
+      # TODO: Find a better version number because Debian packages requires a
+      # specific format so we can't just use the git commit hash.
+      PKG_VERSION: "1.7.1"
     steps:
       - checkout
       - setup_remote_docker:
