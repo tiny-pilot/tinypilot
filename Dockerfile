@@ -14,7 +14,9 @@ COPY . /app
 
 WORKDIR /app
 
-RUN echo "${PKG_VERSION}" > VERSION
+# Use the git hash as the version number, as PKG_VERSION needs to be a semver,
+# so it can't express non-tagged releases.
+RUN echo "$(git rev-parse --short HEAD)" > VERSION
 
 RUN mkdir -p "/releases/${PKG_ID}"
 
