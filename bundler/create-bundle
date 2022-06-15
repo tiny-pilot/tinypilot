@@ -50,6 +50,13 @@ find . \
   -prune \
   -exec rm -rf {} \;
 
+# Prepare a Python virtual environment for running Ansible.
+python3 -m venv venv
+# shellcheck disable=SC1091 # Don’t follow sourced script.
+. venv/bin/activate
+pip install pip==21.3.1
+pip install -r requirements.txt
+
 popd
 
 # Generate build output.
