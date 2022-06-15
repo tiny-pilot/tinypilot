@@ -48,6 +48,19 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/build-javascript
+  build_bundle:
+    docker:
+      - image: debian:buster-20220527
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apt-get update && apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
+      - run:
+          name: Create the bundle
+          command: ./bundler/create-bundle
+      - store_artifacts:
+          path: bundler/dist/
   e2e:
     machine:
       image: ubuntu-2004:202010-01
@@ -63,6 +76,7 @@ workflows:
       - check_bash
       - build_python
       - build_javascript
+      - build_bundle
       - e2e:
           filters:
             branches:

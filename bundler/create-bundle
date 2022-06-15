@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Creates a TinyPilot installation bundle from the bundle/ folder.
+# Fetches all required dependencies automatically.
+
+# Exit on first error.
+set -e
+
+# Exit on unset variable.
+set -u
+
+# Echo commands to stdout.
+set -x
+
+# TODO (jotaen): parameterize script to make the installation work for
+#                TinyPilot Pro as well.
+
+# TODO: Adjust the workflow so that we build Debian packages as part of the same
+# workflow on the same system that we build the bundle so that we don't have to
+# retrieve the Debian package file from a remote URL.
+readonly PKG_URL_TINYPILOT='https://packages.tinypilotkvm.com/community/tinypilot-1.7.1-1-armhf.deb'
+readonly REPO_ANSIBLE_TINYPILOT='https://github.com/tiny-pilot/ansible-role-tinypilot.git'
+readonly REPO_ANSIBLE_NGINX='https://github.com/tiny-pilot/ansible-role-nginx'
+readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustreamer'
+
+readonly BUNDLE_DIR='bundle'
+readonly OUTPUT_DIR='dist'
+
+pushd "${BUNDLE_DIR}"
+
+wget "${PKG_URL_TINYPILOT}"
+
+git clone \
+  --depth 1 \
+  --branch master \
+  "${REPO_ANSIBLE_TINYPILOT}"
+
+git clone \
+  --depth 1 \
+  --branch master \
+  "${REPO_ANSIBLE_NGINX}"
+
+git clone \
+  --depth 1 \
+  --branch master \
+  "${REPO_ANSIBLE_USTREAMER}"
+
+# Remove all `.git/` folders.
+find . \
+  -type d \
+  -name .git \
+  -prune \
+  -exec rm -rf {} \;
+
+popd
+
+# Generate build output.
+mkdir -p "${OUTPUT_DIR}"
+ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"
+tar \
+  --create \
+  --file "${OUTPUT_DIR}/tinypilot.tar" \
+  --directory "${BUNDLE_DIR}" \
+  .
