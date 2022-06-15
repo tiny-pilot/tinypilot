@@ -14,10 +14,6 @@ COPY . /app
 
 WORKDIR /app
 
-# Use the git hash as the version number, as PKG_VERSION needs to be a semver,
-# so it can't express non-tagged releases.
-RUN echo "$(git rev-parse --short HEAD)" > VERSION
-
 RUN mkdir -p "/releases/${PKG_ID}"
 
 WORKDIR "/releases/${PKG_ID}"
@@ -25,6 +21,10 @@ WORKDIR "/releases/${PKG_ID}"
 RUN mkdir -p opt/tinypilot && \
       cp -R /app/* opt/tinypilot/ && \
       rm -rf opt/tinypilot/e2e
+
+# Use the git hash as the version number, as PKG_VERSION needs to be a semver,
+# so it can't express non-tagged releases.
+RUN echo "$(git rev-parse --short HEAD)" > /opt/tinypilot/VERSION
 
 RUN mkdir -p DEBIAN
 
