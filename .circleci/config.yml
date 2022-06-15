@@ -58,7 +58,7 @@ jobs:
           command: apt-get update && apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
       - run:
           name: Create the bundle
-          command: cd budler && ./create-bundle
+          command: cd bundler && ./create-bundle
       - store_artifacts:
           path: bundler/dist/
   e2e:
