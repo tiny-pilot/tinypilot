@@ -8,7 +8,7 @@ ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      dpkg-dev
+      dpkg-dev git
 
 COPY . /app
 
@@ -24,7 +24,7 @@ RUN mkdir -p opt/tinypilot && \
 
 # Use the git hash as the version number, as PKG_VERSION needs to be a semver,
 # so it can't express non-tagged releases.
-RUN echo "$(git rev-parse --short HEAD)" > /opt/tinypilot/VERSION
+RUN echo "$(git rev-parse --short HEAD)" > opt/tinypilot/VERSION
 
 RUN mkdir -p DEBIAN
 
