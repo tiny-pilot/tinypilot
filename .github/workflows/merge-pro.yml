@@ -17,7 +17,7 @@ jobs:
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream jdeanwallace/test-auto-PR-1
           git checkout upstream/jdeanwallace/test-auto-PR-1
-          git merge origin/master --no-edit
+          git merge origin/master --no-edit --allow-unrelated-histories
           if [[ $? -eq 1 ]]; then
             git merge --abort
             exit 0
