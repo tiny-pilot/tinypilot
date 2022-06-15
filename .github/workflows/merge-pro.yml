@@ -11,6 +11,10 @@ jobs:
         with:
           repository: tiny-pilot/tinypilot-pro
           token: ${{ secrets.PR_BOT_PAT }}
+      - name: Set git config
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
       - name: Merge origin into upstream
         run: |
           set +e
