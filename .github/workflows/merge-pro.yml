@@ -2,7 +2,7 @@ name: Merge community changes into pro repo
 on:
   push:
     branches:
-      - master
+      - jdeanwallace/test-auto-PR-1
 jobs:
   updateFork:
     runs-on: ubuntu-latest
@@ -11,22 +11,22 @@ jobs:
         with:
           repository: tiny-pilot/tinypilot-pro
           token: ${{ secrets.PR_BOT_PAT }}
-      - name: Reset the default branch with upstream changes
+      - name: Merge origin into upstream
         run: |
+          set +e
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
-          git checkout -b community-changes-${{ github.sha }}
-          git fetch upstream master
-          git merge upstream/master --no-edit
-          if [[ $? -eq 0 ]]; then
-            HAS_CONFLICTS='No'
-          else
-            HAS_CONFLICTS='Yes'
+          git fetch upstream jdeanwallace/test-auto-PR-1
+          git checkout upstream/jdeanwallace/test-auto-PR-1
+          git merge origin/master --no-edit
+          if [[ $? -eq 1 ]]; then
+            git merge --abort
+            exit 0
           fi
-          echo "has_conflicts="${HAS_CONFLICTS}"" >> "${GITHUB_ENV}"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PR_BOT_PAT }}
+          base: master
           branch: community-changes-${{ github.sha }}
           delete-branch: true
           # If the committer to the community repo (github.actor) has no access
@@ -37,8 +37,6 @@ jobs:
             Merge the last changes from community repository :
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
-
-            Conflicts: ${{ env.has_conflicts }}
 
             **Do not use "Squash and merge" !**
             Merge this PR with a merge commit, keeping the commit history.
