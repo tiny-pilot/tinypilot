@@ -70,15 +70,14 @@ jobs:
       - image: cimg/base:2020.01
     environment:
       UPLOAD_PATH: community/
-    working_directory: /home/circleci/dist
     steps:
       - attach_workspace:
-          at: ./dist
+          at: ./
       - run: # DEBUG
-          command: pwd && ls -l
+          command: cd dist && pwd && ls -l
       - run:
           name: create LATEST file
-          command: ls tinypilot*.tar | tee LATEST
+          command: cd dist && ls tinypilot*.tar | tee LATEST
       - run:
           name: download Backblaze CLI tool
           command: |
@@ -91,10 +90,10 @@ jobs:
           command: ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
       - run:
           name: upload bundle to Backblaze
-          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "$(cat LATEST)" "${UPLOAD_PATH}/"
+          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "dist/$(cat dist/LATEST)" "${UPLOAD_PATH}/"
       - run:
           name: update LATEST file in bucket
-          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" LATEST "${UPLOAD_PATH}/"
+          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" dist/LATEST "${UPLOAD_PATH}/"
   e2e:
     machine:
       image: ubuntu-2004:202010-01
