@@ -37,7 +37,7 @@ jobs:
           # If the committer to the community repo (github.actor) has no access
           # to the pro repo, the PR will be unassigned.
           assignees: ${{ github.actor }}
-          title: Merge changes from community repository
+          title: Community changes jdeanwallace test
           body: |
             Merge the last changes from community repository :
 
