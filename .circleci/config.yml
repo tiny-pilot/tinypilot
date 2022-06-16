@@ -50,7 +50,7 @@ jobs:
           command: ./dev-scripts/build-javascript
   build_bundle:
     docker:
-      - image: debian:buster-20220527
+      - image: cimg/base:2020.01
     steps:
       - checkout
       - run:
@@ -67,15 +67,16 @@ jobs:
             - ./dist
   upload_bundle:
     docker:
-      - image: debian:buster-20220527
+      - image: cimg/base:2020.01
     environment:
       UPLOAD_PATH: community/
+    working_directory: /workspace/dist
     steps:
       - attach_workspace:
-          at: ./dist
+          at: /workpsace
       - run:
           name: create LATEST file
-          command: echo "$(ls tinypilot*.deb)" > LATEST
+          command: echo "$(ls tinypilot*.tar)" > LATEST
       - run:
           name: download Backblaze CLI tool
           command: |
