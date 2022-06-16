@@ -19,15 +19,14 @@ jobs:
       - name: Merge origin into upstream
         run: |
           set +ex
-          git remote add upstream https://github.com/tiny-pilot/tinypilot.git
-          git fetch upstream mtlynch/test-auto-PR-3
-          git checkout upstream/mtlynch/test-auto-PR-3
-          git checkout -b temp-community-changes-${{ github.sha }}
-          git merge origin/master --no-edit --allow-unrelated-histories
-          if [[ $? -ne 0 ]]; then
+          git remote add community https://github.com/tiny-pilot/tinypilot.git
+          git fetch community
+          git checkout community/master
+          git checkout -b community-changes-${{ github.sha }}
+          git merge origin/master --no-edit
+          if [[ $? -eq 0 ]]; then
             git merge --abort
           fi
-          exit $?
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
