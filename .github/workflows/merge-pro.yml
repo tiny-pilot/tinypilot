@@ -11,6 +11,7 @@ jobs:
         with:
           repository: tiny-pilot/tinypilot-pro
           ref: master
+          fetch-depth: 0
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Set git config
         run: |
