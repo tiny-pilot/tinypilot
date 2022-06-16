@@ -89,7 +89,9 @@ jobs:
             ./b2 version
       - run:
           name: authorize Backblaze CLI tool
-          command: set -u && ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+          command: |
+            set -u
+            ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
       - run:
           name: upload bundle to Backblaze
           command: |
