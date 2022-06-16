@@ -74,9 +74,11 @@ jobs:
     steps:
       - attach_workspace:
           at: ./dist
+      - run: # DEBUG
+          command: pwd && ls -l
       - run:
           name: create LATEST file
-          command: echo "$(ls tinypilot*.tar)" | tee LATEST
+          command: set -x echo "$(ls tinypilot*.tar)" | tee LATEST
       - run:
           name: download Backblaze CLI tool
           command: |
