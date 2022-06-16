@@ -61,6 +61,18 @@ jobs:
           command: cd bundler && ./create-bundle
       - store_artifacts:
           path: bundler/dist/
+      - persist_to_workspace:
+          root: ./bundler
+          paths:
+            - ./dist
+  upload_bundle:
+    docker:
+      - image: debian:buster-20220527
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          command: ls -l
   e2e:
     machine:
       image: ubuntu-2004:202010-01
