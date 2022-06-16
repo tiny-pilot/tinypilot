@@ -73,6 +73,14 @@ jobs:
           at: ./
       - run:
           command: ls -l
+      - run:
+          name: download Backblaze CLI tool
+          command: |
+            apt-get update && apt-get install -y wget
+            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux
+            chmod +x ./b2-linux
+            ./b2-linux version
+
   e2e:
     machine:
       image: ubuntu-2004:202010-01
