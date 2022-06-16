@@ -64,6 +64,6 @@ mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"
 tar \
   --create \
-  --file "${OUTPUT_DIR}/${BUNDLE_FILENAME}.tar" \
+  --file "${OUTPUT_DIR}/${BUNDLE_FILENAME}" \
   --directory "${BUNDLE_DIR}" \
   .
