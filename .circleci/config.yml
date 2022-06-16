@@ -50,12 +50,12 @@ jobs:
           command: ./dev-scripts/build-javascript
   build_bundle:
     docker:
-      - image: cimg/base:2020.01
+      - image: debian:buster-20220527
     steps:
       - checkout
       - run:
           name: Install dependencies
-          command: sudo apt-get update && sudo apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
+          command: apt-get update && apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
       - run:
           name: Create the bundle
           command: cd bundler && ./create-bundle
@@ -74,22 +74,24 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: create LATEST file
+          # The LATEST file contains the filename of the latest TinyPilot
+          # bundle.
+          name: Create LATEST file
           command: cd dist && ls tinypilot*.tar | tee LATEST
       - run:
-          name: download Backblaze CLI tool
+          name: Download Backblaze CLI tool
           command: |
             sudo apt-get update && sudo apt-get install -y wget
             wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux --output-document=b2
             chmod +x ./b2
             ./b2 version
       - run:
-          name: authorize Backblaze CLI tool
+          name: Authorize Backblaze CLI tool
           command: |
             set -u
             ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
       - run:
-          name: upload bundle to Backblaze
+          name: Upload bundle to Backblaze
           command: |
             set -u
             BUNDLE_FILENAME="$(cat dist/LATEST)"
@@ -100,7 +102,7 @@ jobs:
               "${UPLOAD_PATH}/${BUNDLE_FILENAME}" \
               > /dev/null # Hide output to avoid exposing bucket details in CI.
       - run:
-          name: update LATEST file to Backblaze
+          name: Update LATEST file to Backblaze
           command: |
             set -u
             ./b2 upload-file \
