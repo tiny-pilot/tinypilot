@@ -34,7 +34,7 @@ def create(file_path, chmod_mode=0o600):
     """
     file_descriptor, temp_file = tempfile.mkstemp(dir=_TEMP_FOLDER)
     try:
-        with open(temp_file, 'bw', encoding='utf-8') as file:
+        with open(temp_file, 'bw') as file:
             yield file
         os.chmod(temp_file, chmod_mode)
         shutil.move(temp_file, file_path)
