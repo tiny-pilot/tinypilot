@@ -70,13 +70,13 @@ jobs:
       - image: cimg/base:2020.01
     environment:
       UPLOAD_PATH: community/
-    working_directory: /tmp/workspace/dist
+    working_directory: /home/circleci/dist
     steps:
       - attach_workspace:
-          at: /tmp/workpsace
+          at: ./dist
       - run:
           name: create LATEST file
-          command: echo "$(ls tinypilot*.tar)" > LATEST
+          command: echo "$(ls tinypilot*.tar)" | tee LATEST
       - run:
           name: download Backblaze CLI tool
           command: |
