@@ -20,14 +20,10 @@ jobs:
       - name: Merge origin into upstream
         run: |
           set +ex
-          echo "Commit history of pro repo"
-          git log --oneline
           git remote add community https://github.com/tiny-pilot/tinypilot.git
           git fetch community
           git checkout community/master
           git checkout -b community-changes-${{ github.sha }}
-          echo "Commit history of community repo"
-          git log --oneline
           git merge origin/master --no-edit || git merge --abort
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
