@@ -69,7 +69,7 @@ jobs:
     docker:
       - image: cimg/base:2020.01
     environment:
-      UPLOAD_PATH: community/
+      UPLOAD_PATH: community
     steps:
       - attach_workspace:
           at: ./
