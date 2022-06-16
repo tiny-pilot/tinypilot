@@ -97,6 +97,9 @@ workflows:
       - build_python
       - build_javascript
       - build_bundle
+      - upload_bundle:
+          requires:
+            - build_bundle
       - e2e:
           filters:
             branches:
