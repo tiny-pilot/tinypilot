@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: tiny-pilot/tinypilot-pro
+          ref: auto-PR
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Set git config
         run: |
