@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: tiny-pilot/tinypilot-pro
-          ref: mtlynch/test-auto-PR-4
+          ref: master
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Set git config
         run: |
@@ -23,7 +23,7 @@ jobs:
           git fetch upstream mtlynch/test-auto-PR-3
           git checkout upstream/mtlynch/test-auto-PR-3
           git checkout -b temp-community-changes-${{ github.sha }}
-          git merge origin/mtlynch/test-auto-PR-4 --no-edit --allow-unrelated-histories
+          git merge origin/master --no-edit --allow-unrelated-histories
           if [[ $? -ne 0 ]]; then
             git merge --abort
           fi
@@ -32,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PR_BOT_PAT }}
-          base: mtlynch/test-auto-PR-4
+          base: master
           branch: community-changes-${{ github.sha }}
           delete-branch: true
           # If the committer to the community repo (github.actor) has no access
