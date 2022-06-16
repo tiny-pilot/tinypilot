@@ -70,10 +70,10 @@ jobs:
       - image: cimg/base:2020.01
     environment:
       UPLOAD_PATH: community/
-    working_directory: /workspace/dist
+    working_directory: /tmp/workspace/dist
     steps:
       - attach_workspace:
-          at: /workpsace
+          at: /tmp/workpsace
       - run:
           name: create LATEST file
           command: echo "$(ls tinypilot*.tar)" > LATEST
