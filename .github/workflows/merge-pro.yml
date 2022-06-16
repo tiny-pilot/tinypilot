@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: tiny-pilot/tinypilot-pro
-          ref: jdeanwallace/test-auto-PR-without-conflicts
+          ref: jdeanwallace/test-auto-PR-with-conflicts
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Set git config
         run: |
@@ -22,7 +22,7 @@ jobs:
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream jdeanwallace/test-auto-PR-1
           git reset --hard upstream/jdeanwallace/test-auto-PR-1
-          git merge origin/jdeanwallace/test-auto-PR-without-conflicts --no-edit --allow-unrelated-histories
+          git merge origin/jdeanwallace/test-auto-PR-with-conflicts --no-edit --allow-unrelated-histories
           if [[ $? -ne 0 ]]; then
             git merge --abort
           fi
@@ -31,13 +31,13 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PR_BOT_PAT }}
-          base: jdeanwallace/test-auto-PR-without-conflicts
+          base: jdeanwallace/test-auto-PR-with-conflicts
           branch: community-changes-${{ github.sha }}
           delete-branch: true
           # If the committer to the community repo (github.actor) has no access
           # to the pro repo, the PR will be unassigned.
           assignees: ${{ github.actor }}
-          title: Community changes jdeanwallace test without conflicts
+          title: Community changes jdeanwallace test with conflicts
           body: |
             Merge the last changes from community repository :
 
