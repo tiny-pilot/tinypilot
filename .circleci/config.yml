@@ -60,7 +60,7 @@ jobs:
           name: Create the bundle
           command: cd bundler && ./create-bundle
       - store_artifacts:
-          path: bundler/dist/
+          path: bundler/dist/files.txt
       - persist_to_workspace:
           root: ./bundler
           paths:
