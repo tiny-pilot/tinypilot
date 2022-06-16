@@ -55,7 +55,7 @@ def parse_mouse_event(message):
     for field in required_fields:
         if field not in message:
             raise MissingFieldErrorError(
-                'Mouse event request is missing required field: %s' % field)
+                f'Mouse event request is missing required field: {field}')
     return MouseEvent(
         buttons=_parse_button_state(message['buttons']),
         relative_x=_parse_relative_position(message['relativeX']),
@@ -69,7 +69,7 @@ def parse_mouse_event(message):
 def _parse_button_state(buttons):
     if not isinstance(buttons, int):
         raise InvalidButtonStateError(
-            'Button state must be an integer value: %s' % buttons)
+            f'Button state must be an integer value: {buttons}')
     if not (0 <= buttons <= _MAX_BUTTON_STATE):
         raise InvalidButtonStateError('Button state must be <= 0x%x: %s' %
                                       (_MAX_BUTTON_STATE, buttons))
@@ -80,20 +80,20 @@ def _parse_relative_position(relative_position):
     if not isinstance(relative_position, float) and not isinstance(
             relative_position, int):
         raise InvalidRelativePositionError(
-            'Relative position must be a float between 0.0 and 1.0: %s' %
-            relative_position)
+            ('Relative position must be a float between 0.0 and 1.0: '
+             f'{relative_position}'))
     if not (0.0 <= relative_position <= 1.0):
         raise InvalidRelativePositionError(
-            'Relative position must be a float between 0.0 and 1.0: %s' %
-            relative_position)
+            ('Relative position must be a float between 0.0 and 1.0: '
+             f'{relative_position}'))
     return relative_position
 
 
 def _parse_wheel_value(wheel_value):
     if not isinstance(wheel_value, int):
-        raise InvalidWheelValueError('Wheel value must be a int: %s' %
-                                     wheel_value)
+        raise InvalidWheelValueError(
+            f'Wheel value must be a int: {wheel_value}')
     if wheel_value not in (-1, 0, 1):
-        raise InvalidWheelValueError('Wheel value must be -1, 0, or 1: %s' %
-                                     wheel_value)
+        raise InvalidWheelValueError(
+            f'Wheel value must be -1, 0, or 1: {wheel_value}')
     return wheel_value

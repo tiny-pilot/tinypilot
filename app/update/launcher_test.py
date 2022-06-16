@@ -6,7 +6,6 @@ from update import launcher
 
 # pylint incorrectly complains that these methods could be free functions, but
 # they need to be part of unittest.TestCase.
-# pylint: disable=no-self-use
 
 
 class LauncherTest(unittest.TestCase):

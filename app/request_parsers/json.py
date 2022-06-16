@@ -22,7 +22,7 @@ def parse_json_body(request, required_fields):
     result = []
     for field in required_fields:
         if field not in json:
-            raise errors.MissingFieldError('Missing required field: %s' % field)
+            raise errors.MissingFieldError(f'Missing required field: {field}')
         result.append(json[field])
 
     return tuple(result)

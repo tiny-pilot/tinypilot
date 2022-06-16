@@ -31,7 +31,7 @@ class AtomicFileTest(unittest.TestCase):
     # pylint: disable=invalid-name
     def assertFileContainsData(self, path, data_expected):
         self.assertTrue(os.path.exists(path))
-        with open(path, 'rb') as file:
+        with open(path, 'rb', encoding='utf-8') as file:
             data_actual = file.read()
             self.assertEqual(data_expected, data_actual)
 

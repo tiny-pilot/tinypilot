@@ -50,7 +50,7 @@ def _get():
             * If the secret key file doesn't have a file permission of 600.
             * If the secret key value isn't a string of 32 bytes.
     """
-    with open(_SECRET_KEY_FILE, 'rb') as key_file:
+    with open(_SECRET_KEY_FILE, 'rb', encoding='utf-8') as key_file:
         file_perms = stat.S_IMODE(os.stat(key_file.name).st_mode)
         if file_perms != _SECRET_KEY_FILE_PERMS:
             raise InvalidSecretKeyError(

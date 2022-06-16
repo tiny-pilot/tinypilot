@@ -272,7 +272,7 @@ def all_licensing_get():
     for license_data in _LICENSE_METADATA:
         response.append({
             'name': license_data.name,
-            'licenseUrl': '/licensing/%s/license' % license_data.name,
+            'licenseUrl': f'/licensing/{license_data.name}/license',
             'homepageUrl': license_data.homepage_url,
         })
 
@@ -320,7 +320,7 @@ def _make_plaintext_response(response_body):
 
 
 def _read_file(license_path):
-    with open(license_path) as license_file:
+    with open(license_path, encoding='utf-8') as license_file:
         return license_file.read()
 
 

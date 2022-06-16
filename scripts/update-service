@@ -43,7 +43,7 @@ def run_update_script():
     except subprocess.CalledProcessError as e:
         logger.error('Update process terminated with failing exit code: %s',
                      str(e))
-        return make_update_result(update_error='The update failed: %s' % str(e))
+        return make_update_result(update_error=f'The update failed: {str(e)}')
 
     logger.info('Update completed successfully')
     return make_update_result(update_error=None)
