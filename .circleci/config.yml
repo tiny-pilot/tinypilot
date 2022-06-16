@@ -68,19 +68,30 @@ jobs:
   upload_bundle:
     docker:
       - image: debian:buster-20220527
+    environment:
+      UPLOAD_PATH: community/
     steps:
       - attach_workspace:
-          at: ./
+          at: ./dist
       - run:
-          command: ls -l
+          name: create LATEST file
+          command: echo "$(ls tinypilot*.deb)" > LATEST
       - run:
           name: download Backblaze CLI tool
           command: |
             apt-get update && apt-get install -y wget
-            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux
-            chmod +x ./b2-linux
-            ./b2-linux version
-
+            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux --output-document=b2
+            chmod +x ./b2
+            ./b2 version
+      - run:
+          name: authorize Backblaze CLI tool
+          command: ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+      - run:
+          name: upload bundle to Backblaze
+          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "$(cat LATEST)" "${UPLOAD_PATH}/"
+      - run:
+          name: update LATEST file in bucket
+          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" LATEST "${UPLOAD_PATH}/"
   e2e:
     machine:
       image: ubuntu-2004:202010-01
