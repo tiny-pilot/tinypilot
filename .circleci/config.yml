@@ -90,10 +90,10 @@ jobs:
           command: ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
       - run:
           name: upload bundle to Backblaze
-          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "dist/$(cat dist/LATEST)" "${UPLOAD_PATH}/"
+          command: BUNDLE_FILENAME="$(cat dist/LATEST)" ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "dist/${BUNDLE_FILENAME}" "${UPLOAD_PATH}/${BUNDLE_FILENAME}"
       - run:
           name: update LATEST file in bucket
-          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" dist/LATEST "${UPLOAD_PATH}/"
+          command: ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" dist/LATEST "${UPLOAD_PATH}/LATEST"
   e2e:
     machine:
       image: ubuntu-2004:202010-01
