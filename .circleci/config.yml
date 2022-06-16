@@ -97,7 +97,7 @@ jobs:
             BUNDLE_FILENAME="$(cat dist/LATEST)"
             ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" "dist/${BUNDLE_FILENAME}" "${UPLOAD_PATH}/${BUNDLE_FILENAME}"
       - run:
-          name: update LATEST file in bucket
+          name: update LATEST file to Backblaze
           command: |
             set -u
             ./b2 upload-file --noProgress "${UPLOAD_BUCKET}" dist/LATEST "${UPLOAD_PATH}/LATEST"
