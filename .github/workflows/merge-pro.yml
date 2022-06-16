@@ -31,7 +31,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PR_BOT_PAT }}
-          base: master
+          base: auto-PR
           branch: community-changes-${{ github.sha }}
           delete-branch: true
           # If the committer to the community repo (github.actor) has no access
