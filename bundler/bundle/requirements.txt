@@ -1,7 +1,7 @@
 # Minimal set of dependencies to bootstrap an Ansible virtualenv.
 # When modifying dependencies, update the credit in /app/license_notice.py
 
-ansible==2.9.10
+ansible==4.2.0
 cffi==1.14.4
 cryptography==35.0.0
 Jinja2==2.11.2
