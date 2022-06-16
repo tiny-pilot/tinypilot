@@ -320,7 +320,7 @@ def _make_plaintext_response(response_body):
 
 
 def _read_file(license_path):
-    with open(license_path) as license_file:
+    with open(license_path, encoding='utf-8') as license_file:
         return license_file.read()
 
 
