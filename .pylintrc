@@ -23,8 +23,11 @@ unsafe-load-any-extension=no
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/995
   consider-using-f-string,
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/997
   consider-using-with,
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/996
   unspecified-encoding,
   fixme,
   useless-suppression,
