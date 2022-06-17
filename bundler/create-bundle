@@ -26,9 +26,34 @@ readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustr
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
+# Temporary workaround for applying the right naming schema to the TinyPilot
+# Debian package. We should fold this naming logic into the workflow for
+# creating the Debian package in
+# https://github.com/tiny-pilot/tinypilot-bundler/issues/9.
+rename_bundle_file() {
+  # The filename of the TinyPilot Debian package.
+  OLD_TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
+  local OLD_TINYPILOT_DEBIAN_PACKAGE
+
+  # TODO: Move the package naming
+  TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
+  local TIMESTAMP
+  BUILD_VERSION="$(git rev-parse --short HEAD)"
+  local BUILD_VERSION
+
+  local NEW_TINYPILOT_DEBIAN_PACKAGE="tinypilot-${TIMESTAMP}-${BUILD_VERSION}.deb"
+
+  mv "${OLD_TINYPILOT_DEBIAN_PACKAGE}" "${NEW_TINYPILOT_DEBIAN_PACKAGE}"
+  echo "${NEW_TINYPILOT_DEBIAN_PACKAGE}"
+}
+
 pushd "${BUNDLE_DIR}"
 
+# TODO: Remove this wget and rename once we're creating the Debian package in
+# the same workflow as the bundle.
+# https://github.com/tiny-pilot/tinypilot-bundler/issues/9
 wget "${PKG_URL_TINYPILOT}"
+TINYPILOT_DEBIAN_PACKAGE=rename_bundle_file
 
 # Copy each Ansible role dependency into the bundle and add a version file.
 for GIT_URL in $REPO_ANSIBLE_TINYPILOT $REPO_ANSIBLE_NGINX $REPO_ANSIBLE_USTREAMER
@@ -52,11 +77,9 @@ find . \
 
 popd
 
-# TODO: Create the build string when we generate the Debian package, and then
-# make the bundle filename just s/\.deb/\.tar/g from the Debian package.
-TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
-BUILD_VERSION="$(git rev-parse --short HEAD)"
-BUNDLE_FILENAME="tinypilot-${TIMESTAMP}-${BUILD_VERSION}.tar"
+# Make the bundle filename the same as the Debian package but with a different
+# file extension.
+BUNDLE_FILENAME="${TINYPILOT_DEBIAN_PACKAGE//.deb/.tar}"
 readonly BUNDLE_FILENAME
 
 # Generate build output.
