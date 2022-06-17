@@ -55,10 +55,10 @@ def write(result, result_file):
 
 class _ResultEncoder(json.JSONEncoder):
 
-    def default(self, obj):
-        if isinstance(obj, datetime.datetime):
-            return iso8601.to_string(obj)
-        return obj
+    def default(self, o):
+        if isinstance(o, datetime.datetime):
+            return iso8601.to_string(o)
+        return o
 
 
 class _ResultDecoder(json.JSONDecoder):
@@ -69,7 +69,6 @@ class _ResultDecoder(json.JSONDecoder):
                                   *args,
                                   **kwargs)
 
-    # pylint: disable=no-self-use
     def _decode_object(self, obj):
         if 'timestamp' in obj:
             obj['timestamp'] = iso8601.parse(obj['timestamp'])

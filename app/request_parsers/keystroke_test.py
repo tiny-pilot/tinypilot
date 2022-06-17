@@ -7,7 +7,6 @@ class KeystrokeTest(unittest.TestCase):
 
     # Intentionally violating style conventions sot hat we can parallel the
     # self.assertEqual method.
-    # pylint: disable=no-self-use
     # pylint: disable=invalid-name
     def assertKeystrokesEqual(self, expected, actual):
         if expected != actual:
