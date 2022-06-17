@@ -1,6 +1,7 @@
 # Dynamic dependencies from dist/ folder.
 /bundle/tinypilot
 /bundle/ansible-role-*
+/bundle/tinypilot*.deb
 
 # Build artifacts.
 /dist
