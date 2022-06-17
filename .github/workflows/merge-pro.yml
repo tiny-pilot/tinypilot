@@ -11,6 +11,7 @@ jobs:
         with:
           repository: tiny-pilot/tinypilot-pro
           ref: jdeanwallace/test-auto-PR-2
+          fetch-depth: 0
           token: ${{ secrets.PR_BOT_PAT }}
       - name: Set git config
         run: |
@@ -21,8 +22,8 @@ jobs:
           set +e
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream jdeanwallace/test-auto-PR-1
-          git reset --hard upstream/jdeanwallace/test-auto-PR-1
-          git merge origin/jdeanwallace/test-auto-PR-2 --no-edit --allow-unrelated-histories
+          git checkout upstream/jdeanwallace/test-auto-PR-1
+          git merge origin/jdeanwallace/test-auto-PR-2 --no-edit
           if [[ $? -ne 0 ]]; then
             git merge --abort
           fi
