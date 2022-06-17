@@ -24,11 +24,11 @@ class UpdateSettingsTest(unittest.TestCase):
         self.mock_settings_dir.cleanup()
 
     def make_mock_settings_file(self, contents):
-        with open(self.settings_file_path, 'w') as mock_file:
+        with open(self.settings_file_path, 'w', encoding='utf-8') as mock_file:
             mock_file.write(contents)
 
     def read_mock_settings_file(self):
-        with open(self.settings_file_path) as mock_file:
+        with open(self.settings_file_path, encoding='utf-8') as mock_file:
             return mock_file.read()
 
     def test_returns_empty_settings_if_no_settings_file_exists(self):
