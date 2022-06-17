@@ -32,14 +32,13 @@ readonly OUTPUT_DIR='dist'
 # https://github.com/tiny-pilot/tinypilot-bundler/issues/9.
 rename_bundle_file() {
   # The filename of the TinyPilot Debian package.
-  OLD_TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
   local OLD_TINYPILOT_DEBIAN_PACKAGE
+  OLD_TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 
-  # TODO: Move the package naming
-  TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
   local TIMESTAMP
-  BUILD_VERSION="$(git rev-parse --short HEAD)"
+  TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
   local BUILD_VERSION
+  BUILD_VERSION="$(git rev-parse --short HEAD)"
 
   local NEW_TINYPILOT_DEBIAN_PACKAGE="tinypilot-${TIMESTAMP}-${BUILD_VERSION}.deb"
 
