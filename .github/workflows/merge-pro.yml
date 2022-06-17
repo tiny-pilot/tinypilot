@@ -22,7 +22,7 @@ jobs:
           set +e
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream jdeanwallace/test-auto-PR-1
-          git checkout -b temp-community-changes-${{ github.sha }} upstream/jdeanwallace/test-auto-PR-1
+          git checkout -b community-changes-${{ github.sha }} upstream/jdeanwallace/test-auto-PR-1
           git merge origin/jdeanwallace/test-auto-PR-2 --no-edit
           if [[ $? -ne 0 ]]; then
             git merge --abort
