@@ -1,0 +1,14 @@
+# Ignore everything.
+*
+
+# Allow the following files and directories.
+!/app
+!/__init__.py
+!/COPYRIGHT
+!/LICENSE
+!/requirements.txt
+!/setup.py
+
+# Ignore Python-specific dev files.
+**/__pycache__
+**/*_test.py
