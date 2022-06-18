@@ -14,6 +14,9 @@ class CallerError(Exception):
 class AtomicFileTest(unittest.TestCase):
 
     def setUp(self):
+        # Ignore pylint because we perform a tear down
+        # and assert the temporary files are gone.
+        # pylint: disable=consider-using-with
         self.destination_dir = tempfile.TemporaryDirectory()
 
         self.temp_dir = tempfile.TemporaryDirectory()
