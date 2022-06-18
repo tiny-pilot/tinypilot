@@ -33,5 +33,6 @@ def start_async():
 
     update.result_store.clear()
 
-    subprocess.Popen(
-        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
+    with subprocess.Popen(
+        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start')) as proc:
+        proc.wait()
