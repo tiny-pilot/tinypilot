@@ -11,6 +11,9 @@ import update.result_store
 class ResultStoreReadTest(unittest.TestCase):
 
     def setUp(self):
+        # Ignore pylint because we perform a tear down
+        # and assert the temporary files are gone.
+        # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
         result_path_patch = mock.patch.object(
@@ -100,6 +103,9 @@ class ResultStoreReadTest(unittest.TestCase):
 class ResultStoreClearTest(unittest.TestCase):
 
     def setUp(self):
+        # Ignore pylint because we perform a tear down
+        # and assert the temporary files are gone.
+        # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
         result_file_dir_patch = mock.patch.object(update.result_store,
@@ -176,6 +182,9 @@ class ResultStoreClearTest(unittest.TestCase):
 class ResultStoreWriteTest(unittest.TestCase):
 
     def setUp(self):
+        # Ignore pylint because we perform a tear down
+        # and assert the temporary files are gone.
+        # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
         result_dir_patch = mock.patch.object(update.result_store,
