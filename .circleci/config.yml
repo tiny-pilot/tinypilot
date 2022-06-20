@@ -50,17 +50,73 @@ jobs:
           command: ./dev-scripts/build-javascript
   build_bundle:
     docker:
-      - image: debian:buster-20220527
+      - image: cimg/base:2020.01
     steps:
       - checkout
       - run:
           name: Install dependencies
-          command: apt-get update && apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
+          command: sudo apt-get update && sudo apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
       - run:
           name: Create the bundle
           command: cd bundler && ./create-bundle
       - store_artifacts:
-          path: bundler/dist/
+          path: bundler/dist/files.txt
+      - persist_to_workspace:
+          root: ./bundler
+          paths:
+            - ./dist
+  upload_bundle:
+    docker:
+      - image: cimg/base:2020.01
+    environment:
+      UPLOAD_PATH: community
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          # The LATEST file contains the filename of the latest TinyPilot
+          # bundle.
+          name: Create LATEST file
+          command: cd dist && ls tinypilot*.tar | tee LATEST
+      - run:
+          name: Download Backblaze CLI tool
+          command: |
+            sudo apt-get update && sudo apt-get install -y wget
+            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux --output-document=./b2
+            chmod +x ./b2
+            ./b2 version
+      - run:
+          name: Authorize Backblaze CLI tool
+          command: |
+            set -u
+            ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+      - run:
+          name: Upload bundle to Backblaze
+          command: |
+            set -u
+            BUNDLE_FILENAME="$(cat dist/LATEST)"
+            ./b2 upload-file \
+              --noProgress \
+              "${UPLOAD_BUCKET}" \
+              "dist/${BUNDLE_FILENAME}" \
+              "${UPLOAD_PATH}/${BUNDLE_FILENAME}" \
+              > /dev/null # Hide output to avoid exposing bucket details in CI.
+      - run:
+          name: Update LATEST file to Backblaze
+          command: |
+            set -u
+            ./b2 upload-file \
+              --noProgress \
+              "${UPLOAD_BUCKET}" \
+              dist/LATEST \
+              "${UPLOAD_PATH}/LATEST" \
+              > /dev/null # Hide output to avoid exposing bucket details in CI.
+      - run:
+          name: Print friendly upload URL
+          command: |
+            set -u
+            BUNDLE_FILENAME="$(cat dist/LATEST)"
+            echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PATH}/${BUNDLE_FILENAME}"
   e2e:
     machine:
       image: ubuntu-2004:202010-01
@@ -77,6 +133,9 @@ workflows:
       - build_python
       - build_javascript
       - build_bundle
+      - upload_bundle:
+          requires:
+            - build_bundle
       - e2e:
           filters:
             branches:
