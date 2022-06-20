@@ -3,7 +3,7 @@
 
 # Dev-only files and documentation.
 **/*_test.py
-/.cirleci
+/.circleci
 /.coverage
 /.dependabot
 /.dockerignore
