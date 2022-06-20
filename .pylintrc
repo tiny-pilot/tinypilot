@@ -27,8 +27,6 @@ disable=
   consider-using-f-string,
   # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/997
   consider-using-with,
-  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/996
-  unspecified-encoding,
   fixme,
   useless-suppression,
   suppressed-message,

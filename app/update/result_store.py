@@ -47,7 +47,7 @@ def read():
         None if no update results exist.
     """
     try:
-        with open(_RESULT_PATH) as result_file:
+        with open(_RESULT_PATH, encoding='utf-8') as result_file:
             return update.result.read(result_file)
     except FileNotFoundError:
         # If we can't find a result file with >=1.4.2 style naming, check for
@@ -63,7 +63,7 @@ def _read_legacy():
     # Legacy filenames start with a ISO-8601 timestamp, so the last one
     # lexicographically is the most recently created file.
     most_recent_result_file = sorted(result_files)[-1]
-    with open(most_recent_result_file) as result_file:
+    with open(most_recent_result_file, encoding='utf-8') as result_file:
         return update.result.read(result_file)
 
 
@@ -78,5 +78,5 @@ def write(result):
     """Writes an update result to the result store."""
     logger.info('Writing result file to %s', _RESULT_PATH)
     os.makedirs(_RESULT_FILE_DIR, exist_ok=True)
-    with open(_RESULT_PATH, 'w') as result_file:
+    with open(_RESULT_PATH, 'w', encoding='utf-8') as result_file:
         update.result.write(result, result_file)

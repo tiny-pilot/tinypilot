@@ -25,7 +25,7 @@ class ResultStoreReadTest(unittest.TestCase):
 
     def make_mock_file(self, filename, contents):
         full_path = os.path.join(self.mock_result_dir.name, filename)
-        with open(full_path, 'w') as mock_file:
+        with open(full_path, 'w', encoding='utf-8') as mock_file:
             mock_file.write(contents)
         return full_path
 
@@ -114,7 +114,7 @@ class ResultStoreClearTest(unittest.TestCase):
 
     def make_mock_file(self, filename, contents):
         full_path = os.path.join(self.mock_result_dir.name, filename)
-        with open(full_path, 'w') as mock_file:
+        with open(full_path, 'w', encoding='utf-8') as mock_file:
             mock_file.write(contents)
         return full_path
 
@@ -196,7 +196,7 @@ class ResultStoreWriteTest(unittest.TestCase):
 
     def read_result_file(self, result_filename):
         full_path = os.path.join(self.mock_result_dir.name, result_filename)
-        with open(full_path) as result_file:
+        with open(full_path, encoding='utf-8') as result_file:
             return result_file.read()
 
     def test_writes_result_accurately(self):

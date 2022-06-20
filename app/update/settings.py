@@ -98,7 +98,7 @@ def load():
         A Settings instance of the current update settings.
     """
     try:
-        with open(_SETTINGS_FILE_PATH) as settings_file:
+        with open(_SETTINGS_FILE_PATH, encoding='utf-8') as settings_file:
             return _from_file(settings_file)
     except FileNotFoundError:
         return Settings(data=None)
@@ -110,7 +110,7 @@ def load():
 def save(settings):
     """Saves a Settings object to the settings file."""
     try:
-        with open(_SETTINGS_FILE_PATH, 'w') as settings_file:
+        with open(_SETTINGS_FILE_PATH, 'w', encoding='utf-8') as settings_file:
             _to_file(settings, settings_file)
     except IOError as e:
         raise SaveSettingsError(
