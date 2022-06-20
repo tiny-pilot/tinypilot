@@ -36,10 +36,11 @@ readonly BUNDLE_FILENAME="tinypilot-${TIMESTAMP}-${TINYPILOT_VERSION}.tar"
 # Enter working directory to set up the bundle’s inner structure.
 pushd "${BUNDLE_DIR}"
 
-# Resolve the exact name of the TinyPilot Debian package. If there is none, the
-# assignment fails and the script exits with non-zero status.
-TINYPILOT_DEBIAN_PACKAGE_NAME="$(ls tinypilot*.deb)"
-readonly TINYPILOT_DEBIAN_PACKAGE_NAME
+# Ensure that a TinyPilot Debian package exists.
+if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
+  echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
+  exit 1
+fi
 
 # Copy each Ansible role dependency into the bundle and add a version file.
 for GIT_URL in $REPO_ANSIBLE_TINYPILOT $REPO_ANSIBLE_NGINX $REPO_ANSIBLE_USTREAMER
