@@ -1,10 +1,14 @@
 FROM debian:bullseye-20220328-slim AS build
 
-# The canonical TinyPilot version.
+# The canonical TinyPilot version. For TinyPilot Community, this is a git commit
+# hash in short form. For TinyPilot Pro, this is a SemVer version.
 ARG TINYPILOT_VERSION
 
-# The `PKG_VERSION` is the version of the Debian package. It might differ from
-# the canonical TinyPilot version, since Debian uses its own versioning scheme.
+# The `PKG_VERSION` is the version of the Debian package. Debian uses its own
+# versioning scheme, which is incompatible with TinyPilot Community. Therefore,
+# the package version should be a timestamp, formatted `YYYYMMDDhhmmss`. That
+# way the package manager always installs the most recently built TinyPilot
+# package.
 ARG PKG_VERSION
 
 ARG PKG_NAME="tinypilot"
