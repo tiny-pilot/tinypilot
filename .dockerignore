@@ -5,6 +5,7 @@
 **/*_test.py
 /.cirleci
 /.dependabot
+/.git
 /.github
 /.vscode
 /bundler
