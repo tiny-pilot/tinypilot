@@ -1,14 +1,32 @@
-# Ignore everything.
-*
-
-# Allow the following files and directories.
-!/app
-!/__init__.py
-!/COPYRIGHT
-!/LICENSE
-!/requirements.txt
-!/setup.py
-
-# Ignore Python-specific dev files.
+# Auto-generated files/folders.
 **/__pycache__
+
+# Dev-only files and documentation.
 **/*_test.py
+/.cirleci
+/.dependabot
+/.github
+/.vscode
+/bundler
+/dev-scripts
+/e2e
+/hooks
+/node_modules
+/readme-assets
+/venv
+/.coverage
+/.dockerignore
+/.gitignore
+/.prettierignore
+/.pylintrc
+/.shellcheckrc
+/.style.yapf
+/.yapfignore
+/ARCHITECTURE.md
+/CONTRIBUTING.md
+/dev_app_settings.cfg
+/dev_requirements.txt
+/Dockerfile
+/MANIFEST.in
+/package.json
+/quick-install
