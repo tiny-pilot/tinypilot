@@ -1,19 +1,15 @@
-[MASTER]
+[MAIN]
+
 # Pickle collected data for later comparisons.
 persistent=no
+
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use.
+jobs=0
 
 # Allow loading of arbitrary C extensions. Extensions are imported into the
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
-
-# Allow optimization of some AST trees. This will activate a peephole AST
-# optimizer, which will apply various small optimizations. For instance, it can
-# be used to obtain the result of joining multiple strings with the addition
-# operator. Joining a lot of strings can lead to a maximum recursion error in
-# Pylint and this flag can prevent that. It has one side effect, the resulting
-# AST will be different than the one from reality. This option is deprecated
-# and it will be removed in Pylint 2.0.
-optimize-ast=no
 
 [MESSAGES CONTROL]
 
@@ -26,57 +22,16 @@ optimize-ast=no
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=fixme,
-  long-suffix,
-  standarderror-builtin,
-  indexing-exception,
-  delslice-method,
-  unichr-builtin,
-  dict-view-method,
-  parameter-unpacking,
-  unicode-builtin,
-  cmp-builtin,
-  intern-builtin,
-  round-builtin,
-  backtick,
-  nonzero-method,
-  xrange-builtin,
-  coerce-method,
-  raw_input-builtin,
-  old-division,
-  filter-builtin-not-iterating,
-  old-octal-literal,
-  input-builtin,
-  map-builtin-not-iterating,
-  buffer-builtin,
-  basestring-builtin,
-  zip-builtin-not-iterating,
-  using-cmp-argument,
-  unpacking-in-except,
-  old-raise-syntax,
-  coerce-builtin,
-  dict-iter-method,
-  hex-method,
-  range-builtin-not-iterating,
+disable=
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/995
+  consider-using-f-string,
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/997
+  consider-using-with,
+  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/996
+  unspecified-encoding,
+  fixme,
   useless-suppression,
-  cmp-method,
-  print-statement,
-  reduce-builtin,
-  file-builtin,
-  long-builtin,
-  getslice-method,
-  execfile-builtin,
-  no-absolute-import,
-  metaclass-assignment,
-  oct-method,
-  reload-builtin,
-  import-star-module-level,
   suppressed-message,
-  apply-builtin,
-  raising-string,
-  next-method-called,
-  setslice-method,
-  old-ne-operator,
   arguments-differ,
   wildcard-import,
   locally-disabled,
@@ -95,12 +50,6 @@ disable=fixme,
 # (visual studio) and html. You can also give a reporter class, eg
 # mypackage.mymodule.MyReporterClass.
 output-format=text
-
-# Put messages in a separate file for each module / package specified on the
-# command line instead of printing them on stdout. Reports (if any) will be
-# written in a file name "pylint_global.[txt|html]". This option is deprecated
-# and it will be removed in Pylint 2.0.
-files-output=no
 
 # Tells whether to display a full report or only the messages
 reports=no
@@ -130,62 +79,32 @@ property-classes=abc.abstractproperty
 # Regular expression matching correct variable names
 variable-rgx=[a-z_][a-z0-9_]{2,60}$
 
-# Naming hint for variable names
-variable-name-hint=[a-z_][a-z0-9_]{2,60}$
-
 # Regular expression matching correct class attribute names
 class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,60}|(__.*__))$
-
-# Naming hint for class attribute names
-class-attribute-name-hint=([A-Za-z_][A-Za-z0-9_]{2,60}|(__.*__))$
 
 # Regular expression matching correct argument names
 argument-rgx=[a-z_][a-z0-9_]{2,60}$
 
-# Naming hint for argument names
-argument-name-hint=[a-z_][a-z0-9_]{2,60}$
-
 # Regular expression matching correct module names
 module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-
-# Naming hint for module names
-module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 
 # Regular expression matching correct constant names
 const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
-# Naming hint for constant names
-const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
-
 # Regular expression matching correct inline iteration names
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
-
-# Naming hint for inline iteration names
-inlinevar-name-hint=[A-Za-z_][A-Za-z0-9_]*$
 
 # Regular expression matching correct method names
 method-rgx=[a-z_][a-z0-9_]{2,80}$
 
-# Naming hint for method names
-method-name-hint=[a-z_][a-z0-9_]{2,0}$
-
 # Regular expression matching correct function names
 function-rgx=[a-z_][a-z0-9_]{2,60}$
-
-# Naming hint for function names
-function-name-hint=[a-z_][a-z0-9_]{2,60}$
 
 # Regular expression matching correct attribute names
 attr-rgx=[a-z_][a-z0-9_]{2,60}$
 
-# Naming hint for attribute names
-attr-name-hint=[a-z_][a-z0-9_]{2,60}$
-
 # Regular expression matching correct class names
 class-rgx=[A-Z_][a-zA-Z0-9]+$
-
-# Naming hint for class names
-class-name-hint=[A-Z_][a-zA-Z0-9]+$
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
@@ -215,12 +134,6 @@ ignore-long-lines=((# )|')?https?://\S+'?$
 # Allow the body of an if to be on the same line as the test if there is no
 # else.
 single-line-if-stmt=y
-
-# List of optional constructs for which whitespace checking is disabled. `dict-
-# separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
-# `trailing-comma` allows a space between comma and closing bracket: (a, ).
-# `empty-line` allows space-only lines.
-no-space-check=trailing-comma,dict-separator
 
 # Maximum number of lines in a module
 max-module-lines=1000
