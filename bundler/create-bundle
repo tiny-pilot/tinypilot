@@ -31,7 +31,8 @@ TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
 TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
 readonly TINYPILOT_VERSION
-readonly BUNDLE_FILENAME="tinypilot-${TIMESTAMP}-${TINYPILOT_VERSION}.tar"
+readonly TINYPILOT_VARIANT='community'
+readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tar"
 
 # Enter working directory to set up the bundle’s inner structure.
 pushd "${BUNDLE_DIR}"
