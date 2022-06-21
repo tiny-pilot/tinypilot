@@ -19,29 +19,26 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 
 @socketio.on('keystroke')
 def on_keystroke(message):
-    logger.debug_sensitive('received keystroke message: %s', message)
+    logger.debug_sensitive(f'received keystroke message: {message}')
     try:
         keystroke = keystroke_request.parse_keystroke(message)
     except keystroke_request.Error as e:
-        logger.error_sensitive('Failed to parse keystroke request: %s', e)
+        logger.error_sensitive(f'Failed to parse keystroke request: {e}')
         return {'success': False}
     hid_keycode = None
     try:
         control_keys, hid_keycode = js_to_hid.convert(keystroke)
     except js_to_hid.UnrecognizedKeyCodeError:
-        logger.warning_sensitive('Unrecognized key: %s (keycode=%s)',
-                                 keystroke.key, keystroke.code)
+        logger.warning_sensitive(f'Unrecognized key: {keystroke.key} (keycode={keystroke.code})')
         return {'success': False}
     if hid_keycode is None:
-        logger.info_sensitive('Ignoring %s key (keycode=%s)', keystroke.key,
-                              keystroke.code)
+        logger.info_sensitive(f'Ignoring {keystroke.key} key (keycode={keystroke.code})')
         return {'success': False}
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
     except hid_write.WriteError as e:
-        logger.error_sensitive('Failed to write key: %s (keycode=%s). %s',
-                               keystroke.key, keystroke.code, e)
+        logger.error_sensitive(f'Failed to write key: {keystroke.key} (keycode={keystroke.code}). {e}')
         return {'success': False}
     return {'success': True}
 
@@ -51,7 +48,7 @@ def on_mouse_event(message):
     try:
         mouse_move_event = mouse_event_request.parse_mouse_event(message)
     except mouse_event_request.Error as e:
-        logger.error_sensitive('Failed to parse mouse event request: %s', e)
+        logger.error_sensitive(f'Failed to parse mouse event request: {e}')
         return {'success': False}
     mouse_path = flask.current_app.config.get('MOUSE_PATH')
     try:
@@ -61,7 +58,7 @@ def on_mouse_event(message):
                                     mouse_move_event.vertical_wheel_delta,
                                     mouse_move_event.horizontal_wheel_delta)
     except hid_write.WriteError as e:
-        logger.error_sensitive('Failed to forward mouse event: %s', e)
+        logger.error_sensitive(f'Failed to forward mouse event: {e}')
         return {'success': False}
     return {'success': True}
 
@@ -72,7 +69,7 @@ def on_key_release():
     try:
         fake_keyboard.release_keys(keyboard_path)
     except hid_write.WriteError as e:
-        logger.error_sensitive('Failed to release keys: %s', e)
+        logger.error_sensitive(f'Failed to release keys: {e}')
 
 
 @socketio.on('connect')

@@ -77,7 +77,7 @@ def _merge_message_with_defaults(message):
 def _parse_modifier_key(modifier_key):
     if not isinstance(modifier_key, bool):
         raise InvalidModifierKeyError(
-            'Modifier keys must be boolean values: %s' % modifier_key)
+            f'Modifier keys must be boolean values: {modifier_key}')
     return modifier_key
 
 
@@ -87,5 +87,5 @@ def _parse_code(code):
 
     # Arbitrary limit, but just to prevent anything crazy.
     if len(code) > 30:
-        raise InvalidKeyCodeError('Key code is too long: %s' % code)
+        raise InvalidKeyCodeError(f'Key code is too long: {code}')
     return code

@@ -26,7 +26,7 @@ def debug_logs_get():
     try:
         return flask.Response(debug_logs.collect(), mimetype='text/plain')
     except debug_logs.Error as e:
-        return flask.Response('Failed to retrieve debug logs: %s' % str(e),
+        return flask.Response(f'Failed to retrieve debug logs: {str(e)}',
                               status=500)
 
 
