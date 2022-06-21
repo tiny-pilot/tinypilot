@@ -33,6 +33,7 @@ def start_async():
 
     update.result_store.clear()
 
-    with subprocess.Popen(
-        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start')) as proc:
-        proc.wait()
+    # We don't need a context handler, as we're not managing the child process.
+    # pylint: disable=consider-using-with
+    subprocess.Popen(
+        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))

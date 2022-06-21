@@ -12,8 +12,8 @@ class UpdateSettingsTest(unittest.TestCase):
         # Mock out the path to the settings.yml file so that it points to a file
         # path that the test controls.
 
-        # Ignore pylint because we perform a tear down
-        # and assert the temporary files are gone.
+        # Ignore pylint because we perform a tear down and assert the temporary
+        # files are gone.
         # pylint: disable=consider-using-with
         self.mock_settings_dir = tempfile.TemporaryDirectory()
         self.settings_file_path = os.path.join(self.mock_settings_dir.name,

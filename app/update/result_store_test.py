@@ -11,8 +11,8 @@ import update.result_store
 class ResultStoreReadTest(unittest.TestCase):
 
     def setUp(self):
-        # Ignore pylint because we perform a tear down
-        # and assert the temporary files are gone.
+        # Ignore pylint because we perform a tear down and assert the temporary
+        # files are gone.
         # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
@@ -103,8 +103,8 @@ class ResultStoreReadTest(unittest.TestCase):
 class ResultStoreClearTest(unittest.TestCase):
 
     def setUp(self):
-        # Ignore pylint because we perform a tear down
-        # and assert the temporary files are gone.
+        # Ignore pylint because we perform a tear down and assert the temporary
+        # files are gone.
         # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
@@ -182,8 +182,8 @@ class ResultStoreClearTest(unittest.TestCase):
 class ResultStoreWriteTest(unittest.TestCase):
 
     def setUp(self):
-        # Ignore pylint because we perform a tear down
-        # and assert the temporary files are gone.
+        # Ignore pylint because we perform a tear down and assert the temporary
+        # files are gone.
         # pylint: disable=consider-using-with
         self.mock_result_dir = tempfile.TemporaryDirectory()
 
