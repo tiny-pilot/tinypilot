@@ -3,4 +3,4 @@
   become: true
   become_method: sudo
   roles:
-    - role: ansible-role-tinypilot
+    - role: ansible-role-tinypilot 
