@@ -4,4 +4,4 @@
 
 echo "Starting mock version of change-hostname..."
 
-echo "Mock change of hostname succeeded (no changes were applied)" 
+echo "Mock change of hostname succeeded (no changes were applied)"

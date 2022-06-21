@@ -102,4 +102,3 @@ ansible-playbook \
 # Persist installation settings.
 cp "${INSTALL_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
 chown tinypilot:tinypilot "${TINYPILOT_SETTINGS_FILE}"
-
