@@ -27,6 +27,9 @@ readonly OUTPUT_DIR='dist'
 # 2. A timestamp (which allows lexical sorting of bundles by their file names).
 # 3. The build version: a git commit hash in short form for TinyPilot Community;
 #    a SemVer version for TinyPilot Pro.
+# Examples for bundle names:
+# - `tinypilot-community-20220620T1611Z-acd7316.tar` (Community)
+# - `tinypilot-pro-20220620T1713Z-2.4.1.tar` (Pro)
 TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
 TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
