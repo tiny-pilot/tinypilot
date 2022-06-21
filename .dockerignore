@@ -1,5 +1,6 @@
 # Auto-generated files/folders.
 **/__pycache__
+**/*.py[cod]
 
 # Dev-only files and documentation.
 **/*_test.py
@@ -28,6 +29,7 @@
 /hooks
 /node_modules
 /package.json
+/package-lock.json
 /quick-install
 /readme-assets
 /venv
