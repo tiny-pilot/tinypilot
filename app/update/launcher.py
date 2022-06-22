@@ -33,5 +33,7 @@ def start_async():
 
     update.result_store.clear()
 
+    # Ignore pylint since we're not managing the child process.
+    # pylint: disable=consider-using-with
     subprocess.Popen(
         ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
