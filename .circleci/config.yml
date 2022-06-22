@@ -48,11 +48,58 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/build-javascript
+  build_debian_package:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.11
+      - run:
+          name: Enable multiarch builds with QEMU
+          command: |
+            docker run \
+              --rm \
+              --privileged \
+              multiarch/qemu-user-static \
+              --reset \
+              -p yes
+      - run:
+          name: Create multiarch build context
+          command: docker context create builder
+      - run:
+          name: Create multiplatform builder
+          command: |
+            docker buildx create builder \
+              --name builder \
+              --driver docker-container \
+              --use
+      - run:
+          name: Ensure builder has booted
+          command: docker buildx inspect --bootstrap
+      - run:
+          name: Build docker image with .deb package
+          command: |
+            export TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+            export PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
+            docker buildx build \
+              --platform linux/arm/v7 \
+              --build-arg TINYPILOT_VERSION \
+              --build-arg PKG_VERSION \
+              --target=artifact \
+              --output type=local,dest=$(pwd)/releases/ \
+              .
+      - persist_to_workspace:
+          root: ./releases
+          paths:
+            - '*.deb'
   build_bundle:
     docker:
       - image: cimg/base:2020.01
     steps:
       - checkout
+      - attach_workspace:
+          at: ./bundler/bundle/
       - run:
           name: Install dependencies
           command: sudo apt-get update && sudo apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
@@ -132,7 +179,10 @@ workflows:
       - check_bash
       - build_python
       - build_javascript
-      - build_bundle
+      - build_debian_package
+      - build_bundle:
+          requires:
+            - build_debian_package
       - upload_bundle:
           requires:
             - build_bundle

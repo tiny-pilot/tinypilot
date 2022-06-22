@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Creates a TinyPilot installation bundle from the bundle/ folder.
-# Fetches all required dependencies automatically.
+#
+# You have to provide the TinyPilot Debian package and place it in the `bundle/`
+# folder. The script fetches all other required dependencies automatically.
 
 # Exit on first error.
 set -e
@@ -12,13 +14,6 @@ set -u
 # Echo commands to stdout.
 set -x
 
-# TODO (jotaen): parameterize script to make the installation work for
-#                TinyPilot Pro as well.
-
-# TODO: Adjust the workflow so that we build Debian packages as part of the same
-# workflow on the same system that we build the bundle so that we don't have to
-# retrieve the Debian package file from a remote URL.
-readonly PKG_URL_TINYPILOT='https://packages.tinypilotkvm.com/community/tinypilot-1.7.1-1-armhf.deb'
 readonly REPO_ANSIBLE_TINYPILOT='https://github.com/tiny-pilot/ansible-role-tinypilot.git'
 readonly REPO_ANSIBLE_NGINX='https://github.com/tiny-pilot/ansible-role-nginx'
 readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustreamer'
@@ -26,33 +21,30 @@ readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustr
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
-# Temporary workaround for applying the right naming schema to the TinyPilot
-# Debian package. We should fold this naming logic into the workflow for
-# creating the Debian package in
-# https://github.com/tiny-pilot/tinypilot-bundler/issues/9.
-rename_bundle_file() {
-  # The filename of the TinyPilot Debian package.
-  local OLD_TINYPILOT_DEBIAN_PACKAGE
-  OLD_TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
+# Compose bundle file name, which consists of these hyphen-separated parts:
+# 1. `tinypilot`
+# 2. The TinyPilot variant: `community` or `pro`
+# 3. A timestamp (which allows lexical sorting of bundles by their file names).
+# 4. The build version: a git commit hash in short form for TinyPilot Community;
+#    a SemVer version for TinyPilot Pro.
+# Examples for bundle names:
+# - `tinypilot-community-20220620T1611Z-acd7316.tar` (Community)
+# - `tinypilot-pro-20220620T1713Z-2.4.1.tar` (Pro)
+TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
+readonly TIMESTAMP
+TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+readonly TINYPILOT_VERSION
+readonly TINYPILOT_VARIANT='community'
+readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tar"
 
-  local TIMESTAMP
-  TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
-  local BUILD_VERSION
-  BUILD_VERSION="$(git rev-parse --short HEAD)"
-
-  local NEW_TINYPILOT_DEBIAN_PACKAGE="tinypilot-${TIMESTAMP}-${BUILD_VERSION}.deb"
-
-  mv "${OLD_TINYPILOT_DEBIAN_PACKAGE}" "${NEW_TINYPILOT_DEBIAN_PACKAGE}"
-  echo "${NEW_TINYPILOT_DEBIAN_PACKAGE}"
-}
-
+# Enter working directory to set up the bundle’s inner structure.
 pushd "${BUNDLE_DIR}"
 
-# TODO: Remove this wget and rename once we're creating the Debian package in
-# the same workflow as the bundle.
-# https://github.com/tiny-pilot/tinypilot-bundler/issues/9
-wget "${PKG_URL_TINYPILOT}"
-TINYPILOT_DEBIAN_PACKAGE="$(rename_bundle_file)"
+# Ensure that a TinyPilot Debian package exists.
+if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
+  echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
+  exit 1
+fi
 
 # Copy each Ansible role dependency into the bundle and add a version file.
 for GIT_URL in $REPO_ANSIBLE_TINYPILOT $REPO_ANSIBLE_NGINX $REPO_ANSIBLE_USTREAMER
@@ -74,14 +66,10 @@ find . \
   -prune \
   -exec rm -rf {} \;
 
+# Leave working directory to assemble the tarball bundle.
 popd
 
-# Make the bundle filename the same as the Debian package but with a different
-# file extension.
-BUNDLE_FILENAME="${TINYPILOT_DEBIAN_PACKAGE//.deb/.tar}"
-readonly BUNDLE_FILENAME
-
-# Generate build output.
+# Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"
 tar \

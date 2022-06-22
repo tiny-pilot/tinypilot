@@ -1,0 +1,35 @@
+# Auto-generated files/folders.
+**/__pycache__
+**/*.py[cod]
+
+# Dev-only files and documentation.
+**/*_test.py
+/.circleci
+/.coverage
+/.dependabot
+/.dockerignore
+/.git
+/.github
+/.gitignore
+/.prettierignore
+/.pylintrc
+/.shellcheckrc
+/.style.yapf
+/.vscode
+/.yapfignore
+/ARCHITECTURE.md
+/CONTRIBUTING.md
+/Dockerfile
+/MANIFEST.in
+/bundler
+/dev-scripts
+/dev_app_settings.cfg
+/dev_requirements.txt
+/e2e
+/hooks
+/node_modules
+/package.json
+/package-lock.json
+/quick-install
+/readme-assets
+/venv
