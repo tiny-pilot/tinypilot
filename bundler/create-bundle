@@ -21,11 +21,11 @@ readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustr
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
-# Compose bundle file name. The naming scheme is:
-# 1. The TinyPilot variant: `tinypilot` for TinyPilot Community; `tinypilot-pro`
-#    for TinyPilot Pro.
-# 2. A timestamp (which allows lexical sorting of bundles by their file names).
-# 3. The build version: a git commit hash in short form for TinyPilot Community;
+# Compose bundle file name, which consists of these hyphen-separated parts:
+# 1. `tinypilot`
+# 2. The TinyPilot variant: `community` or `pro`
+# 3. A timestamp (which allows lexical sorting of bundles by their file names).
+# 4. The build version: a git commit hash in short form for TinyPilot Community;
 #    a SemVer version for TinyPilot Pro.
 # Examples for bundle names:
 # - `tinypilot-community-20220620T1611Z-acd7316.tar` (Community)
