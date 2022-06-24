@@ -92,7 +92,7 @@ jobs:
       - persist_to_workspace:
           root: ./releases
           paths:
-            - "*.deb"
+            - '*.deb'
   build_bundle:
     docker:
       - image: cimg/base:2020.01
