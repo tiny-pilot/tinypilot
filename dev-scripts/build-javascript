@@ -22,3 +22,4 @@ fi
 ./node_modules/.bin/mocha \
   --recursive \
   "${SOURCE_DIR}/**/*.test.js"
+  
