@@ -116,7 +116,7 @@ jobs:
     docker:
       - image: cimg/base:2020.01
     environment:
-      UPLOAD_PATH: community
+      UPLOAD_PREFIX: community
     steps:
       - attach_workspace:
           at: ./
@@ -146,7 +146,7 @@ jobs:
               --noProgress \
               "${UPLOAD_BUCKET}" \
               "dist/${BUNDLE_FILENAME}" \
-              "${UPLOAD_PATH}/${BUNDLE_FILENAME}" \
+              "${UPLOAD_PREFIX}/${BUNDLE_FILENAME}" \
               > /dev/null # Hide output to avoid exposing bucket details in CI.
       - run:
           name: Update LATEST file to Backblaze
@@ -156,14 +156,14 @@ jobs:
               --noProgress \
               "${UPLOAD_BUCKET}" \
               dist/LATEST \
-              "${UPLOAD_PATH}/LATEST" \
+              "${UPLOAD_PREFIX}/version-index/LATEST" \
               > /dev/null # Hide output to avoid exposing bucket details in CI.
       - run:
           name: Print friendly upload URL
           command: |
             set -u
             BUNDLE_FILENAME="$(cat dist/LATEST)"
-            echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PATH}/${BUNDLE_FILENAME}"
+            echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PREFIX}/${BUNDLE_FILENAME}"
   e2e:
     machine:
       image: ubuntu-2004:202010-01
