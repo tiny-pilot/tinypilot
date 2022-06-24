@@ -92,7 +92,7 @@ jobs:
       - persist_to_workspace:
           root: ./releases
           paths:
-            - '*.deb'
+            - "*.deb"
   build_bundle:
     docker:
       - image: cimg/base:2020.01
@@ -124,7 +124,7 @@ jobs:
           # The LATEST file contains the filename of the latest TinyPilot
           # bundle.
           name: Create LATEST file
-          command: cd dist && ls tinypilot*.tar | tee LATEST
+          command: cd dist && ls tinypilot*.tgz | tee LATEST
       - run:
           name: Download Backblaze CLI tool
           command: |
@@ -186,15 +186,9 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
-          filters:
-            branches:
-              only: master
       - upload_bundle:
           requires:
             - build_bundle
-          filters:
-            branches:
-              only: master
       - e2e:
           filters:
             branches:

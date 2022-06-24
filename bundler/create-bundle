@@ -35,7 +35,7 @@ readonly TIMESTAMP
 TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
 readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
-readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tar"
+readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
 # Enter working directory to set up the bundle’s inner structure.
 pushd "${BUNDLE_DIR}"
@@ -74,6 +74,7 @@ mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"
 tar \
   --create \
+  --gzip \
   --file "${OUTPUT_DIR}/${BUNDLE_FILENAME}" \
   --directory "${BUNDLE_DIR}" \
   .
