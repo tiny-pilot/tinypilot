@@ -2,7 +2,7 @@
 
 # “Mock” version of the eventual `get-tinypilot.sh` script.
 # Instead of downloading the installation bundle on the fly, it expects a
-# tarball named `tinypilot.tar` to be present in the same directory.
+# tarball named `tinypilot.tgz` to be present in the same directory.
 
 # Exit on first error.
 set -e
