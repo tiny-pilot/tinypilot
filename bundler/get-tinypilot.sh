@@ -2,7 +2,7 @@
 
 # “Mock” version of the eventual `get-tinypilot.sh` script.
 # Instead of downloading the installation bundle on the fly, it expects a
-# tarball named `tinypilot.tar` to be present in the same directory.
+# tarball named `tinypilot.tgz` to be present in the same directory.
 
 # Exit on first error.
 set -e
@@ -18,8 +18,9 @@ readonly TEMP_FOLDER
 
 # Extract tarball to temporary folder and run install.
 tar \
+  --gunzip \
   --extract \
-  --file tinypilot.tar \
+  --file tinypilot.tgz \
   --directory "${TEMP_FOLDER}"
 pushd "${TEMP_FOLDER}"
 chmod +x install

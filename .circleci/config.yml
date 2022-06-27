@@ -124,7 +124,7 @@ jobs:
           # The LATEST file contains the filename of the latest TinyPilot
           # bundle.
           name: Create LATEST file
-          command: cd dist && ls tinypilot*.tar | tee LATEST
+          command: cd dist && ls tinypilot*.tgz | tee LATEST
       - run:
           name: Download Backblaze CLI tool
           command: |
