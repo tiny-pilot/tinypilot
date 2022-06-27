@@ -148,7 +148,7 @@ python3 -m venv venv
 . venv/bin/activate
 # Upgrade to a recent version of pip so that we can use binary wheels where
 # available instead of building the packages locally.
-pip install pip==21.3.1
+pip install "pip>=21.3.1"
 
 # When modifying dependencies, update the credit in app/license_notice.py.
 echo 'ansible==2.9.10
