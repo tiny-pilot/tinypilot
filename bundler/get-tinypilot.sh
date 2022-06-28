@@ -49,5 +49,4 @@ tar \
   --file "${BUNDLE_FILENAME}" \
   --directory "${BUNDLE_DIR}"
 pushd "${BUNDLE_DIR}"
-chmod +x install
 ./install
