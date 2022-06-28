@@ -36,7 +36,7 @@ download() {
 }
 
 # Always clean up before exiting.
-trap 'clean_up' ERR
+trap 'clean_up' EXIT
 
 # Download tarball to temporary file.
 download
