@@ -42,7 +42,7 @@ trap 'clean_up' EXIT
 # Download tarball to temporary file.
 download
 
-# Extract tarball to temporary folder and run install.
+# Extract tarball to temporary directory and run install.
 tar \
   --gunzip \
   --extract \
