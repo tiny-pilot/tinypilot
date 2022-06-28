@@ -11,10 +11,10 @@ set -u
 # Echo commands to stdout.
 set -x
 
-BUNDLE_FILENAME="$(mktemp)"
+BUNDLE_FILENAME="$(mktemp --suffix .tgz)"
 readonly BUNDLE_FILENAME
 
-BUNDLE_DIR="$(mktemp -d)"
+BUNDLE_DIR="$(mktemp --directory)"
 readonly BUNDLE_DIR
 
 # Remove temporary files & directories.
