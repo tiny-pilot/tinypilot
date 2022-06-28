@@ -146,8 +146,8 @@ pushd "$INSTALLER_DIR"
 
 python3 -m venv venv
 . venv/bin/activate
-# Upgrade to a recent version of pip so that we can use binary wheels where
-# available instead of building the packages locally.
+# Ensure we're using a version of pip that can use binary wheels where available
+# instead of building the packages locally.
 pip install "pip>=21.3.1"
 
 # When modifying dependencies, update the credit in app/license_notice.py.
