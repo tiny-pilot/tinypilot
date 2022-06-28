@@ -31,6 +31,7 @@ download() {
     --write-out '%{http_code}' \
     --silent)"
   if [[ "${HTTP_CODE}" != "200" ]]; then
+    echo "Failed to download tarball with HTTP response status code ${HTTP_CODE}." >&2
     return 1
   fi
 }
