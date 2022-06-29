@@ -16,6 +16,6 @@ cd "${SCRIPT_DIR}/.."
 
 # Check code style with the Prettier libary.
 if ! ./node_modules/.bin/prettier --check . ; then
-  echo "Try running ./node_modules/.bin/prettier --fix to fix formatting" >&2
+  echo "Try running ./dev-scripts/fix-style to fix formatting" >&2
   exit 1
 fi
