@@ -22,25 +22,20 @@ clean_up() {
   rm -rf "${BUNDLE_FILENAME}" "${BUNDLE_DIR}"
 }
 
-# Download latest tarball to temporary file.
-download() {
-  local HTTP_CODE
-  HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
-    --location \
-    --output "${BUNDLE_FILENAME}" \
-    --write-out '%{http_code}' \
-    --silent)"
-  if [[ "${HTTP_CODE}" != "200" ]]; then
-    echo "Failed to download tarball with HTTP response status code ${HTTP_CODE}." >&2
-    return 1
-  fi
-}
-
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
 # Download tarball to temporary file.
-download
+HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
+  --location \
+  --output "${BUNDLE_FILENAME}" \
+  --write-out '%{http_code}' \
+  --silent)"
+readonly HTTP_CODE
+if [[ "${HTTP_CODE}" != "200" ]]; then
+  echo "Failed to download tarball with HTTP response status code ${HTTP_CODE}." >&2
+  exit 1
+fi
 
 # Extract tarball to temporary directory and run install.
 tar \
