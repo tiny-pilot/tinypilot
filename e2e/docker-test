@@ -32,6 +32,6 @@ docker run \
   --name "$CONTAINER_NAME" \
   "$IMAGE_NAME"
 
-docker exec "$CONTAINER_NAME" ./quick-install
+docker exec "$CONTAINER_NAME" ./get-tinypilot.sh
 
 docker exec "$CONTAINER_NAME" ./e2e/test
