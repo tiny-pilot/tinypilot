@@ -2,15 +2,15 @@
 
 ## Overview
 
-![TinyPilot Architecture](https://docs.google.com/drawings/d/e/2PACX-1vR48PdVelUodnzk7az1FE4pNX4WK3l3YRas8Ty8fnE-2qE-DN5AYXsHD26F4OJgmGSZkmGGJgs0RvpT/pub?w=903&amp;h=792)
+![TinyPilot Architecture](https://docs.google.com/drawings/d/e/2PACX-1vR48PdVelUodnzk7az1FE4pNX4WK3l3YRas8Ty8fnE-2qE-DN5AYXsHD26F4OJgmGSZkmGGJgs0RvpT/pub?w=903&h=792)
 
 ## TinyPilot frontend
 
 The TinyPilot frontend runs in the user's browser. It is responsible for:
 
-* Presenting the target computer's video stream in the browser window
-* Forwarding keyboard and mouse input to the [TinyPilot backend](#tinypilot-backend)
-* Offering friendly interfaces for the user to change TinyPilot's settings
+- Presenting the target computer's video stream in the browser window
+- Forwarding keyboard and mouse input to the [TinyPilot backend](#tinypilot-backend)
+- Offering friendly interfaces for the user to change TinyPilot's settings
 
 The TinyPilot frontend is a pure HTML/CSS/JS app. It has no build or compilation step and no framework like Vue, Angular, or React. It uses external libraries as little as possible.
 
@@ -22,12 +22,12 @@ TinyPilot's custom elements can be found in [app/templates/custom-elements](./ap
 
 The backend is a Flask application. It offers handles three types of requests:
 
-* Page requests
-  * To serve a page like the main `/` view, TinyPilot uses Flask to pre-render a template.
-* REST requests
-  * When the frontend makes a request to the backend to query server state or perform some action (e.g., `/api/shutdown`), the backend handles it through REST handlers.
-* WebSockets requests
-  * To handle requests for keystrokes or mouse movements, the backend needs something faster than regular HTTP REST requests, so it uses a WebSockets channel.
+- Page requests
+  - To serve a page like the main `/` view, TinyPilot uses Flask to pre-render a template.
+- REST requests
+  - When the frontend makes a request to the backend to query server state or perform some action (e.g., `/api/shutdown`), the backend handles it through REST handlers.
+- WebSockets requests
+  - To handle requests for keystrokes or mouse movements, the backend needs something faster than regular HTTP REST requests, so it uses a WebSockets channel.
 
 The backend is responsible for sending keyboard and mouse input to the target computer via its USB gadgets (see [USB gadgets](#usb-gadgets) section, below).
 

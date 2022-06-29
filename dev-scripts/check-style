@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+# Check code style with the Prettier libary.
+if ! ./node_modules/.bin/prettier --check . ; then
+  echo "Try running ./node_modules/.bin/prettier --fix to fix formatting" >&2
+  exit 1
+fi
