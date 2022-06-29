@@ -8,9 +8,13 @@ import version
 
 class VersionTest(TestCase):
 
-    def test_local_version_returns_dummy_version_when_in_debug_mode(self):
-        with mock.patch.object(version, '_is_debug', return_value=True):
-            self.assertEqual('0000000', version.local_version())
+    def setUp(self):
+        # Run all unit tests with debug mode disabled.
+        is_debug_patch = mock.patch.object(version,
+                                           '_is_debug',
+                                           return_value=False)
+        self.addCleanup(is_debug_patch.stop)
+        is_debug_patch.start()
 
     def test_local_version_when_file_exists(self):
         with tempfile.NamedTemporaryFile('w',
@@ -19,9 +23,7 @@ class VersionTest(TestCase):
             mock_version_file.flush()
 
             with mock.patch.object(version, '_VERSION_FILE',
-                                   mock_version_file.name), mock.patch.object(
-                                       version, '_is_debug',
-                                       return_value=False):
+                                   mock_version_file.name):
                 self.assertEqual('1234567', version.local_version())
 
     def test_local_version_strips_leading_trailing_whitespace(self):
@@ -31,9 +33,7 @@ class VersionTest(TestCase):
             mock_version_file.flush()
 
             with mock.patch.object(version, '_VERSION_FILE',
-                                   mock_version_file.name), mock.patch.object(
-                                       version, '_is_debug',
-                                       return_value=False):
+                                   mock_version_file.name):
                 self.assertEqual('1234567', version.local_version())
 
     def test_local_version_raises_file_error_when_file_doesnt_exist(self):
@@ -42,8 +42,6 @@ class VersionTest(TestCase):
                                                   'version-file')
 
             with mock.patch.object(version, '_VERSION_FILE',
-                                   mock_version_file_name), mock.patch.object(
-                                       version, '_is_debug',
-                                       return_value=False):
+                                   mock_version_file_name):
                 with self.assertRaises(version.FileError):
                     version.local_version()
