@@ -14,8 +14,15 @@ set -x
 # Check if the user is accidentally downgrading from TinyPilot Pro.
 HAS_PRO_INSTALLED=0
 
+SCRIPT_DIR="$(dirname "$0")"
+# If they're piping this script in from stdin, guess that TinyPilot is
+# in the default location.
+if [ "$SCRIPT_DIR" = "." ]; then
+  SCRIPT_DIR="/opt/tinypilot"
+fi
+
 # Detect TinyPilot Pro if the README file has a TinyPilot Pro header.
-TINYPILOT_README="/opt/tinypilot/README.md"
+TINYPILOT_README="${SCRIPT_DIR}/README.md"
 if [ -f "$TINYPILOT_README" ]; then
   if [ "$(head -n 1 $TINYPILOT_README)" = "# TinyPilot Pro" ]; then
     HAS_PRO_INSTALLED=1
