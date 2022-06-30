@@ -12,12 +12,6 @@ set -u
 # Location of app source files.
 SOURCE_DIR="app"
 
-# Check code style with the Prettier libary.
-if ! ./node_modules/.bin/prettier --check "${SOURCE_DIR}" ; then
-  echo "Try running ./dev-scripts/fix-frontend-format to fix formatting" >&2
-  exit 1
-fi
-
 # Run unit tests.
 ./node_modules/.bin/mocha \
   --recursive \

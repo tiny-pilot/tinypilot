@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Fixes formatting for non-Python files.
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+./node_modules/.bin/prettier --write .
