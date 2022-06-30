@@ -55,3 +55,12 @@ class VersionTest(TestCase):
                 with self.assertRaises(version.FileError):
                     version.local_version()
 
+    def test_local_version_raises_file_error_when_file_is_not_utf_8(self):
+        with tempfile.NamedTemporaryFile() as mock_version_file:
+            mock_version_file.write(b'\xff')
+            mock_version_file.flush()
+
+            with mock.patch.object(version, '_VERSION_FILE',
+                                   mock_version_file.name):
+                with self.assertRaises(version.FileError):
+                    version.local_version()

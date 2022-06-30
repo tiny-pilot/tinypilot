@@ -40,7 +40,7 @@ def local_version():
     try:
         with open(_VERSION_FILE, encoding='utf-8') as file:
             version = file.read().strip()
-    except IOError as e:
+    except (IOError, UnicodeDecodeError) as e:
         raise FileError('Failed to check local version: %s' % str(e)) from e
     if version == '':
         raise FileError('The local version file cannot be empty.')
