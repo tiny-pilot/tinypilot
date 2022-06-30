@@ -1,4 +1,3 @@
-import os
 import tempfile
 from unittest import TestCase
 from unittest import mock
@@ -42,11 +41,7 @@ class VersionTest(TestCase):
                 self.assertEqual('1234567', version.local_version())
 
     def test_local_version_raises_file_error_when_file_doesnt_exist(self):
-        with tempfile.TemporaryDirectory() as mock_version_dir:
-            mock_version_file_name = os.path.join(mock_version_dir,
-                                                  'version-file')
-
-            with mock.patch.object(version, '_VERSION_FILE',
-                                   mock_version_file_name):
-                with self.assertRaises(version.FileError):
-                    version.local_version()
+        with mock.patch.object(version, '_VERSION_FILE',
+                               'non-existent-file.txt'):
+            with self.assertRaises(version.FileError):
+                version.local_version()
