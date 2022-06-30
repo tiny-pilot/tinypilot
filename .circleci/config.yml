@@ -92,7 +92,7 @@ jobs:
       - persist_to_workspace:
           root: ./releases
           paths:
-            - '*.deb'
+            - "*.deb"
   build_bundle:
     docker:
       - image: cimg/base:2020.01
@@ -149,16 +149,6 @@ jobs:
               "${UPLOAD_PREFIX}/${BUNDLE_FILENAME}" \
               > /dev/null # Hide output to avoid exposing bucket details in CI.
       - run:
-          name: Update LATEST file to Backblaze
-          command: |
-            set -u
-            ./b2 upload-file \
-              --noProgress \
-              "${UPLOAD_BUCKET}" \
-              dist/LATEST \
-              "${UPLOAD_PREFIX}/version-index/LATEST" \
-              > /dev/null # Hide output to avoid exposing bucket details in CI.
-      - run:
           name: Print friendly upload URL
           command: |
             set -u
@@ -186,15 +176,9 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
-          filters:
-            branches:
-              only: master
       - upload_bundle:
           requires:
             - build_bundle
-          filters:
-            branches:
-              only: master
       - e2e:
           filters:
             branches:
