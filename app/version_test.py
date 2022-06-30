@@ -43,7 +43,7 @@ class VersionTest(TestCase):
     def test_local_version_raises_file_error_when_file_doesnt_exist(self):
         with mock.patch.object(version, '_VERSION_FILE',
                                'non-existent-file.txt'):
-            with self.assertRaises(version.FileError):
+            with self.assertRaises(version.VersionFileError):
                 version.local_version()
 
     def test_local_version_raises_file_error_when_file_is_empty(self):
@@ -52,7 +52,7 @@ class VersionTest(TestCase):
 
             with mock.patch.object(version, '_VERSION_FILE',
                                    mock_version_file.name):
-                with self.assertRaises(version.FileError):
+                with self.assertRaises(version.VersionFileError):
                     version.local_version()
 
     def test_local_version_raises_file_error_when_file_is_not_utf_8(self):
@@ -62,5 +62,5 @@ class VersionTest(TestCase):
 
             with mock.patch.object(version, '_VERSION_FILE',
                                    mock_version_file.name):
-                with self.assertRaises(version.FileError):
+                with self.assertRaises(version.VersionFileError):
                     version.local_version()

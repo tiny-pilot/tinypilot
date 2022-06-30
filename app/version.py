@@ -11,7 +11,7 @@ class GitError(Error):
     pass
 
 
-class FileError(Error):
+class VersionFileError(Error):
     pass
 
 
@@ -32,7 +32,7 @@ def local_version():
         A version string.
 
     Raises:
-        FileError: If an error occurred while accessing the version file.
+        VersionFileError: If an error occurred while accessing the version file.
     """
     if _is_debug():
         return '0000000'
@@ -41,9 +41,10 @@ def local_version():
         with open(_VERSION_FILE, encoding='utf-8') as file:
             version = file.read().strip()
     except (IOError, UnicodeDecodeError) as e:
-        raise FileError('Failed to check local version: %s' % str(e)) from e
+        raise VersionFileError('Failed to check local version: %s' %
+                               str(e)) from e
     if version == '':
-        raise FileError('The local version file cannot be empty.')
+        raise VersionFileError('The local version file cannot be empty.')
     return version
 
 
