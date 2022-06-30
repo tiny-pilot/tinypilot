@@ -64,6 +64,6 @@ As of Feb. 2021, uStreamer's maintainer is working on a H264 option, expected to
 
 ## Installation
 
-TinyPilot's installation process is somewhat unusual in that it depends on Ansible. The [`quick-install`](./quick-install) script bootstraps an Ansible environment on a Raspberry Pi and then uses [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot) to install itself locally. `ansible-role-tinypilot` transitively includes other roles that TinyPilot depends on such as [`ansible-role-ustreamer`](https://github.com/mtlynch/ansible-role-ustreamer) and [`ansible-role-nginx`](https://github.com/geerlingguy/ansible-role-nginx).
+TinyPilot's installation process is somewhat unusual in that it depends on Ansible. The [`get-tinypilot.sh`](./get-tinypilot.sh) script downloads an tarball, unpacks it, and executes a script called `install` from that package. The `install` script bootstraps an Ansible environment on a Raspberry Pi and then uses [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot) to install itself locally. `ansible-role-tinypilot` transitively includes other roles that TinyPilot depends on such as [`ansible-role-ustreamer`](https://github.com/mtlynch/ansible-role-ustreamer) and [`ansible-role-nginx`](https://github.com/geerlingguy/ansible-role-nginx).
 
-The `quick-install` script is also responsible for version-to-version updates and configuration changes.
+The `get-tinypilot.sh` script is also responsible for version-to-version updates and configuration changes.

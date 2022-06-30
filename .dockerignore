@@ -26,6 +26,7 @@
 /dev_app_settings.cfg
 /dev_requirements.txt
 /e2e
+/get-tinypilot.sh
 /hooks
 /node_modules
 /package.json
