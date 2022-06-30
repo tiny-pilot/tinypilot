@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Checks formatting for non-Python files.
+
 # Exit build script on first failure.
 set -e
 
