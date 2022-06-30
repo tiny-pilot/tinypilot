@@ -45,3 +45,13 @@ class VersionTest(TestCase):
                                'non-existent-file.txt'):
             with self.assertRaises(version.FileError):
                 version.local_version()
+
+    def test_local_version_raises_file_error_when_file_is_empty(self):
+        with tempfile.NamedTemporaryFile('w',
+                                         encoding='utf-8') as mock_version_file:
+
+            with mock.patch.object(version, '_VERSION_FILE',
+                                   mock_version_file.name):
+                with self.assertRaises(version.FileError):
+                    version.local_version()
+
