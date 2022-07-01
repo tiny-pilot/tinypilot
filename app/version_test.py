@@ -15,11 +15,6 @@ class VersionTest(TestCase):
         self.addCleanup(is_debug_patch.stop)
         is_debug_patch.start()
 
-    def test_local_version_returns_dummy_version_when_in_debug_mode(self):
-        # Enable debug mode.
-        with mock.patch.object(version, '_is_debug', return_value=True):
-            self.assertEqual('0000000', version.local_version())
-
     def test_local_version_when_file_exists(self):
         with tempfile.NamedTemporaryFile('w',
                                          encoding='utf-8') as mock_version_file:
@@ -64,3 +59,11 @@ class VersionTest(TestCase):
                                    mock_version_file.name):
                 with self.assertRaises(version.VersionFileError):
                     version.local_version()
+
+
+class DebugModeVersionTest(TestCase):
+
+    def test_local_version_returns_dummy_version_when_in_debug_mode(self):
+        # Enable debug mode.
+        with mock.patch.object(version, '_is_debug', return_value=True):
+            self.assertEqual('0000000', version.local_version())
