@@ -1,13 +1,10 @@
-import flask
+import json
+import urllib.request
 
-import git
+import flask
 
 
 class Error(Exception):
-    pass
-
-
-class GitError(Error):
     pass
 
 
@@ -15,7 +12,12 @@ class VersionFileError(Error):
     pass
 
 
+class VersionRequestError(Error):
+    pass
+
+
 _VERSION_FILE = './VERSION'
+_DUMMY_VERSION = '0000000'
 
 
 def _is_debug():
@@ -35,7 +37,7 @@ def local_version():
         VersionFileError: If an error occurred while accessing the version file.
     """
     if _is_debug():
-        return '0000000'
+        return _DUMMY_VERSION
 
     try:
         with open(_VERSION_FILE, encoding='utf-8') as file:
@@ -52,8 +54,26 @@ def local_version():
 
 
 def latest_version():
+    """Requests the latest version from the TinyPilot Gatekeeper REST API.
+
+    If run locally, in development, a dummy version string is returned.
+
+    Returns:
+        A version string.
+
+    Raises:
+        VersionRequestError: If an error occurred while making an HTTP request
+            to the Gatekeeper API.
+    """
+    if _is_debug():
+        return _DUMMY_VERSION
+
     try:
-        return git.remote_head_commit_id()
-    except git.Error as e:
-        raise GitError('Failed to check latest available version: %s' %
-                       str(e)) from e
+        with urllib.request.urlopen(
+                'https://gk.tinypilotkvm.com/community/available-update',
+                timeout=10) as response:
+            response_data = json.loads(response.read().decode())
+    except urllib.error.URLError as e:
+        raise VersionRequestError(
+            'Failed to check latest available version: %s' % str(e)) from e
+    return response_data['version']

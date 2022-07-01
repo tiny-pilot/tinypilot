@@ -1,4 +1,7 @@
+import json
 import tempfile
+import urllib.error
+import urllib.request
 from unittest import TestCase
 from unittest import mock
 
@@ -60,6 +63,24 @@ class VersionTest(TestCase):
                 with self.assertRaises(version.VersionFileError):
                     version.local_version()
 
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_when_request_is_successful(self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = json.dumps({
+            'version': '1234567'
+        }).encode()
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        self.assertEqual('1234567', version.latest_version())
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_request_fails(
+            self, mock_urlopen):
+        mock_urlopen.side_effect = urllib.error.URLError('foo', None)
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
+
 
 class DebugModeVersionTest(TestCase):
 
@@ -67,3 +88,8 @@ class DebugModeVersionTest(TestCase):
         # Enable debug mode.
         with mock.patch.object(version, '_is_debug', return_value=True):
             self.assertEqual('0000000', version.local_version())
+
+    def test_latest_version_returns_dummy_version_when_in_debug_mode(self):
+        # Enable debug mode.
+        with mock.patch.object(version, '_is_debug', return_value=True):
+            self.assertEqual('0000000', version.latest_version())
