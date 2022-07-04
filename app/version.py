@@ -79,20 +79,20 @@ def latest_version():
             ' characters.') from e
 
     try:
-        response_json = json.loads(response_text)
+        response_dict = json.loads(response_text)
     except json.decoder.JSONDecodeError as e:
         raise VersionRequestError(
             'Failed to decode latest available version response body as JSON.'
         ) from e
 
-    if not isinstance(response_json, dict):
+    if not isinstance(response_dict, dict):
         raise VersionRequestError(
             'Failed to decode latest available version response body as a JSON'
             ' dictionary.')
 
-    if 'version' not in response_json:
+    if 'version' not in response_dict:
         raise VersionRequestError(
             'Failed to get latest available version because of a missing field:'
             ' version')
 
-    return response_json['version']
+    return response_dict['version']
