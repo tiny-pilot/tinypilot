@@ -1,17 +1,18 @@
-import flask
+import json
+import urllib.request
 
-import git
+import flask
 
 
 class Error(Exception):
     pass
 
 
-class GitError(Error):
+class VersionFileError(Error):
     pass
 
 
-class VersionFileError(Error):
+class VersionRequestError(Error):
     pass
 
 
@@ -29,7 +30,7 @@ def local_version():
     dummy version string is returned.
 
     Returns:
-        A version string.
+        A version string (e.g., "abc1234" or "1.2.3").
 
     Raises:
         VersionFileError: If an error occurred while accessing the version file.
@@ -52,8 +53,46 @@ def local_version():
 
 
 def latest_version():
+    """Requests the latest version from the TinyPilot Gatekeeper REST API.
+
+    Returns:
+        A version string (e.g., "abc1234" or "1.2.3").
+
+    Raises:
+        VersionRequestError: If an error occurred while making an HTTP request
+            to the Gatekeeper API.
+    """
     try:
-        return git.remote_head_commit_id()
-    except git.Error as e:
-        raise GitError('Failed to check latest available version: %s' %
-                       str(e)) from e
+        with urllib.request.urlopen(
+                'https://gk.tinypilotkvm.com/community/available-update',
+                timeout=10) as response:
+            response_bytes = response.read()
+    except urllib.error.URLError as e:
+        raise VersionRequestError(
+            'Failed to request latest available version: %s' % str(e)) from e
+
+    try:
+        response_text = response_bytes.decode('utf-8')
+    except UnicodeDecodeError as e:
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as UTF-8'
+            ' characters.') from e
+
+    try:
+        response_dict = json.loads(response_text)
+    except json.decoder.JSONDecodeError as e:
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as JSON.'
+        ) from e
+
+    if not isinstance(response_dict, dict):
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as a JSON'
+            ' dictionary.')
+
+    if 'version' not in response_dict:
+        raise VersionRequestError(
+            'Failed to get latest available version because of a missing field:'
+            ' version')
+
+    return response_dict['version']

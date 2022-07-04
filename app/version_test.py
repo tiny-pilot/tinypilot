@@ -1,4 +1,7 @@
+import json
 import tempfile
+import urllib.error
+import urllib.request
 from unittest import TestCase
 from unittest import mock
 
@@ -59,6 +62,68 @@ class VersionTest(TestCase):
                                    mock_version_file.name):
                 with self.assertRaises(version.VersionFileError):
                     version.local_version()
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_when_request_is_successful(self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = json.dumps({
+            'version': '1234567'
+        }).encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        self.assertEqual('1234567', version.latest_version())
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_response_is_not_utf_8(
+            self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = b'\xff'
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_response_is_not_json(
+            self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = 'plain text'.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_response_is_not_json_dict(
+            self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = json.dumps(
+            'json encoded string').encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_response_missing_field(
+            self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = json.dumps({
+            'wrong_field_name': 'wrong_field_value'
+        }).encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_request_fails(
+            self, mock_urlopen):
+        mock_urlopen.side_effect = urllib.error.URLError(
+            'dummy error from gatekeeper', None)
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
 
 
 class DebugModeVersionTest(TestCase):
