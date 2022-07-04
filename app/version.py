@@ -1,7 +1,9 @@
-import json
 import urllib.request
 
 import flask
+
+import response_parsers.errors
+import response_parsers.version
 
 
 class Error(Exception):
@@ -66,8 +68,7 @@ def latest_version():
         with urllib.request.urlopen(
                 'https://gk.tinypilotkvm.com/community/available-update',
                 timeout=10) as response:
-            response_data = json.loads(response.read().decode())
-    except urllib.error.URLError as e:
+            return response_parsers.version.parse_latest_version(response)
+    except (urllib.error.URLError, response_parsers.errors.Error) as e:
         raise VersionRequestError(
             'Failed to check latest available version: %s' % str(e)) from e
-    return response_data['version']
