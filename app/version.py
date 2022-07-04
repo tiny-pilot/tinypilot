@@ -66,8 +66,8 @@ def latest_version():
         with urllib.request.urlopen(
                 'https://gk.tinypilotkvm.com/community/available-update',
                 timeout=10) as response:
-            response_data = json.loads(response.read().decode())
-    except urllib.error.URLError as e:
+            response_data = json.loads(response.read().decode('utf-8'))
+    except (urllib.error.URLError, UnicodeDecodeError) as e:
         raise VersionRequestError(
             'Failed to check latest available version: %s' % str(e)) from e
     return response_data['version']

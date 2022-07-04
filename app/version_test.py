@@ -68,10 +68,19 @@ class VersionTest(TestCase):
         mock_response = mock.Mock()
         mock_response.read.return_value = json.dumps({
             'version': '1234567'
-        }).encode()
+        }).encode('utf-8')
         mock_urlopen.return_value.__enter__.return_value = mock_response
 
         self.assertEqual('1234567', version.latest_version())
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_when_response_is_not_utf_8(self, mock_urlopen):
+        mock_response = mock.Mock()
+        mock_response.read.return_value = b'\xff'
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        with self.assertRaises(version.VersionRequestError):
+            version.latest_version()
 
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_raises_request_error_when_request_fails(
