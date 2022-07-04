@@ -17,7 +17,6 @@ class VersionRequestError(Error):
 
 
 _VERSION_FILE = './VERSION'
-_DUMMY_VERSION = '0000000'
 
 
 def _is_debug():
@@ -37,7 +36,7 @@ def local_version():
         VersionFileError: If an error occurred while accessing the version file.
     """
     if _is_debug():
-        return _DUMMY_VERSION
+        return '0000000'
 
     try:
         with open(_VERSION_FILE, encoding='utf-8') as file:
@@ -56,8 +55,6 @@ def local_version():
 def latest_version():
     """Requests the latest version from the TinyPilot Gatekeeper REST API.
 
-    If run locally, in development, a dummy version string is returned.
-
     Returns:
         A version string.
 
@@ -65,9 +62,6 @@ def latest_version():
         VersionRequestError: If an error occurred while making an HTTP request
             to the Gatekeeper API.
     """
-    if _is_debug():
-        return _DUMMY_VERSION
-
     try:
         with urllib.request.urlopen(
                 'https://gk.tinypilotkvm.com/community/available-update',

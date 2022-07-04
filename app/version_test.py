@@ -88,8 +88,3 @@ class DebugModeVersionTest(TestCase):
         # Enable debug mode.
         with mock.patch.object(version, '_is_debug', return_value=True):
             self.assertEqual('0000000', version.local_version())
-
-    def test_latest_version_returns_dummy_version_when_in_debug_mode(self):
-        # Enable debug mode.
-        with mock.patch.object(version, '_is_debug', return_value=True):
-            self.assertEqual('0000000', version.latest_version())
