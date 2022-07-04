@@ -66,8 +66,33 @@ def latest_version():
         with urllib.request.urlopen(
                 'https://gk.tinypilotkvm.com/community/available-update',
                 timeout=10) as response:
-            response_data = json.loads(response.read().decode('utf-8'))
-    except (urllib.error.URLError, UnicodeDecodeError) as e:
+            response_bytes = response.read()
+    except urllib.error.URLError as e:
         raise VersionRequestError(
-            'Failed to check latest available version: %s' % str(e)) from e
-    return response_data['version']
+            'Failed to request latest available version: %s' % str(e)) from e
+
+    try:
+        response_text = response_bytes.decode('utf-8')
+    except UnicodeDecodeError as e:
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as UTF-8'
+            ' characters.') from e
+
+    try:
+        response_json = json.loads(response_text)
+    except json.decoder.JSONDecodeError as e:
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as JSON.'
+        ) from e
+
+    if not isinstance(response_json, dict):
+        raise VersionRequestError(
+            'Failed to decode latest available version response body as a JSON'
+            ' dictionary.')
+
+    if 'version' not in response_json:
+        raise VersionRequestError(
+            'Failed to get latest available version because of a missing field:'
+            ' version')
+
+    return response_json['version']
