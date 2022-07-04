@@ -30,7 +30,7 @@ def local_version():
     dummy version string is returned.
 
     Returns:
-        A version string.
+        A version string (e.g., "abc1234" or "1.2.3").
 
     Raises:
         VersionFileError: If an error occurred while accessing the version file.
@@ -56,7 +56,7 @@ def latest_version():
     """Requests the latest version from the TinyPilot Gatekeeper REST API.
 
     Returns:
-        A version string.
+        A version string (e.g., "abc1234" or "1.2.3").
 
     Raises:
         VersionRequestError: If an error occurred while making an HTTP request
