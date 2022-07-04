@@ -85,7 +85,8 @@ class VersionTest(TestCase):
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_raises_request_error_when_request_fails(
             self, mock_urlopen):
-        mock_urlopen.side_effect = urllib.error.URLError('foo', None)
+        mock_urlopen.side_effect = urllib.error.URLError(
+            'dummy error from gatekeeper', None)
 
         with self.assertRaises(version.VersionRequestError):
             version.latest_version()
