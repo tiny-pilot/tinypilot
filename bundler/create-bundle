@@ -53,7 +53,7 @@ do
     --depth 1 \
     --branch master \
     "${GIT_URL}"
-  FOLDER_NAME="$(echo "${GIT_URL}" | sed 's|https://github.com/tiny-pilot/||' | sed 's|.git||')"
+  FOLDER_NAME="$(basename "${GIT_URL}" .git)"
   pushd "${FOLDER_NAME}"
   git rev-parse --short HEAD > VERSION
   popd
