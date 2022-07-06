@@ -11,6 +11,11 @@ set -u
 # Echo commands to stdout.
 set -x
 
+# HACK: If we let mktemp use the default /tmp directory, the system purges the
+# file before the end of the script for some reason. We use /var/tmp as a
+# workaround.
+export TMPDIR='/var/tmp'
+
 BUNDLE_FILENAME="$(mktemp --suffix .tgz)"
 readonly BUNDLE_FILENAME
 
