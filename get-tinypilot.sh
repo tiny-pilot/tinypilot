@@ -11,10 +11,15 @@ set -u
 # Echo commands to stdout.
 set -x
 
-BUNDLE_FILENAME="$(mktemp --suffix .tgz)"
+# HACK: If we let mktemp use the default /tmp directory, the system purges the
+# file before the end of the script for some reason. We use /var/tmp as a
+# workaround.
+readonly TEMP_DIR='/var/tmp'
+
+BUNDLE_FILENAME="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .tgz)"
 readonly BUNDLE_FILENAME
 
-BUNDLE_DIR="$(mktemp --directory)"
+BUNDLE_DIR="$(mktemp --tmpdir="${TEMP_DIR}" --directory)"
 readonly BUNDLE_DIR
 
 # Remove temporary files & directories.
