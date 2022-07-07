@@ -6,5 +6,5 @@ echo "Please switch to https://raw.githubusercontent.com/tiny-pilot/tinypilot/ma
 curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/jdeanwallace/update-overhaul/get-tinypilot.sh | \
     bash -
