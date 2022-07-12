@@ -50,6 +50,20 @@ RUN echo "#/bin/bash" > postinst && \
     echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
     chmod 0555 postinst
 
+RUN echo "#/bin/bash" > prerm && \
+    echo "set -e" >> prerm && \
+    echo "cd /opt/tinypilot" >> prerm && \
+    echo "rm -rf venv app_settings.cfg" >> prerm && \
+    echo "find . \
+-type f \
+-name '*.py[co]' \
+-delete \
+-or \
+-type d \
+-name __pycache__ \
+-delete" >> prerm && \
+    chmod 0555 prerm
+
 RUN dpkg --build "/releases/${PKG_ID}"
 
 FROM scratch as artifact
