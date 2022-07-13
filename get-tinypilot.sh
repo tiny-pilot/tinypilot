@@ -2,6 +2,8 @@
 
 # Download and install the latest version of TinyPilot Community.
 
+{ # Prevent the script from executing until the client downloads the full file.
+
 # Exit on first error.
 set -e
 
@@ -91,3 +93,5 @@ tar \
   --directory "${BUNDLE_DIR}"
 pushd "${BUNDLE_DIR}"
 ./install
+
+} # Prevent the script from executing until the client downloads the full file.
