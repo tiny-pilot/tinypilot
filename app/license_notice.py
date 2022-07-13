@@ -175,9 +175,9 @@ _LICENSE_METADATA = [
         './venv/lib/python3.7/site-packages/WTForms-*.dist-info/LICENSE*',
     ),
 
-    # Ansible dependencies.
-    # These licenses are technically available on the device, but the tinypilot
-    # web app user doesn't have read access to them.
+    # Ansible dependencies that are not covered above. They are not available
+    # permanently on the device because we only create ephemeral Ansible install
+    # environments.
     LicenseMetadata(
         name='Ansible',
         homepage_url='https://www.ansible.com',
@@ -186,33 +186,31 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='cffi',
         homepage_url='http://cffi.readthedocs.org/',
-        license_glob_pattern=
-        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/cffi-*.dist-info/LICENSE'
+        license_url='https://foss.heptapod.net/pypy/cffi/-/blob/v1.14.1/LICENSE'
     ),
     LicenseMetadata(
         name='cryptography',
         homepage_url='https://cryptography.io',
-        license_glob_pattern=
-        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/cryptography-*.dist-info/LICENSE.BSD'
+        license_url=
+        'https://raw.githubusercontent.com/pyca/cryptography/35.0.0/LICENSE.BSD'
     ),
     LicenseMetadata(
         name='MarkupSafe',
         homepage_url='https://palletsprojects.com/p/markupsafe/',
-        license_glob_pattern=
-        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/MarkupSafe-*.dist-info/LICENSE.rst'
+        license_url=
+        'https://raw.githubusercontent.com/pallets/markupsafe/1.1.x/LICENSE.rst'
     ),
     LicenseMetadata(
         name='pycparser',
         homepage_url='https://github.com/eliben/pycparser',
-        license_glob_pattern=
-        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/pycparser-*.dist-info/LICENSE'
+        license_url=
+        'https://raw.githubusercontent.com/eliben/pycparser/release_v2.20/LICENSE'
     ),
     LicenseMetadata(
         name='pyOpenSSL',
         homepage_url='https://pyopenssl.org',
-        license_glob_pattern=
-        '/opt/tinypilot-updater/venv/lib/python3.7/site-packages/pyOpenSSL-*.dist-info/LICENSE'
-    ),
+        license_url=
+        'https://raw.githubusercontent.com/pyca/pyopenssl/20.0.1/LICENSE'),
 
     # Indirect dependencies through Janus.
     LicenseMetadata(
