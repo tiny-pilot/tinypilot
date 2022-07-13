@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo "This script is now DEPRECATED." >&2
-echo "Please switch to https://raw.githubusercontent.com/tiny-pilot/tinypilot/jdeanwallace/update-overhaul/get-tinypilot.sh" >&2
+echo "Please switch to https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh" >&2
 
 curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/jdeanwallace/update-overhaul/get-tinypilot.sh | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh | \
     bash -
