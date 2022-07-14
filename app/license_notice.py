@@ -186,19 +186,13 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='cffi',
         homepage_url='http://cffi.readthedocs.org/',
-        license_url='https://foss.heptapod.net/pypy/cffi/-/blob/v1.14.1/LICENSE'
+        license_url='https://foss.heptapod.net/pypy/cffi/-/raw/v1.14.1/LICENSE'
     ),
     LicenseMetadata(
         name='cryptography',
         homepage_url='https://cryptography.io',
         license_url=
         'https://raw.githubusercontent.com/pyca/cryptography/35.0.0/LICENSE.BSD'
-    ),
-    LicenseMetadata(
-        name='MarkupSafe',
-        homepage_url='https://palletsprojects.com/p/markupsafe/',
-        license_url=
-        'https://raw.githubusercontent.com/pallets/markupsafe/1.1.x/LICENSE.rst'
     ),
     LicenseMetadata(
         name='pycparser',
