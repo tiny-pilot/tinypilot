@@ -67,7 +67,7 @@ readonly BUNDLE_DIR
 
 # Remove temporary files & directories.
 clean_up() {
-  sudo rm -rf "${BUNDLE_FILENAME}" "${BUNDLE_DIR}"
+  rm -rf "${BUNDLE_FILENAME}" "${BUNDLE_DIR}"
 }
 
 # Always clean up before exiting.
