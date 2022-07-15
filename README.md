@@ -66,7 +66,7 @@ curl \
   --silent \
   --show-error \
   https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh | \
-    sudo bash - && \
+    bash - && \
   sudo reboot
 ```
 
