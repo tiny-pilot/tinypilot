@@ -104,7 +104,7 @@ apt-get install -y \
   python3-venv
 
 python3 -m venv "${VIRTUALENV_DIR}"
-# shellcheck disable=SC1091 # Don’t follow sourced script.
+# shellcheck disable=SC1091,SC1090 # Don’t follow dynamically sourced script.
 . "${VIRTUALENV_DIR}/bin/activate"
 # Ensure we're using a version of pip that can use binary wheels where available
 # instead of building the packages locally.
