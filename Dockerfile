@@ -46,9 +46,13 @@ RUN echo "Package: ${PKG_NAME}" >> control && \
     echo "Homepage: https://tinypilotkvm.com" >> control && \
     echo "Description: Simple, easy-to-use KVM over IP" >> control
 
-RUN echo "#!/bin/bash" > preinst && \
-    echo "rm -rf /opt/tinypilot" >> preinst && \
-    chmod 0555 preinst
+RUN cat > preinst <<EOF
+#!/bin/bash
+if [[ -d /opt/tinypilot/.git ]]; then
+  rm -rf /opt/tinypilot /opt/tinypilot-updater
+fi
+EOF
+RUN chmod 0555 preinst
 
 RUN echo "#!/bin/bash" > postinst && \
     echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
