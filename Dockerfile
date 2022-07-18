@@ -1,3 +1,7 @@
+# syntax=docker/dockerfile:1.4
+# Enable here-documents:
+# https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md#here-documents
+
 FROM debian:bullseye-20220328-slim AS build
 
 # The canonical TinyPilot version. For TinyPilot Community, this is a git commit
