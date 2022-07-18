@@ -62,7 +62,7 @@ RUN cat > prerm <<EOF
 #!/bin/bash
 find /opt/tinypilot \
   -type f \
-  -name '*.py[co]' \
+  -name *.pyc \
   -delete \
   -or \
   -type d \
