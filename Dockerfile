@@ -42,11 +42,11 @@ RUN echo "Package: ${PKG_NAME}" >> control && \
     echo "Homepage: https://tinypilotkvm.com" >> control && \
     echo "Description: Simple, easy-to-use KVM over IP" >> control
 
-RUN echo "#/bin/bash" > preinst && \
+RUN echo "#!/bin/bash" > preinst && \
     echo "rm -rf /opt/tinypilot" >> preinst && \
     chmod 0555 preinst
 
-RUN echo "#/bin/bash" > postinst && \
+RUN echo "#!/bin/bash" > postinst && \
     echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
     chmod 0555 postinst
 
