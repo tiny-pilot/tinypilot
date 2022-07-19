@@ -1,3 +1,7 @@
+# syntax=docker/dockerfile:1.4
+# Enable here-documents:
+# https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md#here-documents
+
 FROM debian:bullseye-20220328-slim AS build
 
 # The canonical TinyPilot version. For TinyPilot Community, this is a git commit
@@ -42,13 +46,33 @@ RUN echo "Package: ${PKG_NAME}" >> control && \
     echo "Homepage: https://tinypilotkvm.com" >> control && \
     echo "Description: Simple, easy-to-use KVM over IP" >> control
 
-RUN echo "#/bin/bash" > preinst && \
-    echo "rm -rf /opt/tinypilot" >> preinst && \
-    chmod 0555 preinst
+RUN cat > preinst <<EOF
+#!/bin/bash
 
-RUN echo "#/bin/bash" > postinst && \
+# If a .git directory exists, the previous version was installed with the legacy
+# installer, so wipe the install location and the installer directory clean.
+if [[ -d /opt/tinypilot/.git ]]; then
+  rm -rf /opt/tinypilot /opt/tinypilot-updater
+fi
+EOF
+RUN chmod 0555 preinst
+
+RUN echo "#!/bin/bash" > postinst && \
     echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
     chmod 0555 postinst
+
+RUN cat > prerm <<EOF
+#!/bin/bash
+find /opt/tinypilot \
+  -type f \
+  -name *.pyc \
+  -delete \
+  -or \
+  -type d \
+  -name __pycache__ \
+  -delete
+EOF
+RUN chmod 0555 prerm
 
 RUN dpkg --build "/releases/${PKG_ID}"
 

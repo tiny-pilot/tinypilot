@@ -92,6 +92,6 @@ tar \
   --file "${BUNDLE_FILENAME}" \
   --directory "${BUNDLE_DIR}"
 pushd "${BUNDLE_DIR}"
-./install
+sudo ./install
 
 } # Prevent the script from executing until the client downloads the full file.
