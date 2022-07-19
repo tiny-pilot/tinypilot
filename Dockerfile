@@ -48,6 +48,9 @@ RUN echo "Package: ${PKG_NAME}" >> control && \
 
 RUN cat > preinst <<EOF
 #!/bin/bash
+
+# If a .git directory exists, the previous version was installed with the legacy
+# installer, so wipe the install location and the installer directory clean.
 if [[ -d /opt/tinypilot/.git ]]; then
   rm -rf /opt/tinypilot /opt/tinypilot-updater
 fi
