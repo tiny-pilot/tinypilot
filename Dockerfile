@@ -61,6 +61,19 @@ RUN echo "#!/bin/bash" > postinst && \
     echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
     chmod 0555 postinst
 
+RUN cat > prerm <<EOF
+#!/bin/bash
+find /opt/tinypilot \
+  -type f \
+  -name *.pyc \
+  -delete \
+  -or \
+  -type d \
+  -name __pycache__ \
+  -delete
+EOF
+RUN chmod 0555 prerm
+
 RUN dpkg --build "/releases/${PKG_ID}"
 
 FROM scratch as artifact
