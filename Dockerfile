@@ -63,7 +63,13 @@ RUN echo "#!/bin/bash" > postinst && \
 
 RUN cat > prerm <<EOF
 #!/bin/bash
-find /opt/tinypilot \
+
+# Exit script on first failure.
+set -e
+
+cd /opt/tinypilot
+rm -rf venv
+find . \
   -type f \
   -name *.pyc \
   -delete \
