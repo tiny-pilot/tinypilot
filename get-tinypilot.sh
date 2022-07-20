@@ -62,12 +62,11 @@ readonly TEMP_DIR='/var/tmp'
 BUNDLE_FILENAME="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .tgz)"
 readonly BUNDLE_FILENAME
 
-BUNDLE_DIR="$(mktemp --tmpdir="${TEMP_DIR}" --directory)"
-readonly BUNDLE_DIR
+readonly INSTALLER_DIR='/opt/tinypilot-updater'
 
 # Remove temporary files & directories.
 clean_up() {
-  rm -rf "${BUNDLE_FILENAME}" "${BUNDLE_DIR}"
+  rm -rf "${BUNDLE_FILENAME}"
 }
 
 # Always clean up before exiting.
@@ -86,12 +85,14 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
 fi
 
 # Extract tarball to temporary directory and run install.
+rm -rf "${INSTALLER_DIR}"
+mkdir -p "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
   --file "${BUNDLE_FILENAME}" \
-  --directory "${BUNDLE_DIR}"
-pushd "${BUNDLE_DIR}"
+  --directory "${INSTALLER_DIR}"
+pushd "${INSTALLER_DIR}"
 sudo ./install
 
 } # Prevent the script from executing until the client downloads the full file.
