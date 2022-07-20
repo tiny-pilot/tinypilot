@@ -74,7 +74,7 @@ clean_up() {
 trap 'clean_up' EXIT
 
 # Download tarball to temporary file.
-HTTP_CODE="$(curl https://bundles.tinypilotkvm.com/community/tinypilot-community-20220719T1424Z-e2af7e8.tgz \
+HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
   --location \
   --output "${BUNDLE_FILENAME}" \
   --write-out '%{http_code}' \
