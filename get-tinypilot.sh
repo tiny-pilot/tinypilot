@@ -84,7 +84,7 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
   exit 1
 fi
 
-# Extract tarball to temporary directory and run install.
+# Extract tarball to installer directory and run install.
 rm -rf "${INSTALLER_DIR}"
 mkdir -p "${INSTALLER_DIR}"
 tar \
