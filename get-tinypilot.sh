@@ -89,15 +89,18 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
   exit 1
 fi
 
-# Extract tarball to installer directory and run install.
+# Extract tarball to installer directory. The installer directory and all its
+# content must have root ownership.
 sudo rm -rf "${INSTALLER_DIR}"
 sudo mkdir -p "${INSTALLER_DIR}"
-sudo chown "$(whoami):$(whoami)" --recursive "${INSTALLER_DIR}"
-tar \
+sudo tar \
   --gunzip \
   --extract \
   --file "${BUNDLE_FILENAME}" \
   --directory "${INSTALLER_DIR}"
+sudo chown "$(whoami):$(whoami)" --recursive "${INSTALLER_DIR}"
+
+# Run install.
 pushd "${INSTALLER_DIR}"
 sudo ./install
 
