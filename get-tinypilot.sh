@@ -92,6 +92,7 @@ fi
 # Extract tarball to installer directory and run install.
 sudo rm -rf "${INSTALLER_DIR}"
 sudo mkdir -p "${INSTALLER_DIR}"
+sudo chown "$(whoami):$(whoami)" --recursive "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
