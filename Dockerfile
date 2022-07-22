@@ -50,9 +50,9 @@ RUN cat > preinst <<EOF
 #!/bin/bash
 
 # If a .git directory exists, the previous version was installed with the legacy
-# installer, so wipe the install location and the installer directory clean.
+# installer, so wipe the install location.
 if [[ -d /opt/tinypilot/.git ]]; then
-  rm -rf /opt/tinypilot /opt/tinypilot-updater
+  rm -rf /opt/tinypilot
 fi
 EOF
 RUN chmod 0555 preinst
