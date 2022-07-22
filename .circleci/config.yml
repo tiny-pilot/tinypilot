@@ -185,7 +185,7 @@ jobs:
             )
             for ANSIBLE_ROLE in "${ANSIBLE_ROLES[@]}"; do
               if [[ ! -d "${ANSIBLE_ROLE}" ]]; then
-                >&2 echo "Missing Ansible role: ${ANSIBLE_ROLE}"
+                >&2 echo "Bundle is missing Ansible role: ${ANSIBLE_ROLE}"
                 exit 1
               fi
             done
