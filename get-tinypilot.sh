@@ -62,6 +62,11 @@ readonly TEMP_DIR='/var/tmp'
 BUNDLE_FILENAME="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .tgz)"
 readonly BUNDLE_FILENAME
 
+# The installer directory needs to be `/opt/tinypilot-updater`, because other
+# parts of the application rely on the ansible roles being present in that
+# location. In theory, we could otherwise also extract to a temporary and
+# ephemeral folder, and run the installation from there. We might refactor and
+# change this setup in the future.
 readonly INSTALLER_DIR='/opt/tinypilot-updater'
 
 # Remove temporary files & directories.
