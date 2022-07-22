@@ -123,6 +123,72 @@ jobs:
           root: ./bundler
           paths:
             - ./dist
+  check_bundle_integrity:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Check bundle integrity
+          command: |
+            # Exit script on first failure.
+            set -e
+
+            # Echo commands to stdout.
+            set -x
+
+            # Exit on unset variable.
+            set -u
+
+            BUNDLE_FILE="$(ls dist/tinypilot*.tgz)"
+            readonly BUNDLE_FILE
+            BUNDLE_DIR="$(mktemp --tmpdir=/var/tmp --directory)"
+            readonly BUNDLE_DIR
+
+            # Check bundle size.
+            BUNDLE_SIZE_BYTES="$(wc -c <"${BUNDLE_FILE}")"
+            if [[ "${BUNDLE_SIZE_BYTES}" -eq 0 ]]; then
+              >&2 echo 'Bundle size is zero.'
+              exit 1
+            fi
+            if [[ "${BUNDLE_SIZE_BYTES}" -gt 5000000 ]]; then
+              >&2 echo 'Bundle size is larger than 5mb.'
+              exit 1
+            fi
+
+            # Extract tarball to temporary directory.
+            tar \
+              --gunzip \
+              --extract \
+              --file "${BUNDLE_FILE}" \
+              --directory "${BUNDLE_DIR}"
+            pushd "${BUNDLE_DIR}"
+
+            # Check that install script exists.
+            if [[ ! -f install ]]; then
+              >&2 echo 'Bundle is missing install script.'
+              exit 1
+            fi
+
+            # Check that Debian package exists.
+            if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
+              >&2 echo 'Bundle is missing Debian package.'
+              exit 1
+            fi
+
+            # Check that Ansible roles exist.
+            readonly ANSIBLE_ROLES=(
+              ansible-role-nginx
+              ansible-role-tinypilot
+              ansible-role-ustreamer
+            )
+            for ANSIBLE_ROLE in "${ANSIBLE_ROLES[@]}"; do
+              if [[ ! -d "${ANSIBLE_ROLE}" ]]; then
+                >&2 echo "Missing Ansible role: ${ANSIBLE_ROLE}"
+                exit 1
+              fi
+            done
   upload_bundle:
     docker:
       - image: cimg/base:2020.01
@@ -201,9 +267,15 @@ workflows:
           filters:
             branches:
               only: master
-      - upload_bundle:
+      - check_bundle_integrity:
           requires:
             - build_bundle
+          filters:
+            branches:
+              only: master
+      - upload_bundle:
+          requires:
+            - check_bundle_integrity
           filters:
             branches:
               only: master
