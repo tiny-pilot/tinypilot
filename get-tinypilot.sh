@@ -90,8 +90,8 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
 fi
 
 # Extract tarball to installer directory and run install.
-rm -rf "${INSTALLER_DIR}"
-mkdir -p "${INSTALLER_DIR}"
+sudo rm -rf "${INSTALLER_DIR}"
+sudo mkdir -p "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
