@@ -98,7 +98,7 @@ sudo tar \
   --extract \
   --file "${BUNDLE_FILENAME}" \
   --directory "${INSTALLER_DIR}"
-sudo chown "$(whoami):$(whoami)" --recursive "${INSTALLER_DIR}"
+sudo chown root:root --recursive "${INSTALLER_DIR}"
 
 # Run install.
 pushd "${INSTALLER_DIR}"
