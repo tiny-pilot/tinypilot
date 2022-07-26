@@ -123,6 +123,16 @@ jobs:
           root: ./bundler
           paths:
             - ./dist
+  verify_bundle:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Verify bundle integrity
+          command: ./bundler/verify-bundle
   upload_bundle:
     docker:
       - image: cimg/base:2020.01
@@ -201,9 +211,15 @@ workflows:
           filters:
             branches:
               only: master
-      - upload_bundle:
+      - verify_bundle:
           requires:
             - build_bundle
+          filters:
+            branches:
+              only: master
+      - upload_bundle:
+          requires:
+            - verify_bundle
           filters:
             branches:
               only: master
