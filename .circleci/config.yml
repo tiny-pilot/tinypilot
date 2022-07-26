@@ -224,6 +224,8 @@ workflows:
             branches:
               only: master
       - e2e:
+          requires:
+            - upload_bundle
           filters:
             branches:
               only: master
