@@ -14,9 +14,23 @@ set -u
 # Echo commands to stdout.
 set -x
 
-readonly REPO_ANSIBLE_TINYPILOT='https://github.com/tiny-pilot/ansible-role-tinypilot.git'
-readonly REPO_ANSIBLE_NGINX='https://github.com/tiny-pilot/ansible-role-nginx'
-readonly REPO_ANSIBLE_USTREAMER='https://github.com/tiny-pilot/ansible-role-ustreamer'
+declare -Ar ANSIBLE_TINYPILOT=(
+  [repo]='https://github.com/tiny-pilot/ansible-role-tinypilot.git'
+  [version]='master'
+)
+declare -Ar ANSIBLE_NGINX=(
+  [repo]='https://github.com/tiny-pilot/ansible-role-nginx'
+  [version]='master'
+)
+declare -Ar ANSIBLE_USTREAMER=(
+  [repo]='https://github.com/tiny-pilot/ansible-role-ustreamer'
+  [version]='master'
+)
+readonly ANSIBLE_ROLES=(
+  "${ANSIBLE_TINYPILOT[@]}"
+  "${ANSIBLE_NGINX[@]}"
+  "${ANSIBLE_USTREAMER[@]}"
+)
 
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
@@ -47,13 +61,14 @@ if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
 fi
 
 # Copy each Ansible role dependency into the bundle and add a version file.
-for GIT_URL in $REPO_ANSIBLE_TINYPILOT $REPO_ANSIBLE_NGINX $REPO_ANSIBLE_USTREAMER
-do
+for (( index=0; index < "${#ANSIBLE_ROLES[@]}"; index+=2 )); do
+  REPO="${ANSIBLE_ROLES[${index}]}"
+  VERSION=${ANSIBLE_ROLES[${index}+1]}
   git clone \
     --depth 1 \
-    --branch master \
-    "${GIT_URL}"
-  FOLDER_NAME="$(basename "${GIT_URL}" .git)"
+    --branch "${VERSION}" \
+    "${REPO}"
+  FOLDER_NAME="$(basename "${REPO}" .git)"
   pushd "${FOLDER_NAME}"
   git rev-parse --short HEAD > VERSION
   popd
