@@ -14,17 +14,17 @@ set -u
 # Echo commands to stdout.
 set -x
 
-declare -Ar ANSIBLE_TINYPILOT=(
-  [repo]='https://github.com/tiny-pilot/ansible-role-tinypilot.git'
-  [version]='master'
+readonly ANSIBLE_TINYPILOT=(
+  'https://github.com/tiny-pilot/ansible-role-tinypilot.git'
+  'master'
 )
-declare -Ar ANSIBLE_NGINX=(
-  [repo]='https://github.com/tiny-pilot/ansible-role-nginx'
-  [version]='master'
+readonly ANSIBLE_NGINX=(
+  'https://github.com/tiny-pilot/ansible-role-nginx'
+  'master'
 )
-declare -Ar ANSIBLE_USTREAMER=(
-  [repo]='https://github.com/tiny-pilot/ansible-role-ustreamer'
-  [version]='master'
+readonly ANSIBLE_USTREAMER=(
+  'https://github.com/tiny-pilot/ansible-role-ustreamer'
+  'master'
 )
 readonly ANSIBLE_ROLES=(
   "${ANSIBLE_TINYPILOT[@]}"
