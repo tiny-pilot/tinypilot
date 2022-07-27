@@ -67,6 +67,7 @@ for (( index=0; index < "${#ANSIBLE_ROLES[@]}"; index+=2 )); do
   git clone \
     --depth 1 \
     --branch "${VERSION}" \
+    --single-branch \
     "${REPO}"
   FOLDER_NAME="$(basename "${REPO}" .git)"
   pushd "${FOLDER_NAME}"
