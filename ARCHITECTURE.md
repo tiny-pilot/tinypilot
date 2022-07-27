@@ -62,8 +62,12 @@ Modern browsers support MJPEG natively, but it has a few drawbacks:
 
 As of Feb. 2021, uStreamer's maintainer is working on a H264 option, expected to be available in Q1 or Q2 2021. This will likely alleviate issues around MJPEG.
 
-## Installation
+## Software Distribution (Installation, Updates)
 
-TinyPilot's installation process is somewhat unusual in that it depends on Ansible. The [`quick-install`](./quick-install) script bootstraps an Ansible environment on a Raspberry Pi and then uses [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot) to install itself locally. `ansible-role-tinypilot` transitively includes other roles that TinyPilot depends on such as [`ansible-role-ustreamer`](https://github.com/mtlynch/ansible-role-ustreamer) and [`ansible-role-nginx`](https://github.com/geerlingguy/ansible-role-nginx).
+The TinyPilot software is distributed as a single-file tarball bundle, which is meant to be installed in a Raspberry Pi environment. On a high level, a bundle contains:
 
-The `quick-install` script is also responsible for version-to-version updates and configuration changes.
+- The code for the TinyPilot web service
+- The procedures for configuring the target system, e.g. writing settings files or setting up services.
+- Meta-data, e.g. the TinyPilot version.
+
+For more details, see [the `README` of the bundler](bundler/README.md).
