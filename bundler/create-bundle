@@ -18,7 +18,7 @@ set -x
 # (repo_url version)
 readonly ANSIBLE_TINYPILOT=(
   'https://github.com/tiny-pilot/ansible-role-tinypilot'
-  'master'
+  'update-overhaul'
 )
 readonly ANSIBLE_NGINX=(
   'https://github.com/tiny-pilot/ansible-role-nginx'
