@@ -17,7 +17,7 @@ set -x
 # Ansible role dependencies are each described as an array of two elements:
 # (repo_url version)
 readonly ANSIBLE_TINYPILOT=(
-  'https://github.com/tiny-pilot/ansible-role-tinypilot.git'
+  'https://github.com/tiny-pilot/ansible-role-tinypilot'
   'master'
 )
 readonly ANSIBLE_NGINX=(
