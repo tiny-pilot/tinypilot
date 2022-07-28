@@ -14,24 +14,12 @@ set -u
 # Echo commands to stdout.
 set -x
 
-# Ansible role dependencies are each described as an array of two elements:
-# (repo_url version)
-readonly ANSIBLE_TINYPILOT=(
-  'https://github.com/tiny-pilot/ansible-role-tinypilot'
-  'master'
-)
-readonly ANSIBLE_NGINX=(
-  'https://github.com/tiny-pilot/ansible-role-nginx'
-  'master'
-)
-readonly ANSIBLE_USTREAMER=(
-  'https://github.com/tiny-pilot/ansible-role-ustreamer'
-  'master'
-)
+# Ansible role dependencies are each described as a pair of strings
+# [repo_url, version].
 readonly ANSIBLE_ROLES=(
-  "${ANSIBLE_TINYPILOT[@]}"
-  "${ANSIBLE_NGINX[@]}"
-  "${ANSIBLE_USTREAMER[@]}"
+  'https://github.com/tiny-pilot/ansible-role-tinypilot' 'master'
+  'https://github.com/tiny-pilot/ansible-role-nginx' 'master'
+  'https://github.com/tiny-pilot/ansible-role-ustreamer' 'master'
 )
 
 readonly BUNDLE_DIR='bundle'
