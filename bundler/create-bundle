@@ -52,14 +52,14 @@ fi
 
 # Copy each Ansible role dependency into the bundle and add a version file.
 for (( index=0; index < "${#ANSIBLE_ROLES[@]}"; index+=2 )); do
-  REPO="${ANSIBLE_ROLES[${index}]}"
-  VERSION=${ANSIBLE_ROLES[${index}+1]}
+  REPO_URL="${ANSIBLE_ROLES["${index}"]}"
+  VERSION="${ANSIBLE_ROLES["${index}"+1]}"
   git clone \
     --depth 1 \
     --branch "${VERSION}" \
     --single-branch \
-    "${REPO}"
-  FOLDER_NAME="$(basename "${REPO}" .git)"
+    "${REPO_URL}"
+  FOLDER_NAME="$(basename "${REPO_URL}" .git)"
   pushd "${FOLDER_NAME}"
   git rev-parse --short HEAD > VERSION
   popd
