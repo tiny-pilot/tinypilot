@@ -17,7 +17,7 @@ set -x
 # Ansible role dependencies are each described as a pair of strings
 # [repo_url, version].
 readonly ANSIBLE_ROLES=(
-  'https://github.com/tiny-pilot/ansible-role-tinypilot' 'master'
+  'https://github.com/tiny-pilot/ansible-role-tinypilot' 'update-overhaul'
   'https://github.com/tiny-pilot/ansible-role-nginx' 'master'
   'https://github.com/tiny-pilot/ansible-role-ustreamer' 'master'
 )
