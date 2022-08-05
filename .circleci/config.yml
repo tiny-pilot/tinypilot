@@ -106,14 +106,14 @@ jobs:
             - "*.deb"
   build_bundle:
     docker:
-      - image: cimg/base:2020.01
+      - image: circleci/python:3.7.3
     steps:
       - checkout
       - attach_workspace:
           at: ./bundler/bundle/
       - run:
           name: Install dependencies
-          command: sudo apt-get update && sudo apt-get install -y git libffi-dev libssl-dev python3-dev python3-venv wget
+          command: sudo apt-get update && sudo apt-get install -y git
       - run:
           name: Create the bundle
           command: cd bundler && ./create-bundle

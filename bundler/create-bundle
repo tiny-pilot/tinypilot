@@ -14,14 +14,6 @@ set -u
 # Echo commands to stdout.
 set -x
 
-# Ansible role dependencies are each described as a pair of strings
-# [repo_url, version].
-readonly ANSIBLE_ROLES=(
-  'https://github.com/tiny-pilot/ansible-role-tinypilot' 'master'
-  'https://github.com/tiny-pilot/ansible-role-nginx' 'master'
-  'https://github.com/tiny-pilot/ansible-role-ustreamer' 'master'
-)
-
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
@@ -41,8 +33,9 @@ readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
-# Enter working directory to set up the bundle’s inner structure.
-pushd "${BUNDLE_DIR}"
+python3 -m venv venv
+. venv/bin/activate
+pip install "ansible==2.9.10"
 
 # Ensure that a TinyPilot Debian package exists.
 if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
@@ -50,30 +43,11 @@ if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
   exit 1
 fi
 
-# Copy each Ansible role dependency into the bundle and add a version file.
-for (( index=0; index < "${#ANSIBLE_ROLES[@]}"; index+=2 )); do
-  REPO_URL="${ANSIBLE_ROLES["${index}"]}"
-  VERSION="${ANSIBLE_ROLES["${index}"+1]}"
-  git clone \
-    --depth 1 \
-    --branch "${VERSION}" \
-    --single-branch \
-    "${REPO_URL}"
-  FOLDER_NAME="$(basename "${REPO_URL}" .git)"
-  pushd "${FOLDER_NAME}"
-  git rev-parse --short HEAD > VERSION
-  popd
-done
-
-# Remove all `.git/` folders.
-find . \
-  -type d \
-  -name .git \
-  -prune \
-  -exec rm -rf {} \;
-
-# Leave working directory to assemble the tarball bundle.
-popd
+# Install Ansible role dependencies.
+ansible-galaxy install \
+  --roles-path "${BUNDLE_DIR}/roles" \
+  --force \
+  git+https://github.com/tiny-pilot/ansible-role-tinypilot,galaxy-dependencies
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
