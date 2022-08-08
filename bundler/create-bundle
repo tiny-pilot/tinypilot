@@ -35,7 +35,7 @@ readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILO
 
 python3 -m venv venv
 . venv/bin/activate
-pip install --requirement requirements.txt
+pip install --requirement pip_requirements.txt
 
 # Ensure that a TinyPilot Debian package exists.
 if ! ls "${BUNDLE_DIR}/tinypilot"*.deb 1> /dev/null 2>&1; then
@@ -47,7 +47,7 @@ fi
 ansible-galaxy install \
   --roles-path "${BUNDLE_DIR}/roles" \
   --force \
-  git+https://github.com/tiny-pilot/ansible-role-tinypilot,master
+  --role-file ansible_requirements.yml
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
