@@ -38,7 +38,7 @@ python3 -m venv venv
 pip install "ansible==2.9.10"
 
 # Ensure that a TinyPilot Debian package exists.
-if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
+if ! ls "${BUNDLE_DIR}/tinypilot*.deb" 1> /dev/null 2>&1; then
   echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
   exit 1
 fi
