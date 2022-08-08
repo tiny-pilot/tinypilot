@@ -47,7 +47,7 @@ fi
 ansible-galaxy install \
   --roles-path "${BUNDLE_DIR}/roles" \
   --force \
-  git+https://github.com/tiny-pilot/ansible-role-tinypilot,galaxy-dependencies
+  git+https://github.com/tiny-pilot/ansible-role-tinypilot,master
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
