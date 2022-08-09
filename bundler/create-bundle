@@ -14,6 +14,9 @@ set -u
 # Echo commands to stdout.
 set -x
 
+readonly ANSIBLE_ROLE_TINYPILOT_REPO='https://github.com/tiny-pilot/ansible-role-tinypilot'
+readonly ANSIBLE_ROLE_TINYPILOT_VERSION='master'
+
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
@@ -47,7 +50,7 @@ fi
 ansible-galaxy install \
   --roles-path "${BUNDLE_DIR}/roles" \
   --force \
-  git+https://github.com/tiny-pilot/ansible-role-tinypilot,master
+  "git+${ANSIBLE_ROLE_TINYPILOT_REPO},${ANSIBLE_ROLE_TINYPILOT_VERSION}"
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
