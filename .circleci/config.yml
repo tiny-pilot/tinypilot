@@ -35,7 +35,7 @@ jobs:
           command: ./dev-scripts/check-style
   build_python:
     docker:
-      - image: circleci/python:3.7.3
+      - image: cimg/python:3.7.4
     steps:
       - checkout
       - run:
@@ -106,7 +106,7 @@ jobs:
             - "*.deb"
   build_bundle:
     docker:
-      - image: circleci/python:3.7.3
+      - image: cimg/python:3.7.4
     steps:
       - checkout
       - attach_workspace:
