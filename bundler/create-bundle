@@ -38,7 +38,7 @@ readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILO
 
 python3 -m venv venv
 . venv/bin/activate
-pip install --requirement requirements.txt
+pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
 # Ensure that a TinyPilot Debian package exists.
 if ! ls "${BUNDLE_DIR}/tinypilot"*.deb 1> /dev/null 2>&1; then
