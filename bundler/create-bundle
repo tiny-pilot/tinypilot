@@ -38,6 +38,9 @@ readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILO
 
 python3 -m venv venv
 . venv/bin/activate
+# Ensure we're using a version of pip that can use binary wheels where available
+# instead of building the packages locally.
+pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
 # Ensure that a TinyPilot Debian package exists.
