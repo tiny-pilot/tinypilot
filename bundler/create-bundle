@@ -15,7 +15,7 @@ set -u
 set -x
 
 readonly ANSIBLE_ROLE_TINYPILOT_REPO='https://github.com/tiny-pilot/ansible-role-tinypilot'
-readonly ANSIBLE_ROLE_TINYPILOT_VERSION='update-overhaul'
+readonly ANSIBLE_ROLE_TINYPILOT_VERSION='ansible-2.10'
 
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
