@@ -182,7 +182,7 @@ _LICENSE_METADATA = [
         name='Ansible',
         homepage_url='https://www.ansible.com',
         license_url=
-        'https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING'),
+        'https://raw.githubusercontent.com/ansible/ansible/v2.10.7/COPYING'),
     LicenseMetadata(
         name='cffi',
         homepage_url='http://cffi.readthedocs.org/',
