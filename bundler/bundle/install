@@ -111,7 +111,6 @@ pip install -r requirements.txt
 # Run Ansible.
 ansible-playbook \
   --inventory localhost, \
-  --user "${USER}" \
   install.yml \
   --extra-vars "@${INSTALL_SETTINGS_FILE}" \
   --extra-vars "tinypilot_debian_package_path=${PWD}/${TINYPILOT_DEBIAN_PACKAGE}"
