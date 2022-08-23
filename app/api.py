@@ -135,7 +135,7 @@ def version_get():
 
         Example:
         {
-            "version": "bf07bfe72941457cf068ca0a44c6b0d62dd9ef05",
+            "version": "bf07bfe",
         }
 
         Returns error object on failure.
