@@ -8,7 +8,12 @@ def send_keystroke(keyboard_path, control_keys, hid_keycode):
     hid_write.write_to_hid_interface(keyboard_path, buf)
 
     # If it's a normal keycode (i.e. not a standalone modifier key), add a
-    # message indicating that the key should be released after it is sent.
+    # message indicating that the key should be released after it is sent. We do
+    # this to prevent the keystroke from incorrectly repeating on the target
+    # matchine if there's latency on the network that causes a delay between the
+    # keydown event and keyup event. This has the disadvantage of preventing
+    # intentionally long key presses (see
+    #  https://github.com/tiny-pilot/tinypilot/issues/1093).
     if hid_keycode:
         release_keys(keyboard_path)
 
