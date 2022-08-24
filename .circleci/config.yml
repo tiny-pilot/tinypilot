@@ -204,30 +204,28 @@ workflows:
       - build_debian_package:
           filters:
             branches:
-              # TODO: Change back to `master` before we finally merge the
-              # `update-overhaul` branch. (ditto below)
-              only: update-overhaul
+              only: master
       - build_bundle:
           requires:
             - build_debian_package
           filters:
             branches:
-              only: update-overhaul
+              only: master
       - verify_bundle:
           requires:
             - build_bundle
           filters:
             branches:
-              only: update-overhaul
+              only: master
       - upload_bundle:
           requires:
             - verify_bundle
           filters:
             branches:
-              only: update-overhaul
+              only: master
       - e2e:
           requires:
             - upload_bundle
           filters:
             branches:
-              only: update-overhaul
+              only: master
