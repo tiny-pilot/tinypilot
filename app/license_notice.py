@@ -182,29 +182,35 @@ _LICENSE_METADATA = [
         name='Ansible',
         homepage_url='https://www.ansible.com',
         license_url=
-        'https://raw.githubusercontent.com/ansible/ansible/v2.9.10/COPYING'),
+        'https://raw.githubusercontent.com/ansible/ansible/v2.10.7/COPYING'),
     LicenseMetadata(
         name='cffi',
         homepage_url='http://cffi.readthedocs.org/',
-        license_url='https://foss.heptapod.net/pypy/cffi/-/raw/v1.14.1/LICENSE'
+        license_url='https://foss.heptapod.net/pypy/cffi/-/raw/v1.15.1/LICENSE'
     ),
     LicenseMetadata(
         name='cryptography',
         homepage_url='https://cryptography.io',
         license_url=
-        'https://raw.githubusercontent.com/pyca/cryptography/35.0.0/LICENSE.BSD'
+        'https://raw.githubusercontent.com/pyca/cryptography/37.0.4/LICENSE.BSD'
     ),
+    LicenseMetadata(
+        name='packaging',
+        homepage_url='https://github.com/pypa/packaging',
+        license_url=
+        'https://raw.githubusercontent.com/pypa/packaging/21.3/LICENSE.BSD'),
     LicenseMetadata(
         name='pycparser',
         homepage_url='https://github.com/eliben/pycparser',
         license_url=
-        'https://raw.githubusercontent.com/eliben/pycparser/release_v2.20/LICENSE'
+        'https://raw.githubusercontent.com/eliben/pycparser/release_v2.21/LICENSE'
     ),
     LicenseMetadata(
-        name='pyOpenSSL',
-        homepage_url='https://pyopenssl.org',
+        name='pyparsing',
+        homepage_url='https://github.com/pyparsing/pyparsing/',
         license_url=
-        'https://raw.githubusercontent.com/pyca/pyopenssl/20.0.1/LICENSE'),
+        'https://raw.githubusercontent.com/pyparsing/pyparsing/pyparsing_3.0.9/LICENSE'
+    ),
 
     # Indirect dependencies through Janus.
     LicenseMetadata(

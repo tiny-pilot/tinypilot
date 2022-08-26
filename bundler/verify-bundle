@@ -54,7 +54,7 @@ readonly ANSIBLE_ROLES=(
   ansible-role-ustreamer
 )
 for ansible_role in "${ANSIBLE_ROLES[@]}"; do
-  if [[ ! -d "${ansible_role}" ]]; then
+  if [[ ! -d "roles/${ansible_role}" ]]; then
     >&2 echo "Bundle is missing Ansible role: ${ansible_role}"
     exit 1
   fi

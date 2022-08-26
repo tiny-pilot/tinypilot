@@ -1,4 +1,4 @@
-FROM mtlynch/debian10-ansible:2.9.13
+FROM geerlingguy/docker-debian10-ansible
 
 RUN apt-get update && \
     apt-get install \
