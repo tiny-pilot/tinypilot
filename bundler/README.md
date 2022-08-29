@@ -16,11 +16,11 @@ Everything that’s inside the [`bundle/`](bundle) folder will be shipped to the
   - It’s built from the root [`Dockerfile`](../Dockerfile) and embedded as Debian package
 - **Several Ansible roles**
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
-  - The responsibility of the Ansible roles is to configure the target system
+  - The Ansible roles are responsible for configuring TinyPilot and its dependencies on the device.
 - **Metadata**
   - For example, version/build information
 
-On the target system, the bundle is unpacked to `/opt/tinypilot-updater`. It’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being there for applying system changes. We might refactor this in the future, though.
+On the device, the bundle is unpacked to `/opt/tinypilot-updater`. It’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being there for applying system changes. We might refactor this in the future, though.
 
 The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It does some bootstrapping and then hands over to `ansible-role-tinypilot`, which contains most of the actual installation logic.
 
@@ -37,7 +37,7 @@ New bundles are automatically uploaded via our build platform:
 
 The installation process is facilitated by the [`get-tinypilot.sh`](../get-tinypilot.sh) (`get-tinypilot-pro.sh` for Pro) script.
 
-For installing TinyPilot on the target device, the `get-tinypilot.sh` script unpacks the bundle and invokes the [`install`](bundle/install) script.
+For installing TinyPilot on the device, the `get-tinypilot.sh` script unpacks the bundle and invokes the [`install`](bundle/install) script.
 
 On a fresh device, the user runs the script manually. On a device with an existing TinyPilot installation, the script is invoked “under the hood” throughout the update process.
 
