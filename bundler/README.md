@@ -14,7 +14,6 @@ Everything that’s inside the [`bundle/`](bundle) folder will be shipped to the
 
 - **The TinyPilot web service**
   - It’s built from the root [`Dockerfile`](../Dockerfile) and embedded as Debian package
-  - On the device, the Debian package is installed to `/opt/tinypilot`
 - **Several Ansible roles**
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
   - The responsibility of the Ansible roles is to configure the target system
