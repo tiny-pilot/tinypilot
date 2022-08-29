@@ -76,7 +76,7 @@ When performing a version-to-version update, the above installation procedure is
 1. The update launcher starts the `tinypilot-updater` systemd service.
 1. The `tinypilot-updater` systemd service executes the [`update-service`](../scripts/update-service) Python script.
 1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/update` script.
-1. The privileged `update` service downloads and hands over to `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above).
+1. The privileged `update` service downloads `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above) and executes that script in the privileged context.
 
 This indirection in the update flow is necessary since the TinyPilot web service runs with limited privileges for security reasons. Therefore, the actual update process has to be carried out via a systemd service, which has root privileges.
 
