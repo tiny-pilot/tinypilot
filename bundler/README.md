@@ -68,11 +68,11 @@ The installation procedure consists of the following steps. The procedure is sli
 When performing a version-to-version update, the above installation procedure is carried out automatically after the user had triggered an update from the UI:
 
 1. From the TinyPilot web UI, the user clicks “System” > “Update”
-1. The backend returns two versions:
+1. TinyPilot’s web service backend returns two versions:
    - The one that is currently installed on the system.
    - The latest available version, which is returned from Gatekeeper.
 1. If the versions are different, the frontend shows an “Update” button.
-1. When the user clicks on “Update”, the backend runs the [update launcher](../app/update/launcher.py) asynchronously.
+1. When the user clicks on “Update”, TinyPilot’s web service backend runs the [update launcher](../app/update/launcher.py) asynchronously.
 1. The update launcher starts the `tinypilot-updater` systemd service.
 1. The `tinypilot-updater` systemd service executes the [`update-service`](../scripts/update-service) Python script.
 1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/update` script.
