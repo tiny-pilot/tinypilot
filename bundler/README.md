@@ -13,33 +13,33 @@ The TinyPilot bundle contains all the TinyPilot-owned code required to install T
 The [`create-bundle`](create-bundle) script generates the bundle from the [`bundle/`](bundle) folder. That folder contains a few “static” configuration files. At build time, the `create-bundle` script adds the following dependencies:
 
 - **The TinyPilot web service**
-  - It’s built from the root [`Dockerfile`](../Dockerfile) and embedded as Debian package
+  - The root [`Dockerfile`](../Dockerfile) builds a Debian package from the TinyPilot source files.
 - **Several Ansible roles**
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
   - The Ansible roles are responsible for configuring TinyPilot and its dependencies on the device.
 - **Metadata**
   - For example, version/build information
 
-On the device, the bundle is unpacked to `/opt/tinypilot-updater`. It’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being there for applying system changes. We might refactor this in the future, though.
+On the device, the `get-tinypilot.sh` script (see below) unpacks the bundle to `/opt/tinypilot-updater`. It’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being there for applying system changes. We might refactor this in the future, though.
 
 The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It does some bootstrapping and then hands over to `ansible-role-tinypilot`, which contains most of the actual installation logic.
 
 ### Gatekeeper Web Service
 
-Gatekeeper is our web service where the bundles are hosted and distributed. [See here](https://github.com/tiny-pilot/gatekeeper) for more info.
+Gatekeeper is TinyPilot’s web service for hosting and distributing bundles. [See here](https://github.com/tiny-pilot/gatekeeper) for more info.
 
-New bundles are automatically uploaded via our build platform:
+Our CircleCI build pipeline automatically builds and uploads new bundles:
 
-- For Community, every commit to the `master` branch is released
-- For Pro, only tags with particular format (e.g. `2.4.1`) are released
+- For Community, it releases every commit to the `master` branch
+- For Pro, it only releases tags with particular format (e.g. `2.4.1`)
 
 ### `get-tinypilot.sh`
 
-The installation process is facilitated by the [`get-tinypilot.sh`](../get-tinypilot.sh) (`get-tinypilot-pro.sh` for Pro) script.
+The [`get-tinypilot.sh`](../get-tinypilot.sh) (`get-tinypilot-pro.sh` for Pro) script facilitates the installation process.
 
 For installing TinyPilot on the device, the `get-tinypilot.sh` script unpacks the bundle and invokes the [`install`](bundle/install) script.
 
-On a fresh device, the user runs the script manually. On a device with an existing TinyPilot installation, the script is invoked “under the hood” throughout the update process.
+On a fresh device, the user runs the script manually. On a device with an existing TinyPilot installation, the update process invokes the script “under the hood”.
 
 The `get-tinypilot.sh` script is idempotent, so it’s safe to run repeatedly.
 
@@ -49,15 +49,15 @@ The installation procedure consists of the following steps. The procedure is sli
 
 ### TinyPilot Community
 
-1. `get-tinypilot.sh` script retrieves latest bundle from Gatekeeper
-1. `get-tinypilot.sh` script unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script
+1. `get-tinypilot.sh` script retrieves latest bundle from Gatekeeper.
+1. `get-tinypilot.sh` script unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script.
 
 ### TinyPilot Pro
 
-1. `get-tinypilot-pro.sh` checks whether a version flag was specified.
-   - If no version flag was supplied, `get-tinypilot-pro.sh` asks Gatekeeper what the latest available version is.
+1. `get-tinypilot-pro.sh` checks whether the caller supplied a version flag.
+   - If the version flag is absent, `get-tinypilot-pro.sh` asks Gatekeeper what the latest available version is.
 1. `get-tinypilot-pro.sh` requests the bundle with the desired version from Gatekeeper.
-1. `get-tinypilot-pro.sh` script unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script
+1. `get-tinypilot-pro.sh` script unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script.
 
 ## Update Process
 
@@ -83,10 +83,10 @@ There is one main difference between the Community and Pro edition:
 
 ## History
 
-Until August 2022, the installation and update flows used to look differently. The rationale behind the overhaul are described in detail in the [“update overhaul document”](https://github.com/tiny-pilot/tinypilot-pro/blob/experimental/update-overhaul/UPDATE-WORKFLOW.md). The implementation of the overhaul was facilitated via [this mega ticket](https://github.com/tiny-pilot/tinypilot-pro/issues/445).
+Until August 2022, the installation and update flows used to look differently. The rationale behind the overhaul can be found in detail in the [“update overhaul document”](https://github.com/tiny-pilot/tinypilot-pro/blob/experimental/update-overhaul/UPDATE-WORKFLOW.md). We broke down the overhaul into individual tasks, which you can find in [this mega ticket](https://github.com/tiny-pilot/tinypilot-pro/issues/445).
 
 On a high level, the differences were:
 
-- The previous update flow relied on git repositories. So instead of shipping a self-contained bundle, new code was deployed via `git pull`. While this worked well, we felt that the entire setup was quite complex.
-- There were no license checks for TinyPilot Pro. Instead, the Pro source code was protected only via the “secret” URL of the git mirror.
+- The previous update flow relied on git repositories. So instead of shipping a self-contained bundle, the deployment of new code happened via `git pull`. While this worked well, we felt that the entire setup was quite complex.
+- There were no license checks for TinyPilot Pro. Instead, the only protection mechanism of the Pro source code was by keeping the URL of the git mirror secret.
 - Because the legacy update flow depended on commodity Git hosting, it prevented us from controlling important parts of the update experience such as ensuring valid version transitions, phasing rollouts into stages, and performing license checks.
