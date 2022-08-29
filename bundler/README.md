@@ -93,4 +93,4 @@ On a high level, the differences were:
 
 - The previous update flow relied on git repositories. So instead of shipping a self-contained bundle, new code was basically deployed via `git pull`. While this basically worked well, we felt that the entire setup was quite complex.
 - There were no license checks for TinyPilot Pro. Instead, the Pro source code was protected only via the “secret” URL of the git mirror.
-- Since the legacy update flow wasn’t hosted on our own infrastructure, we didn’t have much insight into usage or telemetrics.
+- Because the legacy update flow depended on commodity Git hosting, it prevented us from controlling important parts of the update experience such as ensuring valid version transitions, phasing rollouts into stages, and performing license checks.
