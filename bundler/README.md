@@ -18,7 +18,7 @@ Everything that’s inside the [`bundle/`](bundle) folder will be shipped to the
 - **Several Ansible roles**
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
   - The responsibility of the Ansible roles is to configure the target system
-- **Meta-data**
+- **Metadata**
   - For example, version/build information
 
 On the target system, the bundle is unpacked to `/opt/tinypilot-updater`. It’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being there for applying system changes. We might refactor this in the future, though.
