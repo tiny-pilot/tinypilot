@@ -8,9 +8,9 @@ Note that this repository (`tinypilot`) contains the source code of the TinyPilo
 
 ### Bundle
 
-The TinyPilot bundle is built from the [`bundle/`](bundle) folder by running the [`create-bundle`](create-bundle) script.
+The TinyPilot bundle contains all the TinyPilot-owned code required to install TinyPilot on a device.
 
-Everything that’s inside the [`bundle/`](bundle) folder will be shipped to the device. At build time, the `create-bundle` script adds the following dependencies to the bundle:
+The [`create-bundle`](create-bundle) script generates the bundle from the [`bundle/`](bundle) folder. That folder contains a few “static” configuration files. At build time, the `create-bundle` script adds the following dependencies:
 
 - **The TinyPilot web service**
   - It’s built from the root [`Dockerfile`](../Dockerfile) and embedded as Debian package
