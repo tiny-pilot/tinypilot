@@ -82,7 +82,7 @@ This indirection in the update flow is necessary since the TinyPilot web service
 
 There is one main difference between the Community and Pro edition:
 
-- On TinyPilot Community, the update process always installs the latest available version (i.e. built from the latest commit to the `master` branch).
+- On TinyPilot Community, the update process always installs the latest available version (i.e., built from the latest commit to the `master` branch).
 - On TinyPilot Pro, the update process installs the particular version that was returned from Gatekeeper and shown in the UI.
 
 ## History
