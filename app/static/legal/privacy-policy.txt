@@ -1,13 +1,13 @@
 PRIVACY POLICY
 
-Last updated: 2022-08-31
+Last updated: 2022-09-01
 
 This policy applies to the TinyPilot web application.
 
 What data we collect and why
 ----------------------------
 
-1. Device information: When you check for available updates, TinyPilot records information about the software running on your device in order to select a compatible update. This information includes OS name, kernel version, TinyPilot software version, and IP address.
+1. Device information: When you check for available updates, TinyPilot records information about the software running on your TinyPilot device in order to select a compatible update. This information includes operating system name, kernel version, TinyPilot software version, and IP address.
 
 2. Diagnostic log information: If you generate a shareable URL for your TinyPilot debug logs, your device will upload a copy of your recent application logs to TinyPilot servers. These logs may contain information such as hostnames, browser metadata, usernames, keystrokes or mouse movements. You have an opportunity to review all information before sharing it with us. TinyPilot also records the IP you use to upload this data to TinyPilot servers.
 
