@@ -6,7 +6,7 @@ def all_frontend_files():
     return _find_files_by_pattern([
         ('./app/templates', '*.html'),
         ('./app/static/css', '*.css'),
-        ('./app/static/legal', '*'),
+        ('./app/static/legal', '*.txt'),
         ('./app/static/js', '*.js'),
     ])
 
