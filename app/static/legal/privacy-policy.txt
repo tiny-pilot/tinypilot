@@ -1,0 +1,48 @@
+PRIVACY POLICY
+
+Last updated: 2022-08-31
+
+This policy applies to the TinyPilot web application.
+
+What data we collect and why
+----------------------------
+
+1. Device information: When you check for available updates, TinyPilot records information about the software running on your device in order to select a compatible update. This information includes OS name, kernel version, TinyPilot software version, and IP address.
+
+2. Diagnostic log information: If you generate a shareable URL for your TinyPilot debug logs, your device will upload a copy of your recent application logs to TinyPilot servers. These logs may contain information such as hostnames, browser metadata, usernames, keystrokes or mouse movements. You have an opportunity to review all information before sharing it with us. TinyPilot also records the IP you use to upload this data to TinyPilot servers.
+
+We do NOT collect data for the purposes of marketing or in-app telemetry.
+
+When we access your data
+------------------------
+
+1. To troubleshoot a software issue you've reported: When you share diagnostic logs in the process of requesting technical support, we will review the logs that you share with us.
+
+2. When required by law: TinyPilot, LLC is a US company with all infrastructure located within the US. TinyPilot does not share information about users unless we are compelled by a legal process or in the event of an emergency government request.
+
+Who we share data with
+----------------------
+
+TinyPilot does not share your data with any other partners or services.
+
+In the event of a sale or merger of TinyPilot, LLC, customer data from the TinyPilot web application will be included in the merger or acquisition and will become property of the new company.
+
+Where we store your data
+------------------------
+
+We store your data on servers in the United States.
+
+How long we store your data
+---------------------------
+
+We store your data indefinitely, unless you request removal.
+
+Requesting deletion
+-------------------
+
+You may request deletion of data associated with your TinyPilot device by contacting privacy@tinypilotkvm.com. We will honor deletion requests within 90 days of receipt.
+
+Contacting us
+-------------
+
+For questions about this policy, please contact privacy@tinypilotkvm.com.
