@@ -24,7 +24,7 @@ jobs:
           command: ./dev-scripts/check-bash
   check_style:
     docker:
-      - image: circleci/node:14.17.5-stretch
+      - image: cimg/node:14.17.5
     steps:
       - checkout
       - run:
