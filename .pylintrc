@@ -35,6 +35,7 @@ disable=
   too-many-public-methods,
   missing-class-docstring,
   superfluous-parens,
+  too-many-lines,       # We can decide on our own which files are too long
   multiple-imports,     # We're using isort to lint imports
   ungrouped-imports,    # We're using isort to lint imports
   wrong-import-order,   # We're using isort to lint imports
