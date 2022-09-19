@@ -8,7 +8,6 @@ allows TinyPilot code to modify it cleanly.
 Typical usage example:
 
     settings = update_settings.load()
-    settings.tinypilot_repo_branch = '2.1.5'
     update_settings.save(settings)
 """
 
@@ -40,23 +39,6 @@ class Settings:
 
     def as_dict(self):
         return self._data
-
-    # Note: tinypilot_repo_branch is confusingly named. It should really be
-    # tinypilot_repo_version, but this class just reflects the names in the
-    # TinyPilot Ansible role.
-    @property
-    def tinypilot_repo_branch(self):
-        return self._data['tinypilot_repo_branch']
-
-    @tinypilot_repo_branch.setter
-    def tinypilot_repo_branch(self, value):
-        """Sets the value of tinypilot_repo_branch in update settings.
-
-        Args:
-            value: A string value of a branch or tag name like '2.1.0' or
-                'virtual-storage'.
-        """
-        self._data['tinypilot_repo_branch'] = value
 
     @property
     def ustreamer_desired_fps(self):

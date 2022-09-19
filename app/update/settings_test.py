@@ -46,44 +46,42 @@ class UpdateSettingsTest(unittest.TestCase):
 
         self.assertEqual('', self.read_mock_settings_file())
 
-    def test_populates_empty_file_with_branch_name(self):
+    def test_populates_empty_file_with_initial_data(self):
         self.make_mock_settings_file('')
 
         settings = update.settings.load()
-        settings.tinypilot_repo_branch = 'dummy-branch-name'
+        settings.ustreamer_desired_fps = 25
         update.settings.save(settings)
 
-        self.assertMultiLineEqual(
-            """
-tinypilot_repo_branch: dummy-branch-name
+        self.assertMultiLineEqual("""
+ustreamer_desired_fps: 25
 """.lstrip(), self.read_mock_settings_file())
 
-    def test_overwrites_existing_branch_name(self):
+    def test_overwrites_value_of_existing_property(self):
         self.make_mock_settings_file("""
-tinypilot_repo_branch: branch-name-to-overwrite
+ustreamer_desired_fps: 25
 """.lstrip())
 
         settings = update.settings.load()
-        settings.tinypilot_repo_branch = 'dummy-branch-name'
+        settings.ustreamer_desired_fps = 10
         update.settings.save(settings)
 
-        self.assertMultiLineEqual(
-            """
-tinypilot_repo_branch: dummy-branch-name
+        self.assertMultiLineEqual("""
+ustreamer_desired_fps: 10
 """.lstrip(), self.read_mock_settings_file())
 
     def test_leaves_unrecognized_settings_intact(self):
         self.make_mock_settings_file("""
-tinypilot_repo_branch: branch-name-to-overwrite
 unrecognized_setting: dummyvalue
+ustreamer_desired_fps: 25
 """.lstrip())
 
         settings = update.settings.load()
-        settings.tinypilot_repo_branch = 'dummy-branch-name'
+        settings.ustreamer_desired_fps = 10
         update.settings.save(settings)
 
         self.assertMultiLineEqual(
             """
-tinypilot_repo_branch: dummy-branch-name
 unrecognized_setting: dummyvalue
+ustreamer_desired_fps: 10
 """.lstrip(), self.read_mock_settings_file())
