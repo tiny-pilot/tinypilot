@@ -233,9 +233,9 @@ connectedCallback() {
 };
 ```
 
-### Use underscore to represent private methods
+### Use an underscore-prefix to name private members
 
-Most of the functions in a web component are only intended for usage within the component. For these functions, prepend the function name with an underscore like `_upload() { ... }`. Functions that accept input from external callers should be prefix-free like `show()`.
+For internal class members (i.e., functions or fields) of a web component that are only supposed to be used within the component, prepend the member name with an underscore like `_upload() { ... }` or `this._port = 8080`. Public members, e.g. functions that are invoked from the outside, should be prefix-free like `show()`.
 
 ### Use free functions where possible
 
