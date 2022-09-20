@@ -8,6 +8,7 @@ allows TinyPilot code to modify it cleanly.
 Typical usage example:
 
     settings = update_settings.load()
+    settings.ustreamer_desired_fps = 15
     update_settings.save(settings)
 """
 
