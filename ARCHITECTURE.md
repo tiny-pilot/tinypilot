@@ -68,6 +68,6 @@ The TinyPilot software is distributed as a single-file tarball bundle, which is 
 
 - The code for the TinyPilot web service
 - The procedures for configuring the target system (e.g., writing settings files or setting up services)
-- Meta-data (e.g., the TinyPilot version)
+- Metadata (e.g., the TinyPilot version)
 
 For more details, see [the `README` of the bundler](bundler/README.md).
