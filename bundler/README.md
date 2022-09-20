@@ -24,7 +24,7 @@ The entrypoint for installing the bundle is the [`bundle/install`](bundle/instal
 
 ### Gatekeeper Web Service
 
-Gatekeeper is TinyPilot’s web service for hosting and distributing bundles. [See here](https://github.com/tiny-pilot/gatekeeper) for more info.
+Gatekeeper is TinyPilot’s web service for hosting and distributing bundles. See [the Gatekeeper README](https://github.com/tiny-pilot/gatekeeper) for more info.
 
 Our CircleCI build pipeline automatically builds and uploads new bundles to Gatekeeper:
 
