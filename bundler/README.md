@@ -33,15 +33,15 @@ Our CircleCI pipeline automatically builds and uploads new bundles to Gatekeeper
 
 ### `get-tinypilot.sh`
 
-The [`get-tinypilot.sh`](../get-tinypilot.sh) (`get-tinypilot-pro.sh` for Pro) script facilitates the installation process.
+[`get-tinypilot.sh`](../get-tinypilot.sh) (`get-tinypilot-pro.sh` for Pro) facilitates the installation process.
 
-For installing TinyPilot on the device, the `get-tinypilot.sh` script unpacks the bundle to `/opt/tinypilot-updater` and invokes the [`install`](bundle/install) script.
+For installing TinyPilot on the device, `get-tinypilot.sh` unpacks the bundle to `/opt/tinypilot-updater` and invokes the [`install`](bundle/install) script.
 
 Note that it’s necessary to persist the bundle folder on the device, because the application still relies on the Ansible roles being present for applying system changes. (We might refactor this in the future.)
 
-On a fresh device, the user runs the `get-tinypilot.sh` script manually. On a device with an existing TinyPilot installation, TinyPilot’s update process invokes the `get-tinypilot.sh` script “under the hood”.
+On a fresh device, the user runs `get-tinypilot.sh` manually. On a device with an existing TinyPilot installation, TinyPilot’s update process invokes `get-tinypilot.sh` “under the hood”.
 
-The `get-tinypilot.sh` script is idempotent, so it’s safe to run repeatedly.
+`get-tinypilot.sh` is idempotent, so it’s safe to run repeatedly.
 
 ## Installation Process
 
@@ -49,8 +49,8 @@ The installation procedure consists of the following steps. The procedure is sli
 
 ### TinyPilot Community
 
-1. `get-tinypilot.sh` script retrieves latest bundle from Gatekeeper.
-1. `get-tinypilot.sh` script unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script.
+1. `get-tinypilot.sh` retrieves latest bundle from Gatekeeper.
+1. `get-tinypilot.sh` unpacks bundle to `/opt/tinypilot-updater` and invokes `install` script.
 
 ### TinyPilot Pro
 
