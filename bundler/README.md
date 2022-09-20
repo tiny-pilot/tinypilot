@@ -29,7 +29,7 @@ Gatekeeper is TinyPilot’s web service for hosting and distributing bundles. Se
 Our CircleCI pipeline automatically builds and uploads new bundles to Gatekeeper:
 
 - For Community, it releases every commit to the `master` branch
-- For Pro, it only releases tags with a particular format (e.g. `2.4.1`)
+- For Pro, it only releases tags with a particular format (e.g., `2.4.1`)
 
 ### `get-tinypilot.sh`
 
