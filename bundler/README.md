@@ -18,7 +18,7 @@ The [`create-bundle`](create-bundle) script generates the bundle from the [`bund
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
   - The Ansible roles are responsible for configuring TinyPilot and its dependencies on the device.
 - **Metadata**
-  - For example, version/build information
+  - E.g., version/build information
 
 The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It does some bootstrapping and then hands over to `ansible-role-tinypilot`, which contains most of the actual installation logic.
 
