@@ -70,6 +70,21 @@ ustreamer_desired_fps: 25
 ustreamer_desired_fps: 10
 """.lstrip(), self.read_mock_settings_file())
 
+    def test_adds_additional_property_to_existing_file(self):
+        self.make_mock_settings_file("""
+ustreamer_desired_fps: 25
+""".lstrip())
+
+        settings = update.settings.load()
+        settings.ustreamer_quality = 50
+        update.settings.save(settings)
+
+        self.assertMultiLineEqual(
+            """
+ustreamer_desired_fps: 25
+ustreamer_quality: 50
+""".lstrip(), self.read_mock_settings_file())
+
     def test_leaves_unrecognized_settings_intact(self):
         self.make_mock_settings_file("""
 unrecognized_setting: dummyvalue
