@@ -66,7 +66,7 @@ When performing a version-to-version update, TinyPilot carries out the above ins
 1. From the TinyPilot web UI, the user clicks “System” > “Update”.
 1. TinyPilot’s web service backend returns two versions:
    - The one that is currently installed on the device.
-   - The latest available version, which is returned by Gatekeeper.
+   - The latest available version, which the TinyPilot web service retrieves from Gatekeeper.
 1. If the versions are different, the frontend shows an “Update” button.
 1. When the user clicks on “Update”, TinyPilot’s web service backend runs the [update launcher](../app/update/launcher.py) asynchronously.
 1. The update launcher starts the `tinypilot-updater` systemd service.
