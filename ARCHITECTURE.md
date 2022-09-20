@@ -64,7 +64,7 @@ As of Feb. 2021, uStreamer's maintainer is working on a H264 option, expected to
 
 ## Software Distribution (Installation, Updates)
 
-The TinyPilot software is distributed as a single-file tarball bundle, which is meant to be installed in a Raspberry Pi environment. On a high level, a bundle contains:
+The TinyPilot software is distributed as a single-file tarball bundle, which is meant to be installed in a Raspberry Pi environment. From a high level, a bundle contains:
 
 - The code for the TinyPilot web service
 - The procedures for configuring the target system, e.g. writing settings files or setting up services.

@@ -85,7 +85,7 @@ There is one main difference between the Community and Pro edition:
 
 Until August/September 2022, the installation and update flows used to look differently. You can read up on the rationale behind the overhaul in detail in the [“update overhaul document”](https://github.com/tiny-pilot/tinypilot-pro/blob/experimental/update-overhaul/UPDATE-WORKFLOW.md). We broke down the overhaul into individual tasks, which you can find in [this mega ticket](https://github.com/tiny-pilot/tinypilot-pro/issues/445).
 
-On a high level, the differences were:
+From a high level, the differences were:
 
 - The previous update flow relied on git repositories. So instead of shipping a self-contained bundle, the deployment of new code happened via `git pull`. While this worked well, we felt that the entire setup was quite complex.
 - There were no license checks for TinyPilot Pro. Instead, the only protection mechanism of the Pro source code was by keeping the URL of the git mirror secret.
