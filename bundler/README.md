@@ -69,10 +69,12 @@ When performing a version-to-version update, TinyPilot carries out the above ins
    - The latest available version, which the TinyPilot web service retrieves from Gatekeeper.
 1. If the versions are different, the frontend shows an “Update” button.
 1. When the user clicks on “Update”, TinyPilot’s web service backend runs the [update launcher](../app/update/launcher.py) asynchronously.
+   - On TinyPilot Pro, the update launcher stores the desired target version in a file.
 1. The update launcher starts the `tinypilot-updater` systemd service.
 1. The `tinypilot-updater` systemd service executes the [`update-service`](../scripts/update-service) Python script.
 1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/update` script.
-1. The privileged `update` service downloads `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above) and executes that script in the privileged context.
+1. The privileged `update` script downloads `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above) and executes that script in the privileged context.
+   - On TinyPilot Pro, the privileged `update` script reads and passes on the target version from the file that the update launcher had populated previously.
 
 The indirection in the update flow has the following reasons:
 
