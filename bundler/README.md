@@ -61,7 +61,7 @@ The installation procedure consists of the following steps. The procedure is sli
 
 ## Update Process
 
-When performing a version-to-version update, TinyPilot carries out the above installation procedure automatically after the user had requested an update via the web UI.
+When performing a version-to-version update, TinyPilot carries out the above installation procedure automatically after the user requests an update via the web UI.
 
 1. From the TinyPilot web UI, the user clicks “System” > “Update”.
 1. TinyPilot’s web service backend returns two versions:
