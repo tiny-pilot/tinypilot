@@ -12,12 +12,12 @@ The TinyPilot bundle contains all the TinyPilot-owned code required to install T
 
 The [`create-bundle`](create-bundle) script generates the bundle from the [`bundle/`](bundle) folder. That folder contains a few “static” configuration files. At build time, the `create-bundle` script adds the following dependencies:
 
-- **The TinyPilot web service**:
+- **The TinyPilot web service**
   - The root [`Dockerfile`](../Dockerfile) packs the TinyPilot web service as a Debian package from the source files.
-- **Several Ansible roles**:
+- **Several Ansible roles**
   - The main role is [`ansible-role-tinypilot`](https://github.com/tiny-pilot/ansible-role-tinypilot), which then fetches the roles for [nginx](https://github.com/tiny-pilot/ansible-role-nginx) and [ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer).
   - The Ansible roles are responsible for configuring TinyPilot and its dependencies on the device.
-- **Metadata**:
+- **Metadata**
   - For example, version/build information
 
 The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It does some bootstrapping and then hands over to `ansible-role-tinypilot`, which contains most of the actual installation logic.
