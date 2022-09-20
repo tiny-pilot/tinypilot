@@ -74,7 +74,10 @@ When performing a version-to-version update, TinyPilot carries out the above ins
 1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/update` script.
 1. The privileged `update` service downloads `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above) and executes that script in the privileged context.
 
-This indirection in the update flow is necessary since the TinyPilot web service runs with limited privileges for security reasons. Therefore, the actual update process has to be carried out via a systemd service, which has root privileges.
+The indirection in the update flow has the following reasons:
+
+- The system update is a long-running process, so we use systemd to run it asynchronously.
+- To avoid an elevation of privilege vulnerability, the `update-service` (owned by the `tinypilot` user) delegates to the privileged `update` script (owned by the `root` user).
 
 There is one main difference between the Community and Pro edition:
 
