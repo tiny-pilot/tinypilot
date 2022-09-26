@@ -100,6 +100,13 @@ sudo tar \
   --directory "${INSTALLER_DIR}"
 sudo chown root:root --recursive "${INSTALLER_DIR}"
 
+# Remove the TinyPilot Pro Debian package to avoid version conflicts with
+# the TinyPilot Community Debian package.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/596
+if [[ "${HAS_PRO_INSTALLED}" -eq 1 ]]; then
+  sudo apt-get remove tinypilot --yes || true
+fi
+
 # Run install.
 pushd "${INSTALLER_DIR}"
 sudo ./install
