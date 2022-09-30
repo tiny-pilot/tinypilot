@@ -15,32 +15,34 @@
       display: block;
     }
 
-    .settings {
-      margin: 2.5rem 0 1.5rem 0;
+    .settings-container {
+      margin: 2rem 0;
     }
 
-    .input-container {
-      display: inline-flex;
-      flex-direction: row;
-      margin-bottom: 1rem;
+    .setting {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
-    .input-container label {
-      display: inline-block;
+    .setting label {
+      display: block;
       text-align: right;
-      margin-right: 0.5rem;
-      width: 100px;
+      margin-right: 0.5em;
+      width: 6em;
     }
 
-    .input-container input {
-      display: inline-block;
-      width: 350px;
+    .setting input {
+      display: block;
+      flex: 1;
+      max-width: 28em;
     }
 
-    #fps-value,
-    #jpeg-quality-value {
-      display: inline-block;
-      width: 50px;
+    .setting-value {
+      width: 3.5em;
+      text-align: right;
+      margin-left: 0.25em;
     }
   </style>
   <div id="loading">
@@ -49,16 +51,16 @@
   </div>
   <div id="edit">
     <h3>Change Video Settings</h3>
-    <div class="settings">
-      <div class="input-container">
-        <label for="fps-slider">FPS</label>
+    <div class="settings-container">
+      <div class="setting">
+        <label for="fps-slider">Frame Rate</label>
         <input type="range" id="fps-slider" min="1" max="30" />
-        <span id="fps-value"></span>
+        <div id="fps-value" class="setting-value"></div>
       </div>
-      <div class="input-container">
-        <label for="jpeg-quality-slider">JPEG Quality</label>
+      <div class="setting">
+        <label for="jpeg-quality-slider">Quality</label>
         <input type="range" id="jpeg-quality-slider" min="1" max="100" />
-        <span id="jpeg-quality-value"></span>
+        <div id="jpeg-quality-value" class="setting-value"></div>
       </div>
     </div>
     <button class="save-btn btn-success" type="button">
@@ -197,7 +199,7 @@
          */
         _setFps(fps) {
           this.elements.fpsSlider.value = fps;
-          this.elements.fpsValue.innerHTML = fps;
+          this.elements.fpsValue.innerHTML = `${fps} fps`;
         }
 
         /**
@@ -212,7 +214,7 @@
          */
         _setJpegQuality(jpegQuality) {
           this.elements.jpegQualitySlider.value = jpegQuality;
-          this.elements.jpegQualityValue.innerHTML = jpegQuality;
+          this.elements.jpegQualityValue.innerHTML = `${jpegQuality} %`;
         }
 
         _restoreSettings() {
