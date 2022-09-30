@@ -116,9 +116,9 @@
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.elements = {
-            buttonSave: this.shadowRoot.querySelector("#edit .save-btn"),
-            buttonClose: this.shadowRoot.querySelector(".close-btn"),
-            buttonRestore: this.shadowRoot.querySelector("#edit .restore-btn"),
+            saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
+            closeButton: this.shadowRoot.querySelector(".close-btn"),
+            restoreButton: this.shadowRoot.querySelector("#edit .restore-btn"),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
             jpegQualitySlider: this.shadowRoot.querySelector(
@@ -128,13 +128,13 @@
               "#jpeg-quality-value"
             ),
           };
-          this.elements.buttonClose.addEventListener("click", () =>
+          this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );
-          this.elements.buttonSave.addEventListener("click", () =>
+          this.elements.saveButton.addEventListener("click", () =>
             this._saveSettings()
           );
-          this.elements.buttonRestore.addEventListener("click", () =>
+          this.elements.restoreButton.addEventListener("click", () =>
             this._restoreSettings()
           );
           this.elements.fpsSlider.addEventListener("input", (event) => {
