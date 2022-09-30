@@ -53,12 +53,12 @@
     <h3>Change Video Settings</h3>
     <div class="settings-container">
       <div class="setting">
-        <label for="video-fps-slider">FPS</label>
+        <label for="video-fps-slider">Frame Rate</label>
         <input type="range" id="video-fps-slider" min="1" max="30" />
         <div id="video-fps-display" class="setting-value"></div>
       </div>
       <div class="setting">
-        <label for="video-jpeg-quality-slider">JPEG Quality</label>
+        <label for="video-jpeg-quality-slider">Quality</label>
         <input type="range" id="video-jpeg-quality-slider" min="1" max="100" />
         <div id="video-jpeg-quality-display" class="setting-value"></div>
       </div>
@@ -157,14 +157,14 @@
           const videoFpsDisplayElement = this.shadowRoot.querySelector(
             "#video-fps-display"
           );
-          videoFpsDisplayElement.innerHTML = videoFps;
+          videoFpsDisplayElement.innerHTML = `${videoFps} fps`;
         }
 
         _setVideoJpegQualityDisplay(videoJpegQuality) {
           const videoJpegQualityDisplayElement = this.shadowRoot.querySelector(
             "#video-jpeg-quality-display"
           );
-          videoJpegQualityDisplayElement.innerHTML = videoJpegQuality;
+          videoJpegQualityDisplayElement.innerHTML = `${videoJpegQuality} %`;
         }
 
         _fetchVideoFps() {
