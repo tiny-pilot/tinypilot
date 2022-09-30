@@ -111,6 +111,7 @@
           super();
           this.attachShadow({ mode: "open" });
           this._defaultSettings = {};
+          this._initialSettings = {};
         }
 
         connectedCallback() {
@@ -168,11 +169,14 @@
           ])
             .then(([fps, defaultFps, jpegQuality, defaultJpegQuality]) => {
               this._setFps(fps);
+              this._initialSettings.fps = fps;
               this._defaultSettings.fps = defaultFps;
 
               this._setJpegQuality(jpegQuality);
+              this._initialSettings.jpegQuality = jpegQuality;
               this._defaultSettings.jpegQuality = defaultJpegQuality;
 
+              this._refreshApplyButton();
               this.state = this.states.EDIT;
             })
             .catch((error) => {
@@ -198,6 +202,7 @@
         _setFps(fps) {
           this.elements.fpsSlider.value = fps;
           this.elements.fpsValue.innerHTML = fps;
+          this._refreshApplyButton();
         }
 
         /**
@@ -213,11 +218,20 @@
         _setJpegQuality(jpegQuality) {
           this.elements.jpegQualitySlider.value = jpegQuality;
           this.elements.jpegQualityValue.innerHTML = jpegQuality;
+          this._refreshApplyButton();
         }
 
         _restoreSettings() {
           this._setFps(this._defaultSettings.fps);
           this._setJpegQuality(this._defaultSettings.jpegQuality);
+        }
+
+        _refreshApplyButton() {
+          const hasChangedValues = [
+            [this._getFps(), this._initialSettings.fps],
+            [this._getJpegQuality(), this._initialSettings.jpegQuality],
+          ].some(([actual, initial]) => actual !== initial);
+          this.elements.buttonSave.disabled = !hasChangedValues;
         }
 
         _saveSettings() {
