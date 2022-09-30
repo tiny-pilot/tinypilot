@@ -15,32 +15,34 @@
       display: block;
     }
 
-    .settings {
-      margin: 2.5rem 0 1.5rem 0;
+    .settings-container {
+      margin: 2rem 0;
     }
 
-    .input-container {
-      display: inline-flex;
-      flex-direction: row;
-      margin-bottom: 1rem;
+    .setting {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
-    .input-container label {
-      display: inline-block;
+    .setting label {
+      display: block;
       text-align: right;
-      margin-right: 0.5rem;
-      width: 100px;
+      margin-right: 0.5em;
+      width: 6em;
     }
 
-    .input-container input {
-      display: inline-block;
-      width: 350px;
+    .setting input {
+      display: block;
+      flex: 1;
+      max-width: 28em;
     }
 
-    #video-fps-display,
-    #video-jpeg-quality-display {
-      display: inline-block;
-      width: 50px;
+    .setting-value {
+      width: 5em;
+      text-align: left;
+      margin-left: 0.75em;
     }
   </style>
   <div id="loading">
@@ -49,16 +51,16 @@
   </div>
   <div id="edit">
     <h3>Change Video Settings</h3>
-    <div class="settings">
-      <div class="input-container">
+    <div class="settings-container">
+      <div class="setting">
         <label for="video-fps-slider">FPS</label>
         <input type="range" id="video-fps-slider" min="1" max="30" />
-        <span id="video-fps-display"></span>
+        <div id="video-fps-display" class="setting-value"></div>
       </div>
-      <div class="input-container">
+      <div class="setting">
         <label for="video-jpeg-quality-slider">JPEG Quality</label>
         <input type="range" id="video-jpeg-quality-slider" min="1" max="100" />
-        <span id="video-jpeg-quality-display"></span>
+        <div id="video-jpeg-quality-display" class="setting-value"></div>
       </div>
     </div>
     <button class="save-btn btn-success" type="button">
