@@ -15,32 +15,34 @@
       display: block;
     }
 
-    .settings {
-      margin: 2.5rem 0 1.5rem 0;
+    .settings-container {
+      margin: 2rem 0;
     }
 
-    .input-container {
-      display: inline-flex;
-      flex-direction: row;
-      margin-bottom: 1rem;
+    .setting {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
-    .input-container label {
-      display: inline-block;
+    .setting label {
+      display: block;
       text-align: right;
-      margin-right: 0.5rem;
-      width: 100px;
+      margin-right: 0.5em;
+      width: 6em;
     }
 
-    .input-container input {
-      display: inline-block;
-      width: 350px;
+    .setting input {
+      display: block;
+      flex: 1;
+      max-width: 28em;
     }
 
-    #fps-value,
-    #jpeg-quality-value {
-      display: inline-block;
-      width: 50px;
+    .setting-value {
+      width: 3.5em;
+      text-align: right;
+      margin-left: 0.25em;
     }
   </style>
   <div id="loading">
@@ -49,16 +51,16 @@
   </div>
   <div id="edit">
     <h3>Change Video Settings</h3>
-    <div class="settings">
-      <div class="input-container">
-        <label for="fps-slider">FPS</label>
+    <div class="settings-container">
+      <div class="setting">
+        <label for="fps-slider">Frame Rate</label>
         <input type="range" id="fps-slider" min="1" max="30" />
-        <span id="fps-value"></span>
+        <div id="fps-value" class="setting-value"></div>
       </div>
-      <div class="input-container">
-        <label for="jpeg-quality-slider">JPEG Quality</label>
+      <div class="setting">
+        <label for="jpeg-quality-slider">Quality</label>
         <input type="range" id="jpeg-quality-slider" min="1" max="100" />
-        <span id="jpeg-quality-value"></span>
+        <div id="jpeg-quality-value" class="setting-value"></div>
       </div>
     </div>
     <button class="save-btn btn-success" type="button">
@@ -110,16 +112,16 @@
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
-          this._defaultSettings = {};
           this._initialSettings = {};
+          this._defaultSettings = {};
         }
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
           this.elements = {
-            buttonSave: this.shadowRoot.querySelector("#edit .save-btn"),
-            buttonClose: this.shadowRoot.querySelector(".close-btn"),
-            buttonRestore: this.shadowRoot.querySelector("#edit .restore-btn"),
+            saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
+            closeButton: this.shadowRoot.querySelector(".close-btn"),
+            restoreButton: this.shadowRoot.querySelector("#edit .restore-btn"),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
             jpegQualitySlider: this.shadowRoot.querySelector(
@@ -129,13 +131,13 @@
               "#jpeg-quality-value"
             ),
           };
-          this.elements.buttonClose.addEventListener("click", () =>
+          this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );
-          this.elements.buttonSave.addEventListener("click", () =>
+          this.elements.saveButton.addEventListener("click", () =>
             this._saveSettings()
           );
-          this.elements.buttonRestore.addEventListener("click", () =>
+          this.elements.restoreButton.addEventListener("click", () =>
             this._restoreSettings()
           );
           this.elements.fpsSlider.addEventListener("input", (event) => {
@@ -201,7 +203,7 @@
          */
         _setFps(fps) {
           this.elements.fpsSlider.value = fps;
-          this.elements.fpsValue.innerHTML = fps;
+          this.elements.fpsValue.innerHTML = `${fps} fps`;
           this._refreshApplyButton();
         }
 
@@ -217,7 +219,7 @@
          */
         _setJpegQuality(jpegQuality) {
           this.elements.jpegQualitySlider.value = jpegQuality;
-          this.elements.jpegQualityValue.innerHTML = jpegQuality;
+          this.elements.jpegQualityValue.innerHTML = `${jpegQuality} %`;
           this._refreshApplyButton();
         }
 
@@ -231,7 +233,7 @@
             [this._getFps(), this._initialSettings.fps],
             [this._getJpegQuality(), this._initialSettings.jpegQuality],
           ].some(([actual, initial]) => actual !== initial);
-          this.elements.buttonSave.disabled = !hasChangedValues;
+          this.elements.saveButton.disabled = !hasChangedValues;
         }
 
         _saveSettings() {
