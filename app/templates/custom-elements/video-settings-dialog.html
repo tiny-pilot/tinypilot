@@ -21,7 +21,7 @@
 
     .setting {
       display: flex;
-      justify-content: center;
+      justify-content: end;
       align-items: center;
       margin-bottom: 1.5rem;
     }
@@ -44,6 +44,17 @@
       text-align: right;
       margin-left: 0.25em;
     }
+
+    .reset-button {
+      font-size: 0.85em;
+      color: #555;
+      margin: 0 1em 0 2em;
+    }
+
+    .reset-button-hidden {
+      /* `_refreshButtons` assigns this class conditionally */
+      visibility: hidden;
+    }
   </style>
   <div id="loading">
     <h3>Retrieving Video Settings</h3>
@@ -56,18 +67,19 @@
         <label for="fps-slider">Frame Rate</label>
         <input type="range" id="fps-slider" min="1" max="30" />
         <div id="fps-value" class="setting-value"></div>
+        <div id="fps-reset" class="btn-text reset-button">Reset to Default</div>
       </div>
       <div class="setting">
         <label for="jpeg-quality-slider">Quality</label>
         <input type="range" id="jpeg-quality-slider" min="1" max="100" />
         <div id="jpeg-quality-value" class="setting-value"></div>
+        <div id="jpeg-quality-reset" class="btn-text reset-button">
+          Reset to Default
+        </div>
       </div>
     </div>
     <button class="save-btn btn-success" type="button">
       Apply
-    </button>
-    <button class="restore-btn btn-action" type="button">
-      Restore Defaults
     </button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
@@ -121,14 +133,17 @@
           this.elements = {
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
-            restoreButton: this.shadowRoot.querySelector("#edit .restore-btn"),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
+            fpsRestoreButton: this.shadowRoot.querySelector("#fps-reset"),
             jpegQualitySlider: this.shadowRoot.querySelector(
               "#jpeg-quality-slider"
             ),
             jpegQualityValue: this.shadowRoot.querySelector(
               "#jpeg-quality-value"
+            ),
+            jpegQualityRestoreButton: this.shadowRoot.querySelector(
+              "#jpeg-quality-reset"
             ),
           };
           this.elements.closeButton.addEventListener("click", () =>
@@ -137,15 +152,21 @@
           this.elements.saveButton.addEventListener("click", () =>
             this._saveSettings()
           );
-          this.elements.restoreButton.addEventListener("click", () =>
-            this._restoreSettings()
-          );
           this.elements.fpsSlider.addEventListener("input", (event) => {
             this._setFps(parseInt(event.target.value, 10));
+          });
+          this.elements.fpsRestoreButton.addEventListener("click", () => {
+            this._setFps(this._defaultSettings.fps);
           });
           this.elements.jpegQualitySlider.addEventListener("input", (event) => {
             this._setJpegQuality(parseInt(event.target.value, 10));
           });
+          this.elements.jpegQualityRestoreButton.addEventListener(
+            "click",
+            () => {
+              this._setJpegQuality(this._defaultSettings.jpegQuality);
+            }
+          );
         }
 
         get state() {
@@ -178,7 +199,7 @@
               this._initialSettings.jpegQuality = jpegQuality;
               this._defaultSettings.jpegQuality = defaultJpegQuality;
 
-              this._refreshApplyButton();
+              this._refreshButtons();
               this.state = this.states.EDIT;
             })
             .catch((error) => {
@@ -204,7 +225,7 @@
         _setFps(fps) {
           this.elements.fpsSlider.value = fps;
           this.elements.fpsValue.innerHTML = `${fps} fps`;
-          this._refreshApplyButton();
+          this._refreshButtons();
         }
 
         /**
@@ -220,20 +241,41 @@
         _setJpegQuality(jpegQuality) {
           this.elements.jpegQualitySlider.value = jpegQuality;
           this.elements.jpegQualityValue.innerHTML = `${jpegQuality} %`;
-          this._refreshApplyButton();
+          this._refreshButtons();
         }
 
-        _restoreSettings() {
-          this._setFps(this._defaultSettings.fps);
-          this._setJpegQuality(this._defaultSettings.jpegQuality);
-        }
-
-        _refreshApplyButton() {
+        /**
+         * Adjust all buttons in the dialog, since they might need to respond to
+         * the currently selected input values.
+         */
+        _refreshButtons() {
+          // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
             [this._getFps(), this._initialSettings.fps],
             [this._getJpegQuality(), this._initialSettings.jpegQuality],
-          ].some(([actual, initial]) => actual !== initial);
+          ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
+
+          // Reset Buttons: only show if the respective slider value differs
+          // from the default setting.
+          [
+            [
+              this._getFps(),
+              this._defaultSettings.fps,
+              this.elements.fpsRestoreButton,
+            ],
+            [
+              this._getJpegQuality(),
+              this._defaultSettings.jpegQuality,
+              this.elements.jpegQualityRestoreButton,
+            ],
+          ].forEach(([actualValue, defaultValue, resetButton]) => {
+            if (actualValue === defaultValue) {
+              resetButton.classList.add("reset-button-hidden");
+            } else {
+              resetButton.classList.remove("reset-button-hidden");
+            }
+          });
         }
 
         _saveSettings() {
