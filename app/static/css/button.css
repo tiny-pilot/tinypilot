@@ -91,4 +91,5 @@ button:disabled,
 .btn-text {
   text-decoration: underline;
   cursor: pointer;
+  color: #555;
 }
