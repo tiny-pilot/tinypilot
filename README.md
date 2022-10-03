@@ -36,7 +36,6 @@ Voyager 2 is TinyPilot's professional-grade KVM over IP device. Its quiet, compa
 
 - [Raspberry Pi 4](https://smile.amazon.com/dp/B07TD42S27) (all variants work)
 - [HDMI to USB dongle](https://smile.amazon.com/dp/B08CXWPYQ8/)
-  - [In smaller form factor](https://smile.amazon.com/dp/B08C9FCF2X/)
   - They have no brand name, and there are several variants, but they're all built on the same MacroSilicon 2109 chip.
   - They're available for \$10-15 on eBay and AliExpress.
 - [3 Amp power supply](https://smile.amazon.com/dp/B0728HB18G)

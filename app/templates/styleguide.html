@@ -50,12 +50,18 @@
         up the brand, such as colours, fonts, patterns or UI components.
       </p>
 
-      <h2 class="section">Typeface</h2>
+      <h2 class="section">Text</h2>
+      <h3>Typeface</h3>
       <p>
         We use “Overpass” for regular text. Technical text (e.g. logs or error
         messages) is set in the monospace variant “<span class="monospace"
           >Overpass Mono</span
         >”.
+      </p>
+      <h3>Text style</h3>
+      <p>
+        To make subsidiary elements look less prominent (e.g., hints or labels),
+        the font size and/or darkness of the text can be slightly reduced.
       </p>
 
       <h2 class="section">Colors</h2>
@@ -147,6 +153,13 @@
           If ever feasible, call-to-action buttons should only appear once. If
           there are multiple regular actions side by side, the “regular” action
           button should be used.
+        </li>
+        <li>
+          Buttons should be disabled if it’s obvious that an operation cannot be
+          carried out. For example, a “save” button next to an input field
+          should only be enabled if there was an actual change, or if the input
+          field contains something. Don’t disable buttons in non-obvious cases,
+          though, for example when the input format is invalid.
         </li>
       </ul>
       <h3>Default Button</h3>
@@ -285,11 +298,11 @@
         in all headlines.
       </p>
 
-      <h2 class="section">Overlay</h2>
+      <h2 class="section">Overlay Dialogs</h2>
       <h3>Design</h3>
       <p>
-        Click on the buttons to learn how the overlay is supposed to be
-        designed.
+        Click on the buttons to learn how a dialog inside an overlay is supposed
+        to be designed.
       </p>
       <!-- Overlay with single call-to-action: -->
       <button id="show-overlay-with-primary-action-btn" class="btn-action">
@@ -405,6 +418,16 @@
           Contributing Guidelines
         </a>
         for details).
+      </p>
+      <h3>Primary Actions</h3>
+      <p>
+        The buttons for primary actions should be located at the bottom of the
+        dialog. These primary actions should either advance the dialog into a
+        different state, or they should terminate the dialog altogether.
+      </p>
+      <p>
+        If there is a primary button for closing or canceling the dialog, it
+        should always be the rightmost one.
       </p>
 
       <h2 class="section">Progress Indicator</h2>
