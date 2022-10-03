@@ -67,6 +67,25 @@ class Settings:
         if 'ustreamer_quality' in self._data:
             del self._data['ustreamer_quality']
 
+    def set_h264_status(self, is_enabled):
+        if is_enabled:
+            self._data['ustreamer_h264_sink'] = 'tinypilot::ustreamer::h264'
+            self._data['ustreamer_h264_sink_mode'] = 777
+            self._data['ustreamer_h264_sink_rm'] = True
+        else:
+            if 'ustreamer_h264_sink' in self._data:
+                del self._data['ustreamer_h264_sink']
+            if 'ustreamer_h264_sink_mode' in self._data:
+                del self._data['ustreamer_h264_sink_mode']
+            if 'ustreamer_h264_sink_rm' in self._data:
+                del self._data['ustreamer_h264_sink_rm']
+
+    def is_h264_enabled(self):
+        return (self._data.get('ustreamer_h264_sink',
+                               None) == 'tinypilot::ustreamer::h264' and
+                self._data.get('ustreamer_h264_sink_mode', None) == 777 and
+                self._data.get('ustreamer_h264_sink_rm', None) is True)
+
 
 def load():
     """Retrieves the current TinyPilot update settings

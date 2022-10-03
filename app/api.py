@@ -380,6 +380,29 @@ def settings_video_jpeg_quality_default_get():
         {'videoJpegQuality': video_settings.DEFAULT_JPEG_QUALITY})
 
 
+@api_blueprint.route('/settings/video/h264', methods=['PUT'])
+def settings_video_h264_put():
+    """Turns H264 on or off.
+
+    Expects a JSON data structure in the request body that contains the
+    desired H264 state as a boolean. Example:
+    {
+        "h264": true
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        h264_enabled = True  # TODO parse actual value from request body
+        settings = update.settings.load()
+        settings.set_h264_status(h264_enabled)
+        update.settings.save(settings)
+    except update.settings.SaveSettingsError as e:
+        return json_response.error(e), 500
+    return json_response.success()
+
+
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
 def settings_video_apply_post():
     """Applies the current video settings found in the settings file.

@@ -1,6 +1,7 @@
 import flask
 
 import hostname
+import update.settings
 from find_files import find as find_files
 
 views_blueprint = flask.Blueprint('views', __name__, url_prefix='')
@@ -11,10 +12,10 @@ _DEFAULT_HOSTNAME = 'tinypilot'
 
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
+    settings = update.settings.load()
     return flask.render_template(
         'index.html',
-        use_webrtc_remote_screen=flask.current_app.config.get(
-            'USE_WEBRTC_REMOTE_SCREEN', False),
+        use_webrtc_remote_screen=settings.is_h264_enabled(),
         page_title_prefix=_page_title_prefix(),
         custom_elements_files=find_files.custom_elements_files())
 
