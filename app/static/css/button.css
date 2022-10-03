@@ -87,3 +87,9 @@ button:disabled,
 .btn-danger:disabled {
   background-color: var(--brand-red-light);
 }
+
+.btn-text {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #555;
+}
