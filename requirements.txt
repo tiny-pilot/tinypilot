@@ -10,7 +10,7 @@ pyyaml==5.4.1
 bidict==0.21.2
 click==7.1.2
 dnspython==1.16.0
-greenlet==1.0.0
+greenlet==1.1.2
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
