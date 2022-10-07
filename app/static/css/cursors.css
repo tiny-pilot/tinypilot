@@ -23,7 +23,3 @@
 *[cursor="pointer"] > * {
   cursor: pointer !important;
 }
-
-*[cursor="cell"] > * {
-  cursor: cell !important;
-}
