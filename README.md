@@ -106,7 +106,7 @@ If you're having trouble with TinyPilot, you can retrive logs from the web dashb
 If you can't access the web dashboard, you can retrieve the logs by SSHing into the device and running the following command:
 
 ```bash
-/opt/tinypilot/dev-scripts/dump-logs
+sudo /opt/tinypilot-privileged/collect-debug-logs
 ```
 
 This log is useful if you [file a bug report](https://github.com/tiny-pilot/tinypilot/issues/new?assignees=&labels=&template=bug_report.md&title=).
