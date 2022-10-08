@@ -204,7 +204,7 @@ workflows:
       - build_debian_package:
           filters:
             branches:
-              only: master
+              only: /.*/
       - build_bundle:
           requires:
             - build_debian_package
@@ -216,7 +216,7 @@ workflows:
             - build_bundle
           filters:
             branches:
-              only: master
+              only: /.*/
       - upload_bundle:
           requires:
             - verify_bundle
