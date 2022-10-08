@@ -210,7 +210,7 @@ workflows:
             - build_debian_package
           filters:
             branches:
-              only: master
+              only: /.*/
       - verify_bundle:
           requires:
             - build_bundle
