@@ -35,11 +35,8 @@ tar \
   --directory "${BUNDLE_DIR}"
 pushd "${BUNDLE_DIR}"
 
-# Check that install script exists.
-if [[ ! -f install ]]; then
-  >&2 echo 'Bundle is missing install script.'
-  exit 1
-fi
+# List Debian package contents.
+dpkg --contents tinypilot*.deb
 
 # Check that Debian package exists.
 if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
