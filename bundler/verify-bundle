@@ -41,11 +41,8 @@ if [[ ! -f install ]]; then
   exit 1
 fi
 
-# Check that Debian package exists.
-if ! ls tinypilot*.deb 1> /dev/null 2>&1; then
-  >&2 echo 'Bundle is missing Debian package.'
-  exit 1
-fi
+# List Debian package contents.
+dpkg --contents tinypilot*.deb
 
 # Check that Ansible roles exist.
 readonly ANSIBLE_ROLES=(
