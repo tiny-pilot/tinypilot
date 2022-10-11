@@ -30,11 +30,11 @@ RUN mkdir -p "/releases/${PKG_ID}"
 WORKDIR "/releases/${PKG_ID}"
 
 RUN mkdir -p opt/tinypilot
-COPY . ./opt/tinypilot/
+COPY ./app ./opt/tinypilot/
+COPY ./LICENSE ./opt/tinypilot/
+COPY ./README.md ./opt/tinypilot/
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
-
-RUN mkdir -p DEBIAN
 
 WORKDIR "/releases/${PKG_ID}/DEBIAN"
 
@@ -45,40 +45,6 @@ RUN echo "Package: ${PKG_NAME}" >> control && \
     echo "Architecture: all" >> control && \
     echo "Homepage: https://tinypilotkvm.com" >> control && \
     echo "Description: Simple, easy-to-use KVM over IP" >> control
-
-RUN cat > preinst <<EOF
-#!/bin/bash
-
-# If a .git directory exists, the previous version was installed with the legacy
-# installer, so wipe the install location.
-if [[ -d /opt/tinypilot/.git ]]; then
-  rm -rf /opt/tinypilot
-fi
-EOF
-RUN chmod 0555 preinst
-
-RUN echo "#!/bin/bash" > postinst && \
-    echo "chown -R tinypilot:tinypilot /opt/tinypilot" >> postinst && \
-    chmod 0555 postinst
-
-RUN cat > prerm <<EOF
-#!/bin/bash
-
-# Exit script on first failure.
-set -e
-
-cd /opt/tinypilot
-rm -rf venv
-find . \
-  -type f \
-  -name *.pyc \
-  -delete \
-  -or \
-  -type d \
-  -name __pycache__ \
-  -delete
-EOF
-RUN chmod 0555 prerm
 
 RUN dpkg --build "/releases/${PKG_ID}"
 
