@@ -74,7 +74,7 @@ def write_to_hid_interface(hid_path, buffer):
     # latency.
     if logger.getEffectiveLevel() == logging.DEBUG:
         logger.debug_sensitive('writing to HID interface %s: %s', hid_path,
-                               ' '.join(['0x%02x' % x for x in buffer]))
+                               ' '.join([f'{x:#04x}' for x in buffer]))
     # Writes can hang, for example, when TinyPilot is attempting to write to the
     # mouse interface, but the target system has no GUI. To avoid locking up the
     # main server process, perform the HID interface I/O in a separate process.
@@ -91,8 +91,9 @@ def write_to_hid_interface(hid_path, buffer):
     # If the result is None, it means the write failed to complete in time.
     if result is None or not result.was_successful():
         raise WriteError(
-            'Failed to write to HID interface: %s. Is USB cable connected?' %
-            hid_path)
+            f'Failed to write to HID interface: {hid_path}. '
+            'Is USB cable connected?'
+        )
 
 
 def _wait_for_process_exit(target_process):

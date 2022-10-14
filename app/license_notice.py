@@ -270,7 +270,7 @@ def all_licensing_get():
     for license_data in _LICENSE_METADATA:
         response.append({
             'name': license_data.name,
-            'licenseUrl': '/licensing/%s/license' % license_data.name,
+            'licenseUrl': f'/licensing/{license_data.name}/license',
             'homepageUrl': license_data.homepage_url,
         })
 
