@@ -90,10 +90,8 @@ def write_to_hid_interface(hid_path, buffer):
     result = write_process.result()
     # If the result is None, it means the write failed to complete in time.
     if result is None or not result.was_successful():
-        raise WriteError(
-            f'Failed to write to HID interface: {hid_path}. '
-            'Is USB cable connected?'
-        )
+        raise WriteError(f'Failed to write to HID interface: {hid_path}. '
+                         'Is USB cable connected?')
 
 
 def _wait_for_process_exit(target_process):

@@ -81,13 +81,11 @@ def _parse_relative_position(relative_position):
             relative_position, int):
         raise InvalidRelativePositionError(
             'Relative position must be a float between 0.0 and 1.0: '
-            f'{relative_position}'
-        )
+            f'{relative_position}')
     if not (0.0 <= relative_position <= 1.0):
         raise InvalidRelativePositionError(
             'Relative position must be a float between 0.0 and 1.0: '
-            f'{relative_position}'
-        )
+            f'{relative_position}')
     return relative_position
 
 
