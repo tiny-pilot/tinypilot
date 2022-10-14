@@ -36,6 +36,7 @@ COPY ./README.md ./opt/tinypilot/
 COPY ./requirements.txt ./opt/tinypilot/
 COPY ./app ./opt/tinypilot/app
 COPY ./scripts ./opt/tinypilot/scripts
+COPY ./debian-pkg .
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
 
