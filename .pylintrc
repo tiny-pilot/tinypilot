@@ -23,8 +23,6 @@ unsafe-load-any-extension=no
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=
-  # Remove when we fix https://github.com/tiny-pilot/tinypilot/issues/995
-  consider-using-f-string,
   fixme,
   useless-suppression,
   suppressed-message,

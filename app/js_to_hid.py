@@ -186,8 +186,8 @@ def _map_keycode(keystroke):
     try:
         return _MAPPING[keystroke.code]
     except KeyError as e:
-        raise UnrecognizedKeyCodeError('Unrecognized key code %s (%s)' %
-                                       (keystroke.key, keystroke.code)) from e
+        raise UnrecognizedKeyCodeError(
+            f'Unrecognized key code {keystroke.key} {keystroke.code}') from e
 
 
 def _count_modifiers(keystroke):

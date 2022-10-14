@@ -45,8 +45,7 @@ def local_version():
         raise VersionFileError(
             'The local version file must only contain UTF-8 characters.') from e
     except IOError as e:
-        raise VersionFileError('Failed to check local version: %s' %
-                               str(e)) from e
+        raise VersionFileError(f'Failed to check local version: {e}') from e
     if version == '':
         raise VersionFileError('The local version file cannot be empty.')
     return version
@@ -69,7 +68,7 @@ def latest_version():
             response_bytes = response.read()
     except urllib.error.URLError as e:
         raise VersionRequestError(
-            'Failed to request latest available version: %s' % str(e)) from e
+            f'Failed to request latest available version: {e}') from e
 
     try:
         response_text = response_bytes.decode('utf-8')

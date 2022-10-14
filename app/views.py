@@ -42,5 +42,5 @@ def stream_get():
 
 def _page_title_prefix():
     if hostname.determine().lower() != _DEFAULT_HOSTNAME.lower():
-        return '%s - ' % hostname.determine()
+        return f'{hostname.determine()} - '
     return ''
