@@ -30,12 +30,12 @@ RUN mkdir -p "/releases/${PKG_ID}"
 WORKDIR "/releases/${PKG_ID}"
 
 RUN mkdir -p opt/tinypilot
-COPY ./app ./opt/tinypilot/
-COPY ./scripts ./opt/tinypilot/scripts
 COPY ./COPYRIGHT ./opt/tinypilot/
 COPY ./LICENSE ./opt/tinypilot/
 COPY ./README.md ./opt/tinypilot/
 COPY ./requirements.txt ./opt/tinypilot/
+COPY ./app ./opt/tinypilot/app
+COPY ./scripts ./opt/tinypilot/scripts
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
 
