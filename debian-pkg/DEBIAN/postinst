@@ -33,3 +33,6 @@ chmod --reference="${SUDOERS_ORIGINAL}" "${SUDOERS_COPY}"
 # Overwrite the original with this new copy.
 visudo --check --file="${SUDOERS_COPY}"
 mv "${SUDOERS_COPY}" "${SUDOERS_ORIGINAL}"
+
+
+# TODO(mtlynch): Install the usb-gadget.service.
