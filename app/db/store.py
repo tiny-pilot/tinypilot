@@ -96,6 +96,13 @@ _MIGRATIONS = [
     """INSERT INTO settings2 SELECT * FROM settings""",
     """DROP TABLE settings""",
     """ALTER TABLE settings2 RENAME TO settings""",
+
+    # 9: Add column in settings table for configuring the streaming mode of the
+    # remote screen.
+    """
+    ALTER TABLE settings
+        ADD COLUMN streaming_mode TEXT
+    """,
 ]
 
 

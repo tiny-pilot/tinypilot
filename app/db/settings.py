@@ -1,7 +1,14 @@
+import enum
+
 import db_connection
 
 # We just store one collection of settings at a time, so the row id is fixed.
 _ROW_ID = 1
+
+
+class StreamingMode(enum.Enum):
+    MJPEG = 'MJPEG'
+    H264 = 'H264'
 
 
 class Settings:
@@ -34,3 +41,21 @@ class Settings:
         if not row or row[0] is None:
             return True
         return row[0] > 0  # Convert integer value to bool.
+
+    def get_streaming_mode(self):
+        """Retrieves the preferred streaming mode for the remote screen.
+
+        Returns:
+            A `StreamingMode` value.
+        """
+        cursor = self._db_connection.execute(
+            'SELECT streaming_mode FROM settings WHERE id=?', [_ROW_ID])
+        row = cursor.fetchone()
+        if not row or row[0] is None:
+            return StreamingMode.MJPEG
+        return StreamingMode(row[0])
+
+    def set_streaming_mode(self, streaming_mode):
+        self._db_connection.execute(
+            'UPDATE settings SET streaming_mode=? WHERE id=?',
+            [streaming_mode.value, _ROW_ID])
