@@ -5,3 +5,9 @@
 if [[ -d /opt/tinypilot/.git ]]; then
   rm -rf /opt/tinypilot
 fi
+
+# If an update script exists at the root privileged dir, the files were placed
+# with legacy Ansible installation, so wipe the directory.
+if [[ -f /opt/tinypilot-privileged/update ]]; then
+  rm -f /opt/tinypilot-privileged/*
+fi
