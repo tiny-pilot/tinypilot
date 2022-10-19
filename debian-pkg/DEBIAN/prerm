@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Exit script on first failure.
+set -e
+
+cd /opt/tinypilot
+rm -rf venv
+find . \
+  -type f \
+  -name "*.pyc" \
+  -delete \
+  -or \
+  -type d \
+  -name __pycache__ \
+  -delete

@@ -94,6 +94,7 @@ jobs:
             export TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
             export PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
             docker buildx build \
+              --file debian-pkg/Dockerfile \
               --platform linux/arm/v7 \
               --build-arg TINYPILOT_VERSION \
               --build-arg PKG_VERSION \
