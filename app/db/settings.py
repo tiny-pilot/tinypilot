@@ -56,6 +56,11 @@ class Settings:
         return StreamingMode(row[0])
 
     def set_streaming_mode(self, streaming_mode):
+        """Stores the preferred streaming mode.
+
+        Args:
+            streaming_mode: `StreamingMode` value.
+        """
         self._db_connection.execute(
             'UPDATE settings SET streaming_mode=? WHERE id=?',
             [streaming_mode.value, _ROW_ID])
