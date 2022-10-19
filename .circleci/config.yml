@@ -68,7 +68,7 @@ jobs:
           version: 20.10.11
       - run:
           name: Build Debian package
-          command: ./deb-scripts/build-debian-pkg
+          command: ./dev-scripts/build-debian-pkg
       - run:
           name: Print Debian package contents
           command: dpkg --contents releases/tinypilot*.deb
