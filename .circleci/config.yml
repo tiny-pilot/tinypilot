@@ -67,42 +67,13 @@ jobs:
       - setup_remote_docker:
           version: 20.10.11
       - run:
-          name: Enable multiarch builds with QEMU
-          command: |
-            docker run \
-              --rm \
-              --privileged \
-              multiarch/qemu-user-static \
-              --reset \
-              -p yes
-      - run:
-          name: Create multiarch build context
-          command: docker context create builder
-      - run:
-          name: Create multiplatform builder
-          command: |
-            docker buildx create builder \
-              --name builder \
-              --driver docker-container \
-              --use
-      - run:
-          name: Ensure builder has booted
-          command: docker buildx inspect --bootstrap
-      - run:
           name: Build Debian package
-          command: |
-            export TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
-            export PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
-            docker buildx build \
-              --file debian-pkg/Dockerfile \
-              --platform linux/arm/v7 \
-              --build-arg TINYPILOT_VERSION \
-              --build-arg PKG_VERSION \
-              --target=artifact \
-              --output type=local,dest=$(pwd)/releases/ \
-              .
+          command: ./dev-scripts/build-debian-pkg
+      - run:
+          name: Print Debian package contents
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
       - persist_to_workspace:
-          root: ./releases
+          root: ./debian-pkg/releases
           paths:
             - "*.deb"
   build_bundle:
