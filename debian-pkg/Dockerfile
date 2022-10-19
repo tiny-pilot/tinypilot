@@ -30,13 +30,13 @@ RUN mkdir -p "/releases/${PKG_ID}"
 WORKDIR "/releases/${PKG_ID}"
 
 RUN mkdir -p opt/tinypilot
-COPY ./COPYRIGHT opt/tinypilot/
-COPY ./LICENSE opt/tinypilot/
-COPY ./README.md opt/tinypilot/
-COPY ./requirements.txt opt/tinypilot/
-COPY ./app opt/tinypilot/app
-COPY ./scripts opt/tinypilot/scripts
-COPY ./debian-pkg .
+COPY ../COPYRIGHT opt/tinypilot/
+COPY ../LICENSE opt/tinypilot/
+COPY ../README.md opt/tinypilot/
+COPY ../requirements.txt opt/tinypilot/
+COPY ../app opt/tinypilot/app
+COPY ../scripts opt/tinypilot/scripts
+COPY . .
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
 

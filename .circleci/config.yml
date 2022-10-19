@@ -99,7 +99,7 @@ jobs:
               --build-arg PKG_VERSION \
               --target=artifact \
               --output type=local,dest=$(pwd)/releases/ \
-              .
+              ./debian-pkg
       - persist_to_workspace:
           root: ./releases
           paths:
