@@ -5,4 +5,4 @@
 # Test files.
 **/*_test.py
 
-Dockerfile
+/debian-pkg/Dockerfile
