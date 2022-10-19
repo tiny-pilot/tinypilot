@@ -12,7 +12,6 @@ _DEFAULT_HOSTNAME = 'tinypilot'
 
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
-    db.settings.Settings().set_streaming_mode(db.settings.StreamingMode.H264)
     # TODO(jotaen) While H264 is being worked on, we still rely on the legacy
     #              mechanism to determine the remote screen mode. Once we are
     #              done, we abandon the `USE_WEBRTC_REMOTE_SCREEN` config.
