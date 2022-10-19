@@ -89,7 +89,7 @@ jobs:
           name: Ensure builder has booted
           command: docker buildx inspect --bootstrap
       - run:
-          name: Build docker image with .deb package
+          name: Build Debian package
           command: |
             export TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
             export PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
