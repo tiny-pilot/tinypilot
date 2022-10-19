@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Reads the tinypilot-updater systemd log and cuts out the junk content.
+
+# Exit on first error.
+set -e
+
+# Treat undefined environment variables as errors.
+set -u
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo ${0}" >&2
+  exit 1
+fi
+
+journalctl -u tinypilot-updater \
+  | grep tinypilot-update-svc \
+  | sed -E 's/^.*tinypilot-update-svc\[[0-9]+\]: //g'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Mock version of /opt/tinypilot-privileged/update-video-settings
+# Mock version of /opt/tinypilot-privileged/scripts/update-video-settings
 
 echo "Starting mock version of update-video-settings..."
 

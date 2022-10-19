@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Creates a symlink from /opt/tinypilot-privileged to dev-scripts/mock-scripts
+# Creates a symlink from /opt/tinypilot-privileged/scripts to dev-scripts/mock-scripts
 # to facilitate development on non-TinyPilot systems.
 
 # Exit build script on first failure.
@@ -12,7 +12,7 @@ set -x
 # Exit on unset variable.
 set -u
 
-readonly PRIVILEGED_SCRIPTS_DIR="/opt/tinypilot-privileged"
+readonly PRIVILEGED_SCRIPTS_DIR="/opt/tinypilot-privileged/scripts"
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly MOCK_SCRIPTS_DIR="${SCRIPT_DIR}/mock-scripts"
 

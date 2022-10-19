@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Mock version of /opt/tinypilot-privileged/change-hostname
+# Mock version of /opt/tinypilot-privileged/scripts/change-hostname
 
 echo "Starting mock version of change-hostname..."
 

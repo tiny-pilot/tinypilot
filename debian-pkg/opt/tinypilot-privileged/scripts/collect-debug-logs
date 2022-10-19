@@ -1,0 +1,174 @@
+#!/bin/bash
+
+# Exit on unset variable.
+set -u
+
+print_help() {
+    cat << EOF
+Usage: ${0##*/} [-hq]
+Collect debug logs.
+  -h Display this help and exit.
+  -q Run in silent mode without prompting user for inputs.
+EOF
+}
+
+#######################################
+# Prints a string if not in silent mode.
+# Globals:
+#   FLAG_SILENT_MODE
+# Arguments:
+#   printf arguments
+# Outputs:
+#   Writes a formatted string to stdout.
+#######################################
+print_info() {
+  if [[ "$FLAG_SILENT_MODE" != "true" ]]; then
+    echo "$@"
+  fi
+}
+
+FLAG_SILENT_MODE=false
+
+# Parse command-line arguments.
+while getopts "hq" opt; do
+    case $opt in
+        h)
+            print_help
+            exit
+            ;;
+        q)
+            FLAG_SILENT_MODE=true
+            ;;
+        *)
+            print_help >&2
+            exit 1
+        # Add more options in the future.
+    esac
+done
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo ${0}" >&2
+  exit 1
+fi
+
+LOG_FILE=$(mktemp)
+print_info "Writing diagnostic logs to $LOG_FILE"
+
+{
+  echo "TinyPilot log dump"
+  echo "https://tinypilotkvm.com"
+  printf "Timestamp: %s" "$(date --iso-8601=seconds)"
+  printf "\n\n"
+} >> "${LOG_FILE}"
+
+echo "Software versions" >> "${LOG_FILE}"
+
+print_info "Checking TinyPilot version..."
+cd /opt/tinypilot && \
+  printf 'TinyPilot version: %s\n' "$(cat VERSION)" >> "${LOG_FILE}"
+
+print_info "Checking uStreamer version..."
+cd /opt/ustreamer && \
+  printf "uStreamer version: %s\n" "$(/opt/ustreamer/ustreamer --version)" >> "${LOG_FILE}"
+
+print_info "Checking OS version..."
+{
+  printf "OS version: %s\n" "$(uname -a)"
+  printf "Distribution name: %s\n" "$(lsb_release --id --short)"
+  printf "Distribution version: %s\n" "$(lsb_release --release --short)"
+  printf "\n"
+} >> "${LOG_FILE}"
+
+echo "TinyPilot state" >> "${LOG_FILE}"
+
+print_info "Checking temperature..."
+printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
+
+print_info "Checking throttled state..."
+printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
+
+print_info "Checking for voltage issues..."
+{
+  echo "voltage logs"
+  journalctl -xe | grep -i "voltage"
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking TinyPilot configuration..."
+{
+  printf "TinyPilot configuration\n"
+  cat /lib/systemd/system/tinypilot.service
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking TinyPilot logs..."
+{
+  printf "TinyPilot logs\n"
+  journalctl -u tinypilot | tail -n 200
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking TinyPilot updater logs..."
+{
+  printf "TinyPilot update logs\n"
+  "$(dirname "$0")/read-update-log" | tail -n 200
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking uStreamer configuration..."
+{
+  printf "uStreamer configuration\n"
+  cat /lib/systemd/system/ustreamer.service
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking uStreamer logs..."
+{
+  printf "uStreamer logs\n"
+  journalctl -u ustreamer | tail -n 80
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Checking nginx logs..."
+{
+  echo "nginx logs"
+  journalctl -u nginx
+  printf "\n\n"
+  tail -n 100 /var/log/nginx/error.log
+  printf "\n\n"
+  tail -n 30 /var/log/nginx/access.log
+  printf "\n"
+} >> "${LOG_FILE}"
+
+print_info "Your log:"
+print_info ""
+cat "${LOG_FILE}"
+print_info "-------------------------------------"
+print_info ""
+print_info ""
+
+SHOULD_UPLOAD=false
+if [[ "$FLAG_SILENT_MODE" != "true" ]]; then
+    echo -n "Upload your log file? You can review it above to see what information it contains (y/n)? "
+    read -r answer
+    printf "\n"
+    if [ "$answer" != "${answer#[Yy]}" ]; then
+        SHOULD_UPLOAD=true
+    fi
+fi
+
+readonly LOG_UPLOAD_URL="https://logs.tinypilotkvm.com"
+
+if [[ "$SHOULD_UPLOAD" == "true" ]]; then
+    URL=$(curl --silent --show-error --form "_=@${LOG_FILE}" "${LOG_UPLOAD_URL}")
+    printf "Copy the following URL into your bug report:\n\n\t"
+    printf "%s\n\n" "${URL}"
+else
+    print_info "Log file not uploaded."
+    print_info "If you decide to share it, run:"
+    print_info ""
+    print_info "  curl -F \"_=@${LOG_FILE}\" ${LOG_UPLOAD_URL}"
+    print_info ""
+fi
