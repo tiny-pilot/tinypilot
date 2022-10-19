@@ -204,19 +204,19 @@ workflows:
       - build_debian_package:
           filters:
             branches:
-              only: master
+              only: /.*/ # DEBUG
       - build_bundle:
           requires:
             - build_debian_package
           filters:
             branches:
-              only: master
+              only: /.*/ # DEBUG
       - verify_bundle:
           requires:
             - build_bundle
           filters:
             branches:
-              only: master
+              only: /.*/ # DEBUG
       - upload_bundle:
           requires:
             - verify_bundle
