@@ -15,7 +15,7 @@ class AlreadyInProgressError(Error):
     pass
 
 
-UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update'
+UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/update'
 
 
 def start_async():

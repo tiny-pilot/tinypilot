@@ -6,7 +6,7 @@ import flask_socketio
 
 import threads
 
-_READ_SCRIPT_PATH = '/opt/tinypilot-privileged/read-update-log'
+_READ_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/read-update-log'
 logger = logging.getLogger(__name__)
 
 

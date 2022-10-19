@@ -29,7 +29,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
         mock_check_output.return_value = """
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
-root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/update
+root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/scripts/update
 """.lstrip().encode('utf-8')
         mock_read_update_result.return_value = None
 
@@ -46,7 +46,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-
         mock_check_output.return_value = """
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
-root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/update
+root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/scripts/update
 """.lstrip().encode('utf-8')
         # get should ignore this result because an update process
         # is currently running, which takes priority over the previous result.

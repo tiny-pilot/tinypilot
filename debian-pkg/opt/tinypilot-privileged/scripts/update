@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Echo commands to stdout.
+set -x
+
+# Treat undefined environment variables as errors.
+set -u
+
+# Exit on first error.
+set -e
+
+curl \
+  --silent \
+  --show-error \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh | \
+    bash -
