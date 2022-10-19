@@ -75,4 +75,4 @@ package-lock.json
 *.xcworkspace
 
 # Debian package builds
-releases/
+debian-pkg/releases/

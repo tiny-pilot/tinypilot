@@ -71,9 +71,9 @@ jobs:
           command: ./dev-scripts/build-debian-pkg
       - run:
           name: Print Debian package contents
-          command: dpkg --contents releases/tinypilot*.deb
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
       - persist_to_workspace:
-          root: ./releases
+          root: ./debian-pkg/releases
           paths:
             - "*.deb"
   build_bundle:

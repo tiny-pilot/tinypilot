@@ -20,5 +20,5 @@ DOCKER_BUILDKIT=1 docker build \
   --build-arg TINYPILOT_VERSION="${TINYPILOT_VERSION}" \
   --build-arg PKG_VERSION="${PKG_VERSION}" \
   --target=artifact \
-  --output "type=local,dest=$(pwd)/releases/" \
+  --output "type=local,dest=$(pwd)/debian-pkg/releases/" \
   .
