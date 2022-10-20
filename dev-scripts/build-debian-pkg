@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+readonly TINYPILOT_VERSION
+
+PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
+readonly PKG_VERSION
+
+DOCKER_BUILDKIT=1 docker build \
+  --file debian-pkg/Dockerfile \
+  --build-arg TINYPILOT_VERSION="${TINYPILOT_VERSION}" \
+  --build-arg PKG_VERSION="${PKG_VERSION}" \
+  --target=artifact \
+  --output "type=local,dest=$(pwd)/debian-pkg/releases/" \
+  .
