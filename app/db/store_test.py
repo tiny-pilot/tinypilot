@@ -27,10 +27,21 @@ class StoreTest(unittest.TestCase):
         'CREATE TABLE first(id INTEGER)',
         'CREATE TABLE second(id INTEGER)',
     ])
-    def test_adjusts_migration_counter_on_initialization(self):
+    def test_applies_migrations_and_adjusts_migration_counter_on_initialization(
+            self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = db.store.create_or_open(temp_file.name)
+            self.assertEqual(['first', 'second'], all_tables(connection))
             self.assertEqual(2, migrations_counter(connection))
+
+    @mock.patch('db.store._MIGRATIONS', [
+        'CREATE TABLE first(id INTEGER); CREATE TABLE second(id INTEGER)',
+    ])
+    def test_processes_multistatement_migrations(self):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            connection = db.store.create_or_open(temp_file.name)
+            self.assertEqual(['first', 'second'], all_tables(connection))
+            self.assertEqual(1, migrations_counter(connection))
 
     @mock.patch('db.store._MIGRATIONS', [])
     def test_noop_if_no_migrations_are_specified(self):
@@ -115,6 +126,26 @@ class StoreTest(unittest.TestCase):
 
             # The migration is supposed to be aborted on first error, and the
             # state of the last successful migration should be effective.
+            self.assertEqual(1, migrations_counter(connection))
+            self.assertEqual(['first'], all_tables(connection))
+
+    @mock.patch(
+        'db.store._MIGRATIONS',
+        [
+            'CREATE TABLE first(id INTEGER)',
+            # The next statement will fail, since it tries to create table
+            # `second` two times, which is not possible.
+            'CREATE TABLE second(name TEXT); CREATE TABLE second(name INTEGER)',
+        ])
+    def test_executes_multistatement_migration_atomically(self):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            with self.assertRaises(sqlite3.OperationalError):
+                db.store.create_or_open(temp_file.name)
+
+            connection = sqlite3.connect(temp_file.name, isolation_level=None)
+
+            # The multi-statement migration must be atomic – so instead of it
+            # being partially applied, it should be rolled backed altogether.
             self.assertEqual(1, migrations_counter(connection))
             self.assertEqual(['first'], all_tables(connection))
 
