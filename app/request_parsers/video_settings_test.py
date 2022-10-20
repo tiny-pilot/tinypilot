@@ -78,3 +78,42 @@ class VideoJpegQualityParserTest(unittest.TestCase):
         with self.assertRaises(errors.MissingFieldError):
             video_settings.parse_jpeg_quality(
                 make_mock_request({'jpegQuality': 1}))
+
+
+class VideoH264BitrateParserTest(unittest.TestCase):
+
+    def test_reject_integers_out_of_bounds(self):
+        with self.assertRaises(errors.InvalidVideoH264BitrateError):
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'videoH264Bitrate': 24}))
+        with self.assertRaises(errors.InvalidVideoH264BitrateError):
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'videoH264Bitrate': 20001}))
+
+    def test_accept_integers_within_bounds(self):
+        self.assertEqual(
+            25,
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'videoH264Bitrate': 25})))
+        self.assertEqual(
+            5000,
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'videoH264Bitrate': 5000})))
+        self.assertEqual(
+            20000,
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'videoH264Bitrate': 20000})))
+
+    def test_reject_non_integers(self):
+        for value in [
+                None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
+        ]:
+            with self.subTest(value):
+                with self.assertRaises(errors.InvalidVideoH264BitrateError):
+                    video_settings.parse_h264_bitrate(
+                        make_mock_request({'videoH264Bitrate': value}))
+
+    def test_reject_incorrect_key(self):
+        with self.assertRaises(errors.MissingFieldError):
+            video_settings.parse_h264_bitrate(
+                make_mock_request({'h264Bitrate': 1}))

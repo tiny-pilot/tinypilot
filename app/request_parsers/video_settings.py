@@ -36,3 +36,22 @@ def parse_jpeg_quality(request):
             'The video JPEG quality must be an whole number between 1 and 100.'
         ) from e
     return video_jpeg_quality
+
+
+def parse_h264_bitrate(request):
+    # pylint: disable=unbalanced-tuple-unpacking
+    (video_h264_bitrate,) = json.parse_json_body(
+        request, required_fields=['videoH264Bitrate'])
+    try:
+        # Note: We need to cast the value to a string first otherwise the int
+        # function forces floats into integers by simply cutting off the
+        # fractional part. This results in the value being incorrectly
+        # validated as an integer.
+        video_h264_bitrate = int(str(video_h264_bitrate))
+        if not 25 <= video_h264_bitrate <= 20000:
+            raise ValueError
+    except ValueError as e:
+        raise errors.InvalidVideoH264BitrateError(
+            'The H264 bitrate must be an whole number between 25 and 20000.'
+        ) from e
+    return video_h264_bitrate

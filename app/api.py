@@ -275,7 +275,7 @@ def settings_video_fps_put():
     try:
         video_fps = request_parsers.video_settings.parse_fps(flask.request)
         settings = update.settings.load()
-        # Note: To avoid polluting the settings file with unnecessay default
+        # Note: To avoid polluting the settings file with unnecessary default
         # values, we unset them instead.
         if video_fps == video_settings.DEFAULT_FPS:
             del settings.ustreamer_desired_fps
@@ -348,7 +348,7 @@ def settings_video_jpeg_quality_put():
         video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
             flask.request)
         settings = update.settings.load()
-        # Note: To avoid polluting the settings file with unnecessay default
+        # Note: To avoid polluting the settings file with unnecessary default
         # values, we unset them instead.
         if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
             del settings.ustreamer_quality
@@ -377,6 +377,80 @@ def settings_video_jpeg_quality_default_get():
     """
     return json_response.success(
         {'videoJpegQuality': video_settings.DEFAULT_JPEG_QUALITY})
+
+
+@api_blueprint.route('/settings/video/h264_bitrate', methods=['GET'])
+def settings_video_h264_bitrate_get():
+    """Retrieves the current H264 video bitrate setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoH264Bitrate: int.
+
+        Example:
+        {
+            "videoH264Bitrate": 5000
+        }
+
+        Returns an error object on failure.
+    """
+    try:
+        ustreamer_h264_bitrate = update.settings.load().ustreamer_h264_bitrate
+    except update.settings.LoadSettingsError as e:
+        return json_response.error(e), 500
+    # Note: Default values are not set in the settings file. So when the
+    # values are unset, we must respond with the correct default value.
+    if ustreamer_h264_bitrate is None:
+        ustreamer_h264_bitrate = video_settings.DEFAULT_H264_BITRATE
+    return json_response.success({'videoH264Bitrate': ustreamer_h264_bitrate})
+
+
+@api_blueprint.route('/settings/video/h264_bitrate', methods=['PUT'])
+def settings_video_h264_bitrate_put():
+    """Changes the current H264 video bitrate setting.
+
+    Expects a JSON data structure in the request body that contains the
+    new videoH264Bitrate as an integer. Example:
+    {
+        "videoH264Bitrate": 1000
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
+            flask.request)
+        settings = update.settings.load()
+        # Note: To avoid polluting the settings file with unnecessary default
+        # values, we unset them instead.
+        if video_h264_bitrate == video_settings.DEFAULT_H264_BITRATE:
+            del settings.ustreamer_h264_bitrate
+        else:
+            settings.ustreamer_h264_bitrate = video_h264_bitrate
+        update.settings.save(settings)
+    except request_parsers.errors.InvalidVideoH264BitrateError as e:
+        return json_response.error(e), 400
+    except update.settings.SaveSettingsError as e:
+        return json_response.error(e), 500
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/video/h264_bitrate/default', methods=['GET'])
+def settings_video_h264_bitrate_default_get():
+    """Retrieves the default H264 video bitrate setting.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoH264Bitrate: int.
+
+        Example:
+        {
+            "videoH264Bitrate": 5000
+        }
+    """
+    return json_response.success(
+        {'videoH264Bitrate': video_settings.DEFAULT_H264_BITRATE})
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])

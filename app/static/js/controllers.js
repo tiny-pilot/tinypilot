@@ -332,6 +332,52 @@ export async function getDefaultVideoJpegQuality() {
     });
 }
 
+export async function getVideoH264Bitrate() {
+  return fetch("/api/settings/video/h264_bitrate", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      if (!data.hasOwnProperty("videoH264Bitrate")) {
+        throw new ControllerError("Missing expected videoH264Bitrate field");
+      }
+      return data.videoH264Bitrate;
+    });
+}
+
+export async function setVideoH264Bitrate(videoH264Bitrate) {
+  return fetch("/api/settings/video/h264_bitrate", {
+    method: "PUT",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ videoH264Bitrate }),
+  }).then(processJsonResponse);
+}
+
+export async function getDefaultVideoH264Bitrate() {
+  return fetch("/api/settings/video/h264_bitrate/default", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      if (!data.hasOwnProperty("videoH264Bitrate")) {
+        throw new ControllerError("Missing expected videoH264Bitrate field");
+      }
+      return data.videoH264Bitrate;
+    });
+}
+
 export async function applyVideoSettings() {
   return fetch("/api/settings/video/apply", {
     method: "POST",
