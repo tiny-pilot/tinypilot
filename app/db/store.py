@@ -136,9 +136,11 @@ def create_or_open(db_path):
         with connection as transaction:
             # Without an explicit `BEGIN`, the sqlite3 library would autocommit
             # structural modifications immediately. See:
-            # The `BEGIN` must also be part of `executescript` itself, since
-            # `executescript` issues an implicit `COMMIT` at the beginning.
             # https://docs.python.org/3.7/library/sqlite3.html#transaction-control
+            # Note that the `BEGIN` cannot be executed in a separate, preceding
+            # `transaction.execute('BEGIN')` command, because
+            # `transaction.executescript` automatically issues an implicit
+            # commit as first thing.
             transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
