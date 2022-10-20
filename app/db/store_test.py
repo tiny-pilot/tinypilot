@@ -24,8 +24,8 @@ def migrations_counter(connection):
 class StoreTest(unittest.TestCase):
 
     @mock.patch('db.store._MIGRATIONS', [
-        'CREATE TABLE first(id INTEGER)',
-        'CREATE TABLE second(id INTEGER)',
+        ['CREATE TABLE first(id INTEGER)'],
+        ['CREATE TABLE second(id INTEGER)'],
     ])
     def test_applies_migrations_and_adjusts_migration_counter_on_initialization(
             self):
@@ -35,7 +35,7 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(2, migrations_counter(connection))
 
     @mock.patch('db.store._MIGRATIONS', [
-        'CREATE TABLE first(id INTEGER); CREATE TABLE second(id INTEGER)',
+        ['CREATE TABLE first(id INTEGER)', 'CREATE TABLE second(id INTEGER)'],
     ])
     def test_processes_multistatement_migrations(self):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -53,9 +53,9 @@ class StoreTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as temp_file:
             # First, run the initial migrations.
             with mock.patch('db.store._MIGRATIONS', [
-                    'CREATE TABLE first(id INTEGER)',
-                    'CREATE TABLE third(id INTEGER)',
-                    'ALTER TABLE third RENAME TO second',
+                ['CREATE TABLE first(id INTEGER)'],
+                ['CREATE TABLE third(id INTEGER)'],
+                ['ALTER TABLE third RENAME TO second'],
             ]):
                 connection = db.store.create_or_open(temp_file.name)
                 self.assertEqual(3, migrations_counter(connection))
@@ -65,10 +65,10 @@ class StoreTest(unittest.TestCase):
             with mock.patch(
                     'db.store._MIGRATIONS',
                 [
-                    'CREATE TABLE first(id INTEGER)',
-                    'CREATE TABLE third(id INTEGER)',
-                    'ALTER TABLE third RENAME TO second',
-                    'CREATE TABLE third(id INTEGER)',  # <-- this one is new
+                    ['CREATE TABLE first(id INTEGER)'],
+                    ['CREATE TABLE third(id INTEGER)'],
+                    ['ALTER TABLE third RENAME TO second'],
+                    ['CREATE TABLE third(id INTEGER)'],  # <-- this one is new
                 ]):
                 connection = db.store.create_or_open(temp_file.name)
                 self.assertEqual(4, migrations_counter(connection))
@@ -76,8 +76,8 @@ class StoreTest(unittest.TestCase):
                                  all_tables(connection))
 
     @mock.patch('db.store._MIGRATIONS', [
-        'CREATE TABLE first(id INTEGER)',
-        'CREATE TABLE second(id INTEGER)',
+        ['CREATE TABLE first(id INTEGER)'],
+        ['CREATE TABLE second(id INTEGER)'],
     ])
     def test_disregards_previously_existing_structure(self):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -95,8 +95,8 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(2, migrations_counter(connection2))
 
     @mock.patch('db.store._MIGRATIONS', [
-        'CREATE TABLE first(id INTEGER)',
-        'CREATE TABLE second(id INTEGER)',
+        ['CREATE TABLE first(id INTEGER)'],
+        ['CREATE TABLE second(id INTEGER)'],
     ])
     def test_does_not_run_migrations_redundantly(self):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -112,10 +112,10 @@ class StoreTest(unittest.TestCase):
     @mock.patch(
         'db.store._MIGRATIONS',
         [
-            'CREATE TABLE first(id INTEGER)',
+            ['CREATE TABLE first(id INTEGER)'],
             # The next statement will fail, since table `first` already exists.
-            'CREATE TABLE first(name TEXT)',
-            'CREATE TABLE second(id INTEGER)',
+            ['CREATE TABLE first(name TEXT)'],
+            ['CREATE TABLE second(id INTEGER)'],
         ])
     def test_aborts_on_bad_migration(self):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -132,10 +132,13 @@ class StoreTest(unittest.TestCase):
     @mock.patch(
         'db.store._MIGRATIONS',
         [
-            'CREATE TABLE first(id INTEGER)',
-            # The next statement will fail, since it tries to create table
+            ['CREATE TABLE first(id INTEGER)'],
+            # The next migration step will fail, since it tries to create table
             # `second` two times, which is not possible.
-            'CREATE TABLE second(name TEXT); CREATE TABLE second(name INTEGER)',
+            [
+                'CREATE TABLE second(name TEXT)',
+                'CREATE TABLE second(name INTEGER)'
+            ],
         ])
     def test_executes_multistatement_migration_atomically(self):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -149,7 +152,7 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(1, migrations_counter(connection))
             self.assertEqual(['first'], all_tables(connection))
 
-    @mock.patch('db.store._MIGRATIONS', ['CREATE TABLE first(id INTEGER)'])
+    @mock.patch('db.store._MIGRATIONS', [['CREATE TABLE first(id INTEGER)']])
     def test_aborts_if_migration_counter_is_incompatible(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = sqlite3.connect(temp_file.name, isolation_level=None)

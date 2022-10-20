@@ -7,16 +7,16 @@ The requirements for our app are rather simple, so instead of pulling in a
 heavy-weight tool, we maintain our own mechanism. It is based off the exact same
 philosophy, which is basically this:
 
-- The database schema is defined through the linear sequence of migration
-  statements. These are applied from the first to the last. After the last
-  migration has run, the final schema is in place. We use the `_MIGRATIONS`
-  list for storing all our migrations statements.
-- Each migration step is applied atomically, i.e., inside a transaction – so
-  it’s either effectuated completely, or not at all.
-- The SQL code of a migration step must not perform its own transaction control
+- The database schema is defined through the linear sequence of migration steps.
+  These are applied from the first to the last. After the last migration
+  has run, the final schema is in place.
+- We use the `_MIGRATIONS` nested list for storing all our migration steps. Each
+  step is a list containing one or more individual SQL queries (as strings).
+- Each migration step, with all its SQL queries, is applied atomically, i.e.,
+  inside a transaction. The SQL queries are either effectuated altogether, or
+  not at all.
+- The SQL code of a migration query must not perform its own transaction control
   (e.g., by issuing a `BEGIN` statement).
-- The SQL code of the migration step may contain multiple SQL statements,
-  delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
   regardless of what initial version we start from. The downside is that we
@@ -51,45 +51,55 @@ logger = logging.getLogger(__name__)
 
 _MIGRATIONS = [
     # 0: Create the user table.
-    """
-    CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL
-        )
-    """,
+    [
+        """
+        CREATE TABLE IF NOT EXISTS users(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL
+            )
+        """
+    ],
 
     # 1: Create the licenses table.
-    """
-    CREATE TABLE IF NOT EXISTS licenses(
-        id INTEGER PRIMARY KEY,
-        license_key TEXT NOT NULL
-        )
-    """,
+    [
+        """
+        CREATE TABLE IF NOT EXISTS licenses(
+            id INTEGER PRIMARY KEY,
+            license_key TEXT NOT NULL
+            )
+        """
+    ],
 
     # 2: Create the settings table.
-    """
-    CREATE TABLE IF NOT EXISTS settings(
-        id INTEGER PRIMARY KEY,
-        requires_https INTEGER NOT NULL
-        )
-    """,
+    [
+        """
+        CREATE TABLE IF NOT EXISTS settings(
+            id INTEGER PRIMARY KEY,
+            requires_https INTEGER NOT NULL
+            )
+        """
+    ],
 
     # 3: Create the wake_on_lan table.
-    """
-    CREATE TABLE IF NOT EXISTS wake_on_lan(
-        id INTEGER PRIMARY KEY,
-        mac_address TEXT NOT NULL UNIQUE
-        )
-    """,
+    [
+        """
+        CREATE TABLE IF NOT EXISTS wake_on_lan(
+            id INTEGER PRIMARY KEY,
+            mac_address TEXT NOT NULL UNIQUE
+            )
+        """
+    ],
 
     # 4: Add column for keeping track of when credentials were changed. The
     # default value is only needed for previously existing rows.
-    """
-    ALTER TABLE users
-        ADD COLUMN credentials_last_changed
-        TEXT NOT NULL DEFAULT "0001-01-01T00:00:00.000000+00:00"
-    """
+    [
+        """
+        ALTER TABLE users
+            ADD COLUMN credentials_last_changed
+            TEXT NOT NULL DEFAULT "0001-01-01T00:00:00.000000+00:00"
+        """
+    ],
 ]
 
 
@@ -138,11 +148,9 @@ def create_or_open(db_path):
             # Without an explicit `BEGIN`, the sqlite3 library would autocommit
             # structural modifications immediately. See:
             # https://docs.python.org/3.7/library/sqlite3.html#transaction-control
-            # Note that the `BEGIN` cannot be executed in a separate, preceding
-            # `transaction.execute('BEGIN')` command, because
-            # `transaction.executescript` automatically issues an implicit
-            # commit as first thing.
-            transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
+            transaction.execute('BEGIN')
+            for query in _MIGRATIONS[i]:
+                transaction.execute(query)
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
             transaction.execute(f'PRAGMA user_version={i+1}')
