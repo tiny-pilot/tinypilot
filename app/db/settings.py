@@ -5,14 +5,20 @@ _ROW_ID = 1
 
 
 class Settings:
+    # The columns of the settings table should never have a `NON NULL`
+    # constraint, otherwise it wouldn’t be possible to selectively set or update
+    # individual columns.
 
     def __init__(self):
         self._db_connection = db_connection.get()
+        # Initialize the table by making sure the “hard-coded” row exists.
+        self._db_connection.execute(
+            'INSERT OR IGNORE INTO settings(id) VALUES (?)', [_ROW_ID])
 
     def set_requires_https(self, should_be_required):
         self._db_connection.execute(
-            'INSERT OR REPLACE INTO settings(id, requires_https)'
-            ' VALUES (?, ?)', [_ROW_ID, should_be_required])
+            'UPDATE settings SET requires_https=? WHERE id=?',
+            [should_be_required, _ROW_ID])
 
     def requires_https(self):
         """Retrieves the setting whether HTTPS connections are required.
@@ -25,6 +31,6 @@ class Settings:
         cursor = self._db_connection.execute(
             'SELECT requires_https FROM settings WHERE id=?', [_ROW_ID])
         row = cursor.fetchone()
-        if not row:
+        if not row or row[0] is None:
             return True
         return row[0] > 0  # Convert integer value to bool.
