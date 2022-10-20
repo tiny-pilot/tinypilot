@@ -103,6 +103,13 @@ _MIGRATIONS = [
     DROP TABLE settings;
     ALTER TABLE __settings__ RENAME TO settings;
     """,
+
+    # 6: Add column in settings table for configuring the streaming mode of the
+    # remote screen.
+    """
+    ALTER TABLE settings
+        ADD COLUMN streaming_mode TEXT
+    """,
 ]
 
 
