@@ -15,7 +15,7 @@ philosophy, which is basically this:
   it’s either effectuated completely, or not at all.
 - The SQL code of a migration step must not perform its own transaction control
   (e.g., by issuing a `BEGIN` statement).
-- The SQL code of the migration step may contain multiple SQL statements,
+- The SQL code of a migration step may contain multiple SQL statements,
   delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
