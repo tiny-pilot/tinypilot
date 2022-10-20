@@ -11,6 +11,11 @@ philosophy, which is basically this:
   statements. These are applied from the first to the last. After the last
   migration has run, the final schema is in place. We use the `_MIGRATIONS`
   list for storing all our migrations statements.
+- Each migration step is applied atomically, i.e. inside a transaction – so it’s
+  either effectuated completely, or not at all. The provided SQL cannot carry
+  out transaction control on its own, e.g. by issuing a `BEGIN`.
+- The SQL code of the migration step may contain multiple SQL statements,
+  delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
   regardless of what initial version we start from. The downside is that we
@@ -85,19 +90,20 @@ _MIGRATIONS = [
         TEXT NOT NULL DEFAULT "0001-01-01T00:00:00.000000+00:00"
     """,
 
-    # 5-8: Remove non-null constraint from settings table. Since sqlite doesn’t
-    # natively support that operation, we have to make use of an intermediate
-    # table.
+    # 5: Remove non-null constraint from settings table (see explanation in
+    # `settings.py`). Since sqlite doesn’t natively support that operation, we
+    # have to make use of an intermediate table.
     """
-    CREATE TABLE settings2(
+    CREATE TABLE __settings__(
         id INTEGER PRIMARY KEY,
         requires_https INTEGER
-    )""",
-    """INSERT INTO settings2 SELECT * FROM settings""",
-    """DROP TABLE settings""",
-    """ALTER TABLE settings2 RENAME TO settings""",
+    );
+    INSERT INTO __settings__ SELECT * FROM settings;
+    DROP TABLE settings;
+    ALTER TABLE __settings__ RENAME TO settings;
+    """,
 
-    # 9: Add column in settings table for configuring the streaming mode of the
+    # 6: Add column in settings table for configuring the streaming mode of the
     # remote screen.
     """
     ALTER TABLE settings
@@ -145,11 +151,12 @@ def create_or_open(db_path):
 
     for i in range(initial_migrations_counter, len(_MIGRATIONS)):
         with connection as transaction:
-            # Without an explicit `begin`, the sqlite3 library would autocommit
+            # Without an explicit `BEGIN`, the sqlite3 library would autocommit
             # structural modifications immediately. See:
             # https://docs.python.org/3/library/sqlite3.html#controlling-transactions
-            transaction.execute('BEGIN')
-            transaction.execute(_MIGRATIONS[i])
+            # The `BEGIN` must also be part of `executescript` itself, since
+            # `executescript` issues an implicit `COMMIT` at the beginning.
+            transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
             transaction.execute(f'PRAGMA user_version={i+1}')

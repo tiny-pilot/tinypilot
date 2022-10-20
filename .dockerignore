@@ -6,3 +6,4 @@
 **/*_test.py
 
 /debian-pkg/Dockerfile
+/debian-pkg/releases/
