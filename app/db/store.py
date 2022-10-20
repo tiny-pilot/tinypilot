@@ -11,9 +11,9 @@ philosophy, which is basically this:
   statements. These are applied from the first to the last. After the last
   migration has run, the final schema is in place. We use the `_MIGRATIONS`
   list for storing all our migrations statements.
-- Each migration step is applied atomically, i.e. inside a transaction – so it’s
-  either effectuated completely, or not at all. The provided SQL cannot carry
-  out transaction control on its own, e.g. by issuing a `BEGIN`.
+- Each migration step is applied atomically, i.e., inside a transaction – so
+  it’s either effectuated completely, or not at all. The provided SQL cannot
+  carry out transaction control on its own, e.g. by issuing a `BEGIN`.
 - The SQL code of the migration step may contain multiple SQL statements,
   delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
