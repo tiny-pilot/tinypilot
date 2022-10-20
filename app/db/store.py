@@ -131,8 +131,9 @@ def create_or_open(db_path):
                              ' current version of the app.')
 
     for i in range(initial_migrations_counter, len(_MIGRATIONS)):
-        # By using the connection objects as context managers, sqlite3 will
-        # automatically commit or rollback any ongoing transaction.
+        # By using the connection object as context manager, sqlite3 will
+        # automatically commit or rollback any ongoing transaction when exiting
+        # the scope.
         with connection as transaction:
             # Without an explicit `BEGIN`, the sqlite3 library would autocommit
             # structural modifications immediately. See:
