@@ -140,8 +140,8 @@ def create_or_open(db_path):
             # https://docs.python.org/3.7/library/sqlite3.html#transaction-control
             # Note that the `BEGIN` cannot be executed in a separate, preceding
             # `transaction.execute('BEGIN')` command, because
-            # `transaction.executescript` automatically issues an implicit
-            # commit as first thing.
+            # `transaction.executescript` automatically issues a `COMMIT` before
+            # executing its script argument.
             transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
