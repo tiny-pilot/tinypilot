@@ -12,9 +12,10 @@ philosophy, which is basically this:
   migration has run, the final schema is in place. We use the `_MIGRATIONS`
   list for storing all our migrations statements.
 - Each migration step is applied atomically, i.e., inside a transaction – so
-  it’s either effectuated completely, or not at all. The provided SQL cannot
-  carry out transaction control on its own, e.g. by issuing a `BEGIN`.
-- The SQL code of the migration step may contain multiple SQL statements,
+  it’s either effectuated completely, or not at all.
+- The SQL code of a migration step must not perform its own transaction control
+  (e.g., by issuing a `BEGIN` statement).
+- The SQL code of a migration step may contain multiple SQL statements,
   delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
@@ -143,12 +144,17 @@ def create_or_open(db_path):
                              ' current version of the app.')
 
     for i in range(initial_migrations_counter, len(_MIGRATIONS)):
+        # By using the connection object as context manager, sqlite3 will
+        # automatically commit or rollback any ongoing transaction when exiting
+        # the scope.
         with connection as transaction:
             # Without an explicit `BEGIN`, the sqlite3 library would autocommit
             # structural modifications immediately. See:
-            # https://docs.python.org/3/library/sqlite3.html#controlling-transactions
-            # The `BEGIN` must also be part of `executescript` itself, since
-            # `executescript` issues an implicit `COMMIT` at the beginning.
+            # https://docs.python.org/3.7/library/sqlite3.html#transaction-control
+            # Note that the `BEGIN` cannot be executed in a separate, preceding
+            # `transaction.execute('BEGIN')` command, because
+            # `transaction.executescript` automatically issues a `COMMIT` before
+            # executing its script argument.
             transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
