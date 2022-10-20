@@ -37,10 +37,9 @@ class Settings:
         """
         cursor = self._db_connection.execute(
             'SELECT requires_https FROM settings WHERE id=?', [_ROW_ID])
-        row = cursor.fetchone()
-        if not row or row[0] is None:
-            return True
-        return row[0] > 0  # Convert integer value to bool.
+        # Reminder: the `requires_https` column is of type integer.
+        raw_value = _fetch_single_value(cursor, 1)
+        return raw_value > 0  # Convert integer value to bool.
 
     def get_streaming_mode(self):
         """Retrieves the preferred streaming mode for the remote screen.
@@ -50,10 +49,8 @@ class Settings:
         """
         cursor = self._db_connection.execute(
             'SELECT streaming_mode FROM settings WHERE id=?', [_ROW_ID])
-        row = cursor.fetchone()
-        if not row or row[0] is None:
-            return StreamingMode.MJPEG
-        return StreamingMode(row[0])
+        raw_value = _fetch_single_value(cursor, StreamingMode.MJPEG.value)
+        return StreamingMode(raw_value)
 
     def set_streaming_mode(self, streaming_mode):
         """Stores the preferred streaming mode.
@@ -64,3 +61,11 @@ class Settings:
         self._db_connection.execute(
             'UPDATE settings SET streaming_mode=? WHERE id=?',
             [streaming_mode.value, _ROW_ID])
+
+
+def _fetch_single_value(connection_cursor, default_value):
+    """Helper method to resolve a query for one single value."""
+    row = connection_cursor.fetchone()
+    if not row or row[0] is None:
+        return default_value
+    return row[0]
