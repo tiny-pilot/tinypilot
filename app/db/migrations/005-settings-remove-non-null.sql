@@ -6,6 +6,6 @@ CREATE TABLE __settings__(
     id INTEGER PRIMARY KEY,
     requires_https INTEGER
 );
-INSERT INTO __settings__ SELECT * FROM settings;
+INSERT INTO __settings__ SELECT id, requires_https FROM settings;
 DROP TABLE settings;
 ALTER TABLE __settings__ RENAME TO settings;
