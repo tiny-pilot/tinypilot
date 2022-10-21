@@ -1,6 +1,6 @@
 -- Remove non-null constraint from settings table (see explanation in
--- `settings.py`). Since sqlite doesn’t natively support that operation, we have
--- to use an intermediate table.
+-- `settings.py`). Since sqlite doesn’t natively support that operation, we
+-- have to use an intermediate table.
 
 CREATE TABLE __settings__(
     id INTEGER PRIMARY KEY,
