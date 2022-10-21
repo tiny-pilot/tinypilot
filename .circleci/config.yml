@@ -22,6 +22,19 @@ jobs:
       - run:
           name: Run static analysis on bash scripts
           command: ./dev-scripts/check-bash
+  lint_sql:
+    docker:
+      - image: sqlfluff/sqlfluff:1.3.2
+        user: root
+    steps:
+      - checkout
+      - run:
+          name: Lint SQL files
+          command: |
+            sqlfluff lint \
+              --disable_progress_bar \
+              --dialect sqlite \
+              app/db/migrations
   check_style:
     docker:
       - image: cimg/node:14.17.5
