@@ -44,6 +44,7 @@ idempotent way. Once the migration mechanism was applied for the first time,
 the database file is successfully converted to the “new” format, and from then
 on it works the same everywhere.
 """
+import glob
 import logging
 import os
 import sqlite3
@@ -129,13 +130,13 @@ def _load_migrations():
         A list of SQL scripts as strings, in the order they should be applied
         to bring the database to the correct state.
     """
-    migrations_dir = os.path.join(os.path.dirname(__file__), 'migrations')
-    logger.debug('loading database migrations from %s', migrations_dir)
+    migrations_pattern = os.path.join(os.path.dirname(__file__), 'migrations',
+                                      '*.sql')
+    logger.debug('loading database migrations from %s', migrations_pattern)
 
     migrations = []
-    for migration_script in sorted(os.listdir(migrations_dir)):
-        with open(os.path.join(migrations_dir, migration_script),
-                  encoding='utf-8') as migration_file:
+    for migration_script in sorted(glob.glob(migrations_pattern)):
+        with open(migration_script, encoding='utf-8') as migration_file:
             migrations.append(migration_file.read())
 
     logger.debug('read %d database migrations from disk', len(migrations))
