@@ -23,7 +23,7 @@ def migrations_counter(connection):
 
 class StoreTest(unittest.TestCase):
 
-    @mock.patch.object(db.store, '_MIGRATIONS', [
+    @mock.patch('db.store._MIGRATIONS', [
         'CREATE TABLE first(id INTEGER)',
         'CREATE TABLE second(id INTEGER)',
     ])
@@ -34,7 +34,7 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(['first', 'second'], all_tables(connection))
             self.assertEqual(2, migrations_counter(connection))
 
-    @mock.patch.object(db.store, '_MIGRATIONS', [
+    @mock.patch('db.store._MIGRATIONS', [
         'CREATE TABLE first(id INTEGER); CREATE TABLE second(id INTEGER)',
     ])
     def test_processes_multistatement_migrations(self):
@@ -43,7 +43,7 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(['first', 'second'], all_tables(connection))
             self.assertEqual(1, migrations_counter(connection))
 
-    @mock.patch.object(db.store, '_MIGRATIONS', [])
+    @mock.patch('db.store._MIGRATIONS', [])
     def test_noop_if_no_migrations_are_specified(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = db.store.create_or_open(temp_file.name)
@@ -52,7 +52,7 @@ class StoreTest(unittest.TestCase):
     def test_applies_migrations_on_initialization(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             # First, run the initial migrations.
-            with mock.patch.object(db.store, '_MIGRATIONS', [
+            with mock.patch('db.store._MIGRATIONS', [
                     'CREATE TABLE first(id INTEGER)',
                     'CREATE TABLE third(id INTEGER)',
                     'ALTER TABLE third RENAME TO second',
@@ -62,9 +62,8 @@ class StoreTest(unittest.TestCase):
                 self.assertEqual(['first', 'second'], all_tables(connection))
 
             # Then, add a new migration to the list and re-initialize the DB.
-            with mock.patch.object(
-                    db.store,
-                    '_MIGRATIONS',
+            with mock.patch(
+                    'db.store._MIGRATIONS',
                 [
                     'CREATE TABLE first(id INTEGER)',
                     'CREATE TABLE third(id INTEGER)',
@@ -76,7 +75,7 @@ class StoreTest(unittest.TestCase):
                 self.assertEqual(['first', 'second', 'third'],
                                  all_tables(connection))
 
-    @mock.patch.object(db.store, '_MIGRATIONS', [
+    @mock.patch('db.store._MIGRATIONS', [
         'CREATE TABLE first(id INTEGER)',
         'CREATE TABLE second(id INTEGER)',
     ])
@@ -95,7 +94,7 @@ class StoreTest(unittest.TestCase):
                              all_tables(connection2))
             self.assertEqual(2, migrations_counter(connection2))
 
-    @mock.patch.object(db.store, '_MIGRATIONS', [
+    @mock.patch('db.store._MIGRATIONS', [
         'CREATE TABLE first(id INTEGER)',
         'CREATE TABLE second(id INTEGER)',
     ])
@@ -150,8 +149,7 @@ class StoreTest(unittest.TestCase):
             self.assertEqual(1, migrations_counter(connection))
             self.assertEqual(['first'], all_tables(connection))
 
-    @mock.patch.object(db.store, '_MIGRATIONS',
-                       ['CREATE TABLE first(id INTEGER)'])
+    @mock.patch('db.store._MIGRATIONS', ['CREATE TABLE first(id INTEGER)'])
     def test_aborts_if_migration_counter_is_incompatible(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = sqlite3.connect(temp_file.name, isolation_level=None)
