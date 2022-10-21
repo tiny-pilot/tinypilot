@@ -183,6 +183,7 @@ workflows:
     jobs:
       - check_whitespace
       - check_bash
+      - lint_sql
       - check_style
       - build_python
       - build_javascript
