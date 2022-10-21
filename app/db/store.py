@@ -45,72 +45,15 @@ the database file is successfully converted to the “new” format, and from th
 on it works the same everywhere.
 """
 import logging
+import os
 import sqlite3
 
 logger = logging.getLogger(__name__)
 
-_MIGRATIONS = [
-    # 0: Create the user table.
-    """
-    CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL
-        )
-    """,
-
-    # 1: Create the licenses table.
-    """
-    CREATE TABLE IF NOT EXISTS licenses(
-        id INTEGER PRIMARY KEY,
-        license_key TEXT NOT NULL
-        )
-    """,
-
-    # 2: Create the settings table.
-    """
-    CREATE TABLE IF NOT EXISTS settings(
-        id INTEGER PRIMARY KEY,
-        requires_https INTEGER NOT NULL
-        )
-    """,
-
-    # 3: Create the wake_on_lan table.
-    """
-    CREATE TABLE IF NOT EXISTS wake_on_lan(
-        id INTEGER PRIMARY KEY,
-        mac_address TEXT NOT NULL UNIQUE
-        )
-    """,
-
-    # 4: Add column for keeping track of when credentials were changed. The
-    # default value is only needed for previously existing rows.
-    """
-    ALTER TABLE users
-        ADD COLUMN credentials_last_changed
-        TEXT NOT NULL DEFAULT "0001-01-01T00:00:00.000000+00:00"
-    """,
-
-    # 5: Remove non-null constraint from settings table (see explanation in
-    # `settings.py`). Since sqlite doesn’t natively support that operation, we
-    # have to use an intermediate table.
-    """
-    CREATE TABLE __settings__(
-        id INTEGER PRIMARY KEY,
-        requires_https INTEGER
-    );
-    INSERT INTO __settings__ SELECT * FROM settings;
-    DROP TABLE settings;
-    ALTER TABLE __settings__ RENAME TO settings;
-    """,
-
-    # 6: Add column in settings table for configuring the streaming mode of the
-    # remote screen.
-    """
-    ALTER TABLE settings
-        ADD COLUMN streaming_mode TEXT
-    """,
-]
+# Contains a list of SQL migration scripts in the order they should be applied.
+# To avoid disk reads on every request, we store this in a module-level variable
+# and lazy load it once.
+_MIGRATIONS = None
 
 
 def create_or_open(db_path):
@@ -126,12 +69,19 @@ def create_or_open(db_path):
     Returns:
         (sqlite3.dbapi2.connection) Database connection object.
     """
+    # pylint: disable=global-statement
+    global _MIGRATIONS
+
+    logger.debug('reading SQLite databse from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
 
     # The `user_version` property tells us how many of the migrations were
     # already run in the past.
     cursor = connection.execute('PRAGMA user_version')
     initial_migrations_counter = cursor.fetchone()[0]
+
+    if not _MIGRATIONS:
+        _MIGRATIONS = _load_migrations()
 
     if initial_migrations_counter == len(_MIGRATIONS):
         # TODO(jotaen) Remove this early return clause once we use a persistent
@@ -169,3 +119,24 @@ def create_or_open(db_path):
         logger.info('Applied migration, counter is now at %d', i + 1)
 
     return connection
+
+
+def _load_migrations():
+    """Loads database migration SQL scripts from disk.
+
+    Returns:
+        A list of SQL scripts as strings, in the order they should be applied
+        to bring the database to the correct state.
+    """
+    migrations_dir = os.path.join(os.path.dirname(__file__), 'migrations')
+    logger.debug('loading database migrations from %s', migrations_dir)
+
+    migrations = []
+    for migration_script in sorted(os.listdir(migrations_dir)):
+        with open(os.path.join(migrations_dir, migration_script),
+                  encoding='utf-8') as migration_file:
+            migrations.append(migration_file.read())
+
+    logger.debug('read %d database migrations from disk', len(migrations))
+
+    return migrations
