@@ -69,6 +69,7 @@ def create_or_open(db_path):
     Returns:
         (sqlite3.dbapi2.connection) Database connection object.
     """
+    # We need a global to avoid re-reading the migrations on every request.
     # pylint: disable=global-statement
     global _MIGRATIONS
 
@@ -80,7 +81,7 @@ def create_or_open(db_path):
     cursor = connection.execute('PRAGMA user_version')
     initial_migrations_counter = cursor.fetchone()[0]
 
-    if not _MIGRATIONS:
+    if _MIGRATIONS is None:
         _MIGRATIONS = _load_migrations()
 
     if initial_migrations_counter == len(_MIGRATIONS):
