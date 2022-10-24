@@ -136,7 +136,7 @@ def create_or_open(db_path):
 
 
 def _read_migrations():
-    """Loads database migration SQL scripts from disk.
+    """Reads database migration SQL scripts from disk.
 
     Returns:
         A list of SQL scripts as strings, in the order they should be applied
