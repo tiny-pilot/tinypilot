@@ -131,13 +131,13 @@ def _load_migrations():
     """
     migrations_pattern = os.path.join(os.path.dirname(__file__), 'migrations',
                                       '*.sql')
-    logger.debug('loading database migrations from %s', migrations_pattern)
+    logger.info('loading database migrations from %s', migrations_pattern)
 
     migrations = []
     for migration_script in sorted(glob.glob(migrations_pattern)):
         with open(migration_script, encoding='utf-8') as migration_file:
             migrations.append(migration_file.read())
 
-    logger.debug('read %d database migrations from disk', len(migrations))
+    logger.info('read %d database migrations from disk', len(migrations))
 
     return migrations
