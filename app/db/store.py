@@ -73,6 +73,8 @@ def create_or_open(db_path):
     # We need a global to avoid re-reading the migrations on every request.
     # pylint: disable=global-statement
     global _MIGRATIONS
+    if _MIGRATIONS is None:
+        _MIGRATIONS = _load_migrations()
 
     logger.debug('reading SQLite databse from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
@@ -81,9 +83,6 @@ def create_or_open(db_path):
     # already run in the past.
     cursor = connection.execute('PRAGMA user_version')
     initial_migrations_counter = cursor.fetchone()[0]
-
-    if _MIGRATIONS is None:
-        _MIGRATIONS = _load_migrations()
 
     if initial_migrations_counter == len(_MIGRATIONS):
         # TODO(jotaen) Remove this early return clause once we use a persistent
