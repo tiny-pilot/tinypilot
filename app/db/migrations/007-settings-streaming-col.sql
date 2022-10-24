@@ -2,4 +2,4 @@
 -- screen.
 
 ALTER TABLE settings
-    ADD COLUMN streaming_mode TEXT;
+ADD COLUMN streaming_mode TEXT;
