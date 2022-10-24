@@ -8,15 +8,28 @@ heavy-weight tool, we maintain our own mechanism. It is based off the exact same
 philosophy, which is basically this:
 
 - The database schema is defined through the linear sequence of migration
-  statements. These are applied from the first to the last. After the last
-  migration has run, the final schema is in place. We use the `_MIGRATIONS`
-  list for storing all our migrations statements.
+  statements.
+- We store all database migrations as SQL scripts in the ./migrations folder.
+- Each SQL script follows the naming convention of
+  `[index]-[table]-[description].sql`
+  - index: an incrementing three-digit index indicating the order to run the
+    migration.
+  - table: the name of the table the script mutates.
+  - description: a brief description of the mutation the script performs.
+- Each SQL script follows these conventions:
+  - The script always begins with a SQL comment explaining the purpose of the
+    script.
+  - The SQL comment is followed by a single blank line.
+  - The SQL code of a migration step may contain multiple SQL statements,
+    delimited by a `;`.
+  - The SQL code of a migration step must not perform its own transaction
+    control (e.g., by issuing a `BEGIN` statement).
+- We apply migrations in order of their script index, starting with 001.
+- After we apply the final migration, the database schema is complete.
+- We read the SQL script files into the `_MIGRATIONS` global variable once for
+  the lifetime of the application to limit redundant disk reads per request.
 - Each migration step is applied atomically, i.e., inside a transaction – so
   it’s either effectuated completely, or not at all.
-- The SQL code of a migration step must not perform its own transaction control
-  (e.g., by issuing a `BEGIN` statement).
-- The SQL code of a migration step may contain multiple SQL statements,
-  delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
   regardless of what initial version we start from. The downside is that we
@@ -73,17 +86,16 @@ def create_or_open(db_path):
     # We need a global to avoid re-reading the migrations on every request.
     # pylint: disable=global-statement
     global _MIGRATIONS
+    if _MIGRATIONS is None:
+        _MIGRATIONS = _read_migrations()
 
-    logger.debug('reading SQLite databse from %s', db_path)
+    logger.debug('Reading SQLite database from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
 
     # The `user_version` property tells us how many of the migrations were
     # already run in the past.
     cursor = connection.execute('PRAGMA user_version')
     initial_migrations_counter = cursor.fetchone()[0]
-
-    if _MIGRATIONS is None:
-        _MIGRATIONS = _load_migrations()
 
     if initial_migrations_counter == len(_MIGRATIONS):
         # TODO(jotaen) Remove this early return clause once we use a persistent
@@ -123,8 +135,8 @@ def create_or_open(db_path):
     return connection
 
 
-def _load_migrations():
-    """Loads database migration SQL scripts from disk.
+def _read_migrations():
+    """Reads database migration SQL scripts from disk.
 
     Returns:
         A list of SQL scripts as strings, in the order they should be applied
@@ -132,13 +144,13 @@ def _load_migrations():
     """
     migrations_pattern = os.path.join(os.path.dirname(__file__), 'migrations',
                                       '*.sql')
-    logger.debug('loading database migrations from %s', migrations_pattern)
+    logger.info('Loading database migrations from %s', migrations_pattern)
 
     migrations = []
     for migration_script in sorted(glob.glob(migrations_pattern)):
         with open(migration_script, encoding='utf-8') as migration_file:
             migrations.append(migration_file.read())
 
-    logger.debug('read %d database migrations from disk', len(migrations))
+    logger.info('Read %d database migrations from disk', len(migrations))
 
     return migrations
