@@ -74,9 +74,9 @@ def create_or_open(db_path):
     # pylint: disable=global-statement
     global _MIGRATIONS
     if _MIGRATIONS is None:
-        _MIGRATIONS = _load_migrations()
+        _MIGRATIONS = _read_migrations()
 
-    logger.debug('reading SQLite databse from %s', db_path)
+    logger.debug('Reading SQLite database from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
 
     # The `user_version` property tells us how many of the migrations were
@@ -122,7 +122,7 @@ def create_or_open(db_path):
     return connection
 
 
-def _load_migrations():
+def _read_migrations():
     """Loads database migration SQL scripts from disk.
 
     Returns:
@@ -131,13 +131,13 @@ def _load_migrations():
     """
     migrations_pattern = os.path.join(os.path.dirname(__file__), 'migrations',
                                       '*.sql')
-    logger.info('loading database migrations from %s', migrations_pattern)
+    logger.info('Loading database migrations from %s', migrations_pattern)
 
     migrations = []
     for migration_script in sorted(glob.glob(migrations_pattern)):
         with open(migration_script, encoding='utf-8') as migration_file:
             migrations.append(migration_file.read())
 
-    logger.info('read %d database migrations from disk', len(migrations))
+    logger.info('Read %d database migrations from disk', len(migrations))
 
     return migrations
