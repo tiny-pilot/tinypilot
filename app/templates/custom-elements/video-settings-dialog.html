@@ -2,6 +2,7 @@
   <style>
     @import "css/style.css";
     @import "css/button.css";
+    @import "css/icons.css";
 
     #loading,
     #edit,
@@ -26,6 +27,16 @@
       margin-bottom: 1.5rem;
     }
 
+    .setting-mjpeg,
+    .setting-h264 {
+      display: none;
+    }
+
+    :host([streaming-mode="MJPEG"]) .setting-mjpeg,
+    :host([streaming-mode="H264"]) .setting-h264 {
+      display: flex;
+    }
+
     .setting label {
       display: block;
       text-align: right;
@@ -36,11 +47,11 @@
     .setting input {
       display: block;
       flex: 1;
-      max-width: 28em;
+      max-width: 26em;
     }
 
     .setting-value {
-      width: 3.5em;
+      width: 6em;
       text-align: right;
       margin-left: 0.25em;
     }
@@ -54,6 +65,11 @@
       /* `_refreshButtons` assigns this class conditionally */
       visibility: hidden;
     }
+
+    .streaming-mode-hint {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
   </style>
   <div id="loading">
     <h3>Retrieving Video Settings</h3>
@@ -61,6 +77,25 @@
   </div>
   <div id="edit">
     <h3>Change Video Settings</h3>
+    <div>
+      Streaming Mode:
+      <dropdown-button style="--dropdown-width: 9rem;">
+        <button slot="button" class="btn-action">
+          <span class="streaming-mode-value">MJPEG</span>
+          <span class="icon-arrow"></span>
+        </button>
+        <li slot="item" class="streaming-mode-mjpeg-button">
+          <div>MJPEG</div>
+          <div class="streaming-mode-hint">Best Compatibility</div>
+        </li>
+        <li slot="item" class="streaming-mode-h264-button">
+          <div>H264</div>
+          <div class="streaming-mode-hint">
+            Higher Quality,<br />Lower Bandwidth
+          </div>
+        </li>
+      </dropdown-button>
+    </div>
     <div class="settings-container">
       <div class="setting">
         <label for="fps-slider">Frame Rate</label>
@@ -68,11 +103,25 @@
         <div id="fps-value" class="setting-value"></div>
         <div id="fps-reset" class="btn-text reset-button">Reset to Default</div>
       </div>
-      <div class="setting">
+      <div class="setting setting-mjpeg">
         <label for="jpeg-quality-slider">Quality</label>
         <input type="range" id="jpeg-quality-slider" min="1" max="100" />
         <div id="jpeg-quality-value" class="setting-value"></div>
         <div id="jpeg-quality-reset" class="btn-text reset-button">
+          Reset to Default
+        </div>
+      </div>
+      <div class="setting setting-h264">
+        <label for="bitrate-slider">Bit Rate</label>
+        <input
+          type="range"
+          id="bitrate-slider"
+          min="50"
+          max="20000"
+          step="50"
+        />
+        <div id="bitrate-value" class="setting-value"></div>
+        <div id="bitrate-reset" class="btn-text reset-button">
           Reset to Default
         </div>
       </div>
@@ -96,12 +145,17 @@
   } from "/js/events.js";
   import {
     applyVideoSettings,
+    getVideoStreamingMode,
     getDefaultVideoFps,
     getDefaultVideoJpegQuality,
+    getDefaultVideoH264Bitrate,
     getVideoFps,
     getVideoJpegQuality,
+    getVideoH264Bitrate,
+    setVideoStreamingMode,
     setVideoFps,
     setVideoJpegQuality,
+    setVideoH264Bitrate,
   } from "/js/controllers.js";
 
   (function () {
@@ -132,6 +186,15 @@
           this.elements = {
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
+            streamingModeMjpegButton: this.shadowRoot.querySelector(
+              ".streaming-mode-mjpeg-button"
+            ),
+            streamingModeH264Button: this.shadowRoot.querySelector(
+              ".streaming-mode-h264-button"
+            ),
+            streamingModeValue: this.shadowRoot.querySelector(
+              ".streaming-mode-value"
+            ),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
             fpsRestoreButton: this.shadowRoot.querySelector("#fps-reset"),
@@ -144,12 +207,29 @@
             jpegQualityRestoreButton: this.shadowRoot.querySelector(
               "#jpeg-quality-reset"
             ),
+            bitrateSlider: this.shadowRoot.querySelector("#bitrate-slider"),
+            bitrateValue: this.shadowRoot.querySelector("#bitrate-value"),
+            bitrateRestoreButton: this.shadowRoot.querySelector(
+              "#bitrate-reset"
+            ),
           };
           this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );
           this.elements.saveButton.addEventListener("click", () =>
             this._saveSettings()
+          );
+          this.elements.streamingModeMjpegButton.addEventListener(
+            "click",
+            () => {
+              this._setStreamingMode("MJPEG");
+            }
+          );
+          this.elements.streamingModeH264Button.addEventListener(
+            "click",
+            () => {
+              this._setStreamingMode("H264");
+            }
           );
           this.elements.fpsSlider.addEventListener("input", (event) => {
             this._setFps(parseInt(event.target.value, 10));
@@ -166,6 +246,12 @@
               this._setJpegQuality(this._defaultSettings.jpegQuality);
             }
           );
+          this.elements.bitrateSlider.addEventListener("input", (event) => {
+            this._setBitrate(parseInt(event.target.value, 10));
+          });
+          this.elements.bitrateRestoreButton.addEventListener("click", () => {
+            this._setBitrate(this._defaultSettings.bitrate);
+          });
         }
 
         get state() {
@@ -184,23 +270,43 @@
         initialize() {
           this.state = this.states.LOADING;
           Promise.all([
+            getVideoStreamingMode(),
             getVideoFps(),
             getDefaultVideoFps(),
             getVideoJpegQuality(),
             getDefaultVideoJpegQuality(),
+            getVideoH264Bitrate(),
+            getDefaultVideoH264Bitrate(),
           ])
-            .then(([fps, defaultFps, jpegQuality, defaultJpegQuality]) => {
-              this._setFps(fps);
-              this._initialSettings.fps = fps;
-              this._defaultSettings.fps = defaultFps;
+            .then(
+              ([
+                streamingMode,
+                fps,
+                defaultFps,
+                jpegQuality,
+                defaultJpegQuality,
+                bitrate,
+                defaultBitrate,
+              ]) => {
+                this._setStreamingMode(streamingMode);
+                this._initialSettings.streamingMode = streamingMode;
 
-              this._setJpegQuality(jpegQuality);
-              this._initialSettings.jpegQuality = jpegQuality;
-              this._defaultSettings.jpegQuality = defaultJpegQuality;
+                this._setFps(fps);
+                this._initialSettings.fps = fps;
+                this._defaultSettings.fps = defaultFps;
 
-              this._refreshButtons();
-              this.state = this.states.EDIT;
-            })
+                this._setJpegQuality(jpegQuality);
+                this._initialSettings.jpegQuality = jpegQuality;
+                this._defaultSettings.jpegQuality = defaultJpegQuality;
+
+                this._setBitrate(bitrate);
+                this._initialSettings.bitrate = bitrate;
+                this._defaultSettings.bitrate = defaultBitrate;
+
+                this._refreshButtons();
+                this.state = this.states.EDIT;
+              }
+            )
             .catch((error) => {
               this.dispatchEvent(
                 new DialogFailedEvent({
@@ -209,6 +315,30 @@
                 })
               );
             });
+        }
+
+        /**
+         * @returns {string}
+         */
+        _getStreamingMode() {
+          return this.getAttribute("streaming-mode");
+        }
+
+        /**
+         * @param streamingMode {string}
+         */
+        _setStreamingMode(streamingMode) {
+          this.elements.streamingModeValue.textContent = streamingMode;
+          this.elements.streamingModeMjpegButton.classList.toggle(
+            "disabled",
+            streamingMode === "MJPEG"
+          );
+          this.elements.streamingModeH264Button.classList.toggle(
+            "disabled",
+            streamingMode === "H264"
+          );
+          this.setAttribute("streaming-mode", streamingMode);
+          this._refreshButtons();
         }
 
         /**
@@ -244,14 +374,33 @@
         }
 
         /**
+         * @returns {number}
+         */
+        _getBitrate() {
+          return parseInt(this.elements.bitrateSlider.value, 10);
+        }
+
+        /**
+         * @param bitrate {number}
+         */
+        _setBitrate(bitrate) {
+          this.elements.bitrateSlider.value = bitrate;
+          const bitrateValue = (bitrate / 1000).toFixed(2);
+          this.elements.bitrateValue.innerHTML = `${bitrateValue} Mb/s`;
+          this._refreshButtons();
+        }
+
+        /**
          * Adjust all buttons in the dialog, since they might need to respond to
          * the currently selected input values.
          */
         _refreshButtons() {
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
+            [this._getStreamingMode(), this._initialSettings.streamingMode],
             [this._getFps(), this._initialSettings.fps],
             [this._getJpegQuality(), this._initialSettings.jpegQuality],
+            [this._getBitrate(), this._initialSettings.bitrate],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
 
@@ -268,6 +417,11 @@
               this._defaultSettings.jpegQuality,
               this.elements.jpegQualityRestoreButton,
             ],
+            [
+              this._getBitrate(),
+              this._defaultSettings.bitrate,
+              this.elements.bitrateRestoreButton,
+            ],
           ].forEach(([actualValue, defaultValue, resetButton]) => {
             if (actualValue === defaultValue) {
               resetButton.classList.add("reset-button-hidden");
@@ -280,8 +434,10 @@
         _saveSettings() {
           this.state = this.states.SAVING;
           return Promise.all([
+            setVideoStreamingMode(this._getStreamingMode()),
             setVideoFps(this._getFps()),
             setVideoJpegQuality(this._getJpegQuality()),
+            setVideoH264Bitrate(this._getBitrate()),
           ])
             .then(applyVideoSettings)
             .then(() => {
