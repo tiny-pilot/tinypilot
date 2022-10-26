@@ -116,9 +116,8 @@
         <input
           type="range"
           id="bitrate-slider"
-          min="50"
-          max="20000"
-          step="50"
+          min="1"
+          max="92"
         />
         <div id="bitrate-value" class="setting-value"></div>
         <div id="bitrate-reset" class="btn-text reset-button">
@@ -173,6 +172,8 @@
           this.states.LOADING,
           this.states.SAVING,
         ]);
+
+        bitrateBuckets = [[100, 25], [1000, 50], [5000, 100], [20000, 500]]; // [[max, step]...]
 
         constructor() {
           super();
@@ -247,10 +248,19 @@
             }
           );
           this.elements.bitrateSlider.addEventListener("input", (event) => {
-            this._setBitrate(parseInt(event.target.value, 10));
+            const sliderValue = parseInt(event.target.value, 10);
+            let bitrate = 0;
+            let bucketI = 0;
+            for (let i = 1; i <= sliderValue; i++) {
+              if (bitrate >= this.bitrateBuckets[bucketI][0]) {
+                bucketI++;
+              }
+              bitrate += this.bitrateBuckets[bucketI][1];
+            }
+            this._setBitrate(bitrate);
           });
           this.elements.bitrateRestoreButton.addEventListener("click", () => {
-            this._setBitrate(this._defaultSettings.bitrate);
+            this._setBitrate(this._defaultSettings.bitrate, 1);
           });
         }
 
@@ -299,9 +309,9 @@
                 this._initialSettings.jpegQuality = jpegQuality;
                 this._defaultSettings.jpegQuality = defaultJpegQuality;
 
-                this._setBitrate(bitrate);
-                this._initialSettings.bitrate = bitrate;
-                this._defaultSettings.bitrate = defaultBitrate;
+                this._setBitrate(25, 1);
+                this._initialSettings.bitrate = 25;
+                this._defaultSettings.bitrate = 25;
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
@@ -383,10 +393,11 @@
         /**
          * @param bitrate {number}
          */
-        _setBitrate(bitrate) {
-          this.elements.bitrateSlider.value = bitrate;
-          const bitrateValue = (bitrate / 1000).toFixed(2);
-          this.elements.bitrateValue.innerHTML = `${bitrateValue} Mb/s`;
+        _setBitrate(bitrate, sliderValue) {
+          if (sliderValue) {
+            this.elements.bitrateSlider.value = sliderValue;
+          }
+          this.elements.bitrateValue.innerHTML = `${bitrate} kb/s`;
           this._refreshButtons();
         }
 
