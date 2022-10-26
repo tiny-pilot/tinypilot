@@ -67,6 +67,19 @@ class Settings:
         if 'ustreamer_quality' in self._data:
             del self._data['ustreamer_quality']
 
+    @property
+    def ustreamer_h264_bitrate(self):
+        return self._data.get('ustreamer_h264_bitrate', None)
+
+    @ustreamer_h264_bitrate.setter
+    def ustreamer_h264_bitrate(self, value):
+        self._data['ustreamer_h264_bitrate'] = value
+
+    @ustreamer_h264_bitrate.deleter
+    def ustreamer_h264_bitrate(self):
+        if 'ustreamer_h264_bitrate' in self._data:
+            del self._data['ustreamer_h264_bitrate']
+
 
 def load():
     """Retrieves the current TinyPilot update settings
