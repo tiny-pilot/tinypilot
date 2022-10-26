@@ -378,6 +378,36 @@ export async function getDefaultVideoH264Bitrate() {
     });
 }
 
+export async function getVideoStreamingMode() {
+  return fetch("/api/settings/video/streaming_mode", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      if (!data.hasOwnProperty("videoStreamingMode")) {
+        throw new ControllerError("Missing expected videoStreamingMode field");
+      }
+      return data.videoStreamingMode;
+    });
+}
+
+export async function setVideoStreamingMode(videoStreamingMode) {
+  return fetch("/api/settings/video/streaming_mode", {
+    method: "PUT",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ videoStreamingMode }),
+  }).then(processJsonResponse);
+}
+
 export async function applyVideoSettings() {
   return fetch("/api/settings/video/apply", {
     method: "POST",

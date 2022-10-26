@@ -1,3 +1,4 @@
+import db.settings
 from request_parsers import errors
 from request_parsers import json
 
@@ -55,3 +56,14 @@ def parse_h264_bitrate(request):
             'The H264 bitrate must be an whole number between 25 and 20000.'
         ) from e
     return video_h264_bitrate
+
+
+def parse_streaming_mode(request):
+    # pylint: disable=unbalanced-tuple-unpacking
+    (video_streaming_mode,) = json.parse_json_body(
+        request, required_fields=['videoStreamingMode'])
+    try:
+        return db.settings.StreamingMode(video_streaming_mode)
+    except ValueError as e:
+        raise errors.InvalidVideoStreamingModeError(
+            'The video streaming mode must be `MJPEG` or `H264`.') from e

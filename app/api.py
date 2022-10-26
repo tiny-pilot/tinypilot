@@ -1,5 +1,6 @@
 import flask
 
+import db.settings
 import debug_logs
 import hostname
 import json_response
@@ -451,6 +452,48 @@ def settings_video_h264_bitrate_default_get():
     """
     return json_response.success(
         {'videoH264Bitrate': video_settings.DEFAULT_H264_BITRATE})
+
+
+@api_blueprint.route('/settings/video/streaming_mode', methods=['GET'])
+def settings_video_streaming_mode_get():
+    """Retrieves the current video streaming mode.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        videoStreamingMode: string.
+
+        Example:
+        {
+            "videoStreamingMode": "MJPEG"
+        }
+    """
+    settings = db.settings.Settings()
+    return json_response.success(
+        {'videoStreamingMode': settings.get_streaming_mode().value})
+
+
+@api_blueprint.route('/settings/video/streaming_mode', methods=['PUT'])
+def settings_video_streaming_mode_put():
+    """Changes the video streaming mode.
+
+    Expects a JSON data structure in the request body that contains the
+    new videoStreamingMode as a string. Example:
+    {
+        "videoStreamingMode": "H264"
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        video_streaming_mode = \
+            request_parsers.video_settings.parse_streaming_mode(flask.request)
+    except request_parsers.errors.InvalidVideoStreamingModeError as e:
+        return json_response.error(e), 400
+
+    settings = db.settings.Settings()
+    settings.set_streaming_mode(video_streaming_mode)
+    return json_response.success()
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])

@@ -8,15 +8,28 @@ heavy-weight tool, we maintain our own mechanism. It is based off the exact same
 philosophy, which is basically this:
 
 - The database schema is defined through the linear sequence of migration
-  statements. These are applied from the first to the last. After the last
-  migration has run, the final schema is in place. We use the `_MIGRATIONS`
-  list for storing all our migrations statements.
+  statements.
+- We store all database migrations as SQL scripts in the ./migrations folder.
+- Each SQL script follows the naming convention of
+  `[index]-[table]-[description].sql`
+  - index: an incrementing three-digit index indicating the order to run the
+    migration.
+  - table: the name of the table the script mutates.
+  - description: a brief description of the mutation the script performs.
+- Each SQL script follows these conventions:
+  - The script always begins with a SQL comment explaining the purpose of the
+    script.
+  - The SQL comment is followed by a single blank line.
+  - The SQL code of a migration step may contain multiple SQL statements,
+    delimited by a `;`.
+  - The SQL code of a migration step must not perform its own transaction
+    control (e.g., by issuing a `BEGIN` statement).
+- We apply migrations in order of their script index, starting with 001.
+- After we apply the final migration, the database schema is complete.
+- We read the SQL script files into the `_MIGRATIONS` global variable once for
+  the lifetime of the application to limit redundant disk reads per request.
 - Each migration step is applied atomically, i.e., inside a transaction – so
   it’s either effectuated completely, or not at all.
-- The SQL code of a migration step must not perform its own transaction control
-  (e.g., by issuing a `BEGIN` statement).
-- The SQL code of a migration step may contain multiple SQL statements,
-  delimited by a `;`.
 - The incremental nature of this migration approach guarantees us that the
   entirety of all individual steps will always produce the exact same result,
   regardless of what initial version we start from. The downside is that we
@@ -44,73 +57,17 @@ idempotent way. Once the migration mechanism was applied for the first time,
 the database file is successfully converted to the “new” format, and from then
 on it works the same everywhere.
 """
+import glob
 import logging
+import os
 import sqlite3
 
 logger = logging.getLogger(__name__)
 
-_MIGRATIONS = [
-    # 0: Create the user table.
-    """
-    CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL
-        )
-    """,
-
-    # 1: Create the licenses table.
-    """
-    CREATE TABLE IF NOT EXISTS licenses(
-        id INTEGER PRIMARY KEY,
-        license_key TEXT NOT NULL
-        )
-    """,
-
-    # 2: Create the settings table.
-    """
-    CREATE TABLE IF NOT EXISTS settings(
-        id INTEGER PRIMARY KEY,
-        requires_https INTEGER NOT NULL
-        )
-    """,
-
-    # 3: Create the wake_on_lan table.
-    """
-    CREATE TABLE IF NOT EXISTS wake_on_lan(
-        id INTEGER PRIMARY KEY,
-        mac_address TEXT NOT NULL UNIQUE
-        )
-    """,
-
-    # 4: Add column for keeping track of when credentials were changed. The
-    # default value is only needed for previously existing rows.
-    """
-    ALTER TABLE users
-        ADD COLUMN credentials_last_changed
-        TEXT NOT NULL DEFAULT "0001-01-01T00:00:00.000000+00:00"
-    """,
-
-    # 5: Remove non-null constraint from settings table (see explanation in
-    # `settings.py`). Since sqlite doesn’t natively support that operation, we
-    # have to use an intermediate table.
-    """
-    CREATE TABLE __settings__(
-        id INTEGER PRIMARY KEY,
-        requires_https INTEGER
-    );
-    INSERT INTO __settings__ SELECT * FROM settings;
-    DROP TABLE settings;
-    ALTER TABLE __settings__ RENAME TO settings;
-    """,
-
-    # 6: Add column in settings table for configuring the streaming mode of the
-    # remote screen.
-    """
-    ALTER TABLE settings
-        ADD COLUMN streaming_mode TEXT
-    """,
-]
+# Contains a list of SQL migration scripts in the order they should be applied.
+# To avoid disk reads on every request, we store this in a module-level variable
+# and lazy load it once.
+_MIGRATIONS = None
 
 
 def create_or_open(db_path):
@@ -126,6 +83,13 @@ def create_or_open(db_path):
     Returns:
         (sqlite3.dbapi2.connection) Database connection object.
     """
+    # We need a global to avoid re-reading the migrations on every request.
+    # pylint: disable=global-statement
+    global _MIGRATIONS
+    if _MIGRATIONS is None:
+        _MIGRATIONS = _read_migrations()
+
+    logger.debug('Reading SQLite database from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
 
     # The `user_version` property tells us how many of the migrations were
@@ -169,3 +133,24 @@ def create_or_open(db_path):
         logger.info('Applied migration, counter is now at %d', i + 1)
 
     return connection
+
+
+def _read_migrations():
+    """Reads database migration SQL scripts from disk.
+
+    Returns:
+        A list of SQL scripts as strings, in the order they should be applied
+        to bring the database to the correct state.
+    """
+    migrations_pattern = os.path.join(os.path.dirname(__file__), 'migrations',
+                                      '*.sql')
+    logger.info('Loading database migrations from %s', migrations_pattern)
+
+    migrations = []
+    for migration_script in sorted(glob.glob(migrations_pattern)):
+        with open(migration_script, encoding='utf-8') as migration_file:
+            migrations.append(migration_file.read())
+
+    logger.info('Read %d database migrations from disk', len(migrations))
+
+    return migrations

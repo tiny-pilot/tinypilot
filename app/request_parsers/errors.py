@@ -24,3 +24,7 @@ class InvalidVideoJpegQualityError(Error):
 
 class InvalidVideoH264BitrateError(Error):
     pass
+
+
+class InvalidVideoStreamingModeError(Error):
+    pass
