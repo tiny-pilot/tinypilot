@@ -5,6 +5,7 @@
     :host {
       --offset-top: 1rem;
       --offset-right: 1rem;
+      --dropdown-width: 8rem;
       position: relative;
       display: inline-block;
     }
@@ -12,7 +13,7 @@
     #dropdown-items {
       display: none;
       position: absolute;
-      min-width: 8em;
+      min-width: var(--dropdown-width);
       right: var(--offset-right);
       padding: 0;
       margin: calc(-1 * var(--offset-top)) 0 0 0;
@@ -34,6 +35,12 @@
 
     slot[name="item"]::slotted(li:hover) {
       background-color: var(--brand-metallic-bright);
+    }
+
+    slot[name="item"]::slotted(li.disabled) {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
     }
   </style>
 
