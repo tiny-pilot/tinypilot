@@ -39,8 +39,10 @@
 
     slot[name="item"]::slotted(li.disabled) {
       opacity: 0.5;
-      cursor: default;
       pointer-events: none;
+      /* Since pointer events are disabled, the cursor can’t be modified freely.
+         So it’s not possible to set the `not-allowed` cursor, for example. */
+      cursor: default;
     }
   </style>
 
