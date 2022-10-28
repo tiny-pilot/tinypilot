@@ -423,11 +423,10 @@
               this.elements.bitrateRestoreButton,
             ],
           ].forEach(([actualValue, defaultValue, resetButton]) => {
-            if (actualValue === defaultValue) {
-              resetButton.classList.add("reset-button-hidden");
-            } else {
-              resetButton.classList.remove("reset-button-hidden");
-            }
+            resetButton.classList.toggle(
+              "reset-button-hidden",
+              actualValue === defaultValue
+            );
           });
         }
 

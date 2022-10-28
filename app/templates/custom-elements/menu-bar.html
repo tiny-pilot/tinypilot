@@ -302,22 +302,14 @@
 
         set isKeyboardVisible(isVisible) {
           const menuItem = this.shadowRoot.getElementById("keyboard-menu-item");
-          if (isVisible) {
-            menuItem.classList.add("nav-selected");
-          } else {
-            menuItem.classList.remove("nav-selected");
-          }
+          menuItem.classList.toggle("nav-selected", isVisible);
         }
 
         set isInputIndicatorEnabled(isEnabled) {
           const menuItem = this.shadowRoot.getElementById(
             "keystroke-history-menu-item"
           );
-          if (isEnabled) {
-            menuItem.classList.add("nav-selected");
-          } else {
-            menuItem.classList.remove("nav-selected");
-          }
+          menuItem.classList.toggle("nav-selected", isEnabled);
         }
 
         emitCustomEvent(eventId, detail) {
@@ -334,11 +326,10 @@
           for (const cursorListItem of this.shadowRoot.querySelectorAll(
             "#cursor-list li"
           )) {
-            if (newCursor === cursorListItem.getAttribute("cursor")) {
-              cursorListItem.classList.add("nav-selected");
-            } else {
-              cursorListItem.classList.remove("nav-selected");
-            }
+            cursorListItem.classList.toggle(
+              "nav-selected",
+              newCursor === cursorListItem.getAttribute("cursor")
+            );
           }
         }
       }
