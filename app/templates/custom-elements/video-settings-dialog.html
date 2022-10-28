@@ -81,14 +81,14 @@
       Streaming Mode:
       <dropdown-button style="--dropdown-width: 9rem;">
         <button slot="button" class="btn-action">
-          <span class="streaming-mode-value">MJPEG</span>
+          <span id="streaming-mode-value">MJPEG</span>
           <span class="icon-arrow"></span>
         </button>
-        <li slot="item" class="streaming-mode-mjpeg-button">
+        <li slot="item" id="streaming-mode-mjpeg-button">
           <div>MJPEG</div>
           <div class="streaming-mode-hint">Best Compatibility</div>
         </li>
-        <li slot="item" class="streaming-mode-h264-button">
+        <li slot="item" id="streaming-mode-h264-button">
           <div>H264</div>
           <div class="streaming-mode-hint">
             Higher Quality,<br />Lower Bandwidth
@@ -187,13 +187,13 @@
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
             streamingModeMjpegButton: this.shadowRoot.querySelector(
-              ".streaming-mode-mjpeg-button"
+              "#streaming-mode-mjpeg-button"
             ),
             streamingModeH264Button: this.shadowRoot.querySelector(
-              ".streaming-mode-h264-button"
+              "#streaming-mode-h264-button"
             ),
             streamingModeValue: this.shadowRoot.querySelector(
-              ".streaming-mode-value"
+              "#streaming-mode-value"
             ),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
