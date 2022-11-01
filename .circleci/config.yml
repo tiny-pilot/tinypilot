@@ -171,14 +171,6 @@ jobs:
             set -u
             BUNDLE_FILENAME="$(cat dist/LATEST)"
             echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PREFIX}/${BUNDLE_FILENAME}"
-  e2e:
-    machine:
-      image: ubuntu-2004:202010-01
-    steps:
-      - checkout
-      - run:
-          name: Run TinyPilot e2e tests
-          command: ./e2e/docker-test
 workflows:
   test:
     jobs:
@@ -207,12 +199,6 @@ workflows:
       - upload_bundle:
           requires:
             - verify_bundle
-          filters:
-            branches:
-              only: master
-      - e2e:
-          requires:
-            - upload_bundle
           filters:
             branches:
               only: master
