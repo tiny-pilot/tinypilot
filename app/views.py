@@ -12,13 +12,8 @@ _DEFAULT_HOSTNAME = 'tinypilot'
 
 @views_blueprint.route('/', methods=['GET'])
 def index_get():
-    # TODO(jotaen) While H264 is being worked on, we still rely on the legacy
-    #              mechanism to determine the remote screen mode. Once we are
-    #              done, we abandon the `USE_WEBRTC_REMOTE_SCREEN` config.
-    use_webrtc = flask.current_app.config.get('USE_WEBRTC_REMOTE_SCREEN', False)
-    if flask.current_app.debug:
-        use_webrtc = db.settings.Settings().get_streaming_mode(
-        ) == db.settings.StreamingMode.H264
+    use_webrtc = db.settings.Settings().get_streaming_mode(
+    ) == db.settings.StreamingMode.H264
 
     return flask.render_template(
         'index.html',
