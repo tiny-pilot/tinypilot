@@ -46,3 +46,17 @@ export class DialogCloseStateChangedEvent extends CustomEvent {
     });
   }
 }
+
+export class VideoStreamingModeChangedEvent extends CustomEvent {
+  /**
+   */
+  constructor(mode) {
+    super("video-streaming-mode-changed", {
+      detail: {
+        mode,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}

@@ -136,3 +136,16 @@ input[type="text"].monospace {
   overflow-y: scroll;
   white-space: pre-wrap;
 }
+
+.status-bar-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 1.8em;
+  background-color: #b6b8c1;
+  color: black;
+  padding: 0.2em 0.7em;
+  font-size: 0.9rem;
+  left: -0.6em;
+  width: max-content;
+  max-width: 25em;
+}

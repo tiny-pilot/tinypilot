@@ -74,6 +74,7 @@
 
 <script type="module">
   import { RateLimitedMouse } from "/js/mouse.js";
+  import { VideoStreamingModeChangedEvent } from "/js/events.js";
 
   (function () {
     const template = document.querySelector("#remote-screen-template");
@@ -174,9 +175,6 @@
             mobileKeyboard.value = "";
             mobileKeyboard.focus();
           });
-
-          // Initialize the remote screen content and use MJPEG by default.
-          this.enableMjpeg();
         }
 
         disconnectedCallback() {
@@ -328,6 +326,7 @@
           this.elements.video.srcObject = mediaStream;
           this.webrtcEnabled = true;
           this.elements.image.removeAttribute("src");
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("H.264"));
         }
 
         /**
@@ -337,6 +336,7 @@
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
           this.elements.video.srcObject = null;
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
         }
 
         _getCurrentScreenElement() {

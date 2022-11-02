@@ -1,0 +1,75 @@
+<template id="video-stream-indicator-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-left: 2.5em;
+      font-size: 0.95em;
+    }
+
+    :host(:hover) .status-bar-tooltip {
+      display: block;
+    }
+
+    .icon {
+      height: 1.2em;
+      margin-right: 0.5em;
+    }
+  </style>
+
+  <svg class="icon" viewBox="0 0 500 416" xmlns="http://www.w3.org/2000/svg">
+    <path
+      fill="#000000"
+      fill-opacity="0.25"
+      fill-rule="evenodd"
+      stroke="#ffffff"
+      stroke-width="32"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M 80 47.30896 C 63.431599 47.30896 50 60.74057 50 77.30896 L 50 269.69104 C 50 286.25946 63.431599 299.69104 80 299.69104 L 420 299.69104 C 436.56839 299.69104 450 286.25946 450 269.69104 L 450 77.30896 C 450 60.74057 436.56839 47.30896 420 47.30896 Z"
+    />
+    <path
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="36"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M 153 375 L 346 375"
+    />
+    <path
+      fill="#ffffff"
+      fill-rule="evenodd"
+      stroke="none"
+      d="M 198 371.084747 L 302 371.084747 L 302 306 L 198 306 Z"
+    />
+  </svg>
+  <span id="label"></span>
+  <div class="status-bar-tooltip">
+    The remote screen is currently streamed via MJPEG. You can configure the
+    streaming mode in the video settings.
+  </div>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector("#video-stream-indicator-template");
+
+    customElements.define(
+      "video-stream-indicator",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+        }
+
+        set mode(mode) {
+          this.shadowRoot.getElementById("label").innerText = mode;
+        }
+      }
+    );
+  })();
+</script>
