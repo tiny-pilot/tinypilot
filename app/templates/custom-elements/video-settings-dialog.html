@@ -37,6 +37,16 @@
       display: flex;
     }
 
+    .streaming-mode-value-mjpeg,
+    .streaming-mode-value-h264 {
+      display: none;
+    }
+
+    :host([streaming-mode="MJPEG"]) .streaming-mode-value-mjpeg,
+    :host([streaming-mode="H264"]) .streaming-mode-value-h264 {
+      display: inline;
+    }
+
     .setting label {
       display: block;
       text-align: right;
@@ -81,7 +91,8 @@
       Streaming Mode:
       <dropdown-button style="--dropdown-width: 9rem;">
         <button slot="button" class="btn-action">
-          <span id="streaming-mode-value">MJPEG</span>
+          <span class="streaming-mode-value-mjpeg">MJPEG</span>
+          <span class="streaming-mode-value-h264">H.264</span>
           <span class="icon-arrow"></span>
         </button>
         <li slot="item" id="streaming-mode-mjpeg-button">
@@ -89,7 +100,7 @@
           <div class="streaming-mode-hint">Best Compatibility</div>
         </li>
         <li slot="item" id="streaming-mode-h264-button">
-          <div>H264</div>
+          <div>H.264</div>
           <div class="streaming-mode-hint">
             Higher Quality,<br />Lower Bandwidth
           </div>
@@ -191,9 +202,6 @@
             ),
             streamingModeH264Button: this.shadowRoot.querySelector(
               "#streaming-mode-h264-button"
-            ),
-            streamingModeValue: this.shadowRoot.querySelector(
-              "#streaming-mode-value"
             ),
             fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
             fpsValue: this.shadowRoot.querySelector("#fps-value"),
@@ -328,7 +336,6 @@
          * @param streamingMode {string}
          */
         _setStreamingMode(streamingMode) {
-          this.elements.streamingModeValue.textContent = streamingMode;
           this.elements.streamingModeMjpegButton.classList.toggle(
             "disabled",
             streamingMode === "MJPEG"
