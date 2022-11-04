@@ -1,12 +1,16 @@
 <template id="connection-indicator-template">
   <style>
-    .status {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+    @import "css/style.css";
+
+    :host {
+      position: relative;
     }
 
-    content-tooltip {
+    :host(:hover) .status-bar-tooltip {
+      display: block;
+    }
+
+    .status {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -47,18 +51,18 @@
     }
   </style>
   <div class="status">
-    <content-tooltip position="top-right">
-      <span class="status-dot"></span>
-      <div slot="text" class="connected-text">
-        You are connected to TinyPilot.
-      </div>
-      <div slot="text" class="disconnected-text">
-        Could not connect to TinyPilot.
-      </div>
-    </content-tooltip>
+    <span class="status-dot"></span>
     <div>
       <span class="label-connected">Connected</span>
       <span class="label-disconnected">Disconnected</span>
+    </div>
+  </div>
+  <div class="status-bar-tooltip">
+    <div slot="text" class="connected-text">
+      You are connected to TinyPilot.
+    </div>
+    <div slot="text" class="disconnected-text">
+      Could not connect to TinyPilot.
     </div>
   </div>
 </template>
