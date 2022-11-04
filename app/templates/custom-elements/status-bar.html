@@ -28,6 +28,11 @@
   <div class="item">
     <connection-indicator id="connection-indicator"></connection-indicator>
   </div>
+  <div class="item">
+    <video-stream-indicator
+      id="video-stream-indicator"
+    ></video-stream-indicator>
+  </div>
   <div class="spacer"></div>
   <div class="item">
     <keystroke-history id="keystroke-history"></keystroke-history>
@@ -49,6 +54,10 @@
 
         get connectionIndicator() {
           return this.shadowRoot.getElementById("connection-indicator");
+        }
+
+        get videoStreamIndicator() {
+          return this.shadowRoot.getElementById("video-stream-indicator");
         }
 
         get keystrokeHistory() {

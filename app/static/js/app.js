@@ -304,6 +304,10 @@ document.addEventListener("keyup", onKeyUp);
 document.addEventListener("overlay-toggled", (evt) => {
   overlayTracker.trackStatus(evt.target, evt.detail.isShown);
 });
+document.addEventListener("video-streaming-mode-changed", (evt) => {
+  document.getElementById("status-bar").videoStreamIndicator.mode =
+    evt.detail.mode;
+});
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
@@ -412,3 +416,6 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
+
+// Initialize the remote screen content; use MJPEG by default.
+document.getElementById("remote-screen").enableMjpeg();
