@@ -53,8 +53,7 @@
         You are connected to TinyPilot.
       </div>
       <div slot="text" class="disconnected-text">
-        Could not connect to TinyPilot:
-        <span id="disconnect-reason"></span>
+        Could not connect to TinyPilot.
       </div>
     </content-tooltip>
     <div>
@@ -83,17 +82,6 @@
 
         set connected(isConnected) {
           this.setAttribute("connected", isConnected);
-        }
-
-        get disconnectReason() {
-          return this.shadowRoot.querySelector("#disconnect-reason")
-            .textContent;
-        }
-
-        set disconnectReason(newValue) {
-          this.shadowRoot.querySelector(
-            "#disconnect-reason"
-          ).innerText = newValue;
         }
       }
     );

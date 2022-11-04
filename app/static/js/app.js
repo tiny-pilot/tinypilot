@@ -109,13 +109,12 @@ function onSocketConnect() {
   setCursor(settings.getScreenCursor());
 }
 
-function onSocketDisconnect(reason) {
+function onSocketDisconnect() {
   setCursor("disabled", false);
   connectedToServer = false;
   const connectionIndicator = document.getElementById("status-bar")
     .connectionIndicator;
   connectionIndicator.connected = false;
-  connectionIndicator.disconnectReason = reason;
   document.getElementById("app").focus();
 }
 
