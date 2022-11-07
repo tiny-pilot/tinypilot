@@ -10,6 +10,12 @@
       font-size: 0.95em;
     }
 
+    .status-bar-tooltip {
+      /* Slightly tweak the tooltip width, so that the text will break in an
+         optimal way, without creating extra space on the right. */
+      max-width: 23em;
+    }
+
     :host(:hover) .status-bar-tooltip {
       display: block;
     }
