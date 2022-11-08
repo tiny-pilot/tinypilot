@@ -46,3 +46,19 @@ export class DialogCloseStateChangedEvent extends CustomEvent {
     });
   }
 }
+
+export class VideoStreamingModeChangedEvent extends CustomEvent {
+  /**
+   * Event, which indicates that the video streaming mode has changed.
+   * @param mode {string} The new mode, e.g.: `MJPEG` or `H264`.
+   */
+  constructor(mode) {
+    super("video-streaming-mode-changed", {
+      detail: {
+        mode,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}

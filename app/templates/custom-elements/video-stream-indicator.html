@@ -1,0 +1,75 @@
+<template id="video-stream-indicator-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-left: 2.5em;
+      font-size: 0.95em;
+    }
+
+    .status-bar-tooltip {
+      /* Slightly tweak the tooltip width, so that the text will break in an
+         optimal way, without creating extra space on the right. */
+      max-width: 23em;
+    }
+
+    :host(:hover) .status-bar-tooltip {
+      display: block;
+    }
+
+    .icon {
+      height: 1.2em;
+      margin-right: 0.5em;
+    }
+
+    .label-mjpeg,
+    .label-h264 {
+      display: none;
+    }
+
+    :host([mode="MJPEG"]) .label-mjpeg,
+    :host([mode="H264"]) .label-h264 {
+      display: inline;
+    }
+  </style>
+
+  <img src="/img/video-stream-icon.svg" class="icon" alt="Video Stream" />
+  <span class="label-mjpeg">MJPEG</span>
+  <span class="label-h264">H.264</span>
+  <div class="status-bar-tooltip">
+    <p>
+      TinyPilot is currently using
+      <span class="label-mjpeg">MJPEG</span>
+      <span class="label-h264">H.264</span>
+      compression to stream the video output of your target device.
+    </p>
+    <p>
+      You can configure the streaming mode in the
+      “System”&nbsp;&gt;&nbsp;“Video&nbsp;Settings” dialog.
+    </p>
+  </div>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector("#video-stream-indicator-template");
+
+    customElements.define(
+      "video-stream-indicator",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+        }
+
+        set mode(mode) {
+          this.setAttribute("mode", mode);
+        }
+      }
+    );
+  })();
+</script>

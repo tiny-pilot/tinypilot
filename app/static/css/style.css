@@ -150,3 +150,12 @@ input[type="text"].monospace {
   width: max-content;
   max-width: 25em;
 }
+
+.status-bar-tooltip p {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+.status-bar-tooltip p:last-child {
+  margin-bottom: 0;
+}
