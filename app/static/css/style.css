@@ -104,10 +104,6 @@ img {
   object-fit: contain;
 }
 
-.question-icon {
-  max-width: 20px;
-}
-
 input[type="text"],
 input[type="password"] {
   padding: 0.4rem;
