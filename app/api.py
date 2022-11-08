@@ -252,7 +252,7 @@ def settings_video_fps_get():
     try:
         video_fps = update.settings.load().ustreamer_desired_fps
     except update.settings.LoadSettingsError as e:
-        return json_response.error(e), 200
+        return json_response.error(e), 500
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
     if video_fps is None:
