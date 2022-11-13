@@ -339,32 +339,32 @@ def settings_video_put():
 
     try:
         video_fps = request_parsers.video_settings.parse_fps(flask.request)
-        if video_fps == video_settings.DEFAULT_FPS:
-            del update_settings.ustreamer_desired_fps
-        else:
-            update_settings.ustreamer_desired_fps = video_fps
     except request_parsers.errors.InvalidVideoFpsError as e:
         return json_response.error(e), 400
+    if video_fps == video_settings.DEFAULT_FPS:
+        del update_settings.ustreamer_desired_fps
+    else:
+        update_settings.ustreamer_desired_fps = video_fps
 
     try:
         video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
             flask.request)
-        if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
-            del update_settings.ustreamer_quality
-        else:
-            update_settings.ustreamer_quality = video_jpeg_quality
     except request_parsers.errors.InvalidVideoJpegQualityError as e:
         return json_response.error(e), 400
+    if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
+        del update_settings.ustreamer_quality
+    else:
+        update_settings.ustreamer_quality = video_jpeg_quality
 
     try:
         video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
-        if video_h264_bitrate == video_settings.DEFAULT_H264_BITRATE:
-            del update_settings.ustreamer_h264_bitrate
-        else:
-            update_settings.ustreamer_h264_bitrate = video_h264_bitrate
     except request_parsers.errors.InvalidVideoH264BitrateError as e:
         return json_response.error(e), 400
+    if video_h264_bitrate == video_settings.DEFAULT_H264_BITRATE:
+        del update_settings.ustreamer_h264_bitrate
+    else:
+        update_settings.ustreamer_h264_bitrate = video_h264_bitrate
 
     # Store the new parameters. Note: we only actually persist anything if *all*
     # values have passed the validation.
