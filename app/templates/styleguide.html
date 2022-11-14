@@ -18,7 +18,7 @@
     .colorcard {
       float: left;
       height: 5rem;
-      min-width: 10rem;
+      min-width: 8rem;
     }
     .section {
       margin-top: 2.5em;
@@ -81,6 +81,10 @@
         <div
           class="colorcard"
           style="background-color: var(--brand-metallic-bright);"
+        ></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-metallic-brighter);"
         ></div>
         <br style="clear: both;" />
         <div
@@ -191,7 +195,7 @@
         </button>
         <li slot="item">Action 1</li>
         <li slot="item">Action 2</li>
-        <li slot="item">Action 3</li>
+        <li slot="item" class="disabled">Action 3</li>
       </dropdown-button>
       <dropdown-button>
         <button slot="button">
@@ -199,7 +203,7 @@
         </button>
         <li slot="item">Action 1</li>
         <li slot="item">Action 2</li>
-        <li slot="item">Action 3</li>
+        <li slot="item" class="disabled">Action 3</li>
       </dropdown-button>
       <h3>Toggle Button</h3>
       <p>

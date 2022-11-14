@@ -1,5 +1,6 @@
 import flask
 
+import db.settings
 import debug_logs
 import hostname
 import json_response
@@ -233,150 +234,147 @@ def status_get():
     return response
 
 
-@api_blueprint.route('/settings/video/fps', methods=['GET'])
-def settings_video_fps_get():
-    """Retrieves the current video FPS setting.
+@api_blueprint.route('/settings/video', methods=['GET'])
+def settings_video_get():
+    """Retrieves the current video settings.
 
     Returns:
         On success, a JSON data structure with the following properties:
-        videoFps: int.
+        - videoStreamingMode: string
+        - videoFps: int
+        - videoDefaultFps: int
+        - videoJpegQuality: int
+        - videoDefaultJpegQuality: int
+        - videoH264Bitrate: int
+        - videoDefaultH264Bitrate: int
 
         Example of success:
         {
-            "videoFps": 30
+            "videoStreamingMode": "MJPEG",
+            "videoFps": 12,
+            "videoDefaultFps": 30,
+            "videoJpegQuality": 80,
+            "videoDefaultJpegQuality": 80,
+            "videoH264Bitrate": 450,
+            "videoDefaultH264Bitrate": 5000
         }
 
         Returns an error object on failure.
     """
     try:
-        video_fps = update.settings.load().ustreamer_desired_fps
+        update_settings = update.settings.load()
     except update.settings.LoadSettingsError as e:
-        return json_response.error(e), 200
+        return json_response.error(e), 500
+
+    # Fetch the uStreamer-related parameters from the update settings file.
     # Note: Default values are not set in the settings file. So when the
     # values are unset, we must respond with the correct default value.
+    video_fps = update_settings.ustreamer_desired_fps
     if video_fps is None:
         video_fps = video_settings.DEFAULT_FPS
-    return json_response.success({'videoFps': video_fps})
 
-
-@api_blueprint.route('/settings/video/fps', methods=['PUT'])
-def settings_video_fps_put():
-    """Changes the current video FPS setting.
-
-    Expects a JSON data structure in the request body that contains the
-    new videoFps as an integer. Example:
-    {
-        "videoFps": 30
-    }
-
-    Returns:
-        Empty response on success, error object otherwise.
-    """
-    try:
-        video_fps = request_parsers.video_settings.parse_fps(flask.request)
-        settings = update.settings.load()
-        # Note: To avoid polluting the settings file with unnecessay default
-        # values, we unset them instead.
-        if video_fps == video_settings.DEFAULT_FPS:
-            del settings.ustreamer_desired_fps
-        else:
-            settings.ustreamer_desired_fps = video_fps
-        update.settings.save(settings)
-    except request_parsers.errors.InvalidVideoFpsError as e:
-        return json_response.error(e), 400
-    except update.settings.SaveSettingsError as e:
-        return json_response.error(e), 500
-    return json_response.success()
-
-
-@api_blueprint.route('/settings/video/fps/default', methods=['GET'])
-def settings_video_fps_default_get():
-    """Retrieves the default video FPS setting.
-
-    Returns:
-        On success, a JSON data structure with the following properties:
-        videoFps: int.
-
-        Example of success:
-        {
-            "videoFps": 30
-        }
-    """
-    return json_response.success({'videoFps': video_settings.DEFAULT_FPS})
-
-
-@api_blueprint.route('/settings/video/jpeg_quality', methods=['GET'])
-def settings_video_jpeg_quality_get():
-    """Retrieves the current video JPEG quality setting.
-
-    Returns:
-        On success, a JSON data structure with the following properties:
-        videoJpegQuality: int.
-
-        Example:
-        {
-            "videoJpegQuality": 80
-        }
-
-        Returns an error object on failure.
-    """
-    try:
-        video_jpeg_quality = update.settings.load().ustreamer_quality
-    except update.settings.LoadSettingsError as e:
-        return json_response.error(e), 500
-    # Note: Default values are not set in the settings file. So when the
-    # values are unset, we must respond with the correct default value.
+    video_jpeg_quality = update_settings.ustreamer_quality
     if video_jpeg_quality is None:
         video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
-    return json_response.success({'videoJpegQuality': video_jpeg_quality})
+
+    video_h264_bitrate = update_settings.ustreamer_h264_bitrate
+    if video_h264_bitrate is None:
+        video_h264_bitrate = video_settings.DEFAULT_H264_BITRATE
+
+    # Retrieve the streaming mode from the database.
+    video_streaming_mode = db.settings.Settings().get_streaming_mode().value
+
+    return json_response.success({
+        'videoStreamingMode': video_streaming_mode,
+        'videoFps': video_fps,
+        'videoDefaultFps': video_settings.DEFAULT_FPS,
+        'videoJpegQuality': video_jpeg_quality,
+        'videoDefaultJpegQuality': video_settings.DEFAULT_JPEG_QUALITY,
+        'videoH264Bitrate': video_h264_bitrate,
+        'videoDefaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
+    })
 
 
-@api_blueprint.route('/settings/video/jpeg_quality', methods=['PUT'])
-def settings_video_jpeg_quality_put():
-    """Changes the current video JPEG quality setting.
+@api_blueprint.route('/settings/video', methods=['PUT'])
+def settings_video_put():
+    """Saves new video settings.
+
+    Note: for the new settings to come into effect, you need to make a call to
+    the /settings/video/apply endpoint afterwards.
 
     Expects a JSON data structure in the request body that contains the
-    new videoJpegQuality as an integer. Example:
+    following parameters for the video settings:
+    - videoStreamingMode: string
+    - videoFps: int
+    - videoJpegQuality: int
+    - videoH264Bitrate: int
+
+    Example of request body:
     {
-        "videoJpegQuality": 80
+        "videoStreamingMode": "MJPEG",
+        "videoFps": 12,
+        "videoJpegQuality": 80,
+        "videoH264Bitrate": 450
     }
 
     Returns:
         Empty response on success, error object otherwise.
     """
+    # TODO(jotaen) Refactor this method to avoid code repetition. That way, the
+    #              following pylint directive should become obsolete.
+    # pylint: disable=too-many-return-statements
+
+    try:
+        video_streaming_mode = \
+            request_parsers.video_settings.parse_streaming_mode(flask.request)
+    except request_parsers.errors.InvalidVideoStreamingModeError as e:
+        return json_response.error(e), 400
+
+    # Parse all uStreamer-related parameters. Note: To avoid polluting the
+    # settings file with unnecessary default values, we unset them instead.
+    try:
+        update_settings = update.settings.load()
+    except update.settings.LoadSettingsError as e:
+        return json_response.error(e), 500
+
+    try:
+        video_fps = request_parsers.video_settings.parse_fps(flask.request)
+    except request_parsers.errors.InvalidVideoFpsError as e:
+        return json_response.error(e), 400
+    if video_fps == video_settings.DEFAULT_FPS:
+        del update_settings.ustreamer_desired_fps
+    else:
+        update_settings.ustreamer_desired_fps = video_fps
+
     try:
         video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
             flask.request)
-        settings = update.settings.load()
-        # Note: To avoid polluting the settings file with unnecessay default
-        # values, we unset them instead.
-        if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
-            del settings.ustreamer_quality
-        else:
-            settings.ustreamer_quality = video_jpeg_quality
-        update.settings.save(settings)
     except request_parsers.errors.InvalidVideoJpegQualityError as e:
         return json_response.error(e), 400
+    if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
+        del update_settings.ustreamer_quality
+    else:
+        update_settings.ustreamer_quality = video_jpeg_quality
+
+    try:
+        video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
+            flask.request)
+    except request_parsers.errors.InvalidVideoH264BitrateError as e:
+        return json_response.error(e), 400
+    if video_h264_bitrate == video_settings.DEFAULT_H264_BITRATE:
+        del update_settings.ustreamer_h264_bitrate
+    else:
+        update_settings.ustreamer_h264_bitrate = video_h264_bitrate
+
+    # Store the new parameters. Note: we only actually persist anything if *all*
+    # values have passed the validation.
+    db.settings.Settings().set_streaming_mode(video_streaming_mode)
+    try:
+        update.settings.save(update_settings)
     except update.settings.SaveSettingsError as e:
         return json_response.error(e), 500
+
     return json_response.success()
-
-
-@api_blueprint.route('/settings/video/jpeg_quality/default', methods=['GET'])
-def settings_video_jpeg_quality_default_get():
-    """Retrieves the default video JPEG quality setting.
-
-    Returns:
-        On success, a JSON data structure with the following properties:
-        videoJpegQuality: int.
-
-        Example:
-        {
-            "videoJpegQuality": 80
-        }
-    """
-    return json_response.success(
-        {'videoJpegQuality': video_settings.DEFAULT_JPEG_QUALITY})
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])

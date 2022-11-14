@@ -240,8 +240,8 @@ export async function textToShareableUrl(text) {
     .then((data) => baseUrl + `/${data.id}`);
 }
 
-export async function getVideoFps() {
-  return fetch("/api/settings/video/fps", {
+export async function getVideoSettings() {
+  return fetch("/api/settings/video", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -249,15 +249,30 @@ export async function getVideoFps() {
   })
     .then(processJsonResponse)
     .then((data) => {
-      if (!data.hasOwnProperty("videoFps")) {
-        throw new ControllerError("Missing expected videoFps field");
-      }
-      return data.videoFps;
+      [
+        "videoStreamingMode",
+        "videoFps",
+        "videoDefaultFps",
+        "videoJpegQuality",
+        "videoDefaultJpegQuality",
+        "videoH264Bitrate",
+        "videoDefaultH264Bitrate",
+      ].forEach((field) => {
+        if (!data.hasOwnProperty(field)) {
+          throw new ControllerError(`Missing expected ${field} field`);
+        }
+      });
+      return data;
     });
 }
 
-export async function setVideoFps(videoFps) {
-  return fetch("/api/settings/video/fps", {
+export async function saveVideoSettings({
+  videoStreamingMode,
+  videoFps,
+  videoJpegQuality,
+  videoH264Bitrate,
+}) {
+  return fetch("/api/settings/video", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -266,70 +281,13 @@ export async function setVideoFps(videoFps) {
       "Content-Type": "application/json",
       "X-CSRFToken": getCsrfToken(),
     },
-    body: JSON.stringify({ videoFps }),
+    body: JSON.stringify({
+      videoStreamingMode,
+      videoFps,
+      videoJpegQuality,
+      videoH264Bitrate,
+    }),
   }).then(processJsonResponse);
-}
-
-export async function getDefaultVideoFps() {
-  return fetch("/api/settings/video/fps/default", {
-    method: "GET",
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-  })
-    .then(processJsonResponse)
-    .then((data) => {
-      if (!data.hasOwnProperty("videoFps")) {
-        throw new ControllerError("Missing expected videoFps field");
-      }
-      return data.videoFps;
-    });
-}
-
-export async function getVideoJpegQuality() {
-  return fetch("/api/settings/video/jpeg_quality", {
-    method: "GET",
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-  })
-    .then(processJsonResponse)
-    .then((data) => {
-      if (!data.hasOwnProperty("videoJpegQuality")) {
-        throw new ControllerError("Missing expected videoJpegQuality field");
-      }
-      return data.videoJpegQuality;
-    });
-}
-
-export async function setVideoJpegQuality(videoJpegQuality) {
-  return fetch("/api/settings/video/jpeg_quality", {
-    method: "PUT",
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCsrfToken(),
-    },
-    body: JSON.stringify({ videoJpegQuality }),
-  }).then(processJsonResponse);
-}
-
-export async function getDefaultVideoJpegQuality() {
-  return fetch("/api/settings/video/jpeg_quality/default", {
-    method: "GET",
-    mode: "same-origin",
-    cache: "no-cache",
-    redirect: "error",
-  })
-    .then(processJsonResponse)
-    .then((data) => {
-      if (!data.hasOwnProperty("videoJpegQuality")) {
-        throw new ControllerError("Missing expected videoJpegQuality field");
-      }
-      return data.videoJpegQuality;
-    });
 }
 
 export async function applyVideoSettings() {

@@ -4,6 +4,7 @@ import subprocess
 _UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/update-video-settings'
 DEFAULT_FPS = 30
 DEFAULT_JPEG_QUALITY = 80
+DEFAULT_H264_BITRATE = 5000
 logger = logging.getLogger(__name__)
 
 

@@ -14,6 +14,7 @@
   --brand-metallic-medium: hsl(var(--brand-hue-metallic), 18%, 45%);
   --brand-metallic-light: hsl(var(--brand-hue-metallic), 16%, 55%);
   --brand-metallic-bright: hsl(var(--brand-hue-metallic), 18%, 65%);
+  --brand-metallic-brighter: hsl(var(--brand-hue-metallic), 18%, 75%);
 
   --brand-sand-light: hsl(var(--brand-hue-yellow), 59%, 92%);
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
@@ -103,10 +104,6 @@ img {
   object-fit: contain;
 }
 
-.question-icon {
-  max-width: 20px;
-}
-
 input[type="text"],
 input[type="password"] {
   padding: 0.4rem;
@@ -135,4 +132,26 @@ input[type="text"].monospace {
   text-align: left;
   overflow-y: scroll;
   white-space: pre-wrap;
+}
+
+.status-bar-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 1.85em;
+  background-color: var(--brand-metallic-brighter);
+  color: black;
+  padding: 0.2em 0.7em;
+  font-size: 0.9rem;
+  left: -0.6em;
+  width: max-content;
+  max-width: 25em;
+}
+
+.status-bar-tooltip p {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+.status-bar-tooltip p:last-child {
+  margin-bottom: 0;
 }

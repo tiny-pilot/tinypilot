@@ -20,3 +20,11 @@ class InvalidVideoFpsError(Error):
 
 class InvalidVideoJpegQualityError(Error):
     pass
+
+
+class InvalidVideoH264BitrateError(Error):
+    pass
+
+
+class InvalidVideoStreamingModeError(Error):
+    pass

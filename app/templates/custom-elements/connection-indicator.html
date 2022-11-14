@@ -1,12 +1,22 @@
 <template id="connection-indicator-template">
   <style>
-    .status {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+    @import "css/style.css";
+
+    :host {
+      position: relative;
     }
 
-    content-tooltip {
+    .status-bar-tooltip {
+      /* Slightly tweak the tooltip width, so that the “disconnected” text will
+         break in an optimal way, without creating extra space on the right. */
+      max-width: 23em;
+    }
+
+    :host(:hover) .status-bar-tooltip {
+      display: block;
+    }
+
+    .status {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -47,19 +57,19 @@
     }
   </style>
   <div class="status">
-    <content-tooltip position="top-right">
-      <span class="status-dot"></span>
-      <div slot="text" class="connected-text">
-        You are connected to TinyPilot.
-      </div>
-      <div slot="text" class="disconnected-text">
-        Could not connect to TinyPilot:
-        <span id="disconnect-reason"></span>
-      </div>
-    </content-tooltip>
+    <span class="status-dot"></span>
     <div>
       <span class="label-connected">Connected</span>
       <span class="label-disconnected">Disconnected</span>
+    </div>
+  </div>
+  <div class="status-bar-tooltip">
+    <div class="connected-text">
+      Your browser is connected to your TinyPilot device.
+    </div>
+    <div class="disconnected-text">
+      Your browser is currently unable to connect to your TinyPilot device over
+      the network.
     </div>
   </div>
 </template>
@@ -83,17 +93,6 @@
 
         set connected(isConnected) {
           this.setAttribute("connected", isConnected);
-        }
-
-        get disconnectReason() {
-          return this.shadowRoot.querySelector("#disconnect-reason")
-            .textContent;
-        }
-
-        set disconnectReason(newValue) {
-          this.shadowRoot.querySelector(
-            "#disconnect-reason"
-          ).innerText = newValue;
         }
       }
     );

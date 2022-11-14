@@ -22,6 +22,20 @@ jobs:
       - run:
           name: Run static analysis on bash scripts
           command: ./dev-scripts/check-bash
+  lint_sql:
+    docker:
+      - image: cimg/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements and run lint script
+          command: |
+            . venv/bin/activate
+            pip install --requirement dev_requirements.txt
+            ./dev-scripts/lint-sql
   check_style:
     docker:
       - image: cimg/node:14.17.5
@@ -67,42 +81,13 @@ jobs:
       - setup_remote_docker:
           version: 20.10.11
       - run:
-          name: Enable multiarch builds with QEMU
-          command: |
-            docker run \
-              --rm \
-              --privileged \
-              multiarch/qemu-user-static \
-              --reset \
-              -p yes
-      - run:
-          name: Create multiarch build context
-          command: docker context create builder
-      - run:
-          name: Create multiplatform builder
-          command: |
-            docker buildx create builder \
-              --name builder \
-              --driver docker-container \
-              --use
-      - run:
-          name: Ensure builder has booted
-          command: docker buildx inspect --bootstrap
-      - run:
           name: Build Debian package
-          command: |
-            export TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
-            export PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
-            docker buildx build \
-              --file debian-pkg/Dockerfile \
-              --platform linux/arm/v7 \
-              --build-arg TINYPILOT_VERSION \
-              --build-arg PKG_VERSION \
-              --target=artifact \
-              --output type=local,dest=$(pwd)/releases/ \
-              .
+          command: ./dev-scripts/build-debian-pkg
+      - run:
+          name: Print Debian package contents
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
       - persist_to_workspace:
-          root: ./releases
+          root: ./debian-pkg/releases
           paths:
             - "*.deb"
   build_bundle:
@@ -186,19 +171,12 @@ jobs:
             set -u
             BUNDLE_FILENAME="$(cat dist/LATEST)"
             echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PREFIX}/${BUNDLE_FILENAME}"
-  e2e:
-    machine:
-      image: ubuntu-2004:202010-01
-    steps:
-      - checkout
-      - run:
-          name: Run TinyPilot e2e tests
-          command: ./e2e/docker-test
 workflows:
   test:
     jobs:
       - check_whitespace
       - check_bash
+      - lint_sql
       - check_style
       - build_python
       - build_javascript
@@ -221,12 +199,6 @@ workflows:
       - upload_bundle:
           requires:
             - verify_bundle
-          filters:
-            branches:
-              only: master
-      - e2e:
-          requires:
-            - upload_bundle
           filters:
             branches:
               only: master
