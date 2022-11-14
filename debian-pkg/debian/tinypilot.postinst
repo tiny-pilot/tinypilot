@@ -34,5 +34,4 @@ chmod --reference="${SUDOERS_ORIGINAL}" "${SUDOERS_COPY}"
 visudo --check --file="${SUDOERS_COPY}"
 mv "${SUDOERS_COPY}" "${SUDOERS_ORIGINAL}"
 
-
-# TODO(mtlynch): Install the usb-gadget.service.
+#DEBHELPER#
