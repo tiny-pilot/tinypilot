@@ -109,7 +109,7 @@ jobs:
             lintian \
               --no-tag-display-limit \
               --suppress-tags-from-file .lintianignore \
-              ./debian-pkg/releases/*.deb
+              tinypilot-*.deb
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
