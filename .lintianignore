@@ -2,7 +2,10 @@
 dir-or-file-in-opt
 
 extended-description-is-empty
+
+# Leave an error just to verify we're failing properly.
+#no-changelog
 no-copyright-file
 maintainer-script-ignores-errors
-maintainer-script-should-not-use-recursive-chown-or-chmod
+recursive-privilege-change
 script-not-executable
