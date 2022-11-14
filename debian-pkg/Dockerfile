@@ -44,6 +44,8 @@ WORKDIR "/releases/${PKG_ID}/DEBIAN"
 
 RUN echo "Package: ${PKG_NAME}" >> control && \
     echo "Version: ${PKG_VERSION}" >> control && \
+    echo "Section: net" >> control && \
+    echo "Priority: optional" >> control && \
     echo "Maintainer: TinyPilot Support <support@tinypilotkvm.com>" >> control && \
     echo "Depends: python3, python3-pip, python3-venv, sudo" >> control && \
     echo "Architecture: all" >> control && \

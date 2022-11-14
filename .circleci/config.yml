@@ -90,18 +90,26 @@ jobs:
           root: ./debian-pkg/releases
           paths:
             - "*.deb"
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .lintianignore
   lint_debian_package:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2022.11-22.04
     steps:
       - attach_workspace:
           at: ./
       - run:
           name: Install lintian
-          command: apt-get install lintian
+          command: sudo apt-get update && sudo apt-get install -y lintian
       - run:
           name: Run lintian
-          command: lintian --no-tag-display-limit ./debian-pkg/releases/*.deb
+          command: |
+            lintian
+              --no-tag-display-limit
+              --suppress-tags-from-file .lintianignore
+              ./debian-pkg/releases/*.deb
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
