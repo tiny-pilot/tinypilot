@@ -105,7 +105,7 @@ jobs:
           command: sudo apt-get update
       - run:
           name: Install lintian
-          command: sudo apt-get install -y lintian=2.114.0ubuntu1.1
+          command: sudo apt-get install -y lintian
       - run:
           name: Run lintian
           command: |
