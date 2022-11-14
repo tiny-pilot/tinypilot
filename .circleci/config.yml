@@ -107,8 +107,11 @@ jobs:
           name: Run lintian
           command: |
             lintian \
+              --check \
               --no-tag-display-limit \
               --suppress-tags-from-file .lintianignore \
+              --fail-on warning \
+              --no-cfg \
               tinypilot-*.deb
   build_bundle:
     docker:
