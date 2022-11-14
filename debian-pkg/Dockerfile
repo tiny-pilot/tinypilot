@@ -23,7 +23,8 @@ ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      dpkg-dev debhelper
+      debhelper \
+      dpkg-dev
 
 RUN mkdir -p "/releases/${PKG_ID}"
 
