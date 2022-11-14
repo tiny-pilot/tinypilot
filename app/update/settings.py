@@ -16,6 +16,8 @@ import os
 
 import yaml
 
+import video_settings
+
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
 
@@ -32,6 +34,11 @@ class SaveSettingsError(Error):
 
 
 class Settings:
+    """Manages the parameters for the update process in a YAML file.
+
+    Note: To avoid polluting the settings file with unnecessary default values,
+    we unset them instead of hard-coding the defaults in the file.
+    """
 
     def __init__(self, data):
         self._data = data
@@ -43,42 +50,46 @@ class Settings:
 
     @property
     def ustreamer_desired_fps(self):
-        return self._data.get('ustreamer_desired_fps', None)
+        return self._get_or_default('ustreamer_desired_fps',
+                                    video_settings.DEFAULT_FPS)
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
-        self._data['ustreamer_desired_fps'] = value
-
-    @ustreamer_desired_fps.deleter
-    def ustreamer_desired_fps(self):
-        if 'ustreamer_desired_fps' in self._data:
-            del self._data['ustreamer_desired_fps']
+        self._set_or_clear('ustreamer_desired_fps', value,
+                           video_settings.DEFAULT_FPS)
 
     @property
     def ustreamer_quality(self):
-        return self._data.get('ustreamer_quality', None)
+        return self._get_or_default('ustreamer_quality',
+                                    video_settings.DEFAULT_JPEG_QUALITY)
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
-        self._data['ustreamer_quality'] = value
-
-    @ustreamer_quality.deleter
-    def ustreamer_quality(self):
-        if 'ustreamer_quality' in self._data:
-            del self._data['ustreamer_quality']
+        self._set_or_clear('ustreamer_quality', value,
+                           video_settings.DEFAULT_JPEG_QUALITY)
 
     @property
     def ustreamer_h264_bitrate(self):
-        return self._data.get('ustreamer_h264_bitrate', None)
+        return self._get_or_default('ustreamer_h264_bitrate',
+                                    video_settings.DEFAULT_H264_BITRATE)
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
-        self._data['ustreamer_h264_bitrate'] = value
+        self._set_or_clear('ustreamer_h264_bitrate', value,
+                           video_settings.DEFAULT_H264_BITRATE)
 
-    @ustreamer_h264_bitrate.deleter
-    def ustreamer_h264_bitrate(self):
-        if 'ustreamer_h264_bitrate' in self._data:
-            del self._data['ustreamer_h264_bitrate']
+    def _set_or_clear(self, prop_name, value, default_value):
+        if value == default_value:
+            if prop_name in self._data:
+                del self._data[prop_name]
+            return
+
+        self._data[prop_name] = value
+
+    def _get_or_default(self, prop_name, default_value):
+        if prop_name in self._data:
+            return self._data[prop_name]
+        return default_value
 
 
 def load():
