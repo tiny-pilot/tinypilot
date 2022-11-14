@@ -155,18 +155,9 @@
     DialogCloseStateChangedEvent,
   } from "/js/events.js";
   import {
+    getVideoSettings,
+    saveVideoSettings,
     applyVideoSettings,
-    getVideoStreamingMode,
-    getDefaultVideoFps,
-    getDefaultVideoJpegQuality,
-    getDefaultVideoH264Bitrate,
-    getVideoFps,
-    getVideoJpegQuality,
-    getVideoH264Bitrate,
-    setVideoStreamingMode,
-    setVideoFps,
-    setVideoJpegQuality,
-    setVideoH264Bitrate,
   } from "/js/controllers.js";
 
   (function () {
@@ -277,25 +268,17 @@
 
         initialize() {
           this.state = this.states.LOADING;
-          Promise.all([
-            getVideoStreamingMode(),
-            getVideoFps(),
-            getDefaultVideoFps(),
-            getVideoJpegQuality(),
-            getDefaultVideoJpegQuality(),
-            getVideoH264Bitrate(),
-            getDefaultVideoH264Bitrate(),
-          ])
+          getVideoSettings()
             .then(
-              ([
-                streamingMode,
-                fps,
-                defaultFps,
-                jpegQuality,
-                defaultJpegQuality,
-                bitrate,
-                defaultBitrate,
-              ]) => {
+              ({
+                videoStreamingMode: streamingMode,
+                videoFps: fps,
+                videoDefaultFps: defaultFps,
+                videoJpegQuality: jpegQuality,
+                videoDefaultJpegQuality: defaultJpegQuality,
+                videoH264Bitrate: bitrate,
+                videoDefaultH264Bitrate: defaultBitrate,
+              }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
 
@@ -439,12 +422,12 @@
 
         _saveSettings() {
           this.state = this.states.SAVING;
-          return Promise.all([
-            setVideoStreamingMode(this._getStreamingMode()),
-            setVideoFps(this._getFps()),
-            setVideoJpegQuality(this._getJpegQuality()),
-            setVideoH264Bitrate(this._getBitrate()),
-          ])
+          return saveVideoSettings({
+            videoStreamingMode: this._getStreamingMode(),
+            videoFps: this._getFps(),
+            videoJpegQuality: this._getJpegQuality(),
+            videoH264Bitrate: this._getBitrate(),
+          })
             .then(applyVideoSettings)
             .then(() => {
               // Note: After the video stream stops, it doesn't try to
