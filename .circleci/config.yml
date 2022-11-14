@@ -106,9 +106,9 @@ jobs:
       - run:
           name: Run lintian
           command: |
-            lintian
-              --no-tag-display-limit
-              --suppress-tags-from-file .lintianignore
+            lintian \
+              --no-tag-display-limit \
+              --suppress-tags-from-file .lintianignore \
               ./debian-pkg/releases/*.deb
   build_bundle:
     docker:
