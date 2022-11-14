@@ -1,0 +1,5 @@
+tinypilot (1.0.0-1) stretch; urgency=medium
+
+  * Initial packaging work with dpkg-buildpackage.
+
+ -- TinyPilot Support <support@tinypilotkvm.com> Mon, 14 Nov 2022 02:50:19 +0000

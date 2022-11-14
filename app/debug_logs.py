@@ -17,7 +17,8 @@ def collect():
         configuration files.
     """
     try:
-        return subprocess.check_output(
-            ['sudo', '/opt/tinypilot-privileged/collect-debug-logs', '-q'])
+        return subprocess.check_output([
+            'sudo', '/opt/tinypilot-privileged/scripts/collect-debug-logs', '-q'
+        ])
     except subprocess.CalledProcessError as e:
         raise LogCollectionScriptFailedError(str(e)) from e

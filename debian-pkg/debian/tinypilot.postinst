@@ -1,0 +1,37 @@
+#!/bin/bash
+
+function join_by {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
+chown -R tinypilot:tinypilot /opt/tinypilot
+
+# Give tinypilot permission to execute certain scripts as root.
+cd "$(mktemp --directory)" || exit 1
+SUDOERS_ORIGINAL="/etc/sudoers"
+SUDOERS_COPY="sudoers-copy"
+cp "${SUDOERS_ORIGINAL}" "${SUDOERS_COPY}"
+
+chmod +w "${SUDOERS_COPY}"
+
+sed --in-place '/^tinypilot /d' "${SUDOERS_COPY}"
+
+SUDO_SCRIPTS=(/opt/tinypilot-privileged/scripts/*)
+SUDO_SCRIPTS+=("/sbin/shutdown")
+SUDO_SCRIPTS+=("/usr/sbin/service janus restart")
+SUDO_SCRIPTS+=("/usr/sbin/service ustreamer restart")
+SUDO_SCRIPTS+=("/usr/sbin/service tinypilot-updater start")
+FULL_LIST="$(join_by , "${SUDO_SCRIPTS[@]}")"
+
+echo "tinypilot ALL=(ALL) NOPASSWD: ${FULL_LIST}" >> "${SUDOERS_COPY}"
+
+# Restore the original permissions.
+chmod --reference="${SUDOERS_ORIGINAL}" "${SUDOERS_COPY}"
+
+# Overwrite the original with this new copy.
+visudo --check --file="${SUDOERS_COPY}"
+mv "${SUDOERS_COPY}" "${SUDOERS_ORIGINAL}"
+
+#DEBHELPER#
