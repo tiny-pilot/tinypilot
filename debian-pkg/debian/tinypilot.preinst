@@ -11,3 +11,5 @@ fi
 if [[ -f /opt/tinypilot-privileged/update ]]; then
   rm -f /opt/tinypilot-privileged/*
 fi
+
+#DEBHELPER#
