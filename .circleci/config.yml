@@ -96,7 +96,7 @@ jobs:
             - .lintianignore
   lint_debian_package:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2022.11-22.04
     steps:
       - attach_workspace:
           at: ./
@@ -105,7 +105,10 @@ jobs:
           command: sudo apt-get update
       - run:
           name: Install lintian
-          command: sudo apt-get install -y lintian
+          command: sudo apt-get install -y lintian=2.114.0ubuntu1.1
+      - run:
+          name: Print lintian version
+          command: lintian --version
       - run:
           name: Run lintian
           command: |
