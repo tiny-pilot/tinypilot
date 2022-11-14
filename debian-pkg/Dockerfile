@@ -57,8 +57,7 @@ Description: "Simple, easy-to-use KVM over IP"
 EOL
 
 WORKDIR "/releases/${PKG_ID}"
-RUN dpkg-buildpackage -b
-#RUN dpkg --build "/releases/${PKG_ID}"
+RUN dpkg-buildpackage --build=binary
 
 FROM scratch as artifact
 
