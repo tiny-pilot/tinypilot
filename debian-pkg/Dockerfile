@@ -45,7 +45,7 @@ WORKDIR "/releases/${PKG_ID}/debian"
 
 RUN cat >control <<EOL
 Source: ${PKG_NAME}
-Section: devel
+Section: net
 Priority: optional
 Maintainer: TinyPilot Support <support@tinypilotkvm.com>
 Build-Depends: debhelper (>= 11)
