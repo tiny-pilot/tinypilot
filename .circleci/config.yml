@@ -111,15 +111,13 @@ jobs:
           command: lintian --version
       - run:
           name: Run lintian
-          # I'd like to do fail-on warning so that we notice warnings, but
-          # using that option seems to make lintian fail "only" on warnings,
-          # meaning it ignores errors.
           command: |
             lintian \
               --check \
               --no-tag-display-limit \
               --suppress-tags-from-file .lintianignore \
               --no-cfg \
+              --fail-on warning,error \
               tinypilot-*.deb
   build_bundle:
     docker:
