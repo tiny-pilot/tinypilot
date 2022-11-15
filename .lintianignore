@@ -1,7 +1,16 @@
-# TODO: File bugs / write explanations for why we're suppressing these warnings.
+# Debian doesn't want packages to install to /opt, but it also doesn't give
+# clear guidance on where they *should* go. It's too much churn at this point to
+# change, so we're going to ignore this.
 dir-or-file-in-opt
+
+# We don't publish to public repositories, so it's not important for us to have
+# an extended package description for now.
 extended-description-is-empty
+
+# We don't publish to public repositories, so it's not important for us to have
+# a changelog for now.
 no-changelog
-no-copyright-file
-maintainer-script-ignores-errors
+
+# Ignore this until we find a better way of setting permissions properly.
+# https://github.com/tiny-pilot/tinypilot/issues/1196
 recursive-privilege-change

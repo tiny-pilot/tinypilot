@@ -36,6 +36,11 @@ COPY ./README.md opt/tinypilot/
 COPY ./requirements.txt opt/tinypilot/
 COPY ./app opt/tinypilot/app
 COPY ./scripts opt/tinypilot/scripts
+RUN mkdir -p usr/share/doc/tinypilot
+COPY ./COPYRIGHT opt/tinypilot/
+# Make an extra copy of the copyright file that the Debian package will
+# recognize.
+COPY ./COPYRIGHT usr/share/doc/tinypilot/copyright
 COPY ./debian-pkg .
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
