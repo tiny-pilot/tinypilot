@@ -4,6 +4,12 @@
 
 FROM debian:bullseye-20220328-slim AS build
 
+RUN set -x && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      debhelper \
+      dpkg-dev
+
 # The canonical TinyPilot version. For TinyPilot Community, this is a git commit
 # hash in short form. For TinyPilot Pro, this is a SemVer version.
 ARG TINYPILOT_VERSION
@@ -20,26 +26,21 @@ ARG PKG_BUILD_NUMBER="1"
 ARG PKG_ARCH="armhf"
 ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 
-RUN set -x && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      debhelper \
-      dpkg-dev
-
 RUN mkdir -p "/releases/${PKG_ID}"
 
 WORKDIR "/releases/${PKG_ID}"
 
-RUN mkdir -p opt/tinypilot
-COPY ./COPYRIGHT opt/tinypilot/
-COPY ./LICENSE opt/tinypilot/
-COPY ./README.md opt/tinypilot/
-COPY ./requirements.txt opt/tinypilot/
-COPY ./app opt/tinypilot/app
-COPY ./scripts opt/tinypilot/scripts
 COPY ./debian-pkg .
 
-RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
+RUN mkdir -p debian/tinypilot/opt/tinypilot
+COPY ./COPYRIGHT debian/tinypilot/opt/tinypilot/
+COPY ./LICENSE debian/tinypilot/opt/tinypilot/
+COPY ./README.md debian/tinypilot/opt/tinypilot/
+COPY ./requirements.txt debian/tinypilot/opt/tinypilot/
+COPY ./app debian/tinypilot/opt/tinypilot/app
+COPY ./scripts debian/tinypilot/opt/tinypilot/scripts
+
+RUN echo "${TINYPILOT_VERSION}" > debian/tinypilot/opt/tinypilot/VERSION
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
