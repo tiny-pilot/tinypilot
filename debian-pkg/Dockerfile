@@ -36,7 +36,6 @@ COPY ./README.md opt/tinypilot/
 COPY ./requirements.txt opt/tinypilot/
 COPY ./app opt/tinypilot/app
 COPY ./scripts opt/tinypilot/scripts
-COPY ./COPYRIGHT opt/tinypilot/
 
 # Make an extra copy of the copyright file that the Debian package will
 # recognize.
