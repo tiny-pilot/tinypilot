@@ -1,10 +1,7 @@
-# We're not sure
+# TODO: File bugs / write explanations for why we're suppressing these warnings.
 dir-or-file-in-opt
-
 extended-description-is-empty
-
-# Leave an error just to verify we're failing properly.
-#no-changelog
+no-changelog
 no-copyright-file
 maintainer-script-ignores-errors
 recursive-privilege-change
