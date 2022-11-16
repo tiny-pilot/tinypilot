@@ -36,8 +36,11 @@ class SaveSettingsError(Error):
 class Settings:
     """Manages the parameters for the update process in a YAML file.
 
-    Note: To avoid polluting the settings file with unnecessary default values,
-    we unset them instead of hard-coding the defaults in the file.
+    To avoid polluting the settings file with unnecessary default values, we
+    unset them instead of hard-coding the defaults in the file.
+
+    For historical/compatibility reasons, the naming of the uStreamer properties
+    is not in line with the naming conventions in the code.
     """
 
     def __init__(self, data):
@@ -51,22 +54,22 @@ class Settings:
     @property
     def ustreamer_desired_fps(self):
         return self._data.get('ustreamer_desired_fps',
-                              video_settings.DEFAULT_FPS)
+                              video_settings.DEFAULT_FRAME_RATE)
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
         self._set_or_clear('ustreamer_desired_fps', value,
-                           video_settings.DEFAULT_FPS)
+                           video_settings.DEFAULT_FRAME_RATE)
 
     @property
     def ustreamer_quality(self):
         return self._data.get('ustreamer_quality',
-                              video_settings.DEFAULT_JPEG_QUALITY)
+                              video_settings.DEFAULT_MJPEG_QUALITY)
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
         self._set_or_clear('ustreamer_quality', value,
-                           video_settings.DEFAULT_JPEG_QUALITY)
+                           video_settings.DEFAULT_MJPEG_QUALITY)
 
     @property
     def ustreamer_h264_bitrate(self):

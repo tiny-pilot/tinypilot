@@ -241,20 +241,20 @@ def settings_video_get():
     Returns:
         On success, a JSON data structure with the following properties:
         - streamingMode: string
-        - fps: int
-        - defaultFps: int
-        - jpegQuality: int
-        - defaultJpegQuality: int
+        - frameRate: int
+        - defaultFrameRate: int
+        - mjpegQuality: int
+        - defaultMjpegQuality: int
         - h264Bitrate: int
         - defaultH264Bitrate: int
 
         Example of success:
         {
             "streamingMode": "MJPEG",
-            "fps": 12,
-            "defaultFps": 30,
-            "jpegQuality": 80,
-            "defaultJpegQuality": 80,
+            "frameRate": 12,
+            "defaultFrameRate": 30,
+            "mjpegQuality": 80,
+            "defaultMjpegQuality": 80,
             "h264Bitrate": 450,
             "defaultH264Bitrate": 5000
         }
@@ -270,10 +270,10 @@ def settings_video_get():
 
     return json_response.success({
         'streamingMode': streaming_mode,
-        'fps': update_settings.ustreamer_desired_fps,
-        'defaultFps': video_settings.DEFAULT_FPS,
-        'jpegQuality': update_settings.ustreamer_quality,
-        'defaultJpegQuality': video_settings.DEFAULT_JPEG_QUALITY,
+        'frameRate': update_settings.ustreamer_desired_fps,
+        'defaultFrameRate': video_settings.DEFAULT_FRAME_RATE,
+        'mjpegQuality': update_settings.ustreamer_quality,
+        'defaultMjpegQuality': video_settings.DEFAULT_MJPEG_QUALITY,
         'h264Bitrate': update_settings.ustreamer_h264_bitrate,
         'defaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
     })
@@ -289,15 +289,15 @@ def settings_video_put():
     Expects a JSON data structure in the request body that contains the
     following parameters for the video settings:
     - streamingMode: string
-    - fps: int
-    - jpegQuality: int
+    - frameRate: int
+    - mjpegQuality: int
     - h264Bitrate: int
 
     Example of request body:
     {
         "streamingMode": "MJPEG",
-        "fps": 12,
-        "jpegQuality": 80,
+        "frameRate": 12,
+        "mjpegQuality": 80,
         "h264Bitrate": 450
     }
 
@@ -307,8 +307,9 @@ def settings_video_put():
     try:
         streaming_mode = \
             request_parsers.video_settings.parse_streaming_mode(flask.request)
-        fps = request_parsers.video_settings.parse_fps(flask.request)
-        jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
+        frame_rate = request_parsers.video_settings.parse_frame_rate(
+            flask.request)
+        mjpeg_quality = request_parsers.video_settings.parse_mjpeg_quality(
             flask.request)
         h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
@@ -320,8 +321,8 @@ def settings_video_put():
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    update_settings.ustreamer_desired_fps = fps
-    update_settings.ustreamer_quality = jpeg_quality
+    update_settings.ustreamer_desired_fps = frame_rate
+    update_settings.ustreamer_quality = mjpeg_quality
     update_settings.ustreamer_h264_bitrate = h264_bitrate
 
     # Store the new parameters. Note: we only actually persist anything if *all*

@@ -251,10 +251,10 @@ export async function getVideoSettings() {
     .then((data) => {
       [
         "streamingMode",
-        "fps",
-        "defaultFps",
-        "jpegQuality",
-        "defaultJpegQuality",
+        "frameRate",
+        "defaultFrameRate",
+        "mjpegQuality",
+        "defaultMjpegQuality",
         "h264Bitrate",
         "defaultH264Bitrate",
       ].forEach((field) => {
@@ -268,8 +268,8 @@ export async function getVideoSettings() {
 
 export async function saveVideoSettings({
   streamingMode,
-  fps,
-  jpegQuality,
+  frameRate,
+  mjpegQuality,
   h264Bitrate,
 }) {
   return fetch("/api/settings/video", {
@@ -283,8 +283,8 @@ export async function saveVideoSettings({
     },
     body: JSON.stringify({
       streamingMode,
-      fps,
-      jpegQuality,
+      frameRate,
+      mjpegQuality,
       h264Bitrate,
     }),
   }).then(processJsonResponse);

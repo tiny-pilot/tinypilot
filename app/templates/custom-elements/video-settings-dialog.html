@@ -109,30 +109,32 @@
     </div>
     <div class="settings-container">
       <div class="setting">
-        <label for="fps-slider">Frame Rate</label>
-        <input type="range" id="fps-slider" min="1" max="30" />
-        <div id="fps-value" class="setting-value"></div>
-        <div id="fps-reset" class="btn-text reset-button">Reset to Default</div>
+        <label for="frame-rate-slider">Frame Rate</label>
+        <input type="range" id="frame-rate-slider" min="1" max="30" />
+        <div id="frame-rate-value" class="setting-value"></div>
+        <div id="frame-rate-reset" class="btn-text reset-button">
+          Reset to Default
+        </div>
       </div>
       <div class="setting setting-mjpeg">
-        <label for="jpeg-quality-slider">Quality</label>
-        <input type="range" id="jpeg-quality-slider" min="1" max="100" />
-        <div id="jpeg-quality-value" class="setting-value"></div>
-        <div id="jpeg-quality-reset" class="btn-text reset-button">
+        <label for="mjpeg-quality-slider">Quality</label>
+        <input type="range" id="mjpeg-quality-slider" min="1" max="100" />
+        <div id="mjpeg-quality-value" class="setting-value"></div>
+        <div id="mjpeg-quality-reset" class="btn-text reset-button">
           Reset to Default
         </div>
       </div>
       <div class="setting setting-h264">
-        <label for="bitrate-slider">Bit Rate</label>
+        <label for="h264-bitrate-slider">Bit Rate</label>
         <input
           type="range"
-          id="bitrate-slider"
+          id="h264-bitrate-slider"
           min="50"
           max="20000"
           step="50"
         />
-        <div id="bitrate-value" class="setting-value"></div>
-        <div id="bitrate-reset" class="btn-text reset-button">
+        <div id="h264-bitrate-value" class="setting-value"></div>
+        <div id="h264-bitrate-reset" class="btn-text reset-button">
           Reset to Default
         </div>
       </div>
@@ -194,22 +196,30 @@
             streamingModeH264Button: this.shadowRoot.querySelector(
               "#streaming-mode-h264-button"
             ),
-            fpsSlider: this.shadowRoot.querySelector("#fps-slider"),
-            fpsValue: this.shadowRoot.querySelector("#fps-value"),
-            fpsRestoreButton: this.shadowRoot.querySelector("#fps-reset"),
-            jpegQualitySlider: this.shadowRoot.querySelector(
-              "#jpeg-quality-slider"
+            frameRateSlider: this.shadowRoot.querySelector(
+              "#frame-rate-slider"
             ),
-            jpegQualityValue: this.shadowRoot.querySelector(
-              "#jpeg-quality-value"
+            frameRateValue: this.shadowRoot.querySelector("#frame-rate-value"),
+            frameRateRestoreButton: this.shadowRoot.querySelector(
+              "#frame-rate-reset"
             ),
-            jpegQualityRestoreButton: this.shadowRoot.querySelector(
-              "#jpeg-quality-reset"
+            mjpegQualitySlider: this.shadowRoot.querySelector(
+              "#mjpeg-quality-slider"
             ),
-            bitrateSlider: this.shadowRoot.querySelector("#bitrate-slider"),
-            bitrateValue: this.shadowRoot.querySelector("#bitrate-value"),
-            bitrateRestoreButton: this.shadowRoot.querySelector(
-              "#bitrate-reset"
+            mjpegQualityValue: this.shadowRoot.querySelector(
+              "#mjpeg-quality-value"
+            ),
+            mjpegQualityRestoreButton: this.shadowRoot.querySelector(
+              "#mjpeg-quality-reset"
+            ),
+            h264BitrateSlider: this.shadowRoot.querySelector(
+              "#h264-bitrate-slider"
+            ),
+            h264BitrateValue: this.shadowRoot.querySelector(
+              "#h264-bitrate-value"
+            ),
+            h264BitrateRestoreButton: this.shadowRoot.querySelector(
+              "#h264-bitrate-reset"
             ),
           };
           this.elements.closeButton.addEventListener("click", () =>
@@ -230,27 +240,33 @@
               this._setStreamingMode("H264");
             }
           );
-          this.elements.fpsSlider.addEventListener("input", (event) => {
-            this._setFps(parseInt(event.target.value, 10));
+          this.elements.frameRateSlider.addEventListener("input", (event) => {
+            this._setFrameRate(parseInt(event.target.value, 10));
           });
-          this.elements.fpsRestoreButton.addEventListener("click", () => {
-            this._setFps(this._defaultSettings.fps);
+          this.elements.frameRateRestoreButton.addEventListener("click", () => {
+            this._setFrameRate(this._defaultSettings.frameRate);
           });
-          this.elements.jpegQualitySlider.addEventListener("input", (event) => {
-            this._setJpegQuality(parseInt(event.target.value, 10));
-          });
-          this.elements.jpegQualityRestoreButton.addEventListener(
-            "click",
-            () => {
-              this._setJpegQuality(this._defaultSettings.jpegQuality);
+          this.elements.mjpegQualitySlider.addEventListener(
+            "input",
+            (event) => {
+              this._setMjpegQuality(parseInt(event.target.value, 10));
             }
           );
-          this.elements.bitrateSlider.addEventListener("input", (event) => {
-            this._setBitrate(parseInt(event.target.value, 10));
+          this.elements.mjpegQualityRestoreButton.addEventListener(
+            "click",
+            () => {
+              this._setMjpegQuality(this._defaultSettings.mjpegQuality);
+            }
+          );
+          this.elements.h264BitrateSlider.addEventListener("input", (event) => {
+            this._setH264Bitrate(parseInt(event.target.value, 10));
           });
-          this.elements.bitrateRestoreButton.addEventListener("click", () => {
-            this._setBitrate(this._defaultSettings.bitrate);
-          });
+          this.elements.h264BitrateRestoreButton.addEventListener(
+            "click",
+            () => {
+              this._setH264Bitrate(this._defaultSettings.h264Bitrate);
+            }
+          );
         }
 
         get state() {
@@ -272,27 +288,27 @@
             .then(
               ({
                 streamingMode,
-                fps,
-                defaultFps,
-                jpegQuality,
-                defaultJpegQuality,
-                h264Bitrate: bitrate,
-                defaultH264Bitrate: defaultBitrate,
+                frameRate,
+                defaultFrameRate,
+                mjpegQuality,
+                defaultMjpegQuality,
+                h264Bitrate,
+                defaultH264Bitrate,
               }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
 
-                this._setFps(fps);
-                this._initialSettings.fps = fps;
-                this._defaultSettings.fps = defaultFps;
+                this._setFrameRate(frameRate);
+                this._initialSettings.frameRate = frameRate;
+                this._defaultSettings.frameRate = defaultFrameRate;
 
-                this._setJpegQuality(jpegQuality);
-                this._initialSettings.jpegQuality = jpegQuality;
-                this._defaultSettings.jpegQuality = defaultJpegQuality;
+                this._setMjpegQuality(mjpegQuality);
+                this._initialSettings.mjpegQuality = mjpegQuality;
+                this._defaultSettings.mjpegQuality = defaultMjpegQuality;
 
-                this._setBitrate(bitrate);
-                this._initialSettings.bitrate = bitrate;
-                this._defaultSettings.bitrate = defaultBitrate;
+                this._setH264Bitrate(h264Bitrate);
+                this._initialSettings.h264Bitrate = h264Bitrate;
+                this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
@@ -334,49 +350,49 @@
         /**
          * @returns {number}
          */
-        _getFps() {
-          return parseInt(this.elements.fpsSlider.value, 10);
+        _getFrameRate() {
+          return parseInt(this.elements.frameRateSlider.value, 10);
         }
 
         /**
-         * @param fps {number}
+         * @param frameRate {number}
          */
-        _setFps(fps) {
-          this.elements.fpsSlider.value = fps;
-          this.elements.fpsValue.innerHTML = `${fps} fps`;
+        _setFrameRate(frameRate) {
+          this.elements.frameRateSlider.value = frameRate;
+          this.elements.frameRateValue.innerHTML = `${frameRate} fps`;
           this._refreshButtons();
         }
 
         /**
          * @returns {number}
          */
-        _getJpegQuality() {
-          return parseInt(this.elements.jpegQualitySlider.value, 10);
+        _getMjpegQuality() {
+          return parseInt(this.elements.mjpegQualitySlider.value, 10);
         }
 
         /**
-         * @param jpegQuality {number}
+         * @param mjpegQuality {number}
          */
-        _setJpegQuality(jpegQuality) {
-          this.elements.jpegQualitySlider.value = jpegQuality;
-          this.elements.jpegQualityValue.innerHTML = `${jpegQuality} %`;
+        _setMjpegQuality(mjpegQuality) {
+          this.elements.mjpegQualitySlider.value = mjpegQuality;
+          this.elements.mjpegQualityValue.innerHTML = `${mjpegQuality} %`;
           this._refreshButtons();
         }
 
         /**
          * @returns {number}
          */
-        _getBitrate() {
-          return parseInt(this.elements.bitrateSlider.value, 10);
+        _getH264Bitrate() {
+          return parseInt(this.elements.h264BitrateSlider.value, 10);
         }
 
         /**
-         * @param bitrate {number}
+         * @param h264Bitrate {number}
          */
-        _setBitrate(bitrate) {
-          this.elements.bitrateSlider.value = bitrate;
-          const bitrateValue = (bitrate / 1000).toFixed(2);
-          this.elements.bitrateValue.innerHTML = `${bitrateValue} Mb/s`;
+        _setH264Bitrate(h264Bitrate) {
+          this.elements.h264BitrateSlider.value = h264Bitrate;
+          const h264BitrateValue = (h264Bitrate / 1000).toFixed(2);
+          this.elements.h264BitrateValue.innerHTML = `${h264BitrateValue} Mb/s`;
           this._refreshButtons();
         }
 
@@ -388,9 +404,9 @@
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
             [this._getStreamingMode(), this._initialSettings.streamingMode],
-            [this._getFps(), this._initialSettings.fps],
-            [this._getJpegQuality(), this._initialSettings.jpegQuality],
-            [this._getBitrate(), this._initialSettings.bitrate],
+            [this._getFrameRate(), this._initialSettings.frameRate],
+            [this._getMjpegQuality(), this._initialSettings.mjpegQuality],
+            [this._getH264Bitrate(), this._initialSettings.h264Bitrate],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
 
@@ -398,19 +414,19 @@
           // from the default setting.
           [
             [
-              this._getFps(),
-              this._defaultSettings.fps,
-              this.elements.fpsRestoreButton,
+              this._getFrameRate(),
+              this._defaultSettings.frameRate,
+              this.elements.frameRateRestoreButton,
             ],
             [
-              this._getJpegQuality(),
-              this._defaultSettings.jpegQuality,
-              this.elements.jpegQualityRestoreButton,
+              this._getMjpegQuality(),
+              this._defaultSettings.mjpegQuality,
+              this.elements.mjpegQualityRestoreButton,
             ],
             [
-              this._getBitrate(),
-              this._defaultSettings.bitrate,
-              this.elements.bitrateRestoreButton,
+              this._getH264Bitrate(),
+              this._defaultSettings.h264Bitrate,
+              this.elements.h264BitrateRestoreButton,
             ],
           ].forEach(([actualValue, defaultValue, resetButton]) => {
             resetButton.classList.toggle(
@@ -424,9 +440,9 @@
           this.state = this.states.SAVING;
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
-            fps: this._getFps(),
-            jpegQuality: this._getJpegQuality(),
-            h264Bitrate: this._getBitrate(),
+            frameRate: this._getFrameRate(),
+            mjpegQuality: this._getMjpegQuality(),
+            h264Bitrate: this._getH264Bitrate(),
           })
             .then(applyVideoSettings)
             .then(() => {
