@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit script on first failure.
+set -e
+
 # If a .git directory exists, the previous version was installed with the legacy
 # installer, so wipe the install location.
 if [[ -d /opt/tinypilot/.git ]]; then

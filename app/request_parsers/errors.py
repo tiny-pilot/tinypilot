@@ -14,17 +14,5 @@ class InvalidHostnameError(Error):
     code = "INVALID_HOSTNAME"
 
 
-class InvalidVideoFpsError(Error):
-    pass
-
-
-class InvalidVideoJpegQualityError(Error):
-    pass
-
-
-class InvalidVideoH264BitrateError(Error):
-    pass
-
-
-class InvalidVideoStreamingModeError(Error):
+class InvalidVideoSettingError(Error):
     pass
