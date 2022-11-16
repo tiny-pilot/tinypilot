@@ -55,6 +55,7 @@ Section: net
 Priority: optional
 Maintainer: TinyPilot Support <support@tinypilotkvm.com>
 Build-Depends: debhelper (>= 11)
+
 Package: ${PKG_NAME}
 Architecture: all
 Depends: python3, python3-pip, python3-venv, sudo
@@ -67,7 +68,7 @@ tinypilot (${PKG_VERSION}) buster; urgency=medium
 
   * Latest TinyPilot release.
 
- -- TinyPilot Support <support@tinypilotkvm.com> $(date '+%a, %d %b %Y %H:%M:%S %z')
+ -- TinyPilot Support <support@tinypilotkvm.com>  $(date '+%a, %d %b %Y %H:%M:%S %z')
 EOF
 
 WORKDIR "/releases/${PKG_ID}"
