@@ -26,9 +26,9 @@ ARG PKG_BUILD_NUMBER="1"
 ARG PKG_ARCH="all"
 ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 
-RUN mkdir -p "/releases/${PKG_ID}"
+RUN mkdir -p "/releases/${PKG_ID}/fileroot"
 
-WORKDIR "/releases/${PKG_ID}"
+WORKDIR "/releases/${PKG_ID}/fileroot"
 
 RUN mkdir -p opt/tinypilot
 COPY ./COPYRIGHT opt/tinypilot/
@@ -43,6 +43,7 @@ COPY ./scripts opt/tinypilot/scripts
 RUN mkdir -p usr/share/doc/tinypilot
 COPY ./COPYRIGHT usr/share/doc/tinypilot/copyright
 
+WORKDIR "/releases/${PKG_ID}"
 COPY ./debian-pkg .
 
 RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION

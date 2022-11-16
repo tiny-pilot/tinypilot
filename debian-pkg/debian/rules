@@ -4,6 +4,6 @@
 	dh $@
 
 override_dh_install:
-	mkdir -p debian/tinypilot/
-	cp -rfa opt debian/tinypilot/
+	mkdir -p debian
+	mv root debian/tinypilot
 	dh_install
