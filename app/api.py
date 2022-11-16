@@ -266,31 +266,15 @@ def settings_video_get():
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    # Fetch the uStreamer-related parameters from the update settings file.
-    # Note: Default values are not set in the settings file. So when the
-    # values are unset, we must respond with the correct default value.
-    video_fps = update_settings.ustreamer_desired_fps
-    if video_fps is None:
-        video_fps = video_settings.DEFAULT_FPS
-
-    video_jpeg_quality = update_settings.ustreamer_quality
-    if video_jpeg_quality is None:
-        video_jpeg_quality = video_settings.DEFAULT_JPEG_QUALITY
-
-    video_h264_bitrate = update_settings.ustreamer_h264_bitrate
-    if video_h264_bitrate is None:
-        video_h264_bitrate = video_settings.DEFAULT_H264_BITRATE
-
-    # Retrieve the streaming mode from the database.
     video_streaming_mode = db.settings.Settings().get_streaming_mode().value
 
     return json_response.success({
         'videoStreamingMode': video_streaming_mode,
-        'videoFps': video_fps,
+        'videoFps': update_settings.ustreamer_desired_fps,
         'videoDefaultFps': video_settings.DEFAULT_FPS,
-        'videoJpegQuality': video_jpeg_quality,
+        'videoJpegQuality': update_settings.ustreamer_quality,
         'videoDefaultJpegQuality': video_settings.DEFAULT_JPEG_QUALITY,
-        'videoH264Bitrate': video_h264_bitrate,
+        'videoH264Bitrate': update_settings.ustreamer_h264_bitrate,
         'videoDefaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
     })
 
@@ -320,51 +304,25 @@ def settings_video_put():
     Returns:
         Empty response on success, error object otherwise.
     """
-    # TODO(jotaen) Refactor this method to avoid code repetition. That way, the
-    #              following pylint directive should become obsolete.
-    # pylint: disable=too-many-return-statements
-
     try:
         video_streaming_mode = \
             request_parsers.video_settings.parse_streaming_mode(flask.request)
-    except request_parsers.errors.InvalidVideoStreamingModeError as e:
+        video_fps = request_parsers.video_settings.parse_fps(flask.request)
+        video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
+            flask.request)
+        video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
+            flask.request)
+    except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
 
-    # Parse all uStreamer-related parameters. Note: To avoid polluting the
-    # settings file with unnecessary default values, we unset them instead.
     try:
         update_settings = update.settings.load()
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    try:
-        video_fps = request_parsers.video_settings.parse_fps(flask.request)
-    except request_parsers.errors.InvalidVideoFpsError as e:
-        return json_response.error(e), 400
-    if video_fps == video_settings.DEFAULT_FPS:
-        del update_settings.ustreamer_desired_fps
-    else:
-        update_settings.ustreamer_desired_fps = video_fps
-
-    try:
-        video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
-            flask.request)
-    except request_parsers.errors.InvalidVideoJpegQualityError as e:
-        return json_response.error(e), 400
-    if video_jpeg_quality == video_settings.DEFAULT_JPEG_QUALITY:
-        del update_settings.ustreamer_quality
-    else:
-        update_settings.ustreamer_quality = video_jpeg_quality
-
-    try:
-        video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
-            flask.request)
-    except request_parsers.errors.InvalidVideoH264BitrateError as e:
-        return json_response.error(e), 400
-    if video_h264_bitrate == video_settings.DEFAULT_H264_BITRATE:
-        del update_settings.ustreamer_h264_bitrate
-    else:
-        update_settings.ustreamer_h264_bitrate = video_h264_bitrate
+    update_settings.ustreamer_desired_fps = video_fps
+    update_settings.ustreamer_quality = video_jpeg_quality
+    update_settings.ustreamer_h264_bitrate = video_h264_bitrate
 
     # Store the new parameters. Note: we only actually persist anything if *all*
     # values have passed the validation.

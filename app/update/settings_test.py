@@ -70,6 +70,44 @@ ustreamer_desired_fps: 25
 ustreamer_desired_fps: 10
 """.lstrip(), self.read_mock_settings_file())
 
+    def test_does_not_populate_default_value_to_file(self):
+        self.make_mock_settings_file('')
+
+        settings = update.settings.load()
+        # `30` happens to be the default FPS value.
+        settings.ustreamer_desired_fps = 30
+        update.settings.save(settings)
+
+        self.assertEqual('', self.read_mock_settings_file())
+
+    def test_clears_prop_from_file_if_value_is_changed_to_be_the_default(self):
+        self.make_mock_settings_file("""
+ustreamer_desired_fps: 25
+""".lstrip())
+
+        settings = update.settings.load()
+        # `30` happens to be the default FPS value.
+        settings.ustreamer_desired_fps = 30
+        update.settings.save(settings)
+
+        self.assertEqual('', self.read_mock_settings_file())
+
+    def test_returns_existing_value_from_file(self):
+        self.make_mock_settings_file("""
+ustreamer_desired_fps: 25
+""".lstrip())
+
+        settings = update.settings.load()
+
+        self.assertEqual(25, settings.ustreamer_desired_fps)
+
+    def test_returns_default_value_if_no_property_exists_in_the_file(self):
+        self.make_mock_settings_file('')
+
+        settings = update.settings.load()
+
+        self.assertEqual(30, settings.ustreamer_desired_fps)
+
     def test_adds_additional_property_to_existing_file(self):
         self.make_mock_settings_file("""
 ustreamer_desired_fps: 25

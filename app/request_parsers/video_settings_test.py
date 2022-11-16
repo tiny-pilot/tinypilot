@@ -15,9 +15,9 @@ def make_mock_request(json_data):
 class VideoFpsParserTest(unittest.TestCase):
 
     def test_reject_integers_out_of_bounds(self):
-        with self.assertRaises(errors.InvalidVideoFpsError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_fps(make_mock_request({'videoFps': 0}))
-        with self.assertRaises(errors.InvalidVideoFpsError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_fps(make_mock_request({'videoFps': 31}))
 
     def test_accept_integers_within_bounds(self):
@@ -33,7 +33,7 @@ class VideoFpsParserTest(unittest.TestCase):
                 None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
         ]:
             with self.subTest(value):
-                with self.assertRaises(errors.InvalidVideoFpsError):
+                with self.assertRaises(errors.InvalidVideoSettingError):
                     video_settings.parse_fps(
                         make_mock_request({'videoFps': value}))
 
@@ -45,10 +45,10 @@ class VideoFpsParserTest(unittest.TestCase):
 class VideoJpegQualityParserTest(unittest.TestCase):
 
     def test_reject_integers_out_of_bounds(self):
-        with self.assertRaises(errors.InvalidVideoJpegQualityError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_jpeg_quality(
                 make_mock_request({'videoJpegQuality': 0}))
-        with self.assertRaises(errors.InvalidVideoJpegQualityError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_jpeg_quality(
                 make_mock_request({'videoJpegQuality': 101}))
 
@@ -71,7 +71,7 @@ class VideoJpegQualityParserTest(unittest.TestCase):
                 None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
         ]:
             with self.subTest(value):
-                with self.assertRaises(errors.InvalidVideoJpegQualityError):
+                with self.assertRaises(errors.InvalidVideoSettingError):
                     video_settings.parse_jpeg_quality(
                         make_mock_request({'videoJpegQuality': value}))
 
@@ -84,10 +84,10 @@ class VideoJpegQualityParserTest(unittest.TestCase):
 class VideoH264BitrateParserTest(unittest.TestCase):
 
     def test_reject_integers_out_of_bounds(self):
-        with self.assertRaises(errors.InvalidVideoH264BitrateError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_h264_bitrate(
                 make_mock_request({'videoH264Bitrate': 24}))
-        with self.assertRaises(errors.InvalidVideoH264BitrateError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_h264_bitrate(
                 make_mock_request({'videoH264Bitrate': 20001}))
 
@@ -110,7 +110,7 @@ class VideoH264BitrateParserTest(unittest.TestCase):
                 None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
         ]:
             with self.subTest(value):
-                with self.assertRaises(errors.InvalidVideoH264BitrateError):
+                with self.assertRaises(errors.InvalidVideoSettingError):
                     video_settings.parse_h264_bitrate(
                         make_mock_request({'videoH264Bitrate': value}))
 
@@ -133,17 +133,17 @@ class VideoStreamingModeParserTest(unittest.TestCase):
                 make_mock_request({'videoStreamingMode': 'H264'})))
 
     def test_reject_invalid_modes(self):
-        with self.assertRaises(errors.InvalidVideoStreamingModeError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_streaming_mode(
                 make_mock_request({'videoStreamingMode': 'mjpeg'}))
-        with self.assertRaises(errors.InvalidVideoStreamingModeError):
+        with self.assertRaises(errors.InvalidVideoSettingError):
             video_settings.parse_streaming_mode(
                 make_mock_request({'videoStreamingMode': 'asdf'}))
 
     def test_reject_invalid_types(self):
         for value in [None, True, 15.0, (), [], {}]:
             with self.subTest(value):
-                with self.assertRaises(errors.InvalidVideoStreamingModeError):
+                with self.assertRaises(errors.InvalidVideoSettingError):
                     video_settings.parse_streaming_mode(
                         make_mock_request({'videoStreamingMode': value}))
 
