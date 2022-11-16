@@ -90,6 +90,35 @@ jobs:
           root: ./debian-pkg/releases
           paths:
             - "*.deb"
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .lintianignore
+  lint_debian_package:
+    docker:
+      - image: cimg/base:2022.11-22.04
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Update apt packages
+          command: sudo apt-get update
+      - run:
+          name: Install lintian
+          command: sudo apt-get install -y lintian=2.114.0ubuntu1.1
+      - run:
+          name: Print lintian version
+          command: lintian --version
+      - run:
+          name: Run lintian
+          command: |
+            lintian \
+              --check \
+              --no-tag-display-limit \
+              --suppress-tags-from-file .lintianignore \
+              --no-cfg \
+              --fail-on warning,error \
+              tinypilot-*.deb
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
@@ -184,6 +213,9 @@ workflows:
           filters:
             branches:
               only: master
+      - lint_debian_package:
+          requires:
+            - build_debian_package
       - build_bundle:
           requires:
             - build_debian_package
