@@ -22,7 +22,6 @@ readonly TINYPILOT_VERSION
 PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
 readonly PKG_VERSION
 
-
 DOCKER_BUILDKIT=1 docker build \
   --file debian-pkg/Dockerfile \
   --build-arg TINYPILOT_VERSION="${TINYPILOT_VERSION}" \
