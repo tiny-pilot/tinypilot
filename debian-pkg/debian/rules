@@ -5,5 +5,5 @@
 
 override_dh_install:
 	mkdir -p debian
-	mv root debian/tinypilot
+	mv fileroot debian/tinypilot
 	dh_install
