@@ -50,8 +50,8 @@ class Settings:
 
     @property
     def ustreamer_desired_fps(self):
-        return self._get_or_default('ustreamer_desired_fps',
-                                    video_settings.DEFAULT_FPS)
+        return self._data.get('ustreamer_desired_fps',
+                              video_settings.DEFAULT_FPS)
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
@@ -60,8 +60,8 @@ class Settings:
 
     @property
     def ustreamer_quality(self):
-        return self._get_or_default('ustreamer_quality',
-                                    video_settings.DEFAULT_JPEG_QUALITY)
+        return self._data.get('ustreamer_quality',
+                              video_settings.DEFAULT_JPEG_QUALITY)
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
@@ -70,8 +70,8 @@ class Settings:
 
     @property
     def ustreamer_h264_bitrate(self):
-        return self._get_or_default('ustreamer_h264_bitrate',
-                                    video_settings.DEFAULT_H264_BITRATE)
+        return self._data.get('ustreamer_h264_bitrate',
+                              video_settings.DEFAULT_H264_BITRATE)
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
@@ -85,11 +85,6 @@ class Settings:
             return
 
         self._data[prop_name] = value
-
-    def _get_or_default(self, prop_name, default_value):
-        if prop_name in self._data:
-            return self._data[prop_name]
-        return default_value
 
 
 def load():
