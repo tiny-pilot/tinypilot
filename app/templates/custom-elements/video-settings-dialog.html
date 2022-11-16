@@ -271,13 +271,13 @@
           getVideoSettings()
             .then(
               ({
-                videoStreamingMode: streamingMode,
-                videoFps: fps,
-                videoDefaultFps: defaultFps,
-                videoJpegQuality: jpegQuality,
-                videoDefaultJpegQuality: defaultJpegQuality,
-                videoH264Bitrate: bitrate,
-                videoDefaultH264Bitrate: defaultBitrate,
+                streamingMode,
+                fps,
+                defaultFps,
+                jpegQuality,
+                defaultJpegQuality,
+                h264Bitrate: bitrate,
+                defaultH264Bitrate: defaultBitrate,
               }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
@@ -423,10 +423,10 @@
         _saveSettings() {
           this.state = this.states.SAVING;
           return saveVideoSettings({
-            videoStreamingMode: this._getStreamingMode(),
-            videoFps: this._getFps(),
-            videoJpegQuality: this._getJpegQuality(),
-            videoH264Bitrate: this._getBitrate(),
+            streamingMode: this._getStreamingMode(),
+            fps: this._getFps(),
+            jpegQuality: this._getJpegQuality(),
+            h264Bitrate: this._getBitrate(),
           })
             .then(applyVideoSettings)
             .then(() => {

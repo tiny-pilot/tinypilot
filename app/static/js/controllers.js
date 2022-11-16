@@ -250,13 +250,13 @@ export async function getVideoSettings() {
     .then(processJsonResponse)
     .then((data) => {
       [
-        "videoStreamingMode",
-        "videoFps",
-        "videoDefaultFps",
-        "videoJpegQuality",
-        "videoDefaultJpegQuality",
-        "videoH264Bitrate",
-        "videoDefaultH264Bitrate",
+        "streamingMode",
+        "fps",
+        "defaultFps",
+        "jpegQuality",
+        "defaultJpegQuality",
+        "h264Bitrate",
+        "defaultH264Bitrate",
       ].forEach((field) => {
         if (!data.hasOwnProperty(field)) {
           throw new ControllerError(`Missing expected ${field} field`);
@@ -267,10 +267,10 @@ export async function getVideoSettings() {
 }
 
 export async function saveVideoSettings({
-  videoStreamingMode,
-  videoFps,
-  videoJpegQuality,
-  videoH264Bitrate,
+  streamingMode,
+  fps,
+  jpegQuality,
+  h264Bitrate,
 }) {
   return fetch("/api/settings/video", {
     method: "PUT",
@@ -282,10 +282,10 @@ export async function saveVideoSettings({
       "X-CSRFToken": getCsrfToken(),
     },
     body: JSON.stringify({
-      videoStreamingMode,
-      videoFps,
-      videoJpegQuality,
-      videoH264Bitrate,
+      streamingMode,
+      fps,
+      jpegQuality,
+      h264Bitrate,
     }),
   }).then(processJsonResponse);
 }
