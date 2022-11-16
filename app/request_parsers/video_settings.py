@@ -11,7 +11,7 @@ def parse_fps(request):
         if not 1 <= video_fps <= 30:
             raise ValueError
     except ValueError as e:
-        raise errors.InvalidVideoSettingsParameter(
+        raise errors.InvalidVideoSettingError(
             'The video FPS must be a whole number between 1 and 30.') from e
     return video_fps
 
@@ -25,7 +25,7 @@ def parse_jpeg_quality(request):
         if not 1 <= video_jpeg_quality <= 100:
             raise ValueError
     except ValueError as e:
-        raise errors.InvalidVideoSettingsParameter(
+        raise errors.InvalidVideoSettingError(
             'The video JPEG quality must be a whole number between 1 and 100.'
         ) from e
     return video_jpeg_quality
@@ -40,7 +40,7 @@ def parse_h264_bitrate(request):
         if not 25 <= video_h264_bitrate <= 20000:
             raise ValueError
     except ValueError as e:
-        raise errors.InvalidVideoSettingsParameter(
+        raise errors.InvalidVideoSettingError(
             'The H264 bitrate must be a whole number between 25 and 20000.'
         ) from e
     return video_h264_bitrate
@@ -53,7 +53,7 @@ def parse_streaming_mode(request):
     try:
         return db.settings.StreamingMode(video_streaming_mode)
     except ValueError as e:
-        raise errors.InvalidVideoSettingsParameter(
+        raise errors.InvalidVideoSettingError(
             'The video streaming mode must be `MJPEG` or `H264`.') from e
 
 

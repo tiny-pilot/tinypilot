@@ -14,5 +14,5 @@ class InvalidHostnameError(Error):
     code = "INVALID_HOSTNAME"
 
 
-class InvalidVideoSettingsParameter(Error):
+class InvalidVideoSettingError(Error):
     pass

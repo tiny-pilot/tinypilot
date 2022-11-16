@@ -312,7 +312,7 @@ def settings_video_put():
             flask.request)
         video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
-    except request_parsers.errors.InvalidVideoSettingsParameter as e:
+    except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
 
     try:
