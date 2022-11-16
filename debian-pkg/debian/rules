@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_install:
+	mkdir -p debian/tinypilot/
+	cp -rfa opt debian/tinypilot/
+	dh_install

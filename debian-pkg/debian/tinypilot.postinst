@@ -4,3 +4,5 @@
 set -e
 
 chown -R tinypilot:tinypilot /opt/tinypilot
+
+#DEBHELPER#
