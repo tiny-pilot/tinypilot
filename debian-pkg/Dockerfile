@@ -43,10 +43,9 @@ COPY ./scripts opt/tinypilot/scripts
 RUN mkdir -p usr/share/doc/tinypilot
 COPY ./COPYRIGHT usr/share/doc/tinypilot/copyright
 
-WORKDIR "/releases/${PKG_ID}"
-COPY ./debian-pkg .
+RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
 
-RUN echo "${TINYPILOT_VERSION}" > "/releases/${PKG_ID}/fileroot/opt/tinypilot/VERSION"
+COPY ./debian-pkg "/releases/${PKG_ID}/"
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
