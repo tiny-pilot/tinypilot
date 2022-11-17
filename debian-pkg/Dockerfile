@@ -28,7 +28,7 @@ ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 
 RUN mkdir -p "/releases/${PKG_ID}"
 
-COPY ./debian-pkg/debian "/releases/${PKG_ID}/"
+COPY ./debian-pkg/debian "/releases/${PKG_ID}/debian"
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
