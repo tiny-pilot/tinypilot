@@ -30,9 +30,11 @@ RUN mkdir -p "/releases/${PKG_ID}"
 
 WORKDIR "/releases/${PKG_ID}"
 
-COPY . .
+COPY . ./
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
+
+COPY ./debian-pkg "/releases/${PKG_ID}/"
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
