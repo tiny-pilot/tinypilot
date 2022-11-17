@@ -1,0 +1,8 @@
+VERSION opt/tinypilot/
+COPYRIGHT opt/tinypilot/
+LICENSE opt/tinypilot/
+README.md opt/tinypilot/
+requirements.txt opt/tinypilot/
+app opt/tinypilot/
+scripts opt/tinypilot/
+COPYRIGHT usr/share/doc/tinypilot/copyright
