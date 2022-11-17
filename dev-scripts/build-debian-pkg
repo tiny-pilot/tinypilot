@@ -6,13 +6,6 @@ set -e
 # Echo commands to stdout.
 set -x
 
-# Use plain Docker build progress output when we're running in CI.
-DOCKER_PROGRESS="auto"
-if [[ -n "${CI}" ]]; then
-  DOCKER_PROGRESS="plain"
-fi
-readonly DOCKER_PROGRESS
-
 # Exit on unset variable.
 set -u
 
@@ -21,6 +14,13 @@ readonly TINYPILOT_VERSION
 
 PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
 readonly PKG_VERSION
+
+# Use plain Docker build progress output when we're running in CI.
+DOCKER_PROGRESS='auto'
+if [[ -n "${CI:-}" ]]; then
+  DOCKER_PROGRESS='plain'
+fi
+readonly DOCKER_PROGRESS
 
 DOCKER_BUILDKIT=1 docker build \
   --file debian-pkg/Dockerfile \
