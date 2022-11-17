@@ -3,6 +3,12 @@
 %:
 	dh $@
 
+# This is a workaround for a behavior I don't understand in dh_install. It would
+# be simpler to simply build the package's filesystem within the
+# debian/tinypilot path to begin with, but when I try that, debhelper tools
+# can't see the tinypilot folder. As a workaround, we build the filesystem in a
+# folder called "fileroot" and then rename the folder to debian/tinypilot just
+# before dh_install.
 override_dh_install:
 	mkdir -p debian
 	mv fileroot debian/tinypilot
