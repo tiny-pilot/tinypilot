@@ -12,58 +12,28 @@ def make_mock_request(json_data):
     return mock_request
 
 
-class VideoFpsParserTest(unittest.TestCase):
+class VideoFrameRateParserTest(unittest.TestCase):
 
     def test_reject_integers_out_of_bounds(self):
         with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_fps(make_mock_request({'fps': 0}))
+            video_settings.parse_frame_rate(make_mock_request({'frameRate': 0}))
         with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_fps(make_mock_request({'fps': 31}))
-
-    def test_accept_integers_within_bounds(self):
-        self.assertEqual(
-            1, video_settings.parse_fps(make_mock_request({'fps': 1})))
-        self.assertEqual(
-            15, video_settings.parse_fps(make_mock_request({'fps': 15})))
-        self.assertEqual(
-            30, video_settings.parse_fps(make_mock_request({'fps': 30})))
-
-    def test_reject_non_integers(self):
-        for value in [
-                None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
-        ]:
-            with self.subTest(value):
-                with self.assertRaises(errors.InvalidVideoSettingError):
-                    video_settings.parse_fps(make_mock_request({'fps': value}))
-
-    def test_reject_incorrect_key(self):
-        with self.assertRaises(errors.MissingFieldError):
-            video_settings.parse_fps(make_mock_request({'something': 1}))
-
-
-class VideoJpegQualityParserTest(unittest.TestCase):
-
-    def test_reject_integers_out_of_bounds(self):
-        with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_jpeg_quality(
-                make_mock_request({'jpegQuality': 0}))
-        with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_jpeg_quality(
-                make_mock_request({'jpegQuality': 101}))
+            video_settings.parse_frame_rate(make_mock_request({'frameRate': 31
+                                                              }))
 
     def test_accept_integers_within_bounds(self):
         self.assertEqual(
             1,
-            video_settings.parse_jpeg_quality(
-                make_mock_request({'jpegQuality': 1})))
+            video_settings.parse_frame_rate(make_mock_request({'frameRate': 1
+                                                              })))
         self.assertEqual(
-            50,
-            video_settings.parse_jpeg_quality(
-                make_mock_request({'jpegQuality': 50})))
+            15,
+            video_settings.parse_frame_rate(make_mock_request({'frameRate': 15
+                                                              })))
         self.assertEqual(
-            100,
-            video_settings.parse_jpeg_quality(
-                make_mock_request({'jpegQuality': 100})))
+            30,
+            video_settings.parse_frame_rate(make_mock_request({'frameRate': 30
+                                                              })))
 
     def test_reject_non_integers(self):
         for value in [
@@ -71,12 +41,50 @@ class VideoJpegQualityParserTest(unittest.TestCase):
         ]:
             with self.subTest(value):
                 with self.assertRaises(errors.InvalidVideoSettingError):
-                    video_settings.parse_jpeg_quality(
-                        make_mock_request({'jpegQuality': value}))
+                    video_settings.parse_frame_rate(
+                        make_mock_request({'frameRate': value}))
 
     def test_reject_incorrect_key(self):
         with self.assertRaises(errors.MissingFieldError):
-            video_settings.parse_jpeg_quality(
+            video_settings.parse_frame_rate(make_mock_request({'something': 1}))
+
+
+class VideoMjpegQualityParserTest(unittest.TestCase):
+
+    def test_reject_integers_out_of_bounds(self):
+        with self.assertRaises(errors.InvalidVideoSettingError):
+            video_settings.parse_mjpeg_quality(
+                make_mock_request({'mjpegQuality': 0}))
+        with self.assertRaises(errors.InvalidVideoSettingError):
+            video_settings.parse_mjpeg_quality(
+                make_mock_request({'mjpegQuality': 101}))
+
+    def test_accept_integers_within_bounds(self):
+        self.assertEqual(
+            1,
+            video_settings.parse_mjpeg_quality(
+                make_mock_request({'mjpegQuality': 1})))
+        self.assertEqual(
+            50,
+            video_settings.parse_mjpeg_quality(
+                make_mock_request({'mjpegQuality': 50})))
+        self.assertEqual(
+            100,
+            video_settings.parse_mjpeg_quality(
+                make_mock_request({'mjpegQuality': 100})))
+
+    def test_reject_non_integers(self):
+        for value in [
+                None, True, '', ' ', 'yes', '$', '3.0', '.1', 15.0, (), [], {}
+        ]:
+            with self.subTest(value):
+                with self.assertRaises(errors.InvalidVideoSettingError):
+                    video_settings.parse_mjpeg_quality(
+                        make_mock_request({'mjpegQuality': value}))
+
+    def test_reject_incorrect_key(self):
+        with self.assertRaises(errors.MissingFieldError):
+            video_settings.parse_mjpeg_quality(
                 make_mock_request({'something': 1}))
 
 

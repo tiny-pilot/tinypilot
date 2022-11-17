@@ -3,32 +3,32 @@ from request_parsers import errors
 from request_parsers import json
 
 
-def parse_fps(request):
+def parse_frame_rate(request):
     # pylint: disable=unbalanced-tuple-unpacking
-    (fps,) = json.parse_json_body(request, required_fields=['fps'])
+    (frame_rate,) = json.parse_json_body(request, required_fields=['frameRate'])
     try:
-        fps = _as_int(fps)
-        if not 1 <= fps <= 30:
+        frame_rate = _as_int(frame_rate)
+        if not 1 <= frame_rate <= 30:
             raise ValueError
     except ValueError as e:
         raise errors.InvalidVideoSettingError(
-            'The video FPS must be a whole number between 1 and 30.') from e
-    return fps
+            'The frame rate must be a whole number between 1 and 30.') from e
+    return frame_rate
 
 
-def parse_jpeg_quality(request):
+def parse_mjpeg_quality(request):
     # pylint: disable=unbalanced-tuple-unpacking
-    (jpeg_quality,) = json.parse_json_body(request,
-                                           required_fields=['jpegQuality'])
+    (mjpeg_quality,) = json.parse_json_body(request,
+                                            required_fields=['mjpegQuality'])
     try:
-        jpeg_quality = _as_int(jpeg_quality)
-        if not 1 <= jpeg_quality <= 100:
+        mjpeg_quality = _as_int(mjpeg_quality)
+        if not 1 <= mjpeg_quality <= 100:
             raise ValueError
     except ValueError as e:
         raise errors.InvalidVideoSettingError(
-            'The video JPEG quality must be a whole number between 1 and 100.'
+            'The MJPEG quality must be a whole number between 1 and 100.'
         ) from e
-    return jpeg_quality
+    return mjpeg_quality
 
 
 def parse_h264_bitrate(request):
