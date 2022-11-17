@@ -86,8 +86,6 @@ jobs:
       - run:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/tinypilot*.deb
-      - store_artifacts:
-          path: ./debian-pkg/releases
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:
