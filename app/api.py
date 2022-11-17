@@ -240,23 +240,23 @@ def settings_video_get():
 
     Returns:
         On success, a JSON data structure with the following properties:
-        - videoStreamingMode: string
-        - videoFps: int
-        - videoDefaultFps: int
-        - videoJpegQuality: int
-        - videoDefaultJpegQuality: int
-        - videoH264Bitrate: int
-        - videoDefaultH264Bitrate: int
+        - streamingMode: string
+        - fps: int
+        - defaultFps: int
+        - jpegQuality: int
+        - defaultJpegQuality: int
+        - h264Bitrate: int
+        - defaultH264Bitrate: int
 
         Example of success:
         {
-            "videoStreamingMode": "MJPEG",
-            "videoFps": 12,
-            "videoDefaultFps": 30,
-            "videoJpegQuality": 80,
-            "videoDefaultJpegQuality": 80,
-            "videoH264Bitrate": 450,
-            "videoDefaultH264Bitrate": 5000
+            "streamingMode": "MJPEG",
+            "fps": 12,
+            "defaultFps": 30,
+            "jpegQuality": 80,
+            "defaultJpegQuality": 80,
+            "h264Bitrate": 450,
+            "defaultH264Bitrate": 5000
         }
 
         Returns an error object on failure.
@@ -266,16 +266,16 @@ def settings_video_get():
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    video_streaming_mode = db.settings.Settings().get_streaming_mode().value
+    streaming_mode = db.settings.Settings().get_streaming_mode().value
 
     return json_response.success({
-        'videoStreamingMode': video_streaming_mode,
-        'videoFps': update_settings.ustreamer_desired_fps,
-        'videoDefaultFps': video_settings.DEFAULT_FPS,
-        'videoJpegQuality': update_settings.ustreamer_quality,
-        'videoDefaultJpegQuality': video_settings.DEFAULT_JPEG_QUALITY,
-        'videoH264Bitrate': update_settings.ustreamer_h264_bitrate,
-        'videoDefaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
+        'streamingMode': streaming_mode,
+        'fps': update_settings.ustreamer_desired_fps,
+        'defaultFps': video_settings.DEFAULT_FPS,
+        'jpegQuality': update_settings.ustreamer_quality,
+        'defaultJpegQuality': video_settings.DEFAULT_JPEG_QUALITY,
+        'h264Bitrate': update_settings.ustreamer_h264_bitrate,
+        'defaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
     })
 
 
@@ -288,29 +288,29 @@ def settings_video_put():
 
     Expects a JSON data structure in the request body that contains the
     following parameters for the video settings:
-    - videoStreamingMode: string
-    - videoFps: int
-    - videoJpegQuality: int
-    - videoH264Bitrate: int
+    - streamingMode: string
+    - fps: int
+    - jpegQuality: int
+    - h264Bitrate: int
 
     Example of request body:
     {
-        "videoStreamingMode": "MJPEG",
-        "videoFps": 12,
-        "videoJpegQuality": 80,
-        "videoH264Bitrate": 450
+        "streamingMode": "MJPEG",
+        "fps": 12,
+        "jpegQuality": 80,
+        "h264Bitrate": 450
     }
 
     Returns:
         Empty response on success, error object otherwise.
     """
     try:
-        video_streaming_mode = \
+        streaming_mode = \
             request_parsers.video_settings.parse_streaming_mode(flask.request)
-        video_fps = request_parsers.video_settings.parse_fps(flask.request)
-        video_jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
+        fps = request_parsers.video_settings.parse_fps(flask.request)
+        jpeg_quality = request_parsers.video_settings.parse_jpeg_quality(
             flask.request)
-        video_h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
+        h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
     except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
@@ -320,13 +320,13 @@ def settings_video_put():
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    update_settings.ustreamer_desired_fps = video_fps
-    update_settings.ustreamer_quality = video_jpeg_quality
-    update_settings.ustreamer_h264_bitrate = video_h264_bitrate
+    update_settings.ustreamer_desired_fps = fps
+    update_settings.ustreamer_quality = jpeg_quality
+    update_settings.ustreamer_h264_bitrate = h264_bitrate
 
     # Store the new parameters. Note: we only actually persist anything if *all*
     # values have passed the validation.
-    db.settings.Settings().set_streaming_mode(video_streaming_mode)
+    db.settings.Settings().set_streaming_mode(streaming_mode)
     try:
         update.settings.save(update_settings)
     except update.settings.SaveSettingsError as e:
