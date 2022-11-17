@@ -10,3 +10,7 @@ extended-description-is-empty
 # Ignore this until we find a better way of setting permissions properly.
 # https://github.com/tiny-pilot/tinypilot/issues/1196
 recursive-privilege-change
+
+# Our copyright notice isn't in the correct format.
+# https://lintian.debian.org/tags/copyright-without-copyright-notice
+copyright-without-copyright-notice

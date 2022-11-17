@@ -26,26 +26,19 @@ ARG PKG_BUILD_NUMBER="1"
 ARG PKG_ARCH="all"
 ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 
-RUN mkdir -p "/releases/${PKG_ID}/fileroot"
+RUN mkdir -p "/releases/${PKG_ID}"
 
-WORKDIR "/releases/${PKG_ID}/fileroot"
+WORKDIR "/releases/${PKG_ID}"
 
-RUN mkdir -p opt/tinypilot
-COPY ./COPYRIGHT opt/tinypilot/
-COPY ./LICENSE opt/tinypilot/
-COPY ./README.md opt/tinypilot/
-COPY ./requirements.txt opt/tinypilot/
-COPY ./app opt/tinypilot/app
-COPY ./scripts opt/tinypilot/scripts
+COPY ./debian-pkg ./
+COPY ./COPYRIGHT ./
+COPY ./LICENSE ./
+COPY ./README.md ./
+COPY ./requirements.txt ./
+COPY ./app ./app
+COPY ./scripts ./scripts
 
-# Make an extra copy of the copyright file that the Debian package will
-# recognize.
-RUN mkdir -p usr/share/doc/tinypilot
-COPY ./COPYRIGHT usr/share/doc/tinypilot/copyright
-
-RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
-
-COPY ./debian-pkg "/releases/${PKG_ID}/"
+RUN echo "${TINYPILOT_VERSION}" > VERSION
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
