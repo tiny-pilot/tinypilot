@@ -28,13 +28,13 @@ ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
 
 RUN mkdir -p "/releases/${PKG_ID}"
 
-COPY ./debian-pkg/debian "/releases/${PKG_ID}/debian"
+WORKDIR "/releases/${PKG_ID}"
+
+COPY . .
+
+RUN echo "${TINYPILOT_VERSION}" > VERSION
 
 WORKDIR "/releases/${PKG_ID}/debian"
-
-COPY . ./tmp/
-
-RUN echo "${TINYPILOT_VERSION}" > ./tmp/VERSION
 
 RUN cat >control <<EOF
 Source: ${PKG_NAME}
