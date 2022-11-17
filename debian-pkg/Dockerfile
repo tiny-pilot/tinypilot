@@ -32,7 +32,7 @@ COPY ./debian-pkg/debian "/releases/${PKG_ID}/debian"
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
-COPY . ./tmp
+COPY . ./tmp/
 
 RUN echo "${TINYPILOT_VERSION}" > ./tmp/VERSION
 
