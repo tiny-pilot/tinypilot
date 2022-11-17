@@ -53,7 +53,7 @@ Package: ${PKG_NAME}
 Architecture: all
 Depends: python3, python3-pip, python3-venv, sudo
 Homepage: https://tinypilotkvm.com
-Description: "Simple, easy-to-use KVM over IP"
+Description: Simple, easy-to-use KVM over IP
 EOF
 
 RUN cat >changelog <<EOF
