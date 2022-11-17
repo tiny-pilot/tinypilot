@@ -209,8 +209,10 @@ workflows:
       - check_style
       - build_python
       - build_javascript
-      # TODO: Go back to only building on master
-      - build_debian_package
+      - build_debian_package:
+          filters:
+            branches:
+              only: master
       - lint_debian_package:
           requires:
             - build_debian_package
