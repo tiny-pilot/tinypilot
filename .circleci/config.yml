@@ -118,7 +118,7 @@ jobs:
               --suppress-tags-from-file .lintianignore \
               --no-cfg \
               --fail-on warning,error \
-              tinypilot_*.deb
+              tinypilot*.deb
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
