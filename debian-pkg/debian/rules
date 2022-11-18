@@ -3,10 +3,5 @@
 %:
 	dh $@
 
-override_dh_install:
-	mkdir -p debian/tinypilot/
-	cp -rfa opt debian/tinypilot/
-	dh_install
-
 override_dh_installsystemd:
 	dh_installsystemd --name=usb-gadget
