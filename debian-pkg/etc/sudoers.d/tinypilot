@@ -1,0 +1,10 @@
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/change-hostname
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/collect-debug-logs
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/read-update-log
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/remove-usb-gadget
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/update
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/update-video-settings
+tinypilot ALL=(ALL) NOPASSWD: /sbin/shutdown
+tinypilot ALL=(ALL) NOPASSWD: /usr/sbin/service janus restart
+tinypilot ALL=(ALL) NOPASSWD: /usr/sbin/service tinypilot-updater start
+tinypilot ALL=(ALL) NOPASSWD: /usr/sbin/service ustreamer restart
