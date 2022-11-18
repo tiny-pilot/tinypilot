@@ -7,6 +7,7 @@ FROM debian:bullseye-20220328-slim AS build
 RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      debhelper \
       dpkg-dev
 
 # The canonical TinyPilot version. For TinyPilot Community, this is a git commit
@@ -29,36 +30,42 @@ RUN mkdir -p "/releases/${PKG_ID}"
 
 WORKDIR "/releases/${PKG_ID}"
 
-RUN mkdir -p opt/tinypilot
-COPY ./COPYRIGHT opt/tinypilot/
-COPY ./LICENSE opt/tinypilot/
-COPY ./README.md opt/tinypilot/
-COPY ./requirements.txt opt/tinypilot/
-COPY ./app opt/tinypilot/app
-COPY ./scripts opt/tinypilot/scripts
+COPY ./debian-pkg ./
+COPY ./COPYRIGHT ./
+COPY ./LICENSE ./
+COPY ./README.md ./
+COPY ./requirements.txt ./
+COPY ./app ./app
+COPY ./scripts ./scripts
 
-# Make an extra copy of the copyright file that the Debian package will
-# recognize.
-RUN mkdir -p usr/share/doc/tinypilot
-COPY ./COPYRIGHT usr/share/doc/tinypilot/copyright
+RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-COPY ./debian-pkg .
+WORKDIR "/releases/${PKG_ID}/debian"
 
-RUN echo "${TINYPILOT_VERSION}" > opt/tinypilot/VERSION
+RUN cat >control <<EOF
+Source: ${PKG_NAME}
+Section: net
+Priority: optional
+Maintainer: TinyPilot Support <support@tinypilotkvm.com>
+Build-Depends: debhelper (>= 11)
 
-WORKDIR "/releases/${PKG_ID}/DEBIAN"
+Package: ${PKG_NAME}
+Architecture: ${PKG_ARCH}
+Depends: python3, python3-pip, python3-venv, sudo
+Homepage: https://tinypilotkvm.com
+Description: Simple, easy-to-use KVM over IP
+EOF
 
-RUN echo "Package: ${PKG_NAME}" >> control && \
-    echo "Version: ${PKG_VERSION}" >> control && \
-    echo "Section: net" >> control && \
-    echo "Priority: optional" >> control && \
-    echo "Maintainer: TinyPilot Support <support@tinypilotkvm.com>" >> control && \
-    echo "Depends: python3, python3-pip, python3-venv, sudo" >> control && \
-    echo "Architecture: ${PKG_ARCH}" >> control && \
-    echo "Homepage: https://tinypilotkvm.com" >> control && \
-    echo "Description: Simple, easy-to-use KVM over IP" >> control
+RUN cat >changelog <<EOF
+tinypilot (${PKG_VERSION}) buster; urgency=medium
 
-RUN dpkg --build "/releases/${PKG_ID}"
+  * Latest TinyPilot release.
+
+ -- TinyPilot Support <support@tinypilotkvm.com>  $(date '+%a, %d %b %Y %H:%M:%S %z')
+EOF
+
+WORKDIR "/releases/${PKG_ID}"
+RUN dpkg-buildpackage --build=binary
 
 FROM scratch as artifact
 

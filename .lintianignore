@@ -7,10 +7,10 @@ dir-or-file-in-opt
 # an extended package description for now.
 extended-description-is-empty
 
-# We don't publish to public repositories, so it's not important for us to have
-# a changelog for now.
-no-changelog
-
 # Ignore this until we find a better way of setting permissions properly.
 # https://github.com/tiny-pilot/tinypilot/issues/1196
 recursive-privilege-change
+
+# Our copyright notice isn't in the correct format.
+# https://lintian.debian.org/tags/copyright-without-copyright-notice
+copyright-without-copyright-notice
