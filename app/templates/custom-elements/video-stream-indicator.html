@@ -34,23 +34,61 @@
     :host([mode="H264"]) .label-h264 {
       display: inline;
     }
+
+    .tooltip-text-info {
+      display: block;
+    }
+
+    .warning-icon {
+      height: 0.95em;
+      margin-left: 0.4em;
+    }
+
+    .tooltip-text-h264-failure,
+    .warning-icon {
+      display: none;
+    }
+
+    :host([has-h264-failed=""]) .tooltip-text-info {
+      display: none;
+    }
+
+    :host([has-h264-failed=""]) .tooltip-text-h264-failure,
+    :host([has-h264-failed=""]) .warning-icon {
+      display: block;
+    }
   </style>
 
   <img src="/img/video-stream-icon.svg" class="icon" alt="Video Stream" />
   <span class="label-mjpeg">MJPEG</span>
   <span class="label-h264">H.264</span>
   <div class="status-bar-tooltip">
-    <p>
-      TinyPilot is currently using
-      <span class="label-mjpeg">MJPEG</span>
-      <span class="label-h264">H.264</span>
-      compression to stream the video output of your target device.
-    </p>
-    <p>
-      You can configure the streaming mode in the
-      “System”&nbsp;&gt;&nbsp;“Video&nbsp;Settings” dialog.
-    </p>
+    <div class="tooltip-text-info">
+      <p>
+        TinyPilot is currently using
+        <span class="label-mjpeg">MJPEG</span>
+        <span class="label-h264">H.264</span>
+        compression to stream the video output of your target device.
+      </p>
+      <p>
+        You can configure the streaming mode in the
+        “System”&nbsp;&gt;&nbsp;“Video&nbsp;Settings” dialog.
+      </p>
+    </div>
+    <div class="tooltip-text-h264-failure">
+      <p>
+        TinyPilot failed to stream video output from your target device using
+        H.264 compression.
+      </p>
+      <p>
+        See “System” &gt; “Logs” for diagnostic details.
+      </p>
+      <p>
+        Refreshing the page or restarting your device may fix the issue.
+      </p>
+    </div>
   </div>
+  <img src="/img/warning-icon.svg" class="warning-icon" alt="Warning" />
 </template>
 
 <script type="module">
@@ -66,8 +104,50 @@
           );
         }
 
+        disconnectedCallback() {
+          clearTimeout(this._delayedH264Warning);
+        }
+
+        get mode() {
+          return this.getAttribute("mode");
+        }
+
         set mode(mode) {
           this.setAttribute("mode", mode);
+          this._checkModeSuccess();
+        }
+
+        set desiredMode(desiredMode) {
+          this._desiredMode = desiredMode;
+        }
+
+        /**
+         * Schedules a (delayed) check to see whether the desired mode
+         * eventually succeeded. We currently only handle the case where the
+         * H264 stream fails to come up, because we cannot determine the state
+         * of the MJPEG stream. The delay is needed, because it may take a few
+         * seconds for the H264 stream to come up, and we don’t want to confuse
+         * users with a flickering warning icon.
+         *
+         * This method is safe to call at any time, regardless of the current
+         * mode. It only may restart a currently ongoing timer, which may cause
+         * some extra delay.
+         */
+        _checkModeSuccess() {
+          const DELAY_SECONDS = 7;
+          clearTimeout(this._delayedH264Warning);
+
+          if (this.mode === this._desiredMode) {
+            this.removeAttribute("has-h264-failed");
+          } else {
+            this._delayedH264Warning = setTimeout(() => {
+              // If H264 was selected but hasn’t come into effect, display the
+              // warning; in all other cases, hide it.
+              const hasH264Failed =
+                this._desiredMode === "H264" && this.mode !== "H264";
+              this.toggleAttribute("has-h264-failed", hasH264Failed);
+            }, DELAY_SECONDS * 1000);
+          }
         }
       }
     );

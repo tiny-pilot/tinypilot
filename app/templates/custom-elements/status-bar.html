@@ -50,6 +50,15 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
+
+          // Due to the (currently alphabetical) initialization order of our web
+          // components, the video stream indicator has not yet been registered
+          // as custom component at the time when this component is initialized.
+          customElements.whenDefined("video-stream-indicator").then(() => {
+            this.videoStreamIndicator.desiredMode = this.getAttribute(
+              "video-stream-desired-mode"
+            );
+          });
         }
 
         get connectionIndicator() {

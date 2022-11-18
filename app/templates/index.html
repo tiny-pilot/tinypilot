@@ -24,7 +24,15 @@
         <menu-bar id="menu-bar"></menu-bar>
       </div>
       <div class="footer-bar">
-        <status-bar id="status-bar"></status-bar>
+        <!-- prettier-ignore -->
+        <status-bar
+          id="status-bar"
+          {% if use_webrtc_remote_screen %}
+          video-stream-desired-mode="H264"
+          {% else %}
+          video-stream-desired-mode="MJPEG"
+          {% endif %}
+        ></status-bar>
       </div>
 
       <div class="page-content container">
