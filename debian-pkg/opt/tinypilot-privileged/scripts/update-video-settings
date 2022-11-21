@@ -72,5 +72,6 @@ echo "- hosts: localhost
 ansible-playbook \
   "${PLAYBOOK}" \
   --inventory localhost, \
+  --extra-vars "@${INSTALLER_DIR}/roles/ansible-role-tinypilot/vars/main.yml" \
   --extra-vars "${EXTRA_VARS_PATH}" \
   --tags "systemd-config"
