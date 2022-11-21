@@ -19,4 +19,4 @@ copyright-without-copyright-notice
 # warnings until we can find the right field values.
 # https://github.com/tiny-pilot/tinypilot/issues/1207
 systemd-service-file-refers-to-obsolete-target
-systemd-service-file-refers-to-unusual-wantedby-target
+systemd-service-file-refers-to-unusual-wantedby-target
