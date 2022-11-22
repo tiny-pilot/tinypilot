@@ -18,6 +18,7 @@
 
   --brand-sand-light: hsl(var(--brand-hue-yellow), 59%, 92%);
   --brand-creme-light: hsl(var(--brand-hue-yellow), 60%, 97%);
+  --brand-background-dark: hsl(var(--brand-hue-yellow), 16%, 11%);
 
   --brand-orange-light: hsl(var(--brand-hue-orange), 100%, 80%);
   --brand-orange-dark: hsl(var(--brand-hue-orange), 50%, 50%);
@@ -52,6 +53,12 @@
 body {
   margin: 0;
   background: var(--brand-creme-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--brand-background-dark);
+  }
 }
 
 .container {
