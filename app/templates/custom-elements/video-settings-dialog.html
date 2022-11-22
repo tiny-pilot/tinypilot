@@ -449,6 +449,9 @@
               // Note: After the video stream stops, it doesn't try to
               // reconnect. So in order to restart the video stream, we need to
               // reload the page.
+              // Should we ever change that mechanism in the future and abandon
+              // the page reload, keep in mind that other parts of the frontend
+              // might rely on the current behavior.
               location.reload();
             })
             .catch((error) => {

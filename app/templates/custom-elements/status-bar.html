@@ -29,8 +29,14 @@
     <connection-indicator id="connection-indicator"></connection-indicator>
   </div>
   <div class="item">
+    <!-- prettier-ignore -->
     <video-stream-indicator
       id="video-stream-indicator"
+      {% if use_webrtc_remote_screen %}
+      desired-mode="H264"
+      {% else %}
+      desired-mode="MJPEG"
+      {% endif %}
     ></video-stream-indicator>
   </div>
   <div class="spacer"></div>
