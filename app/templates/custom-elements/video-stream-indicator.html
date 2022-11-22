@@ -117,8 +117,8 @@
           this._checkModeSuccess();
         }
 
-        set desiredMode(desiredMode) {
-          this._desiredMode = desiredMode;
+        get desiredMode() {
+          return this.getAttribute("desired-mode");
         }
 
         /**
@@ -137,14 +137,14 @@
           const DELAY_SECONDS = 7;
           clearTimeout(this._delayedH264Warning);
 
-          if (this.mode === this._desiredMode) {
+          if (this.mode === this.desiredMode) {
             this.removeAttribute("has-h264-failed");
           } else {
             this._delayedH264Warning = setTimeout(() => {
               // If H264 was selected but hasn’t come into effect, display the
               // warning; in all other cases, hide it.
               const hasH264Failed =
-                this._desiredMode === "H264" && this.mode !== "H264";
+                this.desiredMode === "H264" && this.mode !== "H264";
               this.toggleAttribute("has-h264-failed", hasH264Failed);
             }, DELAY_SECONDS * 1000);
           }
