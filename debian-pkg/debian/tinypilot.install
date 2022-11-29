@@ -1,3 +1,5 @@
+etc /
+opt /
 VERSION opt/tinypilot/
 COPYRIGHT opt/tinypilot/
 LICENSE opt/tinypilot/

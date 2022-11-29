@@ -1,7 +1,7 @@
 import logging
 import subprocess
 
-_UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/update-video-settings'
+_UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/update-video-settings'
 DEFAULT_FRAME_RATE = 30
 DEFAULT_MJPEG_QUALITY = 80
 DEFAULT_H264_BITRATE = 5000

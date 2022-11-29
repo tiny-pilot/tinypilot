@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Mock version of /opt/tinypilot-privileged/collect-debug-logs
+# Mock version of /opt/tinypilot-privileged/scripts/collect-debug-logs
 
 cat << EOF
 ***NOTICE: This is a synthetic log dump for development purposes***
@@ -226,7 +226,7 @@ Mar 01 10:06:43 tinypilot python[573]: [2021-03-01 10:06:43,133] INFO in socket_
 Mar 01 10:06:44 tinypilot python[573]: [2021-03-01 10:06:44,467] INFO in main: [SENSITIVE] There is more sensitive data here,
 and it even spans
 multiple lines! [/SENSITIVE]
-Mar 01 10:06:47 tinypilot sudo[791]: tinypilot : TTY=unknown ; PWD=/opt/tinypilot ; USER=root ; COMMAND=/opt/tinypilot-privileged/collect-debug-logs -q
+Mar 01 10:06:47 tinypilot sudo[791]: tinypilot : TTY=unknown ; PWD=/opt/tinypilot ; USER=root ; COMMAND=/opt/tinypilot-privileged/scripts/collect-debug-logs -q
 Mar 01 10:06:47 tinypilot sudo[791]: pam_unix(sudo:session): session opened for user root by (uid=0)
 Mar 01 10:06:47 tinypilot python[573]: Writing diagnostic logs to /tmp/tmp.EvctHesve7
 Mar 01 10:06:47 tinypilot python[573]: Checking TinyPilot version...

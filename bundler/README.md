@@ -72,7 +72,7 @@ When performing a version-to-version update, TinyPilot carries out the above ins
    - On TinyPilot Pro, the update launcher stores the desired target version in a file.
 1. The update launcher starts the `tinypilot-updater` systemd service.
 1. The `tinypilot-updater` systemd service executes the [`update-service`](../scripts/update-service) Python script.
-1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/update` script.
+1. The `update-service` invokes the privileged `/opt/tinypilot-privileged/scripts/update` script.
 1. The privileged `update` script downloads `get-tinypilot.sh`/`get-tinypilot-pro.sh` (see above) and executes that script in the privileged context.
    - On TinyPilot Pro, the privileged `update` script reads and passes on the target version from the file that the update launcher had populated previously.
 

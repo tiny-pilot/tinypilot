@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# Update uStreamer video settings.
+
+# Exit on first error.
+set -e
+
+# Treat undefined environment variables as errors.
+set -u
+
+print_help() {
+    cat << EOF
+Usage: ${0##*/} [-hq]
+Update uStreamer video settings.
+  -h Display this help and exit.
+  -q Run in quiet mode.
+EOF
+}
+
+FLAG_QUIET_MODE=false
+
+# Parse command-line arguments.
+while getopts "hq" opt; do
+    case $opt in
+        h)
+            print_help
+            exit
+            ;;
+        q)
+            FLAG_QUIET_MODE=true
+            ;;
+        *)
+            print_help >&2
+            exit 1
+    esac
+done
+
+if [[ "${FLAG_QUIET_MODE}" = "true" ]]; then
+  # Ignore stdout.
+  exec 1> /dev/null
+else
+  # Echo commands to stdout.
+  set -x
+fi
+
+# Check if there's a settings file with extra installation settings.
+readonly TINYPILOT_SETTINGS_FILE="/home/tinypilot/settings.yml"
+if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  echo "Using settings file at: ${TINYPILOT_SETTINGS_FILE}"
+  EXTRA_VARS_PATH="@${TINYPILOT_SETTINGS_FILE}"
+else
+  echo "No pre-existing settings file found at: ${TINYPILOT_SETTINGS_FILE}"
+  EXTRA_VARS_PATH=""
+fi
+readonly EXTRA_VARS_PATH
+
+readonly INSTALLER_DIR="/opt/tinypilot-updater"
+pushd "${INSTALLER_DIR}"
+
+. venv/bin/activate
+
+readonly PLAYBOOK=$(mktemp --suffix ".yml")
+readonly USTREAMER_ROLE_NAME="ansible-role-ustreamer"
+echo "- hosts: localhost
+  connection: local
+  become: true
+  become_method: sudo
+  gather_facts: no
+  roles:
+    - role: ${USTREAMER_ROLE_NAME}" > "${PLAYBOOK}"
+
+ansible-playbook \
+  "${PLAYBOOK}" \
+  --inventory localhost, \
+  --extra-vars "@${INSTALLER_DIR}/roles/ansible-role-tinypilot/vars/main.yml" \
+  --extra-vars "${EXTRA_VARS_PATH}" \
+  --tags "systemd-config"
