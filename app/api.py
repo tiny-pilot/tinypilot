@@ -48,22 +48,12 @@ def shutdown_post():
 def restart_post():
     """Triggers restart of the system.
 
-    For backwards compatibility, we must include the now deprecated `success`
-    and `error` properties in the response. This is needed for when TinyPilot
-    updates from a version before our migration to using conventional HTTP
-    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
-
     Returns:
-        No additional properties on success.
-
-        success: true for backwards compatibility.
-        error: null for backwards compatibility.
-
-        Returns error object otherwise.
+        Empty response on success, error object otherwise.
     """
     try:
         local_system.restart()
-        return json_response.success({'success': True, 'error': None})
+        return json_response.success()
     except local_system.Error as e:
         return json_response.error(e), 500
 
@@ -72,36 +62,22 @@ def restart_post():
 def update_get():
     """Fetches the state of the latest update job.
 
-    For backwards compatibility, we must include the now deprecated `success`
-    and `error` properties in the response. This is needed for when TinyPilot
-    updates from a version before our migration to using conventional HTTP
-    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
-
     Returns:
         On success, a JSON data structure with the following properties:
         status: str describing the status of the job. Can be one of
                 ["NOT_RUNNING", "DONE", "IN_PROGRESS"].
-        updateError: str of the error that occured while updating. If no error
-                     occured, then this will be null.
-        success: true for backwards compatibility.
-        error: null for backwards compatibility.
+        updateError: str of the error that occurred while updating. If no error
+                     occurred, then this will be null.
 
         Example:
         {
             "status": "NOT_RUNNING",
-            "updateError": null,
-            "success": true,
-            "error": null
+            "updateError": null
         }
     """
 
     status, error = update.status.get()
-    return json_response.success({
-        'status': str(status),
-        'updateError': error,
-        'success': True,
-        'error': None
-    })
+    return json_response.success({'status': str(status), 'updateError': error})
 
 
 @api_blueprint.route('/update', methods=['PUT'])
@@ -218,18 +194,10 @@ def status_get():
     This endpoint may be called from all locations, so there is no restriction
     in regards to CORS.
 
-    For backwards compatibility, we must include the now deprecated `success`
-    and `error` properties in the response. This is needed for when TinyPilot
-    updates from a version before our migration to using conventional HTTP
-    status codes. Issue: https://github.com/tiny-pilot/tinypilot/issues/506
-
     Returns:
-        No additional properties implies the server is up and running.
-
-        success: true for backwards compatibility.
-        error: null for backwards compatibility.
+        Empty response, which implies the server is up and running.
     """
-    response = json_response.success({'success': True, 'error': None})
+    response = json_response.success()
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
