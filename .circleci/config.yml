@@ -133,7 +133,7 @@ jobs:
           name: Create the bundle
           command: cd bundler && ./create-bundle
       - store_artifacts:
-          path: bundler/dist/files.txt
+          path: bundler/dist/
       - persist_to_workspace:
           root: ./bundler
           paths:
