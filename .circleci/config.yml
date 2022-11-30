@@ -222,6 +222,8 @@ workflows:
       - upload_bundle:
           requires:
             - verify_bundle
+          # Uploading a new bundle affects Gatekeeper's view of the latest
+          # bundle available, so we should only do this on master.
           filters:
             branches:
               only: master
