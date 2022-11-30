@@ -9,7 +9,19 @@ set -x
 # Exit on unset variable.
 set -u
 
-TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+# Determine tinypilot version, which consists of the following, hyphen-separated
+# parts:
+# 1. An “official” release tag, which is SemVer-formatted
+# 2. (optional) For non-tagged (i.e., unofficial/development) builds, the number
+#    of commits since the last tag, plus the short hash of the current HEAD
+#    commit
+# Examples for tinypilot version identifiers:
+# - `1.7.3` (a tagged release)
+# - `1.7.3-8-c862fe0` (a dev version that’s 8 commits ahead of the `1.7.3` tag,
+#   with commit hash `c862fe0`)
+# - `1.8.0-beta1-26-66e4012` (a dev version that’s 26 commits ahead of the
+#   `1.8.0-beta1` pre-release tag, with commit hash `66e4012`)
+TINYPILOT_VERSION="$(git describe --tags)"
 readonly TINYPILOT_VERSION
 
 PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
