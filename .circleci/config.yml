@@ -209,25 +209,14 @@ workflows:
       - check_style
       - build_python
       - build_javascript
-      - build_debian_package:
-          filters:
-            branches:
-              only: master
-      - lint_debian_package:
-          requires:
-            - build_debian_package
+      - build_debian_package
+      - lint_debian_package
       - build_bundle:
           requires:
             - build_debian_package
-          filters:
-            branches:
-              only: master
       - verify_bundle:
           requires:
             - build_bundle
-          filters:
-            branches:
-              only: master
       - upload_bundle:
           requires:
             - verify_bundle
