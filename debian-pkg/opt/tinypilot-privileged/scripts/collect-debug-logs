@@ -83,6 +83,16 @@ print_info "Checking OS version..."
 
 echo "TinyPilot state" >> "${LOG_FILE}"
 
+print_info "Checking if filesystem is read-only..."
+{
+  READ_ONLY_FILESYSTEM="off"
+  if grep -q "boot=overlay" /proc/cmdline ; then
+    READ_ONLY_FILESYSTEM="on"
+  fi
+  readonly READ_ONLY_FILESYSTEM
+  echo "Read-only filesystem: ${READ_ONLY_FILESYSTEM}"
+} >> "${LOG_FILE}"
+
 print_info "Checking temperature..."
 printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
 
