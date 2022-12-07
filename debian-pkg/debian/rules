@@ -2,3 +2,6 @@
 
 %:
 	dh $@
+
+override_dh_installsystemd:
+	dh_installsystemd --name=tinypilot-updater

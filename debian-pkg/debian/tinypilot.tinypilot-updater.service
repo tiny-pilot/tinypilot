@@ -1,0 +1,18 @@
+[Unit]
+Description=TinyPilot updater
+After=syslog.target network.target
+
+[Service]
+Type=oneshot
+User=tinypilot
+WorkingDirectory=/opt/tinypilot
+ExecStart=/opt/tinypilot/venv/bin/python scripts/update-service
+Environment=PYTHONPATH=/opt/tinypilot/app
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=tinypilot-update-svc
+TimeoutSec=900
+KillSignal=SIGKILL
+
+[Install]
+WantedBy=local-fs.target
