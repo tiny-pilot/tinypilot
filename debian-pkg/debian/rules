@@ -4,4 +4,4 @@
 	dh $@
 
 override_dh_installsystemd:
-	dh_installsystemd --name=tinypilot-updater
+	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
