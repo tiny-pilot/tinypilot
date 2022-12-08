@@ -81,6 +81,13 @@ print_info "Checking OS version..."
   printf "\n"
 } >> "${LOG_FILE}"
 
+print_info "Checking hardware information..."
+{
+  echo "Hardware information"
+  grep "^Hardware\|^Revision\|^Model" /proc/cpuinfo | sed "s/\s*:\s*/: /g"
+  printf "\n"
+} >> "${LOG_FILE}"
+
 echo "TinyPilot state" >> "${LOG_FILE}"
 
 print_info "Checking if filesystem is read-only..."
