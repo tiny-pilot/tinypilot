@@ -14,3 +14,9 @@ recursive-privilege-change
 # Our copyright notice isn't in the correct format.
 # https://lintian.debian.org/tags/copyright-without-copyright-notice
 copyright-without-copyright-notice
+
+# Apparently the Target and WantedBy fields we specify are atypical, so suppress
+# warnings until we can find the right field values.
+# https://github.com/tiny-pilot/tinypilot/issues/1207
+systemd-service-file-refers-to-obsolete-target
+systemd-service-file-refers-to-unusual-wantedby-target
