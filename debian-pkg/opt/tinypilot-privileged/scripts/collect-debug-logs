@@ -84,7 +84,7 @@ print_info "Checking OS version..."
 print_info "Checking hardware information..."
 {
   echo "Hardware information"
-  grep -E "Hardware|Revision|Model" /proc/cpuinfo | sed -r "s/\s+//1"
+  grep "^Hardware\|^Revision\|^Model" /proc/cpuinfo | sed "s/\s*:\s*/: /g"
   printf "\n"
 } >> "${LOG_FILE}"
 
