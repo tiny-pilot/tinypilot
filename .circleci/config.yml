@@ -87,7 +87,7 @@ jobs:
       - run:
           name: Test role with molecule
           command: |
-            ANSIBLE_ROLE_DIR="${CIRCLE_WORKING_DIRECTORY}/roles/ansible-role-tinypilot" \
+            ANSIBLE_ROLE_DIR="${CIRCLE_WORKING_DIRECTORY}/roles/ansible-role-tinypilot"
             . venv/bin/activate && \
             pip install --upgrade pip && \
             pip install wheel==0.34.2 && \
