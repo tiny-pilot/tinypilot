@@ -13,15 +13,15 @@ Available variables are listed below, along with default values (see [defaults/m
 tinypilot_group: tinypilot
 tinypilot_repo: https://github.com/tiny-pilot/tinypilot.git
 tinypilot_repo_branch: master
-tinypilot_interface: '127.0.0.1'
+tinypilot_interface: "127.0.0.1"
 tinypilot_port: 8000
 tinypilot_keyboard_interface: /dev/hidg0
 ```
 
 ## Dependencies
 
-* [tiny-pilot.ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer)
-* [tiny-pilot.nginx](https://github.com/tiny-pilot/ansible-role-nginx)
+- [tiny-pilot.ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer)
+- [tiny-pilot.nginx](https://github.com/tiny-pilot/ansible-role-nginx)
 
 ## Example Playbook
 

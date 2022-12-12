@@ -10,7 +10,7 @@ tinypilot_privileged_dir: /opt/tinypilot-privileged
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
 # in order to elevate their variable precedence. These variables will now
 # override the default variables in the uStreamer role.
-ustreamer_interface: '127.0.0.1'
+ustreamer_interface: "127.0.0.1"
 ustreamer_port: 8001
 ustreamer_repo: https://github.com/tiny-pilot/ustreamer.git
 # Assigning `ustreamer_h264_sink` will make the uStreamer role install the Janus

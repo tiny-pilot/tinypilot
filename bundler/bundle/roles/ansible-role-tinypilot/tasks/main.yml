@@ -18,7 +18,7 @@
     dest: "{{ tinypilot_privileged_dir }}/lib/{{ item | basename }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   with_fileglob:
     - lib/*
 
@@ -82,7 +82,7 @@
     # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
     - molecule-idempotence-notest
 
-- name: '[DEPRECATED] get TinyPilot repo'
+- name: "[DEPRECATED] get TinyPilot repo"
   # Don't escalate privileges because only the directory owner can use git.
   # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
   become: no
@@ -140,7 +140,7 @@
     dest: /lib/systemd/system/tinypilot.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
     - reload TinyPilot systemd config
     - restart TinyPilot service

@@ -53,7 +53,7 @@
     dest: "{{ tinypilot_privileged_dir }}/init-usb-gadget"
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
 
 - name: copy usb-gadget de-initializer
   copy:
@@ -61,7 +61,7 @@
     dest: "{{ tinypilot_privileged_dir }}/remove-usb-gadget"
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
 
 - name: install usb-gadget initializer as a service
   template:
@@ -69,7 +69,7 @@
     dest: /lib/systemd/system/usb-gadget.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   register: usb_gadget_template
 
 - name: enable systemd usb-gadget initializer service file
@@ -109,7 +109,7 @@
   get_url:
     url: https://github.com/tiny-pilot/hid-backport/raw/master/bin/usb_f_hid.ko
     dest: "{{ hid_module_stat.stat.path }}"
-    mode: '0644'
+    mode: "0644"
     force: yes
   when: patch_hid_module
 
