@@ -1,0 +1,56 @@
+version: 2.1
+jobs:
+  check_whitespace:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - run:
+          name: Check for trailing whitespace
+          command: tests/check-trailing-whitespace
+      - run:
+          name: Check that all text files end in a trailing newline
+          command: tests/check-trailing-newline
+  check_bash:
+    docker:
+      - image: koalaman/shellcheck-alpine:v0.7.1
+    steps:
+      - run:
+          name: Install dependencies
+          command: apk add bash git grep openssh
+      - checkout
+      - run:
+          name: Run static analysis on bash scripts
+          command: ./tests/check-bash
+  build:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Create symlink to role
+          command: |
+            mkdir -p "${HOME}/.ansible/roles" && \
+            ln -s "${HOME}/project" "${HOME}/.ansible/roles/ansible-role-tinypilot"
+      - run:
+          name: Create Python3 virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Test role with molecule
+          command: |
+            . venv/bin/activate && \
+            pip install --upgrade pip && \
+            pip install wheel==0.34.2 && \
+            pip install -r molecule/requirements.txt && \
+            ansible --version && \
+            molecule --version && \
+            ansible-galaxy install --role-file meta/requirements.yml && \
+            molecule test
+workflows:
+  version: 2
+  all-tests:
+    jobs:
+      - check_whitespace
+      - check_bash
+      - build

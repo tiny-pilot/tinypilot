@@ -1,0 +1,59 @@
+# To update this file:
+#
+#   1. Delete the venv folder
+#   2. Create a fresh venv folder with python3 -m venv venv
+#   3. pip install the direct dependencies
+#   4. Run pip freeze and save any indirect dependencies below
+#   5. Remove dataclasses==0.8 and pkg_resources==0.0.0
+
+# Direct dependencies
+
+ansible==2.10.7
+molecule==3.2.3
+molecule-docker==0.2.4
+
+# Indirect dependencies
+
+ansible-base==2.10.17
+arrow==1.2.2
+bcrypt==3.2.2
+binaryornot==0.4.4
+Cerberus==1.3.4
+certifi==2022.12.7
+cffi==1.15.1
+chardet==5.0.0
+charset-normalizer==2.1.0
+click==7.1.2
+click-completion==0.5.2
+click-help-colors==0.9.1
+commonmark==0.9.1
+cookiecutter==2.1.1
+cryptography==38.0.3
+distro==1.7.0
+docker==5.0.3
+enrich==1.2.7
+idna==3.3
+Jinja2==3.1.2
+jinja2-time==0.2.0
+MarkupSafe==2.1.1
+packaging==21.3
+paramiko==2.11.0
+pathspec==0.9.0
+pluggy==0.13.1
+pycparser==2.21
+Pygments==2.12.0
+PyNaCl==1.5.0
+pyparsing==3.0.9
+python-dateutil==2.8.2
+python-slugify==6.1.2
+PyYAML==5.4.1
+requests==2.28.1
+rich==12.5.1
+selinux==0.2.1
+shellingham==1.5.0
+six==1.16.0
+subprocess-tee==0.3.5
+text-unidecode==1.3
+urllib3==1.26.11
+websocket-client==1.3.3
+yamllint==1.27.1

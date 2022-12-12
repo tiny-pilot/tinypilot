@@ -1,0 +1,153 @@
+---
+- name: install uStreamer
+  import_tasks: ustreamer.yml
+  tags:
+    - ustreamer
+
+- name: install nginx
+  import_tasks: nginx.yml
+
+- name: create the `lib` directory if it does not exist
+  file:
+    path: "{{ tinypilot_privileged_dir }}/lib"
+    state: directory
+
+- name: copy `lib` scripts
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tinypilot_privileged_dir }}/lib/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: '0755'
+  with_fileglob:
+    - lib/*
+
+- name: install HID USB gadget
+  import_tasks: install_usb_gadget.yml
+
+- name: collect TinyPilot required apt packages on all systems
+  set_fact:
+    tinypilot_packages:
+      - git
+      - python3-venv
+      - sudo
+    can_install_pip3: >-
+      {{ (ansible_distribution == 'Debian' and ansible_distribution_version is version('11', '>='))
+         or (ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')) }}
+
+- name: add pip to required apt packages
+  set_fact:
+    tinypilot_packages: "{{ tinypilot_packages }} + ['python-pip']"
+  when: not can_install_pip3
+
+- name: add pip3 to required apt packages
+  set_fact:
+    tinypilot_packages: "{{ tinypilot_packages }} + ['python3-pip']"
+  when: can_install_pip3
+
+- name: install TinyPilot pre-requisite packages
+  apt:
+    name: "{{ tinypilot_packages }}"
+    state: present
+  when: tinypilot_debian_package_path == None
+
+- name: create tinypilot group
+  group:
+    name: "{{ tinypilot_group }}"
+    state: present
+
+- name: create tinypilot user
+  user:
+    name: "{{ tinypilot_user }}"
+    group: "{{ tinypilot_group }}"
+    system: yes
+    create_home: yes
+
+- name: install TinyPilot Debian package
+  apt:
+    deb: "{{ tinypilot_debian_package_path }}"
+  when: tinypilot_debian_package_path != None
+
+- name: create TinyPilot folder
+  file:
+    path: "{{ tinypilot_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes
+  when: tinypilot_debian_package_path == None
+  tags:
+    # This fails the idempotency test because it must run on every provision
+    # to set the correct directory ownership that allows git to sync.
+    # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
+    - molecule-idempotence-notest
+
+- name: '[DEPRECATED] get TinyPilot repo'
+  # Don't escalate privileges because only the directory owner can use git.
+  # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
+  become: no
+  git:
+    repo: "{{ tinypilot_repo }}"
+    dest: "{{ tinypilot_dir }}"
+    version: "{{ tinypilot_repo_branch }}"
+    accept_hostkey: yes
+  when: tinypilot_debian_package_path == None
+  notify:
+    - restart TinyPilot service
+
+- name: find absolute path to python3
+  shell: realpath $(which python3)
+  register: realpath_python3
+  changed_when: false
+
+- name: save absolute path to python3
+  set_fact:
+    python3_abs_path: "{{ realpath_python3.stdout }}"
+
+- name: create TinyPilot virtualenv
+  pip:
+    virtualenv: "{{ tinypilot_dir }}/venv"
+    virtualenv_command: "{{ python3_abs_path }} -m venv venv"
+    requirements: "{{ tinypilot_dir }}/requirements.txt"
+    extra_args: "{{ tinypilot_pip_args }}"
+  notify:
+    - restart TinyPilot service
+
+- name: create TinyPilot app settings
+  template:
+    src: tinypilot-app-settings.cfg.j2
+    dest: "{{ tinypilot_app_settings_file }}"
+    owner: "{{ tinypilot_user }}"
+    group: "{{ tinypilot_group }}"
+  notify:
+    - restart TinyPilot service
+  tags:
+    - app-settings
+
+- name: fix TinyPilot folder permissions
+  file:
+    path: "{{ tinypilot_dir }}"
+    state: directory
+    owner: "{{ tinypilot_user }}"
+    group: "{{ tinypilot_group }}"
+    recurse: yes
+  tags:
+    - molecule-idempotence-notest
+
+- name: install TinyPilot as a service
+  template:
+    src: tinypilot.systemd.j2
+    dest: /lib/systemd/system/tinypilot.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - reload TinyPilot systemd config
+    - restart TinyPilot service
+  tags:
+    - systemd-config
+
+- name: enable systemd TinyPilot service file
+  systemd:
+    name: tinypilot
+    enabled: yes

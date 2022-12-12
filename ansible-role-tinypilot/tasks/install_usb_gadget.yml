@@ -1,0 +1,120 @@
+---
+- name: set the path to config.txt on non-Ubuntu systems
+  set_fact:
+    config_txt_path: /boot/config.txt
+  when: ansible_distribution != 'Ubuntu'
+
+- name: set the path to config.txt for Ubuntu
+  set_fact:
+    config_txt_path: /boot/firmware/config.txt
+  when: ansible_distribution == 'Ubuntu'
+
+- name: check for a boot config file
+  stat:
+    path: "{{ config_txt_path }}"
+  register: boot_config_stat
+
+- name: enable dwc2 driver in boot config
+  lineinfile:
+    path: "{{ config_txt_path }}"
+    create: no
+    line: dtoverlay=dwc2
+  register: boot_config_lineinfile
+  when: boot_config_stat.stat.exists
+
+- name: check for an /etc/modules file
+  stat:
+    path: /etc/modules
+  register: etc_modules_stat
+
+- name: enable dwc2 driver in modules
+  lineinfile:
+    path: /etc/modules
+    create: no
+    line: dwc2
+  register: modules_lineinfile
+  when: etc_modules_stat.stat.exists
+
+- name: determine if a reboot is required
+  set_fact:
+    reboot_required: >-
+      {{ boot_config_lineinfile.changed or modules_lineinfile.changed }}
+
+- name: create TinyPilot privileged folder
+  file:
+    path: "{{ tinypilot_privileged_dir }}"
+    state: directory
+    owner: "root"
+    group: "root"
+
+- name: copy usb-gadget initializer
+  copy:
+    src: init-usb-gadget
+    dest: "{{ tinypilot_privileged_dir }}/init-usb-gadget"
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: copy usb-gadget de-initializer
+  copy:
+    src: remove-usb-gadget
+    dest: "{{ tinypilot_privileged_dir }}/remove-usb-gadget"
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: install usb-gadget initializer as a service
+  template:
+    src: usb-gadget.systemd.j2
+    dest: /lib/systemd/system/usb-gadget.service
+    owner: root
+    group: root
+    mode: '0644'
+  register: usb_gadget_template
+
+- name: enable systemd usb-gadget initializer service file
+  systemd:
+    name: usb-gadget
+    enabled: yes
+    daemon_reload: "{{ usb_gadget_template.changed }}"
+
+# This custom USB HID kernel module fixes compatibility issues in pre-boot for
+# OS X systems. The patch already exists in kernal versions >= 5.15.
+# Issue: https://github.com/tiny-pilot/ansible-role-tinypilot/issues/151
+- name: check the HID module file
+  ansible.builtin.stat:
+    path: /lib/modules/{{ ansible_kernel }}/kernel/drivers/usb/gadget/function/usb_f_hid.ko
+    checksum_algorithm: sha256
+  register: hid_module_stat
+
+- name: save whether the HID module should be patched
+  set_fact:
+    patch_hid_module: >-
+      {{ ansible_kernel is version('5.15', '<')
+         and ansible_kernel is version('5.10', '>=')
+         and hid_module_stat.stat.checksum is defined
+         and hid_module_stat.stat.checksum != '45f9c885e8b0e1d2fdaf4aec2179a38ad9a1c76c71f44c997c99a865fdfe72d7' }}
+
+- name: ensure HID module is not in use
+  service:
+    name: usb-gadget
+    state: stopped
+  when: patch_hid_module and not reboot_required
+
+- name: unload HID module
+  command: modprobe --remove usb_f_hid
+  when: patch_hid_module and not reboot_required
+
+- name: patch HID module
+  get_url:
+    url: https://github.com/tiny-pilot/hid-backport/raw/master/bin/usb_f_hid.ko
+    dest: "{{ hid_module_stat.stat.path }}"
+    mode: '0644'
+    force: yes
+  when: patch_hid_module
+
+- name: load HID module
+  command: modprobe usb_f_hid
+  when: patch_hid_module and not reboot_required
+  notify:
+    - start usb-gadget service

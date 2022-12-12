@@ -1,0 +1,92 @@
+---
+# TinyPilot Pro has two nginx configuration files, whereas TinyPilot Community
+# has just one. Remove the extra Pro file otherwise nginx will fail due to the
+# extra file if the user downgrades from Pro to free.
+- name: remove stray conf file from TinyPilot Pro
+  file:
+    path: /etc/nginx/sites-enabled/tinypilot.http.conf
+    state: absent
+
+- name: import nginx role
+  import_role:
+    name: ansible-role-nginx
+  vars:
+    nginx_upstreams:
+      - name: tinypilot
+        servers:
+          - "{{ tinypilot_interface }}:{{ tinypilot_port }} fail_timeout=1s max_fails=600"
+      - name: ustreamer
+        servers:
+          - "{{ ustreamer_interface }}:{{ ustreamer_port }} fail_timeout=1s max_fails=600"
+      - name: janus-ws
+        # The Janus port and interface are currently not configurable, but they
+        # are set to fixed values by the Janus Debian package.
+        # See: https://github.com/tiny-pilot/janus-debian/issues/5
+        servers:
+          - "127.0.0.1:8002 fail_timeout=1s max_fails=600"
+    nginx_vhosts:
+      - listen: "{{ tinypilot_external_port }} default_server"
+        server_name: "tinypilot"
+        root: "{{ tinypilot_dir }}"
+        index: "index.html"
+        extra_parameters: |
+          proxy_buffers 16 16k;
+          proxy_buffer_size 16k;
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_http_version 1.1;
+
+          location /socket.io {
+            proxy_pass http://tinypilot;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            # Since this is a connection upgrade, we don't inherit the settings from
+            # above. We need these so that nginx forwards requests properly to
+            # Flask-SocketIO.
+            # See: https://github.com/miguelgrinberg/Flask-SocketIO/issues/1501#issuecomment-802082048
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+          }
+          location /state {
+            proxy_pass http://ustreamer;
+          }
+          location /stream {
+            postpone_output 0;
+            proxy_buffering off;
+            proxy_ignore_headers X-Accel-Buffering;
+            proxy_pass http://ustreamer;
+          }
+          location /snapshot {
+            proxy_pass http://ustreamer;
+          }
+          location /janus/ws {
+            proxy_pass http://janus-ws;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Scheme $scheme;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          }
+          location / {
+            proxy_pass http://tinypilot;
+          }
+          location ~* ^/.+\.(html|js|js.map|css|woff|woff2)$ {
+            root "{{ tinypilot_dir }}/app/static";
+
+            # We cache assets to prevent the browser from making redundant
+            # requests to the same files while loading the page. (Observed on
+            # Chrome 91.) We don’t want caching otherwise, though, in order to
+            # avoid stale files after users update their device. Note, that in
+            # addition to `max-age`, the browser’s caching behaviour is relative
+            # to the `Last-Modified` header, so we make that seem recent.
+            add_header Last-Modified $date_gmt;
+            add_header Cache-Control 'public, max-age=10s';
+          }
+          location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
+            root "{{ tinypilot_dir }}/app/static";
+          }
+    nginx_remove_default_vhost: true
