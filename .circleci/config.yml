@@ -78,8 +78,6 @@ jobs:
       image: ubuntu-2004:202010-01
     resource_class: large
     working_directory: ~/project/bundler/bundle
-    environment:
-      ANSIBLE_ROLE_DIR: "${CIRCLE_WORKING_DIRECTORY}/roles/ansible-role-tinypilot"
     steps:
       - checkout:
           path: ~/project
@@ -89,6 +87,7 @@ jobs:
       - run:
           name: Test role with molecule
           command: |
+            ANSIBLE_ROLE_DIR="${CIRCLE_WORKING_DIRECTORY}/roles/ansible-role-tinypilot" \
             . venv/bin/activate && \
             pip install --upgrade pip && \
             pip install wheel==0.34.2 && \
