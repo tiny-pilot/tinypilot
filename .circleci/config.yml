@@ -73,6 +73,30 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/build-javascript
+  build_ansible:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: large
+    working_directory: ~/project/bundler/bundle
+    environment:
+      ANSIBLE_ROLE_DIR: "${CIRCLE_WORKING_DIRECTORY}/roles/ansible-role-tinypilot"
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Create Python3 virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Test role with molecule
+          command: |
+            . venv/bin/activate && \
+            pip install --upgrade pip && \
+            pip install wheel==0.34.2 && \
+            pip install -r "${ANSIBLE_ROLE_DIR}/molecule/requirements.txt" && \
+            ansible --version && \
+            molecule --version && \
+            ansible-galaxy install --role-file "${ANSIBLE_ROLE_DIR}/meta/requirements.yml" && \
+            molecule test
   build_debian_package:
     docker:
       - image: cimg/base:stable
@@ -209,6 +233,7 @@ workflows:
       - check_style
       - build_python
       - build_javascript
+      - build_ansible
       - build_debian_package
       - lint_debian_package:
           requires:
