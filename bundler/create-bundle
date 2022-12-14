@@ -29,12 +29,11 @@ fi
 # Prints the TinyPilot release version as populated in the Debian package. The
 # Debian package stores the version string in a header field of its control
 # file. The header is named: `Tinypilot-Version`.
-# Note: Debian package header names are case-insensitive.
 print_tinypilot_version() {
-  local header_prefix='Tinypilot-Version: '
-  dpkg --info "${BUNDLE_DIR}/tinypilot"*.deb | \
-    grep --ignore-case "${header_prefix}" | \
-    sed --expression "s/^\s${header_prefix}//gI"
+  dpkg-deb \
+    --show \
+    --showformat '${Tinypilot-Version}' \
+    "${BUNDLE_DIR}/tinypilot"*.deb
 }
 
 # Compose bundle file name, which consists of these hyphen-separated parts:
