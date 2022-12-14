@@ -20,6 +20,26 @@ readonly ANSIBLE_ROLE_TINYPILOT_VERSION='master'
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
+# Ensure that a TinyPilot Debian package exists.
+if ! ls "${BUNDLE_DIR}/tinypilot"*.deb 1> /dev/null 2>&1; then
+  echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
+  exit 1
+fi
+
+# Prints the TinyPilot release version as populated in the Debian package. The
+# Debian package stores the version string in a header field of its control
+# file. The header is named: `Tinypilot-Version`.
+print_tinypilot_version() {
+  # Shellcheck incorrectly warns that the `${...}` placeholder in `--showformat`
+  # doesn’t expand, due to the single-quotes. The format string is not meant to
+  # contain a bash variable, though, the placeholder is specific to `dpkg-deb`.
+  # shellcheck disable=SC2016
+  dpkg-deb \
+    --show \
+    --showformat '${Tinypilot-Version}' \
+    "${BUNDLE_DIR}/tinypilot"*.deb
+}
+
 # Compose bundle file name, which consists of these hyphen-separated parts:
 # 1. `tinypilot`
 # 2. The TinyPilot variant: `community` or `pro`
@@ -31,7 +51,7 @@ readonly OUTPUT_DIR='dist'
 # - `tinypilot-pro-20220620T1713Z-2.4.1.tgz` (Pro)
 TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
-TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+TINYPILOT_VERSION="$(print_tinypilot_version)"
 readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
@@ -42,12 +62,6 @@ python3 -m venv venv
 # instead of building the packages locally.
 pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
-
-# Ensure that a TinyPilot Debian package exists.
-if ! ls "${BUNDLE_DIR}/tinypilot"*.deb 1> /dev/null 2>&1; then
-  echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
-  exit 1
-fi
 
 # Install Ansible role dependencies.
 ansible-galaxy install \

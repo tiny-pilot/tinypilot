@@ -54,6 +54,7 @@ Architecture: ${PKG_ARCH}
 Depends: python3, python3-pip, python3-venv, sudo
 Homepage: https://tinypilotkvm.com
 Description: Simple, easy-to-use KVM over IP
+XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
 EOF
 
 RUN cat >changelog <<EOF
