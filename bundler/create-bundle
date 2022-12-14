@@ -30,6 +30,10 @@ fi
 # Debian package stores the version string in a header field of its control
 # file. The header is named: `Tinypilot-Version`.
 print_tinypilot_version() {
+  # Shellcheck incorrectly warns that the `${...}` placeholder in `--showformat`
+  # doesn’t expand, due to the single-quotes. The format string is not meant to
+  # contain a bash variable, though, the placeholder is specific to `dpkg-deb`.
+  # shellcheck disable=SC2016
   dpkg-deb \
     --show \
     --showformat '${Tinypilot-Version}' \
