@@ -98,7 +98,9 @@ function attachToJanusPlugin() {
       // Note, that the plugin will automatically start streaming when it
       // receives this request, so it’s technically not required to issue
       // another `start` request afterwards. (See below.)
-      janusPluginHandle.send({ message: { request: "watch" } });
+      janusPluginHandle.send({
+        message: { request: "watch", params: { audio: true } },
+      });
     },
 
     /**
@@ -123,7 +125,9 @@ function attachToJanusPlugin() {
         msg.error_code === 503 &&
         watchRequestRetryExpiryTimestamp > Date.now()
       ) {
-        janusPluginHandle.send({ message: { request: "watch" } });
+        janusPluginHandle.send({
+          message: { request: "watch", params: { audio: true } },
+        });
         return;
       }
       if (!jsep) {
