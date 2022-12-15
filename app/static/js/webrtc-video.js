@@ -166,7 +166,9 @@ function attachToJanusPlugin() {
      * @param {boolean} added Whether the track was added or removed.
      */
     onremotetrack: function (track, mid, added) {
-      console.debug(`Remote track changed. mid:"${mid}" added:"${added}"`);
+      console.debug(
+        `Remote ${track.kind} track ${mid} ${added ? "added" : "removed"}.`
+      );
 
       if (!added) {
         remoteScreen.enableMjpeg();
@@ -179,9 +181,7 @@ function attachToJanusPlugin() {
       // That way, the track is assigned a new and globally unique id. This
       // helps to avoid potential interferences with other JS code that might
       // also deal with media tracks.
-      const stream = new MediaStream();
-      stream.addTrack(track.clone());
-      remoteScreen.enableWebrtc(stream);
+      remoteScreen.enableWebrtc(track.clone());
     },
   });
 }

@@ -320,13 +320,22 @@
 
         /**
          * Enable the WebRTC stream while disabling the MJPEG stream.
-         * @param {MediaStream} mediaStream https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+         * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        enableWebrtc(mediaStream) {
-          this.elements.video.srcObject = mediaStream;
+        enableWebrtc(mediaStreamTrack) {
+          let modeChanged = this.elements.video.srcObject === null;
+          if (modeChanged) {
+            this.elements.video.srcObject = new MediaStream();
+          }
+          // Note: If the specified track is already in the stream's track set,
+          // the addTrack method has no effect.
+          // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
+          this.elements.video.srcObject.addTrack(mediaStreamTrack);
           this.webrtcEnabled = true;
           this.elements.image.removeAttribute("src");
-          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+          if (modeChanged) {
+            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+          }
         }
 
         /**
