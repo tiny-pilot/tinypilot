@@ -54,6 +54,23 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
+if ! grep -q "4 Model B\|Zero 2 W" /proc/cpuinfo ; then
+  set +u
+  if [[ "${FORCE_ALLOW_INCOMPATIBLE}" = 1 ]]; then
+    echo "Installing on potentially incompatible hardware"
+    set -u
+  else
+    set +x
+    printf "You are trying to install on potentially incompatible hardware.\n\n"
+    printf "Visit https://github.com/tiny-pilot/tinypilot/ for more details.\n"
+    printf "\n"
+    printf "If you want to install anyway type the following:\n\n"
+    printf "  export FORCE_ALLOW_INCOMPATIBLE=1\n\n"
+    printf "And then run your previous command again.\n"
+    exit 255
+  fi
+fi
+
 # HACK: If we let mktemp use the default /tmp directory, the system purges the
 # file before the end of the script for some reason. We use /var/tmp as a
 # workaround.
