@@ -111,7 +111,7 @@ def version_get():
 
         Example:
         {
-            "version": "bf07bfe",
+            "version": "1.2.3-16",
         }
 
         Returns error object on failure.
@@ -132,7 +132,7 @@ def latest_release_get():
 
         Example:
         {
-            "version": "bf07bfe72941457cf068ca0a44c6b0d62dd9ef05",
+            "version": "1.2.3-16",
         }
 
         Returns error object on failure.

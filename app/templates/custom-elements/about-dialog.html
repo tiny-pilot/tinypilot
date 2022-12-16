@@ -101,7 +101,7 @@
             .then((version) => {
               this.shadowRoot.getElementById(
                 "version-number"
-              ).innerText = this._formatVersion(version);
+              ).innerText = version;
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -132,11 +132,6 @@
               );
             }
           });
-        }
-
-        _formatVersion(version) {
-          // Truncate git commit hash to same length as git's short hash format.
-          return version.substr(0, 7);
         }
       }
     );

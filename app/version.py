@@ -26,17 +26,17 @@ def _is_debug():
 def local_version():
     """Read the current local version string from the version file.
 
-    If run locally, in development, where a version file is not present then a
+    If run locally, in development, where a version file is not present, then a
     dummy version string is returned.
 
     Returns:
-        A version string (e.g., "abc1234" or "1.2.3").
+        A version string (e.g., "1.2.3-16").
 
     Raises:
         VersionFileError: If an error occurred while accessing the version file.
     """
     if _is_debug():
-        return '0000000'
+        return '0.0.0-0'
 
     try:
         with open(_VERSION_FILE, encoding='utf-8') as file:
@@ -55,7 +55,7 @@ def latest_version():
     """Requests the latest version from the TinyPilot Gatekeeper REST API.
 
     Returns:
-        A version string (e.g., "abc1234" or "1.2.3").
+        A version string (e.g., "1.2.3-16").
 
     Raises:
         VersionRequestError: If an error occurred while making an HTTP request
