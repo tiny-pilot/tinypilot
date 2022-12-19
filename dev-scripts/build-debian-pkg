@@ -10,8 +10,9 @@ set -x
 set -u
 
 print_tinypilot_version() {
+  # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
   git describe --tags --long |
-  sed --expression 's/-g[0-9a-f]\{7\}$//g'
+  sed --expression 's/\(-g\([0-9a-f]\{7\}\)\)$/+\2/g'
 }
 
 TINYPILOT_VERSION="$(print_tinypilot_version)"

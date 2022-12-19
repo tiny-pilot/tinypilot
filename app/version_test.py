@@ -131,4 +131,4 @@ class DebugModeVersionTest(TestCase):
     def test_local_version_returns_dummy_version_when_in_debug_mode(self):
         # Enable debug mode.
         with mock.patch.object(version, '_is_debug', return_value=True):
-            self.assertEqual('0.0.0-0', version.local_version())
+            self.assertEqual('0.0.0-0+aaaaaaa', version.local_version())

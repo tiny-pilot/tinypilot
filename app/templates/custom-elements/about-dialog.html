@@ -101,7 +101,7 @@
             .then((version) => {
               this.shadowRoot.getElementById(
                 "version-number"
-              ).innerText = version;
+              ).innerText = this._formatVersion(version);
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -132,6 +132,15 @@
               );
             }
           });
+        }
+
+        /**
+         * Formats the version string in a less technical way, to display it to
+         * the user.
+         */
+        _formatVersion(version) {
+          const parts = version.split("+");
+          return `${parts[0]}  [${parts[1]}]`;
         }
       }
     );

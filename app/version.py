@@ -36,7 +36,7 @@ def local_version():
         VersionFileError: If an error occurred while accessing the version file.
     """
     if _is_debug():
-        return '0.0.0-0'
+        return '0.0.0-0+aaaaaaa'
 
     try:
         with open(_VERSION_FILE, encoding='utf-8') as file:
