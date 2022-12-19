@@ -55,7 +55,7 @@ def latest_version():
     """Requests the latest version from the TinyPilot Gatekeeper REST API.
 
     Returns:
-        A version string (e.g., "1.2.3-16").
+        A version string (e.g., "1.2.3-16+7a6c812").
 
     Raises:
         VersionRequestError: If an error occurred while making an HTTP request

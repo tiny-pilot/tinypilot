@@ -132,7 +132,7 @@ def latest_release_get():
 
         Example:
         {
-            "version": "1.2.3-16",
+            "version": "1.2.3-16+7a6c812",
         }
 
         Returns error object on failure.

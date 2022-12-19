@@ -21,22 +21,22 @@ class VersionTest(TestCase):
     def test_local_version_when_file_exists(self):
         with tempfile.NamedTemporaryFile('w',
                                          encoding='utf-8') as mock_version_file:
-            mock_version_file.write('1.2.3-16')
+            mock_version_file.write('1.2.3-16+7a6c812')
             mock_version_file.flush()
 
             with mock.patch.object(version, '_VERSION_FILE',
                                    mock_version_file.name):
-                self.assertEqual('1.2.3-16', version.local_version())
+                self.assertEqual('1.2.3-16+7a6c812', version.local_version())
 
     def test_local_version_strips_leading_trailing_whitespace(self):
         with tempfile.NamedTemporaryFile('w',
                                          encoding='utf-8') as mock_version_file:
-            mock_version_file.write('    1.2.3-16   \n')
+            mock_version_file.write('    1.2.3-16+7a6c812   \n')
             mock_version_file.flush()
 
             with mock.patch.object(version, '_VERSION_FILE',
                                    mock_version_file.name):
-                self.assertEqual('1.2.3-16', version.local_version())
+                self.assertEqual('1.2.3-16+7a6c812', version.local_version())
 
     def test_local_version_raises_file_error_when_file_doesnt_exist(self):
         with mock.patch.object(version, '_VERSION_FILE',

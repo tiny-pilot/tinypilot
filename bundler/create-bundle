@@ -47,7 +47,7 @@ print_tinypilot_version() {
 # 4. The SemVer-compliant TinyPilot version.
 # Examples for bundle names:
 # - `tinypilot-pro-20220620T1713Z-2.4.1.tgz` (Pro)
-# - `tinypilot-community-20220620T1611Z-1.8.0-23.tgz` (Community)
+# - `tinypilot-community-20220620T1611Z-1.8.0-23+649a6b2.tgz` (Community)
 TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
 TINYPILOT_VERSION="$(print_tinypilot_version)"
