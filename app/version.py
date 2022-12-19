@@ -30,7 +30,7 @@ def local_version():
     dummy version string is returned.
 
     Returns:
-        A version string (e.g., "1.2.3-16").
+        A version string (e.g., "1.2.3-16+7a6c812").
 
     Raises:
         VersionFileError: If an error occurred while accessing the version file.
