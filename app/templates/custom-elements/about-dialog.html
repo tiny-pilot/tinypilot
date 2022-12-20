@@ -134,9 +134,13 @@
           });
         }
 
+        /**
+         * Formats the version string in a less technical way, to display it to
+         * the user.
+         */
         _formatVersion(version) {
-          // Truncate git commit hash to same length as git's short hash format.
-          return version.substr(0, 7);
+          const parts = version.split("+");
+          return `${parts[0]}  [${parts[1]}]`;
         }
       }
     );

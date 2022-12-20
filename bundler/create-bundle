@@ -44,11 +44,10 @@ print_tinypilot_version() {
 # 1. `tinypilot`
 # 2. The TinyPilot variant: `community` or `pro`
 # 3. A timestamp (which allows lexical sorting of bundles by their file names).
-# 4. The build version: a git commit hash in short form for TinyPilot Community;
-#    a SemVer version for TinyPilot Pro.
+# 4. The SemVer-compliant TinyPilot version.
 # Examples for bundle names:
-# - `tinypilot-community-20220620T1611Z-acd7316.tgz` (Community)
 # - `tinypilot-pro-20220620T1713Z-2.4.1.tgz` (Pro)
+# - `tinypilot-community-20220620T1611Z-1.8.0-23+649a6b2.tgz` (Community)
 TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
 TINYPILOT_VERSION="$(print_tinypilot_version)"
