@@ -3,6 +3,23 @@
 # Exit script on first failure.
 set -e
 
-chown -R tinypilot:tinypilot /opt/tinypilot
+# Exit on unset variable.
+set -u
+
+readonly TINYPILOT_USER="tinypilot"
+readonly TINYPILOT_GROUP="tinypilot"
+readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
+
+addgroup \
+  --system \
+  "${TINYPILOT_GROUP}"
+
+adduser \
+  --system \
+  --group "${TINYPILOT_GROUP}" \
+  --home "${TINYPILOT_HOME_DIR}" \
+  "${TINYPILOT_USER}"
+
+chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
 
 #DEBHELPER#
