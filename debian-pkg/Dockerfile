@@ -10,15 +10,14 @@ RUN set -x && \
       debhelper \
       dpkg-dev
 
-# The canonical TinyPilot version. For TinyPilot Community, this is a git commit
-# hash in short form. For TinyPilot Pro, this is a SemVer version.
+# The canonical, SemVer-compliant TinyPilot version.
 ARG TINYPILOT_VERSION
 
 # The `PKG_VERSION` is the version of the Debian package. Debian uses its own
-# versioning scheme, which is incompatible with TinyPilot Community. Therefore,
-# the package version should be a timestamp, formatted `YYYYMMDDhhmmss`. That
-# way the package manager always installs the most recently built TinyPilot
-# package.
+# versioning scheme, which is not strictly compatible with TinyPilot’s version
+# conventions. Therefore, the package version should be a timestamp, formatted
+# `YYYYMMDDhhmmss`. That way the package manager always installs the most
+# recently built TinyPilot package.
 ARG PKG_VERSION
 
 ARG PKG_NAME="tinypilot"

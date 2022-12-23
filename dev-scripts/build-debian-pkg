@@ -9,7 +9,13 @@ set -x
 # Exit on unset variable.
 set -u
 
-TINYPILOT_VERSION="$(git rev-parse --short HEAD)"
+print_tinypilot_version() {
+  # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
+  git describe --tags --long |
+  sed --expression 's/\(-g\([0-9a-f]\{7\}\)\)$/+\2/g'
+}
+
+TINYPILOT_VERSION="$(print_tinypilot_version)"
 readonly TINYPILOT_VERSION
 
 PKG_VERSION="$(date '+%Y%m%d%H%M%S')"

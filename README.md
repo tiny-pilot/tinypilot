@@ -53,7 +53,7 @@ See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypi
 
 ## Pre-requisites
 
-- Raspberry Pi OS Stretch or later
+- Raspberry Pi OS Buster or later (32-bit)
 - python3-venv
 
 ## Simple installation
