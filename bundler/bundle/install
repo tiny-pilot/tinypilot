@@ -40,6 +40,13 @@ clean_up() {
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
+# Prevent installation on the Raspberry Pi 3.
+if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
+  echo 'You are trying to install on incompatible hardware.' >&2
+  echo 'Visit https://github.com/tiny-pilot/tinypilot/ for more details.' >&2
+  exit 1
+fi
+
 # Prevent installation on the 64-bit version of Raspberry Pi OS.
 # https://github.com/tiny-pilot/tinypilot/issues/929
 if [[ "$(uname -m)" == 'aarch64' && "$(lsb_release --id --short)" == 'Debian' ]]; then

@@ -54,13 +54,6 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
-if grep -q "Raspberry Pi 3" /proc/cpuinfo ; then
-  set +x
-  printf "You are trying to install on incompatible hardware.\n\n"
-  printf "Visit https://github.com/tiny-pilot/tinypilot/ for more details.\n"
-  exit 255
-fi
-
 # HACK: If we let mktemp use the default /tmp directory, the system purges the
 # file before the end of the script for some reason. We use /var/tmp as a
 # workaround.
