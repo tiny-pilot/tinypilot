@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+./dev-scripts/build-debian-pkg
+
+LATEST_DEBIAN_PACKAGE="$(ls -t debian-pkg/releases/tinypilot*.deb | head -n 1)"
+readonly LATEST_DEBIAN_PACKAGE
+
+mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
+
+pushd ./bundler
+./create-bundle
+popd
+
+LATEST_INSTALL_BUNDLE="$(ls -t bundler/dist/tinypilot*.tgz | head -n 1)"
+readonly LATEST_INSTALL_BUNDLE
+
+pushd "$($mktemp --directory)"
+tar -xvf "${LATEST_INSTALL_BUNDLE}"
+
+./install
