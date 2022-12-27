@@ -29,7 +29,7 @@ popd
 LATEST_INSTALL_BUNDLE="$(ls -t bundler/dist/tinypilot*.tgz | head -n 1)"
 readonly LATEST_INSTALL_BUNDLE
 
-pushd "$($mktemp --directory)"
+pushd "$(mktemp --directory)"
 tar -xvf "${LATEST_INSTALL_BUNDLE}"
 
 ./install
