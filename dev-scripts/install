@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Installs the local directory's version of TinyPilot's code onto the current
+# system.
+#
+# This script is only for development. Regular users should use the
+# get-tinypilot.sh script in the directory root.
+
 # Exit build script on first failure.
 set -e
 
