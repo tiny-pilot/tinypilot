@@ -11,6 +11,7 @@ The steps below show you how to quickly set up a development environment for Tin
 - Python 3.7 or higher
 - Node.js 14.17.5 or higher
 - [shellcheck](https://github.com/koalaman/shellcheck#installing)
+- Docker 20.10.x or higher
 
 ### Install packages
 
