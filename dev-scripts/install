@@ -51,4 +51,4 @@ readonly LATEST_INSTALL_BUNDLE
 pushd "$(mktemp --directory)"
 tar -xvf "${LATEST_INSTALL_BUNDLE}"
 
-./install
+sudo ./install
