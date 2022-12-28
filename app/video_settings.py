@@ -1,7 +1,6 @@
 import logging
 import subprocess
 
-_UPDATE_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/update-video-settings'
 DEFAULT_FRAME_RATE = 30
 DEFAULT_MJPEG_QUALITY = 80
 DEFAULT_H264_BITRATE = 5000
@@ -19,24 +18,24 @@ class VideoSettingsUpdateError(Error):
 def apply():
     """Apply the current video settings found in the settings file.
 
-    This runs the ustreamer ansible role using the systemd-config tag.
-
     Args:
         None
 
     Returns:
-        A string consisting of the stdout and stderr output from the
-        update-video-settings script.
+        None
 
     Raises:
         VideoSettingsUpdateError: If the script exits with a non-zero exit code.
     """
-    logger.info('Running update-video-settings')
-    try:
-        output = subprocess.check_output(['sudo', _UPDATE_SCRIPT_PATH],
-                                         stderr=subprocess.STDOUT,
-                                         universal_newlines=True)
-    except subprocess.CalledProcessError as e:
-        raise VideoSettingsUpdateError(str(e.output).strip()) from e
-    logger.info('update-video-settings completed successfully')
-    return output
+    for service in ('ustreamer', 'janus'):
+        logger.info('Restarting %s to apply new video settings', service)
+        try:
+            subprocess.check_output(
+                ['sudo', '/usr/sbin/service', service, 'restart'],
+                stderr=subprocess.STDOUT,
+                universal_newlines=True)
+        except subprocess.CalledProcessError as e:
+            raise VideoSettingsUpdateError(str(e.output).strip()) from e
+
+    logger.info(
+        'Finished restarting video services to apply new video settings')
