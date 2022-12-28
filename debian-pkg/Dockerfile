@@ -34,6 +34,7 @@ COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
 COPY ./LICENSE ./
 COPY ./README.md ./
+COPY ./requirements.txt ./
 COPY ./setup.py ./
 COPY ./app ./app
 COPY ./scripts ./scripts
