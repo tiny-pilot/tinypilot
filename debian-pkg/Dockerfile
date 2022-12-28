@@ -8,6 +8,7 @@ RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       debhelper \
+      dh-virtualenv \
       dpkg-dev
 
 # The canonical, SemVer-compliant TinyPilot version.
