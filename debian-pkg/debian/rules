@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot/venv
+
 %:
 	dh $@  --with python-virtualenv
 
