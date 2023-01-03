@@ -10,16 +10,19 @@ readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
 
-# Note that we can't use the --system flag. We've always installed the group
-# without applying the --system flag, so to start now will cause conflicts
-# during update for existing installations.
-addgroup "${TINYPILOT_GROUP}"
+# Create tinypilot group if it doesn't already exist.
+getent group "${TINYPILOT_GROUP}" || \
+  addgroup \
+    --system \
+    "${TINYPILOT_GROUP}"
 
-adduser \
-  --system \
-  --group "${TINYPILOT_GROUP}" \
-  --home "${TINYPILOT_HOME_DIR}" \
-  "${TINYPILOT_USER}"
+# Create tinypilot  user if it doesn't already exist.
+getent passwd "${TINYPILOT_USER}" || \
+  adduser \
+    --system \
+    --group "${TINYPILOT_GROUP}" \
+    --home "${TINYPILOT_HOME_DIR}" \
+    "${TINYPILOT_USER}"
 
 chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
 
