@@ -71,8 +71,7 @@ fi
 
 readonly INSTALLER_DIR='/opt/tinypilot-updater'
 
-# Extract tarball to installer directory. The installer directory and all its
-# content must have root ownership.
+# Extract tarball to installer directory.
 rm -rf "${INSTALLER_DIR}"
 mkdir -p "${INSTALLER_DIR}"
 tar \
