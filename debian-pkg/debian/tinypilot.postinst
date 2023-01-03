@@ -19,13 +19,12 @@ getent group "${TINYPILOT_GROUP}" > /dev/null || \
     --system \
     "${TINYPILOT_GROUP}"
 
-# Create tinypilot  user if it doesn't already exist.
-getent passwd "${TINYPILOT_USER}" > /dev/null || \
-  adduser \
-    --system \
-    --group "${TINYPILOT_GROUP}" \
-    --home "${TINYPILOT_HOME_DIR}" \
-    "${TINYPILOT_USER}"
+# adduser is idempotent, so we don't need to check existence first.
+adduser \
+  --system \
+  --ingroup "${TINYPILOT_GROUP}" \
+  --home "${TINYPILOT_HOME_DIR}" \
+  "${TINYPILOT_USER}"
 
 chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
 
