@@ -20,3 +20,9 @@ copyright-without-copyright-notice
 # https://github.com/tiny-pilot/tinypilot/issues/1207
 systemd-service-file-refers-to-obsolete-target
 systemd-service-file-refers-to-unusual-wantedby-target
+
+# Our custom `Tinypilot-Version` header field triggers an `unknown-field`
+# warning. In general, it’s legitimate for Debian control files to contain
+# user-defined fields, though.
+# https://lintian.debian.org/tags/unknown-field
+unknown-field
