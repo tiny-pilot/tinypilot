@@ -6,8 +6,9 @@
 #  sudo install-bundle /tmp/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
 #  sudo install-bundle https://example.com/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
 #
-# This script is only for development. Regular users should use the
-# get-tinypilot.sh or get-tinypilot-pro.sh scripts.
+# This script is only for development, though unlike other dev scripts, it
+# installs on the device. Regular users should use the get-tinypilot.sh or
+# get-tinypilot-pro.sh scripts.
 #
 # get-tinypilot.sh and get-tinypilot-pro.sh do not use this script because they
 # can't rely on it being available locally at install time.
