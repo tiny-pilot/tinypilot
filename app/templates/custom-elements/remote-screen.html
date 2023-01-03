@@ -323,7 +323,7 @@
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         enableWebrtc(mediaStreamTrack) {
-          let modeChanged = this.elements.video.srcObject === null;
+          const modeChanged = this.elements.video.srcObject === null;
           if (modeChanged) {
             this.elements.video.srcObject = new MediaStream();
           }
