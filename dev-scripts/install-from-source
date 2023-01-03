@@ -57,5 +57,4 @@ popd
 LATEST_INSTALL_BUNDLE="${PWD}/$(ls -t bundler/dist/tinypilot*.tgz | head -n 1)"
 readonly LATEST_INSTALL_BUNDLE
 
-sudo ./debian-pkg/opt/tinypilot-privileged/scripts/install-bundle \
-  "${LATEST_INSTALL_BUNDLE}"
+sudo ./scripts/install-bundle "${LATEST_INSTALL_BUNDLE}"
