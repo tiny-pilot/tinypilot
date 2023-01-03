@@ -19,10 +19,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
+cd ./bundler
+
 readonly ANSIBLE_ROLE_TINYPILOT_REPO='https://github.com/tiny-pilot/ansible-role-tinypilot'
 readonly ANSIBLE_ROLE_TINYPILOT_VERSION='master'
-
-cd ./bundler
 
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
