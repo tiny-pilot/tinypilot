@@ -1,5 +1,6 @@
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/change-hostname
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/collect-debug-logs
+# Omit install-bundle as it's a dev script.
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/read-update-log
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/update
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/update-video-settings
