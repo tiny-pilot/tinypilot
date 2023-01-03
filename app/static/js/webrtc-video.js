@@ -179,13 +179,7 @@ function attachToJanusPlugin() {
         return;
       }
 
-      // According to the examples/tests in the Janus repository, the track
-      // object is supposed to be cloned:
-      // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
-      // That way, the track is assigned a new and globally unique id. This
-      // helps to avoid potential interferences with other JS code that might
-      // also deal with media tracks.
-      remoteScreen.enableWebrtc(track.clone());
+      remoteScreen.enableWebrtc(track);
     },
   });
 }
