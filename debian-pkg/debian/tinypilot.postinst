@@ -10,9 +10,10 @@ readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
 
-addgroup \
-  --system \
-  "${TINYPILOT_GROUP}"
+# Note that we can't use the --system flag. We've always installed the group
+# without applying the --system flag, so to start now will cause conflicts
+# during update for existing installations.
+addgroup "${TINYPILOT_GROUP}"
 
 adduser \
   --system \
