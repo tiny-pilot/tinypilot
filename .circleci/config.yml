@@ -131,7 +131,7 @@ jobs:
           command: sudo apt-get update && sudo apt-get install -y git
       - run:
           name: Create the bundle
-          command: cd bundler && ./create-bundle
+          command: ./create-bundle
       - store_artifacts:
           path: bundler/dist/
       - persist_to_workspace:
