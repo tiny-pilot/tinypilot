@@ -2,6 +2,10 @@
 #
 # Install TinyPilot from a TinyPilot bundle tarball.
 #
+# Examples:
+#  sudo install-bundle /tmp/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+#  sudo install-bundle https://example.com/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+#
 # This script is only for development. Regular users should use the
 # get-tinypilot.sh or get-tinypilot-pro.sh scripts.
 #
@@ -14,13 +18,18 @@ set -u
 # Exit on first error.
 set -e
 
-# Echo commands to stdout.
-set -x
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo $0 $@" >&2
+  exit 1
+fi
 
 print_help() {
   cat << EOF
 Usage: ${0##*/} [-h] bundle_path
 Install the specified TinyPilot bundle on the system.
+  bundle_path: Local filesystem path or URL to TinyPilot bundle.
   -h Display this help and exit.
 EOF
 }
@@ -45,7 +54,20 @@ if (( $# == 0 )); then
   exit 1
 fi
 
+# Echo commands to stdout.
+set -x
+
 readonly BUNDLE_PATH="$1"
+
+if [[ $BUNDLE_PATH == http* ]]; then
+  cd "$(mktemp --directory)"
+  wget "${BUNDLE_PATH}"
+  BUNDLE_FILE_PATH="${PWD}/$(find . -name '*.tgz')"
+  readonly BUNDLE_FILE_PATH
+else
+  readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
+fi
+
 readonly INSTALLER_DIR='/opt/tinypilot-updater'
 
 # Extract tarball to installer directory. The installer directory and all its
@@ -55,7 +77,7 @@ mkdir -p "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
-  --file "${BUNDLE_PATH}" \
+  --file "${BUNDLE_FILE_PATH}" \
   --directory "${INSTALLER_DIR}"
 
 # Run install.
