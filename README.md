@@ -46,8 +46,8 @@ Voyager 2 is TinyPilot's professional-grade KVM over IP device. Its quiet, compa
 - (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/product/tinypilot-power-connector): Supports continuous power when the target computer turns off.
   - Requires two additional [USB-A to microUSB cables](https://smile.amazon.com/dp/B01JPDTZXK/) and a [3 Amp power adapter](https://smile.amazon.com/dp/B0728HB18G).
   - If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://smile.amazon.com/dp/B012V56D2A/) to minimize voltage drop along the cable.
-- (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/)
-  - If your target computer has VGA output, the above adapter is [confirmed to work](https://github.com/tiny-pilot/tinypilot/issues/76#issuecomment-664736402) with TinyPilot.
+- (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/) - If your target system has VGA output.
+  - Alternatively, you can replace the VGA to HDMI adapter and HDMI to USB dongle with a [VGA to USB adapter](https://smile.amazon.com/dp/B08GYXZC3D).
 
 See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
 
