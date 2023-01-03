@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# Install TinyPilot from a TinyPilot bundle tarball.
+#
+# This script is only for development. Regular users should use the
+# get-tinypilot.sh or get-tinypilot-pro.sh scripts.
+#
+# get-tinypilot.sh and get-tinypilot-pro.sh do not use this script because they
+# can't rely on it being available locally at install time.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [-h] bundle_path
+Install the specified TinyPilot bundle on the system.
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+# Ensure 'new_hostname' is given.
+shift $((OPTIND - 1))
+if (( $# == 0 )); then
+  echo 'Input parameter missing: new_hostname' >&2
+  exit 1
+fi
+
+readonly BUNDLE_PATH="$1"
+readonly INSTALLER_DIR='/opt/tinypilot-updater'
+
+# Extract tarball to installer directory. The installer directory and all its
+# content must have root ownership.
+rm -rf "${INSTALLER_DIR}"
+mkdir -p "${INSTALLER_DIR}"
+tar \
+  --gunzip \
+  --extract \
+  --file "${BUNDLE_PATH}" \
+  --directory "${INSTALLER_DIR}"
+
+# Run install.
+pushd "${INSTALLER_DIR}"
+./install
