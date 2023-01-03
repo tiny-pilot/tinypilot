@@ -22,7 +22,7 @@ set -e
 if [[ "${EUID}" -ne 0 ]]; then
   echo "This script requires root privileges." >&2
   echo "Please re-run with sudo:" >&2
-  echo "  sudo $0 $@" >&2
+  echo "  sudo $0 $*" >&2
   exit 1
 fi
 
