@@ -51,7 +51,7 @@ done
 # Ensure 'new_hostname' is given.
 shift $((OPTIND - 1))
 if (( $# == 0 )); then
-  echo 'Input parameter missing: new_hostname' >&2
+  echo 'Input parameter missing: bundle_path' >&2
   exit 1
 fi
 
