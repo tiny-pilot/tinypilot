@@ -46,9 +46,7 @@ rm ./bundler/bundle/tinypilot*.deb
 
 mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
 
-pushd ./bundler
-./create-bundle
-popd
+./bundler/create-bundle
 
 # Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
 # we don't expect non-alphanumeric filenames, and the find equivalent is more
