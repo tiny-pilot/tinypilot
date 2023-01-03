@@ -6,6 +6,9 @@ set -e
 # Exit on unset variable.
 set -u
 
+# Echo commands to stdout.
+set -x
+
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
