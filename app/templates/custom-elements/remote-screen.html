@@ -324,13 +324,26 @@
          */
         enableWebrtc(mediaStreamTrack) {
           const modeChanged = this.elements.video.srcObject === null;
-          if (modeChanged) {
-            this.elements.video.srcObject = new MediaStream();
+          const stream = modeChanged
+            ? new MediaStream()
+            : this.elements.video.srcObject;
+          // Ensure that the stream doesn't contain multiple tracks of the same
+          // kind (i.e., multiple audio or video tracks).
+          // For example, if an additional new video track is being added, first
+          // remove the old video track.
+          for (const track of stream.getTracks()) {
+            if (
+              track.kind === mediaStreamTrack.kind &&
+              track.id !== mediaStreamTrack.id
+            ) {
+              stream.removeTrack(track);
+            }
           }
           // Note: If the specified track is already in the stream's track set,
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
-          this.elements.video.srcObject.addTrack(mediaStreamTrack);
+          stream.addTrack(mediaStreamTrack);
+          this.elements.video.srcObject = stream;
           this.webrtcEnabled = true;
           this.elements.image.removeAttribute("src");
           if (modeChanged) {
