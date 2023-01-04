@@ -3,8 +3,9 @@
 # Installs the local directory's version of TinyPilot's code onto the current
 # system.
 #
-# This script is only for development. Regular users should use the
-# get-tinypilot.sh script in the directory root.
+# This script is only for development. TinyPilot Community users should use the
+# get-tinypilot.sh script in the directory root. TinyPilot Pro users should use
+# get-tinypilot-pro.sh from the licensed URL.
 
 # Exit build script on first failure.
 set -e
