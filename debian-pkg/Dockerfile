@@ -50,7 +50,7 @@ Build-Depends: debhelper (>= 11)
 
 Package: ${PKG_NAME}
 Architecture: ${PKG_ARCH}
-Depends: python3, python3-pip, python3-venv, sudo
+Depends: adduser, python3, python3-pip, python3-venv, sudo
 Homepage: https://tinypilotkvm.com
 Description: Simple, easy-to-use KVM over IP
 XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
