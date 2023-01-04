@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Installs the local directory's version of TinyPilot's code onto the current
+# system.
+#
+# This script is only for development. TinyPilot Community users should use the
+# get-tinypilot.sh script in the directory root. TinyPilot Pro users should use
+# get-tinypilot-pro.sh from the licensed URL.
+
+# Exit build script on first failure.
+set -e
+
+# Echo commands to stdout.
+set -x
+
+# Exit on unset variable.
+set -u
+
+
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+# Work around a Docker bug on Raspbian Buster.
+# https://github.com/debuerreotype/docker-debian-artifacts/issues/122
+if [[ "$(lsb_release --id --short)" == "Raspbian" && \
+      "$(lsb_release --release --short)" == "10" ]]; then
+  sed \
+    --in-place \
+    --regexp-extended \
+    's/debian:bullseye-[0-9]+-slim/debian:buster-slim/g' \
+    ./debian-pkg/Dockerfile
+fi
+
+./dev-scripts/build-debian-pkg
+
+# Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
+# we don't expect non-alphanumeric filenames, and the find equivalent is more
+# complex.
+# shellcheck disable=SC2012
+LATEST_DEBIAN_PACKAGE="${PWD}/$(ls -t debian-pkg/releases/tinypilot*.deb | head -n 1)"
+readonly LATEST_DEBIAN_PACKAGE
+
+# Clear any previous TinyPilot Debian packages in the bundle directory.
+find ./bundler/bundle/ -name 'tinypilot*.deb' -delete
+
+mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
+
+./bundler/create-bundle
+
+# Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
+# we don't expect non-alphanumeric filenames, and the find equivalent is more
+# complex.
+# shellcheck disable=SC2012
+LATEST_INSTALL_BUNDLE="${PWD}/$(ls -t bundler/dist/tinypilot*.tgz | head -n 1)"
+readonly LATEST_INSTALL_BUNDLE
+
+sudo ./scripts/install-bundle "${LATEST_INSTALL_BUNDLE}"
