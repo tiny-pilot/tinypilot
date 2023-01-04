@@ -48,10 +48,10 @@ while getopts 'h' opt; do
   esac
 done
 
-# Ensure 'new_hostname' is given.
-shift $((OPTIND - 1))
+# Ensure 'bundle_path' is given.
+shift "$((OPTIND - 1))"
 if (( $# == 0 )); then
-  echo 'Input parameter missing: new_hostname' >&2
+  echo 'Input parameter missing: bundle_path' >&2
   exit 1
 fi
 
@@ -60,7 +60,7 @@ set -x
 
 readonly BUNDLE_PATH="$1"
 
-if [[ $BUNDLE_PATH == http* ]]; then
+if [[ "${BUNDLE_PATH}" == http* ]]; then
   cd "$(mktemp --directory)"
   wget "${BUNDLE_PATH}"
   BUNDLE_FILE_PATH="${PWD}/$(find . -name '*.tgz')"
