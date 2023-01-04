@@ -1,0 +1,85 @@
+#!/bin/bash
+#
+# Install TinyPilot from a TinyPilot bundle tarball.
+#
+# Examples:
+#  sudo install-bundle /tmp/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+#  sudo install-bundle https://example.com/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+#
+# This script is only for development, though unlike other dev scripts, it
+# installs on the device. Regular users should use the get-tinypilot.sh or
+# get-tinypilot-pro.sh scripts.
+#
+# get-tinypilot.sh and get-tinypilot-pro.sh do not use this script because they
+# can't rely on it being available locally at install time.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo $0 $*" >&2
+  exit 1
+fi
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [-h] bundle_path
+Install the specified TinyPilot bundle on the system.
+  bundle_path: Local filesystem path or URL to TinyPilot bundle.
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+# Ensure 'bundle_path' is given.
+shift "$((OPTIND - 1))"
+if (( $# == 0 )); then
+  echo 'Input parameter missing: bundle_path' >&2
+  exit 1
+fi
+
+# Echo commands to stdout.
+set -x
+
+readonly BUNDLE_PATH="$1"
+
+if [[ "${BUNDLE_PATH}" == http* ]]; then
+  cd "$(mktemp --directory)"
+  wget "${BUNDLE_PATH}"
+  BUNDLE_FILE_PATH="${PWD}/$(find . -name '*.tgz')"
+  readonly BUNDLE_FILE_PATH
+else
+  readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
+fi
+
+readonly INSTALLER_DIR='/opt/tinypilot-updater'
+
+# Extract tarball to installer directory.
+rm -rf "${INSTALLER_DIR}"
+mkdir -p "${INSTALLER_DIR}"
+tar \
+  --gunzip \
+  --extract \
+  --file "${BUNDLE_FILE_PATH}" \
+  --directory "${INSTALLER_DIR}"
+
+# Run install.
+pushd "${INSTALLER_DIR}"
+./install
