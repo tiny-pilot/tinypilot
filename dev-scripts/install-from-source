@@ -42,7 +42,7 @@ LATEST_DEBIAN_PACKAGE="${PWD}/$(ls -t debian-pkg/releases/tinypilot*.deb | head 
 readonly LATEST_DEBIAN_PACKAGE
 
 # Clear any previous TinyPilot Debian packages in the bundle directory.
-find ./bundler/bundle/ -name tinypilot*.deb -delete
+find ./bundler/bundle/ -name 'tinypilot*.deb' -delete
 
 mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
 
