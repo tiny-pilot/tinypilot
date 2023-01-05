@@ -47,6 +47,14 @@ if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
   exit 1
 fi
 
+# Abort installation if the read-only filesystem is enabled
+if grep -q "boot=overlay" /proc/cmdline ; then
+  echo 'The read-only filesystem is enabled.' >&2
+  echo 'Disable the read-only filesystem before proceeding.' >&2
+  echo 'See https://tinypilotkvm.com/faq/read-only-filesystem for details.' >&2
+  exit 1
+fi
+
 # Check if there's already a settings file with extra installation settings.
 if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
   echo "Using settings file at: ${TINYPILOT_SETTINGS_FILE}"
