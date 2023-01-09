@@ -9,6 +9,8 @@ set -u
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
+readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
+readonly USTREAMER_CONFIG_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
 
 # Create tinypilot group if it doesn't already exist.
 getent group "${TINYPILOT_GROUP}" > /dev/null || \
@@ -24,5 +26,13 @@ adduser \
   "${TINYPILOT_USER}"
 
 chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
+
+# Use TinyPilot's settings to override uStreamer's runtime variables.
+if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
+  ln \
+    --symbolic \
+    "${TINYPILOT_SETTINGS_FILE}" \
+    "${USTREAMER_CONFIG_FILE}"
+fi
 
 #DEBHELPER#
