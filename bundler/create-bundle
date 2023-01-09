@@ -22,7 +22,7 @@ cd "${SCRIPT_DIR}/.."
 cd ./bundler
 
 readonly ANSIBLE_ROLE_TINYPILOT_REPO='https://github.com/tiny-pilot/ansible-role-tinypilot'
-readonly ANSIBLE_ROLE_TINYPILOT_VERSION='jdeanwallace/apply-video-settings'
+readonly ANSIBLE_ROLE_TINYPILOT_VERSION='master'
 
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
