@@ -1,7 +1,7 @@
 import logging
 import subprocess
 
-import flask
+import db.settings
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,9 @@ def restart():
     complete.
     """
     _restart_ustreamer()
-    if flask.current_app.config.get('USE_WEBRTC_REMOTE_SCREEN', False):
+    use_webrtc = db.settings.Settings().get_streaming_mode(
+    ) == db.settings.StreamingMode.H264
+    if use_webrtc:
         _restart_janus()
 
 
