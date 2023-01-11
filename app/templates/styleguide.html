@@ -11,6 +11,12 @@
     @import "css/icons.css";
     @import "css/toggle.css";
 
+    body {
+      /* Override to prevent dark-mode, otherwise we would need to make several
+         color adjustments in the styleguide to account for the dark background.
+         That’s not worth the effort, since the styleguide is internal. */
+      background: var(--brand-creme-light) !important;
+    }
     main {
       margin: 1rem auto;
       width: 40rem;
