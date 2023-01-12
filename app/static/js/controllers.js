@@ -310,3 +310,17 @@ export async function getLicensingMetadata() {
     redirect: "error",
   }).then(processJsonResponse);
 }
+
+export async function isMjpegStreamAvailable() {
+  try {
+    const response = await fetch("/stream", {
+      method: "GET",
+      mode: "same-origin",
+      cache: "no-cache",
+      redirect: "error",
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
