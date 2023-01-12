@@ -137,7 +137,9 @@ print_info "Checking TinyPilot updater logs..."
 print_info "Checking uStreamer configuration..."
 {
   printf "uStreamer configuration\n"
-  cat /opt/ustreamer-launcher/configs.d/*
+  # Merge together all YAML config files.
+  yq eval-all '. as $item ireduce ({}; . * $item )' \
+    /opt/ustreamer-launcher/configs.d/*
   printf "\n"
 } >> "${LOG_FILE}"
 
