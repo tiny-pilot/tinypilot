@@ -314,7 +314,7 @@ export async function getLicensingMetadata() {
 export async function isMjpegStreamAvailable() {
   try {
     const response = await fetch("/stream", {
-      method: "GET",
+      method: "HEAD",
       mode: "same-origin",
       cache: "no-cache",
       redirect: "error",
