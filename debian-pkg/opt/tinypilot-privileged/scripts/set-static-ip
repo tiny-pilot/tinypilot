@@ -40,10 +40,15 @@ set-static-ip \\
 EOF
 }
 
+print_help_nudge() {
+  echo "For help on using this tool:" >&2
+  echo "  set-static-ip --help" >&2
+}
+
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
-source "${SCRIPT_DIR}"/lib/markers.sh
+source "${SCRIPT_DIR}/lib/markers.sh"
 
 # Parse command-line arguments.
 if ! NEW_ARGS=$(getopt -q -o "" -l "ip:,router:,dns:,interface:" -- "$@"); then
@@ -59,9 +64,8 @@ while true; do
       if [[ -z "${IP_ADDRESS}" ]] ; then
         readonly IP_ADDRESS="$2"
       else
-        echo "Only one static IP address should be provided using --ip." >&2
-        echo "For help on using this tool:" >&2
-        echo "  set-static-ip --help" >&2
+        echo "Only one static IP address should be provided using --ip" >&2
+        print_help_nudge
         exit 1
       fi
       shift 2
@@ -70,9 +74,8 @@ while true; do
       if [[ -z "${ROUTERS}" ]] ; then
         readonly ROUTERS="$2"
       else
-        echo "Only one router IP address should be provided using --router." >&2
-        echo "For help on using this tool:" >&2
-        echo "  set-static-ip --help" >&2
+        echo "Only one router IP address should be provided using --router" >&2
+        print_help_nudge
         exit 1
       fi
       shift 2
@@ -89,9 +92,8 @@ while true; do
       if [[ -z "${INTERFACE}" ]] ; then
         readonly INTERFACE="$2"
       else
-        echo "Only one interface should be provided using --interface." >&2
-        echo "For help on using this tool:" >&2
-        echo "  set-static-ip --help" >&2
+        echo "Only one interface should be provided using --interface" >&2
+        print_help_nudge
         exit 1
       fi
       shift 2
@@ -105,16 +107,14 @@ done
 
 # There must be at least a static IP address and a router IP address.
 if [[ -z "${IP_ADDRESS}" ]] ; then
-  echo "You must specify an IP address using --ip." >&2
-  echo "For help on using this tool:" >&2
-  echo "  set-static-ip --help" >&2
+  echo "You must specify an IP address using --ip" >&2
+  print_help_nudge
   exit 1
 fi
 
 if [[ -z "${ROUTERS}" ]] ; then
-  echo "You must specify a router IP address using --router." >&2
-  echo "For help on using this tool:" >&2
-  echo "  set-static-ip --help" >&2
+  echo "You must specify a router IP address using --router" >&2
+  print_help_nudge
   exit 1
 fi
 
@@ -133,7 +133,7 @@ fi
 set -u
 
 # Use the unset-static-ip script to remove any existing configuration.
-"${SCRIPT_DIR}"/unset-static-ip --quiet --interface ${INTERFACE}
+"${SCRIPT_DIR}/unset-static-ip" --quiet --interface ${INTERFACE}
 
 # Only proceed if no other configuration exists.
 if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then

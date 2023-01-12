@@ -30,7 +30,7 @@ EOF
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
-source "${SCRIPT_DIR}"/lib/markers.sh
+source "${SCRIPT_DIR}/lib/markers.sh"
 
 # Parse command-line arguments.
 if ! NEW_ARGS=$(getopt -q -o "" -l "quiet,interface:" -- "$@"); then
@@ -50,7 +50,7 @@ while true; do
       if [[ -z "${INTERFACE}" ]] ; then
         readonly INTERFACE="$2"
       else
-        echo "Only one interface should be provided using --interface." >&2
+        echo "Only one interface should be provided using --interface" >&2
         echo "For help on using this tool:" >&2
         echo "  unset-static-ip --help" >&2
         exit 1
