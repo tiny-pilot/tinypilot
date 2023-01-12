@@ -1,0 +1,162 @@
+#!/bin/bash
+#
+# Sets a static local IP address for the TinyPilot device.
+
+# Exit on first error.
+set -e
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} --router router_ip --ip static_ip [--dns dns_ip]...
+[--interface name]
+
+Sets a static local IP address for the TinyPilot device.
+  --router router_ip: The IP address of the local router (e.g., 10.0.0.1).
+  --ip static_ip:     The static IP address to assign to the TinyPilot device
+                      (e.g., 10.0.0.50).
+  --dns dns_ip:       Optional. A DNS server to use to resolve domain names
+                      (e.g., 8.8.8.8). Multiple DNS servers can be provided. If
+                      unspecified, defaults to the router's DNS, then Google
+                      (8.8.8.8), then Cloudflare (1.1.1.1).
+  --interface name:   Optional. The interface to configure (e.g., eth0).
+                      Defaults to eth0.
+  --help:             Display this help text.
+
+Examples:
+
+1. Set static IP to 10.0.105 on a 10.0.0.x network.
+set-static-ip \\
+  --router 10.0.0.1 \\
+  --ip 10.0.0.105
+
+2. Configure wlan0 with a static IP of 192.168.1.100, with a Quad9 DNS server and a local fallback DNS server.
+set-static-ip \\
+  --router 192.168.1.1 \\
+  --ip 192.168.1.100 \\
+  --dns 9.9.9.9 \\
+  --dns 192.168.1.1 \\
+  --interface wlan0
+
+EOF
+}
+
+print_help_nudge() {
+  echo "For help on using this tool:" >&2
+  echo "  set-static-ip --help" >&2
+}
+
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly CONFIG_FILE="/etc/dhcpcd.conf"
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+# Parse command-line arguments.
+if ! NEW_ARGS=$(getopt -q -o "" -l "ip:,router:,dns:,interface:" -- "$@"); then
+  print_help
+  exit 1
+fi
+
+# Process command-line arguments.
+eval set -- "${NEW_ARGS}"
+while true; do
+  case "$1" in
+    --ip)
+      if [[ -z "${IP_ADDRESS}" ]] ; then
+        readonly IP_ADDRESS="$2"
+      else
+        echo "Only one static IP address should be provided using --ip" >&2
+        print_help_nudge
+        exit 1
+      fi
+      shift 2
+      ;;
+    --router)
+      if [[ -z "${ROUTERS}" ]] ; then
+        readonly ROUTERS="$2"
+      else
+        echo "Only one router IP address should be provided using --router" >&2
+        print_help_nudge
+        exit 1
+      fi
+      shift 2
+      ;;
+    --dns)
+      if [[ -z "${DNS}" ]] ; then
+        DNS="$2"
+      else
+        DNS="${DNS} $2"
+      fi
+      shift 2
+      ;;
+    --interface)
+      if [[ -z "${INTERFACE}" ]] ; then
+        readonly INTERFACE="$2"
+      else
+        echo "Only one interface should be provided using --interface" >&2
+        print_help_nudge
+        exit 1
+      fi
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+  esac
+done
+
+# There must be at least a static IP address and a router IP address.
+if [[ -z "${IP_ADDRESS}" ]] ; then
+  echo "You must specify an IP address using --ip" >&2
+  print_help_nudge
+  exit 1
+fi
+
+if [[ -z "${ROUTERS}" ]] ; then
+  echo "You must specify a router IP address using --router" >&2
+  print_help_nudge
+  exit 1
+fi
+
+# Default DNS settings.
+if [[ -z "${DNS}" ]] ; then
+  DNS="${ROUTERS} 8.8.8.8 1.1.1.1"
+fi
+readonly DNS
+
+# Default interface.
+if [[ -z "${INTERFACE}" ]] ; then
+  readonly INTERFACE="eth0"
+fi
+
+# Exit on unset variable.
+set -u
+
+# Use the unset-static-ip script to remove any existing configuration.
+"${SCRIPT_DIR}/unset-static-ip" --quiet --interface ${INTERFACE}
+
+# Only proceed if no other configuration exists.
+if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
+  echo "An existing configuration exists in ${CONFIG_FILE} for ${INTERFACE}." >&2
+  echo "Please remove the existing configuration and try again." >&2
+  exit 1
+fi
+
+# Write out the new configuration.
+{
+  echo "${MARKER_START}"
+  echo "interface ${INTERFACE}"
+  echo "static ip_address=${IP_ADDRESS}"
+  echo "static routers=${ROUTERS}"
+  echo "static domain_name_servers=${DNS}"
+  echo "${MARKER_END}"
+} | sudo tee --append "${CONFIG_FILE}" > /dev/null
+
+# Changes require a reboot so prompt the user.
+echo "A static local IP address has been set."
+echo "  Interface: ${INTERFACE}"
+echo "  IP Address: ${IP_ADDRESS}"
+echo "  Routers: ${ROUTERS}"
+echo "  Domain Name Servers: ${DNS}"
+echo ""
+echo "Reboot your TinyPilot device to apply the changes."
