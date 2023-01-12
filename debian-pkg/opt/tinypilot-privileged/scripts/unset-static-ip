@@ -30,7 +30,7 @@ EOF
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
-source "${SCRIPT_DIR}/lib/markers.sh"
+. "${SCRIPT_DIR}/lib/markers.sh"
 
 # Parse command-line arguments.
 if ! NEW_ARGS=$(getopt -q -o "" -l "quiet,interface:" -- "$@"); then

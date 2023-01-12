@@ -10,7 +10,7 @@ set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # shellcheck source=lib/markers.sh
-source "${SCRIPT_DIR}/lib/markers.sh"
+. "${SCRIPT_DIR}/lib/markers.sh"
 
 readonly VALID_HOSTNAME_PATTERN='^[-0-9A-Za-z]+$'
 
