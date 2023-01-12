@@ -137,7 +137,9 @@ print_info "Checking TinyPilot updater logs..."
 print_info "Checking uStreamer configuration..."
 {
   printf "uStreamer configuration\n"
-  # Merge together all YAML config files.
+  # Merge together all YAML files.
+  # Prevent shellcheck from thinking that $item is a bash variable.
+  # shellcheck disable=SC2016
   yq eval-all '. as $item ireduce ({}; . * $item )' \
     /opt/ustreamer-launcher/configs.d/*
   printf "\n"
