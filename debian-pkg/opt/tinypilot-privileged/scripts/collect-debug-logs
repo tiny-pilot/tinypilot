@@ -137,7 +137,7 @@ print_info "Checking TinyPilot updater logs..."
 print_info "Checking uStreamer configuration..."
 {
   printf "uStreamer configuration\n"
-  cat /lib/systemd/system/ustreamer.service
+  tail --lines +1 /opt/ustreamer-launcher/configs.d/*
   printf "\n"
 } >> "${LOG_FILE}"
 

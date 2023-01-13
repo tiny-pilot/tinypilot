@@ -160,7 +160,9 @@
     getVideoSettings,
     saveVideoSettings,
     applyVideoSettings,
+    isMjpegStreamAvailable,
   } from "/js/controllers.js";
+  import { poll } from "/js/poll.js";
 
   (function () {
     const template = document.querySelector("#video-settings-template");
@@ -445,6 +447,13 @@
             h264Bitrate: this._getH264Bitrate(),
           })
             .then(applyVideoSettings)
+            .then(() =>
+              poll({
+                fn: isMjpegStreamAvailable,
+                validate: (isAvailable) => isAvailable,
+                interval: 1000,
+              })
+            )
             .then(() => {
               // Note: After the video stream stops, it doesn't try to
               // reconnect. So in order to restart the video stream, we need to

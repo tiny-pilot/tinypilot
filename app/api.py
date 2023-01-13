@@ -12,6 +12,7 @@ import update.launcher
 import update.settings
 import update.status
 import version
+import video_service
 import video_settings
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -309,10 +310,8 @@ def settings_video_apply_post():
     """Applies the current video settings found in the settings file.
 
     Returns:
-        Empty response on success, error object otherwise.
+        Empty response.
     """
-    try:
-        video_settings.apply()
-    except video_settings.Error as e:
-        return json_response.error(e), 500
+    video_service.restart()
+
     return json_response.success()
