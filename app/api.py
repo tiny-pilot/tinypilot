@@ -309,6 +309,9 @@ def settings_video_put():
 def settings_video_apply_post():
     """Applies the current video settings found in the settings file.
 
+    To allow the current video settings to take effect, we restart the video
+    streaming services to reread the settings file and reinitialize the stream.
+
     Returns:
         Empty response.
     """
