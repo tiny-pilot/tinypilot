@@ -13,7 +13,6 @@ import update.settings
 import update.status
 import version
 import video_service
-import video_settings
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -240,11 +239,11 @@ def settings_video_get():
     return json_response.success({
         'streamingMode': streaming_mode,
         'frameRate': update_settings.ustreamer_desired_fps,
-        'defaultFrameRate': video_settings.DEFAULT_FRAME_RATE,
+        'defaultFrameRate': video_service.DEFAULT_FRAME_RATE,
         'mjpegQuality': update_settings.ustreamer_quality,
-        'defaultMjpegQuality': video_settings.DEFAULT_MJPEG_QUALITY,
+        'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
         'h264Bitrate': update_settings.ustreamer_h264_bitrate,
-        'defaultH264Bitrate': video_settings.DEFAULT_H264_BITRATE
+        'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE
     })
 
 
