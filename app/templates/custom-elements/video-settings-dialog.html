@@ -450,7 +450,7 @@
             .then(() =>
               // To ensure that the MJPEG stream is available after applying the
               // video settings, we need to poll the /stream endpoint until it
-              // returns an HTTP 200 OK response.
+              // returns an HTTP 2xx response.
               poll({
                 fn: isMjpegStreamAvailable,
                 validate: (isAvailable) => isAvailable,
