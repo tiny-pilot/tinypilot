@@ -71,3 +71,46 @@ The TinyPilot software is distributed as a single-file tarball bundle, which is 
 - Metadata (e.g., the TinyPilot version)
 
 For more details, see [the `README` of the bundler](bundler/README.md).
+
+## Configuration
+
+### Runtime database
+
+TinyPilot's runtime database is located at `/home/tinypilot/tinypilot.db`.
+
+The runtime database is a SQLite database that stores settings that only affect TinyPilot and not other associated components such as nginx or uStreamer. The runtime database includes:
+
+* Currently selected streaming mode to display in the web UI (MJPEG or H.264)
+* Usernames and password hashes (Pro only)
+* MAC address for Wake on LAN (Pro only)
+
+### YAML configuration files
+
+TinyPilot's global settings are located at:
+
+* `/home/tinypilot/settings.yml`
+  * This file is also symlinked from `/opt/ustreamer-launcher/configs.d/100-tinypilot.yml`
+
+The `settings.yml` file override's the default settings for the TinyPilot and uStreamer Ansible roles.
+
+uStreamer specific settings are located at:
+
+* `/opt/ustreamer-launcher/configs.d/000-defaults.yml`
+
+### Ansible-generated files
+
+Ansible generates several files that control TinyPilot's behavior.
+
+The most interesting configuration file Ansible generates is the nginx configuration:
+
+* `/etc/nginx/sites-enabled/tinypilot.conf`
+
+For TC358743-based systems (which all Voyager systems are), Ansible copies the value of `ustreamer_edid` from the Ansible configuration to an EDID file at:
+
+* `/home/ustreamer/edids/tc358743-edid.hex`
+
+Ansible additionally generates several systemd service definitions. As of TinyPilot Pro 2.5.2 and TinyPilot Community 1.8.1, the service definitions don't contain many interesting settings:
+
+* `/lib/systemd/system/tinypilot.service`
+* `/lib/systemd/system/ustreamer.service`
+* `/lib/systemd/system/usb-gadget.service`
