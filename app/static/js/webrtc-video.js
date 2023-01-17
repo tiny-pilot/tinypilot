@@ -171,7 +171,7 @@ function attachToJanusPlugin() {
      */
     onremotetrack: function (track, mid, added) {
       console.debug(
-        `Remote ${track.kind} track ${mid} ${added ? "added" : "removed"}.`
+        `Remote ${track.kind} track "${mid}" ${added ? "added" : "removed"}.`
       );
 
       if (!added) {
