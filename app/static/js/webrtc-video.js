@@ -98,7 +98,9 @@ function attachToJanusPlugin() {
       // Note, that the plugin will automatically start streaming when it
       // receives this request, so it’s technically not required to issue
       // another `start` request afterwards. (See below.)
-      janusPluginHandle.send({ message: { request: "watch" } });
+      janusPluginHandle.send({
+        message: { request: "watch", params: { audio: true } },
+      });
     },
 
     /**
@@ -123,7 +125,9 @@ function attachToJanusPlugin() {
         msg.error_code === 503 &&
         watchRequestRetryExpiryTimestamp > Date.now()
       ) {
-        janusPluginHandle.send({ message: { request: "watch" } });
+        janusPluginHandle.send({
+          message: { request: "watch", params: { audio: true } },
+        });
         return;
       }
       if (!jsep) {
@@ -166,22 +170,16 @@ function attachToJanusPlugin() {
      * @param {boolean} added Whether the track was added or removed.
      */
     onremotetrack: function (track, mid, added) {
-      console.debug(`Remote track changed. mid:"${mid}" added:"${added}"`);
+      console.debug(
+        `Remote ${track.kind} track "${mid}" ${added ? "added" : "removed"}.`
+      );
 
       if (!added) {
         remoteScreen.enableMjpeg();
         return;
       }
 
-      // According to the examples/tests in the Janus repository, the track
-      // object is supposed to be cloned:
-      // https://github.com/meetecho/janus-gateway/blob/4110eea4568926dc18642a544718c87118629253/html/streamingtest.js#L249-L250
-      // That way, the track is assigned a new and globally unique id. This
-      // helps to avoid potential interferences with other JS code that might
-      // also deal with media tracks.
-      const stream = new MediaStream();
-      stream.addTrack(track.clone());
-      remoteScreen.enableWebrtc(stream);
+      remoteScreen.enableWebrtc(track);
     },
   });
 }
