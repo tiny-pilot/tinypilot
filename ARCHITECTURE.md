@@ -97,6 +97,8 @@ uStreamer specific settings are located at:
 
 * `/opt/ustreamer-launcher/configs.d/000-defaults.yml`
 
+Changes to uStreamer settings in either YAML configuration file take effect on the next restart of the uStreamer systemd service.
+
 ### Ansible-generated files
 
 Ansible generates several files that control TinyPilot's behavior.
