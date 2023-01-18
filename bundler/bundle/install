@@ -81,15 +81,12 @@ elif [ -f "${USTREAMER_SETTINGS_FILE}" ] \
 fi
 
 # Write uStreamer settings.
-if "${USE_TC358743_DEFAULTS}"; then
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_encoder" "omx"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_format" "uyvy"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_workers" "3"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_use_dv_timings" "true"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_drop_same_frames" "30"
-else
-  # If this system does not use a TC358743 capture chip, assume defaults for a
-  # MacroSilicon MS2109-based HDMI-to-USB capture dongle.
+# If this system does not use a TC358743 capture chip, assume defaults for a
+# MacroSilicon MS2109-based HDMI-to-USB capture dongle. The TC358743 defaults
+# are provided in the uStreamer Ansible role.
+# TODO: we might be able to remove these defaults from here.
+# See https://github.com/tiny-pilot/tinypilot/issues/1267
+if ! "${USE_TC358743_DEFAULTS}"; then
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_encoder" "hw"
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_format" "jpeg"
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
