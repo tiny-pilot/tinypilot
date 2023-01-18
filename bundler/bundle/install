@@ -126,4 +126,7 @@ ansible-playbook \
 # Persist installation settings.
 cp "${INSTALL_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
 chown tinypilot:tinypilot "${TINYPILOT_SETTINGS_FILE}"
+
+# Make the installation settings file world readable so that the uStreamer
+# launcher script can access it via a symbolic link.
 chmod 0644 "${TINYPILOT_SETTINGS_FILE}"

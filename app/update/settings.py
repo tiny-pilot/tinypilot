@@ -16,7 +16,7 @@ import os
 
 import yaml
 
-import video_settings
+import video_service
 
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
@@ -54,32 +54,32 @@ class Settings:
     @property
     def ustreamer_desired_fps(self):
         return self._data.get('ustreamer_desired_fps',
-                              video_settings.DEFAULT_FRAME_RATE)
+                              video_service.DEFAULT_FRAME_RATE)
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
         self._set_or_clear('ustreamer_desired_fps', value,
-                           video_settings.DEFAULT_FRAME_RATE)
+                           video_service.DEFAULT_FRAME_RATE)
 
     @property
     def ustreamer_quality(self):
         return self._data.get('ustreamer_quality',
-                              video_settings.DEFAULT_MJPEG_QUALITY)
+                              video_service.DEFAULT_MJPEG_QUALITY)
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
         self._set_or_clear('ustreamer_quality', value,
-                           video_settings.DEFAULT_MJPEG_QUALITY)
+                           video_service.DEFAULT_MJPEG_QUALITY)
 
     @property
     def ustreamer_h264_bitrate(self):
         return self._data.get('ustreamer_h264_bitrate',
-                              video_settings.DEFAULT_H264_BITRATE)
+                              video_service.DEFAULT_H264_BITRATE)
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
         self._set_or_clear('ustreamer_h264_bitrate', value,
-                           video_settings.DEFAULT_H264_BITRATE)
+                           video_service.DEFAULT_H264_BITRATE)
 
     def _set_or_clear(self, prop_name, value, default_value):
         if value == default_value:

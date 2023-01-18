@@ -3,6 +3,10 @@ import subprocess
 
 import db.settings
 
+DEFAULT_FRAME_RATE = 30
+DEFAULT_MJPEG_QUALITY = 80
+DEFAULT_H264_BITRATE = 5000
+
 logger = logging.getLogger(__name__)
 
 

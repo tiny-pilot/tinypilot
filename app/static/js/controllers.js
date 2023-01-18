@@ -312,15 +312,12 @@ export async function getLicensingMetadata() {
 }
 
 export async function isMjpegStreamAvailable() {
-  try {
-    const response = await fetch("/stream", {
-      method: "HEAD",
-      mode: "same-origin",
-      cache: "no-cache",
-      redirect: "error",
-    });
-    return response.ok;
-  } catch (error) {
-    return false;
-  }
+  return fetch("/stream", {
+    method: "HEAD",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then((response) => response.ok)
+    .catch(() => false);
 }
