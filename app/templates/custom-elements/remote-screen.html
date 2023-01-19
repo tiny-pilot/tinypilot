@@ -137,6 +137,19 @@
             image: this.shadowRoot.getElementById("mjpeg-output"),
           };
 
+          // Initialize the WebRTC media stream.
+          this.elements.video.srcObject = new MediaStream();
+
+          // Display the WebRTC stream when the WebRTC media starts playing.
+          this.elements.video.addEventListener("playing", (event) => {
+            this.enableWebrtc();
+          });
+
+          // Display the MJPEG stream when the WebRTC media is paused.
+          this.elements.video.addEventListener("pause", (event) => {
+            this.enableMjpeg();
+          });
+
           this._addScreenEventListeners(this.elements.video);
           this._addScreenEventListeners(this.elements.image);
 
@@ -319,14 +332,12 @@
         }
 
         /**
-         * Enable the WebRTC stream while disabling the MJPEG stream.
+         * Adds a track to the WebRTC media stream.
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        enableWebrtc(mediaStreamTrack) {
-          const modeChanged = this.elements.video.srcObject === null;
-          const stream = modeChanged
-            ? new MediaStream()
-            : this.elements.video.srcObject;
+        addWebrtcStreamTrack(mediaStreamTrack) {
+          const video = this.elements.video;
+          const stream = video.srcObject;
           // Ensure that the stream doesn't contain multiple tracks of the same
           // kind (i.e., multiple audio or video tracks).
           // For example, if an additional new video track is being added, first
@@ -343,21 +354,39 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-          this.elements.video.srcObject = stream;
-          this.webrtcEnabled = true;
-          this.elements.image.removeAttribute("src");
-          if (modeChanged) {
-            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+          if (video.paused) {
+            video.play();
           }
         }
 
         /**
-         * Enable the MJPEG stream while disabling the WebRTC stream.
+         * Removes a track from the WebRTC media stream.
+         * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
+         */
+        removeWebrtcStreamTrack(mediaStreamTrack) {
+          const video = this.elements.video;
+          const stream = video.srcObject;
+          stream.removeTrack(mediaStreamTrack);
+          if (stream.getTracks().length === 0) {
+            video.pause();
+          }
+        }
+
+        /**
+         * Displays the WebRTC stream while hiding the MJPEG stream.
+         */
+        enableWebrtc() {
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+        }
+
+        /**
+         * Displays the MJPEG stream while hiding the WebRTC stream.
          */
         enableMjpeg() {
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
-          this.elements.video.srcObject = null;
           this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
         }
 
