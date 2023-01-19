@@ -385,6 +385,9 @@
          * Displays the MJPEG stream while hiding the WebRTC stream.
          */
         enableMjpeg() {
+          if (this.elements.image.hasAttribute("src")) {
+            return;
+          }
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
           this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
