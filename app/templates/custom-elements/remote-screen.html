@@ -355,7 +355,9 @@
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
           if (video.paused) {
-            video.play();
+            video.play().catch((error) => {
+              console.error("Failed play WebRTC media: " + error);
+            });
           }
         }
 
