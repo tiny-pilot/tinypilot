@@ -175,9 +175,9 @@ function attachToJanusPlugin() {
       );
 
       if (added) {
-        remoteScreen.addWebrtcStreamTrack(track);
+        remoteScreen.enableWebrtcStreamTrack(track);
       } else {
-        remoteScreen.removeWebrtcStreamTrack(track);
+        remoteScreen.disableWebrtcStreamTrack(track);
       }
     },
   });

@@ -335,10 +335,16 @@
         }
 
         /**
-         * Adds a track to the WebRTC media stream.
+         * Adds a track to the WebRTC media stream and attempts to display the
+         * WebRTC stream, while hiding the MJPEG stream.
+         *
+         * The WebRTC stream may silently fail to display if the browser hasn't
+         * been granted permission to play media. If so, the MJPEG stream will
+         * continue to be displayed.
+         *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        addWebrtcStreamTrack(mediaStreamTrack) {
+        enableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           const stream = video.srcObject;
           // Ensure that the stream doesn't contain multiple tracks of the same
@@ -368,14 +374,19 @@
         }
 
         /**
-         * Removes a track from the WebRTC media stream.
+         * Removes a track from the WebRTC media stream. If there are no more
+         * tracks in the stream, the MJPEG stream is displayed and the WebRTC
+         * stream is hidden.
+         *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        removeWebrtcStreamTrack(mediaStreamTrack) {
+        disableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
           if (stream.getTracks().length === 0) {
+            // Once there are no more tracks left in the stream, we pause the
+            // media to indicate that the WebRTC stream should be hidden.
             video.pause();
           }
         }
