@@ -145,7 +145,7 @@
           // video element's `autoplay` attribute or explicitly when we call the
           // `play` method.
           this.elements.video.addEventListener("playing", (event) => {
-            this.enableWebrtc();
+            this._enableWebrtc();
           });
 
           // Display the MJPEG stream when the WebRTC media is paused.
@@ -394,7 +394,7 @@
         /**
          * Displays the WebRTC stream while hiding the MJPEG stream.
          */
-        enableWebrtc() {
+        _enableWebrtc() {
           this.webrtcEnabled = true;
           this.elements.image.removeAttribute("src");
           this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
