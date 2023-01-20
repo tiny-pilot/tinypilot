@@ -141,6 +141,9 @@
           this.elements.video.srcObject = new MediaStream();
 
           // Display the WebRTC stream when the WebRTC media starts playing.
+          // Note: the media can either start playing automatically via the
+          // video element's `autoplay` attribute or explicitly when we call the
+          // `play` method.
           this.elements.video.addEventListener("playing", (event) => {
             this.enableWebrtc();
           });
@@ -355,6 +358,9 @@
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
           if (video.paused) {
+            // We always attempt to play the media because only when the media
+            // starts playing do we know that the WebRTC stream is ready to be
+            // displayed.
             video.play().catch((error) => {
               console.error("Failed play WebRTC media: " + error);
             });
