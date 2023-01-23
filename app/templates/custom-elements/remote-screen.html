@@ -350,6 +350,11 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
+          if (stream.getVideoTracks().length === 0) {
+            // Don't display the WebRTC stream if there are no video tracks.
+            // https://github.com/tiny-pilot/tinypilot/issues/1271
+            return;
+          }
           // We always attempt to play the media because only when the media
           // starts playing do we know that the WebRTC stream is ready to be
           // displayed.
@@ -379,6 +384,7 @@
             // the WebRTC media and display the MJPEG stream. However, if there
             // are no more audio tracks left in the stream, we stay in H.264
             // mode because it's still better than MJPEG mode.
+            // https://github.com/tiny-pilot/tinypilot/issues/1271
             video.pause();
             this.enableMjpeg();
           }
