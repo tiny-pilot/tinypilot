@@ -174,12 +174,11 @@ function attachToJanusPlugin() {
         `Remote ${track.kind} track "${mid}" ${added ? "added" : "removed"}.`
       );
 
-      if (!added) {
-        remoteScreen.enableMjpeg();
-        return;
+      if (added) {
+        remoteScreen.enableWebrtcStreamTrack(track);
+      } else {
+        remoteScreen.disableWebrtcStreamTrack(track);
       }
-
-      remoteScreen.enableWebrtc(track);
     },
   });
 }

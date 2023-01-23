@@ -68,7 +68,7 @@
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
 
     <img class="screen" id="mjpeg-output" />
-    <video class="screen" id="webrtc-output" autoplay playsinline muted></video>
+    <video class="screen" id="webrtc-output" playsinline muted></video>
   </div>
 </template>
 
@@ -136,6 +136,9 @@
             video: this.shadowRoot.getElementById("webrtc-output"),
             image: this.shadowRoot.getElementById("mjpeg-output"),
           };
+
+          // Initialize the WebRTC media stream.
+          this.elements.video.srcObject = new MediaStream();
 
           this._addScreenEventListeners(this.elements.video);
           this._addScreenEventListeners(this.elements.image);
@@ -319,14 +322,18 @@
         }
 
         /**
-         * Enable the WebRTC stream while disabling the MJPEG stream.
+         * Adds a track to the WebRTC media stream and attempts to display the
+         * WebRTC stream, while hiding the MJPEG stream.
+         *
+         * The WebRTC stream may silently fail to display if the browser hasn't
+         * been granted permission to play media. If so, the MJPEG stream will
+         * continue to be displayed.
+         *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        enableWebrtc(mediaStreamTrack) {
-          const modeChanged = this.elements.video.srcObject === null;
-          const stream = modeChanged
-            ? new MediaStream()
-            : this.elements.video.srcObject;
+        enableWebrtcStreamTrack(mediaStreamTrack) {
+          const video = this.elements.video;
+          const stream = video.srcObject;
           // Ensure that the stream doesn't contain multiple tracks of the same
           // kind (i.e., multiple audio or video tracks).
           // For example, if an additional new video track is being added, first
@@ -343,21 +350,56 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-          this.elements.video.srcObject = stream;
-          this.webrtcEnabled = true;
-          this.elements.image.removeAttribute("src");
-          if (modeChanged) {
-            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+          // We always attempt to play the media because only when the media
+          // starts playing do we know that the WebRTC stream is ready to be
+          // displayed.
+          video
+            .play()
+            .then(() => {
+              this._enableWebrtc();
+            })
+            .catch((error) => {
+              console.error("Failed to play WebRTC media: " + error);
+            });
+        }
+
+        /**
+         * Removes a track from the WebRTC media stream. If there are no more
+         * tracks in the stream, the MJPEG stream is displayed and the WebRTC
+         * stream is hidden.
+         *
+         * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
+         */
+        disableWebrtcStreamTrack(mediaStreamTrack) {
+          const video = this.elements.video;
+          const stream = video.srcObject;
+          stream.removeTrack(mediaStreamTrack);
+          if (stream.getTracks().length === 0) {
+            // Once there are no more tracks left in the stream, we pause the
+            // WebRTC media and display the MJPEG stream.
+            video.pause();
+            this.enableMjpeg();
           }
         }
 
         /**
-         * Enable the MJPEG stream while disabling the WebRTC stream.
+         * Displays the WebRTC stream while hiding the MJPEG stream.
+         */
+        _enableWebrtc() {
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+        }
+
+        /**
+         * Displays the MJPEG stream while hiding the WebRTC stream.
          */
         enableMjpeg() {
+          if (this.elements.image.hasAttribute("src")) {
+            return;
+          }
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
-          this.elements.video.srcObject = null;
           this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
         }
 
