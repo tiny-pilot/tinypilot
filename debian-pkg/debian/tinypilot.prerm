@@ -3,15 +3,17 @@
 # Exit script on first failure.
 set -e
 
-cd /opt/tinypilot
-rm -rf venv
-find . \
-  -type f \
-  -name "*.pyc" \
-  -delete \
-  -or \
-  -type d \
-  -name __pycache__ \
-  -delete
+if [[ -d /opt/tinypilot ]] ; then
+  cd /opt/tinypilot
+  rm -rf venv
+  find . \
+    -type f \
+    -name "*.pyc" \
+    -delete \
+    -or \
+    -type d \
+    -name __pycache__ \
+    -delete
+fi
 
 #DEBHELPER#
