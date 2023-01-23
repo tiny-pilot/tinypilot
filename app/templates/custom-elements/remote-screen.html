@@ -374,9 +374,11 @@
           const video = this.elements.video;
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
-          if (stream.getTracks().length === 0) {
-            // Once there are no more tracks left in the stream, we pause the
-            // WebRTC media and display the MJPEG stream.
+          if (stream.getVideoTracks().length === 0) {
+            // Once there are no more video tracks left in the stream, we pause
+            // the WebRTC media and display the MJPEG stream. However, if there
+            // are no more audio tracks left in the stream, we stay in H.264
+            // mode because it's still better than MJPEG mode.
             video.pause();
             this.enableMjpeg();
           }
