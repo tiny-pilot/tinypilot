@@ -68,7 +68,7 @@
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
 
     <img class="screen" id="mjpeg-output" />
-    <video class="screen" id="webrtc-output" autoplay playsinline muted></video>
+    <video class="screen" id="webrtc-output" playsinline muted></video>
   </div>
 </template>
 
@@ -139,19 +139,6 @@
 
           // Initialize the WebRTC media stream.
           this.elements.video.srcObject = new MediaStream();
-
-          // Display the WebRTC stream when the WebRTC media starts playing.
-          // Note: the media can either start playing automatically via the
-          // video element's `autoplay` attribute or explicitly when we call the
-          // `play` method.
-          this.elements.video.addEventListener("playing", (event) => {
-            this._enableWebrtc();
-          });
-
-          // Display the MJPEG stream when the WebRTC media is paused.
-          this.elements.video.addEventListener("pause", (event) => {
-            this.enableMjpeg();
-          });
 
           this._addScreenEventListeners(this.elements.video);
           this._addScreenEventListeners(this.elements.image);
@@ -363,14 +350,17 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-          if (video.paused) {
-            // We always attempt to play the media because only when the media
-            // starts playing do we know that the WebRTC stream is ready to be
-            // displayed.
-            video.play().catch((error) => {
+          // We always attempt to play the media because only when the media
+          // starts playing do we know that the WebRTC stream is ready to be
+          // displayed.
+          video
+            .play()
+            .then(() => {
+              this._enableWebrtc();
+            })
+            .catch((error) => {
               console.error("Failed to play WebRTC media: " + error);
             });
-          }
         }
 
         /**
@@ -386,8 +376,9 @@
           stream.removeTrack(mediaStreamTrack);
           if (stream.getTracks().length === 0) {
             // Once there are no more tracks left in the stream, we pause the
-            // media to indicate that the WebRTC stream should be hidden.
+            // WebRTC media and display the MJPEG stream.
             video.pause();
+            this.enableMjpeg();
           }
         }
 
