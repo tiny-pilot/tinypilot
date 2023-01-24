@@ -322,8 +322,10 @@
         }
 
         /**
-         * Adds a track to the WebRTC media stream and attempts to display the
-         * WebRTC stream, while hiding the MJPEG stream.
+         * Adds a track to the WebRTC media stream. If there any video tracks in
+         * the stream, the WebRTC stream is displayed and the MJPEG stream is
+         * hidden. However, if there are only audio tracks in the stream, the
+         * MJPEG stream will continue to be displayed.
          *
          * The WebRTC stream may silently fail to display if the browser hasn't
          * been granted permission to play media. If so, the MJPEG stream will
@@ -350,6 +352,9 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
+          if (stream.getVideoTracks().length === 0) {
+            return;
+          }
           // We always attempt to play the media because only when the media
           // starts playing do we know that the WebRTC stream is ready to be
           // displayed.
@@ -365,8 +370,10 @@
 
         /**
          * Removes a track from the WebRTC media stream. If there are no more
-         * tracks in the stream, the MJPEG stream is displayed and the WebRTC
-         * stream is hidden.
+         * video tracks in the stream, the MJPEG stream is displayed and the
+         * WebRTC stream is hidden. However, if there are no more audio tracks
+         * in the stream, the WebRTC stream will continue to be displayed
+         * because it's still better than the MJPEG stream.
          *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
@@ -374,9 +381,7 @@
           const video = this.elements.video;
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
-          if (stream.getTracks().length === 0) {
-            // Once there are no more tracks left in the stream, we pause the
-            // WebRTC media and display the MJPEG stream.
+          if (stream.getVideoTracks().length === 0) {
             video.pause();
             this.enableMjpeg();
           }
