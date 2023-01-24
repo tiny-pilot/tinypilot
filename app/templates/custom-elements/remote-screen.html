@@ -322,8 +322,10 @@
         }
 
         /**
-         * Adds a track to the WebRTC media stream and attempts to display the
-         * WebRTC stream, while hiding the MJPEG stream.
+         * Adds a track to the WebRTC media stream. If there any video tracks in
+         * the stream, the WebRTC stream is displayed and the MJPEG stream is
+         * hidden. However, if there are only audio tracks in the stream, the
+         * MJPEG stream will continue to be displayed.
          *
          * The WebRTC stream may silently fail to display if the browser hasn't
          * been granted permission to play media. If so, the MJPEG stream will
@@ -351,8 +353,6 @@
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
           if (stream.getVideoTracks().length === 0) {
-            // Don't display the WebRTC stream if there are no video tracks.
-            // https://github.com/tiny-pilot/tinypilot/issues/1271
             return;
           }
           // We always attempt to play the media because only when the media
@@ -370,8 +370,10 @@
 
         /**
          * Removes a track from the WebRTC media stream. If there are no more
-         * tracks in the stream, the MJPEG stream is displayed and the WebRTC
-         * stream is hidden.
+         * video tracks in the stream, the MJPEG stream is displayed and the
+         * WebRTC stream is hidden. However, if there are no more audio tracks
+         * in the stream, the WebRTC stream will continue to be displayed
+         * because it's still better than the MJPEG stream.
          *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
@@ -380,11 +382,6 @@
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
           if (stream.getVideoTracks().length === 0) {
-            // Once there are no more video tracks left in the stream, we pause
-            // the WebRTC media and display the MJPEG stream. However, if there
-            // are no more audio tracks left in the stream, we stay in H.264
-            // mode because it's still better than MJPEG mode.
-            // https://github.com/tiny-pilot/tinypilot/issues/1271
             video.pause();
             this.enableMjpeg();
           }
