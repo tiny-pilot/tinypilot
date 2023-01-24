@@ -2,7 +2,7 @@
 # When modifying dependencies, update the credit in /app/license_notice.py
 
 # Direct dependencies.
-ansible==2.10.7
+ansible==7.0.0
 
 # Indirect dependencies.
 ansible-base==2.10.17
