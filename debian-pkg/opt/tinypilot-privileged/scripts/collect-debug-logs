@@ -113,6 +113,13 @@ print_info "Checking for voltage issues..."
   printf "\n"
 } >> "${LOG_FILE}"
 
+print_info "Checking TinyPilot settings..."
+{
+  printf "TinyPilot settings.yml\n"
+  cat /home/tinypilot/settings.yml
+  printf "\n"
+} >> "${LOG_FILE}"
+
 print_info "Checking TinyPilot configuration..."
 {
   printf "TinyPilot configuration\n"
