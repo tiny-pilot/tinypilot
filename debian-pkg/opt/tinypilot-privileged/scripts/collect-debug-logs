@@ -103,7 +103,7 @@ print_info "Checking if filesystem is read-only..."
 print_info "Checking if SSH is enabled..."
 {
   SSH_STATUS="disabled"
-  if systemctl is-active --quiet ssh ; then
+  if /opt/tinypilot/scripts/is-ssh-enabled ; then
     SSH_STATUS="enabled"
   fi
   readonly SSH_STATUS
