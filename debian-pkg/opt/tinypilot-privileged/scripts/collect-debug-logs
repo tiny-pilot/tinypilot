@@ -100,6 +100,16 @@ print_info "Checking if filesystem is read-only..."
   echo "Read-only filesystem: ${READ_ONLY_FILESYSTEM}"
 } >> "${LOG_FILE}"
 
+print_info "Checking if SSH is enabled..."
+{
+  SSH_STATUS="disabled"
+  if /opt/tinypilot/scripts/is-ssh-enabled ; then
+    SSH_STATUS="enabled"
+  fi
+  readonly SSH_STATUS
+  echo "SSH access: ${SSH_STATUS}"
+} >> "${LOG_FILE}"
+
 print_info "Checking temperature..."
 printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Test if SSH is enabled.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [-h]
+Returns an exit code of 0 if SSH is enabled and 255 if SSH is disabled.
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+if systemctl is-active --quiet ssh ; then
+  exit 0
+fi
+
+exit 255
