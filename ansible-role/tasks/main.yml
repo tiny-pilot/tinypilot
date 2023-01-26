@@ -18,7 +18,7 @@
     dest: "{{ tinypilot_privileged_dir }}/lib/{{ item | basename }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   with_fileglob:
     - lib/*
 
@@ -64,7 +64,7 @@
     dest: /lib/systemd/system/tinypilot.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
     - reload TinyPilot systemd config
     - restart TinyPilot service
