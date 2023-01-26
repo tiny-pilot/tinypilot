@@ -132,7 +132,8 @@ jobs:
       - run:
           name: Add TinyPilot Debian package name as an environment variable
           command: |
-            echo "export TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb)"" >> "${BASH_ENV}"
+            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
+            echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
