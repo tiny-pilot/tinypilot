@@ -15,6 +15,6 @@
         cache_valid_time: 600
     - name: Gather facts
       setup:
-    - name: "Include ansible-role-tinypilot"
+    - name: Include ansible-role
       include_role:
         name: ansible-role
