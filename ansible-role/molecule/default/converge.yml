@@ -17,6 +17,4 @@
       setup:
     - name: "Include ansible-role-tinypilot"
       include_role:
-        name: "ansible-role-tinypilot"
-      vars:
-        tinypilot_debian_package_path: /opt/debian-pkgs/tinypilot_latest_all.deb
+        name: ansible-role

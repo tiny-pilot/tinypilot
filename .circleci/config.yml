@@ -119,6 +119,34 @@ jobs:
               --no-cfg \
               --fail-on warning,error \
               tinypilot*.deb
+  build_ansible_role:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: large
+    working_directory: ~/project/ansible-role
+    steps:
+      - checkout:
+          path: ~/project
+      - attach_workspace:
+          at: ./debian-pkgs
+      - run:
+          name: Add TinyPilot Debian package name as an environment variable
+          command: |
+            echo "export TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb)"" >> "${BASH_ENV}"
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Test role with molecule
+          command: |
+            . venv/bin/activate && \
+            pip install --upgrade pip && \
+            pip install wheel==0.34.2 && \
+            pip install -r molecule/requirements.txt && \
+            ansible --version && \
+            molecule --version && \
+            ansible-galaxy install --role-file meta/requirements.yml && \
+            molecule test
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
@@ -211,6 +239,9 @@ workflows:
       - build_javascript
       - build_debian_package
       - lint_debian_package:
+          requires:
+            - build_debian_package
+      - build_ansible_role:
           requires:
             - build_debian_package
       - build_bundle:

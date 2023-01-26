@@ -28,6 +28,7 @@ provisioner:
       all:
         vars:
           ansible_user: root
+          tinypilot_debian_package_path: /opt/debian-pkgs/${TINYPILOT_DEBIAN_PACKAGE}
 verifier:
   name: ansible
 scenario:
