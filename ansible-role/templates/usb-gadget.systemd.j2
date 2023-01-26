@@ -1,0 +1,14 @@
+[Unit]
+Description=Initialize USB gadgets
+After=syslog.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart={{ tinypilot_privileged_dir }}/init-usb-gadget
+RemainAfterExit=true
+ExecStop={{ tinypilot_privileged_dir }}/remove-usb-gadget
+StandardOutput=journal
+
+[Install]
+WantedBy=local-fs.target

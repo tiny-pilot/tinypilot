@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: tinypilot
+  author: Michael Lynch
+  description: Use your Raspberry Pi as a virtual keyboard
+  license: MIT
+
+  min_ansible_version: 2.10
+
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+    - name: Ubuntu
+      versions:
+        - bionic
+
+  galaxy_tags:
+    - raspberrypi
+    - kvm
+    - usb
+    - hid
+    - oss

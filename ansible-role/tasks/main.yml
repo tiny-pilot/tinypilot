@@ -1,0 +1,77 @@
+---
+- name: install uStreamer
+  import_tasks: ustreamer.yml
+  tags:
+    - ustreamer
+
+- name: install nginx
+  import_tasks: nginx.yml
+
+- name: create the `lib` directory if it does not exist
+  file:
+    path: "{{ tinypilot_privileged_dir }}/lib"
+    state: directory
+
+- name: copy `lib` scripts
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tinypilot_privileged_dir }}/lib/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: '0755'
+  with_fileglob:
+    - lib/*
+
+- name: install HID USB gadget
+  import_tasks: install_usb_gadget.yml
+
+- name: install TinyPilot Debian package
+  apt:
+    deb: "{{ tinypilot_debian_package_path }}"
+
+- name: find absolute path to python3
+  shell: realpath $(which python3)
+  register: realpath_python3
+  changed_when: false
+
+- name: save absolute path to python3
+  set_fact:
+    python3_abs_path: "{{ realpath_python3.stdout }}"
+
+- name: create TinyPilot virtualenv
+  pip:
+    virtualenv: "{{ tinypilot_dir }}/venv"
+    virtualenv_command: "{{ python3_abs_path }} -m venv venv"
+    requirements: "{{ tinypilot_dir }}/requirements.txt"
+    extra_args: "{{ tinypilot_pip_args }}"
+  notify:
+    - restart TinyPilot service
+
+- name: create TinyPilot app settings
+  template:
+    src: tinypilot-app-settings.cfg.j2
+    dest: "{{ tinypilot_app_settings_file }}"
+    owner: "{{ tinypilot_user }}"
+    group: "{{ tinypilot_group }}"
+  notify:
+    - restart TinyPilot service
+  tags:
+    - app-settings
+
+- name: install TinyPilot as a service
+  template:
+    src: tinypilot.systemd.j2
+    dest: /lib/systemd/system/tinypilot.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - reload TinyPilot systemd config
+    - restart TinyPilot service
+  tags:
+    - systemd-config
+
+- name: enable systemd TinyPilot service file
+  systemd:
+    name: tinypilot
+    enabled: yes
