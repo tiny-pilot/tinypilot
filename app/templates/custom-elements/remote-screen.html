@@ -89,6 +89,7 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
+          this._attemptToUnmute = this._attemptToUnmute.bind(this);
           this.fillSpace = this.fillSpace.bind(this);
           this._addScreenEventListeners = this._addScreenEventListeners.bind(
             this
@@ -178,10 +179,16 @@
             mobileKeyboard.value = "";
             mobileKeyboard.focus();
           });
+
+          // TODO: determine exactly what qualifies as “user interaction”
+          document.addEventListener("click", this._attemptToUnmute);
+          document.addEventListener("keyup", this._attemptToUnmute);
         }
 
         disconnectedCallback() {
           window.removeEventListener("resize", this.onWindowResize);
+          document.removeEventListener("click", this._attemptToUnmute);
+          document.removeEventListener("keyup", this._attemptToUnmute);
           super.disconnectedCallback && super.disconnectedCallback();
         }
 
@@ -340,14 +347,10 @@
           // kind (i.e., multiple audio or video tracks).
           // For example, if an additional new video track is being added, first
           // remove the old video track.
-          for (const track of stream.getTracks()) {
-            if (
-              track.kind === mediaStreamTrack.kind &&
-              track.id !== mediaStreamTrack.id
-            ) {
-              stream.removeTrack(track);
-            }
+          if (stream.getTracks().find(t => t.id === mediaStreamTrack.id)) {
+            return;
           }
+          console.log('=== NEW TRACK === ', mediaStreamTrack)
           // Note: If the specified track is already in the stream's track set,
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
@@ -358,14 +361,35 @@
           // We always attempt to play the media because only when the media
           // starts playing do we know that the WebRTC stream is ready to be
           // displayed.
-          video
-            .play()
-            .then(() => {
+          if (video.paused) {
+            this._playVideoWithAudio().then(() => {
               this._enableWebrtc();
-            })
-            .catch((error) => {
-              console.error("Failed to play WebRTC media: " + error);
             });
+          }
+        }
+
+        _attemptToUnmute() {
+          const video = this.elements.video;
+          if (!this.webrtcEnabled || video.muted === false) {
+            return;
+          }
+          this._playVideoWithAudio();
+        }
+
+        _playVideoWithAudio() {
+          const video = this.elements.video;
+          video.muted = false;
+          const attemptToPlay = () => {
+            video.play().catch(error => {
+              console.error("Failed to play WebRTC media: " + error);
+            })
+          };
+          return video.play().catch(error => {
+            if (error.toString().includes('NotAllowedError')) {
+              video.muted = true;
+              return attemptToPlay();
+            }
+          })
         }
 
         /**
