@@ -70,7 +70,7 @@ pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
 # Install Ansible role.
-mkdir --parents "${ANSIBLE_ROLE_TINYPILOT_DIR}"
+mkdir "${ANSIBLE_ROLES_DIR}"
 cp -r ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
 
 # Install Ansible role dependencies.
