@@ -43,7 +43,7 @@ If you're planning to contribute code to TinyPilot, it's a good idea to enable t
 
 ### Enable mock scripts
 
-The TinyPilot server backend uses several privileged scripts (created in [`ansible-role/files/`](ansible-role/files)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
+The TinyPilot server backend uses several privileged scripts (provisioned to [`/opt/tinypilot-privileged/scripts/`](debian-pkg/opt/tinypilot-privileged/scripts)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
 
 To set up symlinks that mock out those scripts and facilitate development, run the following command:
 
