@@ -89,7 +89,9 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          this._attemptToUnmute = this._attemptToUnmute.bind(this);
+          this._onGlobalUserInteraction = this._onGlobalUserInteraction.bind(
+            this
+          );
           this.fillSpace = this.fillSpace.bind(this);
           this._addScreenEventListeners = this._addScreenEventListeners.bind(
             this
@@ -180,15 +182,14 @@
             mobileKeyboard.focus();
           });
 
-          // TODO: determine exactly what qualifies as “user interaction”
-          document.addEventListener("click", this._attemptToUnmute);
-          document.addEventListener("keyup", this._attemptToUnmute);
+          document.addEventListener("click", this._onGlobalUserInteraction);
+          document.addEventListener("keyup", this._onGlobalUserInteraction);
         }
 
         disconnectedCallback() {
           window.removeEventListener("resize", this.onWindowResize);
-          document.removeEventListener("click", this._attemptToUnmute);
-          document.removeEventListener("keyup", this._attemptToUnmute);
+          document.removeEventListener("click", this._onGlobalUserInteraction);
+          document.removeEventListener("keyup", this._onGlobalUserInteraction);
           super.disconnectedCallback && super.disconnectedCallback();
         }
 
@@ -334,9 +335,13 @@
          * hidden. However, if there are only audio tracks in the stream, the
          * MJPEG stream will continue to be displayed.
          *
-         * The WebRTC stream may silently fail to display if the browser hasn't
-         * been granted permission to play media. If so, the MJPEG stream will
-         * continue to be displayed.
+         * Autoplay of WebRTC media tracks might be restricted by the UserAgent,
+         * either through explicit user settings, or due to automatic detection
+         * mechanisms, such as whether the user had interacted with the website
+         * prior to the playback (i.e., by clicking somewhere).
+         * - If both video and audio are blocked, it will fall back to MJPEG.
+         * - If only audio is blocked, then it will display video, and try to
+         *   unmute the audio track. Unmuting might not succeed, though.
          *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
@@ -347,49 +352,37 @@
           // kind (i.e., multiple audio or video tracks).
           // For example, if an additional new video track is being added, first
           // remove the old video track.
-          if (stream.getTracks().find(t => t.id === mediaStreamTrack.id)) {
-            return;
+          for (const track of stream.getTracks()) {
+            if (
+              track.kind === mediaStreamTrack.kind &&
+              track.id !== mediaStreamTrack.id
+            ) {
+              stream.removeTrack(track);
+            }
           }
-          console.log('=== NEW TRACK === ', mediaStreamTrack)
+
           // Note: If the specified track is already in the stream's track set,
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-          if (stream.getVideoTracks().length === 0) {
-            return;
-          }
-          // We always attempt to play the media because only when the media
-          // starts playing do we know that the WebRTC stream is ready to be
-          // displayed.
-          if (video.paused) {
-            this._playVideoWithAudio().then(() => {
-              this._enableWebrtc();
-            });
-          }
-        }
 
-        _attemptToUnmute() {
-          const video = this.elements.video;
-          if (!this.webrtcEnabled || video.muted === false) {
-            return;
+          // We only proceed switching to WebRTC if we have at least video
+          // signal.
+          if (mediaStreamTrack.kind === "video") {
+            // We naively unmute before we start the playback, because we cannot
+            // tell ahead of time whether audio is blocked by the UserAgent.
+            video.muted = false;
+            this._playWebrtcVideo()
+              .then(() => {
+                this.webrtcEnabled = true;
+                this.elements.image.removeAttribute("src");
+                this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+              })
+              .catch(() => {
+                // If WebRTC didn’t work, switch back to MJPEG.
+                this.enableMjpeg();
+              });
           }
-          this._playVideoWithAudio();
-        }
-
-        _playVideoWithAudio() {
-          const video = this.elements.video;
-          video.muted = false;
-          const attemptToPlay = () => {
-            video.play().catch(error => {
-              console.error("Failed to play WebRTC media: " + error);
-            })
-          };
-          return video.play().catch(error => {
-            if (error.toString().includes('NotAllowedError')) {
-              video.muted = true;
-              return attemptToPlay();
-            }
-          })
         }
 
         /**
@@ -412,12 +405,61 @@
         }
 
         /**
-         * Displays the WebRTC stream while hiding the MJPEG stream.
+         * Starts the WebRTC video playback. The caller is responsible that the
+         * tracks are present. In case the video element is not muted and the
+         * UserAgent blocks audio, then it automatically tries to mute the video
+         * element, so that we still end up having video at least.
          */
-        _enableWebrtc() {
-          this.webrtcEnabled = true;
-          this.elements.image.removeAttribute("src");
-          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+        _playWebrtcVideo(shouldRetryWithMuting = true) {
+          const video = this.elements.video;
+          return video.play().catch((error) => {
+            // The `AbortError` error typically means that multiple separate
+            // events had triggered the stream playback around the same time,
+            // and one of them eventually outpaced the other ones. We can’t
+            // prevent that, since initiating video play is asynchronous, and
+            // it should be safe to ignore this.
+            if (error.toString().includes("AbortError")) {
+              console.debug(error);
+              return;
+            }
+
+            // The `NotAllowedError` means that playing video is not allowed,
+            // most likely because the user has blocked audio or video
+            // autoplay. If this happens, the browser usually stops the video
+            // element altogether, so we have to restart it. Overall, we only
+            // attempt this once, to avoid an infinite recursion.
+            if (
+              error.toString().includes("NotAllowedError") &&
+              shouldRetryWithMuting
+            ) {
+              console.debug(error);
+              video.muted = true;
+              return this._playWebrtcVideo(false);
+            }
+
+            // For all other errors, the only thing left to do is logging and
+            // passing through.
+            console.error("Failed to play WebRTC media: " + error);
+            throw error;
+          });
+        }
+
+        /**
+         * Callback for detecting an explicit user interaction on the site. We
+         * hook into these events for trying to unmute the video stream. Note
+         * that not all user interactions qualify for unmuting – e.g., a
+         * keystroke on a letter works, but a modifier key might not be
+         * eligible.
+         */
+        _onGlobalUserInteraction() {
+          const video = this.elements.video;
+          if (!this.webrtcEnabled || video.muted === false) {
+            return;
+          }
+          video.muted = false;
+          if (video.paused) {
+            this._playWebrtcVideo();
+          }
         }
 
         /**
