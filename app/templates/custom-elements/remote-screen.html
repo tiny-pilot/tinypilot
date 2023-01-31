@@ -68,7 +68,7 @@
     <input id="mobile-keyboard-input" autocapitalize="off" type="text" />
 
     <img class="screen" id="mjpeg-output" />
-    <video class="screen" id="webrtc-output" playsinline muted></video>
+    <video class="screen" id="webrtc-output" playsinline></video>
   </div>
 </template>
 
@@ -124,6 +124,16 @@
               );
             }
           );
+          // Attempt to unmute the WebRTC stream when the user interacts with
+          // the page.
+          document.addEventListener("click", (event) => {
+            const video = this.elements.video;
+            if (!this.webrtcEnabled || video.muted === false) {
+              return;
+            }
+            video.muted = false;
+            this._playWebrtc();
+          });
         }
 
         connectedCallback() {
@@ -352,16 +362,15 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-          if (stream.getVideoTracks().length === 0) {
+          if (mediaStreamTrack.kind !== "video") {
             return;
           }
-          // We always attempt to play the media because only when the media
+          // We always attempt to play the video because only when the video
           // starts playing do we know that the WebRTC stream is ready to be
           // displayed.
-          video
-            .play()
+          this._playWebrtc()
             .then(() => {
-              this._enableWebrtc();
+              this._displayWebrtc();
             })
             .catch((error) => {
               console.error("Failed to play WebRTC media: " + error);
@@ -387,10 +396,25 @@
           }
         }
 
+        async _playWebrtc() {
+          const video = this.elements.video;
+          try {
+            await video.play();
+          } catch (error) {
+            if (error.name === "NotAllowedError" && video.muted === true) {
+              // If the browser has blocked us from playing video and the video
+              // is already muted, then there's nothing more we can do.
+              throw error;
+            }
+            video.muted = true;
+            return this._playWebrtc();
+          }
+        }
+
         /**
          * Displays the WebRTC stream while hiding the MJPEG stream.
          */
-        _enableWebrtc() {
+        _displayWebrtc() {
           this.webrtcEnabled = true;
           this.elements.image.removeAttribute("src");
           this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
