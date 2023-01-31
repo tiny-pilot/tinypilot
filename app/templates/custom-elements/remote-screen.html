@@ -338,16 +338,17 @@
          * Autoplay of WebRTC media tracks might be restricted by the UserAgent,
          * either through explicit user settings, or due to automatic detection
          * mechanisms, such as whether the user had interacted with the website
-         * prior to the playback (i.e., by clicking somewhere).
-         * - If both video and audio are blocked, it will fall back to MJPEG.
-         * - If only audio is blocked, then it will display video, and try to
-         *   unmute the audio track. Unmuting might not succeed, though.
+         * prior to the playback (i.e., by clicking somewhere). Our strategy is:
+         * - If both video and audio are blocked, we will fall back to MJPEG.
+         * - If only audio is blocked, then we will display video, and try to
+         *   unmute the audio track. (Which might not succeed, though.)
          *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         enableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           const stream = video.srcObject;
+
           // Ensure that the stream doesn't contain multiple tracks of the same
           // kind (i.e., multiple audio or video tracks).
           // For example, if an additional new video track is being added, first
@@ -367,10 +368,12 @@
           stream.addTrack(mediaStreamTrack);
 
           // We only proceed switching to WebRTC if we have at least video
-          // signal.
+          // signal. We don’t want to switch yet if the only thing we have is an
+          // audio track.
           if (mediaStreamTrack.kind === "video") {
-            // We naively unmute before we start the playback, because we cannot
-            // tell ahead of time whether audio is blocked by the UserAgent.
+            // We optimistically unmute before we start the playback, because we
+            // cannot tell ahead of time whether audio is blocked by the
+            // UserAgent.
             video.muted = false;
             this._playWebrtcVideo()
               .then(() => {
@@ -405,40 +408,44 @@
         }
 
         /**
-         * Starts the WebRTC video playback. The caller is responsible that the
-         * tracks are present. In case the video element is not muted and the
-         * UserAgent blocks audio, then it automatically tries to mute the video
-         * element, so that we still end up having video at least.
+         * Starts the WebRTC video playback. The caller is responsible to make
+         * sure that the media tracks are present.
+         *
+         * In case the video element is a) not muted, and b) the UserAgent
+         * blocks audio, then the browser might prevent the playback altogether.
+         * This method will then automatically try to mute the video element and
+         * retry playing, so that we at least end up having video active.
          */
         _playWebrtcVideo(shouldRetryWithMuting = true) {
           const video = this.elements.video;
+
           return video.play().catch((error) => {
-            // The `AbortError` error typically means that multiple separate
-            // events had triggered the stream playback around the same time,
-            // and one of them eventually outpaced the other ones. We can’t
-            // prevent that, since initiating video play is asynchronous, and
-            // it should be safe to ignore this.
-            if (error.toString().includes("AbortError")) {
+            // The `AbortError` error typically means that something had
+            // canceled the video initialization while it was in-flight. In our
+            // case, this usually originates from another, simultaneous play
+            // request that got stopped (which then stops all other play
+            // requests via this error). It should be safe to ignore this here,
+            // since that other play request is responsible for handling and
+            // recovering from the original issue.
+            if (error.name === "AbortError") {
               console.debug(error);
               return;
             }
 
             // The `NotAllowedError` means that playing video is not allowed,
-            // most likely because the user has blocked audio or video
+            // most likely because the UserAgent has blocked audio or video
             // autoplay. If this happens, the browser usually stops the video
-            // element altogether, so we have to restart it. Overall, we only
-            // attempt this once, to avoid an infinite recursion.
-            if (
-              error.toString().includes("NotAllowedError") &&
-              shouldRetryWithMuting
-            ) {
+            // element altogether (and not just the audio). If only audio was
+            // blocked, we can try to recover video by muting the stream.
+            // Overall, we only attempt this once, to avoid an infinite
+            // recursion.
+            if (error.name === "NotAllowedError" && shouldRetryWithMuting) {
               console.debug(error);
               video.muted = true;
               return this._playWebrtcVideo(false);
             }
 
-            // For all other errors, the only thing left to do is logging and
-            // passing through.
+            // Pass through any other error.
             console.error("Failed to play WebRTC media: " + error);
             throw error;
           });
@@ -446,16 +453,22 @@
 
         /**
          * Callback for detecting an explicit user interaction on the site. We
-         * hook into these events for trying to unmute the video stream. Note
-         * that not all user interactions qualify for unmuting – e.g., a
-         * keystroke on a letter works, but a modifier key might not be
-         * eligible.
+         * hook into these events for trying to unmute the video stream, because
+         * per UserAgent policies, a user interaction can make the browser
+         * unblock audio (but doesn’t have to).
+         *
+         * Note that not all user interactions qualify for unmuting – e.g., a
+         * keystroke on a letter works, but a modifier key or ESC is not
+         * eligible. We have to act on best guess basis here.
          */
         _onGlobalUserInteraction() {
           const video = this.elements.video;
           if (!this.webrtcEnabled || video.muted === false) {
             return;
           }
+          // If audio is blocked by the UserAgent, then trying to unmute might
+          // stop (pause) the video stream altogether. Therefore, we need to
+          // check this afterwards and recover.
           video.muted = false;
           if (video.paused) {
             this._playWebrtcVideo();
