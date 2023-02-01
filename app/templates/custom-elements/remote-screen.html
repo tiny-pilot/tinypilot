@@ -430,7 +430,7 @@
             // request that got stopped (which then stops all other play
             // requests via this error). We can’t do anything about this here,
             // so we abort and leave it to that other (succeeding) play request
-            // to continue handling the playback.
+            // to continue handling the issue.
             if (error.name === "AbortError") {
               console.debug(error);
               throw error;
