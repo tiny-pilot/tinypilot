@@ -381,7 +381,7 @@
             video.muted = false;
             try {
               await this._playWebrtcVideo();
-            } catch (error) {
+            } catch {
               return;
             }
             this.webrtcEnabled = true;
