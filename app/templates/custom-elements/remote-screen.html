@@ -370,6 +370,10 @@
           // We only proceed switching to WebRTC if we have at least video
           // signal. We don’t want to switch yet if the only thing we have is an
           // audio track.
+          // It’s also important that we hold off on emitting the switch-over
+          // event (`VideoStreamingModeChangedEvent`) until the video playback
+          // has started, to ensure a smooth visual transition of the remote
+          // screen without any flickering/interruption.
           if (mediaStreamTrack.kind === "video") {
             // We optimistically unmute before we start the playback, because we
             // cannot tell ahead of time whether audio is blocked by the
