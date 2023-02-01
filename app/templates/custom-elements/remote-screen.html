@@ -428,9 +428,9 @@
             // canceled the video initialization while it was in-flight. In our
             // case, this usually originates from another, simultaneous play
             // request that got stopped (which then stops all other play
-            // requests via this error). It should be safe to ignore this here,
-            // since that other play request is responsible for handling and
-            // recovering from the original issue.
+            // requests via this error). We can’t do anything about this here,
+            // so we abort and leave it to that other (succeeding) play request
+            // to continue handling the playback.
             if (error.name === "AbortError") {
               console.debug(error);
               throw error;
@@ -449,7 +449,7 @@
               return this._playWebrtcVideo(false);
             }
 
-            // Pass through any other error.
+            // For any other errors, the only thing we can do is log them.
             console.error("Failed to play WebRTC media: " + error);
             throw error;
           }
