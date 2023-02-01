@@ -345,7 +345,7 @@
          *
          * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        enableWebrtcStreamTrack(mediaStreamTrack) {
+        async enableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           const stream = video.srcObject;
 
@@ -375,16 +375,14 @@
             // cannot tell ahead of time whether audio is blocked by the
             // UserAgent.
             video.muted = false;
-            this._playWebrtcVideo()
-              .then(() => {
-                this.webrtcEnabled = true;
-                this.elements.image.removeAttribute("src");
-                this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
-              })
-              .catch(() => {
-                // If WebRTC didn’t work, switch back to MJPEG.
-                this.enableMjpeg();
-              });
+            try {
+              await this._playWebrtcVideo();
+            } catch (error) {
+              return;
+            }
+            this.webrtcEnabled = true;
+            this.elements.image.removeAttribute("src");
+            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
           }
         }
 
@@ -416,10 +414,12 @@
          * This method will then automatically try to mute the video element and
          * retry playing, so that we at least end up having video active.
          */
-        _playWebrtcVideo(shouldRetryWithMuting = true) {
+        async _playWebrtcVideo(shouldRetryWithMuting = true) {
           const video = this.elements.video;
 
-          return video.play().catch((error) => {
+          try {
+            await video.play();
+          } catch(error) {
             // The `AbortError` error typically means that something had
             // canceled the video initialization while it was in-flight. In our
             // case, this usually originates from another, simultaneous play
@@ -448,7 +448,7 @@
             // Pass through any other error.
             console.error("Failed to play WebRTC media: " + error);
             throw error;
-          });
+          }
         }
 
         /**
