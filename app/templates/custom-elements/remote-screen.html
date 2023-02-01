@@ -429,7 +429,7 @@
             // recovering from the original issue.
             if (error.name === "AbortError") {
               console.debug(error);
-              return;
+              throw error;
             }
 
             // The `NotAllowedError` means that playing video is not allowed,
