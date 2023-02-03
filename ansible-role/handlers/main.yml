@@ -1,0 +1,15 @@
+---
+- name: reload TinyPilot systemd config
+  systemd:
+    name: tinypilot
+    daemon_reload: yes
+
+- name: restart TinyPilot service
+  service:
+    name: tinypilot
+    state: restarted
+
+- name: start usb-gadget service
+  service:
+    name: usb-gadget
+    state: started

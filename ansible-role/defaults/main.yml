@@ -1,0 +1,21 @@
+---
+# Specifies the filesystem path or URL of a Debian package that installs
+# TinyPilot.
+tinypilot_debian_package_path: null
+# Port on which TinyPilot frontend listens (accessible from other hosts on the
+# network).
+tinypilot_external_port: 80
+tinypilot_interface: "127.0.0.1"
+# Port on which TinyPilot's backend listens (accessible only from
+# tinypilot_interface).
+tinypilot_port: 8000
+tinypilot_keyboard_interface: /dev/hidg0
+tinypilot_mouse_interface: /dev/hidg1
+tinypilot_enable_debug_logging: no
+tinypilot_pip_args: ""
+tinypilot_app_settings_file: "/home/{{ tinypilot_user }}/app_settings.cfg"
+
+# uStreamer version to use on systems prior to Raspbian Bullseye (Debian 11).
+ustreamer_repo_version_legacy: v4.13
+# uStreamer version to use on Raspbian Bullseye (Debian 11) or later systems.
+ustreamer_repo_version_modern: v5.34
