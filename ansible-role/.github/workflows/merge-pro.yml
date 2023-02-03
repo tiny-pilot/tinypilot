@@ -1,0 +1,35 @@
+name: Merge community changes into pro repo
+on:
+  push:
+    branches:
+      - master
+jobs:
+  updateFork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: tiny-pilot/ansible-role-tinypilot-pro
+          token: ${{ secrets.PR_BOT_PAT }}
+      - name: Reset the default branch with upstream changes
+        run: |
+          git remote add upstream https://github.com/tiny-pilot/ansible-role-tinypilot.git
+          git fetch upstream master:upstream-master
+          git reset --hard upstream-master
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PR_BOT_PAT }}
+          branch: community-changes-${{ github.sha }}
+          delete-branch: true
+          # If the committer to the community repo (github.actor) has no access
+          # to the pro repo, the PR will be unassigned.
+          assignees: ${{ github.actor }}
+          title: Merge changes from community repository
+          body: |
+            Merge the last changes from community repository :
+
+            https://github.com/tiny-pilot/ansible-role-tinypilot/commit/${{ github.sha }}
+
+            **Do not use "Squash and merge" !**
+            Merge this PR with a merge commit, keeping the commit history.

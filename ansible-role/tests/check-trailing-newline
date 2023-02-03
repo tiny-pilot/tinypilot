@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Verify that all text files end in a trailing newline.
+
+# Exit on first failing command.
+set -e
+# Exit on unset variable.
+set -u
+
+FILES=$(find . \
+  -type f \
+  -not -path "./.git/*" \
+  -exec grep \
+  --binary-files=without-match \
+  --quiet \
+  . {} \; -print)
+
+SUCCESS=0
+
+for F in ${FILES[*]}
+do
+  if ! [[ -s "$F" && -z "$(tail -c 1 "$F")" ]]; then
+    printf "File must end in a trailing newline: %s\n" "$F"
+    SUCCESS=-1
+  fi
+done
+
+exit "$SUCCESS"
