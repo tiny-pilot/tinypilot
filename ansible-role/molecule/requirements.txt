@@ -8,7 +8,7 @@
 
 # Direct dependencies
 
-ansible==2.10.7
+ansible==7.0.0
 molecule==3.2.3
 molecule-docker==0.2.4
 
