@@ -15,8 +15,6 @@
         cache_valid_time: 600
     - name: Gather facts
       setup:
-    - name: "Include ansible-role-tinypilot"
+    - name: Include ansible-role
       include_role:
-        name: "ansible-role-tinypilot"
-      vars:
-        tinypilot_debian_package_path: /opt/debian-pkgs/tinypilot_latest_all.deb
+        name: ansible-role
