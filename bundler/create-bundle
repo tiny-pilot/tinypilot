@@ -69,11 +69,11 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
-# Install Ansible role.
+# Copy Ansible role.
 mkdir "${ANSIBLE_ROLES_DIR}"
 cp -r ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
 
-# Install Ansible role dependencies.
+# Download Ansible role dependencies.
 ansible-galaxy install \
   --roles-path "${ANSIBLE_ROLES_DIR}" \
   --role-file "${ANSIBLE_ROLE_TINYPILOT_DIR}/meta/requirements.yml" \
