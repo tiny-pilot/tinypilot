@@ -130,7 +130,7 @@ If you're interested in seeing what's happening with the project at a granular l
 ## See also
 
 - [TinyPilot Wiki](https://github.com/tiny-pilot/tinypilot/wiki): Guides for tasks related to TinyPilot.
-- [TinyPilot Ansible Role](https://github.com/tiny-pilot/ansible-role-tinypilot): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
+- [TinyPilot Ansible Role](ansible-role/README.md): Use [Ansible](https://docs.ansible.com/ansible/latest/index.html) to install TinyPilot and all dependencies as a systemd service.
 
 ## Acknowledgments
 

@@ -1,10 +1,5 @@
 # Ansible Role: TinyPilot
 
-[![CircleCI](https://circleci.com/gh/tiny-pilot/ansible-role-tinypilot.svg?style=svg)](https://circleci.com/gh/tiny-pilot/ansible-role-tinypilot)
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
-
-Ansible role for [TinyPilot KVM](https://github.com/tiny-pilot/tinypilot).
-
 ## Role Variables
 
 Available variables are listed below, along with default values (see [defaults/main.yml](defaults/main.yml)):
@@ -29,12 +24,10 @@ tinypilot_debian_package_path: null
 
 To install TinyPilot using the Ansible role, you need to provide the role with a path or URL to a TinyPilot Debian package.
 
-To build a TinyPilot Debian package, run the following snippet:
+To build a TinyPilot Debian package, run the following command:
 
 ```bash
-cd $(mktemp -d) && \
-  git clone https://github.com/tiny-pilot/tinypilot.git . && \
-  ./dev-scripts/build-debian-pkg
+../dev-scripts/build-debian-pkg
 ```
 
 This will produce a TinyPilot Debian package under `./debian-pkg/releases`.
@@ -44,7 +37,7 @@ This will produce a TinyPilot Debian package under `./debian-pkg/releases`.
 ```yaml
 - hosts: all
   roles:
-    - role: ansible-role-tinypilot
+    - role: ../ansible-role
       vars:
         tinypilot_debian_package_path: /path/to/tinypilot.deb
 ```
@@ -52,18 +45,10 @@ This will produce a TinyPilot Debian package under `./debian-pkg/releases`.
 ### Running Example Playbook
 
 ```bash
-ansible-galaxy install git+https://github.com/tiny-pilot/ansible-role-tinypilot.git
+ansible-galaxy install --role-file meta/requirements.yml
 ansible-playbook example.yml
 ```
 
 ## Documentation
 
 - [Introduction to the USB gadget driver](docs/usb-gadget-driver.md)
-
-## License
-
-MIT
-
-## Author Information
-
-This role was created in 2020 by [Michael Lynch](http://mtlynch.io).
