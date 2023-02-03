@@ -10,7 +10,7 @@ Ansible role for [TinyPilot KVM](https://github.com/tiny-pilot/tinypilot).
 Available variables are listed below, along with default values (see [defaults/main.yml](defaults/main.yml)):
 
 ```yaml
-tinypilot_interface: '127.0.0.1'
+tinypilot_interface: "127.0.0.1"
 tinypilot_port: 8000
 tinypilot_keyboard_interface: /dev/hidg0
 # The client is responsible for specifying the path/URL to the TinyPilot Debian
@@ -20,8 +20,8 @@ tinypilot_debian_package_path: null
 
 ## Dependencies
 
-* [tiny-pilot.ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer)
-* [tiny-pilot.nginx](https://github.com/tiny-pilot/ansible-role-nginx)
+- [tiny-pilot.ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer)
+- [tiny-pilot.nginx](https://github.com/tiny-pilot/ansible-role-nginx)
 
 ## Example Playbook
 
