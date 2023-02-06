@@ -446,7 +446,7 @@
             if (error.name === "NotAllowedError" && shouldRetryWithMuting) {
               console.debug(error);
               video.muted = true;
-              return this._playWebrtcVideo(false);
+              return this._playWebrtcVideo(/*shouldRetryWithMuting=*/ false);
             }
 
             // For any other errors, the only thing we can do is log them.
