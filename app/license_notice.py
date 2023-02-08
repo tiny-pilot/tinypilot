@@ -192,7 +192,7 @@ _LICENSE_METADATA = [
         name='cryptography',
         homepage_url='https://cryptography.io',
         license_url=
-        'https://raw.githubusercontent.com/pyca/cryptography/38.0.1/LICENSE.BSD'
+        'https://raw.githubusercontent.com/pyca/cryptography/37.0.4/LICENSE.BSD'
     ),
     LicenseMetadata(
         name='packaging',
