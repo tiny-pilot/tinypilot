@@ -18,7 +18,7 @@ The steps below show you how to quickly set up a development environment for Tin
 To install TinyPilot's dev packages, run the following command:
 
 ```bash
-python3.7 -m venv venv && \
+python3 -m venv venv && \
   . venv/bin/activate && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
