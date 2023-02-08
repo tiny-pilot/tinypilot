@@ -36,7 +36,7 @@ _LICENSE_METADATA = [
         homepage_url='https://github.com/pikvm/ustreamer'),
     LicenseMetadata(name='Python',
                     homepage_url='https://python.org',
-                    license_glob_pattern='/usr/lib/python3.7/LICENSE.txt'),
+                    license_glob_pattern='/usr/lib/python3.*/LICENSE.txt'),
     LicenseMetadata(name='nginx',
                     license_url='https://nginx.org/LICENSE',
                     homepage_url='https://nginx.org'),
@@ -70,25 +70,25 @@ _LICENSE_METADATA = [
         name='eventlet',
         homepage_url='https://eventlet.net',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/eventlet-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/eventlet-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Flask',
         homepage_url='https://flask.palletsprojects.com',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/Flask-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/Flask-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Flask-SocketIO',
         homepage_url='https://flask-socketio.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/Flask_SocketIO-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/Flask_SocketIO-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Flask-WTF',
         homepage_url='https://flask-wtf.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/Flask_WTF-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/Flask_WTF-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='pyyaml',
@@ -100,43 +100,43 @@ _LICENSE_METADATA = [
         name='bidict',
         homepage_url='https://bidict.readthedocs.io/en/main',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/bidict-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/bidict-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='click',
         homepage_url='https://palletsprojects.com/p/click',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/click-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/click-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='dnspython',
         homepage_url='https://www.dnspython.org',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/dnspython-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/dnspython-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='greenlet',
         homepage_url='https://greenlet.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/greenlet-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/greenlet-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='itsdangerous',
         homepage_url='https://palletsprojects.com/p/itsdangerous/',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/itsdangerous-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/itsdangerous-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Jinja2',
         homepage_url='https://palletsprojects.com/p/jinja/',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/Jinja2-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/Jinja2-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='MarkupSafe',
         homepage_url='https://palletsprojects.com/p/markupsafe/',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/MarkupSafe-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/MarkupSafe-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='monotonic',
@@ -148,31 +148,31 @@ _LICENSE_METADATA = [
         name='python-engineio',
         homepage_url='https://github.com/miguelgrinberg/python-engineio',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/python_engineio-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/python_engineio-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='python-socketio',
         homepage_url='https://github.com/miguelgrinberg/python-socketio',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/python_socketio-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/python_socketio-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='six',
         homepage_url='https://github.com/benjaminp/six',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/six-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/six-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Werkzeug',
         homepage_url='https://palletsprojects.com/p/werkzeug/',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/Werkzeug-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/Werkzeug-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='WTForms',
         homepage_url='https://wtforms.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.7/site-packages/WTForms-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/WTForms-*.dist-info/LICENSE*',
     ),
 
     # Ansible dependencies that are not covered above. They are not available
