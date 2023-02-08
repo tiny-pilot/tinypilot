@@ -20,6 +20,15 @@ export class KeyboardState {
   }
 
   /**
+   * Returns the current keyboard state, indicating which key codes are being
+   * pressed.
+   * @returns Object {[keyCode:string]: [isPressed:boolean]}
+   */
+  get state() {
+    return this._isKeyPressed;
+  }
+
+  /**
    * @param canonicalCode (string) The canonical key code.
    * @returns boolean
    */
