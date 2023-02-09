@@ -33,6 +33,11 @@ def styleguide_get():
     return flask.abort(404)
 
 
+@views_blueprint.route('/bug-demo', methods=['GET'])
+def bug_demo_get():
+    return flask.render_template('bug-demo.html')
+
+
 # On a real install, nginx redirects the /stream route to uStreamer, so a real
 # user should never hit this route in production. In development, show a fake
 # still image to give a better sense of how the TinyPilot UI looks.

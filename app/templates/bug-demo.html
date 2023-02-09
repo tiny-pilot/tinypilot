@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      Bug Demo
+    </title>
+    <style>
+      video {
+        width: 500px;
+        height: 200px;
+        border: 1px solid black;
+        background: lightblue;
+      }
+    </style>
+  </head>
+  <body>
+    <video class="screen" id="webrtc-output" playsinline></video>
+    <script>
+      document.getElementById("webrtc-output").srcObject = new MediaStream();
+    </script>
+  </body>
+</html>
