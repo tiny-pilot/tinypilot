@@ -140,8 +140,13 @@
             image: this.shadowRoot.getElementById("mjpeg-output"),
           };
 
-          // Initialize the WebRTC media stream.
-          this.elements.video.srcObject = new MediaStream();
+          // Note that we can’t assign a persistent `MediaStream` object to the
+          // `srcObject` attribute that we would retain over the lifecycle of
+          // this class, because otherwise Chrome shows an infinite loading
+          // spinner for the browser tab. Therefore, we need to initialize the
+          // source object lazily whenever we want to access it, and clear it
+          // when we don’t need it anymore.
+          this.elements.video.srcObject = null;
 
           this._addScreenEventListeners(this.elements.video);
           this._addScreenEventListeners(this.elements.image);
@@ -347,6 +352,11 @@
          */
         async enableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
+          if (!video.srcObject) {
+            // Lazy-initialize the media stream. (See comment in
+            // `connectedCallback`.)
+            video.srcObject = new MediaStream();
+          }
           const stream = video.srcObject;
 
           // Ensure that the stream doesn't contain multiple tracks of the same
@@ -401,6 +411,9 @@
          */
         disableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
+          if (!video.srcObject) {
+            return;
+          }
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
           if (stream.getVideoTracks().length === 0) {
@@ -488,6 +501,8 @@
           }
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
+          // Clean up the media stream. (See comment in `connectedCallback`.)
+          this.elements.video.srcObject = null;
           this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
         }
 
