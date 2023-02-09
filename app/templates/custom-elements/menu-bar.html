@@ -158,6 +158,18 @@
       border-radius: 0.8em;
       pointer-events: none; /* “Click-through” to underlying menu item */
     }
+
+    .external-link:after {
+      --icon-size: 0.85em;
+      position: absolute;
+      content: "";
+      top: 0.8em;
+      right: 0.8em;
+      background: url("/img/external-link-icon.svg") no-repeat;
+      background-size: var(--icon-size) var(--icon-size);
+      width: var(--icon-size);
+      height: var(--icon-size);
+    }
   </style>
 
   <div class="logo"><img src="/img/logo.svg" alt="TinyPilot logo" /></div>
@@ -243,6 +255,22 @@
       <ul class="items">
         <li class="item">
           <a data-onclick-event="about-dialog-requested">About</a>
+        </li>
+        <li class="item external-link">
+          <a
+            href="https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app"
+            rel="noopener noreferrer"
+            target="_blank"
+            >Upgrade to Pro</a
+          >
+        </li>
+        <li class="item external-link">
+          <a
+            href="https://github.com/tiny-pilot/tinypilot"
+            rel="noopener noreferrer"
+            target="_blank"
+            >Github</a
+          >
         </li>
       </ul>
     </li>
