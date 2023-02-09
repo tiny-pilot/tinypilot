@@ -316,7 +316,7 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
 // browser window loses focus.
 window.addEventListener("blur", () => {
   for (const [keyCode, isPressed] of Object.entries(keyboardState.state)) {
-    if (isPressed) {
+    if (isPressed && isModifierCode(keyCode)) {
       onKeyUp(/*keyboardEvent=*/ { code: keyCode });
     }
   }
