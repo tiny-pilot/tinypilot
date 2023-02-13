@@ -68,8 +68,6 @@
   notify:
     - reload TinyPilot systemd config
     - restart TinyPilot service
-  tags:
-    - systemd-config
 
 - name: enable systemd TinyPilot service file
   systemd:
