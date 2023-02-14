@@ -56,8 +56,8 @@ describe("KeyboardState", () => {
       assert.strictEqual(true, keyboardState.isKeyPressed("AltLeft"));
       assert.strictEqual(true, keyboardState.isKeyPressed("ControlLeft"));
       assert.deepEqual(
-        ["AltLeft", "ControlLeft"],
-        keyboardState.getAllPressedModifierKeys()
+        new Set(["AltLeft", "ControlLeft"]),
+        new Set(keyboardState.getAllPressedModifierKeys())
       );
     });
   });
