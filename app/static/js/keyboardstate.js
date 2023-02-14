@@ -20,15 +20,6 @@ export class KeyboardState {
   }
 
   /**
-   * Returns the current keyboard state, indicating which key codes are being
-   * pressed.
-   * @returns Object {[keyCode:string]: [isPressed:boolean]}
-   */
-  get state() {
-    return this._isKeyPressed;
-  }
-
-  /**
    * @param canonicalCode (string) The canonical key code.
    * @returns boolean
    */
@@ -87,5 +78,14 @@ export class KeyboardState {
         this._isKeyPressed[possibleCodes[0]] = true;
       }
     }
+  }
+
+  /**
+   * @returns {string[]} An unordered array of canonical key codes.
+   */
+  getAllPressedModifierKeys() {
+    return Object.entries(this._isKeyPressed)
+      .filter(([keyCode, isPressed]) => isPressed && isModifierCode(keyCode))
+      .map(([keyCode]) => keyCode);
   }
 }

@@ -315,11 +315,11 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
 // stuck. To avoid this, we release any modifier keycodes being pressed when the
 // browser window loses focus.
 window.addEventListener("blur", () => {
-  for (const [keyCode, isPressed] of Object.entries(keyboardState.state)) {
-    if (isPressed && isModifierCode(keyCode)) {
-      onKeyUp(/*keyboardEvent=*/ { code: keyCode });
-    }
-  }
+  keyboardState
+    .getAllPressedModifierKeys()
+    .forEach((keyCode) =>
+      onKeyUp(new KeyboardEvent("keyup", { code: keyCode }))
+    );
 });
 
 const menuBar = document.getElementById("menu-bar");
