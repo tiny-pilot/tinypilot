@@ -41,4 +41,24 @@ describe("KeyboardState", () => {
     assert.strictEqual(false, keyboardState.isKeyPressed("ControlLeft"));
     assert.strictEqual(false, keyboardState.isKeyPressed("AltRight"));
   });
+
+  describe("#getAllPressedModifierKeys()", () => {
+    it("should return an array of pressed modifier keys", () => {
+      const keyboardState = new KeyboardState();
+      const event = {
+        code: "KeyE",
+        altKey: true,
+        ctrlKey: true,
+      };
+      keyboardState.onKeyDown(event);
+
+      assert.strictEqual(true, keyboardState.isKeyPressed("KeyE"));
+      assert.strictEqual(true, keyboardState.isKeyPressed("AltLeft"));
+      assert.strictEqual(true, keyboardState.isKeyPressed("ControlLeft"));
+      assert.deepEqual(
+        new Set(["AltLeft", "ControlLeft"]),
+        new Set(keyboardState.getAllPressedModifierKeys())
+      );
+    });
+  });
 });
