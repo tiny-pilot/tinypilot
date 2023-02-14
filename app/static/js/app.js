@@ -309,11 +309,14 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
     evt.detail.mode;
 });
 
-// To allow for keycode combinations to be pressed (e.g., ALT + TAB), we don't
-// automatically release modifier keycodes after being pressed. However, if we
-// are unable to capture modifier's "keyup" event, the keycode would appear
-// stuck. To avoid this, we release any modifier keycodes being pressed when the
-// browser window loses focus.
+// To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
+// backend doesn't automatically release modifier keycodes after being pressed.
+// However, in the case where the user presses a combination like Alt + Tab,
+// for example, then the browser would only receive the "keydown" event for Alt,
+// since the Tab press is intercepted by the operating system and switches focus
+// to another application. That way, the modifier key appears stuck on the
+// target machine. To avoid this, we release any modifier keycodes being pressed
+// when the browser window loses focus.
 window.addEventListener("blur", () => {
   keyboardState
     .getAllPressedModifierKeys()
