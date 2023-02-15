@@ -57,6 +57,14 @@
       display: flex;
       flex-direction: column-reverse;
     }
+
+    #update-prompt-automatic {
+      display: none;
+    }
+
+    :host([update-kind="automatic"]) #update-prompt-automatic {
+      display: block;
+    }
   </style>
 
   <div id="checking">
@@ -66,13 +74,10 @@
 
   <div id="update-available">
     <h3>Update TinyPilot</h3>
-    <p>
-      An update is available. Would you like to install the latest version?
-    </p>
-    <button id="confirm-update" class="btn-success" type="button">
-      Update
-    </button>
-    <button id="cancel-update" type="button">Cancel</button>
+    <update-prompt-automatic
+      id="update-prompt-automatic"
+    ></update-prompt-automatic>
+    <!-- Note: in Pro, we have more update kinds here. -->
   </div>
 
   <div id="latest">
@@ -153,17 +158,10 @@
             updateLogs: this.shadowRoot.querySelector(
               "#update-container .logs"
             ),
+            updatePromptAutomatic: this.shadowRoot.querySelector(
+              "#update-prompt-automatic"
+            ),
           };
-          this.shadowRoot
-            .getElementById("confirm-update")
-            .addEventListener("click", () => {
-              this._doUpdate();
-            });
-          this.shadowRoot
-            .getElementById("cancel-update")
-            .addEventListener("click", () => {
-              this.dispatchEvent(new DialogClosedEvent());
-            });
           this.shadowRoot
             .getElementById("ok-latest")
             .addEventListener("click", () => {
@@ -174,6 +172,19 @@
             .addEventListener("click", () => {
               location.reload();
             });
+
+          // Wire up update prompts. Note: due to alphabetic initialization
+          // order of our custom elements, any <update-prompt-...> components
+          // will become available *after* the <update-dialog> component, so we
+          // have to wrap their setup procedure into a callback.
+          customElements.whenDefined("update-prompt-automatic").then(() => {
+            this.elements.updatePromptAutomatic.onConfirm = () => {
+              this._doUpdate();
+            };
+            this.elements.updatePromptAutomatic.onCancel = () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            };
+          });
         }
 
         get _state() {
@@ -189,17 +200,19 @@
           );
         }
 
+        _renderPrompt(updateInfo) {
+          this.setAttribute("update-kind", updateInfo.kind);
+        }
+
         checkVersion() {
           this._state = this.states.CHECKING;
 
           Promise.all([getVersion(), getLatestRelease()])
-            .then((versions) => {
-              const localVersion = versions[0];
-              const latestRelease = versions[1];
-
-              if (localVersion === latestRelease) {
+            .then(([localVersion, latestRelease]) => {
+              if (localVersion.version === latestRelease.version) {
                 this._state = this.states.LATEST;
               } else {
+                this._renderPrompt(latestRelease);
                 this._state = this.states.UPDATE_AVAILABLE;
               }
             })

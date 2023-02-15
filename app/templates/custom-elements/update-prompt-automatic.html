@@ -1,0 +1,47 @@
+<template id="update-prompt-automatic">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+  </style>
+
+  <p>
+    An update is available. Would you like to install the latest version?
+  </p>
+  <button id="confirm-update" class="btn-success" type="button">
+    Update
+  </button>
+  <button id="cancel-update" type="button">Cancel</button>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector("#update-prompt-automatic");
+
+    customElements.define(
+      "update-prompt-automatic",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+        }
+
+        set onConfirm(handler) {
+          this.shadowRoot
+            .getElementById("confirm-update")
+            .addEventListener("click", handler);
+        }
+
+        set onCancel(handler) {
+          this.shadowRoot
+            .getElementById("cancel-update")
+            .addEventListener("click", handler);
+        }
+      }
+    );
+  })();
+</script>

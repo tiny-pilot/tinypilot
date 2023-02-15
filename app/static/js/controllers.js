@@ -68,11 +68,13 @@ export async function getLatestRelease() {
     redirect: "error",
   })
     .then(processJsonResponse)
-    .then((versionResponse) => {
-      if (!versionResponse.hasOwnProperty("version")) {
-        throw new ControllerError("Missing expected version field");
-      }
-      return versionResponse.version;
+    .then((updateInfo) => {
+      ["version", "kind", "data"].forEach((field) => {
+        if (!updateInfo.hasOwnProperty(field)) {
+          throw new ControllerError(`Missing expected ${field} field`);
+        }
+      });
+      return updateInfo;
     });
 }
 
@@ -89,7 +91,7 @@ export async function getVersion() {
       if (!versionResponse.hasOwnProperty("version")) {
         throw new ControllerError("Missing expected version field");
       }
-      return versionResponse.version;
+      return versionResponse;
     });
 }
 
