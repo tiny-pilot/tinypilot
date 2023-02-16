@@ -18,5 +18,5 @@ monotonic==1.5
 python-engineio==4.0.1
 python-socketio==5.1.0
 six==1.15.0
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 WTForms==2.3.3
