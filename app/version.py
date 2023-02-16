@@ -1,3 +1,4 @@
+import dataclasses
 import json
 import urllib.request
 
@@ -17,6 +18,16 @@ class VersionRequestError(Error):
 
 
 _VERSION_FILE = './VERSION'
+
+
+@dataclasses.dataclass
+class UpdateInfo:
+    """This data structure reflects the response of Gatekeeper’s
+    `/available-update` routes.
+    """
+    version: str
+    kind: str
+    data: dict
 
 
 def _is_debug():
@@ -52,10 +63,11 @@ def local_version():
 
 
 def latest_version():
-    """Requests the latest version from the TinyPilot Gatekeeper REST API.
+    """Requests info about the latest release from the TinyPilot Gatekeeper REST
+    API.
 
     Returns:
-        A version string (e.g., "1.2.3-16+7a6c812").
+        An UpdateInfo object, containing the information about the release.
 
     Raises:
         VersionRequestError: If an error occurred while making an HTTP request
@@ -89,9 +101,12 @@ def latest_version():
             'Failed to decode latest available version response body as a JSON'
             ' dictionary.')
 
-    if 'version' not in response_dict:
+    if not all(key in response_dict for key in ('version', 'kind', 'data')):
         raise VersionRequestError(
-            'Failed to get latest available version because of a missing field:'
-            ' version')
+            'Failed to get latest available version because of an incompatible'
+            ' response structure. Expected fields: version, kind, data. Got: '
+            '' + ', '.join([*response_dict]) + '.')
 
-    return response_dict['version']
+    return UpdateInfo(version=response_dict['version'],
+                      kind=response_dict['kind'],
+                      data=response_dict['data'])

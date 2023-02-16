@@ -191,6 +191,13 @@
           );
         }
 
+        _renderPrompt(updateInfo) {
+          if (updateInfo.kind !== "automatic") {
+            throw new Error(`Unsupported update kind: ${updateInfo.kind}`);
+          }
+          this.setAttribute("update-kind", updateInfo.kind);
+        }
+
         checkVersion() {
           this._state = this.states.CHECKING;
 
@@ -199,7 +206,7 @@
               if (localVersion.version === latestRelease.version) {
                 this._state = this.states.LATEST;
               } else {
-                this.setAttribute("update-kind", "automatic");
+                this._renderPrompt(latestRelease);
                 this._state = this.states.UPDATE_AVAILABLE;
               }
             })

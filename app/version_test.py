@@ -67,11 +67,13 @@ class VersionTest(TestCase):
     def test_latest_version_when_request_is_successful(self, mock_urlopen):
         mock_response = mock.Mock()
         mock_response.read.return_value = json.dumps({
-            'version': '1.2.3-16+7a6c812'
+            'version': '1.2.3-16+7a6c812',
+            'kind': 'automatic',
+            'data': None,
         }).encode('utf-8')
         mock_urlopen.return_value.__enter__.return_value = mock_response
 
-        self.assertEqual('1.2.3-16+7a6c812', version.latest_version())
+        self.assertEqual('1.2.3-16+7a6c812', version.latest_version().version)
 
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_raises_request_error_when_response_is_not_utf_8(
