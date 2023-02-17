@@ -57,6 +57,14 @@
       display: flex;
       flex-direction: column-reverse;
     }
+
+    #update-prompt-automatic {
+      display: none;
+    }
+
+    :host([update-kind="automatic"]) #update-prompt-automatic {
+      display: block;
+    }
   </style>
 
   <div id="checking">
@@ -66,13 +74,10 @@
 
   <div id="update-available">
     <h3>Update TinyPilot</h3>
-    <p>
-      An update is available. Would you like to install the latest version?
-    </p>
-    <button id="confirm-update" class="btn-success" type="button">
-      Update
-    </button>
-    <button id="cancel-update" type="button">Cancel</button>
+    <update-prompt-automatic
+      id="update-prompt-automatic"
+    ></update-prompt-automatic>
+    <!-- Note: in Pro, we have more update kinds here. -->
   </div>
 
   <div id="latest">
@@ -155,16 +160,6 @@
             ),
           };
           this.shadowRoot
-            .getElementById("confirm-update")
-            .addEventListener("click", () => {
-              this._doUpdate();
-            });
-          this.shadowRoot
-            .getElementById("cancel-update")
-            .addEventListener("click", () => {
-              this.dispatchEvent(new DialogClosedEvent());
-            });
-          this.shadowRoot
             .getElementById("ok-latest")
             .addEventListener("click", () => {
               this.dispatchEvent(new DialogClosedEvent());
@@ -174,6 +169,13 @@
             .addEventListener("click", () => {
               location.reload();
             });
+
+          this.shadowRoot.addEventListener("update-prompt-confirmed", () => {
+            this._doUpdate();
+          });
+          this.shadowRoot.addEventListener("update-prompt-canceled", () => {
+            this.dispatchEvent(new DialogClosedEvent());
+          });
         }
 
         get _state() {
@@ -193,13 +195,11 @@
           this._state = this.states.CHECKING;
 
           Promise.all([getVersion(), getLatestRelease()])
-            .then((versions) => {
-              const localVersion = versions[0];
-              const latestRelease = versions[1];
-
-              if (localVersion === latestRelease) {
+            .then(([localVersion, latestRelease]) => {
+              if (localVersion.version === latestRelease.version) {
                 this._state = this.states.LATEST;
               } else {
+                this.setAttribute("update-kind", "automatic");
                 this._state = this.states.UPDATE_AVAILABLE;
               }
             })
