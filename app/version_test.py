@@ -74,6 +74,8 @@ class VersionTest(TestCase):
         mock_urlopen.return_value.__enter__.return_value = mock_response
 
         self.assertEqual('1.2.3-16+7a6c812', version.latest_version().version)
+        self.assertEqual('automatic', version.latest_version().kind)
+        self.assertEqual(None, version.latest_version().data)
 
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_raises_request_error_when_response_is_not_utf_8(
