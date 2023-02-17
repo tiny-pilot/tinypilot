@@ -136,7 +136,7 @@ def latest_release_get():
         {
             "version": "1.2.3-16+7a6c812",
             "kind": "automatic",
-            "data": null,
+            "data": null
         }
 
         Returns error object on failure.
