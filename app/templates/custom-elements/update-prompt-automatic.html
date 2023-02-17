@@ -14,8 +14,6 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent } from "/js/events.js";
-
   (function () {
     const template = document.querySelector("#update-prompt-automatic");
 
@@ -30,14 +28,19 @@
           this.shadowRoot
             .getElementById("cancel-update")
             .addEventListener("click", () => {
-              this.dispatchEvent(new DialogClosedEvent());
+              this.dispatchEvent(
+                new CustomEvent("update-prompt-canceled", {
+                  bubbles: true,
+                  composed: true,
+                })
+              );
             });
 
           this.shadowRoot
             .getElementById("confirm-update")
             .addEventListener("click", () => {
               this.dispatchEvent(
-                new CustomEvent("update-requested", {
+                new CustomEvent("update-prompt-confirmed", {
                   bubbles: true,
                   composed: true,
                 })

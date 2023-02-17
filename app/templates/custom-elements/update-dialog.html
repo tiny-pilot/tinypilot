@@ -173,8 +173,11 @@
               location.reload();
             });
 
-          this.shadowRoot.addEventListener("update-requested", () => {
+          this.shadowRoot.addEventListener("update-prompt-confirmed", () => {
             this._doUpdate();
+          });
+          this.shadowRoot.addEventListener("update-prompt-canceled", () => {
+            this.dispatchEvent(new DialogClosedEvent());
           });
         }
 
