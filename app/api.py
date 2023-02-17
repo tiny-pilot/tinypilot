@@ -129,18 +129,28 @@ def latest_release_get():
     Returns:
         On success, a JSON data structure with the following properties:
         version: str.
+        kind: str.
+        data: object (of kind-specific structure), or null.
 
         Example:
         {
             "version": "1.2.3-16+7a6c812",
+            "kind": "automatic",
+            "data": null
         }
 
         Returns error object on failure.
     """
     try:
-        return json_response.success({'version': version.latest_version()})
+        update_info = version.latest_version()
     except version.Error as e:
         return json_response.error(e), 500
+
+    return json_response.success({
+        'version': update_info.version,
+        'kind': update_info.kind,
+        'data': update_info.data,
+    })
 
 
 @api_blueprint.route('/hostname', methods=['GET'])
