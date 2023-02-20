@@ -173,12 +173,18 @@
               location.reload();
             });
 
-          this.shadowRoot.addEventListener("update-prompt-confirmed", () => {
-            this._doUpdate();
-          });
-          this.shadowRoot.addEventListener("update-prompt-canceled", () => {
-            this.dispatchEvent(new DialogClosedEvent());
-          });
+          this.elements.updatePromptAutomatic.addEventListener(
+            "update-prompt-confirmed",
+            () => {
+              this._doUpdate();
+            }
+          );
+          this.elements.updatePromptAutomatic.addEventListener(
+            "update-prompt-canceled",
+            () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            }
+          );
         }
 
         get _state() {
