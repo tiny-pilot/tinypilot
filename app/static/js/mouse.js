@@ -103,9 +103,9 @@
 export class RateLimitedMouse {
   /**
    * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
-   * wait between sending low-priority mouse events to the backend.
+   *     wait between sending low-priority mouse events to the backend.
    * @param {function(Object)} sendEventFn Function that sends a parsed mouse
-   * event to the backend server.
+   *     event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
     this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
@@ -154,7 +154,7 @@ export class RateLimitedMouse {
    * mouse event to send.
    *
    * @param {Object} mouseInfo Mouse information object, parsed from
-   * parseMouseEvent.
+   *     parseMouseEvent.
    */
   _emitEvent(mouseInfo) {
     this._sendEventFn(mouseInfo);
@@ -187,9 +187,9 @@ export class RateLimitedMouse {
  * simple -1, 0, or 1.
  *
  * @param {number} delta The mouse wheel delta value from the browser's mouse
- * event.
+ *     event.
  * @returns {number} A value of -1, 0, or 1 representing whether the delta is
- * negative, zero, or positive, respectively.
+ *     negative, zero, or positive, respectively.
  */
 function normalizeWheelDelta(delta) {
   if (!delta) {
@@ -203,20 +203,20 @@ function normalizeWheelDelta(delta) {
  * containing information about the mouse event.
  *
  * @param {Object} evt A standard JavaScript mouse event, such as mousedown or
- * mousemove.
+ *     mousemove.
  * @returns {Object} The mouse event data in TinyPilot-specific format with the
- * following properties:
- * - buttons (number) A bitmask representing which mouse buttons are pressed,
- *   in the same format as the buttons property from the native JavaScript mouse
- *   events.
- * - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
- *   relative x-offset from the left edge of the screen.
- * - relativeY (number) A value between 0.0 and 1.0 representing the mouse's
- *   relative y-offset from the top edge of the screen.
- * - verticalWheelDelta (number) A -1, 0, or 1 representing movement of the
- *   mouse's vertical scroll wheel.
- * - horizontalWheelDelta (number) A -1, 0, or 1 representing movement of the
- *   mouse's horizontal scroll wheel.
+ *     following properties:
+ *     - buttons (number) A bitmask representing which mouse buttons are
+ *       pressed, in the same format as the buttons property from the native
+ *       JavaScript mouse events.
+ *     - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
+ *       relative x-offset from the left edge of the screen.
+ *     - relativeY (number) A value between 0.0 and 1.0 representing the mouse's
+ *       relative y-offset from the top edge of the screen.
+ *     - verticalWheelDelta (number) A -1, 0, or 1 representing movement of the
+ *       mouse's vertical scroll wheel.
+ *     - horizontalWheelDelta (number) A -1, 0, or 1 representing movement of
+ *       the mouse's horizontal scroll wheel.
  */
 function parseMouseEvent(evt) {
   const boundingRect = evt.target.getBoundingClientRect();

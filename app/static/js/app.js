@@ -119,7 +119,7 @@ function onSocketDisconnect() {
 }
 
 /**
- * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ * @param {KeyboardEvent} evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyDown(evt) {
   if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
@@ -207,7 +207,7 @@ function sendMouseEvent(
 }
 
 /**
- * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ * @param {KeyboardEvent} evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyUp(evt) {
   if (isPasteOverlayShowing()) {

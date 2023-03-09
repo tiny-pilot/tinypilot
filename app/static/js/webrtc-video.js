@@ -85,7 +85,7 @@ function attachToJanusPlugin() {
 
     /**
      * The plugin handle was successfully created and is ready to be used.
-     * @param {object} pluginHandle The Janus plugin handle.
+     * @param {Object} pluginHandle The Janus plugin handle.
      */
     success: function (pluginHandle) {
       janusPluginHandle = pluginHandle;
@@ -113,8 +113,8 @@ function attachToJanusPlugin() {
 
     /**
      * A message/event has been received from the plugin.
-     * @param {object} msg
-     * @param {object|null} jsep JSEP = JavaScript Session Establishment Protocol
+     * @param {Object} msg
+     * @param {Object} [jsep] JSEP = JavaScript Session Establishment Protocol
      */
     onmessage: function (msg, jsep) {
       // `503` indicates that the plugin was not initialized yet and therefore

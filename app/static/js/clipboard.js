@@ -1,7 +1,6 @@
 /**
  * Copies the text content of a DOM Element to the clipboard.
  * @param {Element} element The DOM Element of the text that you want copied.
- * @returns {void}
  */
 export function copyElementTextToClipboard(element) {
   // The fancy Async Clipboard API only works on pages served up by https

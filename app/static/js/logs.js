@@ -14,7 +14,7 @@ const REDACTED_MESSAGE = "[SENSITIVE DATA REDACTED]";
  * This function doesn’t make any other assumptions on how the log lines are
  * formatted.
  *
- * @param logText {string}
+ * @param {string} logText
  * @returns {string}
  */
 export function redactSensitiveData(logText) {

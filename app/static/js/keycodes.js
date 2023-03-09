@@ -70,7 +70,7 @@ const commonKeyCodes = {
 };
 
 /**
- * @param keystroke https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+ * @param {KeyboardEvent} keystroke https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 export function keystrokeToCanonicalCode(keystroke) {
   // Some keyboards send RightAlt/AltGraph as LeftControl then Alt, where the
