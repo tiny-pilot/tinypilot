@@ -27,9 +27,12 @@ jobs:
           assignees: ${{ github.actor }}
           title: Merge changes from community repository
           body: |
-            Merge the last changes from community repository :
+            ${{ github.actor }}, please merge the last changes from community repository:
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
 
-            **Do not use "Squash and merge" !**
+            **Do not use "Squash and merge"!**
+
             Merge this PR with a merge commit, keeping the commit history.
+
+            (If you accidentally squash, it's not a disaster, but it will create a bit of noise on the subsequent PR from Community)
