@@ -6,9 +6,14 @@
 
   <div id="feature-pro">
     <h3>This Feature is Available in TinyPilot Pro</h3>
-    <button id="upgrade-to-pro" class="btn-success" type="button">
+    <a
+      href="https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app"
+      class="btn btn-action btn-external-link"
+      target="_blank"
+      rel="noopener noreferer"
+    >
       Learn More
-    </button>
+    </a>
     <button id="cancel-upgrade-to-pro" type="button">Cancel</button>
   </div>
 </template>
@@ -26,18 +31,10 @@
           template.content.cloneNode(true)
         );
         this.elements = {
-          upgradeToPro: this.shadowRoot.getElementById("upgrade-to-pro"),
           cancelUpgradeToPro: this.shadowRoot.getElementById(
             "cancel-upgrade-to-pro"
           ),
         };
-
-        this.elements.upgradeToPro.addEventListener("click", () => {
-          window.open(
-            "https://tinypilotkvm.com/product/tinypilot-pro?ref=tinypilot-app",
-            "_blank"
-          );
-        });
         this.elements.cancelUpgradeToPro.addEventListener("click", () => {
           this.dispatchEvent(new DialogClosedEvent());
         });
