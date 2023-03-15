@@ -13,7 +13,7 @@ export class DialogClosedEvent extends CustomEvent {
 export class DialogFailedEvent extends CustomEvent {
   /**
    * Event that closes the dialog and displays the error dialog instead.
-   * @param {Object} errorInfo Object with the following properties:
+   * @param {Object} errorInfo
    * @param {string} errorInfo.title A concise summary of the error.
    * @param {string} [errorInfo.message] A user-friendly and helpful message
    *     that ideally gives the user some guidance what to do now. Defaults
