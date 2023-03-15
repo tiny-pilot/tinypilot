@@ -114,7 +114,7 @@ function attachToJanusPlugin() {
     /**
      * A message/event has been received from the plugin.
      * @param {Object} msg
-     * @param {Object} [jsep] JSEP = JavaScript Session Establishment Protocol
+     * @param {Object} [jsep] (JavaScript Session Establishment Protocol)
      */
     onmessage: function (msg, jsep) {
       // `503` indicates that the plugin was not initialized yet and therefore
