@@ -22,10 +22,10 @@ class ControllerError extends Error {
  * Processes response from the backend API.
  * @param {Object} response An object as returned by `fetch`
  * @returns {Promise<Object>}
- *     Success case: a JSON response with status 2xx. Promise resolves with
- *                   data from response body.
- *     Error case:   anything else, e.g. non-JSON or status 4xx/5xx.
- *                   Promise rejects with a `ControllerError`.
+ *     Success case: a JSON response with status 2xx. Promise resolves with data
+ *         from response body.
+ *     Error case:   anything else, e.g. non-JSON or status 4xx/5xx. Promise
+ *         rejects with a `ControllerError`.
  *
  */
 async function processJsonResponse(response) {
