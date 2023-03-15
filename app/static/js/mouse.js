@@ -202,21 +202,22 @@ function normalizeWheelDelta(delta) {
  * Parses a standard JavaScript mouse event into a TinyPilot-specific object
  * containing information about the mouse event.
  *
- * @param {Object} evt A standard JavaScript mouse event, such as mousedown or
- *     mousemove.
- * @returns {Object} The mouse event data in TinyPilot-specific format with the
- *     following properties:
- *     - buttons (number) A bitmask representing which mouse buttons are
- *       pressed, in the same format as the buttons property from the native
- *       JavaScript mouse events.
- *     - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
- *       relative x-offset from the left edge of the screen.
- *     - relativeY (number) A value between 0.0 and 1.0 representing the mouse's
- *       relative y-offset from the top edge of the screen.
- *     - verticalWheelDelta (number) A -1, 0, or 1 representing movement of the
- *       mouse's vertical scroll wheel.
- *     - horizontalWheelDelta (number) A -1, 0, or 1 representing movement of
- *       the mouse's horizontal scroll wheel.
+ * The mouse event data in TinyPilot-specific format.
+ *
+ * @typedef {Object} MouseEventData
+ * @property {number} buttons A bitmask representing which mouse buttons are
+ *     pressed, in the same format as the buttons property from the native
+ *     JavaScript mouse events.
+ * @property {number} relativeX A value between 0.0 and 1.0 representing the
+ *     mouse's relative x-offset from the left edge of the screen.
+ * @property {number} relativeY A value between 0.0 and 1.0 representing the
+ *     mouse's relative y-offset from the top edge of the screen.
+ * @property {number} verticalWheelDelta A -1, 0, or 1 representing movement of
+ *     the mouse's vertical scroll wheel.
+ * @property {number} horizontalWheelDelta A -1, 0, or 1 representing movement
+ *     of the mouse's horizontal scroll wheel.
+ *
+ * @returns {MouseEventData}
  */
 function parseMouseEvent(evt) {
   const boundingRect = evt.target.getBoundingClientRect();
