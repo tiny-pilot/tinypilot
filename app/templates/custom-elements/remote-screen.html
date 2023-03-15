@@ -348,7 +348,7 @@
          * - If only audio is blocked, then we will display video, and try to
          *   unmute the audio track. (Which might not succeed, though.)
          *
-         * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
+         * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         async enableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
@@ -407,7 +407,7 @@
          * in the stream, the WebRTC stream will continue to be displayed
          * because it's still better than the MJPEG stream.
          *
-         * @param {MediaStreamTrack} mediaStreamTrack https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
+         * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         disableWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;

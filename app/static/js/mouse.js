@@ -102,9 +102,9 @@
 
 export class RateLimitedMouse {
   /**
-   * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
+   * @param {number} millisecondsBetweenMouseEvents - Number of milliseconds to
    *     wait between sending low-priority mouse events to the backend.
-   * @param {function(Object)} sendEventFn Function that sends a parsed mouse
+   * @param {function(Object)} sendEventFn - Function that sends a parsed mouse
    *     event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
@@ -153,7 +153,7 @@ export class RateLimitedMouse {
    * Emit a mouse event immediately and start a timeout window to gate the next
    * mouse event to send.
    *
-   * @param {Object} mouseInfo Mouse information object, parsed from
+   * @param {Object} mouseInfo - Mouse information object, parsed from
    *     parseMouseEvent.
    */
   _emitEvent(mouseInfo) {
@@ -186,7 +186,7 @@ export class RateLimitedMouse {
  * Different browsers use different values for the delta, so we reduce it to a
  * simple -1, 0, or 1.
  *
- * @param {number} delta The mouse wheel delta value from the browser's mouse
+ * @param {number} delta - The mouse wheel delta value from the browser's mouse
  *     event.
  * @returns {number} A value of -1, 0, or 1 representing whether the delta is
  *     negative, zero, or positive, respectively.

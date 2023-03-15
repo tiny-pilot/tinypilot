@@ -14,12 +14,12 @@ export class DialogFailedEvent extends CustomEvent {
   /**
    * Event that closes the dialog and displays the error dialog instead.
    * @param {Object} errorInfo
-   * @param {string} errorInfo.title A concise summary of the error.
-   * @param {string} [errorInfo.message] A user-friendly and helpful message
+   * @param {string} errorInfo.title - A concise summary of the error.
+   * @param {string} [errorInfo.message] - A user-friendly and helpful message
    *     that ideally gives the user some guidance what to do now. Defaults
    *     to a generic message.
-   * @param {string|Error} [errorInfo.details] The technical error details, e.g.
-   *     the original error message from the API or library call.
+   * @param {string|Error} [errorInfo.details] - The technical error details,
+   *     e.g. the original error message from the API or library call.
    */
   constructor(errorInfo) {
     super("dialog-failed", {
@@ -50,7 +50,7 @@ export class DialogCloseStateChangedEvent extends CustomEvent {
 export class VideoStreamingModeChangedEvent extends CustomEvent {
   /**
    * Event, which indicates that the video streaming mode has changed.
-   * @param {string} mode The new mode, e.g.: `MJPEG` or `H264`.
+   * @param {string} mode - The new mode, e.g.: `MJPEG` or `H264`.
    */
   constructor(mode) {
     super("video-streaming-mode-changed", {

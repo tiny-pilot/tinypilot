@@ -77,7 +77,7 @@ function attachToJanusPlugin() {
      * associated to the handle changes.
      * ICE = Interactive Connectivity Establishment
      * See https://developer.mozilla.org/en-US/docs/Glossary/ICE
-     * @param {string} state E.g., "connected" or "failed".
+     * @param {string} state - E.g., "connected" or "failed".
      */
     iceState: function (state) {
       console.debug("ICE Connection State changed to: " + state);
@@ -85,7 +85,7 @@ function attachToJanusPlugin() {
 
     /**
      * The plugin handle was successfully created and is ready to be used.
-     * @param {Object} pluginHandle The Janus plugin handle.
+     * @param {Object} pluginHandle - The Janus plugin handle.
      */
     success: function (pluginHandle) {
       janusPluginHandle = pluginHandle;
@@ -114,7 +114,7 @@ function attachToJanusPlugin() {
     /**
      * A message/event has been received from the plugin.
      * @param {Object} msg
-     * @param {Object} [jsep] (JavaScript Session Establishment Protocol)
+     * @param {Object} [jsep] - (JavaScript Session Establishment Protocol)
      */
     onmessage: function (msg, jsep) {
       // `503` indicates that the plugin was not initialized yet and therefore
@@ -165,9 +165,9 @@ function attachToJanusPlugin() {
      * not safe to assume that this callback will be invoked reliably. We have
      * also observed different behavior in Chrome and Firefox.
      *
-     * @param {MediaStreamTrack} track https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
-     * @param {string} mid The Media-ID.
-     * @param {boolean} added Whether the track was added or removed.
+     * @param {MediaStreamTrack} track - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
+     * @param {string} mid - The Media-ID.
+     * @param {boolean} added - Whether the track was added or removed.
      */
     onremotetrack: function (track, mid, added) {
       console.debug(
