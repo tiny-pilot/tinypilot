@@ -102,10 +102,10 @@
 
 export class RateLimitedMouse {
   /**
-   * @param {number} millisecondsBetweenMouseEvents Number of milliseconds to
-   * wait between sending low-priority mouse events to the backend.
-   * @param {function(Object)} sendEventFn Function that sends a parsed mouse
-   * event to the backend server.
+   * @param {number} millisecondsBetweenMouseEvents - Number of milliseconds to
+   *     wait between sending low-priority mouse events to the backend.
+   * @param {function(Object)} sendEventFn - Function that sends a parsed mouse
+   *     event to the backend server.
    */
   constructor(millisecondsBetweenMouseEvents, sendEventFn) {
     this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
@@ -153,8 +153,8 @@ export class RateLimitedMouse {
    * Emit a mouse event immediately and start a timeout window to gate the next
    * mouse event to send.
    *
-   * @param {Object} mouseInfo Mouse information object, parsed from
-   * parseMouseEvent.
+   * @param {Object} mouseInfo - Mouse information object, parsed from
+   *     parseMouseEvent.
    */
   _emitEvent(mouseInfo) {
     this._sendEventFn(mouseInfo);
@@ -186,10 +186,10 @@ export class RateLimitedMouse {
  * Different browsers use different values for the delta, so we reduce it to a
  * simple -1, 0, or 1.
  *
- * @param {number} delta The mouse wheel delta value from the browser's mouse
- * event.
+ * @param {number} delta - The mouse wheel delta value from the browser's mouse
+ *     event.
  * @returns {number} A value of -1, 0, or 1 representing whether the delta is
- * negative, zero, or positive, respectively.
+ *     negative, zero, or positive, respectively.
  */
 function normalizeWheelDelta(delta) {
   if (!delta) {
@@ -202,21 +202,22 @@ function normalizeWheelDelta(delta) {
  * Parses a standard JavaScript mouse event into a TinyPilot-specific object
  * containing information about the mouse event.
  *
- * @param {Object} evt A standard JavaScript mouse event, such as mousedown or
- * mousemove.
- * @returns {Object} The mouse event data in TinyPilot-specific format with the
- * following properties:
- * - buttons (number) A bitmask representing which mouse buttons are pressed,
- *   in the same format as the buttons property from the native JavaScript mouse
- *   events.
- * - relativeX (number) A value between 0.0 and 1.0 representing the mouse's
- *   relative x-offset from the left edge of the screen.
- * - relativeY (number) A value between 0.0 and 1.0 representing the mouse's
- *   relative y-offset from the top edge of the screen.
- * - verticalWheelDelta (number) A -1, 0, or 1 representing movement of the
- *   mouse's vertical scroll wheel.
- * - horizontalWheelDelta (number) A -1, 0, or 1 representing movement of the
- *   mouse's horizontal scroll wheel.
+ * The mouse event data in TinyPilot-specific format.
+ *
+ * @typedef {Object} MouseEventData
+ * @property {number} buttons A bitmask representing which mouse buttons are
+ *     pressed, in the same format as the buttons property from the native
+ *     JavaScript mouse events.
+ * @property {number} relativeX A value between 0.0 and 1.0 representing the
+ *     mouse's relative x-offset from the left edge of the screen.
+ * @property {number} relativeY A value between 0.0 and 1.0 representing the
+ *     mouse's relative y-offset from the top edge of the screen.
+ * @property {number} verticalWheelDelta A -1, 0, or 1 representing movement of
+ *     the mouse's vertical scroll wheel.
+ * @property {number} horizontalWheelDelta A -1, 0, or 1 representing movement
+ *     of the mouse's horizontal scroll wheel.
+ *
+ * @returns {MouseEventData}
  */
 function parseMouseEvent(evt) {
   const boundingRect = evt.target.getBoundingClientRect();

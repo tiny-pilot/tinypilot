@@ -8,9 +8,9 @@ function getCsrfTokenElement(doc) {
 
 class ControllerError extends Error {
   /**
-   * @param details string with the original error message.
-   * @param code (optional) string with the error code, or `undefined` for
-   *             non-application or unknown errors.
+   * @param {string} details - The original error message.
+   * @param {string} [code] - The error code, or `undefined` for non-application
+   *     or unknown errors.
    */
   constructor(details, code) {
     super(details);
@@ -20,12 +20,12 @@ class ControllerError extends Error {
 
 /**
  * Processes response from the backend API.
- * @param response An object as returned by `fetch`
+ * @param {Object} response - An object as returned by `fetch`
  * @returns {Promise<Object>}
- *    Success case: a JSON response with status 2xx. Promise resolves with
- *                  data from response body.
- *    Error case:   anything else, e.g. non-JSON or status 4xx/5xx. Promise
- *                  rejects with a `ControllerError`.
+ *     Success case: a JSON response with status 2xx. Promise resolves with data
+ *         from response body.
+ *     Error case:   anything else, e.g. non-JSON or status 4xx/5xx. Promise
+ *         rejects with a `ControllerError`.
  *
  */
 async function processJsonResponse(response) {

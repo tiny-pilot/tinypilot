@@ -2,10 +2,10 @@
  * Invokes a Promise repetitively until it resolves to the expected outcome.
  *
  * @template T
- * @param {function(): Promise<T>} fn The function to be polled.
- * @param {function(T): boolean} validate Function to validate fn’s result.
- * @param {number} interval Polling interval in milliseconds.
- * @param {number} [timeout] Time in milliseconds after which to abort.
+ * @param {function(): Promise<T>} fn - The function to be polled.
+ * @param {function(T): boolean} validate - Function to validate fn’s result.
+ * @param {number} interval - Polling interval in milliseconds.
+ * @param {number} [timeout] - Time in milliseconds after which to abort.
  * @returns {Promise<T>}
  */
 export async function poll({ fn, validate, interval, timeout }) {

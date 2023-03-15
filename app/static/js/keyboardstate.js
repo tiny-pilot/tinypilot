@@ -20,8 +20,8 @@ export class KeyboardState {
   }
 
   /**
-   * @param canonicalCode (string) The canonical key code.
-   * @returns boolean
+   * @param {string} canonicalCode - The canonical key code.
+   * @returns {boolean}
    */
   isKeyPressed(canonicalCode) {
     return (
@@ -30,7 +30,7 @@ export class KeyboardState {
   }
 
   /**
-   * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+   * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
    */
   onKeyDown(evt) {
     const canonicalCode = keystrokeToCanonicalCode(evt);
@@ -41,7 +41,7 @@ export class KeyboardState {
   }
 
   /**
-   * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+   * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
    */
   onKeyUp(evt) {
     const canonicalCode = keystrokeToCanonicalCode(evt);
@@ -54,7 +54,7 @@ export class KeyboardState {
    * keys have been pressed or released while the browser window didn’t have
    * focus. The information in the event object takes precedence over this
    * class's cached state.
-   * @param evt https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+   * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
    */
   _fixInternalModifierStates(evt) {
     for (const [modifierProp, possibleCodes] of Object.entries(
