@@ -205,16 +205,16 @@ function normalizeWheelDelta(delta) {
  * The mouse event data in TinyPilot-specific format.
  *
  * @typedef {Object} MouseEventData
- * @property {number} buttons A bitmask representing which mouse buttons are
+ * @property {number} buttons - A bitmask representing which mouse buttons are
  *     pressed, in the same format as the buttons property from the native
  *     JavaScript mouse events.
- * @property {number} relativeX A value between 0.0 and 1.0 representing the
+ * @property {number} relativeX - A value between 0.0 and 1.0 representing the
  *     mouse's relative x-offset from the left edge of the screen.
- * @property {number} relativeY A value between 0.0 and 1.0 representing the
+ * @property {number} relativeY - A value between 0.0 and 1.0 representing the
  *     mouse's relative y-offset from the top edge of the screen.
- * @property {number} verticalWheelDelta A -1, 0, or 1 representing movement of
- *     the mouse's vertical scroll wheel.
- * @property {number} horizontalWheelDelta A -1, 0, or 1 representing movement
+ * @property {number} verticalWheelDelta - A -1, 0, or 1 representing movement
+ *     of the mouse's vertical scroll wheel.
+ * @property {number} horizontalWheelDelta - A -1, 0, or 1 representing movement
  *     of the mouse's horizontal scroll wheel.
  *
  * @returns {MouseEventData}
