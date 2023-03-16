@@ -24,4 +24,10 @@ elif [[ -d "${PRIVILEGED_SCRIPTS_DIR}" ]]; then
   exit 1
 fi
 
+# Create parent folder (in case it doesn’t exist).
+mkdir \
+  --parents \
+  "$(dirname "${PRIVILEGED_SCRIPTS_DIR}")"
+
+# Symlink folder with privileged scripts.
 ln -s "${MOCK_SCRIPTS_DIR}" "${PRIVILEGED_SCRIPTS_DIR}"
