@@ -93,3 +93,11 @@ button:disabled,
   cursor: pointer;
   color: #555;
 }
+
+.btn-external-link {
+  background-image: url("/img/external-link-icon.svg");
+  background-repeat: no-repeat;
+  background-position: top 49% right 1.2em;
+  background-size: 0.75em;
+  padding-right: 2.5em;
+}
