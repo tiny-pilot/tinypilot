@@ -11,7 +11,7 @@ set -e
 # Exit on unset variable.
 set -u
 
-# Echo commands to stdout.
+# Print commands to terminal (stderr).
 set -x
 
 # Change directory to repository root.

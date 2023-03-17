@@ -10,7 +10,7 @@ set -e
 # Exit on unset variable.
 set -u
 
-# Echo commands to stdout.
+# Print commands to terminal (stderr).
 set -x
 
 # Check if the user is accidentally downgrading from TinyPilot Pro.

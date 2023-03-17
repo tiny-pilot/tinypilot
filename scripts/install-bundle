@@ -55,7 +55,7 @@ if (( $# == 0 )); then
   exit 1
 fi
 
-# Echo commands to stdout.
+# Print commands to terminal (stderr).
 set -x
 
 readonly BUNDLE_PATH="$1"

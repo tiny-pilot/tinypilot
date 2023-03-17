@@ -5,7 +5,7 @@
 # Exit on first error.
 set -e
 
-# Echo commands to stdout.
+# Print commands to terminal (stderr).
 set -x
 
 # Treat undefined environment variables as errors.
