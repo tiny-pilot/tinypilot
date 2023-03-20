@@ -3,7 +3,7 @@
 # Exit build script on first failure.
 set -e
 
-# Print commands to terminal (stderr).
+# Echo commands before executing them, by default to stderr.
 set -x
 
 # Exit on unset variable.
