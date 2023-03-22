@@ -26,7 +26,7 @@ fi
 
 # Create parent folder (in case it doesn’t exist).
 mkdir \
-  --parents \
+  -p \
   "$(dirname "${PRIVILEGED_SCRIPTS_DIR}")"
 
 # Symlink folder with privileged scripts.
