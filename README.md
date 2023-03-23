@@ -26,11 +26,11 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
 
-### [TinyPilot Voyager 2](https://tinypilotkvm.com/product/tinypilot-voyager2)
+### [TinyPilot Voyager 2a](https://tinypilotkvm.com/product/tinypilot-voyager2a)
 
-[![Photo of TinyPilot Voyager 2](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2-600px.png)](https://tinypilotkvm.com/product/tinypilot-voyager2)
+[![Photo of TinyPilot Voyager 2a](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/product/tinypilot-voyager2a)
 
-Voyager 2 is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
+Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
 ## Build your own
 
