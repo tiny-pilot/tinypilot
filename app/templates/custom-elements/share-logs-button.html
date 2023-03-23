@@ -187,6 +187,7 @@
               .replace("http://", "")
               .replace("https://", "");
             this.elements.url.setAttribute("href", url);
+            this.elements.url.setAttribute("title", url);
             this._sharedUrl = url;
           } catch (error) {
             console.error("Failed to upload logs: " + error);
@@ -206,7 +207,7 @@
           // we still want to copy the full, canonical URL to the clipboard.
           // To do that, we briefly replace the display URL with the canonical
           // one for the duration of the “copy to clipboard” operation. The user
-          // shouldn’t anything about this.
+          // shouldn’t notice anything about this.
           const previousDisplayText = this.elements.url.textContent;
           this.elements.url.textContent = this.elements.url.getAttribute(
             "href"
