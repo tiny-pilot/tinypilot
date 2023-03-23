@@ -26,7 +26,7 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
 
-### [TinyPilot Voyager 2a](https://tinypilotkvm.com/product/tinypilot-voyager2)
+### [TinyPilot Voyager 2a](https://tinypilotkvm.com/product/tinypilot-voyager2a)
 
 [![Photo of TinyPilot Voyager 2a](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/product/tinypilot-voyager2a)
 
