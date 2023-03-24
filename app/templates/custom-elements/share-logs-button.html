@@ -155,15 +155,15 @@
         }
 
         /**
-         * @callback logsTextSupplier Callback function that is invoked when the
-         *     user requests the shareable URL, and that provides the logs for
-         *     uploading as return value.
+         * A callback function that returns the logs text when the user requests
+         * a shareable URL.
+         * @callback getLogsTextCallback
          * @returns {string}
          *
-         * @param {logsTextSupplier} logsTextSupplier
+         * @param {getLogsTextCallback} getLogsTextCb
          */
-        initialize(logsTextSupplier) {
-          this.getLogsText = logsTextSupplier;
+        initialize(getLogsTextCb) {
+          this.getLogsText = getLogsTextCb;
           this.elements.getUrlButton.disabled = false;
           this.state = this.states.INITIAL;
         }
