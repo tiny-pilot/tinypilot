@@ -13,7 +13,8 @@ set -x
 set -u
 
 readonly PRIVILEGED_SCRIPTS_DIR="/opt/tinypilot-privileged/scripts"
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
 readonly MOCK_SCRIPTS_DIR="${SCRIPT_DIR}/mock-scripts"
 
 # If there's an existing symlink, remove it.
