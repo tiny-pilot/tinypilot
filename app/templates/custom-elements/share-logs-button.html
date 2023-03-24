@@ -170,12 +170,6 @@
 
         async _handleRequestShareableUrl() {
           this.state = this.states.LOADING;
-          if (typeof this.getLogsText !== "function") {
-            // This is just an internal safeguard: it shouldn’t occur in reality
-            // unless the wiring of this component was incorrect.
-            console.error("Internal error: cannot retrieve logs");
-            return;
-          }
 
           try {
             const url = await textToShareableUrl(this.getLogsText());
