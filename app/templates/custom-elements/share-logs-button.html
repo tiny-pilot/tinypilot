@@ -134,7 +134,7 @@
 
           this.elements = {
             getUrlButton: this.shadowRoot.querySelector("#get-url-button"),
-            url: this.shadowRoot.querySelector("#display-link a"),
+            urlLink: this.shadowRoot.querySelector("#display-link a"),
             copyButton: this.shadowRoot.querySelector("#copy-button"),
           };
 
@@ -146,7 +146,6 @@
           });
 
           this.state = this.states.INITIAL;
-          this._sharedUrl = "";
         }
 
         set state(newValue) {
@@ -156,39 +155,30 @@
         }
 
         /**
-         * @callback logsTextSupplier Callback function that is invoked when the
-         *     user requests the shareable URL, and that provides the logs for
-         *     uploading as return value.
+         * A callback function that returns the logs text when the user requests
+         * a shareable URL.
+         * @callback getLogsTextCallback
          * @returns {string}
          *
-         * @param {logsTextSupplier} logsTextSupplier
+         * @param {getLogsTextCallback} getLogsTextCb
          */
-        initialize(logsTextSupplier) {
-          this.getLogsText = logsTextSupplier;
-          this.elements.getUrlButton.disabled = false;
+        initialize(getLogsTextCb) {
+          this.getLogsText = getLogsTextCb;
           this.state = this.states.INITIAL;
-          this._sharedUrl = "";
         }
 
         async _handleRequestShareableUrl() {
           this.state = this.states.LOADING;
-          if (typeof this.getLogsText !== "function") {
-            // This is just an internal safeguard: it shouldn’t occur in reality
-            // unless the wiring of this component was incorrect.
-            console.error("Internal error: cannot retrieve logs");
-            return;
-          }
 
           try {
             const url = await textToShareableUrl(this.getLogsText());
             // For the displayed URL, strip the protocol prefix, to make it
             // look a bit slimmer.
-            this.elements.url.textContent = url
+            this.elements.urlLink.textContent = url
               .replace("http://", "")
               .replace("https://", "");
-            this.elements.url.setAttribute("href", url);
-            this.elements.url.setAttribute("title", url);
-            this._sharedUrl = url;
+            this.elements.urlLink.setAttribute("href", url);
+            this.elements.urlLink.setAttribute("title", url);
           } catch (error) {
             console.error("Failed to upload logs: " + error);
             // In case of failure, we just reset the button, since we cannot
@@ -208,12 +198,12 @@
           // To do that, we briefly replace the display URL with the canonical
           // one for the duration of the “copy to clipboard” operation. The user
           // shouldn’t notice anything about this.
-          const previousDisplayText = this.elements.url.textContent;
-          this.elements.url.textContent = this.elements.url.getAttribute(
+          const previousDisplayText = this.elements.urlLink.textContent;
+          this.elements.urlLink.textContent = this.elements.urlLink.getAttribute(
             "href"
           );
-          copyElementTextToClipboard(this.elements.url);
-          this.elements.url.textContent = previousDisplayText;
+          copyElementTextToClipboard(this.elements.urlLink);
+          this.elements.urlLink.textContent = previousDisplayText;
 
           this.elements.copyButton.classList.add("copied");
           setTimeout(() => {
