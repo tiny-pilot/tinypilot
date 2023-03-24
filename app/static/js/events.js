@@ -20,6 +20,8 @@ export class DialogFailedEvent extends CustomEvent {
    *     to a generic message.
    * @param {string|Error} [errorInfo.details] - The technical error details,
    *     e.g. the original error message from the API or library call.
+   * @param {boolean} [errorInfo.isShareable] - Whether there should be a button
+   *     for uploading the error details to the logs server.
    */
   constructor(errorInfo) {
     super("dialog-failed", {
