@@ -146,7 +146,6 @@
           });
 
           this.state = this.states.INITIAL;
-          this._sharedUrl = "";
         }
 
         set state(newValue) {
@@ -167,7 +166,6 @@
           this.getLogsText = logsTextSupplier;
           this.elements.getUrlButton.disabled = false;
           this.state = this.states.INITIAL;
-          this._sharedUrl = "";
         }
 
         async _handleRequestShareableUrl() {
@@ -188,7 +186,6 @@
               .replace("https://", "");
             this.elements.url.setAttribute("href", url);
             this.elements.url.setAttribute("title", url);
-            this._sharedUrl = url;
           } catch (error) {
             console.error("Failed to upload logs: " + error);
             // In case of failure, we just reset the button, since we cannot
