@@ -5,16 +5,12 @@
     @import "css/toggle.css";
 
     #logs-loading,
-    #logs-success,
-    #url-loading,
-    #url-success {
+    #logs-success {
       display: none;
     }
 
     :host([state="logs-loading"]) #logs-loading,
-    :host([state="logs-success"]) #logs-success,
-    :host([state="url-loading"]) #url-loading,
-    :host([state="url-success"]) #url-success {
+    :host([state="logs-success"]) #logs-success {
       display: block;
     }
 
@@ -39,31 +35,8 @@
     .toggle {
       margin: 0 0.5rem;
     }
-
-    #url-success .url-wrapper {
-      margin: 1rem 0;
-    }
-
-    #url-success .url {
-      user-select: text;
-      background: #bdbdbd;
-      padding: 0.6rem 2rem;
-      border-radius: var(--border-radius);
-    }
-
-    #url-sensitive-data-hidden-hint {
-      display: none;
-      font-size: 0.9rem;
-      opacity: 0.9;
-      margin: -0.5rem 0 0.5rem 0;
-    }
-
-    :host(:not([include-sensitive-data])) #url-sensitive-data-hidden-hint {
-      display: block;
-    }
   </style>
 
-  <!-- Get Debug Logs -->
   <div id="logs-loading">
     <h3>Retrieving Debug Logs</h3>
     <progress-spinner></progress-spinner>
@@ -72,9 +45,7 @@
   <div id="logs-success">
     <h3>Debug Logs</h3>
     <div class="action-buttons">
-      <button class="share-btn btn-action" type="button">
-        Get Shareable URL
-      </button>
+      <share-logs-button id="share-logs-button"></share-logs-button>
       <div style="flex: 1;"><!-- Spacer --></div>
       <div class="toggle-container">
         Hide Sensitive Data
@@ -87,26 +58,6 @@
     <p class="logs logs-output monospace"></p>
     <button class="close-btn" type="button">Close</button>
   </div>
-
-  <!-- Get Shareable URL -->
-  <div id="url-loading">
-    <h3>Retrieving Shareable URL</h3>
-    <progress-spinner></progress-spinner>
-  </div>
-
-  <div id="url-success">
-    <h3>Debug Logs</h3>
-    <div class="url-wrapper">
-      <a class="url"></a>
-      <button class="copy-btn btn-action" type="button">
-        Copy to Clipboard
-      </button>
-    </div>
-    <div id="url-sensitive-data-hidden-hint">
-      (Sensitive data in the uploaded logs was hidden.)
-    </div>
-    <button class="close-btn" type="button">Close</button>
-  </div>
 </template>
 
 <script type="module">
@@ -115,8 +66,7 @@
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
   } from "/js/events.js";
-  import { copyElementTextToClipboard } from "/js/clipboard.js";
-  import { getDebugLogs, textToShareableUrl } from "/js/controllers.js";
+  import { getDebugLogs } from "/js/controllers.js";
   import { redactSensitiveData } from "/js/logs.js";
 
   (function () {
@@ -127,13 +77,8 @@
         states = {
           LOGS_LOADING: "logs-loading",
           LOGS_SUCCESS: "logs-success",
-          URL_LOADING: "url-loading",
-          URL_SUCCESS: "url-success",
         };
-        statesWithoutDialogClose = new Set([
-          this.states.LOGS_LOADING,
-          this.states.URL_LOADING,
-        ]);
+        statesWithoutDialogClose = new Set([this.states.LOGS_LOADING]);
 
         constructor() {
           super();
@@ -141,7 +86,6 @@
           // Ensure that these methods always refer to the correct "this",
           // regardless of where they are called.
           this.retrieveLogs = this.retrieveLogs.bind(this);
-          this._getUrl = this._getUrl.bind(this);
         }
 
         connectedCallback() {
@@ -160,7 +104,9 @@
               "include-sensitive-data"
             ),
             logsText: this.shadowRoot.querySelector("#logs-success .logs"),
-            shareUrl: this.shadowRoot.querySelector("#url-success .url"),
+            shareLogsButton: this.shadowRoot.querySelector(
+              "#share-logs-button"
+            ),
           };
           this.elements.includeSensitiveData.addEventListener(
             "input",
@@ -174,17 +120,6 @@
               this.dispatchEvent(new DialogClosedEvent())
             );
           });
-          this.shadowRoot
-            .querySelector("#logs-success .share-btn")
-            .addEventListener("click", this._getUrl);
-          this.shadowRoot
-            .querySelector("#url-success .copy-btn")
-            .addEventListener("click", (event) => {
-              this.onPushCopyButton(
-                /*buttonElement=*/ event.target,
-                /*sourceElement=*/ this.elements.shareUrl
-              );
-            });
         }
 
         get state() {
@@ -240,34 +175,18 @@
         /**
          * (Re-)renders the log text panel, taking into account the current
          * sensitivity settings.
+         * Note: calling this method will reset the state of the
+         * <share-logs-button> component, since the uploaded URL is stale when
+         * changing the logs display text.
          */
         _renderLogDisplayText() {
-          this.elements.logsText.textContent = this.includeSensitiveData
+          const logsDisplayText = this.includeSensitiveData
             ? this._logText.original
             : this._logText.redacted;
-        }
-
-        _getUrl() {
-          this.state = this.states.URL_LOADING;
-          textToShareableUrl(this._getLogTextAsDisplayed())
-            .then((url) => {
-              this.elements.shareUrl.textContent = url;
-              this.elements.shareUrl.href = url;
-              this.state = this.states.URL_SUCCESS;
-            })
-            .catch((error) => {
-              this.dispatchEvent(
-                new DialogFailedEvent({
-                  title: "Error Retrieving Shareable URL",
-                  details: error,
-                })
-              );
-            });
-        }
-
-        onPushCopyButton(buttonElement, sourceElement) {
-          copyElementTextToClipboard(sourceElement);
-          buttonElement.innerText = "Copied!";
+          this.elements.logsText.textContent = logsDisplayText;
+          this.elements.shareLogsButton.initialize(
+            /*getLogsTextCb=*/ () => logsDisplayText
+          );
         }
       }
     );

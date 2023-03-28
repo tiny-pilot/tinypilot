@@ -10,7 +10,7 @@
       display: none;
     }
 
-    :host([is-shareable=""]) #share-logs-button {
+    :host([is-shareable]) #share-logs-button {
       display: block;
     }
 
@@ -93,7 +93,7 @@
           ).style.display = details ? "block" : "none";
           this.shadowRoot
             .getElementById("share-logs-button")
-            .initialize(() => String(details));
+            .initialize(/*getLogsTextCb=*/ () => String(details));
           this.toggleAttribute("is-shareable", details && isShareable);
         }
       }
