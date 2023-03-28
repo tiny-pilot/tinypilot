@@ -8,7 +8,8 @@ set -u
 # Exit on first error.
 set -e
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
 
@@ -83,7 +84,8 @@ fi
 printf "%s\n" "${NEW_HOSTNAME}" > /etc/hostname
 
 # Populate corresponding entry to `etc/hosts`.
-readonly OLD_ETC_HOSTS=$(printf "%s\n" "${etc_hosts_original[@]}")
+OLD_ETC_HOSTS=$(printf "%s\n" "${etc_hosts_original[@]}")
+readonly OLD_ETC_HOSTS
 printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
   "${MARKER_START}" "${NEW_HOSTNAME}" "${MARKER_END}" "${OLD_ETC_HOSTS}" \
   > /etc/hosts
