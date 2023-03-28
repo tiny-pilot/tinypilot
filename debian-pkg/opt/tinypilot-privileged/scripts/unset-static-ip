@@ -27,7 +27,8 @@ unset-static-ip \\
 EOF
 }
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
 readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
@@ -110,7 +111,8 @@ if [[ "${#section[@]}" -ne 0 ]] ; then
 fi
 
 # Convert array of lines to a single string.
-readonly OLD_CONFIG_FILE=$(printf "%s\n" "${dhcpcd_original[@]}")
+OLD_CONFIG_FILE=$(printf "%s\n" "${dhcpcd_original[@]}")
+readonly OLD_CONFIG_FILE
 
 # Write original file contents back to the file.
 echo "${OLD_CONFIG_FILE}" | sudo tee "${CONFIG_FILE}" > /dev/null

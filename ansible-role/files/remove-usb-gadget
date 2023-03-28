@@ -11,7 +11,8 @@ set -x
 # Treat undefined environment variables as errors.
 set -u
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+readonly SCRIPT_DIR
 # shellcheck source=lib/usb-gadget.sh
 source "${SCRIPT_DIR}/lib/usb-gadget.sh"
 

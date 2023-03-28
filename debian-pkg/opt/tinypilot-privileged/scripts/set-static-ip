@@ -45,7 +45,8 @@ print_help_nudge() {
   echo "  set-static-ip --help" >&2
 }
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
 readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
@@ -133,7 +134,7 @@ fi
 set -u
 
 # Use the unset-static-ip script to remove any existing configuration.
-"${SCRIPT_DIR}/unset-static-ip" --quiet --interface ${INTERFACE}
+"${SCRIPT_DIR}/unset-static-ip" --quiet --interface "${INTERFACE}"
 
 # Only proceed if no other configuration exists.
 if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then

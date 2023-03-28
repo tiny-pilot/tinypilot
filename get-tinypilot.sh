@@ -27,7 +27,7 @@ readonly SCRIPT_DIR
 # Detect TinyPilot Pro if the README file has a TinyPilot Pro header.
 readonly TINYPILOT_README="${SCRIPT_DIR}/README.md"
 if [[ -f "${TINYPILOT_README}" ]]; then
-  if [[ "$(head -n 1 ${TINYPILOT_README})" = "# TinyPilot Pro" ]]; then
+  if [[ "$(head -n 1 "${TINYPILOT_README}")" = "# TinyPilot Pro" ]]; then
     HAS_PRO_INSTALLED=1
   fi
 fi
