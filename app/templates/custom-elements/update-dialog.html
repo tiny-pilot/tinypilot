@@ -338,6 +338,7 @@
                 // Include full update logs in the error details, as it likely
                 // contains specific information about the error.
                 details: `${error}\n\n${this.elements.updateLogs.textContent}`,
+                isShareable: true,
               })
             );
             return;
