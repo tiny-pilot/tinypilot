@@ -184,7 +184,9 @@
             ? this._logText.original
             : this._logText.redacted;
           this.elements.logsText.textContent = logsDisplayText;
-          this.elements.shareLogsButton.initialize(() => logsDisplayText);
+          this.elements.shareLogsButton.initialize(
+            /*getLogsTextCb=*/ () => logsDisplayText
+          );
         }
       }
     );

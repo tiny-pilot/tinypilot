@@ -2,6 +2,23 @@
   <style>
     @import "css/style.css";
 
+    #message {
+      margin-bottom: 2em;
+    }
+
+    #share-logs-button {
+      display: none;
+    }
+
+    :host([is-shareable]) #share-logs-button {
+      display: block;
+    }
+
+    .details-header {
+      display: flex;
+      align-items: end;
+    }
+
     #details {
       padding: 0.5rem;
       max-height: 30vh;
@@ -20,15 +37,18 @@
       color: var(--brand-red);
       font-weight: 600;
       text-align: left;
-      font-size: 0.9em;
-      margin: 0.25rem 0.4rem;
+      margin: 0 0.4rem;
     }
   </style>
 
   <h3 id="title"></h3>
   <p id="message"></p>
   <div id="details-container">
-    <div class="details-label">Details:</div>
+    <div class="details-header">
+      <div class="details-label">Details:</div>
+      <div style="flex: 1;"><!-- Spacer --></div>
+      <share-logs-button id="share-logs-button"></share-logs-button>
+    </div>
     <pre id="details" class="monospace"></pre>
   </div>
   <button id="close">Close</button>
@@ -59,13 +79,22 @@
         /**
          * @see `DialogFailedEvent` for description of parameters.
          */
-        setup({ title, message = this.DEFAULT_MESSAGE, details = "" }) {
+        setup({
+          title,
+          message = this.DEFAULT_MESSAGE,
+          details = "",
+          isShareable = false,
+        }) {
           this.shadowRoot.getElementById("title").innerText = title;
           this.shadowRoot.getElementById("message").innerText = message;
           this.shadowRoot.getElementById("details").innerText = details;
           this.shadowRoot.getElementById(
             "details-container"
           ).style.display = details ? "block" : "none";
+          this.shadowRoot
+            .getElementById("share-logs-button")
+            .initialize(/*getLogsTextCb=*/ () => String(details));
+          this.toggleAttribute("is-shareable", details && isShareable);
         }
       }
     );
