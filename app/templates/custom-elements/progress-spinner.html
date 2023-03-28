@@ -5,6 +5,8 @@
     :host {
       --size: 5rem;
       --thickness: 10px;
+      --color-circle: var(--brand-metallic-bright);
+      --color-rotor: var(--brand-blue);
       display: inline-block;
     }
 
@@ -14,8 +16,8 @@
       height: var(--size);
       border-width: var(--thickness);
       border-style: solid;
-      border-color: var(--brand-metallic-bright);
-      border-top-color: var(--brand-blue);
+      border-color: var(--color-circle);
+      border-top-color: var(--color-rotor);
       border-radius: 50%;
       animation: spin 1.5s linear infinite;
       box-sizing: border-box;

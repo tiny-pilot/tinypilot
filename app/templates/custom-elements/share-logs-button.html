@@ -1,0 +1,216 @@
+<template id="share-logs-button-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    #get-url-button,
+    #get-url-button progress-spinner,
+    #display-link {
+      display: none;
+    }
+
+    #get-url-button span {
+      /* To hide the initial button label, we use the `visibility` attribute,
+         so that the button keeps its original width when showing the progress
+         spinner. */
+      visibility: hidden;
+    }
+
+    :host([state="initial"]) #get-url-button,
+    :host([state="loading"]) #get-url-button {
+      display: block;
+    }
+
+    :host([state="initial"]) #get-url-button span {
+      visibility: visible;
+    }
+
+    :host([state="loading"]) #get-url-button progress-spinner {
+      display: block;
+    }
+
+    :host([state="display-link"]) #display-link {
+      display: flex;
+    }
+
+    button {
+      position: relative;
+      margin: 0;
+    }
+
+    #get-url-button progress-spinner {
+      --size: 1.5em;
+      --thickness: 5px;
+      --color-circle: var(--brand-creme-light);
+      --color-rotor: var(--brand-blue-dark);
+      position: absolute;
+      top: 0.4em;
+      left: 50%;
+      right: 50%;
+      margin-left: calc(-0.5 * var(--size));
+    }
+
+    #display-link {
+      align-items: stretch;
+    }
+
+    .url-container {
+      display: flex;
+      align-items: center;
+      background-color: #dbdbdb;
+      padding: 0 0.5em;
+      border: 1px solid #666;
+      border-right: none; /* Visually collapse with left button border */
+      border-top-left-radius: 0.25em;
+      border-bottom-left-radius: 0.25em;
+    }
+
+    .url-container a {
+      color: #000;
+      align-items: center;
+    }
+
+    #copy-button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    #copy-button img {
+      width: 1.2em;
+      margin-bottom: -0.2em;
+    }
+
+    #copy-button span {
+      display: none;
+    }
+
+    #copy-button.copied span {
+      display: inline;
+    }
+
+    #copy-button.copied img {
+      display: none;
+    }
+  </style>
+
+  <button id="get-url-button" class="btn-action">
+    <span>Get Shareable URL</span>
+    <progress-spinner></progress-spinner>
+  </button>
+
+  <div id="display-link">
+    <div class="url-container">
+      <a href="" target="_blank" rel="noopener noreferrer">
+        <!-- Filled via JS -->
+      </a>
+    </div>
+    <button id="copy-button" class="btn-action" title="Copy Link to Clipboard">
+      <img src="/img/clipboard-icon.svg" alt="Copy" />
+      <span>Copied!</span>
+    </button>
+  </div>
+</template>
+
+<script type="module">
+  import { copyElementTextToClipboard } from "/js/clipboard.js";
+  import { textToShareableUrl } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#share-logs-button-template");
+
+    customElements.define(
+      "share-logs-button",
+      class extends HTMLElement {
+        states = {
+          INITIAL: "initial",
+          LOADING: "loading",
+          DISPLAY_LINK: "display-link",
+        };
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+
+          this.elements = {
+            getUrlButton: this.shadowRoot.querySelector("#get-url-button"),
+            urlLink: this.shadowRoot.querySelector("#display-link a"),
+            copyButton: this.shadowRoot.querySelector("#copy-button"),
+          };
+
+          this.elements.getUrlButton.addEventListener("click", () => {
+            this._handleRequestShareableUrl();
+          });
+          this.elements.copyButton.addEventListener("click", () => {
+            this._handleCopyToClipboard();
+          });
+
+          this.state = this.states.INITIAL;
+        }
+
+        set state(newValue) {
+          this.setAttribute("state", newValue);
+          this.elements.getUrlButton.disabled =
+            newValue === this.states.LOADING;
+        }
+
+        /**
+         * A callback function that returns the logs text when the user requests
+         * a shareable URL.
+         * @callback getLogsTextCallback
+         * @returns {string}
+         *
+         * @param {getLogsTextCallback} getLogsTextCb
+         */
+        initialize(getLogsTextCb) {
+          this.getLogsText = getLogsTextCb;
+          this.state = this.states.INITIAL;
+        }
+
+        async _handleRequestShareableUrl() {
+          this.state = this.states.LOADING;
+
+          try {
+            const url = await textToShareableUrl(this.getLogsText());
+            // For the displayed URL, strip the protocol prefix, to make it
+            // look a bit slimmer.
+            this.elements.urlLink.textContent = url
+              .replace("http://", "")
+              .replace("https://", "");
+            this.elements.urlLink.setAttribute("href", url);
+            this.elements.urlLink.setAttribute("title", url);
+          } catch (error) {
+            console.error("Failed to upload logs: " + error);
+            // In case of failure, we just reset the button, since we cannot
+            // display a detailed error message inline. It should be obvious
+            // to the user that they need to try again, and the original error
+            // message probably wouldn’t help them much.
+            this.initialize(this.getLogsText); // Reset component.
+            return;
+          }
+
+          this.state = this.states.DISPLAY_LINK;
+        }
+
+        _handleCopyToClipboard() {
+          // Workaround: we display the URL without protocol part in the UI, but
+          // we still want to copy the full, canonical URL to the clipboard.
+          // To do that, we briefly replace the display URL with the canonical
+          // one for the duration of the “copy to clipboard” operation. The user
+          // shouldn’t notice anything about this.
+          const previousDisplayText = this.elements.urlLink.textContent;
+          this.elements.urlLink.textContent = this.elements.urlLink.getAttribute(
+            "href"
+          );
+          copyElementTextToClipboard(this.elements.urlLink);
+          this.elements.urlLink.textContent = previousDisplayText;
+
+          this.elements.copyButton.classList.add("copied");
+          setTimeout(() => {
+            this.elements.copyButton.classList.remove("copied");
+          }, 2000);
+        }
+      }
+    );
+  })();
+</script>
