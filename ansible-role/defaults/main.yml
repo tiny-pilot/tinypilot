@@ -18,4 +18,4 @@ tinypilot_app_settings_file: "/home/{{ tinypilot_user }}/app_settings.cfg"
 # uStreamer version to use on systems prior to Raspbian Bullseye (Debian 11).
 ustreamer_repo_version_legacy: v4.13
 # uStreamer version to use on Raspbian Bullseye (Debian 11) or later systems.
-ustreamer_repo_version_modern: v5.34
+ustreamer_repo_version_modern: v5.38
