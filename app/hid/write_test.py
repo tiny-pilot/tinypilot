@@ -8,7 +8,7 @@ import hid.write
 # Dummy functions to represent what can happen when a Human Interface Device
 # writes.
 #
-# On MacOS, the multiprocessing module spawns rather than forks new
+# On some MacOS systems, the multiprocessing module spawns rather than forks new
 # processes[1], which pickles these functions[2]. So, they must be defined
 # using `def` at the top level of a module[3].
 #
