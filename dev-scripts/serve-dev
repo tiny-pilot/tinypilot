@@ -11,7 +11,7 @@ set -u
 
 # Serve TinyPilot in dev mode.
 HOST=0.0.0.0 \
-  PORT=8000 \
+  PORT=${PORT:=8000} \
   DEBUG=1 \
   USE_RELOADER=1 \
   APP_SETTINGS_FILE=../dev_app_settings.cfg \

@@ -74,3 +74,8 @@ node_modules
 
 # Debian package builds
 debian-pkg/releases/
+
+# End-to-End test data
+/test-results/
+/playwright-report/
+/playwright/.cache/
