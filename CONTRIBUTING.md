@@ -36,7 +36,7 @@ To run TinyPilot's build scripts, run:
 ./dev-scripts/build
 ```
 
-To run TinyPilot's end-to-end scripts, run:
+To run TinyPilot's end-to-end tests, run:
 
 ```bash
 ./dev-scripts/run-e2e-tests
