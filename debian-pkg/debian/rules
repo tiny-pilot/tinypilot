@@ -1,7 +1,12 @@
 #!/usr/bin/make -f
 
+export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot
+
 %:
-	dh $@
+	dh $@ --with python-virtualenv
 
 override_dh_installsystemd:
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
+
+override_dh_virtualenv:
+        dh_virtualenv --skip-install
