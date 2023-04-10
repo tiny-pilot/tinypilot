@@ -12,6 +12,8 @@ set -x
 # Exit on unset variable.
 set -u
 
+BUILD_TARGETS="$1"
+
 print_tinypilot_version() {
   # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
   git describe --tags --long |
@@ -33,7 +35,7 @@ readonly DOCKER_PROGRESS
 
 DOCKER_BUILDKIT=1 docker build \
   --file debian-pkg/Dockerfile \
-  --platform linux/arm/v7 \
+  --platform "${BUILD_TARGETS}" \
   --build-arg TINYPILOT_VERSION="${TINYPILOT_VERSION}" \
   --build-arg PKG_VERSION="${PKG_VERSION}" \
   --target=artifact \

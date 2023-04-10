@@ -12,4 +12,3 @@ override_dh_installsystemd:
 
 override_dh_virtualenv:
 	dh_virtualenv --skip-install --install-suffix venv
-	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
