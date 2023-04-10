@@ -81,6 +81,9 @@ jobs:
       - setup_remote_docker:
           version: 20.10.11
       - run:
+          name: Enable multiarch builds with QEMU
+          command: ./dev-scripts/enable-multiarch-docker
+      - run:
           name: Build Debian package
           command: ./dev-scripts/build-debian-pkg
       - run:
