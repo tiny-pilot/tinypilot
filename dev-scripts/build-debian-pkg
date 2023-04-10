@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Note: You must run ./dev-scripts/enable-multiarch-docker on your system at
+# least once before running this script.
+
 # Exit build script on first failure.
 set -e
 
