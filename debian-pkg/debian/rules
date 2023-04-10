@@ -12,5 +12,5 @@ override_dh_installsystemd:
 
 override_dh_virtualenv:
 	dh_virtualenv --skip-install --install-suffix venv
-	rm $(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
+	rm opt/tinypilot/venv/.gitignore
 	find . -type d -name __pycache__ -delete
