@@ -74,15 +74,11 @@ jobs:
           name: Run build script
           command: ./dev-scripts/build-javascript
   build_debian_package:
-    docker:
-      - image: cimg/base:stable
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.large
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.11
-      - run:
-          name: Enable multiarch builds with QEMU
-          command: ./dev-scripts/enable-multiarch-docker
       - run:
           name: Build Debian package
           command: ./dev-scripts/build-debian-pkg
