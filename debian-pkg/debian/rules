@@ -14,5 +14,5 @@ override_dh_virtualenv:
 	dh_virtualenv --skip-install --install-suffix venv
 
 override_dh_clean:
-    dh_clean $(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
-    find . -type d -name __pycache__ -delete
+	dh_clean $(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
+	find . -type d -name __pycache__ -delete
