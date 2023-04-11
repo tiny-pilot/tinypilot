@@ -33,8 +33,7 @@ if [[ "$(lsb_release --id --short)" == "Raspbian" && \
     ./debian-pkg/Dockerfile
 fi
 
-# TODO: Update this to not use QEMU on TinyPilot device.
-./dev-scripts/build-debian-pkg
+./dev-scripts/build-debian-pkg "linux/arm/v7"
 
 # Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
 # we don't expect non-alphanumeric filenames, and the find equivalent is more
