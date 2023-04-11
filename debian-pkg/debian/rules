@@ -20,8 +20,8 @@ override_dh_virtualenv:
 	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
 	# Lintian will complain if the .gitignore stays in venv.
 	rm ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
-	# Lintian complains about this folder, but we don't need it in production, so
-	# we delete it.
+	# Lintian complains about issues in certain packages' tests folders, but we
+	# don't need them in production, so we delete them.
 	rm -rf ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/greenlet/tests/
 	# Lintian complains if it sees that these scripts are not executable.
 	chmod +x ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py

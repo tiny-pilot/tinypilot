@@ -26,7 +26,3 @@ systemd-service-file-refers-to-unusual-wantedby-target
 # user-defined fields, though.
 # https://lintian.debian.org/tags/unknown-field
 unknown-field
-
-# Lintian doesn't recognize the Python interpreter within the Python virtual
-# environment.
-unusual-interpreter
