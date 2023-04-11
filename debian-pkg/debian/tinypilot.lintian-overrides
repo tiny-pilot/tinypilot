@@ -6,4 +6,10 @@ tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/s
 
 # Lintian doesn't recognize the Python interpreter when it's within the
 # virtualenv.
-tinypilot: unusual-interpreter [opt/tinypilot/venv/*]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install*]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/flask]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip*]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel*]
+tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/greenlet/tests/test_version.py]
+tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py]
+tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/setuptools/command/easy_install.py]
