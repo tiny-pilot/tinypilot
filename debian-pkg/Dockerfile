@@ -24,11 +24,11 @@ ARG PKG_VERSION
 ARG PKG_NAME="tinypilot"
 ARG PKG_BUILD_NUMBER="1"
 ARG PKG_ARCH="armhf"
-ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
+RUN echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
 
-RUN mkdir -p "/releases/${PKG_ID}"
+RUN mkdir -p "/releases/temp-pkg-id"
 
-WORKDIR "/releases/${PKG_ID}"
+WORKDIR "/releases/temp-pkg-id"
 
 COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
@@ -40,7 +40,7 @@ COPY ./scripts ./scripts
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-WORKDIR "/releases/${PKG_ID}/debian"
+WORKDIR "/releases/temp-pkg-id/debian"
 
 RUN set -x && \
     if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
@@ -72,8 +72,12 @@ tinypilot (${PKG_VERSION}) buster; urgency=medium
  -- TinyPilot Support <support@tinypilotkvm.com>  $(date '+%a, %d %b %Y %H:%M:%S %z')
 EOF
 
-WORKDIR "/releases/${PKG_ID}"
-RUN dpkg-buildpackage --build=binary
+# Rename the temporary release directory to the final package ID.
+WORKDIR "/releases"
+RUN set -x && \
+    mv tmp-pkg-id "$(cat /tmp/pkg-id)" && \
+    cd "$(cat /tmp/pkg-id)" && \
+    dpkg-buildpackage --build=binary
 
 FROM scratch as artifact
 

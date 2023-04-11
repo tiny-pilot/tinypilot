@@ -12,7 +12,7 @@ set -x
 # Exit on unset variable.
 set -u
 
-BUILD_TARGETS="$1"
+BUILD_TARGETS="${1:-linux/arm/v7,linux/amd64}"
 
 print_tinypilot_version() {
   # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
