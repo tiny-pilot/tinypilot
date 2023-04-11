@@ -8,9 +8,6 @@
     "editor.defaultFormatter": "ms-python.python",
     "editor.tabSize": 4
   },
-  "[rules]": {
-    "editor.insertSpaces": false
-  },
   "python.formatting.provider": "yapf",
   "python.linting.pylintEnabled": true,
   "python.linting.enabled": true,
