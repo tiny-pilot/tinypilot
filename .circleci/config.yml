@@ -90,10 +90,13 @@ jobs:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/linux_arm_v7/tinypilot*.deb
       - persist_to_workspace:
-          root: ./debian-pkg/releases
+          root: ./debian-pkg/releases/linux_amd64
           paths:
-            - "linux_amd64/*.deb"
-            - "linux_arm_v7/*.deb"
+            - "*.deb"
+      - persist_to_workspace:
+          root: ./debian-pkg/releases/linux_arm_v7
+          paths:
+            - "*.deb"
       - persist_to_workspace:
           root: ./
           paths:
