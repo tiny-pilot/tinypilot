@@ -90,14 +90,11 @@ jobs:
           root: ./debian-pkg/releases
           paths:
             - "*.deb"
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - .lintianignore
   lint_debian_package:
     docker:
       - image: cimg/base:2022.11-22.04
     steps:
+      - checkout
       - attach_workspace:
           at: ./
       - run:
