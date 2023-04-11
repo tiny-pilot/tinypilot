@@ -88,7 +88,7 @@ jobs:
           command: ./dev-scripts/build-debian-pkg "linux/arm/v7,linux/amd64"
       - run:
           name: Print Debian package contents
-          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
+          command: dpkg --contents debian-pkg/releases/linux_arm_v7/tinypilot*.deb
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:
