@@ -1,0 +1,20 @@
+# This is from a third-party dependency we don't control.
+tinypilot: embedded-javascript-library opt/tinypilot/venv/lib/python3.9/site-packages/werkzeug/debug/shared/jquery.js please use libjs-jquery
+
+# Lintian doesn't recognize the Python interpreter when it's within the
+# virtualenv.
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install-3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install3]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/flask]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip-3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip3]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel-3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel3.9]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel3]
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel]
+tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python3.9/site-packages/pkg_resources/_vendor/appdirs.py]
+tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python3.9/site-packages/setuptools/command/easy_install.py]
