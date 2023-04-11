@@ -28,7 +28,7 @@ readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
 readonly ANSIBLE_ROLE_TINYPILOT_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-tinypilot"
 
 # Exclude the AMD64 package from the production bundle.
-rm "${BUNDLE_DIR}/tinypilot"*amd64.deb"
+rm "${BUNDLE_DIR}/tinypilot"*amd64.deb
 
 # Ensure that a TinyPilot Debian package exists.
 if ! ls "${BUNDLE_DIR}/tinypilot"*armhf.deb 1> /dev/null 2>&1; then
