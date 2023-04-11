@@ -12,4 +12,9 @@ override_dh_installsystemd:
 
 override_dh_virtualenv:
 	dh_virtualenv --skip-install --install-suffix venv
+	rm ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
+	rm -rf ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python3.9/site-packages/werkzeug/debug/
+	rm -rf ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python3.9/site-packages/greenlet/tests/
 	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
+	chmod +x ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python3.9/site-packages/pkg_resources/_vendor/appdirs.py
+	chmod +x ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python3.9/site-packages/setuptools/command/easy_install.py
