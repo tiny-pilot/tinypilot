@@ -44,7 +44,7 @@ print_tinypilot_version() {
   dpkg-deb \
     --show \
     --showformat '${Tinypilot-Version}' \
-    "${BUNDLE_DIR}/tinypilot"*.deb
+    "${BUNDLE_DIR}/tinypilot"*armhf.deb
 }
 
 # Compose bundle file name, which consists of these hyphen-separated parts:
