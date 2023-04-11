@@ -92,7 +92,8 @@ jobs:
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:
-            - "*.deb"
+            - "linux_amd64/*.deb"
+            - "linux_arm_v7/*.deb"
       - persist_to_workspace:
           root: ./
           paths:
@@ -121,7 +122,7 @@ jobs:
               --suppress-tags-from-file .lintianignore \
               --no-cfg \
               --fail-on warning,error \
-              tinypilot*.deb
+              tinypilot*armhf.deb
   build_ansible_role:
     machine:
       image: ubuntu-2004:202010-01
@@ -135,7 +136,7 @@ jobs:
       - run:
           name: Add TinyPilot Debian package name as an environment variable
           command: |
-            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
+            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*amd64.deb | xargs basename)"
             echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
       - run:
           name: Create virtual environment

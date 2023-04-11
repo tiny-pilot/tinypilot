@@ -11,6 +11,9 @@ RUN set -x && \
       dh-virtualenv \
       dpkg-dev
 
+# Set by docker.
+ARG TARGETPLATFORM
+
 # The canonical, SemVer-compliant TinyPilot version.
 ARG TINYPILOT_VERSION
 
@@ -23,12 +26,23 @@ ARG PKG_VERSION
 
 ARG PKG_NAME="tinypilot"
 ARG PKG_BUILD_NUMBER="1"
-ARG PKG_ARCH="armhf"
-RUN echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
 
-RUN mkdir -p "/releases/temp-pkg-id"
+RUN set -x && \
+    if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
+      echo "armhf" > /tmp/pkg-arch; \
+    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+      echo "amd64" > /tmp/pkg-arch; \
+    else \
+      echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2; \
+      exit 1; \
+    fi
+RUN set -u && \
+    PKG_ARCH="$(cat /tmp/pkg-arch)" && \
+    echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
 
-WORKDIR "/releases/temp-pkg-id"
+RUN mkdir -p "/releases/placeholder-pkg-id"
+
+WORKDIR "/releases/placeholder-pkg-id"
 
 COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
@@ -40,14 +54,10 @@ COPY ./scripts ./scripts
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-WORKDIR "/releases/temp-pkg-id/debian"
+WORKDIR "/releases/placeholder-pkg-id/debian"
 
 RUN set -x && \
-    if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
-      PKG_ARCH="armhf"; \
-    else \
-      PKG_ARCH="amd64"; \
-    fi && \
+    PKG_ARCH="$(cat /tmp/pkg-arch)" && \
     set -u && \
     cat >control <<EOF
 Source: ${PKG_NAME}
@@ -72,11 +82,12 @@ tinypilot (${PKG_VERSION}) buster; urgency=medium
  -- TinyPilot Support <support@tinypilotkvm.com>  $(date '+%a, %d %b %Y %H:%M:%S %z')
 EOF
 
-# Rename the temporary release directory to the final package ID.
+# Rename the placeholder release directory to the final package ID.
 WORKDIR "/releases"
 RUN set -x && \
-    mv tmp-pkg-id "$(cat /tmp/pkg-id)" && \
-    cd "$(cat /tmp/pkg-id)" && \
+    PKG_ID="$(cat /tmp/pkg-id)" && \
+    mv placeholder-pkg-id "${PKG_ID}" && \
+    cd "${PKG_ID}" && \
     dpkg-buildpackage --build=binary
 
 FROM scratch as artifact
