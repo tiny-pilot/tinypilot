@@ -10,11 +10,19 @@ export DEB_BUILD_OPTIONS=noddebs
 override_dh_installsystemd:
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
 
+#
 override_dh_virtualenv:
+	# Skip install because TinyPilot doesn't need to run setup.py to install.
+	# Use the venv directory because that's where we've historically kept it.
 	dh_virtualenv --skip-install --install-suffix venv
+	# dh_virtualenv doesn't remove __pycache__ directories, so we clean them up
+	# manually.
 	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
+	# Lintian will complain if the .gitignore stays in venv.
 	rm ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore
-	rm -rf ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/werkzeug/debug/
+	# Lintian complains about this folder, but we don't need it in production, so
+	# we delete it.
 	rm -rf ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/greenlet/tests/
+	# Lintian complains if it sees that these scripts are not executable.
 	chmod +x ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py
 	chmod +x ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/lib/python*/site-packages/setuptools/command/easy_install.py
