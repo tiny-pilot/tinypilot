@@ -42,7 +42,14 @@ RUN echo "${TINYPILOT_VERSION}" > VERSION
 
 WORKDIR "/releases/${PKG_ID}/debian"
 
-RUN cat >control <<EOF
+RUN set -x && \
+    if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
+      PKG_ARCH="armhf"; \
+    else \
+      PKG_ARCH="amd64"; \
+    fi && \
+    set -u && \
+    cat >control <<EOF
 Source: ${PKG_NAME}
 Section: net
 Priority: optional
