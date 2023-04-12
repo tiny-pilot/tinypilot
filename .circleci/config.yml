@@ -252,6 +252,12 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
+          # Creating the bundle assumes an ARMv7 build, so we only do this on
+          # master, because it's slow building the ARMv7 binaries from a
+          # CircleCI AMD64 instance.
+          filters:
+            branches:
+              only: master
       - verify_bundle:
           requires:
             - build_bundle
