@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Configure Docker to support multiarch builds, allowing it to use QEMU to build
+# images targeting different CPU architectures.
+
 # Exit build script on first failure.
 set -e
 
@@ -16,6 +19,7 @@ docker run \
   multiarch/qemu-user-static \
   --reset \
   -p yes
+
 # Create multiarch build context
 docker context create builder
 

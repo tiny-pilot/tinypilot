@@ -1,7 +1,18 @@
 #!/bin/bash
 
-# Note: You must run ./dev-scripts/enable-multiarch-docker on your system at
-# least once before running this script.
+# Build TinyPilot Debian packages
+#
+# Usage:
+#   build-debian-pkg [target architectures]
+#
+# target architecture: A comma-separated list of architectures that Docker
+#   accepts for its --platform argument. If omitted, defaults to
+#   "linux/arm/v7,linux/amd64".
+#   See https://docs.docker.com/build/building/multi-platform/ for other target
+#   platform options.
+#
+# Examples
+#  build-debian-pkg "linux/arm/v7,linux/arm64"
 
 # Exit build script on first failure.
 set -e
