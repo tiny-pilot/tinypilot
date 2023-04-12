@@ -11,7 +11,8 @@ RUN set -x && \
       dh-virtualenv \
       dpkg-dev
 
-# Set by docker.
+# Docker populates this value from the --platform argument. See
+# https://docs.docker.com/build/building/multi-platform/
 ARG TARGETPLATFORM
 
 # The canonical, SemVer-compliant TinyPilot version.

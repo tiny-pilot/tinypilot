@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build TinyPilot Debian packages
+# Build TinyPilot Debian packages.
 #
 # Usage:
 #   build-debian-pkg [target architectures]
