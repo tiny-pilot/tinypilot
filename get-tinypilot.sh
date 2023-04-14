@@ -54,24 +54,14 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
-# HACK: If we let mktemp use the default /tmp directory, the system purges the
-# file before the end of the script for some reason. We use /var/tmp as a
-# workaround.
-readonly TEMP_DIR='/var/tmp'
-
-BUNDLE_FILENAME="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .tgz)"
-readonly BUNDLE_FILENAME
-
-# The installer directory needs to be `/opt/tinypilot-updater`, because other
-# parts of the application rely on the ansible roles being present in that
-# location. In theory, we could otherwise also extract to a temporary and
-# ephemeral folder, and run the installation from there. We might refactor and
-# change this setup in the future.
-readonly INSTALLER_DIR='/opt/tinypilot-updater'
+readonly RAMDISK_DIR='/mnt/tinypilot'
+readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
+readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
 
 # Remove temporary files & directories.
 clean_up() {
-  rm -rf "${BUNDLE_FILENAME}"
+  umount "${RAMDISK_DIR}" || true
+  rm -rf "${RAMDISK_DIR}"
 }
 
 # Always clean up before exiting.
@@ -80,7 +70,7 @@ trap 'clean_up' EXIT
 # Download tarball to temporary file.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
   --location \
-  --output "${BUNDLE_FILENAME}" \
+  --output "${BUNDLE_FILE}" \
   --write-out '%{http_code}' \
   --silent)"
 readonly HTTP_CODE
@@ -89,14 +79,22 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
   exit 1
 fi
 
+# Mount RAMdisk.
+sudo mkdir "${RAMDISK_DIR}"
+sudo mount \
+  --types tmpfs \
+  --options size=1g \
+  --source tmpfs \
+  --target "${RAMDISK_DIR}" \
+  --verbose
+
 # Extract tarball to installer directory. The installer directory and all its
 # content must have root ownership.
-sudo rm -rf "${INSTALLER_DIR}"
-sudo mkdir -p "${INSTALLER_DIR}"
+sudo mkdir "${INSTALLER_DIR}"
 sudo tar \
   --gunzip \
   --extract \
-  --file "${BUNDLE_FILENAME}" \
+  --file "${BUNDLE_FILE}" \
   --directory "${INSTALLER_DIR}"
 sudo chown root:root --recursive "${INSTALLER_DIR}"
 
