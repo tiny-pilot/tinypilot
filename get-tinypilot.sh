@@ -54,20 +54,29 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
-readonly RAMDISK_DIR='/mnt/tinypilot'
+readonly RAMDISK_DIR='/mnt/tinypilot-installer'
 readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
 readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
 
 # Remove temporary files & directories.
 clean_up() {
-  umount "${RAMDISK_DIR}" || true
+  umount --lazy "${RAMDISK_DIR}" || true
   rm -rf "${RAMDISK_DIR}"
 }
 
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
-# Download tarball to temporary file.
+# Mount volatile RAMdisk.
+sudo mkdir "${RAMDISK_DIR}"
+sudo mount \
+  --types tmpfs \
+  --options size=1g \
+  --source tmpfs \
+  --target "${RAMDISK_DIR}" \
+  --verbose
+
+# Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
   --location \
   --output "${BUNDLE_FILE}" \
@@ -78,15 +87,6 @@ if [[ "${HTTP_CODE}" != "200" ]]; then
   echo "Failed to download tarball with HTTP response status code ${HTTP_CODE}." >&2
   exit 1
 fi
-
-# Mount RAMdisk.
-sudo mkdir "${RAMDISK_DIR}"
-sudo mount \
-  --types tmpfs \
-  --options size=1g \
-  --source tmpfs \
-  --target "${RAMDISK_DIR}" \
-  --verbose
 
 # Extract tarball to installer directory. The installer directory and all its
 # content must have root ownership.
