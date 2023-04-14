@@ -28,6 +28,9 @@ ARG PKG_VERSION
 ARG PKG_NAME="tinypilot"
 ARG PKG_BUILD_NUMBER="1"
 
+# Docker's platform names don't match Debian's platform names, so we translate
+# the platform name from the Docker version to the Debian version and save the
+# result to a file so we can re-use it in later stages.
 RUN set -x && \
     if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
       echo "armhf" > /tmp/pkg-arch; \
@@ -41,6 +44,10 @@ RUN set -u && \
     PKG_ARCH="$(cat /tmp/pkg-arch)" && \
     echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
 
+# We ultimately need the directory name to be the package ID, but there's no
+# way to specify a dynamic value in Docker's WORKDIR command, so we use a
+# placeholder directory name to assemble the Debian package and then rename the
+# directory to its package ID name in the final stages of packaging.
 RUN mkdir -p "/releases/placeholder-pkg-id"
 
 WORKDIR "/releases/placeholder-pkg-id"
