@@ -74,7 +74,7 @@ trap 'clean_up' EXIT
 sudo mkdir "${RAMDISK_DIR}"
 sudo mount \
   --types tmpfs \
-  --options size=1g \
+  --options size=500m \
   --source tmpfs \
   --target "${RAMDISK_DIR}" \
   --verbose
