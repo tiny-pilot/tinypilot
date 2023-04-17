@@ -35,6 +35,14 @@ tar \
   --directory "${BUNDLE_DIR}"
 pushd "${BUNDLE_DIR}"
 
+# Check extracted bundle directory size.
+BUNDLE_DIR_SIZE_BYTES="$(du --summarize --bytes "${BUNDLE_DIR}" | cut --fields 1)"
+readonly BUNDLE_DIR_SIZE_BYTES
+if [[ "${BUNDLE_DIR_SIZE_BYTES}" -gt 500000000 ]]; then
+  >&2 echo "Bundle directory size is larger than 500mb, which exceeds the size of the installer's RAMdisk"
+  exit 1
+fi
+
 # Check that install script exists.
 if [[ ! -f install ]]; then
   >&2 echo 'Bundle is missing install script.'
