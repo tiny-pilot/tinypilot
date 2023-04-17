@@ -88,7 +88,7 @@ trap 'clean_up' EXIT
 mkdir "${RAMDISK_DIR}"
 mount \
   --types tmpfs \
-  --options size=1g \
+  --options size=500m \
   --source tmpfs \
   --target "${RAMDISK_DIR}" \
   --verbose
