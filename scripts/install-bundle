@@ -69,13 +69,16 @@ else
   readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
 fi
 
+readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 readonly RAMDISK_DIR='/mnt/tinypilot-installer'
 readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
 
 # Remove temporary files & directories.
 clean_up() {
   umount --lazy "${RAMDISK_DIR}" || true
-  rm -rf "${RAMDISK_DIR}"
+  rm -rf \
+    "${LEGACY_INSTALLER_DIR}" \
+    "${RAMDISK_DIR}"
 }
 
 # Always clean up before exiting.

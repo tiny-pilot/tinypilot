@@ -54,10 +54,10 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
+readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 readonly RAMDISK_DIR='/mnt/tinypilot-installer'
 readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
 readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
-readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 
 # Remove temporary files & directories.
 clean_up() {
