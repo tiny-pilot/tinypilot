@@ -49,7 +49,7 @@ fi
 
 # Prevent installation on OS versions lower than Raspberry Pi OS 11 "Bullseye".
 if [[ "$(lsb_release --release --short)" -lt 11 ]]; then
-  echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\"." >&2
+  echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\" or lower." >&2
   echo "To install TinyPilot, you'll need to upgrade your operating system to Raspberry Pi OS 11 \"Bullseye\"." >&2
 fi
 
