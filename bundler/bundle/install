@@ -51,6 +51,7 @@ fi
 if [[ "$(lsb_release --release --short)" -lt 11 ]]; then
   echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\" or lower." >&2
   echo "To install TinyPilot, you'll need to upgrade your operating system to Raspberry Pi OS 11 \"Bullseye\"." >&2
+  exit 1
 fi
 
 # Abort installation if the read-only filesystem is enabled
