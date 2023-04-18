@@ -1,0 +1,13 @@
+version: 2.1
+setup: true
+orbs:
+  path-filtering: circleci/path-filtering@0.1.4
+workflows:
+  always-run:
+    jobs:
+      - path-filtering/filter:
+          name: build_pipeline_params
+          mapping: |
+            ansible-role/.* can_build_ansible_role true
+          base-revision: master
+          config-path: .circleci/continue_config.yml

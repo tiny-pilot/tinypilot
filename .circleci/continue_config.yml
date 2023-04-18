@@ -1,4 +1,8 @@
 version: 2.1
+parameters:
+  can_build_ansible_role:
+    type: boolean
+    default: false
 jobs:
   check_whitespace:
     docker:
