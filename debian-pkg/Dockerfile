@@ -57,7 +57,7 @@ XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
 EOF
 
 RUN cat >changelog <<EOF
-tinypilot (${PKG_VERSION}) buster; urgency=medium
+tinypilot (${PKG_VERSION}) bullseye; urgency=medium
 
   * Latest TinyPilot release.
 
