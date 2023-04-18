@@ -126,29 +126,32 @@ jobs:
     resource_class: large
     working_directory: ~/project/ansible-role
     steps:
-      - checkout:
-          path: ~/project
-      - attach_workspace:
-          at: ./debian-pkgs
-      - run:
-          name: Add TinyPilot Debian package name as an environment variable
-          command: |
-            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
-            echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
-      - run:
-          name: Create virtual environment
-          command: python3 -m venv venv
-      - run:
-          name: Test role with molecule
-          command: |
-            . venv/bin/activate && \
-            pip install --upgrade pip && \
-            pip install wheel==0.34.2 && \
-            pip install -r molecule/requirements.txt && \
-            ansible --version && \
-            molecule --version && \
-            ansible-galaxy install --role-file meta/requirements.yml && \
-            molecule test
+      - when:
+          condition: << pipeline.parameters.can_build_ansible_role >>
+          steps:
+            - checkout:
+                path: ~/project
+            - attach_workspace:
+                at: ./debian-pkgs
+            - run:
+                name: Add TinyPilot Debian package name as an environment variable
+                command: |
+                  TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
+                  echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
+            - run:
+                name: Create virtual environment
+                command: python3 -m venv venv
+            - run:
+                name: Test role with molecule
+                command: |
+                  . venv/bin/activate && \
+                  pip install --upgrade pip && \
+                  pip install wheel==0.34.2 && \
+                  pip install -r molecule/requirements.txt && \
+                  ansible --version && \
+                  molecule --version && \
+                  ansible-galaxy install --role-file meta/requirements.yml && \
+                  molecule test
   build_bundle:
     docker:
       - image: cimg/python:3.7.4
