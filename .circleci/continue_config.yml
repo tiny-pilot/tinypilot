@@ -126,6 +126,7 @@ jobs:
     resource_class: large
     working_directory: ~/project/ansible-role
     steps:
+      - run: echo "Hello, World!"
       - when:
           condition: << pipeline.parameters.can_build_ansible_role >>
           steps:
