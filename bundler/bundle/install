@@ -47,6 +47,13 @@ if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
   exit 1
 fi
 
+# Prevent installation on OS versions lower than Raspberry Pi OS 11 "Bullseye".
+if (( "$(lsb_release --release --short)" < 11 )); then
+  echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\" or lower." >&2
+  echo "To install TinyPilot, you'll need to upgrade your operating system to Raspberry Pi OS 11 \"Bullseye\"." >&2
+  exit 1
+fi
+
 # Abort installation if the read-only filesystem is enabled
 if grep -q "boot=overlay" /proc/cmdline ; then
   echo 'The read-only filesystem is enabled.' >&2
