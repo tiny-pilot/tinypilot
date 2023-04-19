@@ -130,7 +130,7 @@ jobs:
           condition: << pipeline.parameters.can_build_ansible_role >>
           steps:
             - run:
-                name: Skip job because no files updated
+                name: Skipping job because files weren't updated
                 command: circleci-agent step halt
       - checkout:
           path: ~/project
