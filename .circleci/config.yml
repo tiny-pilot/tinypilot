@@ -3,7 +3,7 @@ setup: true
 orbs:
   path-filtering: circleci/path-filtering@0.1.4
 workflows:
-  always-run:
+  build_pipeline:
     jobs:
       - path-filtering/filter:
           name: build_pipeline_params
