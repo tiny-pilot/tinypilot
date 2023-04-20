@@ -8,8 +8,9 @@
     }
 
     .keyboard {
-      width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
-      min-width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
+      --width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
+      width: var(--width);
+      min-width: var(--width);
       background-color: #f7f7f7;
       margin: 1rem auto;
       padding: 14px;
