@@ -8,8 +8,8 @@
     }
 
     .keyboard {
-      width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
-      min-width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
+      width: calc(21 * var(--key-size) + 6 * var(--block-spacing));
+      min-width: calc(21 * var(--key-size) + 6 * var(--block-spacing));
       background-color: #f7f7f7;
       margin: 1rem auto;
       padding: 14px;
@@ -23,6 +23,12 @@
 
     #keyboard-block-left {
       margin-right: var(--block-spacing);
+      width: calc(var(--key-size) * 3);
+    }
+
+    #keyboard-block-middle {
+      margin-left: var(--block-spacing);
+      margin-right: var(--block-spacing);
       width: calc(var(--key-size) * 15);
     }
 
@@ -35,35 +41,37 @@
       width: 100%;
       float: left;
     }
-
-    .keyboard-row-bump {
-      padding-bottom: calc(2 * var(--block-spacing));
-    }
   </style>
   <div class="keyboard">
     <div id="keyboard-block-left" class="keyboard-block">
-      <div class="keyboard-row keyboard-row-bump">
-        <keyboard-key class="accented" code="Escape">Esc</keyboard-key>
+      <div class="keyboard-row">
         <keyboard-key class="hidden"></keyboard-key>
+        <keyboard-key class="hidden"></keyboard-key>
+        <keyboard-key class="accented" code="Escape">Esc</keyboard-key>
+      </div>
+      <div class="keyboard-row">
         <keyboard-key code="F1">F1</keyboard-key>
         <keyboard-key code="F2">F2</keyboard-key>
         <keyboard-key code="F3">F3</keyboard-key>
+      </div>
+      <div class="keyboard-row">
         <keyboard-key code="F4">F4</keyboard-key>
-        <keyboard-key class="hidden key-collapse-half"></keyboard-key>
-
         <keyboard-key code="F5">F5</keyboard-key>
         <keyboard-key code="F6">F6</keyboard-key>
+      </div>
+      <div class="keyboard-row">
         <keyboard-key code="F7">F7</keyboard-key>
         <keyboard-key code="F8">F8</keyboard-key>
-        <keyboard-key class="hidden key-collapse-half"></keyboard-key>
-
         <keyboard-key code="F9">F9</keyboard-key>
+      </div>
+      <div class="keyboard-row">
         <keyboard-key code="F10">F10</keyboard-key>
         <keyboard-key code="F11">F11</keyboard-key>
         <keyboard-key code="F12">F12</keyboard-key>
       </div>
-      <!-- end keyboard-row -->
+    </div>
 
+    <div id="keyboard-block-middle" class="keyboard-block">
       <div class="keyboard-row">
         <keyboard-key code="Backquote">
           <slot>~</slot>
@@ -257,8 +265,9 @@
       </div>
       <!-- end keyboard-row -->
     </div>
+
     <div id="keyboard-block-right" class="keyboard-block">
-      <div class="keyboard-row keyboard-row-bump">
+      <div class="keyboard-row">
         <keyboard-key code="PrintScreen">Print</keyboard-key>
         <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
         <keyboard-key code="Pause">Pause</keyboard-key>
@@ -274,10 +283,6 @@
         <keyboard-key code="Delete">Delete</keyboard-key>
         <keyboard-key code="End">End</keyboard-key>
         <keyboard-key code="PageDown">Page Down</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key class="hidden"></keyboard-key>
       </div>
       <!-- end keyboard-row -->
       <div class="keyboard-row">
