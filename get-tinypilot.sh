@@ -62,9 +62,8 @@ fi
 # https://github.com/tiny-pilot/tinypilot/issues/1357
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 
-readonly RAMDISK_DIR='/mnt/tinypilot-installer'
-readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
-readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
+readonly INSTALLER_DIR='/mnt/tinypilot-installer'
+readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
 # The RAMdisk size is based on the combined size of the following elements:
 # - The TinyPilot bundle archive
@@ -75,10 +74,10 @@ readonly RAMDISK_SIZE='500m'
 
 # Remove temporary files & directories.
 clean_up() {
-  umount --lazy "${RAMDISK_DIR}" || true
+  umount --lazy "${INSTALLER_DIR}" || true
   rm -rf \
     "${LEGACY_INSTALLER_DIR}" \
-    "${RAMDISK_DIR}"
+    "${INSTALLER_DIR}"
 }
 
 # Always clean up before exiting.
@@ -92,12 +91,12 @@ trap 'clean_up' EXIT
 # altogether, the possibility of using swap space is an acceptable compromise in
 # exchange for limiting memory usage.
 # https://github.com/tiny-pilot/tinypilot/issues/1357
-sudo mkdir "${RAMDISK_DIR}"
+sudo mkdir "${INSTALLER_DIR}"
 sudo mount \
   --types tmpfs \
   --options "size=${RAMDISK_SIZE}" \
   --source tmpfs \
-  --target "${RAMDISK_DIR}" \
+  --target "${INSTALLER_DIR}" \
   --verbose
 
 # Download tarball to RAMdisk.
@@ -114,7 +113,6 @@ fi
 
 # Extract tarball to installer directory. The installer directory and all its
 # content must have root ownership.
-sudo mkdir "${INSTALLER_DIR}"
 sudo tar \
   --gunzip \
   --extract \

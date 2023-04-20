@@ -70,31 +70,29 @@ else
 fi
 
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
-readonly RAMDISK_DIR='/mnt/tinypilot-installer'
-readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
+readonly INSTALLER_DIR='/mnt/tinypilot-installer'
 
 # Remove temporary files & directories.
 clean_up() {
-  umount --lazy "${RAMDISK_DIR}" || true
+  umount --lazy "${INSTALLER_DIR}" || true
   rm -rf \
     "${LEGACY_INSTALLER_DIR}" \
-    "${RAMDISK_DIR}"
+    "${INSTALLER_DIR}"
 }
 
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
 # Mount volatile RAMdisk.
-mkdir "${RAMDISK_DIR}"
+mkdir "${INSTALLER_DIR}"
 mount \
   --types tmpfs \
   --options size=500m \
   --source tmpfs \
-  --target "${RAMDISK_DIR}" \
+  --target "${INSTALLER_DIR}" \
   --verbose
 
 # Extract tarball to installer directory.
-mkdir "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
