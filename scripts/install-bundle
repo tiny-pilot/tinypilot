@@ -71,6 +71,7 @@ fi
 
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 readonly INSTALLER_DIR='/mnt/tinypilot-installer'
+readonly RAMDISK_SIZE='500m'
 
 # Remove temporary files & directories.
 clean_up() {
@@ -87,7 +88,7 @@ trap 'clean_up' EXIT
 mkdir "${INSTALLER_DIR}"
 mount \
   --types tmpfs \
-  --options size=500m \
+  --options "size=${RAMDISK_SIZE}" \
   --source tmpfs \
   --target "${INSTALLER_DIR}" \
   --verbose
