@@ -65,11 +65,13 @@ readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 readonly INSTALLER_DIR='/mnt/tinypilot-installer'
 readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
-# The RAMdisk size is based on the combined size of the following elements:
+# The RAMdisk size is broadly based on the combined size of the following:
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
 #     script
-# - At least a 10% safety margin
+# - At least a 20% safety margin
+# Use the following command to help you estimate a sensible size allocation:
+#   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
 readonly RAMDISK_SIZE='500m'
 
 # Remove temporary files & directories.
