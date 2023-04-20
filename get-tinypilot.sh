@@ -78,6 +78,13 @@ clean_up() {
 trap 'clean_up' EXIT
 
 # Mount volatile RAMdisk.
+# Note: `tmpfs` can use swap space when the device's physical memory is under
+# pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
+# but also doesn't enforce a filesystem size limit, unlike `tmpfs`. Considering
+# that our goal is to reduce disk writes and not necessarily eliminate them
+# altogether, the possibility of using swap space is an acceptable compromise in
+# exchange for limiting memory usage.
+# https://github.com/tiny-pilot/tinypilot/issues/1357
 sudo mkdir "${RAMDISK_DIR}"
 sudo mount \
   --types tmpfs \
