@@ -66,6 +66,13 @@ readonly RAMDISK_DIR='/mnt/tinypilot-installer'
 readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
 readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
 
+# The RAMdisk size is based on the combined size of the following elements:
+# - The TinyPilot bundle archive
+# - The unpacked TinyPilot bundle archive, after running the bundle's `install`
+#     script
+# - At least a 10% safety margin
+readonly RAMDISK_SIZE='500m'
+
 # Remove temporary files & directories.
 clean_up() {
   umount --lazy "${RAMDISK_DIR}" || true
@@ -88,7 +95,7 @@ trap 'clean_up' EXIT
 sudo mkdir "${RAMDISK_DIR}"
 sudo mount \
   --types tmpfs \
-  --options size=500m \
+  --options "size=${RAMDISK_SIZE}" \
   --source tmpfs \
   --target "${RAMDISK_DIR}" \
   --verbose
