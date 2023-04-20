@@ -54,7 +54,14 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
+# Historically, the TinyPilot bundle was unpacked to the device's disk, where it
+# persisted. Since the, we've moved to the use of a volatile RAMdisk, which
+# avoids excessive writes to the filesystem. As a result, this legacy installer
+# directory has been orphaned and is now removed as part of this script's
+# `clean_up` function.
+# https://github.com/tiny-pilot/tinypilot/issues/1357
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
+
 readonly RAMDISK_DIR='/mnt/tinypilot-installer'
 readonly BUNDLE_FILE="${RAMDISK_DIR}/bundle.tgz"
 readonly INSTALLER_DIR="${RAMDISK_DIR}/installer"
