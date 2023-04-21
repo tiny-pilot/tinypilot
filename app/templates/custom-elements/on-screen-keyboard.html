@@ -1,16 +1,8 @@
 <template id="on-screen-keyboard-template">
   <style>
-    :host {
-      /* Note: the --key-size needs to be in line with the width and margin of
-         the individual <key> component. */
-      --key-size: 46px;
-      --block-spacing: 8px;
-    }
-
     .keyboard {
-      --width: calc(21 * var(--key-size) + 6 * var(--block-spacing));
-      width: var(--width);
-      min-width: var(--width);
+      display: inline-flex;
+      gap: 14px;
       background-color: #f7f7f7;
       margin: 1rem auto;
       padding: 14px;
@@ -19,32 +11,16 @@
     }
 
     .keyboard-block {
-      display: inline-block;
-    }
-
-    #keyboard-block-left {
-      margin-right: var(--block-spacing);
-      width: calc(var(--key-size) * 3);
-    }
-
-    #keyboard-block-middle {
-      margin-left: var(--block-spacing);
-      margin-right: var(--block-spacing);
-      width: calc(var(--key-size) * 15);
-    }
-
-    #keyboard-block-right {
-      margin-left: var(--block-spacing);
-      width: calc(var(--key-size) * 3);
+      display: flex;
+      flex-direction: column;
     }
 
     .keyboard-row {
-      width: 100%;
-      float: left;
+      display: flex;
     }
   </style>
   <div class="keyboard">
-    <div id="keyboard-block-left" class="keyboard-block">
+    <div class="keyboard-block">
       <div class="keyboard-row">
         <keyboard-key class="hidden"></keyboard-key>
         <keyboard-key class="hidden"></keyboard-key>
@@ -77,7 +53,7 @@
       <!-- end keyboard-row -->
     </div>
 
-    <div id="keyboard-block-middle" class="keyboard-block">
+    <div class="keyboard-block">
       <div class="keyboard-row">
         <keyboard-key code="Backquote">
           <slot>~</slot>
@@ -272,7 +248,7 @@
       <!-- end keyboard-row -->
     </div>
 
-    <div id="keyboard-block-right" class="keyboard-block">
+    <div class="keyboard-block">
       <div class="keyboard-row">
         <keyboard-key code="PrintScreen">Print</keyboard-key>
         <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
