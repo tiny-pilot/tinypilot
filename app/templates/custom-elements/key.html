@@ -1,17 +1,23 @@
 <template id="key-template">
   <style>
+    :host {
+      /* Note: the width must be a multiple of 2. */
+      --width: 50px;
+      --margin: 1px;
+    }
+
     .key {
       position: relative;
       display: block;
       float: left;
-      width: 50px;
-      height: 50px;
+      width: var(--width);
+      height: var(--width);
       font-family: "Overpass", sans-serif;
       font-size: 12px;
       background-color: #fff;
       line-height: 16px;
       border-radius: 2px;
-      margin: 1px;
+      margin: var(--margin);
       padding: 1px;
       cursor: pointer;
       border: 1px solid rgb(187, 187, 187);
@@ -53,23 +59,23 @@
     }
 
     :host(.key-collapse-half) .key {
-      width: 24px;
+      width: calc(0.5 * var(--width) - 1 * var(--margin));
     }
 
     :host(.key-extend-half) .key {
-      width: 77px;
+      width: calc(1.5 * var(--width) + 1 * var(--margin));
     }
 
     :host(.key-extend-full) .key {
-      width: 102px;
+      width: calc(2 * var(--width) + 2 * var(--margin));
     }
 
     :host(.key-extend-full-half) .key {
-      width: 128px;
+      width: calc(2.5 * var(--width) + 3 * var(--margin));
     }
 
     :host(.key-space) .key {
-      width: 229px;
+      width: calc(4.5 * var(--width) + 7 * var(--margin));
     }
   </style>
   <button type="button" class="key">

@@ -1,8 +1,16 @@
 <template id="on-screen-keyboard-template">
   <style>
+    :host {
+      /* Note: the --key-size needs to be in line with the width and margin of
+         the individual <key> component. */
+      --key-size: 52px;
+      --block-spacing: 14px;
+    }
+
     .keyboard {
-      width: 992px;
-      min-width: 992px;
+      --width: calc(18 * var(--key-size) + 4 * var(--block-spacing));
+      width: var(--width);
+      min-width: var(--width);
       background-color: #f7f7f7;
       margin: 1rem auto;
       padding: 14px;
@@ -15,13 +23,13 @@
     }
 
     #keyboard-block-left {
-      margin-right: 14px;
-      width: 780px;
+      margin-right: var(--block-spacing);
+      width: calc(var(--key-size) * 15);
     }
 
     #keyboard-block-right {
-      margin-left: 14px;
-      width: 156px;
+      margin-left: var(--block-spacing);
+      width: calc(var(--key-size) * 3);
     }
 
     .keyboard-row {
@@ -30,7 +38,7 @@
     }
 
     .keyboard-row-bump {
-      padding-bottom: 28px;
+      padding-bottom: calc(2 * var(--block-spacing));
     }
   </style>
   <div class="keyboard">
