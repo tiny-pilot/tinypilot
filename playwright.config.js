@@ -14,7 +14,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://0.0.0.0:9000",
+    baseURL: process.env.E2E_BASE_URL || "http://0.0.0.0:9000",
     actionTimeout: 0,
     trace: "on",
     video: "on",
@@ -28,10 +28,14 @@ export default defineConfig({
   ],
 
   outputDir: "e2e-results/",
-  webServer: {
-    command:
-      ". venv/bin/activate && export PORT=9000 && ./dev-scripts/serve-dev",
-    url: "http://0.0.0.0:9000",
-    reuseExistingServer: !process.env.CI,
-  },
+
+  /* Do not start the local web server when running against a target TinyPilot server. */
+  webServer: Boolean(process.env.E2E_BASE_URL)
+    ? undefined
+    : {
+        command:
+          ". venv/bin/activate && export PORT=9000 && ./dev-scripts/serve-dev",
+        url: "http://0.0.0.0:9000",
+        reuseExistingServer: !process.env.CI,
+      },
 });
