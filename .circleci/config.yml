@@ -13,6 +13,6 @@ workflows:
       - path-filtering/filter:
           name: build_pipeline_params
           mapping: |
-            ansible-role/.* should_build_ansible_role true
+            ansible-role/.* ansible_role_changed true
           base-revision: master
           config-path: .circleci/continue_config.yml

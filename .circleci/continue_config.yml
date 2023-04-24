@@ -1,6 +1,6 @@
 version: 2.1
 parameters:
-  should_build_ansible_role:
+  ansible_role_changed:
     type: boolean
     default: false
 jobs:
@@ -127,7 +127,7 @@ jobs:
     working_directory: ~/project/ansible-role
     steps:
       - unless:
-          condition: << pipeline.parameters.should_build_ansible_role >>
+          condition: << pipeline.parameters.ansible_role_changed >>
           steps:
             - run:
                 name: Skipping job because files weren't changed
