@@ -76,6 +76,6 @@ node_modules
 debian-pkg/releases/
 
 # End-to-End test data
-/test-results/
+e2e-results/
 /playwright-report/
 /playwright/.cache/
