@@ -1,3 +1,8 @@
+# This file uses CircleCI's dynamic configuration feature, which can dynamically
+# generate pipeline parameters and/or YAML configurations. See
+# https://circleci.com/docs/dynamic-config/
+# In this case, we're dynamically loading the rest of our YAML configurations
+# (i.e., .circleci/continue_config.yml) at runtime.
 version: 2.1
 setup: true
 orbs:
