@@ -8,8 +8,3 @@
   service:
     name: tinypilot
     state: restarted
-
-- name: start usb-gadget service
-  service:
-    name: usb-gadget
-    state: started
