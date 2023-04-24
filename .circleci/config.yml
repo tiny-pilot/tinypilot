@@ -7,10 +7,6 @@ version: 2.1
 setup: true
 orbs:
   path-filtering: circleci/path-filtering@0.1.4
-parameters:
-  should_build_ansible_role:
-    type: boolean
-    default: false
 workflows:
   build_pipeline:
     jobs:
