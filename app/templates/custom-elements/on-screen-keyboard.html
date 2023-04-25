@@ -25,6 +25,20 @@
       border-top-right-radius: 8px;
     }
 
+    #collapse-button {
+      position: absolute;
+      width: 25px;
+      top: 0;
+      left: 0;
+      background-color: #333;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    #collapse-button:hover {
+      background-color: var(--brand-blue);
+    }
+
     .keyboard {
       width: var(--keyboard-width);
       display: flex;
@@ -59,6 +73,11 @@
       float: left;
     }
   </style>
+  <img
+    src="/img/angle-down-icon.svg"
+    id="collapse-button"
+    title="Collapse Keyboard"
+  />
   <div class="keyboard">
     <div id="keyboard-block-left">
       <div class="keyboard-row">
@@ -335,6 +354,8 @@
             template.content.cloneNode(true)
           );
 
+          this._onShowCallback = () => {};
+
           this.addEventListener("keyclick", (evt) => {
             this.onKeyClick(
               evt.detail.key,
@@ -345,14 +366,33 @@
           this.addEventListener("keyrelease", (evt) => {
             this.emitKeyEvent("keyup", evt.detail.key, evt.detail.code);
           });
+          this.shadowRoot
+            .querySelector("#collapse-button")
+            .addEventListener("click", () => {
+              this.show(false);
+            });
         }
 
         show(isVisible) {
           this.toggleAttribute("is-shown", isVisible);
+          this._onShowCallback(isVisible);
         }
 
         isShown() {
           return this.hasAttribute("is-shown");
+        }
+
+        /**
+         * A callback function that is invoked when the keyboard visibility is
+         * changed.
+         * @callback onChangeVisibilityCb
+         * @param {boolean} isVisible
+         */
+        /**
+         * @param {onChangeVisibilityCb} callback
+         */
+        onChangeVisibility(callback) {
+          this._onShowCallback = callback;
         }
 
         onKeyClick(key, code, isModifier) {

@@ -264,12 +264,6 @@ function setCursor(cursor, save = true) {
   }
 }
 
-function setKeyboardVisibility(isVisible) {
-  document.getElementById("on-screen-keyboard").show(isVisible);
-  settings.setKeyboardVisibility(isVisible);
-  document.getElementById("menu-bar").isKeyboardVisible = isVisible;
-}
-
 function setKeystrokeHistoryStatus(isEnabled) {
   if (isEnabled) {
     settings.enableKeystrokeHistory();
@@ -309,6 +303,13 @@ window.addEventListener("blur", () => {
     );
 });
 
+const onScreenKeyboard = document.getElementById("on-screen-keyboard");
+onScreenKeyboard.onChangeVisibility((isVisible) => {
+  settings.setKeyboardVisibility(isVisible);
+  document.getElementById("menu-bar").isKeyboardVisible = isVisible;
+});
+onScreenKeyboard.show(settings.isKeyboardVisible());
+
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
@@ -320,8 +321,7 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
   setKeystrokeHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
-  const onScreenKeyboard = document.getElementById("on-screen-keyboard");
-  setKeyboardVisibility(!onScreenKeyboard.isShown());
+  onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
@@ -380,7 +380,7 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
     code: "Delete",
   });
 });
-setKeyboardVisibility(settings.isKeyboardVisible());
+
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
 document
