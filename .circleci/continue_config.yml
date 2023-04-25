@@ -1,4 +1,8 @@
 version: 2.1
+parameters:
+  ansible_role_changed:
+    type: boolean
+    default: false
 jobs:
   check_whitespace:
     docker:
@@ -122,6 +126,12 @@ jobs:
     resource_class: large
     working_directory: ~/project/ansible-role
     steps:
+      - unless:
+          condition: << pipeline.parameters.ansible_role_changed >>
+          steps:
+            - run:
+                name: Skipping job because files weren't changed
+                command: circleci-agent step halt
       - checkout:
           path: ~/project
       - attach_workspace:
