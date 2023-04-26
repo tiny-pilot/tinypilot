@@ -17,18 +17,6 @@ const keyboardState = new KeyboardState();
 // Keep track of overlays, in order to properly deactivate keypress forwarding.
 const overlayTracker = new OverlayTracker();
 
-function hideElementById(id) {
-  document.getElementById(id).style.display = "none";
-}
-
-function showElementById(id, display = "block") {
-  document.getElementById(id).style.display = display;
-}
-
-function isElementShown(id) {
-  return document.getElementById(id).style.display !== "none";
-}
-
 /**
  * @see `DialogFailedEvent` for parameter `errorInfo`
  */
@@ -277,11 +265,7 @@ function setCursor(cursor, save = true) {
 }
 
 function setKeyboardVisibility(isVisible) {
-  if (isVisible) {
-    showElementById("on-screen-keyboard");
-  } else {
-    hideElementById("on-screen-keyboard");
-  }
+  document.getElementById("on-screen-keyboard").show(isVisible);
   settings.setKeyboardVisibility(isVisible);
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 }
@@ -336,7 +320,8 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
   setKeystrokeHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
-  setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
+  const onScreenKeyboard = document.getElementById("on-screen-keyboard");
+  setKeyboardVisibility(!onScreenKeyboard.isShown());
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
@@ -426,7 +411,7 @@ const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
-    hideElementById(elementId);
+    document.getElementById(elementId).style.display = "none";
   }
 });
 
