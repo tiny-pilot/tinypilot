@@ -1,5 +1,7 @@
 <template id="on-screen-keyboard-template">
   <style>
+    @import "css/style.css";
+
     :host {
       /* Note: the --key-size needs to be in line with the width and margin of
          the individual <key> component. */
@@ -21,8 +23,8 @@
       overflow-x: auto;
       border: 1px solid #333;
       border-bottom: 0;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
     }
 
     #collapse-button {
