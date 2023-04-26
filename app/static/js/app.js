@@ -304,7 +304,8 @@ window.addEventListener("blur", () => {
 });
 
 const onScreenKeyboard = document.getElementById("on-screen-keyboard");
-onScreenKeyboard.onChangeVisibility((isVisible) => {
+onScreenKeyboard.addEventListener("keyboard-visibility-changed", (evt) => {
+  const isVisible = evt.detail.isVisible;
   settings.setKeyboardVisibility(isVisible);
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 });

@@ -356,8 +356,6 @@
             template.content.cloneNode(true)
           );
 
-          this._onShowCallback = () => {};
-
           this.addEventListener("keyclick", (evt) => {
             this.onKeyClick(
               evt.detail.key,
@@ -377,24 +375,17 @@
 
         show(isVisible) {
           this.toggleAttribute("is-shown", isVisible);
-          this._onShowCallback(isVisible);
+          this.dispatchEvent(
+            new CustomEvent("keyboard-visibility-changed", {
+              detail: { isVisible },
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
 
         isShown() {
           return this.hasAttribute("is-shown");
-        }
-
-        /**
-         * A callback function that is invoked when the keyboard visibility is
-         * changed.
-         * @callback onChangeVisibilityCb
-         * @param {boolean} isVisible
-         */
-        /**
-         * @param {onChangeVisibilityCb} callback
-         */
-        onChangeVisibility(callback) {
-          this._onShowCallback = callback;
         }
 
         onKeyClick(key, code, isModifier) {
