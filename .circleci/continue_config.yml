@@ -121,6 +121,12 @@ jobs:
           name: Install node dependencies
           command: npm install
       - run:
+          name: Enable mock scripts
+          command: sudo ./dev-scripts/enable-mock-scripts
+      - run:
+          name: Enable passwordless sudo
+          command: sudo ./dev-scripts/enable-passwordless-sudo
+      - run:
           name: Run playwright tests
           command: npx playwright test
       - store_artifacts:

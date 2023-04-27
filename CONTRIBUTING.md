@@ -58,7 +58,7 @@ If you're planning to contribute code to TinyPilot, it's a good idea to enable t
 ./hooks/enable_hooks
 ```
 
-### Enable mock scripts
+### Enable mock scripts and passwordless sudo access
 
 The TinyPilot server backend uses several privileged scripts (provisioned to [`/opt/tinypilot-privileged/scripts/`](debian-pkg/opt/tinypilot-privileged/scripts)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
 
@@ -66,6 +66,12 @@ To set up symlinks that mock out those scripts and facilitate development, run t
 
 ```bash
 sudo ./dev-scripts/enable-mock-scripts
+```
+
+If you do not already have passwordless sudo enabled in general, you also need to allow the server backend to execute these privileged scripts and other services without interactively prompting you for a password. To do that, run:
+
+```bash
+sudo ./dev-scripts/enable-passwordless-sudo
 ```
 
 ### Run in dev mode
