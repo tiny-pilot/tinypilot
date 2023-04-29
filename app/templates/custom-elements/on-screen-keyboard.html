@@ -5,24 +5,19 @@
     :host {
       --key-size: 46px; /* Must be divisible by 2 */
       --block-spacing: 8px;
-      --keyboard-width: calc(21 * var(--key-size) + 8 * var(--block-spacing));
       --keyboard-height: calc(5 * var(--key-size) + 2 * var(--block-spacing));
 
+      display: flex;
       position: fixed;
       bottom: 31px; /* Same as status bar height */
       right: 0;
       left: 0;
       margin: 0 auto;
       transition: 0.5s;
-      max-width: var(--keyboard-width);
       /* If the viewport width is too small to fit the full keyboard, we make
          the keyboard drawer horizontally scrollable. We only want to show the
          scroll bar, however, if scrolling is actually applicable. */
       overflow-x: auto;
-      border: 1px solid #333;
-      border-bottom: 0;
-      border-top-left-radius: var(--border-radius);
-      border-top-right-radius: var(--border-radius);
     }
 
     :host(:not([is-shown])) {
@@ -45,10 +40,16 @@
 
     .keyboard {
       display: flex;
+      position: relative;
+      margin: 0 auto;
       box-sizing: border-box;
       background-color: #f7f7f7;
       padding: var(--block-spacing);
       color: #333;
+      border: 1px solid #333;
+      border-bottom: 0;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
     }
 
     .keyboard-block {
@@ -69,12 +70,12 @@
       padding: 1px;
     }
   </style>
-  <img
-    src="/img/angle-down-icon.svg"
-    id="collapse-button"
-    title="Collapse Keyboard"
-  />
   <div class="keyboard">
+    <img
+      src="/img/angle-down-icon.svg"
+      id="collapse-button"
+      title="Collapse Keyboard"
+    />
     <div class="keyboard-block" style="--columns: 3;">
       <keyboard-key class="hidden"></keyboard-key>
       <keyboard-key class="hidden"></keyboard-key>
