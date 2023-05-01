@@ -1,7 +1,7 @@
 # When modifying dependencies, update the credit in app/license_notice.py.
 
 eventlet==0.31.0
-Flask==1.1.1
+Flask==2.3.2
 Flask-SocketIO==5.0.1
 Flask-WTF==0.14.3
 pyyaml==5.4.1
