@@ -1,11 +1,26 @@
 <template id="on-screen-keyboard-template">
   <style>
+    /**
+     * The on-screen keyboard slides out from the bottom (like a drawer), and
+     * hovers over the lower part of the app UI. Please note the following
+     * design considerations:
+     * - The keyboard layout optimizes for space efficiency, especially in the
+     *   vertical dimension. For example, the F1-F12 function keys are grouped
+     *   as a block on the left for that reason.
+     * - The areas of the remote screen left and right of the on-screen keyboard
+     *   must stay receptive for mouse events. Therefore, we have to calculate
+     *   the absolute width of the keyboard explicitly.
+     * - If the viewport width is too small to fit the full keyboard, we make
+     *   the keyboard drawer horizontally scrollable. We only want to show the
+     *   scroll bar, however, if scrolling is actually applicable. The usability
+     *   of this approach is not perfect, but such a narrow viewport should be
+     *   a rare use-case anyway.
+     */
+
     @import "css/style.css";
 
     :host {
-      /* Note: the --key-size needs to be in line with the width and margin of
-         the individual <key> component. */
-      --key-size: 46px;
+      --key-size: 46px; /* Must be divisible by 2 */
       --block-spacing: 8px;
       --keyboard-width: calc(21 * var(--key-size) + 8 * var(--block-spacing));
       --keyboard-height: calc(5 * var(--key-size) + 2 * var(--block-spacing));
@@ -17,9 +32,6 @@
       margin: 0 auto;
       transition: 0.5s;
       max-width: var(--keyboard-width);
-      /* If the viewport width is too small to fit the full keyboard, we make
-         the keyboard drawer horizontally scrollable. We only want to show the
-         scroll bar, however, if scrolling is actually applicable. */
       overflow-x: auto;
       border: 1px solid #333;
       border-bottom: 0;
@@ -27,6 +39,10 @@
       border-top-right-radius: var(--border-radius);
       background-color: rgba(235, 235, 235, 0.7);
       backdrop-filter: blur(5px);
+    }
+
+    :host(:not([is-shown])) {
+      bottom: calc(-1 * var(--keyboard-height) - 1px);
     }
 
     #collapse-button {
@@ -44,36 +60,27 @@
     }
 
     .keyboard {
-      width: var(--keyboard-width);
       display: flex;
       box-sizing: border-box;
-      padding: var(--block-spacing) calc(2 * var(--block-spacing));
-      color: #333;
+      padding: var(--block-spacing);
     }
 
-    :host(:not([is-shown])) {
-      bottom: calc(-1 * var(--keyboard-height) - 1px);
+    .keyboard-block {
+      /* In order to accommodate keys that extend in half steps, we need to
+         double up the grid, and then divide everything by 2. */
+      display: grid;
+      grid-template-rows: repeat(5, var(--key-size));
+      grid-template-columns: repeat(
+        calc(2 * var(--columns)),
+        calc(var(--key-size) / 2)
+      );
+      padding: 0 var(--block-spacing);
     }
 
-    #keyboard-block-left {
-      margin-right: var(--block-spacing);
-      width: calc(var(--key-size) * 3);
-    }
-
-    #keyboard-block-middle {
-      margin-left: var(--block-spacing);
-      margin-right: var(--block-spacing);
-      width: calc(var(--key-size) * 15);
-    }
-
-    #keyboard-block-right {
-      margin-left: var(--block-spacing);
-      width: calc(var(--key-size) * 3);
-    }
-
-    .keyboard-row {
-      width: 100%;
-      float: left;
+    keyboard-key {
+      --span: 1; /* Must be a multiple of 0.5 */
+      grid-column: span calc(2 * var(--span));
+      padding: 1px;
     }
   </style>
   <img
@@ -82,265 +89,235 @@
     title="Collapse Keyboard"
   />
   <div class="keyboard">
-    <div id="keyboard-block-left">
-      <div class="keyboard-row">
-        <keyboard-key class="hidden"></keyboard-key>
-        <keyboard-key class="hidden"></keyboard-key>
-        <keyboard-key class="accented" code="Escape">Esc</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="F1">F1</keyboard-key>
-        <keyboard-key code="F2">F2</keyboard-key>
-        <keyboard-key code="F3">F3</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="F4">F4</keyboard-key>
-        <keyboard-key code="F5">F5</keyboard-key>
-        <keyboard-key code="F6">F6</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="F7">F7</keyboard-key>
-        <keyboard-key code="F8">F8</keyboard-key>
-        <keyboard-key code="F9">F9</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="F10">F10</keyboard-key>
-        <keyboard-key code="F11">F11</keyboard-key>
-        <keyboard-key code="F12">F12</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
+    <div class="keyboard-block" style="--columns: 3;">
+      <keyboard-key class="hidden"></keyboard-key>
+      <keyboard-key class="hidden"></keyboard-key>
+      <keyboard-key class="accented" code="Escape">Esc</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="F1">F1</keyboard-key>
+      <keyboard-key code="F2">F2</keyboard-key>
+      <keyboard-key code="F3">F3</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="F4">F4</keyboard-key>
+      <keyboard-key code="F5">F5</keyboard-key>
+      <keyboard-key code="F6">F6</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="F7">F7</keyboard-key>
+      <keyboard-key code="F8">F8</keyboard-key>
+      <keyboard-key code="F9">F9</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="F10">F10</keyboard-key>
+      <keyboard-key code="F11">F11</keyboard-key>
+      <keyboard-key code="F12">F12</keyboard-key>
     </div>
 
-    <div id="keyboard-block-middle">
-      <div class="keyboard-row">
-        <keyboard-key code="Backquote">
-          <slot>~</slot>
-          <span slot="bottom">`</span>
-        </keyboard-key>
-        <keyboard-key code="Digit1">
-          <slot>!</slot>
-          <span slot="bottom">1</span>
-        </keyboard-key>
-        <keyboard-key code="Digit2">
-          <slot>@</slot>
-          <span slot="bottom">2</span>
-        </keyboard-key>
-        <keyboard-key code="Digit3">
-          <slot>#</slot>
-          <span slot="bottom">3</span>
-        </keyboard-key>
-        <keyboard-key code="Digit4">
-          <slot>$</slot>
-          <span slot="bottom">4</span>
-        </keyboard-key>
-        <keyboard-key code="Digit5">
-          <slot>%</slot>
-          <span slot="bottom">5</span>
-        </keyboard-key>
-        <keyboard-key code="Digit6">
-          <slot>^</slot>
-          <span slot="bottom">6</span>
-        </keyboard-key>
-        <keyboard-key code="Digit7">
-          <slot>&</slot>
-          <span slot="bottom">7</span>
-        </keyboard-key>
-        <keyboard-key code="Digit8">
-          <slot>*</slot>
-          <span slot="bottom">8</span>
-        </keyboard-key>
-        <keyboard-key code="Digit9">
-          <slot>(</slot>
-          <span slot="bottom">9</span>
-        </keyboard-key>
-        <keyboard-key code="Digit0">
-          <slot>)</slot>
-          <span slot="bottom">0</span>
-        </keyboard-key>
-        <keyboard-key code="Minus">
-          <slot>_</slot>
-          <span slot="bottom">-</span>
-        </keyboard-key>
-        <keyboard-key code="Equal">
-          <slot>+</slot>
-          <span slot="bottom">=</span>
-        </keyboard-key>
-
-        <keyboard-key code="Backspace" class="key-extend-full accented"
-          >Backspace</keyboard-key
-        >
-      </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <keyboard-key code="Tab" class="key-extend-full accented"
-          >Tab</keyboard-key
-        >
-        <keyboard-key code="KeyQ">Q</keyboard-key>
-        <keyboard-key code="KeyW">W</keyboard-key>
-        <keyboard-key code="KeyE">E</keyboard-key>
-        <keyboard-key code="KeyR">R</keyboard-key>
-        <keyboard-key code="KeyT">T</keyboard-key>
-        <keyboard-key code="KeyY">Y</keyboard-key>
-        <keyboard-key code="KeyU">U</keyboard-key>
-        <keyboard-key code="KeyI">I</keyboard-key>
-        <keyboard-key code="KeyO">O</keyboard-key>
-        <keyboard-key code="KeyP">P</keyboard-key>
-        <keyboard-key code="BracketLeft">
-          <slot>{</slot>
-          <span slot="bottom">[</span>
-        </keyboard-key>
-        <keyboard-key code="BracketRight">
-          <slot>}</slot>
-          <span slot="bottom">]</span>
-        </keyboard-key>
-        <keyboard-key code="Backslash">
-          <slot>|</slot>
-          <span slot="bottom">\</span>
-        </keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="CapsLock" class="key-extend-full accented"
-          >Caps Lock</keyboard-key
-        >
-        <keyboard-key code="KeyA">A</keyboard-key>
-        <keyboard-key code="KeyS">S</keyboard-key>
-        <keyboard-key code="KeyD">D</keyboard-key>
-        <keyboard-key code="KeyF">F</keyboard-key>
-        <keyboard-key code="KeyG">G</keyboard-key>
-        <keyboard-key code="KeyH">H</keyboard-key>
-        <keyboard-key code="KeyJ">J</keyboard-key>
-        <keyboard-key code="KeyK">K</keyboard-key>
-        <keyboard-key code="KeyL">L</keyboard-key>
-        <keyboard-key code="Semicolon">
-          <slot>:</slot>
-          <span slot="bottom">;</span>
-        </keyboard-key>
-        <keyboard-key code="Quote">
-          <slot>"</slot>
-          <span slot="bottom">'</span>
-        </keyboard-key>
-
-        <keyboard-key code="Enter" class="key-extend-full accented"
-          >Enter</keyboard-key
-        >
-      </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <keyboard-key
-          code="ShiftLeft"
-          modifier="true"
-          class="modifier key-extend-full-half accented"
-          >Shift</keyboard-key
-        >
-
-        <keyboard-key code="KeyZ">Z</keyboard-key>
-        <keyboard-key code="KeyX">X</keyboard-key>
-        <keyboard-key code="KeyC">C</keyboard-key>
-        <keyboard-key code="KeyV">V</keyboard-key>
-        <keyboard-key code="KeyB">B</keyboard-key>
-        <keyboard-key code="KeyN">N</keyboard-key>
-        <keyboard-key code="KeyM">M</keyboard-key>
-        <keyboard-key code="Comma">
-          <slot><</slot>
-          <span slot="bottom">,</span>
-        </keyboard-key>
-        <keyboard-key code="Period">
-          <slot>></slot>
-          <span slot="bottom">.</span>
-        </keyboard-key>
-        <keyboard-key code="Slash">
-          <slot>?</slot>
-          <span slot="bottom">/</span>
-        </keyboard-key>
-        <keyboard-key
-          code="ShiftRight"
-          modifier="true"
-          class="modifier key-extend-full-half accented"
-          >Shift</keyboard-key
-        >
-      </div>
-      <!-- end keyboard-row -->
-
-      <div class="keyboard-row">
-        <keyboard-key
-          code="ControlLeft"
-          modifier="true"
-          class="modifier key-extend-full accented"
-          >Control</keyboard-key
-        >
-        <keyboard-key
-          code="MetaLeft"
-          modifier="true"
-          class="modifier key-extend-half accented"
-          >Meta</keyboard-key
-        >
-        <keyboard-key code="AltLeft" modifier="true" class="modifier accented"
-          >Alt</keyboard-key
-        >
-        <keyboard-key code="Space" class="key-space">Space</keyboard-key>
-        <keyboard-key code="AltRight" modifier="true" class="modifier accented"
-          >Alt</keyboard-key
-        >
-        <keyboard-key
-          code="MetaRight"
-          modifier="true"
-          class="modifier key-extend-half accented"
-          >Meta</keyboard-key
-        >
-        <keyboard-key
-          code="ContextMenu"
-          key="ContextMenu"
-          class="key-extend-half accented"
-          >Menu</keyboard-key
-        >
-        <keyboard-key
-          code="ControlRight"
-          modifier="true"
-          class="modifier key-extend-full accented"
-          >Control</keyboard-key
-        >
-      </div>
-      <!-- end keyboard-row -->
+    <div class="keyboard-block" style="--columns: 15;">
+      <keyboard-key code="Backquote">
+        <slot>~</slot>
+        <span slot="bottom">`</span>
+      </keyboard-key>
+      <keyboard-key code="Digit1">
+        <slot>!</slot>
+        <span slot="bottom">1</span>
+      </keyboard-key>
+      <keyboard-key code="Digit2">
+        <slot>@</slot>
+        <span slot="bottom">2</span>
+      </keyboard-key>
+      <keyboard-key code="Digit3">
+        <slot>#</slot>
+        <span slot="bottom">3</span>
+      </keyboard-key>
+      <keyboard-key code="Digit4">
+        <slot>$</slot>
+        <span slot="bottom">4</span>
+      </keyboard-key>
+      <keyboard-key code="Digit5">
+        <slot>%</slot>
+        <span slot="bottom">5</span>
+      </keyboard-key>
+      <keyboard-key code="Digit6">
+        <slot>^</slot>
+        <span slot="bottom">6</span>
+      </keyboard-key>
+      <keyboard-key code="Digit7">
+        <slot>&</slot>
+        <span slot="bottom">7</span>
+      </keyboard-key>
+      <keyboard-key code="Digit8">
+        <slot>*</slot>
+        <span slot="bottom">8</span>
+      </keyboard-key>
+      <keyboard-key code="Digit9">
+        <slot>(</slot>
+        <span slot="bottom">9</span>
+      </keyboard-key>
+      <keyboard-key code="Digit0">
+        <slot>)</slot>
+        <span slot="bottom">0</span>
+      </keyboard-key>
+      <keyboard-key code="Minus">
+        <slot>_</slot>
+        <span slot="bottom">-</span>
+      </keyboard-key>
+      <keyboard-key code="Equal">
+        <slot>+</slot>
+        <span slot="bottom">=</span>
+      </keyboard-key>
+      <keyboard-key code="Backspace" class="accented" style="--span: 2;"
+        >Backspace</keyboard-key
+      >
+      <!-- Row break -->
+      <keyboard-key code="Tab" class="accented" style="--span: 2;"
+        >Tab</keyboard-key
+      >
+      <keyboard-key code="KeyQ">Q</keyboard-key>
+      <keyboard-key code="KeyW">W</keyboard-key>
+      <keyboard-key code="KeyE">E</keyboard-key>
+      <keyboard-key code="KeyR">R</keyboard-key>
+      <keyboard-key code="KeyT">T</keyboard-key>
+      <keyboard-key code="KeyY">Y</keyboard-key>
+      <keyboard-key code="KeyU">U</keyboard-key>
+      <keyboard-key code="KeyI">I</keyboard-key>
+      <keyboard-key code="KeyO">O</keyboard-key>
+      <keyboard-key code="KeyP">P</keyboard-key>
+      <keyboard-key code="BracketLeft">
+        <slot>{</slot>
+        <span slot="bottom">[</span>
+      </keyboard-key>
+      <keyboard-key code="BracketRight">
+        <slot>}</slot>
+        <span slot="bottom">]</span>
+      </keyboard-key>
+      <keyboard-key code="Backslash">
+        <slot>|</slot>
+        <span slot="bottom">\</span>
+      </keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="CapsLock" class="accented" style="--span: 2;"
+        >Caps Lock</keyboard-key
+      >
+      <keyboard-key code="KeyA">A</keyboard-key>
+      <keyboard-key code="KeyS">S</keyboard-key>
+      <keyboard-key code="KeyD">D</keyboard-key>
+      <keyboard-key code="KeyF">F</keyboard-key>
+      <keyboard-key code="KeyG">G</keyboard-key>
+      <keyboard-key code="KeyH">H</keyboard-key>
+      <keyboard-key code="KeyJ">J</keyboard-key>
+      <keyboard-key code="KeyK">K</keyboard-key>
+      <keyboard-key code="KeyL">L</keyboard-key>
+      <keyboard-key code="Semicolon">
+        <slot>:</slot>
+        <span slot="bottom">;</span>
+      </keyboard-key>
+      <keyboard-key code="Quote">
+        <slot>"</slot>
+        <span slot="bottom">'</span>
+      </keyboard-key>
+      <keyboard-key code="Enter" class="accented" style="--span: 2;"
+        >Enter</keyboard-key
+      >
+      <!-- Row break -->
+      <keyboard-key
+        code="ShiftLeft"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 2.5;"
+        >Shift</keyboard-key
+      >
+      <keyboard-key code="KeyZ">Z</keyboard-key>
+      <keyboard-key code="KeyX">X</keyboard-key>
+      <keyboard-key code="KeyC">C</keyboard-key>
+      <keyboard-key code="KeyV">V</keyboard-key>
+      <keyboard-key code="KeyB">B</keyboard-key>
+      <keyboard-key code="KeyN">N</keyboard-key>
+      <keyboard-key code="KeyM">M</keyboard-key>
+      <keyboard-key code="Comma">
+        <slot><</slot>
+        <span slot="bottom">,</span>
+      </keyboard-key>
+      <keyboard-key code="Period">
+        <slot>></slot>
+        <span slot="bottom">.</span>
+      </keyboard-key>
+      <keyboard-key code="Slash">
+        <slot>?</slot>
+        <span slot="bottom">/</span>
+      </keyboard-key>
+      <keyboard-key
+        code="ShiftRight"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 2.5;"
+        >Shift</keyboard-key
+      >
+      <!-- Row break -->
+      <keyboard-key
+        code="ControlLeft"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 2;"
+        >Control</keyboard-key
+      >
+      <keyboard-key
+        code="MetaLeft"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 1.5;"
+        >Meta</keyboard-key
+      >
+      <keyboard-key code="AltLeft" modifier="true" class="modifier accented"
+        >Alt</keyboard-key
+      >
+      <keyboard-key code="Space" class="key-space" style="--span: 4.5;"
+        >Space</keyboard-key
+      >
+      <keyboard-key code="AltRight" modifier="true" class="modifier accented"
+        >Alt</keyboard-key
+      >
+      <keyboard-key
+        code="MetaRight"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 1.5;"
+        >Meta</keyboard-key
+      >
+      <keyboard-key
+        code="ContextMenu"
+        key="ContextMenu"
+        class="accented"
+        style="--span: 1.5;"
+        >Menu</keyboard-key
+      >
+      <keyboard-key
+        code="ControlRight"
+        modifier="true"
+        class="modifier accented"
+        style="--span: 2;"
+        >Control</keyboard-key
+      >
     </div>
 
-    <div id="keyboard-block-right">
-      <div class="keyboard-row">
-        <keyboard-key code="PrintScreen">Print</keyboard-key>
-        <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
-        <keyboard-key code="Pause">Pause</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="Insert">Insert</keyboard-key>
-        <keyboard-key code="Home">Home</keyboard-key>
-        <keyboard-key code="PageUp">Page Up</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key code="Delete">Delete</keyboard-key>
-        <keyboard-key code="End">End</keyboard-key>
-        <keyboard-key code="PageDown">Page Down</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key class="hidden"></keyboard-key>
-        <keyboard-key use-code="true" code="ArrowUp">Up</keyboard-key>
-        <keyboard-key class="hidden"></keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
-      <div class="keyboard-row">
-        <keyboard-key use-code="true" code="ArrowLeft">Left</keyboard-key>
-        <keyboard-key use-code="true" code="ArrowDown">Down</keyboard-key>
-        <keyboard-key use-code="true" code="ArrowRight">Right</keyboard-key>
-      </div>
-      <!-- end keyboard-row -->
+    <div class="keyboard-block" style="--columns: 3;">
+      <keyboard-key code="PrintScreen">Print</keyboard-key>
+      <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
+      <keyboard-key code="Pause">Pause</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="Insert">Insert</keyboard-key>
+      <keyboard-key code="Home">Home</keyboard-key>
+      <keyboard-key code="PageUp">Page Up</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key code="Delete">Delete</keyboard-key>
+      <keyboard-key code="End">End</keyboard-key>
+      <keyboard-key code="PageDown">Page Down</keyboard-key>
+      <!-- Row break -->
+      <keyboard-key class="hidden"></keyboard-key>
+      <keyboard-key use-code="true" code="ArrowUp">Up</keyboard-key>
+      <keyboard-key class="hidden"></keyboard-key>
+      <!-- Row break -->
+      <keyboard-key use-code="true" code="ArrowLeft">Left</keyboard-key>
+      <keyboard-key use-code="true" code="ArrowDown">Down</keyboard-key>
+      <keyboard-key use-code="true" code="ArrowRight">Right</keyboard-key>
     </div>
   </div>
 </template>
