@@ -1,5 +1,22 @@
 <template id="on-screen-keyboard-template">
   <style>
+    /**
+     * The on-screen keyboard slides out from the bottom (like a drawer), and
+     * hovers over the lower part of the app UI. Please note the following
+     * design considerations:
+     * - The keyboard layout optimizes for space efficiency, especially in the
+     *   vertical dimension. For example, the F1-F12 function keys are grouped
+     *   as a block on the left for that reason.
+     * - The areas of the remote screen left and right of the on-screen keyboard
+     *   must stay receptive for mouse events. Therefore, we have to calculate
+     *   the absolute width of the keyboard explicitly.
+     * - If the viewport width is too small to fit the full keyboard, we make
+     *   the keyboard drawer horizontally scrollable. We only want to show the
+     *   scroll bar, however, if scrolling is actually applicable. The usability
+     *   of this approach is not perfect, but such a narrow viewport should be
+     *   a rare use-case anyway.
+     */
+
     @import "css/style.css";
 
     :host {
@@ -15,9 +32,6 @@
       margin: 0 auto;
       transition: 0.5s;
       max-width: var(--keyboard-width);
-      /* If the viewport width is too small to fit the full keyboard, we make
-         the keyboard drawer horizontally scrollable. We only want to show the
-         scroll bar, however, if scrolling is actually applicable. */
       overflow-x: auto;
       border: 1px solid #333;
       border-bottom: 0;
