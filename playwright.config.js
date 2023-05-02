@@ -30,7 +30,7 @@ export default defineConfig({
   outputDir: "e2e-results/",
 
   /* Do not start the local web server when running against a target TinyPilot server. */
-  webServer: Boolean(process.env.E2E_BASE_URL)
+  webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
         command:
