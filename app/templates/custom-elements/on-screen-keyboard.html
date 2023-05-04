@@ -33,11 +33,12 @@
       transition: 0.5s;
       max-width: var(--keyboard-width);
       overflow-x: auto;
-      border: 1px solid #333;
+      border: 1px solid rgba(175, 175, 175, 0.7);
       border-bottom: 0;
       border-top-left-radius: var(--border-radius);
       border-top-right-radius: var(--border-radius);
-      background-color: #f7f7f7;
+      background-color: rgba(235, 235, 235, 0.7);
+      backdrop-filter: blur(5px);
     }
 
     :host(:not([is-shown])) {
