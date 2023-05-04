@@ -51,7 +51,7 @@ fi
 # Note: the distro ID is called "Raspbian" because the 32-bit version of the
 # Raspberry Pi operating system is based on Raspbian repos (an independent
 # open-source project). Similarly, the the 64-bit version of the Raspberry Pi
-# operating system is based on Debian and it's distro ID would be "Debian".
+# operating system is based on Debian and its distro ID would be "Debian".
 if [[ "$(lsb_release --id --short)" == 'Raspbian' ]] \
     && (( "$(lsb_release --release --short)" < 11 )); then
   echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\" or lower." >&2
