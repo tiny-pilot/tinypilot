@@ -3,7 +3,7 @@
 # Configure Docker to support multiarch builds, allowing it to use QEMU to build
 # images targeting different CPU architectures.
 
-# Exit build script on first failure.
+# Exit script on first failure.
 set -e
 
 # Echo commands before executing them, by default to stderr.
@@ -12,7 +12,7 @@ set -x
 # Exit on unset variable.
 set -u
 
-# Enable multiarch builds with QEMU
+# Enable multiarch builds with QEMU.
 docker run \
   --rm \
   --privileged \
@@ -20,14 +20,14 @@ docker run \
   --reset \
   -p yes
 
-# Create multiarch build context
+# Create multiarch build context.
 docker context create builder
 
-# Create multiplatform builder
+# Create multiplatform builder.
 docker buildx create builder \
   --name builder \
   --driver docker-container \
   --use
 
-# Ensure builder has booted
+# Ensure builder has booted.
 docker buildx inspect --bootstrap
