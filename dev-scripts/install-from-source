@@ -22,17 +22,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
-# Work around a Docker bug on Raspbian Buster.
-# https://github.com/debuerreotype/docker-debian-artifacts/issues/122
-if [[ "$(lsb_release --id --short)" == "Raspbian" && \
-      "$(lsb_release --release --short)" == "10" ]]; then
-  sed \
-    --in-place \
-    --regexp-extended \
-    's/debian:bullseye-[0-9]+-slim/debian:buster-slim/g' \
-    ./debian-pkg/Dockerfile
-fi
-
 ./dev-scripts/build-debian-pkg "linux/arm/v7"
 
 # Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
