@@ -15,7 +15,7 @@ while read -r line; do
     --binary-files=without-match \
     --exclude="*third-party*" \
     "${line}"; then
-    echo "ERROR: Found trailing whitespace";
+    echo "Found trailing whitespace" >&2 ;
     exit 1;
   fi
 done < <(git ls-files)

@@ -17,18 +17,6 @@ const keyboardState = new KeyboardState();
 // Keep track of overlays, in order to properly deactivate keypress forwarding.
 const overlayTracker = new OverlayTracker();
 
-function hideElementById(id) {
-  document.getElementById(id).style.display = "none";
-}
-
-function showElementById(id, display = "block") {
-  document.getElementById(id).style.display = display;
-}
-
-function isElementShown(id) {
-  return document.getElementById(id).style.display !== "none";
-}
-
 /**
  * @see `DialogFailedEvent` for parameter `errorInfo`
  */
@@ -276,16 +264,6 @@ function setCursor(cursor, save = true) {
   }
 }
 
-function setKeyboardVisibility(isVisible) {
-  if (isVisible) {
-    showElementById("on-screen-keyboard");
-  } else {
-    hideElementById("on-screen-keyboard");
-  }
-  settings.setKeyboardVisibility(isVisible);
-  document.getElementById("menu-bar").isKeyboardVisible = isVisible;
-}
-
 function setKeystrokeHistoryStatus(isEnabled) {
   if (isEnabled) {
     settings.enableKeystrokeHistory();
@@ -325,6 +303,14 @@ window.addEventListener("blur", () => {
     );
 });
 
+const onScreenKeyboard = document.getElementById("on-screen-keyboard");
+onScreenKeyboard.addEventListener("keyboard-visibility-changed", (evt) => {
+  const isVisible = evt.detail.isVisible;
+  settings.setKeyboardVisibility(isVisible);
+  document.getElementById("menu-bar").isKeyboardVisible = isVisible;
+});
+onScreenKeyboard.show(settings.isKeyboardVisible());
+
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
 menuBar.addEventListener("cursor-selected", (evt) => {
@@ -336,7 +322,7 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
   setKeystrokeHistoryStatus(!isEnabled);
 });
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
-  setKeyboardVisibility(!isElementShown("on-screen-keyboard"));
+  onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
@@ -395,7 +381,7 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
     code: "Delete",
   });
 });
-setKeyboardVisibility(settings.isKeyboardVisible());
+
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
 document
@@ -426,7 +412,7 @@ const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", (evt) => {
   // Hide the interactive elements of the page during shutdown.
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
-    hideElementById(elementId);
+    document.getElementById(elementId).style.display = "none";
   }
 });
 
