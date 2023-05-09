@@ -65,9 +65,9 @@ const overlayTracker = new OverlayTracker();
     "\\" : new KeyboardEvent('keydown', {"key":"\\","code":"Backslash","keyCode":220,"shiftKey":false,"ctrlKey":false,"altKey":false,"metaKey":false}),
     "~" : new KeyboardEvent('keydown', {"key":"~","code":"Backquote","keyCode":192,"shiftKey":true,"ctrlKey":false,"altKey":false,"metaKey":false}),
     "`" : new KeyboardEvent('keydown', {"key":"`","code":"Backquote","keyCode":192,"shiftKey":false,"ctrlKey":false,"altKey":false,"metaKey":false})
-  
   }
   const remoteScreenShadow = document.getElementById("remote-screen").shadowRoot;
+
   function showKeyboard() { 
     var fakeInput = remoteScreenShadow.getElementById("fakeInput");
     if(fakeInput == null)
@@ -99,8 +99,7 @@ const overlayTracker = new OverlayTracker();
     fakeInput.addEventListener("keyup", onKeyUp);
   }
   
-  function onInput() {
-    
+  function onInput() { 
     var created;
     var fakeInputValue = remoteScreenShadow.getElementById("fakeInput").value;
     var typedLetter = fakeInputValue.charAt(fakeInputValue.length - 1);
