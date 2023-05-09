@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Exit build script on first failure.
+# Exit on first failure.
 set -e
 
 # Echo commands before executing them, by default to stderr.
