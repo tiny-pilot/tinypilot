@@ -17,6 +17,403 @@ const keyboardState = new KeyboardState();
 // Keep track of overlays, in order to properly deactivate keypress forwarding.
 const overlayTracker = new OverlayTracker();
 
+var eventDict = {
+  Shift: new KeyboardEvent("keydown", {
+    key: "Shift",
+    code: "ShiftLeft",
+    keyCode: 16,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "!": new KeyboardEvent("keydown", {
+    key: "!",
+    code: "Digit1",
+    keyCode: 49,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "@": new KeyboardEvent("keydown", {
+    key: "@",
+    code: "Digit2",
+    keyCode: 50,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "#": new KeyboardEvent("keydown", {
+    key: "#",
+    code: "Digit3",
+    keyCode: 51,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  $: new KeyboardEvent("keydown", {
+    key: "$",
+    code: "Digit4",
+    keyCode: 52,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "%": new KeyboardEvent("keydown", {
+    key: "%",
+    code: "Digit5",
+    keyCode: 53,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "^": new KeyboardEvent("keydown", {
+    key: "^",
+    code: "Digit6",
+    keyCode: 54,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "&": new KeyboardEvent("keydown", {
+    key: "&",
+    code: "Digit7",
+    keyCode: 55,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "*": new KeyboardEvent("keydown", {
+    key: "*",
+    code: "Digit8",
+    keyCode: 56,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "(": new KeyboardEvent("keydown", {
+    key: "(",
+    code: "Digit9",
+    keyCode: 57,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ")": new KeyboardEvent("keydown", {
+    key: ")",
+    code: "Digit0",
+    keyCode: 48,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  _: new KeyboardEvent("keydown", {
+    key: "_",
+    code: "Minus",
+    keyCode: 173,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "+": new KeyboardEvent("keydown", {
+    key: "+",
+    code: "Equal",
+    keyCode: 61,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "}": new KeyboardEvent("keydown", {
+    key: "}",
+    code: "BracketRight",
+    keyCode: 221,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "{": new KeyboardEvent("keydown", {
+    key: "{",
+    code: "BracketLeft",
+    keyCode: 219,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "|": new KeyboardEvent("keydown", {
+    key: "|",
+    code: "Backslash",
+    keyCode: 220,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  '"': new KeyboardEvent("keydown", {
+    key: '"',
+    code: "Quote",
+    keyCode: 222,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ":": new KeyboardEvent("keydown", {
+    key: ":",
+    code: "Semicolon",
+    keyCode: 59,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "<": new KeyboardEvent("keydown", {
+    key: "<",
+    code: "Comma",
+    keyCode: 188,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ">": new KeyboardEvent("keydown", {
+    key: ">",
+    code: "Period",
+    keyCode: 190,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "?": new KeyboardEvent("keydown", {
+    key: "?",
+    code: "Slash",
+    keyCode: 191,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "-": new KeyboardEvent("keydown", {
+    key: "-",
+    code: "Minus",
+    keyCode: 173,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "=": new KeyboardEvent("keydown", {
+    key: "=",
+    code: "Equal",
+    keyCode: 61,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "[": new KeyboardEvent("keydown", {
+    key: "[",
+    code: "BracketLeft",
+    keyCode: 219,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "]": new KeyboardEvent("keydown", {
+    key: "]",
+    code: "BracketRight",
+    keyCode: 221,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ";": new KeyboardEvent("keydown", {
+    key: ";",
+    code: "Semicolon",
+    keyCode: 59,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "'": new KeyboardEvent("keydown", {
+    key: "'",
+    code: "Quote",
+    keyCode: 222,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ",": new KeyboardEvent("keydown", {
+    key: ",",
+    code: "Comma",
+    keyCode: 188,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  ".": new KeyboardEvent("keydown", {
+    key: ".",
+    code: "Period",
+    keyCode: 190,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "/": new KeyboardEvent("keydown", {
+    key: "/",
+    code: "Slash",
+    keyCode: 191,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  " ": new KeyboardEvent("keydown", {
+    key: " ",
+    code: "Space",
+    keyCode: 32,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  Backspace: new KeyboardEvent("keydown", {
+    key: "Backspace",
+    code: "Backspace",
+    keyCode: 8,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  Enter: new KeyboardEvent("keydown", {
+    key: "Enter",
+    code: "Enter",
+    keyCode: 13,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "\\": new KeyboardEvent("keydown", {
+    key: "\\",
+    code: "Backslash",
+    keyCode: 220,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "~": new KeyboardEvent("keydown", {
+    key: "~",
+    code: "Backquote",
+    keyCode: 192,
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+  "`": new KeyboardEvent("keydown", {
+    key: "`",
+    code: "Backquote",
+    keyCode: 192,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+  }),
+};
+const remoteScreenShadow = document.getElementById("remote-screen").shadowRoot;
+
+function showKeyboard() {
+  var fakeInput = remoteScreenShadow.getElementById("fakeInput");
+  if (fakeInput == null) {
+    fakeInput = document.createElement("input");
+    fakeInput.setAttribute("type", "text");
+    fakeInput.setAttribute("id", "fakeInput");
+    fakeInput.setAttribute("autocorrect", "off");
+    fakeInput.setAttribute("autocapitalize", "off");
+    fakeInput.style.opacity = 0;
+    remoteScreenShadow.querySelector(".screen-wrapper").appendChild(fakeInput);
+  }
+  fakeInput.value = "";
+  fakeInput.focus();
+  fakeInput.removeEventListener("input", onInput);
+  fakeInput.removeEventListener("keydown", onKeyDown);
+  fakeInput.removeEventListener("keyup", onKeyUp);
+  fakeInput.addEventListener("input", onInput);
+  fakeInput.addEventListener("keydown", function (event) {
+    event.preventDefault();
+    if (
+      event.key == "Enter" ||
+      event.key == "Backspace" ||
+      event.key == "Shift"
+    ) {
+      onKeyDown(eventDict[event.key]);
+    } else {
+      onInput();
+    }
+  });
+  fakeInput.addEventListener("keyup", onKeyUp);
+}
+
+function onInput() {
+  var created;
+  var fakeInputValue = remoteScreenShadow.getElementById("fakeInput").value;
+  var typedLetter = fakeInputValue.charAt(fakeInputValue.length - 1);
+  if (/\d/.test(typedLetter)) {
+    created = new KeyboardEvent("keydown", {
+      key: typedLetter,
+      code: "Digit" + typedLetter,
+      keyCode: typedLetter.charCodeAt(0),
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+      metaKey: false,
+      bubbles: true,
+      cancelable: true,
+    });
+  } else if (/[^a-zA-Z0-9]/.test(typedLetter)) {
+    created = eventDict[typedLetter];
+  } else {
+    created = new KeyboardEvent("keydown", {
+      key: typedLetter,
+      code: "Key" + typedLetter.toUpperCase(),
+      keyCode: typedLetter.toUpperCase().charCodeAt(0),
+      shiftKey: typedLetter == typedLetter.toUpperCase() ? true : false,
+      ctrlKey: false,
+      altKey: false,
+      metaKey: false,
+      bubbles: true,
+      cancelable: true,
+    });
+  }
+  document
+    .getElementById("remote-screen")
+    .shadowRoot.getElementById("fakeInput").value = "";
+  onKeyDown(created);
+}
+
 /**
  * @see `DialogFailedEvent` for parameter `errorInfo`
  */
@@ -110,6 +507,15 @@ function onSocketDisconnect() {
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyDown(evt) {
+  if (
+    evt == null ||
+    evt.key == null ||
+    evt.key == "" ||
+    evt.key == "Unidentified"
+  ) {
+    return;
+  }
+
   if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
     return;
   }
@@ -149,7 +555,8 @@ function onKeyDown(evt) {
       onScreenKeyboard.isModifierKeyPressed("ShiftLeft"),
     shiftRight:
       keyboardState.isKeyPressed("ShiftRight") ||
-      onScreenKeyboard.isModifierKeyPressed("ShiftRight"),
+      onScreenKeyboard.isModifierKeyPressed("ShiftRight") ||
+      evt.shiftKey,
     ctrlLeft:
       keyboardState.isKeyPressed("ControlLeft") ||
       onScreenKeyboard.isModifierKeyPressed("ControlLeft"),
@@ -414,6 +821,12 @@ shutdownDialog.addEventListener("shutdown-started", (evt) => {
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     document.getElementById(elementId).style.display = "none";
   }
+});
+
+const keyBoardInput = remoteScreenShadow.getElementById("kbButton");
+keyBoardInput.addEventListener("click", function (event) {
+  event.preventDefault();
+  showKeyboard();
 });
 
 socket.on("connect", onSocketConnect);

@@ -68,6 +68,7 @@ body {
   text-align: center;
   margin: 0 auto;
   padding-top: 55px; /* Account for menu bar plus some extra spacing */
+  padding-bottom: 40px; /* Account for status bar plus some extra spacing */
 }
 
 .header-bar {
@@ -86,6 +87,7 @@ body {
 
 html {
   font-family: "Overpass", sans-serif;
+  -webkit-touch-callout: none;
 }
 
 *:focus {
