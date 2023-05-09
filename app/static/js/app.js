@@ -79,14 +79,17 @@ function showKeyboard() {
   fakeInput.addEventListener("input", onInput);
   fakeInput.addEventListener("keydown", function(event) {
     event.preventDefault();
-    if(event.key=="Enter" || event.key=="Backspace" || event.key=="Shift")
+    if(event.key=="Enter" || event.key=="Backspace" || event.key=="Shift"){
       onKeyDown(eventDict[event.key]);
-    else
-      onInput(); 
+    }
+    else{
+      onInput();
+    } 
   });
   fakeInput.addEventListener("keyup", onKeyUp);
 }
-  
+
+
 function onInput() { 
   var created;
   var fakeInputValue = remoteScreenShadow.getElementById("fakeInput").value;
@@ -101,8 +104,7 @@ function onInput() {
       altKey: false,
       metaKey: false,
       bubbles: true,
-      cancelable: true
-    });
+      cancelable: true});
   } else if (/[^a-zA-Z0-9]/.test(typedLetter)) {
       created = eventDict[typedLetter];
   } else {
@@ -115,8 +117,7 @@ function onInput() {
       altKey: false,
       metaKey: false,
       bubbles: true,
-      cancelable: true
-    });
+      cancelable: true});
   } 
   document.getElementById("remote-screen").shadowRoot.getElementById("fakeInput").value = "";
   onKeyDown(created);
