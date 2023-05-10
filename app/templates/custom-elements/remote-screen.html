@@ -207,8 +207,96 @@
             this.rateLimitedMouse.onMouseMove(evt);
           });
           screenElement.addEventListener("mousedown", (evt) => {
+            //mousedown is not getting any buttons attibutes on ios - a naive fix.
+            //assuming mousedown always have buttons attribute set and default is 1
+            if(evt.buttons)
             this.rateLimitedMouse.onMouseDown(evt);
+            else{
+                  var mouseEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    button: 0,
+                    buttons: 1,
+                    clientX: evt.clientX,
+                    clientY: evt.clientY
+                });
+              screenElement.dispatchEvent(mouseEvent);
+            }
           });
+          
+          let isTouchScreen = false;
+          this.shadowRoot.addEventListener("touchend", () => {
+            isTouchScreen = true;
+          });
+          var isPointerMoving = false;
+          var touchStartTimestamp = null;
+          var longTouchDuration = 1000; // Time in milliseconds for a touch to be considered a long touch
+          var touchTimeoutId = null;
+          var touchDownEvent = null;
+          const activePointers = {};
+          screenElement.addEventListener("pointerdown", (evt) => {
+            touchStartTimestamp = Date.now();
+            var rlm = this.rateLimitedMouse;
+            isTouchScreen = evt.pointerType=="touch"?true:false;
+            touchDownEvent = evt;
+            touchTimeoutId = setTimeout(function() {
+              if(isTouchScreen && !isPointerMoving){
+              var mouseEvent = new MouseEvent('mousedown', {
+                 bubbles: true,
+                  cancelable: true,
+                  view: window,
+                   button: 0,
+                  buttons: 2,
+                  clientX: evt.clientX,
+                  clientY: evt.clientY
+                });
+              screenElement.dispatchEvent(mouseEvent);
+              }
+              
+            }, longTouchDuration);
+          });
+
+          screenElement.addEventListener("pointerup", (evt) => {
+            const pointerId = evt.pointerId;
+            isPointerMoving = false;
+            var touchEndTimestamp = Date.now();
+            var touchDuration = touchEndTimestamp - touchStartTimestamp;
+            if (touchDuration < longTouchDuration && touchTimeoutId !== null) {
+              clearTimeout(touchTimeoutId);
+              //considered as a normal touch
+            }
+            else{
+              var mouseEvent = new MouseEvent('mouseup', {
+                 bubbles: true,
+                  cancelable: true,
+                  view: window,
+                   button: 0,
+                  buttons: 2,
+                  clientX: evt.clientX,
+                  clientY: evt.clientY
+                });
+              //considered as a long touch
+              screenElement.dispatchEvent(mouseEvent);
+            }
+          });
+
+          let lastPos = null;
+          screenElement.addEventListener("touchmove", (evt)=>{
+            isPointerMoving = true;
+            const numberOfPoints = evt.touches.length;
+            if(numberOfPoints == 2){
+              let currentPos = evt.touches[0].clientY;
+              let dist = currentPos - (lastPos || currentPos);
+              const wheelEvent = new WheelEvent('wheel', { 
+                deltaY: 0-dist, 
+                clientX: evt.touches[0].clientX,
+                clientY: evt.touches[0].clientY});
+              screenElement.dispatchEvent(wheelEvent);
+              lastPos = currentPos
+            }
+          });
+          
           screenElement.addEventListener("mouseup", (evt) => {
             this.rateLimitedMouse.onMouseUp(evt);
           });
