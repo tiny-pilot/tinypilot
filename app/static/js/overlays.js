@@ -4,7 +4,9 @@
  * speaking it’s not safe to rely on that.
  */
 export class OverlayTracker {
-  currentOverlays = new Set();
+  constructor() {
+    this.currentOverlays = new Set();
+  }
 
   hasOverlays() {
     return this.currentOverlays.size > 0;

@@ -1,7 +1,9 @@
 let settings = {};
 try {
   settings = JSON.parse(localStorage.getItem("settings"));
-} catch {}
+} catch {
+  // Ignore errors.
+}
 
 const defaults = {
   isKeyHistoryEnabled: true,

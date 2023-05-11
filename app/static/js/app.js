@@ -6,8 +6,12 @@ import {
 } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
+import { isPasteOverlayShowing, showPasteOverlay } from "./paste.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
+
+// Suppress ESLint warnings about undefined variables.
+/* global io */
 
 const socket = io();
 let connectedToServer = false;
@@ -73,7 +77,7 @@ function processKeystroke(keystroke) {
   // sends dummy keydown events with a keycode of 229. Ignore these events, as
   // there's no way to map it to a real key.
   if (keystroke.keyCode === 229) {
-    resolve({});
+    return;
   }
   const keystrokeHistoryEvent = keystrokeHistory.push(keystroke.key);
   const result = sendKeystroke(socket, keystroke);
@@ -409,7 +413,7 @@ document
     document.getElementById("app").focus();
   });
 const shutdownDialog = document.getElementById("shutdown-dialog");
-shutdownDialog.addEventListener("shutdown-started", (evt) => {
+shutdownDialog.addEventListener("shutdown-started", () => {
   // Hide the interactive elements of the page during shutdown.
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     document.getElementById(elementId).style.display = "none";

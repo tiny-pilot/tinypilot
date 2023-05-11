@@ -166,22 +166,21 @@
 
   (function () {
     const template = document.querySelector("#video-settings-template");
+    const states = {
+      LOADING: "loading",
+      EDIT: "edit",
+      SAVING: "saving",
+    };
 
     customElements.define(
       "video-settings-dialog",
       class extends HTMLElement {
-        states = {
-          LOADING: "loading",
-          EDIT: "edit",
-          SAVING: "saving",
-        };
-        statesWithoutDialogClose = new Set([
-          this.states.LOADING,
-          this.states.SAVING,
-        ]);
-
         constructor() {
           super();
+          this.statesWithoutDialogClose = new Set([
+            states.LOADING,
+            states.SAVING,
+          ]);
           this.attachShadow({ mode: "open" });
           this._initialSettings = {};
           this._defaultSettings = {};
@@ -285,7 +284,7 @@
         }
 
         initialize() {
-          this.state = this.states.LOADING;
+          this.state = states.LOADING;
           getVideoSettings()
             .then(
               ({
@@ -313,7 +312,7 @@
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
                 this._refreshButtons();
-                this.state = this.states.EDIT;
+                this.state = states.EDIT;
               }
             )
             .catch((error) => {
@@ -439,7 +438,7 @@
         }
 
         _saveSettings() {
-          this.state = this.states.SAVING;
+          this.state = states.SAVING;
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),

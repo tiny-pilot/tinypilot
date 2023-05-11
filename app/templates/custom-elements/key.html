@@ -71,7 +71,7 @@
         constructor() {
           super();
 
-          this.addEventListener("click", (evt) => {
+          this.addEventListener("click", () => {
             this.togglePressedState();
 
             // Don't send event if click removed "pressed" state
