@@ -158,34 +158,14 @@
           this.shadowRoot.addEventListener("touchend", () => {
             isTouchScreen = true;
           });
-          this.shadowRoot.addEventListener("click", () => {
-            if (isTouchScreen) {
-              this.shadowRoot.getElementById("mobile-keyboard-input").focus();
-            }
-          });
+          // this.shadowRoot.addEventListener("click", () => {
+          //   if (isTouchScreen) {
+          //     this.shadowRoot.getElementById("mobile-keyboard-input").focus();
+          //   }
+          // });
 
-          // On mobile, the keydown events function differently due to the OS
-          // attempting to autocomplete text. Instead of listening for keydown
-          // events, we listen for input events.
-          const mobileKeyboard = this.shadowRoot.getElementById(
-            "mobile-keyboard-input"
-          );
-          mobileKeyboard.addEventListener("input", (evt) => {
-            // Handle insertCompositionText, which mean typing in autocomplete
-            // mode. The global keydown event handler processes all other key
-            // input events.
-            if (
-              evt.inputType === "insertText" ||
-              evt.inputType === "insertCompositionText"
-            ) {
-              sendTextInput(evt.data);
-            }
 
-            // Force the autocomplete sequence to restart.
-            mobileKeyboard.blur();
-            mobileKeyboard.value = "";
-            mobileKeyboard.focus();
-          });
+
 
           document.addEventListener("click", this._onGlobalUserInteraction);
           document.addEventListener("keyup", this._onGlobalUserInteraction);
