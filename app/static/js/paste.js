@@ -1,4 +1,4 @@
-let pasteOverlay = document.getElementById("paste-overlay");
+const pasteOverlay = document.getElementById("paste-overlay");
 pasteOverlay.addEventListener("keydown", onPasteOverlayKeyDown);
 pasteOverlay.addEventListener("paste", onPaste);
 pasteOverlay.addEventListener("click", () => {
