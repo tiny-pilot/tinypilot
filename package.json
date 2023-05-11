@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "lint": "eslint ./**/*.js  ./**/*.html"
+    "lint": "eslint './**/*.js'  './**/*.html'"
   },
   "devDependencies": {
     "eslint": "8.40.0",
