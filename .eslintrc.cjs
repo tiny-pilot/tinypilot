@@ -17,5 +17,5 @@ module.exports = {
       { allow: ["error", "debug"] },
     ],
   },
-  //ignorePatterns: ["venv", "app/static/third-party/**/*.js"],
+  ignorePatterns: ["venv", "app/static/third-party/**/*.js"],
 };
