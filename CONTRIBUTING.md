@@ -78,10 +78,6 @@ Host tinypilot
   ForwardAgent yes
 ```
 
-### Remote scripts
-
-For carrying out common procedures on the device, see [here](dev-scripts/remote-scripts/README.md).
-
 ## Architecture
 
 For a high-level view of TinyPilot's architecture, see the [ARCHITECTURE](ARCHITECTURE.md) file.
