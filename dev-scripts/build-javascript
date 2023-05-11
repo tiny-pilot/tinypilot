@@ -16,3 +16,5 @@ SOURCE_DIR="app"
 ./node_modules/.bin/mocha \
   --recursive \
   "${SOURCE_DIR}/**/*.test.js"
+
+./dev-scripts/lint-frontend

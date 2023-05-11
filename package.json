@@ -1,6 +1,11 @@
 {
   "type": "module",
+  "scripts": {
+    "lint": "eslint ./**/*.js  ./**/*.html"
+  },
   "devDependencies": {
+    "eslint": "8.40.0",
+    "eslint-plugin-html": "7.1.0",
     "mocha": "9.1.0",
     "prettier": "2.0.5"
   }

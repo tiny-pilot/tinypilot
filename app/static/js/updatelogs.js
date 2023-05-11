@@ -1,3 +1,6 @@
+// Suppress ESLint warnings about undefined variables.
+/* global io */
+
 /**
  * Streams the TinyPilot update logs via a SocketIO connection.
  * @requires socketio

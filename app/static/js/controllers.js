@@ -70,6 +70,7 @@ export async function getLatestRelease() {
     .then(processJsonResponse)
     .then((updateInfo) => {
       ["version", "kind", "data"].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (!updateInfo.hasOwnProperty(field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
@@ -88,6 +89,7 @@ export async function getVersion() {
   })
     .then(processJsonResponse)
     .then((versionResponse) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!versionResponse.hasOwnProperty("version")) {
         throw new ControllerError("Missing expected version field");
       }
@@ -151,9 +153,11 @@ export async function getUpdateStatus() {
   })
     .then(processJsonResponse)
     .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("status")) {
         throw new ControllerError("Missing expected status field");
       }
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("updateError")) {
         throw new ControllerError("Missing expected updateError field");
       }
@@ -171,6 +175,7 @@ export async function determineHostname() {
   })
     .then(processJsonResponse)
     .then((hostnameResponse) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!hostnameResponse.hasOwnProperty("hostname")) {
         throw new ControllerError("Missing expected hostname field");
       }
@@ -234,6 +239,7 @@ export async function textToShareableUrl(text) {
   })
     .then(processJsonResponse)
     .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("id")) {
         throw new ControllerError("Missing expected id field");
       }
@@ -260,6 +266,7 @@ export async function getVideoSettings() {
         "h264Bitrate",
         "defaultH264Bitrate",
       ].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (!data.hasOwnProperty(field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
