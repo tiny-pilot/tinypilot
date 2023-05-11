@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Checks for SQL script anti-patterns.
+# Checks for JavaScript anti-patterns.
 
 # Exit on first failure.
 set -e
