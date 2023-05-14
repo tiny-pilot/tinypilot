@@ -75,6 +75,11 @@
 <script type="module">
   import { RateLimitedMouse } from "/js/mouse.js";
   import { VideoStreamingModeChangedEvent } from "/js/events.js";
+  var browser = null;
+  let userAgentString = navigator.userAgent;
+  if (userAgentString.indexOf("Chrome") > -1) browser = "chrome";
+  else if (userAgentString.indexOf("Firefox") > -1) browser = "firefox";
+  else if (userAgentString.indexOf("Safari") > -1) browser = "safari";
 
   (function () {
     const template = document.querySelector("#remote-screen-template");
@@ -161,11 +166,6 @@
           // this.shadowRoot.addEventListener("click", () => {
           //   if (isTouchScreen) {
           //     this.shadowRoot.getElementById("mobile-keyboard-input").focus();
-          //   }
-          // });
-
-
-
 
           document.addEventListener("click", this._onGlobalUserInteraction);
           document.addEventListener("keyup", this._onGlobalUserInteraction);
@@ -187,77 +187,91 @@
             this.rateLimitedMouse.onMouseMove(evt);
           });
           screenElement.addEventListener("mousedown", (evt) => {
-            //mousedown is not getting any buttons attibutes on ios - a naive fix.
-            //assuming mousedown always have buttons attribute set and default is 1
-            if (evt.buttons) this.rateLimitedMouse.onMouseDown(evt);
-            else {
-              var mouseEvent = new MouseEvent("mousedown", {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-                button: 0,
-                buttons: 1,
-                clientX: evt.clientX,
-                clientY: evt.clientY,
-              });
-              screenElement.dispatchEvent(mouseEvent);
-            }
+            this.rateLimitedMouse.onMouseDown(evt);
           });
-
-          let isTouchScreen = false;
-          this.shadowRoot.addEventListener("touchend", () => {
-            isTouchScreen = true;
-          });
+          //-------------------------------------------------------------------------------
           var isPointerMoving = false;
           var touchStartTimestamp = null;
-          var longTouchDuration = 1000; // Time in milliseconds for a touch to be considered a long touch
+          var longTouchDuration = 600; // Time in milliseconds for a touch to be considered a long touch
           var touchTimeoutId = null;
-          var touchDownEvent = null;
-          const activePointers = {};
-          screenElement.addEventListener("pointerdown", (evt) => {
+          let touchClientX = null;
+          let touchClientY = null;
+          //listens to touchstart and dispatches a right click event if the touch duration is longetr than 1000ms
+          screenElement.addEventListener("touchstart", (evt) => {
+            if (browser == "safari" || browser == "firefox")
+              //evt needs to disabled only on firefox and safari to avoid default long press action
+              evt.preventDefault();
             touchStartTimestamp = Date.now();
             var rlm = this.rateLimitedMouse;
-            isTouchScreen = evt.pointerType == "touch" ? true : false;
-            touchDownEvent = evt;
+            touchClientX = evt.touches[0].clientX;
+            touchClientY = evt.touches[0].clientY;
+            // touchTimeoutId will be triggered only if the touch duration is longer than 600ms
             touchTimeoutId = setTimeout(function () {
-              if (isTouchScreen && !isPointerMoving) {
-                var mouseEvent = new MouseEvent("mousedown", {
+              if (!isPointerMoving) {
+                let mouseEvent = new MouseEvent("mousedown", {
                   bubbles: true,
                   cancelable: true,
                   view: window,
                   button: 0,
                   buttons: 2,
-                  clientX: evt.clientX,
-                  clientY: evt.clientY,
+                  clientX: evt.touches[0].clientX,
+                  clientY: evt.touches[0].clientY,
                 });
                 screenElement.dispatchEvent(mouseEvent);
               }
             }, longTouchDuration);
           });
 
-          screenElement.addEventListener("pointerup", (evt) => {
-            const pointerId = evt.pointerId;
+          screenElement.addEventListener("touchend", (evt) => {
+            evt.preventDefault();
             isPointerMoving = false;
             var touchEndTimestamp = Date.now();
             var touchDuration = touchEndTimestamp - touchStartTimestamp;
+            //if touch duration is less than 600ms it is considered as a normal touch
+            //and left left button down is dispatched which is followed by mouseup
             if (touchDuration < longTouchDuration && touchTimeoutId !== null) {
               clearTimeout(touchTimeoutId);
-              //considered as a normal touch
-            } else {
-              var mouseEvent = new MouseEvent("mouseup", {
+              console.log("Normal touch");
+              //if normal touch dispatching mousedown event
+              let mouseEvent = new MouseEvent("mousedown", {
                 bubbles: true,
                 cancelable: true,
                 view: window,
                 button: 0,
-                buttons: 2,
-                clientX: evt.clientX,
-                clientY: evt.clientY,
+                buttons: 1,
+                clientX: touchClientX,
+                clientY: touchClientY,
               });
-              //considered as a long touch
+              screenElement.dispatchEvent(mouseEvent);
+              //and an immediate mouse up event.
+              mouseEvent = new MouseEvent("mouseup", {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+                button: 0,
+                buttons: 0,
+                clientX: touchClientX,
+                clientY: touchClientY,
+              });
+              screenElement.dispatchEvent(mouseEvent);
+            }
+            //if long touch is finished then mouseup is dispatched
+            else {
+              let mouseEvent = new MouseEvent("mouseup", {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+                button: 0,
+                buttons: 0,
+                clientX: touchClientX,
+                clientY: touchClientY,
+              });
+              console.log("long touch");
               screenElement.dispatchEvent(mouseEvent);
             }
           });
 
+          //mocks the wheel event from two finger swipe.
           let lastPos = null;
           screenElement.addEventListener("touchmove", (evt) => {
             isPointerMoving = true;
@@ -274,6 +288,8 @@
               lastPos = currentPos;
             }
           });
+
+          //--------------------------------------------------------------------------------------
 
           screenElement.addEventListener("mouseup", (evt) => {
             this.rateLimitedMouse.onMouseUp(evt);
