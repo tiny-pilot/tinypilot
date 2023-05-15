@@ -12,9 +12,9 @@ set -u
 # Location of app source files.
 SOURCE_DIR="app"
 
+./dev-scripts/lint-frontend
+
 # Run unit tests.
 ./node_modules/.bin/mocha \
   --recursive \
   "${SOURCE_DIR}/**/*.test.js"
-
-./dev-scripts/lint-frontend

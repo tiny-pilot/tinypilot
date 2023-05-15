@@ -16,6 +16,8 @@
  */
 
 // Suppress ESLint warnings about undefined variables.
+// Janus is defined by the Janus library, which is globally available on the
+// page.
 /* global Janus */
 
 // Parameters for the setup.

@@ -11,6 +11,8 @@ import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
 
 // Suppress ESLint warnings about undefined variables.
+// `io` is defined by the Socket.IO library, which is globally available on the
+// page.
 /* global io */
 
 const socket = io();

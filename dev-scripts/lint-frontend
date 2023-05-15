@@ -11,4 +11,4 @@ set -x
 # Exit on unset variable.
 set -u
 
-npm run lint
+./node_modules/.bin/eslint "./**/*.js" "./**/*.html"
