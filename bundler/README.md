@@ -57,7 +57,7 @@ The installation procedure consists of the following steps. The procedure is sli
 1. `get-tinypilot-pro.sh` checks whether the caller supplied a version flag.
    - If the version flag is absent, `get-tinypilot-pro.sh` asks Gatekeeper what the latest available version is.
 1. `get-tinypilot-pro.sh` requests the bundle with the desired version from Gatekeeper.
-2. `get-tinypilot-pro.sh` unpacks bundle and invokes `install` script.
+1. `get-tinypilot-pro.sh` unpacks bundle and invokes `install` script.
 
 ## Update Process
 
