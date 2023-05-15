@@ -1,3 +1,8 @@
+// Suppress ESLint warnings about undefined variables.
+// `io` is defined by the Socket.IO library, which is globally available on the
+// page.
+/* global io */
+
 /**
  * Streams the TinyPilot update logs via a SocketIO connection.
  * @requires socketio
