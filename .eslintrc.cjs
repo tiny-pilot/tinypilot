@@ -26,7 +26,6 @@ module.exports = {
     "no-var": "error",
     "one-var-declaration-per-line": "error",
     "prefer-const": "error",
-    strict: "error",
   },
   ignorePatterns: ["app/static/third-party", "playwright-report", "venv"],
 };
