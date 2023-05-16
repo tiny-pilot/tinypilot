@@ -367,6 +367,7 @@
         }
 
         onKeyClick(key, code, isModifier) {
+          let adjustedKey = key;
           // Make uppercase when shift is active – but only if no other modifier
           // is pressed at the same time.
           if (
@@ -382,13 +383,13 @@
               "ControlRight",
             ].every((m) => !this.isModifierKeyPressed(m))
           ) {
-            key = this.getShiftedKeyValue(key);
+            adjustedKey = this.getShiftedKeyValue(adjustedKey);
           }
 
-          this.emitKeyEvent("keydown", key, code);
+          this.emitKeyEvent("keydown", adjustedKey, code);
 
           if (!isModifier) {
-            this.emitKeyEvent("keyup", key, code);
+            this.emitKeyEvent("keyup", adjustedKey, code);
 
             // Remove pressed state from all modifier keys if non-modifier key
             // was pressed.
