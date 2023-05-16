@@ -19,7 +19,6 @@ module.exports = {
         ignorePattern: `[a-zA-Z]+=`,
       },
     ],
-    curly: "error",
     eqeqeq: "error",
     // This will produce an error for console.log or console.warn in production
     // and a warning in development.
