@@ -11,6 +11,15 @@ module.exports = {
   extends: ["eslint:recommended"],
   rules: {
     "block-scoped-var": "error",
+    "capitalized-comments": [
+      "error",
+      "always",
+      {
+        ignoreConsecutiveComments: true,
+        ignorePattern: `[a-zA-Z]+=`,
+      },
+    ],
+    curly: "error",
     eqeqeq: "error",
     // This will produce an error for console.log or console.warn in production
     // and a warning in development.
