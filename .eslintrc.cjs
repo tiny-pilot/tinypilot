@@ -16,6 +16,10 @@ module.exports = {
       "always",
       {
         ignoreConsecutiveComments: true,
+        // We want to allow inline comments to document a parameter like
+        // foo(/*force=*/ true). We're not married to this particular pattern
+        // for variable names, and we can update it if we have variable names
+        // that fall outside the pattern.
         ignorePattern: `[a-zA-Z]+=`,
       },
     ],
