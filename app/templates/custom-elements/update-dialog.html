@@ -242,7 +242,7 @@
         }
 
         _performRestart() {
-          return shutdown(/*restart*/ true)
+          return shutdown(/*restart=*/ true)
             .then(() => {
               this._state = this.states.RESTARTING;
             })
