@@ -368,8 +368,6 @@
 
         onKeyClick(keyRaw, code, isModifier) {
           const key = this.getEffectiveKeyValue(keyRaw);
-          // Make uppercase when shift is active – but only if no other modifier
-          // is pressed at the same time.
 
           this.emitKeyEvent("keydown", key, code);
 
