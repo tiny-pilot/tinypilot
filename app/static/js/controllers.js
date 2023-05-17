@@ -60,8 +60,7 @@ async function processJsonResponse(response) {
 }
 
 export async function getLatestRelease() {
-  let route = "/api/latestRelease";
-  return fetch(route, {
+  return fetch("/api/latestRelease", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -80,8 +79,7 @@ export async function getLatestRelease() {
 }
 
 export async function getVersion() {
-  let route = "/api/version";
-  return fetch(route, {
+  return fetch("/api/version", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -131,8 +129,7 @@ export async function shutdown(restart) {
 }
 
 export async function update() {
-  let route = "/api/update";
-  return fetch(route, {
+  return fetch("/api/update", {
     method: "PUT",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -144,8 +141,7 @@ export async function update() {
 }
 
 export async function getUpdateStatus() {
-  let route = "/api/update";
-  return fetch(route, {
+  return fetch("/api/update", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -166,8 +162,7 @@ export async function getUpdateStatus() {
 }
 
 export async function determineHostname() {
-  const route = "/api/hostname";
-  return fetch(route, {
+  return fetch("/api/hostname", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -184,8 +179,7 @@ export async function determineHostname() {
 }
 
 export async function changeHostname(newHostname) {
-  const route = "/api/hostname";
-  return fetch(route, {
+  return fetch("/api/hostname", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -201,8 +195,7 @@ export async function changeHostname(newHostname) {
 }
 
 export async function checkStatus(baseURL = "") {
-  const route = "/api/status";
-  return fetch(baseURL + route, {
+  return fetch(baseURL + "/api/status", {
     method: "GET",
     mode: "cors",
     cache: "no-cache",

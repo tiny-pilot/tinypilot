@@ -37,6 +37,7 @@ module.exports = {
     "no-useless-return": "error",
     "no-var": "error",
     "one-var-declaration-per-line": "error",
+    "prefer-const": "error",
   },
   ignorePatterns: ["app/static/third-party", "playwright-report", "venv"],
 };
