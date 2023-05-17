@@ -425,7 +425,7 @@
          * into account keyboard state and any modifier keys that are active.
          **/
         getEffectiveKeyValue(key) {
-          // Convert the key to uppercase when shift is active, but only if no
+          // Convert the key to uppercase when shift is active but only if no
           // other modifier is pressed at the same time.
           if (
             ["ShiftLeft", "ShiftRight"].some((m) =>
