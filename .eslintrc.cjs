@@ -33,6 +33,7 @@ module.exports = {
     "no-constant-binary-expression": "error",
     "no-duplicate-imports": "error",
     "no-lonely-if": "error",
+    "no-param-reassign": "error",
     "no-unused-private-class-members": "error",
     "no-useless-return": "error",
     "no-var": "error",
