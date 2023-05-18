@@ -86,7 +86,6 @@ body {
 
 html {
   font-family: "Overpass", sans-serif;
-  -webkit-touch-callout: none;
 }
 
 *:focus {
