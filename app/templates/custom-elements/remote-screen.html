@@ -76,7 +76,7 @@
 <script type="module">
   import { RateLimitedMouse } from "/js/mouse.js";
   import { VideoStreamingModeChangedEvent } from "/js/events.js";
-    import { TouchEvents } from "/js/touchEvents.js"
+  import { TouchEvents } from "/js/touchEvents.js";
 
   (function () {
     const template = document.querySelector("#remote-screen-template");
@@ -129,7 +129,7 @@
               );
             }
           );
-            this.touchEvents = new TouchEvents();
+          this.touchEvents = new TouchEvents();
         }
 
         connectedCallback() {
@@ -178,21 +178,20 @@
           screenElement.addEventListener("mousedown", (evt) => {
             this.rateLimitedMouse.onMouseDown(evt);
           });
-          //-------------------------------------------------------------------------------
-            
-          //listens to touchstart and dispatches a right click event if the touch duration is longetr than 1000ms
-            
+
+          // Listens to touchstart and dispatches a right click event if the touch duration is longetr than 600ms
+
           screenElement.addEventListener("touchstart", (evt) => {
-              this.touchEvents.touchStartAction(evt, screenElement);
+            this.touchEvents.touchStartAction(evt, screenElement);
           });
 
           screenElement.addEventListener("touchend", (evt) => {
-              this.touchEvents.touchEndAction(evt, screenElement);
+            this.touchEvents.touchEndAction(evt, screenElement);
           });
 
           //mocks the wheel event from two finger swipe.
-            screenElement.addEventListener("touchmove", (evt)=>{
-              this.touchEvents.touchMoveAction(evt, screenElement);
+          screenElement.addEventListener("touchmove", (evt) => {
+            this.touchEvents.touchMoveAction(evt, screenElement);
           });
 
           //--------------------------------------------------------------------------------------
@@ -212,8 +211,6 @@
           });
         }
 
-          
-  
         get fullscreen() {
           return this.getAttribute("fullscreen") === "true";
         }
@@ -482,7 +479,6 @@
           }
         }
 
-  
         /**
          * Displays the MJPEG stream while hiding the WebRTC stream.
          */
@@ -507,5 +503,4 @@
       }
     );
   })();
-  
 </script>
