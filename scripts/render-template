@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+# Renders a Jinja2 template using TinyPilot settings data.
+
+# To test:
+# $ PYTHONPATH="${PWD}/app" ./scripts/render-template \
+#    debian-pkg/opt/tinypilot/templates/tinypilot-app-settings.cfg.j2
+
+# Ignore pylint complaint that this filename has a dash instead of an
+# underscore.
+# pylint:disable=invalid-name
+
+import argparse
+import io
+import os
+
+import render_template
+
+_DEFAULTS = {
+    'tinypilot_keyboard_interface': '/dev/hidg0',
+    'tinypilot_mouse_interface': '/dev/hidg1',
+}
+
+_USER_OVERRIDES_PATH = '/home/tinypilot/settings.yml'
+
+
+def main(args):
+    user_overrides_file = io.StringIO("")
+    if os.path.exists(_USER_OVERRIDES_PATH):
+        with open(_USER_OVERRIDES_PATH, encoding='utf8') as f:
+            user_overrides_file = io.StringIO(f.read())
+
+    with open(args.template_filename, encoding='utf8') as f:
+        template_file = io.StringIO(f.read())
+
+    print(render_template.render(_DEFAULTS, user_overrides_file, template_file))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        prog='TinyPilot Template Renderer',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('template_filename')
+    main(parser.parse_args())
