@@ -42,7 +42,7 @@ if [[ ! -f install ]]; then
 fi
 
 # List Debian package contents.
-dpkg --contents tinypilot*.deb
+dpkg --contents tinypilot*armhf.deb
 
 # Check that Ansible roles exist.
 readonly ANSIBLE_ROLES=(
