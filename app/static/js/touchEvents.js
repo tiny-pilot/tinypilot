@@ -2,7 +2,7 @@ export class TouchEvents {
   constructor() {
     this.touchStartTimestamp;
     this.isPointerMoving = false;
-    this.longTouchDuration = 600; // Time in milliseconds for a touch to be considered a long touch this is arbitary
+    this.longTouchDuration = 600; // Time in milliseconds for a touch to be considered a long touch this is arbitrary.
     this.touchTimeoutId = null;
     this.touchClientX = null;
     this.touchClientY = null;
@@ -15,13 +15,13 @@ export class TouchEvents {
   }
 
   touchStartAction(evt, screenElement) {
-    // Evt needs to disabled only on firefox and safari to avoid default long press action
+    // Evt needs to be disabled only on firefox and safari to avoid default long press action.
     if (this.browser === "safari" || this.browser === "firefox")
       evt.preventDefault();
     this.touchStartTimestamp = Date.now();
     this.touchClientX = evt.touches[0].clientX;
     this.touchClientY = evt.touches[0].clientY;
-    // TouchTimeoutId will be triggered only if the touch duration is longer than 600ms
+    // TouchTimeoutId will be triggered only if the touch duration is longer than 600ms.
     this.touchTimeoutId = setTimeout(() => {
       if (!this.isPointerMoving) {
         const mouseEvent = new MouseEvent("mousedown", {
@@ -44,15 +44,15 @@ export class TouchEvents {
     const touchEndTimestamp = Date.now();
     const touchDuration = touchEndTimestamp - this.touchStartTimestamp;
     /***
-     * If touch duration is less than 600ms it is considered as a normal touch
-     * and left button down is dispatched which is followed by mouseup
+     * If touch duration is less than 600ms, it is considered as a normal touch
+     * and left button down is dispatched which is followed by mouseup.
      ***/
     if (
       touchDuration < this.longTouchDuration &&
       this.touchTimeoutId !== null
     ) {
       clearTimeout(this.touchTimeoutId);
-      // If normal touch dispatching mousedown event
+      // If normal touch dispatching mousedown event.
       let mouseEvent = new MouseEvent("mousedown", {
         bubbles: true,
         cancelable: true,
@@ -75,7 +75,7 @@ export class TouchEvents {
       });
       screenElement.dispatchEvent(mouseEvent);
     }
-    // If long touch is finished then mouseup is dispatched
+    // If long touch is finished then mouseup is dispatched.
     else {
       const mouseEvent = new MouseEvent("mouseup", {
         bubbles: true,
@@ -97,6 +97,7 @@ export class TouchEvents {
       this.touchTimeoutId = null;
     }
     const numberOfPoints = evt.touches.length;
+    // Simulate a wheel event only if two touches are detected.
     if (numberOfPoints === 2) {
       const currentPos = evt.touches[0].clientY;
       const dist = currentPos - (this.lastPos || currentPos);
