@@ -49,6 +49,8 @@ isort \
   --skip-glob=third_party/* \
   --skip-glob=venv/*
 
+# TODO: Check render-template too.
+
 # Run static analysis for Python bugs/cruft.
 pyflakes "${SOURCE_DIR}/" "${UPDATE_SCRIPT}"
 
