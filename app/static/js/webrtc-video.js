@@ -15,6 +15,11 @@
  * https://github.com/tiny-pilot/ustreamer/blob/master/docs/h264.md
  */
 
+// Suppress ESLint warnings about undefined variables.
+// Janus is defined by the Janus library, which is globally available on the
+// page.
+/* global Janus */
+
 // Parameters for the setup.
 const config = {
   // Set to `true` to turn on all internal Janus logging. Make sure to set the

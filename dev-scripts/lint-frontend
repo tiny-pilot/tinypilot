@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Checks for JavaScript anti-patterns.
+
 # Exit on first failure.
 set -e
 
@@ -9,4 +11,4 @@ set -x
 # Exit on unset variable.
 set -u
 
-./dev-scripts/build
+./node_modules/.bin/eslint "./**/*.js" "./**/*.html"

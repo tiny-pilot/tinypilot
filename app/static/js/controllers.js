@@ -60,8 +60,7 @@ async function processJsonResponse(response) {
 }
 
 export async function getLatestRelease() {
-  let route = "/api/latestRelease";
-  return fetch(route, {
+  return fetch("/api/latestRelease", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -70,6 +69,7 @@ export async function getLatestRelease() {
     .then(processJsonResponse)
     .then((updateInfo) => {
       ["version", "kind", "data"].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (!updateInfo.hasOwnProperty(field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
@@ -79,8 +79,7 @@ export async function getLatestRelease() {
 }
 
 export async function getVersion() {
-  let route = "/api/version";
-  return fetch(route, {
+  return fetch("/api/version", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -88,6 +87,7 @@ export async function getVersion() {
   })
     .then(processJsonResponse)
     .then((versionResponse) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!versionResponse.hasOwnProperty("version")) {
         throw new ControllerError("Missing expected version field");
       }
@@ -129,8 +129,7 @@ export async function shutdown(restart) {
 }
 
 export async function update() {
-  let route = "/api/update";
-  return fetch(route, {
+  return fetch("/api/update", {
     method: "PUT",
     headers: {
       "X-CSRFToken": getCsrfToken(),
@@ -142,8 +141,7 @@ export async function update() {
 }
 
 export async function getUpdateStatus() {
-  let route = "/api/update";
-  return fetch(route, {
+  return fetch("/api/update", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -151,9 +149,11 @@ export async function getUpdateStatus() {
   })
     .then(processJsonResponse)
     .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("status")) {
         throw new ControllerError("Missing expected status field");
       }
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("updateError")) {
         throw new ControllerError("Missing expected updateError field");
       }
@@ -162,8 +162,7 @@ export async function getUpdateStatus() {
 }
 
 export async function determineHostname() {
-  const route = "/api/hostname";
-  return fetch(route, {
+  return fetch("/api/hostname", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -171,6 +170,7 @@ export async function determineHostname() {
   })
     .then(processJsonResponse)
     .then((hostnameResponse) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!hostnameResponse.hasOwnProperty("hostname")) {
         throw new ControllerError("Missing expected hostname field");
       }
@@ -179,8 +179,7 @@ export async function determineHostname() {
 }
 
 export async function changeHostname(newHostname) {
-  const route = "/api/hostname";
-  return fetch(route, {
+  return fetch("/api/hostname", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -196,8 +195,7 @@ export async function changeHostname(newHostname) {
 }
 
 export async function checkStatus(baseURL = "") {
-  const route = "/api/status";
-  return fetch(baseURL + route, {
+  return fetch(baseURL + "/api/status", {
     method: "GET",
     mode: "cors",
     cache: "no-cache",
@@ -234,6 +232,7 @@ export async function textToShareableUrl(text) {
   })
     .then(processJsonResponse)
     .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!data.hasOwnProperty("id")) {
         throw new ControllerError("Missing expected id field");
       }
@@ -260,6 +259,7 @@ export async function getVideoSettings() {
         "h264Bitrate",
         "defaultH264Bitrate",
       ].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (!data.hasOwnProperty(field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }

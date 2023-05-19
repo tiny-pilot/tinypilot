@@ -69,11 +69,31 @@ else
   readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
 fi
 
-readonly INSTALLER_DIR='/opt/tinypilot-updater'
+readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
+readonly INSTALLER_DIR='/mnt/tinypilot-installer'
+readonly RAMDISK_SIZE='500m'
+
+# Remove temporary files & directories.
+clean_up() {
+  umount --lazy "${INSTALLER_DIR}" || true
+  rm -rf \
+    "${LEGACY_INSTALLER_DIR}" \
+    "${INSTALLER_DIR}"
+}
+
+# Always clean up before exiting.
+trap 'clean_up' EXIT
+
+# Mount volatile RAMdisk.
+mkdir "${INSTALLER_DIR}"
+mount \
+  --types tmpfs \
+  --options "size=${RAMDISK_SIZE}" \
+  --source tmpfs \
+  --target "${INSTALLER_DIR}" \
+  --verbose
 
 # Extract tarball to installer directory.
-rm -rf "${INSTALLER_DIR}"
-mkdir -p "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \

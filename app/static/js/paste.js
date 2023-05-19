@@ -1,4 +1,4 @@
-pasteOverlay = document.getElementById("paste-overlay");
+const pasteOverlay = document.getElementById("paste-overlay");
 pasteOverlay.addEventListener("keydown", onPasteOverlayKeyDown);
 pasteOverlay.addEventListener("paste", onPaste);
 pasteOverlay.addEventListener("click", () => {
@@ -6,11 +6,11 @@ pasteOverlay.addEventListener("click", () => {
 });
 
 // TODO(jotaen) Migrate this to use `OverlayTracker`
-function isPasteOverlayShowing() {
+export function isPasteOverlayShowing() {
   return pasteOverlay.getAttribute("show") === "true";
 }
 
-function showPasteOverlay() {
+export function showPasteOverlay() {
   pasteOverlay.setAttribute("show", "true");
   placeCaretInPasteOverlay();
 }

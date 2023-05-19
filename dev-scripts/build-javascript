@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Exit build script on first failure.
+# Exit on first failure.
 set -e
 
 # Echo commands before executing them, by default to stderr.
@@ -11,6 +11,8 @@ set -u
 
 # Location of app source files.
 SOURCE_DIR="app"
+
+./dev-scripts/lint-frontend
 
 # Run unit tests.
 ./node_modules/.bin/mocha \
