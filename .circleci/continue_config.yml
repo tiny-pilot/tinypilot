@@ -85,13 +85,20 @@ jobs:
       - setup_remote_docker:
           version: 20.10.11
       - run:
+          name: Enable multiarch builds with QEMU
+          command: ./dev-scripts/enable-multiarch-docker
+      - run:
           name: Build Debian package
-          command: ./dev-scripts/build-debian-pkg
+          command: ./dev-scripts/build-debian-pkg "linux/arm/v7,linux/amd64"
       - run:
           name: Print Debian package contents
-          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
+          command: dpkg --contents debian-pkg/releases/linux_arm_v7/tinypilot*.deb
       - persist_to_workspace:
-          root: ./debian-pkg/releases
+          root: ./debian-pkg/releases/linux_amd64
+          paths:
+            - "*.deb"
+      - persist_to_workspace:
+          root: ./debian-pkg/releases/linux_arm_v7
           paths:
             - "*.deb"
   lint_debian_package:
@@ -119,7 +126,7 @@ jobs:
               --suppress-tags-from-file .lintianignore \
               --no-cfg \
               --fail-on warning,error \
-              tinypilot*.deb
+              tinypilot*armhf.deb
   build_ansible_role:
     machine:
       image: ubuntu-2004:202010-01
@@ -139,7 +146,7 @@ jobs:
       - run:
           name: Add TinyPilot Debian package name as an environment variable
           command: |
-            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
+            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*amd64.deb | xargs basename)"
             echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
       - run:
           name: Create virtual environment
@@ -255,6 +262,12 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
+          # Creating the bundle assumes an ARMv7 build, so we only do this on
+          # master, because it's slow building the ARMv7 binaries from a
+          # CircleCI AMD64 instance.
+          filters:
+            branches:
+              only: master
       - verify_bundle:
           requires:
             - build_bundle
