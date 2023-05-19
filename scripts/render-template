@@ -16,6 +16,7 @@ import os
 
 import render_template
 
+# TODO: Document these.
 _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
@@ -32,7 +33,7 @@ def main(args):
         with open(_USER_OVERRIDES_PATH, encoding='utf8') as f:
             user_overrides_file = io.StringIO(f.read())
 
-    with open(args.template_filename, encoding='utf8') as f:
+    with open(args.template_path, encoding='utf8') as f:
         template_file = io.StringIO(f.read())
 
     print(render_template.render(_DEFAULTS, user_overrides_file, template_file))
@@ -42,5 +43,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='TinyPilot Template Renderer',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('template_filename')
+    parser.add_argument('template_path')
     main(parser.parse_args())
