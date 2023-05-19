@@ -3,7 +3,7 @@
 # Creates a symlink from /opt/tinypilot-privileged/scripts to dev-scripts/mock-scripts
 # to facilitate development on non-TinyPilot systems.
 
-# Exit on first failure.
+# Exit build script on first failure.
 set -e
 
 if [[ "${EUID}" -ne 0 ]]; then

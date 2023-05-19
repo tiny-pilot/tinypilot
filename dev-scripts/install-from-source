@@ -7,7 +7,7 @@
 # get-tinypilot.sh script in the directory root. TinyPilot Pro users should use
 # get-tinypilot-pro.sh from the licensed URL.
 
-# Exit on first failure.
+# Exit build script on first failure.
 set -e
 
 # Echo commands before executing them, by default to stderr.
