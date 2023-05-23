@@ -47,7 +47,7 @@ pyparsing==3.0.9
 python-dateutil==2.8.2
 python-slugify==6.1.2
 PyYAML==5.4.1
-requests==2.28.1
+requests==2.31.0
 rich==12.5.1
 selinux==0.2.1
 shellingham==1.5.0
