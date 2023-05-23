@@ -62,9 +62,6 @@ fi
 # https://github.com/tiny-pilot/tinypilot/issues/1357
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 
-readonly INSTALLER_DIR='/mnt/tinypilot-installer'
-readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
-
 # The RAMdisk size is broadly based on the combined size of the following:
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
@@ -72,7 +69,37 @@ readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 # - At least a 20% safety margin
 # Use the following command to help you estimate a sensible size allocation:
 #   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
-readonly RAMDISK_SIZE='500m'
+readonly RAMDISK_SIZE_MI=500
+
+FREE_MEMORY_MI="$(free --mebi |
+  grep --fixed-strings 'Mem:' |
+  tr --squeeze-repeats ' ' |
+  cut --delimiter ' ' --fields 4)"
+readonly FREE_MEMORY_MI
+
+if (( "${FREE_MEMORY_MI}" > "${RAMDISK_SIZE_MI}" )); then
+  # Mount volatile RAMdisk.
+  # Note: `tmpfs` can use swap space when the device's physical memory is under
+  # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
+  # but also doesn't enforce a filesystem size limit, unlike `tmpfs`. Considering
+  # that our goal is to reduce disk writes and not necessarily eliminate them
+  # altogether, the possibility of using swap space is an acceptable compromise in
+  # exchange for limiting memory usage.
+  # https://github.com/tiny-pilot/tinypilot/issues/1357
+  INSTALLER_DIR='/mnt/tinypilot-installer'
+  sudo mkdir "${INSTALLER_DIR}"
+  sudo mount \
+    --types tmpfs \
+    --options "size=${RAMDISK_SIZE_MI}m" \
+    --source tmpfs \
+    --target "${INSTALLER_DIR}" \
+    --verbose
+else
+  INSTALLER_DIR="$(mktemp --directory)"
+fi
+readonly INSTALLER_DIR
+
+readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
 # Remove temporary files & directories.
 clean_up() {
@@ -84,22 +111,6 @@ clean_up() {
 
 # Always clean up before exiting.
 trap 'clean_up' EXIT
-
-# Mount volatile RAMdisk.
-# Note: `tmpfs` can use swap space when the device's physical memory is under
-# pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
-# but also doesn't enforce a filesystem size limit, unlike `tmpfs`. Considering
-# that our goal is to reduce disk writes and not necessarily eliminate them
-# altogether, the possibility of using swap space is an acceptable compromise in
-# exchange for limiting memory usage.
-# https://github.com/tiny-pilot/tinypilot/issues/1357
-sudo mkdir "${INSTALLER_DIR}"
-sudo mount \
-  --types tmpfs \
-  --options "size=${RAMDISK_SIZE}" \
-  --source tmpfs \
-  --target "${INSTALLER_DIR}" \
-  --verbose
 
 # Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
