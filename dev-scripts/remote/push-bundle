@@ -1,0 +1,81 @@
+#!/bin/bash
+#
+# Proxy script for pushing/installing a bundle to a remote testing device.
+#
+# Examples:
+#  install-bundle https://example.com/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+#  install-bundle /local/path/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+SCRIPT_PATH=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+readonly SCRIPT_PATH
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [-h] bundle_path
+Install the specified TinyPilot bundle on a remote TinyPilot testing device.
+  bundle_path: Local filesystem path or web URL.
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+# Ensure config is present.
+if [[ -z "${TINYTESTPILOT_SSH_HOSTNAME}" ]]; then
+  echo 'Environment variable $TINYTESTPILOT_SSH_HOSTNAME must be specified.' >&2
+  exit 1
+fi
+
+# Ensure 'bundle_path' is given.
+shift "$((OPTIND - 1))"
+if (( $# == 0 )); then
+  echo 'Input parameter missing: bundle_path' >&2
+  exit 1
+fi
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+readonly BUNDLE_PATH="$1"
+
+# Download bundle, if path is a web URL.
+if [[ "${BUNDLE_PATH}" == http* ]]; then
+  pushd "$(mktemp -d)"
+  curl \
+   --fail \
+   --location \
+   --output bundle.tgz \
+   "${BUNDLE_PATH}"
+  ls -lah
+  BUNDLE_FILE_PATH="${PWD}/bundle.tgz"
+  readonly BUNDLE_FILE_PATH
+  popd
+else
+  readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
+fi
+
+# Sync install script and bundle to device.
+rsync "${SCRIPT_PATH}/../../scripts/install-bundle" "root@${TINYTESTPILOT_SSH_HOSTNAME}:/tmp/install-bundle"
+rsync "${BUNDLE_FILE_PATH}" "root@${TINYTESTPILOT_SSH_HOSTNAME}:/tmp/bundle.tgz"
+
+# Delegate to install script.
+ssh "root@${TINYTESTPILOT_SSH_HOSTNAME}" << ENDSSH
+/tmp/install-bundle /tmp/bundle.tgz
+ENDSSH

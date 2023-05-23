@@ -63,20 +63,41 @@ To run TinyPilot on a non-Pi machine, run:
 
 For more complex changes it is useful to test your feature branch on a Raspberry Pi, in order to verify them in the real production environment.
 
-### Setup SSH keys for login
+The following setup and helper scripts aim to provide a unified workflow.
 
-1. [Generate SSH keys and upload your public key](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) to your device. Please use strong keys, e.g., ED25519 or RSA 4096+.
-2. Verify that you can login with your SSH keys.
-3. On the device, disable password-based login by specifying `PasswordAuthentication no` in `/etc/ssh/sshd_config`. Reboot afterwards.
+### SSH setup
 
-### SSH agent forwarding
+On your local machine, you should [generate separate SSH keys](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) for the testing device. Please use strong keys, e.g., ED25519 or RSA 4096+.
 
-In case you need SSH keys for accessing the Git repositories (e.g., for testing TinyPilot's Pro version), please enable SSH agent forwarding in your local `~/.ssh/config`.
+Add the following section to your `~/.ssh/config` file, so that your SSH keys are picked up automatically.
 
 ```
-Host tinypilot
-  ForwardAgent yes
+Host tinypilot tinypilot.local
+	User root
+	IdentityFile ~/.ssh/tinypilot
 ```
+
+For more convenience (but also less security), you can disable integrity checks. You should only do this for your testing device, only if the testing device is within a local network, and only if the testing device is connected to a non-sensitive target machine.
+
+```
+Host tinypilot tinypilot.local
+	User root
+	IdentityFile ~/.ssh/tinypilot
+	UserKnownHostsFile /dev/null
+	StrictHostKeyChecking no
+```
+
+### Bootstrapping a new Voyager testing device
+
+You only need to carry out the bootstrapping procedure once for a pristine device / SD card.
+
+For accessing your testing device via the command line, make sure that the SSH agent on the device is enabled.
+
+Run the [`bootstrap` dev-script](./dev-scripts/remote/bootstrap) in order to populate your SSH key, and to set up some basic system config.
+
+### Installing dev builds on the device
+
+You can push and install dev bundles to your testing device by using the [`push-bundle` dev-script](./dev-scripts/remote/push-bundle).
 
 ## Architecture
 

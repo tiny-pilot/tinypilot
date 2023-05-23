@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# Bootstraps a TinyPilot Voyager device for testing purposes.
+# This uploads SSH keys to the device, and it ensures that all Voyager-specific
+# prerequisites are met.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [-h] ssh_connection
+Bootstraps a new TinyPilot Voyager device for testing purposes.
+  ssh_connection: The default SSH connection string, e.g.: pi@raspberrypi
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+# Ensure config is present.
+if [[ -z "${TINYTESTPILOT_SSH_KEY}" ]]; then
+  echo 'Environment variable $TINYTESTPILOT_SSH_KEY must be specified.' >&2
+  exit 1
+fi
+
+# Ensure 'ssh_connection' is given.
+shift "$((OPTIND - 1))"
+if (( $# == 0 )); then
+  echo 'Input parameter missing: ssh_connection' >&2
+  exit 1
+fi
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+readonly SSH_DEFAULT_CONNECTION="$1"
+
+SSH_PUBLIC_KEY="$(<"${TINYTESTPILOT_SSH_KEY}.pub")"
+readonly SSH_PUBLIC_KEY
+
+# Execute bootstrap procedure:
+# - Upload SSH public key.
+# - Set up tinypilot user and group.
+# - Setup Voyager config.
+ssh "${SSH_DEFAULT_CONNECTION}" << ENDSSH
+set -eu
+
+sudo su
+
+# Register developer’s SSH key for root account.
+mkdir -p /root/.ssh
+echo "${SSH_PUBLIC_KEY}" > /root/.ssh/authorized_keys
+
+# Set up tinypilot user (unless it exists).
+if ! id tinypilot &>/dev/null; then
+  addgroup --system tinypilot
+  adduser \
+    --system \
+    --shell /bin/bash \
+    --ingroup tinypilot \
+    --home "/home/tinypilot" \
+    tinypilot
+fi
+
+# Setup config for Voyager device (unless it exists).
+su tinypilot
+if [[ ! -f ~/settings.yml ]]; then
+  touch ~/settings.yml
+  echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
+fi
+ENDSSH

@@ -2,9 +2,8 @@
 #
 # Install TinyPilot from a TinyPilot bundle tarball.
 #
-# Examples:
+# Example:
 #  sudo install-bundle /tmp/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
-#  sudo install-bundle https://example.com/tinypilot-community-20230103T1619Z-1.8.0-74+7623988.tgz
 #
 # This script is only for development, though unlike other dev scripts, it
 # installs on the device. Regular users should use the get-tinypilot.sh or
@@ -30,7 +29,7 @@ print_help() {
   cat << EOF
 Usage: ${0##*/} [-h] bundle_path
 Install the specified TinyPilot bundle on the system.
-  bundle_path: Local filesystem path or URL to TinyPilot bundle.
+  bundle_path: Local filesystem path
   -h Display this help and exit.
 EOF
 }
@@ -58,17 +57,7 @@ fi
 # Echo commands before executing them, by default to stderr.
 set -x
 
-readonly BUNDLE_PATH="$1"
-
-if [[ "${BUNDLE_PATH}" == http* ]]; then
-  cd "$(mktemp --directory)"
-  wget "${BUNDLE_PATH}"
-  BUNDLE_FILE_PATH="${PWD}/$(find . -name '*.tgz')"
-  readonly BUNDLE_FILE_PATH
-else
-  readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
-fi
-
+readonly BUNDLE_FILE_PATH="$1"
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 readonly INSTALLER_DIR='/mnt/tinypilot-installer'
 readonly RAMDISK_SIZE='500m'
