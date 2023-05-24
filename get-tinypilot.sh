@@ -77,6 +77,19 @@ FREE_MEMORY_MIB="$(free --mebi |
   cut --delimiter ' ' --fields 4)"
 readonly FREE_MEMORY_MIB
 
+INSTALLER_DIR='/mnt/tinypilot-installer'
+
+# Remove temporary files & directories.
+clean_up() {
+  umount --lazy "${INSTALLER_DIR}" || true
+  rm -rf \
+    "${LEGACY_INSTALLER_DIR}" \
+    "${INSTALLER_DIR}"
+}
+
+# Always clean up before exiting.
+trap 'clean_up' EXIT
+
 if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
@@ -86,7 +99,6 @@ if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # altogether, the possibility of using swap space is an acceptable compromise in
   # exchange for limiting memory usage.
   # https://github.com/tiny-pilot/tinypilot/issues/1357
-  INSTALLER_DIR='/mnt/tinypilot-installer'
   sudo mkdir "${INSTALLER_DIR}"
   sudo mount \
     --types tmpfs \
@@ -101,17 +113,6 @@ fi
 readonly INSTALLER_DIR
 
 readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
-
-# Remove temporary files & directories.
-clean_up() {
-  umount --lazy "${INSTALLER_DIR}" || true
-  rm -rf \
-    "${LEGACY_INSTALLER_DIR}" \
-    "${INSTALLER_DIR}"
-}
-
-# Always clean up before exiting.
-trap 'clean_up' EXIT
 
 # Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
