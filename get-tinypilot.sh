@@ -95,6 +95,7 @@ if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
     --target "${INSTALLER_DIR}" \
     --verbose
 else
+  # Fallback to installing from disk.
   INSTALLER_DIR="$(mktemp --directory)"
 fi
 readonly INSTALLER_DIR

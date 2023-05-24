@@ -70,8 +70,29 @@ else
 fi
 
 readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
-readonly INSTALLER_DIR='/mnt/tinypilot-installer'
-readonly RAMDISK_SIZE='500m'
+readonly RAMDISK_SIZE_MIB=500
+
+FREE_MEMORY_MIB="$(free --mebi |
+  grep --fixed-strings 'Mem:' |
+  tr --squeeze-repeats ' ' |
+  cut --delimiter ' ' --fields 4)"
+readonly FREE_MEMORY_MIB
+
+if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
+  # Mount volatile RAMdisk.
+  INSTALLER_DIR='/mnt/tinypilot-installer'
+  sudo mkdir "${INSTALLER_DIR}"
+  sudo mount \
+    --types tmpfs \
+    --options "size=${RAMDISK_SIZE_MIB}m" \
+    --source tmpfs \
+    --target "${INSTALLER_DIR}" \
+    --verbose
+else
+  # Fallback to installing from disk.
+  INSTALLER_DIR="$(mktemp --directory)"
+fi
+readonly INSTALLER_DIR
 
 # Remove temporary files & directories.
 clean_up() {
@@ -83,15 +104,6 @@ clean_up() {
 
 # Always clean up before exiting.
 trap 'clean_up' EXIT
-
-# Mount volatile RAMdisk.
-mkdir "${INSTALLER_DIR}"
-mount \
-  --types tmpfs \
-  --options "size=${RAMDISK_SIZE}" \
-  --source tmpfs \
-  --target "${INSTALLER_DIR}" \
-  --verbose
 
 # Extract tarball to installer directory.
 tar \
