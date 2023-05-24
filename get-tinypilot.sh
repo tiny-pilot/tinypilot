@@ -69,15 +69,15 @@ readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 # - At least a 20% safety margin
 # Use the following command to help you estimate a sensible size allocation:
 #   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
-readonly RAMDISK_SIZE_MI=500
+readonly RAMDISK_SIZE_MIB=500
 
-FREE_MEMORY_MI="$(free --mebi |
+FREE_MEMORY_MIB="$(free --mebi |
   grep --fixed-strings 'Mem:' |
   tr --squeeze-repeats ' ' |
   cut --delimiter ' ' --fields 4)"
-readonly FREE_MEMORY_MI
+readonly FREE_MEMORY_MIB
 
-if (( "${FREE_MEMORY_MI}" > "${RAMDISK_SIZE_MI}" )); then
+if (( "${FREE_MEMORY_MIB}" > "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
   # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
@@ -90,7 +90,7 @@ if (( "${FREE_MEMORY_MI}" > "${RAMDISK_SIZE_MI}" )); then
   sudo mkdir "${INSTALLER_DIR}"
   sudo mount \
     --types tmpfs \
-    --options "size=${RAMDISK_SIZE_MI}m" \
+    --options "size=${RAMDISK_SIZE_MIB}m" \
     --source tmpfs \
     --target "${INSTALLER_DIR}" \
     --verbose
