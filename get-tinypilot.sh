@@ -77,7 +77,7 @@ FREE_MEMORY_MIB="$(free --mebi |
   cut --delimiter ' ' --fields 4)"
 readonly FREE_MEMORY_MIB
 
-if (( "${FREE_MEMORY_MIB}" > "${RAMDISK_SIZE_MIB}" )); then
+if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
   # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
