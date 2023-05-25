@@ -127,7 +127,10 @@ jobs:
     working_directory: ~/project/ansible-role
     steps:
       - unless:
-          condition: << pipeline.parameters.ansible_role_changed >>
+          condition:
+            or:
+              - << pipeline.parameters.ansible_role_changed >>
+              - equal: [master, << pipeline.git.branch >>]
           steps:
             - run:
                 name: Skipping job because files weren't changed
