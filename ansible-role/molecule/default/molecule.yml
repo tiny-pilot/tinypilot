@@ -22,8 +22,11 @@ provisioner:
           ansible_user: root
           tinypilot_debian_package_path: /opt/debian-pkgs/${TINYPILOT_DEBIAN_PACKAGE}
   options:
-    extra-vars:
-      ustreamer_debian_package_path: https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.38-20230524143200/ustreamer_5.38-20230524143200_amd64.deb
+    # This variable expects a string, just like `--extra-vars` command-line
+    # parameter. See
+    # https://github.com/ansible-community/molecule/issues/3065#issuecomment-835897461
+    extra-vars: >
+      ustreamer_debian_package_path=https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.38-20230524143200/ustreamer_5.38-20230524143200_amd64.deb
 verifier:
   name: ansible
 scenario:
