@@ -5,7 +5,7 @@ After=syslog.target
 [Service]
 Type=oneshot
 User=root
-ExecStart=/opt/tinypilot_privileged/init-usb-gadget
+ExecStart=/opt/tinypilot-privileged/init-usb-gadget
 RemainAfterExit=true
 ExecStop=/opt/tinypilot-privileged/remove-usb-gadget
 StandardOutput=journal
