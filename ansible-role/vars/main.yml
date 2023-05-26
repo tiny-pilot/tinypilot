@@ -13,8 +13,7 @@ tinypilot_privileged_dir: /opt/tinypilot-privileged
 # override the default variables in the uStreamer role.
 ustreamer_interface: "127.0.0.1"
 ustreamer_port: 8001
-ustreamer_repo: https://github.com/tiny-pilot/ustreamer.git
-ustreamer_repo_version: v5.38
+ustreamer_debian_package_path: https://github.com/tiny-pilot/ustreamer-debian/releases/download/ustreamer_5.38-20230525134432/ustreamer_5.38-20230525134432_armhf.deb
 # Assigning `ustreamer_h264_sink` will make the uStreamer role install the Janus
 # server on the system, and thus enable H264 video streaming.
 ustreamer_h264_sink: tinypilot::ustreamer::h264
