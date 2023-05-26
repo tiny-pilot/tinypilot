@@ -90,6 +90,8 @@ clean_up() {
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
+# Determine the installation directory. Use RAMdisk if there is enough memory,
+# otherwise, fall back to regular disk.
 if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
