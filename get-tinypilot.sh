@@ -77,6 +77,7 @@ FREE_MEMORY_MIB="$(free --mebi |
   cut --delimiter ' ' --fields 4)"
 readonly FREE_MEMORY_MIB
 
+# Assign a provisional installation directory for our `clean_up` function.
 INSTALLER_DIR='/mnt/tinypilot-installer'
 
 # Remove temporary files & directories.
