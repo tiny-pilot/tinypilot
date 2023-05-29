@@ -4,12 +4,12 @@
   tags:
     - ustreamer
 
-- name: install HID USB gadget
-  import_tasks: install_usb_gadget.yml
-
 - name: install TinyPilot Debian package
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
+
+- name: install HID USB gadget
+  import_tasks: install_usb_gadget.yml
 
 - name: find absolute path to python3
   shell: realpath $(which python3)
