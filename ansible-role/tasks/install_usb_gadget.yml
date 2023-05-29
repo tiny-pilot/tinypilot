@@ -57,16 +57,16 @@
     mode: "0700"
 
 - name: install usb-gadget initializer as a service
-  template:
-    src: usb-gadget.systemd.j2
+  copy:
+    src: usb-gadget.service
     dest: /lib/systemd/system/usb-gadget.service
     owner: root
     group: root
     mode: "0644"
-  register: usb_gadget_template
+  register: usb_gadget_file
 
 - name: enable systemd usb-gadget initializer service file
   systemd:
     name: usb-gadget
     enabled: yes
-    daemon_reload: "{{ usb_gadget_template.changed }}"
+    daemon_reload: "{{ usb_gadget_file.changed }}"

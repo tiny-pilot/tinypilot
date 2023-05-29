@@ -4,9 +4,6 @@
   tags:
     - ustreamer
 
-- name: install nginx
-  import_tasks: nginx.yml
-
 - name: install HID USB gadget
   import_tasks: install_usb_gadget.yml
 
@@ -58,3 +55,6 @@
   systemd:
     name: tinypilot
     enabled: yes
+
+- name: install nginx
+  import_tasks: nginx.yml
