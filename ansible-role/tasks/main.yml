@@ -4,9 +4,6 @@
   tags:
     - ustreamer
 
-- name: install nginx
-  import_tasks: nginx.yml
-
 - name: create the `lib` directory if it does not exist
   file:
     path: "{{ tinypilot_privileged_dir }}/lib"
@@ -73,3 +70,6 @@
   systemd:
     name: tinypilot
     enabled: yes
+
+- name: install nginx
+  import_tasks: nginx.yml
