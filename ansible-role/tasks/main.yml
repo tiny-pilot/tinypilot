@@ -4,27 +4,12 @@
   tags:
     - ustreamer
 
-- name: create the `lib` directory if it does not exist
-  file:
-    path: "{{ tinypilot_privileged_dir }}/lib"
-    state: directory
-
-- name: copy `lib` scripts
-  copy:
-    src: "{{ item }}"
-    dest: "{{ tinypilot_privileged_dir }}/lib/{{ item | basename }}"
-    owner: root
-    group: root
-    mode: "0755"
-  with_fileglob:
-    - lib/*
-
-- name: install HID USB gadget
-  import_tasks: install_usb_gadget.yml
-
 - name: install TinyPilot Debian package
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
+
+- name: install HID USB gadget
+  import_tasks: install_usb_gadget.yml
 
 - name: find absolute path to python3
   shell: realpath $(which python3)
