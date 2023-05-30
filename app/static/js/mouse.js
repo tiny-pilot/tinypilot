@@ -104,34 +104,59 @@ export class RateLimitedMouse {
   /**
    * @param {number} millisecondsBetweenMouseEvents - Number of milliseconds to
    *     wait between sending low-priority mouse events to the backend.
+   * @param {boolean} isMouseRelative Indicates that mouse events should be
+   * interpretted as relative movement instead of absolute positioning.
+   * @param {number} speed A number to multiply relative mouse movements
+   * by to speed up or slow down cursor movement. Usually, just sending the
+   * raw integer makes for a usable experience. But some target displays might
+   * need to scale the movement numbers.
    * @param {function(Object)} sendEventFn - Function that sends a parsed mouse
    *     event to the backend server.
    */
-  constructor(millisecondsBetweenMouseEvents, sendEventFn) {
+  constructor(
+    millisecondsBetweenMouseEvents,
+    isMouseRelative,
+    speed,
+    sendEventFn
+  ) {
     this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
+    this._isMouseRelative = isMouseRelative;
+    this._speed = speed;
     this._sendEventFn = sendEventFn;
     this._queuedEvent = null;
     this._eventTimer = null;
   }
 
-  onMouseDown(jsMouseEvt) {
-    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
+  onMouseDown(jsMouseEvt, isRelative) {
+    this._processHighPriorityEvent(
+      parseMouseEvent(jsMouseEvt, isRelative, this._speed)
+    );
   }
 
-  onMouseUp(jsMouseEvt) {
-    this._processHighPriorityEvent(parseMouseEvent(jsMouseEvt));
+  onMouseUp(jsMouseEvt, isRelative) {
+    this._processHighPriorityEvent(
+      parseMouseEvent(jsMouseEvt, isRelative, this._speed)
+    );
   }
 
-  onMouseMove(jsMouseEvt) {
-    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
+  onMouseMove(jsMouseEvt, isRelative) {
+    this._processLowPriorityEvent(
+      parseMouseEvent(jsMouseEvt, isRelative, this._speed)
+    );
   }
 
-  onWheel(jsMouseEvt) {
-    this._processLowPriorityEvent(parseMouseEvent(jsMouseEvt));
+  onWheel(jsMouseEvt, isRelative) {
+    this._processLowPriorityEvent(
+      parseMouseEvent(jsMouseEvt, isRelative, this._speed)
+    );
   }
 
   setTimeoutWindow(millisecondsBetweenMouseEvents) {
     this._millisecondsBetweenMouseEvents = millisecondsBetweenMouseEvents;
+  }
+
+  setMouseRelative(isMouseRelative) {
+    this._isMouseRelative = isMouseRelative;
   }
 
   _processHighPriorityEvent(mouseInfo) {
@@ -143,6 +168,20 @@ export class RateLimitedMouse {
 
   _processLowPriorityEvent(mouseInfo) {
     if (this._isInTimeoutWindow()) {
+      // This only queues the last event, and all previous events are lost.
+      // This is fine when sending absolute position coordinates. But can be
+      // a problem when movement events are supposed to accumulate with a
+      // relative mouse. Do accumulation in relative mode
+      if (
+        mouseInfo.isRelative &&
+        this._queuedEvent &&
+        this._queuedEvent.isRelative
+      ) {
+        mouseInfo.relativeX += this._queuedEvent.relativeX;
+        mouseInfo.relativeY += this._queuedEvent.relativeY;
+        mouseInfo.verticalWheelDelta += this._queuedEvent.verticalWheelDelta;
+        mouseInfo.horizontalWheelDelta += this._queuedEvent.horizontalWheelDelta;
+      }
       this._queuedEvent = mouseInfo;
     } else {
       this._emitEvent(mouseInfo);
@@ -154,7 +193,7 @@ export class RateLimitedMouse {
    * mouse event to send.
    *
    * @param {Object} mouseInfo - Mouse information object, parsed from
-   *     parseMouseEvent.
+   *     _parseMouseEvent.
    */
   _emitEvent(mouseInfo) {
     this._sendEventFn(mouseInfo);
@@ -205,13 +244,21 @@ function normalizeWheelDelta(delta) {
  * The mouse event data in TinyPilot-specific format.
  *
  * @typedef {Object} MouseEventData
+ * @property {boolean} isRelative - A boolean value indicating whether the
+ *     event is for a relative mouse or an absolute style pointer.
  * @property {number} buttons - A bitmask representing which mouse buttons are
  *     pressed, in the same format as the buttons property from the native
  *     JavaScript mouse events.
- * @property {number} relativeX - A value between 0.0 and 1.0 representing the
- *     mouse's relative x-offset from the left edge of the screen.
- * @property {number} relativeY - A value between 0.0 and 1.0 representing the
- *     mouse's relative y-offset from the top edge of the screen.
+ * @property {number} relativeX - For absolute events: A value between 0.0 and
+ *     1.0 representing the mouse's relative x-offset from the left edge of the
+ *     screen. For relative events: A signed integer representing the change
+ *     in x position from the previous mouse event. (For practicality, the value
+ *     is limited to +/- 32767 here.)
+ * @property {number} relativeY - For absolute events: A value between 0.0 and
+ *     1.0 representing the mouse's relative y-offset from the top edge of the
+ *     screen. For relative events: A signed integer representing the change
+ *     in y position from the previous mouse event. (For practicality, the value
+ *     is limited to +/- 32767 here.)
  * @property {number} verticalWheelDelta - A -1, 0, or 1 representing movement
  *     of the mouse's vertical scroll wheel.
  * @property {number} horizontalWheelDelta - A -1, 0, or 1 representing movement
@@ -219,7 +266,28 @@ function normalizeWheelDelta(delta) {
  *
  * @returns {MouseEventData}
  */
-function parseMouseEvent(evt) {
+function parseMouseEvent(evt, isRelative, speed) {
+  // In pointerLock/relative mode, clientX/Y still exist, but are kept constant.
+  // Movement is denoted by the added moveX/Y attributes. These are unbounded,
+  // but for practicality, we will limit them so they fit in the USB message
+  // buffer on the server side.
+  if (isRelative) {
+    return {
+      isRelative: true,
+      buttons: evt.buttons,
+      relativeX: Math.min(
+        32767,
+        Math.max(-32767, parseInt(evt.movementX * speed))
+      ),
+      relativeY: Math.min(
+        32767,
+        Math.max(-32767, parseInt(evt.movementY * speed))
+      ),
+      verticalWheelDelta: normalizeWheelDelta(evt.deltaY),
+      horizontalWheelDelta: normalizeWheelDelta(evt.deltaX),
+    };
+  }
+
   const boundingRect = evt.target.getBoundingClientRect();
   const cursorX = Math.max(0, evt.clientX - boundingRect.left);
   const cursorY = Math.max(0, evt.clientY - boundingRect.top);
@@ -227,6 +295,7 @@ function parseMouseEvent(evt) {
   const height = boundingRect.bottom - boundingRect.top;
 
   return {
+    isRelative: false,
     buttons: evt.buttons,
     relativeX: Math.min(1.0, Math.max(0.0, cursorX / width)),
     relativeY: Math.min(1.0, Math.max(0.0, cursorY / height)),

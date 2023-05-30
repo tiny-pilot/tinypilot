@@ -112,6 +112,8 @@ D=$(mktemp)
 echo -ne \\x05\\x01      # USAGE_PAGE (Generic Desktop)
 echo -ne \\x09\\x02      # USAGE (Mouse)
 echo -ne \\xA1\\x01      # COLLECTION (Application)
+echo -ne \\x09\\x01      # USAGE (Pointer)
+echo -ne \\xA1\\x00      # COLLECTION (Physical)
                          #   8-buttons
 echo -ne \\x05\\x09      #   USAGE_PAGE (Button)
 echo -ne \\x19\\x01      #   USAGE_MINIMUM (Button 1)
@@ -145,9 +147,62 @@ echo -ne \\x25\\x7F      #   LOGICAL_MAXIMUM (127)
 echo -ne \\x75\\x08      #   REPORT_SIZE (8)
 echo -ne \\x95\\x01      #   REPORT_COUNT (1)
 echo -ne \\x81\\x06      #   INPUT (Data,Var,Rel)
-echo -ne \\xC0           # END_COLLECTION
+echo -ne \\xC0           # END_COLLECTION (Physical)
+echo -ne \\xC0           # END_COLLECTION (Application)
 } >> "$D"
 cp "$D" "${USB_MOUSE_FUNCTIONS_DIR}/report_desc"
+
+# Mouse (Relative)
+mkdir -p "$USB_MOUSE_REL_FUNCTIONS_DIR"
+echo 0 > "${USB_MOUSE_REL_FUNCTIONS_DIR}/protocol"
+echo 0 > "${USB_MOUSE_REL_FUNCTIONS_DIR}/subclass"
+echo 7 > "${USB_MOUSE_REL_FUNCTIONS_DIR}/report_length"
+
+# Write the report descriptor
+D=$(mktemp)
+{
+echo -ne \\x05\\x01      # USAGE_PAGE (Generic Desktop)
+echo -ne \\x09\\x02      # USAGE (Mouse)
+echo -ne \\xA1\\x01      # COLLECTION (Application)
+echo -ne \\x09\\x01      # USAGE (Pointer)
+echo -ne \\xA1\\x00      # COLLECTION (Physical)
+                          # 8 Buttons
+echo -ne \\x05\\x09      #   USAGE_PAGE (Button)
+echo -ne \\x19\\x01      #   USAGE_MINIMUM (Button 1)
+echo -ne \\x29\\x08      #   USAGE_MAXIMUM (Button 5)
+echo -ne \\x15\\x00      #   LOGICAL_MINIMUM (0)
+echo -ne \\x25\\x01      #   LOGICAL_MAXIMUM (1)
+echo -ne \\x95\\x08      #   REPORT_COUNT (8)
+echo -ne \\x75\\x01      #   REPORT_SIZE (1)
+echo -ne \\x81\\x02      #   INPUT (Data,Var,Abs)
+                          # x,y relative movement
+echo -ne \\x05\\x01      #   USAGE_PAGE (Generic Desktop)
+echo -ne \\x09\\x30      #   USAGE (X)
+echo -ne \\x09\\x31      #   USAGE (Y)
+echo -ne \\x16\\x01\\x80 #   LOGICAL_MINIMUM (-32767)
+echo -ne \\x26\\xFF\\x7F #   LOGICAL_MAXIMUM (32767)
+echo -ne \\x95\\x02      #   REPORT_COUNT (2)
+echo -ne \\x75\\x10      #   REPORT_SIZE (16)
+echo -ne \\x81\\x06      #   INPUT (Data,Var,Rel)
+                          # vertical wheel
+echo -ne \\x09\\x38      #   USAGE (vertical wheel)
+echo -ne \\x15\\x81      #   LOGICAL_MINIMUM (-127)
+echo -ne \\x25\\x7F      #   LOGICAL_MAXIMUM (127)
+echo -ne \\x95\\x01      #   REPORT_COUNT (1)
+echo -ne \\x75\\x08      #   REPORT_SIZE (8)
+echo -ne \\x81\\x06      #   INPUT (Data,Var,Rel)
+                          # horizontal wheel
+echo -ne \\x05\\x0c      #   USAGE_PAGE (Generic Desktop)
+echo -ne \\x0A\\x02\\x38 #   USAGE (Consumer AC Pan)
+echo -ne \\x15\\x81      #   LOGICAL_MINIMUM (-127)
+echo -ne \\x25\\x7F      #   LOGICAL_MAXIMUM (127)
+echo -ne \\x95\\x01      #   REPORT_COUNT (1)
+echo -ne \\x75\\x08      #   REPORT_SIZE (8)
+echo -ne \\x81\\x06      #   INPUT (Data,Var,Rel)
+echo -ne \\xC0           # END_COLLECTION (Physical)
+echo -ne \\xC0           # END_COLLECTION (Application)
+} >> "$D"
+cp "$D" "${USB_MOUSE_REL_FUNCTIONS_DIR}/report_desc"
 
 mkdir -p "${USB_CONFIG_DIR}"
 echo 250 > "${USB_CONFIG_DIR}/MaxPower"
@@ -158,5 +213,6 @@ echo "Config ${USB_CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configu
 
 ln -s "${USB_KEYBOARD_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 ln -s "${USB_MOUSE_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
+ln -s "${USB_MOUSE_REL_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 
-usb_gadget_activate
+usb_gadget_activate "/dev/hidg0" "/dev/hidg1" "/dev/hidg2"

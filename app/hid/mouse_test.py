@@ -33,3 +33,17 @@ class MouseTest(unittest.TestCase):
             # Byte 1-2 = 32767 * 0.0 = 0 = 0x0000
             # Byte 3-4 = 32767 * 1.0 = 32767 = 0x7fff (little-endian)
             self.assertEqual(b'\x00\x00\x00\xff\x7f\x00\x00', input_file.read())
+
+    def test_sends_relative_mouse_move_to_hid_interface(self):
+        with tempfile.NamedTemporaryFile() as input_file:
+            mouse.send_relative_mouse_event(mouse_path=input_file.name,
+                                            buttons=0,
+                                            move_x=314,
+                                            move_y=-159,
+                                            vertical_wheel_delta=0,
+                                            horizontal_wheel_delta=0)
+            input_file.seek(0)
+            # Byte 0   = No buttons pressed
+            # Byte 1-2 = 314 = 0x013A
+            # Byte 3-4 = -159 = 0xff61 (little-endian)
+            self.assertEqual(b'\x00\x3A\x01\x61\xff\x00\x00', input_file.read())

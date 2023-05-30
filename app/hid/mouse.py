@@ -17,6 +17,20 @@ def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
     hid_write.write_to_hid_interface(mouse_path, buf)
 
 
+def send_relative_mouse_event(mouse_path, buttons, move_x, move_y,
+                              vertical_wheel_delta, horizontal_wheel_delta):
+    # pylint: disable=invalid-name
+    buf = [0] * 7
+    buf[0] = buttons
+    buf[1] = move_x & 0xff
+    buf[2] = (move_x >> 8) & 0xff
+    buf[3] = move_y & 0xff
+    buf[4] = (move_y >> 8) & 0xff
+    buf[5] = _translate_vertical_wheel_delta(vertical_wheel_delta) & 0xff
+    buf[6] = horizontal_wheel_delta & 0xff
+    hid_write.write_to_hid_interface(mouse_path, buf)
+
+
 def _scale_mouse_coordinates(relative_x, relative_y):
     # This comes from LOGICAL_MAXIMUM in the mouse HID descriptor.
     max_hid_value = 32767.0

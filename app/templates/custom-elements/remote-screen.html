@@ -115,8 +115,18 @@
               this.fullscreenIsFullHeight = false;
             }
           });
+          let mouseSpeed = 1.0;
+          // eslint-disable-next-line eqeqeq
+          if (typeof URLSearchParams != "undefined") {
+            const searchParams = new URLSearchParams(window.location.search);
+            const newSpeed = parseFloat(searchParams.get("mouse-speed"));
+            if (!isNaN(newSpeed)) mouseSpeed = newSpeed;
+          }
           this.rateLimitedMouse = new RateLimitedMouse(
             this.millisecondsBetweenMouseEvents,
+            // eslint-disable-next-line capitalized-comments
+            false /*isMouseRelative:*/,
+            mouseSpeed,
             (mouseEvent) => {
               this.dispatchEvent(
                 new CustomEvent("mouse-event", {
@@ -194,17 +204,17 @@
             // Ensure that mouse drags don't attempt to drag the screen element.
             evt.preventDefault();
 
-            this.rateLimitedMouse.onMouseMove(evt);
+            this.rateLimitedMouse.onMouseMove(evt, this.isMouseRelative);
           });
           screenElement.addEventListener("mousedown", (evt) => {
-            this.rateLimitedMouse.onMouseDown(evt);
+            this.rateLimitedMouse.onMouseDown(evt, this.isMouseRelative);
           });
           screenElement.addEventListener("mouseup", (evt) => {
-            this.rateLimitedMouse.onMouseUp(evt);
+            this.rateLimitedMouse.onMouseUp(evt, this.isMouseRelative);
           });
           screenElement.addEventListener("wheel", (evt) => {
             evt.preventDefault();
-            this.rateLimitedMouse.onWheel(evt);
+            this.rateLimitedMouse.onWheel(evt, this.isMouseRelative);
           });
 
           // Ignore the context menu so that it doesn't block the screen when
@@ -230,6 +240,20 @@
 
         set millisecondsBetweenMouseEvents(newValue) {
           this.setAttribute("milliseconds-between-mouse-events", newValue);
+        }
+
+        get isMouseRelative() {
+          const currentScreen = this._getCurrentScreenElement();
+          return this.shadowRoot.pointerLockElement === currentScreen;
+        }
+
+        set isMouseRelative(newValue) {
+          const currentScreen = this._getCurrentScreenElement();
+          if (newValue === false) {
+            document.exitPointerLock();
+          } else if (this.shadowRoot.pointerLockElement !== currentScreen) {
+            currentScreen.requestPointerLock();
+          }
         }
 
         get cursor() {
@@ -384,6 +408,10 @@
             } catch {
               return;
             }
+            if (this.shadowRoot.pointerLockElement === this.elements.image) {
+              document.exitPointerLock();
+              this.elements.video.requestPointerLock();
+            }
             this.webrtcEnabled = true;
             this.elements.image.removeAttribute("src");
             this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
@@ -488,6 +516,10 @@
         enableMjpeg() {
           if (this.elements.image.hasAttribute("src")) {
             return;
+          }
+          if (this.shadowRoot.pointerLockElement === this.elements.video) {
+            document.exitPointerLock();
+            this.elements.image.requestPointerLock();
           }
           this.elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;

@@ -247,6 +247,9 @@
         <li class="item">
           <a data-onclick-event="fullscreen-requested">Full Screen</a>
         </li>
+        <li class="item" id="mouse-mode-menu-item">
+          <a data-onclick-event="mouse-mode-toggled">Relative Mouse</a>
+        </li>
       </ul>
     </li>
 
@@ -346,6 +349,14 @@
           menuItem.classList.toggle("nav-selected", isEnabled);
         }
 
+        set isRelativeMouseEnabled(isEnabled) {
+          const menuItem = this.shadowRoot.getElementById(
+            "mouse-mode-menu-item"
+          );
+          menuItem.classList.toggle("nav-selected", isEnabled);
+          this.toggleHover(!isEnabled);
+        }
+
         emitCustomEvent(eventId, detail) {
           this.dispatchEvent(
             new CustomEvent(eventId, {
@@ -354,6 +365,30 @@
               composed: true,
             })
           );
+        }
+
+        toggleHover(isEnabled) {
+          for (const sheet of this.shadowRoot.styleSheets) {
+            if (sheet.cssRules) {
+              for (const rule of sheet.cssRules) {
+                if (rule.selectorText) {
+                  if (isEnabled) {
+                    rule.selectorText = rule.selectorText.replace(
+                      ":active",
+                      ":hover"
+                    );
+                  } else {
+                    setTimeout(() => {
+                      rule.selectorText = rule.selectorText.replace(
+                        ":hover",
+                        ":active"
+                      );
+                    }, 300);
+                  }
+                }
+              }
+            }
+          }
         }
 
         set cursor(newCursor) {

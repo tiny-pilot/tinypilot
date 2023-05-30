@@ -53,13 +53,21 @@ def on_mouse_event(message):
     except mouse_event_request.Error as e:
         logger.error_sensitive('Failed to parse mouse event request: %s', e)
         return {'success': False}
-    mouse_path = flask.current_app.config.get('MOUSE_PATH')
     try:
-        fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
-                                    mouse_move_event.relative_x,
-                                    mouse_move_event.relative_y,
-                                    mouse_move_event.vertical_wheel_delta,
-                                    mouse_move_event.horizontal_wheel_delta)
+        if mouse_move_event.is_relative:
+            mouse_path = flask.current_app.config.get('RELATIVE_MOUSE_PATH')
+            fake_mouse.send_relative_mouse_event(
+                mouse_path, mouse_move_event.buttons,
+                mouse_move_event.relative_x, mouse_move_event.relative_y,
+                mouse_move_event.vertical_wheel_delta,
+                mouse_move_event.horizontal_wheel_delta)
+        else:
+            mouse_path = flask.current_app.config.get('MOUSE_PATH')
+            fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
+                                        mouse_move_event.relative_x,
+                                        mouse_move_event.relative_y,
+                                        mouse_move_event.vertical_wheel_delta,
+                                        mouse_move_event.horizontal_wheel_delta)
     except hid_write.WriteError as e:
         logger.error_sensitive('Failed to forward mouse event: %s', e)
         return {'success': False}
