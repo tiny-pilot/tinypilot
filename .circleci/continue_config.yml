@@ -89,7 +89,16 @@ jobs:
           command: ./dev-scripts/enable-multiarch-docker
       - run:
           name: Build Debian package
-          command: ./dev-scripts/build-debian-pkg "linux/arm/v7,linux/amd64"
+          # Building ARMv7 binaries is slow, so we only build them on the master
+          # branch.
+          command: |
+            set -exu
+            if [[ "${CIRCLE_BRANCH}" == 'master' ]]; then
+              readonly BUILD_TARGETS='linux/arm/v7,linux/amd64'
+            else
+              readonly BUILD_TARGETS='linux/amd64'
+            fi
+            ./dev-scripts/build-debian-pkg "${BUILD_TARGETS}"
       - run:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/linux_arm_v7/tinypilot*.deb
