@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 # Prevent debhelper from generating an extra package with debug symbols.
 export DEB_BUILD_OPTIONS=noddebs
 
