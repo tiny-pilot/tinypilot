@@ -3,18 +3,17 @@
   lineinfile:
     path: /boot/config.txt
     line: dtoverlay=dwc2
-
-- name: check for an /etc/modules file
-  stat:
-    path: /etc/modules
-  register: etc_modules_stat
+  # Skip this step when running under molecule, as this path doesn't exist
+  # in standard Debian.
+  tags: molecule-notest
 
 - name: enable dwc2 driver in modules
   lineinfile:
     path: /etc/modules
-    create: no
     line: dwc2
-  when: etc_modules_stat.stat.exists
+  # Skip this step when running under molecule, as this path doesn't exist
+  # in standard Debian.
+  tags: molecule-notest
 
 - name: create TinyPilot privileged folder
   file:
