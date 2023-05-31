@@ -1,7 +1,11 @@
 #!/usr/bin/make -f
 
-export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot
+# Enable hardening build flags.
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot
 # Prevent debhelper from generating an extra package with debug symbols.
 export DEB_BUILD_OPTIONS=noddebs
 
