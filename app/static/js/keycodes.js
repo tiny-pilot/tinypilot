@@ -101,7 +101,7 @@ export function findKeyCode(character, browserLanguage) {
 
 // Returns true if the text character requires a shift key.
 export function requiresShiftKey(character) {
-  const shiftedPattern = /^[A-Z¬!"£$%^&\*()_\+{}|<>\?:@~#]/;
+  const shiftedPattern = /^[A-Z¬!"£$%^&*()_+{}|<>?:@~#]/;
   return shiftedPattern.test(character);
 }
 

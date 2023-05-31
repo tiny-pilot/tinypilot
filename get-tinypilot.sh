@@ -54,20 +54,31 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
-# HACK: If we let mktemp use the default /tmp directory, the system purges the
-# file before the end of the script for some reason. We use /var/tmp as a
-# workaround.
-readonly TEMP_DIR='/var/tmp'
+# Historically, the TinyPilot bundle was unpacked to the device's disk, where it
+# persisted. Since then, we've moved to the use of a volatile RAMdisk, which
+# avoids excessive writes to the filesystem. As a result, this legacy installer
+# directory has been orphaned and is now removed as part of this script's
+# `clean_up` function.
+# https://github.com/tiny-pilot/tinypilot/issues/1357
+readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 
-BUNDLE_FILENAME="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .tgz)"
-readonly BUNDLE_FILENAME
+# The RAMdisk size is broadly based on the combined size of the following:
+# - The TinyPilot bundle archive
+# - The unpacked TinyPilot bundle archive, after running the bundle's `install`
+#     script
+# - At least a 20% safety margin
+# Use the following command to help you estimate a sensible size allocation:
+#   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
+readonly RAMDISK_SIZE_MIB=500
 
-# The installer directory needs to be `/opt/tinypilot-updater`, because other
-# parts of the application rely on the ansible roles being present in that
-# location. In theory, we could otherwise also extract to a temporary and
-# ephemeral folder, and run the installation from there. We might refactor and
-# change this setup in the future.
-readonly INSTALLER_DIR='/opt/tinypilot-updater'
+FREE_MEMORY_MIB="$(free --mebi |
+  grep --fixed-strings 'Mem:' |
+  tr --squeeze-repeats ' ' |
+  cut --delimiter ' ' --fields 4)"
+readonly FREE_MEMORY_MIB
+
+# Assign a provisional installation directory for our `clean_up` function.
+INSTALLER_DIR='/mnt/tinypilot-installer'
 
 # Remove temporary files & directories.
 clean_up() {
@@ -77,7 +88,33 @@ clean_up() {
 # Always clean up before exiting.
 trap 'clean_up' EXIT
 
-# Download tarball to temporary file.
+# Determine the installation directory. Use RAMdisk if there is enough memory,
+# otherwise, fall back to regular disk.
+if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
+  # Mount volatile RAMdisk.
+  # Note: `tmpfs` can use swap space when the device's physical memory is under
+  # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
+  # but also doesn't enforce a filesystem size limit, unlike `tmpfs`. Considering
+  # that our goal is to reduce disk writes and not necessarily eliminate them
+  # altogether, the possibility of using swap space is an acceptable compromise in
+  # exchange for limiting memory usage.
+  # https://github.com/tiny-pilot/tinypilot/issues/1357
+  sudo mkdir "${INSTALLER_DIR}"
+  sudo mount \
+    --types tmpfs \
+    --options "size=${RAMDISK_SIZE_MIB}m" \
+    --source tmpfs \
+    --target "${INSTALLER_DIR}" \
+    --verbose
+else
+  # Fall back to installing from disk.
+  INSTALLER_DIR="$(mktemp --directory)"
+fi
+readonly INSTALLER_DIR
+
+readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
+
+# Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
   --location \
   --output "${BUNDLE_FILENAME}" \

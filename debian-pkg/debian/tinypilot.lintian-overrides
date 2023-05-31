@@ -3,6 +3,8 @@ tinypilot: embedded-javascript-library opt/tinypilot/venv/lib/python*/site-packa
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/greenlet/tests/test_version.py]
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py]
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/setuptools/command/easy_install.py]
+tinypilot: embedded-library libyaml opt/tinypilot/venv/lib/python*/site-packages/yaml/*.so
+tinypilot: hardening-no-relro [opt/tinypilot/venv/lib/python*/site-packages/yaml/*.so]
 
 # Lintian doesn't recognize the Python interpreter when it's within the
 # virtualenv.

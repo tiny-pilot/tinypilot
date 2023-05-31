@@ -170,17 +170,7 @@
           const mobileKeyboard = this.shadowRoot.getElementById(
             "mobile-keyboard-input"
           );
-          mobileKeyboard.addEventListener("input", (evt) => {
-            // Handle insertCompositionText, which mean typing in autocomplete
-            // mode. The global keydown event handler processes all other key
-            // input events.
-            if (
-              evt.inputType === "insertText" ||
-              evt.inputType === "insertCompositionText"
-            ) {
-              sendTextInput(evt.data);
-            }
-
+          mobileKeyboard.addEventListener("input", () => {
             // Force the autocomplete sequence to restart.
             mobileKeyboard.blur();
             mobileKeyboard.value = "";

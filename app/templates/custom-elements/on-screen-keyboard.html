@@ -366,24 +366,8 @@
           return this.hasAttribute("is-shown");
         }
 
-        onKeyClick(key, code, isModifier) {
-          // Make uppercase when shift is active – but only if no other modifier
-          // is pressed at the same time.
-          if (
-            ["ShiftLeft", "ShiftRight"].some((m) =>
-              this.isModifierKeyPressed(m)
-            ) &&
-            [
-              "MetaLeft",
-              "MetaRight",
-              "AltLeft",
-              "AltRight",
-              "ControlLeft",
-              "ControlRight",
-            ].every((m) => !this.isModifierKeyPressed(m))
-          ) {
-            key = this.getShiftedKeyValue(key);
-          }
+        onKeyClick(keyRaw, code, isModifier) {
+          const key = this.getEffectiveKeyValue(keyRaw);
 
           this.emitKeyEvent("keydown", key, code);
 
@@ -434,6 +418,32 @@
               key.isPressed = false;
               this.emitKeyEvent("keyup", key.key, key.code);
             });
+        }
+
+        /**
+         * Translate a keyboard character into the appropriate character, taking
+         * into account keyboard state and any modifier keys that are active.
+         **/
+        getEffectiveKeyValue(key) {
+          // Convert the key to uppercase when shift is active but only if no
+          // other modifier is pressed at the same time.
+          if (
+            ["ShiftLeft", "ShiftRight"].some((m) =>
+              this.isModifierKeyPressed(m)
+            ) &&
+            [
+              "MetaLeft",
+              "MetaRight",
+              "AltLeft",
+              "AltRight",
+              "ControlLeft",
+              "ControlRight",
+            ].every((m) => !this.isModifierKeyPressed(m))
+          ) {
+            return this.getShiftedKeyValue(key);
+          }
+
+          return key;
         }
 
         getShiftedKeyValue(key) {
