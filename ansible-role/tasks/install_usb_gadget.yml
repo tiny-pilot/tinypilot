@@ -1,37 +1,19 @@
 ---
-- name: set the path to config.txt on non-Ubuntu systems
-  set_fact:
-    config_txt_path: /boot/config.txt
-  when: ansible_distribution != 'Ubuntu'
-
-- name: set the path to config.txt for Ubuntu
-  set_fact:
-    config_txt_path: /boot/firmware/config.txt
-  when: ansible_distribution == 'Ubuntu'
-
-- name: check for a boot config file
-  stat:
-    path: "{{ config_txt_path }}"
-  register: boot_config_stat
-
 - name: enable dwc2 driver in boot config
   lineinfile:
-    path: "{{ config_txt_path }}"
-    create: no
+    path: /boot/config.txt
     line: dtoverlay=dwc2
-  when: boot_config_stat.stat.exists
-
-- name: check for an /etc/modules file
-  stat:
-    path: /etc/modules
-  register: etc_modules_stat
+  # Skip this step when running under molecule, as this path doesn't exist
+  # in standard Debian.
+  tags: molecule-notest
 
 - name: enable dwc2 driver in modules
   lineinfile:
     path: /etc/modules
-    create: no
     line: dwc2
-  when: etc_modules_stat.stat.exists
+  # Skip this step when running under molecule, as this path doesn't exist
+  # in standard Debian.
+  tags: molecule-notest
 
 - name: create TinyPilot privileged folder
   file:
