@@ -3,9 +3,5 @@
 %:
 	dh $@
 
-execute_after_dh_fixperms:
-  chmod 0700 /opt/tinypilot-privileged/init-usb-gadget
-	chmod 0700 /opt/tinypilot-privileged/remove-usb-gadget
-
 override_dh_installsystemd:
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
