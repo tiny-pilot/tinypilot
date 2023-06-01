@@ -19,6 +19,9 @@ override_dh_virtualenv:
 	# Skip install because TinyPilot doesn't need to run setup.py to install.
 	# Use the venv directory because that's where we've historically kept it.
 	dh_virtualenv --skip-install --install-suffix venv
+
+override_dh_auto_clean:
+	dh_auto_clean --
 	# dh_virtualenv doesn't remove __pycache__ directories, so we clean them up
 	# manually.
 	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
