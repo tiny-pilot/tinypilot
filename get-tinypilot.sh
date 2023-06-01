@@ -54,14 +54,6 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
-# Historically, the TinyPilot bundle was unpacked to the device's disk, where it
-# persisted. Since then, we've moved to the use of a volatile RAMdisk, which
-# avoids excessive writes to the filesystem. As a result, this legacy installer
-# directory has been orphaned and is now removed as part of this script's
-# `clean_up` function.
-# https://github.com/tiny-pilot/tinypilot/issues/1357
-readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
-
 # The RAMdisk size is broadly based on the combined size of the following:
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
@@ -111,8 +103,6 @@ else
   INSTALLER_DIR="$(mktemp --directory)"
 fi
 readonly INSTALLER_DIR
-
-readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
 # Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \

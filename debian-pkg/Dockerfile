@@ -25,32 +25,34 @@ ARG TINYPILOT_VERSION
 # recently built TinyPilot package.
 ARG PKG_VERSION
 
-ARG PKG_NAME="tinypilot"
-ARG PKG_BUILD_NUMBER="1"
+ARG PKG_NAME='tinypilot'
+ARG PKG_BUILD_NUMBER='1'
 
 # Docker's platform names don't match Debian's platform names, so we translate
 # the platform name from the Docker version to the Debian version and save the
 # result to a file so we can re-use it in later stages.
-RUN set -x && \
-    if [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
-      echo "armhf" > /tmp/pkg-arch; \
-    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-      echo "amd64" > /tmp/pkg-arch; \
-    else \
-      echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2; \
-      exit 1; \
-    fi
-RUN set -u && \
-    PKG_ARCH="$(cat /tmp/pkg-arch)" && \
-    echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
+RUN cat | bash <<'EOF'
+set -exu
+case "${TARGETPLATFORM}" in
+  'linux/amd64')
+    PKG_ARCH='amd64'
+    ;;
+  'linux/arm/v7')
+    PKG_ARCH='armhf'
+    ;;
+  *)
+    echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2
+    exit 1
+esac
+echo "${PKG_ARCH}" > /tmp/pkg-arch
+echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
+EOF
 
 # We ultimately need the directory name to be the package ID, but there's no
 # way to specify a dynamic value in Docker's WORKDIR command, so we use a
 # placeholder directory name to assemble the Debian package and then rename the
 # directory to its package ID name in the final stages of packaging.
-RUN mkdir -p "/releases/placeholder-pkg-id"
-
-WORKDIR "/releases/placeholder-pkg-id"
+WORKDIR /releases/placeholder-pkg-id
 
 COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
@@ -62,7 +64,7 @@ COPY ./scripts ./scripts
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-WORKDIR "/releases/placeholder-pkg-id/debian"
+WORKDIR /releases/placeholder-pkg-id/debian
 
 RUN set -x && \
     PKG_ARCH="$(cat /tmp/pkg-arch)" && \
@@ -91,7 +93,7 @@ tinypilot (${PKG_VERSION}) bullseye; urgency=medium
 EOF
 
 # Rename the placeholder release directory to the final package ID.
-WORKDIR "/releases"
+WORKDIR /releases
 RUN set -x && \
     PKG_ID="$(cat /tmp/pkg-id)" && \
     mv placeholder-pkg-id "${PKG_ID}" && \
@@ -100,4 +102,4 @@ RUN set -x && \
 
 FROM scratch as artifact
 
-COPY --from=build "/releases/*.deb" ./
+COPY --from=build /releases/*.deb ./

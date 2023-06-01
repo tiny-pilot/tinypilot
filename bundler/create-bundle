@@ -72,8 +72,11 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
+# Clear Ansible roles.
+rm -rf "${ANSIBLE_ROLES_DIR}"
+mkdir "${ANSIBLE_ROLES_DIR}"
+
 # Copy Ansible role.
-mkdir -p "${ANSIBLE_ROLES_DIR}"
 cp -r \
   --no-target-directory \
   ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"

@@ -8,9 +8,6 @@
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
 
-- name: install HID USB gadget
-  import_tasks: install_usb_gadget.yml
-
 - name: install TinyPilot as a service
   template:
     src: tinypilot.systemd.j2
