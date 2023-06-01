@@ -54,6 +54,14 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
   fi
 fi
 
+# Historically, the TinyPilot bundle was unpacked to the device's disk, where it
+# persisted. Since then, we've moved to the use of a volatile RAMdisk, which
+# avoids excessive writes to the filesystem. As a result, this legacy installer
+# directory has been orphaned and is now removed as part of this script's
+# `clean_up` function.
+# https://github.com/tiny-pilot/tinypilot/issues/1357
+readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
+
 # The RAMdisk size is broadly based on the combined size of the following:
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
@@ -74,7 +82,10 @@ INSTALLER_DIR='/mnt/tinypilot-installer'
 
 # Remove temporary files & directories.
 clean_up() {
-  rm -rf "${BUNDLE_FILENAME}"
+  umount --lazy "${INSTALLER_DIR}" || true
+  rm -rf \
+    "${LEGACY_INSTALLER_DIR}" \
+    "${INSTALLER_DIR}"
 }
 
 # Always clean up before exiting.
@@ -104,10 +115,12 @@ else
 fi
 readonly INSTALLER_DIR
 
+readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
+
 # Download tarball to RAMdisk.
 HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
   --location \
-  --output "${BUNDLE_FILENAME}" \
+  --output "${BUNDLE_FILE}" \
   --write-out '%{http_code}' \
   --silent)"
 readonly HTTP_CODE
@@ -118,12 +131,10 @@ fi
 
 # Extract tarball to installer directory. The installer directory and all its
 # content must have root ownership.
-sudo rm -rf "${INSTALLER_DIR}"
-sudo mkdir -p "${INSTALLER_DIR}"
 sudo tar \
   --gunzip \
   --extract \
-  --file "${BUNDLE_FILENAME}" \
+  --file "${BUNDLE_FILE}" \
   --directory "${INSTALLER_DIR}"
 sudo chown root:root --recursive "${INSTALLER_DIR}"
 

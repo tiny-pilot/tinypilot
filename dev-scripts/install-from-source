@@ -7,7 +7,7 @@
 # get-tinypilot.sh script in the directory root. TinyPilot Pro users should use
 # get-tinypilot-pro.sh from the licensed URL.
 
-# Exit build script on first failure.
+# Exit on first failure.
 set -e
 
 # Echo commands before executing them, by default to stderr.
@@ -22,7 +22,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
-./dev-scripts/build-debian-pkg "linux/arm/v7"
+./dev-scripts/build-debian-pkg
 
 # Shellcheck recommends find instead of ls for non-alphanumeric filenames, but
 # we don't expect non-alphanumeric filenames, and the find equivalent is more

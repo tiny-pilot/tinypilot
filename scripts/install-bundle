@@ -131,8 +131,6 @@ fi
 readonly INSTALLER_DIR
 
 # Extract tarball to installer directory.
-rm -rf "${INSTALLER_DIR}"
-mkdir -p "${INSTALLER_DIR}"
 tar \
   --gunzip \
   --extract \
