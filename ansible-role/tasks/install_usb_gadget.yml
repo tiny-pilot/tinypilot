@@ -1,20 +1,4 @@
 ---
-- name: enable dwc2 driver in boot config
-  lineinfile:
-    path: /boot/config.txt
-    line: dtoverlay=dwc2
-  # Skip this step when running under molecule, as this path doesn't exist
-  # in standard Debian.
-  tags: molecule-notest
-
-- name: enable dwc2 driver in modules
-  lineinfile:
-    path: /etc/modules
-    line: dwc2
-  # Skip this step when running under molecule, as this path doesn't exist
-  # in standard Debian.
-  tags: molecule-notest
-
 - name: create TinyPilot privileged folder
   file:
     path: "{{ tinypilot_privileged_dir }}"
