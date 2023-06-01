@@ -11,9 +11,6 @@ galaxy_info:
     - name: Debian
       versions:
         - bullseye
-    - name: Ubuntu
-      versions:
-        - bionic
 
   galaxy_tags:
     - raspberrypi
