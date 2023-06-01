@@ -41,11 +41,6 @@ if ! grep --quiet '^dtoverlay=dwc2\( \|$\)' "${BOOT_CONFIG_PATH}" ; then
   echo "dtoverlay=dwc2" | tee --append "${BOOT_CONFIG_PATH}"
 fi
 
-# Limit access to USB gadget scripts.
-chmod 0700 \
-  /opt/tinypilot-privileged/init-usb-gadget \
-  /opt/tinypilot-privileged/remove-usb-gadget
-
 # Use TinyPilot's settings to override uStreamer's runtime variables.
 if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
   ln \
