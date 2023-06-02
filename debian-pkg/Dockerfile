@@ -4,7 +4,7 @@
 
 FROM debian:bullseye-20220328-slim AS build
 
-RUN set -x && \
+RUN set -exu && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       debhelper \
@@ -66,9 +66,8 @@ RUN echo "${TINYPILOT_VERSION}" > VERSION
 
 WORKDIR /releases/placeholder-pkg-id/debian
 
-RUN set -x && \
+RUN set -exu && \
     PKG_ARCH="$(cat /tmp/pkg-arch)" && \
-    set -u && \
     cat >control <<EOF
 Source: ${PKG_NAME}
 Section: net
@@ -84,7 +83,8 @@ Description: Simple, easy-to-use KVM over IP
 XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
 EOF
 
-RUN cat >changelog <<EOF
+RUN set -exu && \
+    cat >changelog <<EOF
 tinypilot (${PKG_VERSION}) bullseye; urgency=medium
 
   * Latest TinyPilot release.
@@ -94,11 +94,13 @@ EOF
 
 # Rename the placeholder release directory to the final package ID.
 WORKDIR /releases
-RUN set -x && \
-    PKG_ID="$(cat /tmp/pkg-id)" && \
-    mv placeholder-pkg-id "${PKG_ID}" && \
-    cd "${PKG_ID}" && \
-    dpkg-buildpackage --build=binary
+RUN cat | bash <<'EOF'
+set -exu
+PKG_ID="$(cat /tmp/pkg-id)"
+mv placeholder-pkg-id "${PKG_ID}"
+cd "${PKG_ID}"
+dpkg-buildpackage --build=binary
+EOF
 
 FROM scratch as artifact
 

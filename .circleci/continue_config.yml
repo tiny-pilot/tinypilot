@@ -102,6 +102,14 @@ jobs:
             ./dev-scripts/build-debian-pkg "${BUILD_TARGETS}"
       - run:
           name: Move Debian packages to a predictable location
+          # Building for multiple architectures at once, changes the path of the
+          # resulting Debian package. For example:
+          #   - Building for both AMD64 and ARMv7, produces files in:
+          #     - `releases/linux_arm_v7/*.deb`
+          #     - `releases/linux_amd64/*.deb`
+          #   - Building for only AMD64, produces files in:
+          #     - `releases/*.deb`
+          # For consistency, we move all packages to `releases/*.deb`.
           command: find . -name '*.deb' -exec mv {} ./debian-pkg/releases/ \;
       - run:
           name: Print Debian package contents
