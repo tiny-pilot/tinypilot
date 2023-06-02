@@ -8,24 +8,6 @@
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
 
-- name: find absolute path to python3
-  shell: realpath $(which python3)
-  register: realpath_python3
-  changed_when: false
-
-- name: save absolute path to python3
-  set_fact:
-    python3_abs_path: "{{ realpath_python3.stdout }}"
-
-- name: create TinyPilot virtualenv
-  pip:
-    virtualenv: "{{ tinypilot_dir }}/venv"
-    virtualenv_command: "{{ python3_abs_path }} -m venv venv"
-    requirements: "{{ tinypilot_dir }}/requirements.txt"
-    extra_args: "{{ tinypilot_pip_args }}"
-  notify:
-    - restart TinyPilot service
-
 - name: create TinyPilot app settings
   template:
     src: tinypilot-app-settings.cfg.j2

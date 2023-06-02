@@ -1,8 +1,27 @@
 #!/usr/bin/make -f
 
+# Enable hardening build flags.
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+export DH_VIRTUALENV_INSTALL_ROOT=/opt/tinypilot
+# Prevent debhelper from generating an extra package with debug symbols.
+export DEB_BUILD_OPTIONS=noddebs
+
 %:
-	dh $@
+	dh $@ --with python-virtualenv
 
 override_dh_installsystemd:
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
 	dh_installsystemd --name=usb-gadget --no-start
+
+override_dh_virtualenv:
+	# Skip install because TinyPilot doesn't need to run setup.py to install.
+	# Use the venv directory because that's where we've historically kept it.
+	dh_virtualenv --skip-install --install-suffix venv
+	# dh_virtualenv doesn't remove __pycache__ directories, so we clean them up
+	# manually.
+	find . -type d -name __pycache__ -prune -exec rm -rf {} \;
+	# Lintian will complain if the .gitignore stays in venv.
+	rm ./debian/tinypilot$(DH_VIRTUALENV_INSTALL_ROOT)/venv/.gitignore

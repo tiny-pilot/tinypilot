@@ -84,12 +84,40 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.11
+          docker_layer_caching: true
+      - run:
+          name: Enable multiarch builds with QEMU
+          command: ./dev-scripts/enable-multiarch-docker
       - run:
           name: Build Debian package
-          command: ./dev-scripts/build-debian-pkg
+          # Building ARMv7 binaries is slow, so we only build them on the master
+          # branch.
+          command: |
+            set -exu
+            if [[ "${CIRCLE_BRANCH}" == 'master' ]]; then
+              readonly BUILD_TARGETS='linux/arm/v7,linux/amd64'
+            else
+              readonly BUILD_TARGETS='linux/amd64'
+            fi
+            ./dev-scripts/build-debian-pkg "${BUILD_TARGETS}"
+      - run:
+          name: Move Debian packages to a predictable location
+          # Building for multiple architectures at once, changes the path of the
+          # resulting Debian package. For example:
+          #   - Building for both AMD64 and ARMv7, produces files in:
+          #     - `releases/linux_arm_v7/*.deb`
+          #     - `releases/linux_amd64/*.deb`
+          #   - Building for only AMD64, produces files in:
+          #     - `releases/*.deb`
+          # For consistency, we move all packages to `releases/*.deb`.
+          command: find . -name '*.deb' -exec mv {} ./debian-pkg/releases/ \;
       - run:
           name: Print Debian package contents
-          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
+          command: |
+            set -exu
+            while read -r file; do
+              dpkg --contents "${file}"
+            done < <(ls ./debian-pkg/releases/*.deb)
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:
@@ -113,13 +141,16 @@ jobs:
       - run:
           name: Run lintian
           command: |
-            lintian \
-              --check \
-              --no-tag-display-limit \
-              --suppress-tags-from-file .lintianignore \
-              --no-cfg \
-              --fail-on warning,error \
-              tinypilot*.deb
+            set -exu
+            while read -r file; do
+              lintian \
+                --check \
+                --no-tag-display-limit \
+                --suppress-tags-from-file .lintianignore \
+                --no-cfg \
+                --fail-on warning,error \
+                "${file}"
+            done < <(ls *.deb)
   build_ansible_role:
     machine:
       image: ubuntu-2004:202010-01
@@ -142,7 +173,7 @@ jobs:
       - run:
           name: Add TinyPilot Debian package name as an environment variable
           command: |
-            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*.deb | xargs basename)"
+            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*amd64.deb | xargs basename)"
             echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
       - run:
           name: Create virtual environment
@@ -258,6 +289,12 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
+          # Creating the bundle assumes an ARMv7 build, so we only do this on
+          # master, because it's slow building the ARMv7 binaries from a
+          # CircleCI AMD64 instance.
+          filters:
+            branches:
+              only: master
       - verify_bundle:
           requires:
             - build_bundle

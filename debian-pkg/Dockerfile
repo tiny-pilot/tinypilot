@@ -4,11 +4,16 @@
 
 FROM debian:bullseye-20220328-slim AS build
 
-RUN set -x && \
+RUN set -exu && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       debhelper \
+      dh-virtualenv \
       dpkg-dev
+
+# Docker populates this value from the --platform argument. See
+# https://docs.docker.com/build/building/multi-platform/
+ARG TARGETPLATFORM
 
 # The canonical, SemVer-compliant TinyPilot version.
 ARG TINYPILOT_VERSION
@@ -20,14 +25,34 @@ ARG TINYPILOT_VERSION
 # recently built TinyPilot package.
 ARG PKG_VERSION
 
-ARG PKG_NAME="tinypilot"
-ARG PKG_BUILD_NUMBER="1"
-ARG PKG_ARCH="all"
-ARG PKG_ID="${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}"
+ARG PKG_NAME='tinypilot'
+ARG PKG_BUILD_NUMBER='1'
 
-RUN mkdir -p "/releases/${PKG_ID}"
+# Docker's platform names don't match Debian's platform names, so we translate
+# the platform name from the Docker version to the Debian version and save the
+# result to a file so we can re-use it in later stages.
+RUN cat | bash <<'EOF'
+set -exu
+case "${TARGETPLATFORM}" in
+  'linux/amd64')
+    PKG_ARCH='amd64'
+    ;;
+  'linux/arm/v7')
+    PKG_ARCH='armhf'
+    ;;
+  *)
+    echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2
+    exit 1
+esac
+echo "${PKG_ARCH}" > /tmp/pkg-arch
+echo "${PKG_NAME}-${PKG_VERSION}-${PKG_BUILD_NUMBER}-${PKG_ARCH}" > /tmp/pkg-id
+EOF
 
-WORKDIR "/releases/${PKG_ID}"
+# We ultimately need the directory name to be the package ID, but there's no
+# way to specify a dynamic value in Docker's WORKDIR command, so we use a
+# placeholder directory name to assemble the Debian package and then rename the
+# directory to its package ID name in the final stages of packaging.
+WORKDIR /releases/placeholder-pkg-id
 
 COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
@@ -39,9 +64,11 @@ COPY ./scripts ./scripts
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-WORKDIR "/releases/${PKG_ID}/debian"
+WORKDIR /releases/placeholder-pkg-id/debian
 
-RUN cat >control <<EOF
+RUN set -exu && \
+    PKG_ARCH="$(cat /tmp/pkg-arch)" && \
+    cat >control <<EOF
 Source: ${PKG_NAME}
 Section: net
 Priority: optional
@@ -50,13 +77,14 @@ Build-Depends: debhelper (>= 11)
 
 Package: ${PKG_NAME}
 Architecture: ${PKG_ARCH}
-Depends: adduser, python3, python3-pip, python3-venv, sudo
+Depends: \${shlibs:Depends}, adduser, python3, python3-pip, python3-venv, sudo
 Homepage: https://tinypilotkvm.com
 Description: Simple, easy-to-use KVM over IP
 XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
 EOF
 
-RUN cat >changelog <<EOF
+RUN set -exu && \
+    cat >changelog <<EOF
 tinypilot (${PKG_VERSION}) bullseye; urgency=medium
 
   * Latest TinyPilot release.
@@ -64,9 +92,16 @@ tinypilot (${PKG_VERSION}) bullseye; urgency=medium
  -- TinyPilot Support <support@tinypilotkvm.com>  $(date '+%a, %d %b %Y %H:%M:%S %z')
 EOF
 
-WORKDIR "/releases/${PKG_ID}"
-RUN dpkg-buildpackage --build=binary
+# Rename the placeholder release directory to the final package ID.
+WORKDIR /releases
+RUN cat | bash <<'EOF'
+set -exu
+PKG_ID="$(cat /tmp/pkg-id)"
+mv placeholder-pkg-id "${PKG_ID}"
+cd "${PKG_ID}"
+dpkg-buildpackage --build=binary
+EOF
 
 FROM scratch as artifact
 
-COPY --from=build "/releases/*.deb" ./
+COPY --from=build /releases/*.deb ./

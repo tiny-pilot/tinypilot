@@ -27,8 +27,11 @@ readonly OUTPUT_DIR='dist'
 readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
 readonly ANSIBLE_ROLE_TINYPILOT_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-tinypilot"
 
+# Exclude the AMD64 package from the production bundle.
+rm -f "${BUNDLE_DIR}/tinypilot"*amd64.deb
+
 # Ensure that a TinyPilot Debian package exists.
-if ! ls "${BUNDLE_DIR}/tinypilot"*.deb 1> /dev/null 2>&1; then
+if ! ls "${BUNDLE_DIR}/tinypilot"*armhf.deb 1> /dev/null 2>&1; then
   echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2
   exit 1
 fi
@@ -44,7 +47,7 @@ print_tinypilot_version() {
   dpkg-deb \
     --show \
     --showformat '${Tinypilot-Version}' \
-    "${BUNDLE_DIR}/tinypilot"*.deb
+    "${BUNDLE_DIR}/tinypilot"*armhf.deb
 }
 
 # Compose bundle file name, which consists of these hyphen-separated parts:
@@ -69,9 +72,14 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 
-# Copy Ansible role.
+# Clear Ansible roles from any previous bundle builds.
+rm -rf "${ANSIBLE_ROLES_DIR}"
 mkdir "${ANSIBLE_ROLES_DIR}"
-cp -r ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
+
+# Copy Ansible role.
+cp -r \
+  --no-target-directory \
+  ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
 
 # Download Ansible role dependencies.
 ansible-galaxy install \

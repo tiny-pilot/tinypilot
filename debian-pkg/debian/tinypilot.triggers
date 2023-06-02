@@ -1,0 +1,9 @@
+# These triggers are based on guidance from the dh-virtualenv documentation.
+# https://dh-virtualenv.readthedocs.io/en/1.2.1/tutorial.html#step-2-set-up-packaging-for-your-project
+
+# Register interest in Python interpreter changes and don't make the Python
+# package dependent on the virtualenv package processing (noawait).
+interest-noawait /usr/bin/python3
+
+# Also provide a symbolic trigger for all dh-virtualenv packages.
+interest-await dh-virtualenv-interpreter-update
