@@ -11,9 +11,12 @@ The other directory for TinyPilot executables is `/opt/tinypilot/scripts`, but t
 An example elevation of privilege attack might look like this:
 
 ```bash
-echo "#!/bin/bash" > /opt/tinypilot/scripts/executable-with-sudo-enabled
-echo "rm -rf /" >> /opt/tinypilot/scripts/executable-with-sudo-enabled
-sudo /opt/tinypilot/scripts/executable-with-sudo-enabled
+$ echo "Hello, I am an attacker running as $(whoami)"
+Hello, I am an attacker running as tinypilot
+$ echo '#!/bin/bash' > /opt/tinypilot/scripts/executable-with-sudo-enabled
+$ echo 'Now, I am an attacker running as $(whoami)' >> /opt/tinypilot/scripts/executable-with-sudo-enabled
+$ sudo /opt/tinypilot/scripts/executable-with-sudo-enabled
+Now, I am an attacker running as root
 ```
 
 By separating scripts that run as `sudo` into a separate `tinypilot-privileged` directory and ensuring that only `root` can write files in this directory, we mitigate the risk of an elevation of privilege attack.
