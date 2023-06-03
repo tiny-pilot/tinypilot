@@ -60,23 +60,93 @@ To run TinyPilot on a non-Pi machine, run:
 ./dev-scripts/serve-dev
 ```
 
-## Setting up a device for QA/testing
+## QA/Testing on a TinyPilot device
 
-For more complex changes it is useful to test your feature branch on a Raspberry Pi, in order to verify them in the real production environment.
+It’s useful to have a TinyPilot device set up for testing changes end-to-end and in a real production environment.
 
-### Setup SSH keys for login
+One upfront note about security: the following guides suggest intentionally loose security settings. This is a trade-off for development convenience. You should only take them over if your TinyPilot device resides in a private network, and if it isn’t connected to a target machine with sensitive data.
 
-1. [Generate SSH keys and upload your public key](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) to your device. Please use strong keys, e.g., ED25519 or RSA 4096+.
-2. Verify that you can login with your SSH keys.
-3. On the device, disable password-based login by specifying `PasswordAuthentication no` in `/etc/ssh/sshd_config`. Reboot afterwards.
+### Local SSH Setup
 
-### SSH agent forwarding
+For convenient SSH access to your TinyPilot device, you should [generate a pair of dedicated SSH keys](https://www.raspberrypi.com/documentation/computers/remote-access.html#generate-new-ssh-keys) on your dev machine, e.g. `~/.ssh/tinypilot`.
 
-In case you need SSH keys for accessing the Git repositories (e.g., for testing TinyPilot's Pro version), please enable SSH agent forwarding in your local `~/.ssh/config`.
+By adding the following block to your `~/.ssh/config` file, your dev machine will pick up your SSH key for accessing the TinyPilot device, and your dev machine will also skip the integrity checks of the connection.
 
 ```
-Host tinypilot
-  ForwardAgent yes
+Host raspberrypi raspberrypi.local
+  User root
+  IdentityFile ~/.ssh/tinypilot
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+```
+
+### Remote SSH Setup
+
+On the remote machine, add your public SSH key to the `/root/.ssh/authorized_keys` file. If the file or directory doesn’t exist yet, you have to create it manually.
+
+```bash
+sudo su
+mkdir -p /root/.ssh
+echo 'YOUR_PUBLIC_SSH_KEY' > /root/.ssh/authorized_keys
+```
+
+In order to do this, you have to authenticate via username/password.
+
+On TinyPilot Pro, the default username/password is `pilot`/`flyingsopi`. Remember to first enable SSH access via the security settings dialog in the TinyPilot Pro web UI.
+
+### Flash SD-card with clean Raspberry Pi OS
+
+For setting up a clean device, we recommend using the [“Raspberry Pi Imager” app](https://www.raspberrypi.com/software/) for flashing SD-cards. Make sure you use the following settings:
+
+- Lite version of Raspberry Pi OS (i.e., no desktop environment)
+- Enable SSH access
+- Add your public SSH key as authorized key
+
+By the way, for flashing the ready-made disk images of TinyPilot Pro, we recommend using the [“Balena Etcher” app](https://etcher.balena.io/).
+
+### Initialize system on Voyager hardware
+
+If you want to initialize a new system on Voyager hardware, you first need to set some configuration in place to make TinyPilot work with Voyager’s video capture chip.
+
+```bash
+# Create tinypilot system user and group.
+addgroup --system tinypilot
+adduser \
+    --system \
+    --shell /bin/bash \
+    --ingroup tinypilot \
+    --home "/home/tinypilot" \
+    tinypilot
+
+# Add uStreamer configuration.
+su tinypilot
+echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
+```
+
+### Installing a nightly bundle
+
+In order to test a change as complete bundle on device, perform the following steps:
+
+1. Push your changes as branch to GitHub. The `build_bundle` CircleCI job will build a complete bundle off the branch, and store it as artifact on CircleCI.
+2. If your device doesn’t contain a TinyPilot installation yet, upload the [`install-bundle` script](scripts/install-bundle) via `scp` or `rsync`. Otherwise, you find it in `/opt/tinypilot/scripts/install-bundle`.
+3. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
+   - As an alternative, you can also upload the bundle directly, and use the file path as input argument.
+
+### Scripting often-used procedures
+
+For common procedures that you need to repeat often, it’s useful to encode them as bash scripts. We currently don’t provide off-the-shelf scripts here, because the dev setups and environments are too different.
+
+As a tip: given that your SSH config is all set, you can script commands for the remote machine like this:
+
+```bash
+# Execute single command.
+ssh raspberrypi "echo 'Hello World'"
+
+# Execute multiple commands.
+ssh raspberrypi << 'ENDSSH'
+echo 'Hello ...'
+echo '... World!'
+ENDSSH
 ```
 
 ## Architecture
