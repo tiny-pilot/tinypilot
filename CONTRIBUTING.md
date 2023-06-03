@@ -67,7 +67,7 @@ One upfront note about security: the following guides suggest intentionally loos
 
 ### Local SSH Setup
 
-For convenient SSH access to your TinyPilot device, you should [generate a pair of dedicated SSH keys](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) on your dev machine, e.g. `~/.ssh/tinypilot`.
+For convenient SSH access to your TinyPilot device, you should [generate a pair of dedicated SSH keys](https://www.raspberrypi.com/documentation/computers/remote-access.html#generate-new-ssh-keys) on your dev machine, e.g. `~/.ssh/tinypilot`.
 
 By adding the following block to your `~/.ssh/config` file, your dev machine will pick up your SSH key for accessing the TinyPilot device, and your dev machine will also skip the integrity checks of the connection.
 
