@@ -119,7 +119,6 @@ adduser \
 
 # Add uStreamer configuration.
 su tinypilot
-touch ~/settings.yml
 echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
 ```
 
