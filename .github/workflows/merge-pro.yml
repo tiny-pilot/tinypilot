@@ -2,7 +2,7 @@ name: Merge community changes into pro repo
 on:
   push:
     branches:
-      - master
+      - community-pr-url
 jobs:
   updateFork:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
           # If the committer to the community repo (github.actor) has no access
           # to the pro repo, the PR will be unassigned.
           assignees: ${{ github.actor }}
-          title: Merge changes from community repository
+          title: "[TEST] Merge changes from community repository"
           body: |
             Related ${{ env.COMMUNITY_PR_URL }}
 
