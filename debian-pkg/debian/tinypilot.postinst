@@ -54,7 +54,8 @@ set -x # DEBUG
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
 . venv/bin/activate && \
-  ./scripts/render-template ./templates/tinypilot-app-settings.cfg.j2 \
+  PYTHONPATH=/opt/tinypilot/app \
+    ./scripts/render-template ./templates/tinypilot-app-settings.cfg.j2 \
     > "${TINYPILOT_APP_SETTINGS}" &&
   deactivate
   chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
