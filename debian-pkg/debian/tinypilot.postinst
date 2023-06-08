@@ -49,6 +49,7 @@ if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
     "${USTREAMER_CONFIG_FILE}"
 fi
 
+# Populate TinyPilot's Flask settings file.
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
 . venv/bin/activate && \
