@@ -49,8 +49,6 @@ if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
     "${USTREAMER_CONFIG_FILE}"
 fi
 
-set -x # DEBUG
-
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
 . venv/bin/activate && \
@@ -59,7 +57,6 @@ readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
     > "${TINYPILOT_APP_SETTINGS}" &&
   deactivate
   chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
-  cat "${TINYPILOT_APP_SETTINGS}" # DEBUG
 popd
 
 
