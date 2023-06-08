@@ -16,7 +16,8 @@ import os
 
 import render_template
 
-# TODO: Document these.
+# Define default settings for TinyPilot values. The YAML data in
+# _USER_OVERRIDES_PATH take precedence over these defaults.
 _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
