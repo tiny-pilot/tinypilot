@@ -6,7 +6,8 @@ def render(default_settings, user_overrides_file, template_file):
     """Renders a Jinja2 template using TinyPilot settings.
 
     Args:
-        default_settings: A dict containing TinyPilot's default settings.
+        default_settings: A dict containing TinyPilot's default settings that
+            can influence a TinyPilot template.
         user_overrides_file: A file-like object containing YAML data that the
             user has configured to override the default settings.
         template_file: A file-like object containing a Jinja2 template to
