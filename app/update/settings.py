@@ -49,16 +49,15 @@ class Settings:
     """
 
     def __init__(self, data):
-        self._data = data
-        if not self._data:
-            self._data = {}
+        # Merge the defaults with data, with data taking precedence.
+        self._data = {**_DEFAULTS, **(data if data else {})}
 
     def as_dict(self):
         return self._data
 
     @property
     def ustreamer_desired_fps(self):
-        return self._get('ustreamer_desired_fps')
+        return self._data['ustreamer_desired_fps']
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
@@ -66,7 +65,7 @@ class Settings:
 
     @property
     def ustreamer_quality(self):
-        return self._get('ustreamer_quality')
+        return self._data['ustreamer_quality']
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
@@ -74,14 +73,11 @@ class Settings:
 
     @property
     def ustreamer_h264_bitrate(self):
-        return self._get('ustreamer_h264_bitrate')
+        return self._data['ustreamer_h264_bitrate']
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
         self._data['ustreamer_h264_bitrate'] = value
-
-    def _get(self, prop_name):
-        return self._data.get(prop_name, _DEFAULTS[prop_name])
 
 
 def load():
