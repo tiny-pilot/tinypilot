@@ -3,8 +3,13 @@
 # Renders a Jinja2 template using TinyPilot settings data.
 
 # To test:
-# $ PYTHONPATH="${PWD}/app" ./scripts/render-template \
-#    debian-pkg/opt/tinypilot/templates/tinypilot-app-settings.cfg.j2
+#
+#   $ TEMPLATE_FILE=$(mktemp) && \
+#       echo 'KEYBOARD_PATH = {{ tinypilot_keyboard_interface }}'  \
+#           >> ${TEMPLATE_FILE} && \
+#       echo 'MOUSE_PATH = {{ tinypilot_mouse_interface }}' \
+#           >> ${TEMPLATE_FILE} && \
+#       PYTHONPATH="${PWD}/app" ./scripts/render-template < ${TEMPLATE_FILE}
 
 # Ignore pylint complaint that this filename has a dash instead of an
 # underscore.
@@ -13,6 +18,7 @@
 import argparse
 import io
 import os
+import sys
 
 import render_template
 
@@ -26,7 +32,7 @@ _DEFAULTS = {
 _USER_OVERRIDES_PATH = '/home/tinypilot/settings.yml'
 
 
-def main(args):
+def main(_):
     # We expect the input files to be <100 KB, so we read them into memory to
     # avoid deeply nesting in context handlers.
     user_overrides_file = io.StringIO('')
@@ -34,15 +40,13 @@ def main(args):
         with open(_USER_OVERRIDES_PATH, encoding='utf8') as f:
             user_overrides_file = io.StringIO(f.read())
 
-    with open(args.template_path, encoding='utf8') as f:
-        template_file = io.StringIO(f.read())
-
-    print(render_template.render(_DEFAULTS, user_overrides_file, template_file))
+            print(
+                render_template.render(_DEFAULTS, user_overrides_file,
+                                       sys.stdin))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='TinyPilot Template Renderer',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('template_path')
     main(parser.parse_args())
