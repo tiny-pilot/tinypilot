@@ -33,16 +33,12 @@ _USER_OVERRIDES_PATH = '/home/tinypilot/settings.yml'
 
 
 def main(_):
-    # We expect the input files to be <100 KB, so we read them into memory to
-    # avoid deeply nesting in context handlers.
     user_overrides_file = io.StringIO('')
     if os.path.exists(_USER_OVERRIDES_PATH):
         with open(_USER_OVERRIDES_PATH, encoding='utf8') as f:
             user_overrides_file = io.StringIO(f.read())
 
-            print(
-                render_template.render(_DEFAULTS, user_overrides_file,
-                                       sys.stdin))
+    print(render_template.render(_DEFAULTS, user_overrides_file, sys.stdin))
 
 
 if __name__ == '__main__':
