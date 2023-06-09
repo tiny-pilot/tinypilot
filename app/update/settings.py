@@ -23,6 +23,8 @@ _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 # Define default settings for TinyPilot values. The YAML data in
 # _SETTINGS_FILE_PATH take precedence over these defaults.
 _DEFAULTS = {
+    'tinypilot_keyboard_interface': '/dev/hidg0',
+    'tinypilot_mouse_interface': '/dev/hidg1',
     'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
@@ -52,13 +54,14 @@ class Settings:
         self._data = data
         if not self._data:
             self._data = {}
+        self._data = {**_DEFAULTS, **self._data}
 
     def as_dict(self):
         return self._data
 
     @property
     def ustreamer_desired_fps(self):
-        return self._get('ustreamer_desired_fps')
+        return self._data['ustreamer_desired_fps']
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
@@ -66,7 +69,7 @@ class Settings:
 
     @property
     def ustreamer_quality(self):
-        return self._get('ustreamer_quality')
+        return self._data['ustreamer_quality']
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
@@ -74,14 +77,11 @@ class Settings:
 
     @property
     def ustreamer_h264_bitrate(self):
-        return self._get('ustreamer_h264_bitrate')
+        return self._data['ustreamer_h264_bitrate']
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
         self._data['ustreamer_h264_bitrate'] = value
-
-    def _get(self, prop_name):
-        return self._data.get(prop_name, _DEFAULTS[prop_name])
 
 
 def load():
