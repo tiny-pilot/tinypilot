@@ -26,8 +26,7 @@ import update.settings
 def main(_):
     settings = update.settings.load()
 
-    print(jinja2.Environment().from_string(sys.stdin.read()).render(
-        settings.as_dict()))
+    print(jinja2.Template(sys.stdin.read()).render(settings.as_dict()))
 
 
 if __name__ == '__main__':
