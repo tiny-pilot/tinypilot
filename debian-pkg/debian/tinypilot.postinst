@@ -62,7 +62,7 @@ EOF
 )
 . venv/bin/activate && \
 PYTHONPATH=/opt/tinypilot/app \
-  ./scripts/render-template ./templates/tinypilot-app-settings.cfg.j2 \
+  ./scripts/render-template \
   <<< "${SETTINGS_TEMPLATE}" \
   > "${TINYPILOT_APP_SETTINGS}" && \
   deactivate
