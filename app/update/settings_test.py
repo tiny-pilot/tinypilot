@@ -35,8 +35,10 @@ class UpdateSettingsTest(unittest.TestCase):
         with open(self.settings_file_path, encoding='utf-8') as mock_file:
             return mock_file.read()
 
-    def test_returns_empty_settings_if_no_settings_file_exists(self):
-        self.assertEqual({}, update.settings.load().as_dict())
+    def test_as_dict_returns_default_settings_if_no_settings_file_exists(self):
+        settings_dict = update.settings.load().as_dict()
+        self.assertEqual(30, settings_dict['ustreamer_desired_fps'])
+        self.assertEqual(3, len(settings_dict))
 
     def test_populates_empty_file_with_blank_settings(self):
         self.make_mock_settings_file('')

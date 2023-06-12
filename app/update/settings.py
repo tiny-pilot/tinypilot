@@ -20,6 +20,14 @@ import video_service
 
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
+# Define default settings for TinyPilot values. The YAML data in
+# _SETTINGS_FILE_PATH take precedence over these defaults.
+_DEFAULTS = {
+    'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
+    'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
+    'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
+}
+
 
 class Error(Exception):
     pass
@@ -36,58 +44,40 @@ class SaveSettingsError(Error):
 class Settings:
     """Manages the parameters for the update process in a YAML file.
 
-    To avoid polluting the settings file with unnecessary default values, we
-    unset them instead of hard-coding the defaults in the file.
-
     For historical/compatibility reasons, the naming of the uStreamer properties
     is not in line with the naming conventions in the code.
     """
 
     def __init__(self, data):
-        self._data = data
-        if not self._data:
-            self._data = {}
+        # Merge the defaults with data, with data taking precedence.
+        self._data = {**_DEFAULTS, **(data if data else {})}
 
     def as_dict(self):
         return self._data
 
     @property
     def ustreamer_desired_fps(self):
-        return self._data.get('ustreamer_desired_fps',
-                              video_service.DEFAULT_FRAME_RATE)
+        return self._data['ustreamer_desired_fps']
 
     @ustreamer_desired_fps.setter
     def ustreamer_desired_fps(self, value):
-        self._set_or_clear('ustreamer_desired_fps', value,
-                           video_service.DEFAULT_FRAME_RATE)
+        self._data['ustreamer_desired_fps'] = value
 
     @property
     def ustreamer_quality(self):
-        return self._data.get('ustreamer_quality',
-                              video_service.DEFAULT_MJPEG_QUALITY)
+        return self._data['ustreamer_quality']
 
     @ustreamer_quality.setter
     def ustreamer_quality(self, value):
-        self._set_or_clear('ustreamer_quality', value,
-                           video_service.DEFAULT_MJPEG_QUALITY)
+        self._data['ustreamer_quality'] = value
 
     @property
     def ustreamer_h264_bitrate(self):
-        return self._data.get('ustreamer_h264_bitrate',
-                              video_service.DEFAULT_H264_BITRATE)
+        return self._data['ustreamer_h264_bitrate']
 
     @ustreamer_h264_bitrate.setter
     def ustreamer_h264_bitrate(self, value):
-        self._set_or_clear('ustreamer_h264_bitrate', value,
-                           video_service.DEFAULT_H264_BITRATE)
-
-    def _set_or_clear(self, prop_name, value, default_value):
-        if value == default_value:
-            if prop_name in self._data:
-                del self._data[prop_name]
-            return
-
-        self._data[prop_name] = value
+        self._data['ustreamer_h264_bitrate'] = value
 
 
 def load():
@@ -127,6 +117,13 @@ def _from_file(settings_file):
 
 
 def _to_file(settings, settings_file):
-    """Writes a Settings object to a file."""
-    if settings.as_dict():
-        yaml.safe_dump(settings.as_dict(), settings_file)
+    """Writes a Settings object to a file, excluding any default values."""
+    # To avoid polluting the settings file with unnecessary default values, we
+    # exclude them instead of hard-coding the defaults in the file.
+    settings_without_defaults = {}
+    for key, value in settings.as_dict().items():
+        if (key not in _DEFAULTS) or (value != _DEFAULTS[key]):
+            settings_without_defaults[key] = value
+
+    if settings_without_defaults:
+        yaml.safe_dump(settings_without_defaults, settings_file)
