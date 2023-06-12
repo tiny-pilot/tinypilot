@@ -36,7 +36,7 @@
     dest: "{{ ustreamer_janus_configs_dir }}/{{ item }}"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   loop:
     - janus.jcfg
     - janus.transport.websockets.jcfg

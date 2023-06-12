@@ -4,9 +4,9 @@
 - name: define ansible to yq architecture mapping
   set_fact:
     ustreamer_yq_architecture_map:
-       x86_64: amd64
-       armv7l: arm
-       aarch64: arm64
+      x86_64: amd64
+      armv7l: arm
+      aarch64: arm64
 
 - name: canonicalize yq binary architecture
   set_fact:
@@ -18,7 +18,7 @@
     dest: /usr/bin/yq
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: create uStreamer launcher directories
   file:
@@ -68,7 +68,7 @@
     content: "{{ ustreamer_runtime_vars | to_nice_yaml(explicit_start=True) }}"
     owner: "{{ ustreamer_user }}"
     group: "{{ ustreamer_group }}"
-    mode: '0444'
+    mode: "0444"
   notify:
     - restart uStreamer
 
@@ -78,6 +78,6 @@
     dest: "{{ ustreamer_launcher_script }}"
     owner: "{{ ustreamer_user }}"
     group: "{{ ustreamer_group }}"
-    mode: '0755'
+    mode: "0755"
   notify:
     - restart uStreamer

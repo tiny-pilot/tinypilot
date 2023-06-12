@@ -6,7 +6,7 @@
 
 - name: decode command-line string
   set_fact:
-      cmdline_string: "{{ cmdline_slurp['content'] | b64decode }}"
+    cmdline_string: "{{ cmdline_slurp['content'] | b64decode }}"
 
 - name: change cma to 128M if it's set to a different value
   copy:
