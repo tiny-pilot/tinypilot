@@ -185,7 +185,7 @@
     dest: /lib/systemd/system/ustreamer.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
     - reload systemd config
     - restart uStreamer
@@ -202,7 +202,7 @@
     dest: "{{ ustreamer_settings_file }}"
     owner: "{{ ustreamer_user }}"
     group: "{{ ustreamer_group }}"
-    mode: '0644'
+    mode: "0644"
 
 - name: create uStreamer Janus plugin config
   template:

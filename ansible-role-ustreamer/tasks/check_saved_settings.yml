@@ -6,7 +6,7 @@
 
 - name: decode settings file
   set_fact:
-      ustreamer_settings: "{{ ustreamer_settings_slurp['content'] | b64decode | from_yaml }}"
+    ustreamer_settings: "{{ ustreamer_settings_slurp['content'] | b64decode | from_yaml }}"
 
 - name: read ustreamer_capture_device from config file if it's not already defined
   set_fact:
