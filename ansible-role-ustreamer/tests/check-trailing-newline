@@ -17,7 +17,7 @@ FILES=$(find . \
 
 SUCCESS=0
 
-for F in ${FILES[*]}
+for F in "${FILES[@]}"
 do
   if ! [[ -s "$F" && -z "$(tail -c 1 "$F")" ]]; then
     printf "File must end in a trailing newline: %s\n" "$F"
