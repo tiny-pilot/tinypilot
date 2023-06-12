@@ -1,0 +1,28 @@
+---
+- name: reload systemd config
+  systemd:
+    daemon_reload: yes
+
+- name: restart uStreamer
+  service:
+    name: ustreamer
+    state: restarted
+
+- name: load TC358743 EDID file
+  service:
+    name: load-tc358743-edid
+    state: started
+  # If the TC358743 is not yet attached, for example, when pre-provisioning an
+  # image, this will fail, but we can ignore it.
+  ignore_errors: yes
+
+- name: configure TC358743 EDID loader to run at boot
+  systemd:
+    name: load-tc358743-edid
+    enabled: yes
+
+- name: restart Janus
+  service:
+    name: janus
+    state: restarted
+  when: ustreamer_install_janus

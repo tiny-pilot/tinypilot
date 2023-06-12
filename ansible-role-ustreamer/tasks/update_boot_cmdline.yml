@@ -1,0 +1,21 @@
+---
+- name: read /boot/cmdline.txt
+  slurp:
+    src: /boot/cmdline.txt
+  register: cmdline_slurp
+
+- name: decode command-line string
+  set_fact:
+      cmdline_string: "{{ cmdline_slurp['content'] | b64decode }}"
+
+- name: change cma to 128M if it's set to a different value
+  copy:
+    content: "{{ cmdline_string | regex_replace('cma=\\d+M', 'cma=128M') }}"
+    dest: "/boot/cmdline.txt"
+  when: cmdline_string is regex("cma=") and cmdline_string is not regex("cma=128M")
+
+- name: add cma=128M to cmdline.txt if it's missing
+  copy:
+    content: "{{ cmdline_string | regex_replace('\\s+rootwait', ' cma=128M rootwait') }}"
+    dest: "/boot/cmdline.txt"
+  when: cmdline_string is not regex("cma=")
