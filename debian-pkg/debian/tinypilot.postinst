@@ -60,6 +60,7 @@ KEYBOARD_PATH = '{{ tinypilot_keyboard_interface }}'
 MOUSE_PATH = '{{ tinypilot_mouse_interface }}'
 EOF
 )
+readonly SETTINGS_TEMPLATE
 . venv/bin/activate && \
 PYTHONPATH=/opt/tinypilot/app \
   ./scripts/render-template \
