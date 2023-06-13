@@ -52,14 +52,15 @@ fi
 # Populate TinyPilot's Flask settings file.
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
-SETTINGS_TEMPLATE=$(cat <<-EOF
+SETTINGS_TEMPLATE='
 # This configuration file is an actual Python file. Only variables in uppercase
 # are recognized as config keys.
 
-KEYBOARD_PATH = '{{ tinypilot_keyboard_interface }}'
-MOUSE_PATH = '{{ tinypilot_mouse_interface }}'
-EOF
-)
+KEYBOARD_PATH = "{{ tinypilot_keyboard_interface }}"
+MOUSE_PATH = "{{ tinypilot_mouse_interface }}"
+'
+# Strip leading newline.
+SETTINGS_TEMPLATE="${SETTINGS_TEMPLATE:1}"
 readonly SETTINGS_TEMPLATE
 . venv/bin/activate && \
   PYTHONPATH=/opt/tinypilot/app \
