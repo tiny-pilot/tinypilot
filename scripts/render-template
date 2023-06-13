@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
+"""Renders a Jinja2 template using TinyPilot settings data.
 
-# Renders a Jinja2 template using TinyPilot settings data.
-
-# To test:
-#
-#   $ TEMPLATE_FILE=$(mktemp) && \
-#       echo 'KEYBOARD_PATH = {{ tinypilot_keyboard_interface }}'  \
-#           >> ${TEMPLATE_FILE} && \
-#       echo 'MOUSE_PATH = {{ tinypilot_mouse_interface }}' \
-#           >> ${TEMPLATE_FILE} && \
-#       PYTHONPATH="${PWD}/app" ./scripts/render-template < ${TEMPLATE_FILE}
+To test:
+  $ PYTHONPATH="${PWD}/app" ./scripts/render-template <<'EOF'
+KEYBOARD_PATH = '{{ tinypilot_keyboard_interface }}'
+MOUSE_PATH = '{{ tinypilot_mouse_interface }}'
+EOF
+"""
 
 # Ignore pylint complaint that this filename has a dash instead of an
 # underscore.
