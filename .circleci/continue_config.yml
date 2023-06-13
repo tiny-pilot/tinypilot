@@ -51,6 +51,18 @@ jobs:
       - run:
           name: Check code style
           command: ./dev-scripts/check-style
+  decode_edid:
+    docker:
+      - image: cimg/base:2022.02
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install edid-decode
+          command: sudo apt-get update && sudo apt-get install --yes edid-decode
+      - run:
+          name: Decode the EDID
+          command: ./dev-scripts/decode-edid
   build_python:
     docker:
       - image: cimg/python:3.7.4
@@ -277,6 +289,7 @@ workflows:
       - check_bash
       - lint_sql
       - check_style
+      - decode_edid
       - build_python
       - build_javascript
       - build_debian_package
