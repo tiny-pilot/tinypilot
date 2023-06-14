@@ -164,7 +164,11 @@ jobs:
           condition:
             or:
               - << pipeline.parameters.ansible_role_changed >>
-              - equal: [<< pipeline.parameters.build_branch >>, << pipeline.git.branch >>]
+              - equal:
+                  [
+                    << pipeline.parameters.build_branch >>,
+                    << pipeline.git.branch >>,
+                  ]
           steps:
             - run:
                 name: Skipping job because files weren't changed
