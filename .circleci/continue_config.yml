@@ -5,7 +5,7 @@ parameters:
     default: false
   # Creating the bundle assumes an ARMv7 build, so we only do this on master,
   # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
-  build_branch:
+  bundle_build_branch:
     type: string
     default: master
 jobs:
@@ -97,7 +97,7 @@ jobs:
           name: Build Debian package
           command: |
             set -exu
-            if [[ "${CIRCLE_BRANCH}" == '<< pipeline.parameters.build_branch >>' ]]; then
+            if [[ "${CIRCLE_BRANCH}" == '<< pipeline.parameters.bundle_build_branch >>' ]]; then
               readonly BUILD_TARGETS='linux/arm/v7,linux/amd64'
             else
               readonly BUILD_TARGETS='linux/amd64'
@@ -166,7 +166,7 @@ jobs:
               - << pipeline.parameters.ansible_role_changed >>
               - equal:
                   [
-                    << pipeline.parameters.build_branch >>,
+                    << pipeline.parameters.bundle_build_branch >>,
                     << pipeline.git.branch >>,
                   ]
           steps:
@@ -298,7 +298,7 @@ workflows:
             - build_debian_package
           filters:
             branches:
-              only: << pipeline.parameters.build_branch >>
+              only: << pipeline.parameters.bundle_build_branch >>
       - verify_bundle:
           requires:
             - build_bundle
