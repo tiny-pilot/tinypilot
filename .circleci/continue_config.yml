@@ -6,8 +6,8 @@ parameters:
   # Creating the bundle assumes an ARMv7 build, so we only do this on master,
   # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
   bundle_build_branch:
-    type: string
-    default: master
+    type: boolean
+    default: << pipeline.parameters.ansible_role_changed >>
 jobs:
   check_whitespace:
     docker:
