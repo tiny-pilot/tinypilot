@@ -52,8 +52,6 @@ fi
 # Populate TinyPilot's Flask settings file.
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
-
-
 SETTINGS_TEMPLATE="$(cat <<-'EOF'
 # This configuration file is an actual Python file. Only variables in uppercase
 # are recognized as config keys.
