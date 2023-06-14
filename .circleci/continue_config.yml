@@ -3,6 +3,11 @@ parameters:
   ansible_role_changed:
     type: boolean
     default: false
+  # Creating the bundle assumes an ARMv7 build, so we only do this on master,
+  # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
+  build_branch:
+    type: string
+    default: master
 jobs:
   check_whitespace:
     docker:
@@ -90,11 +95,9 @@ jobs:
           command: ./dev-scripts/enable-multiarch-docker
       - run:
           name: Build Debian package
-          # Building ARMv7 binaries is slow, so we only build them on the master
-          # branch.
           command: |
             set -exu
-            if [[ "${CIRCLE_BRANCH}" == 'master' ]]; then
+            if [[ "${CIRCLE_BRANCH}" == '<< pipeline.parameters.build_branch >>' ]]; then
               readonly BUILD_TARGETS='linux/arm/v7,linux/amd64'
             else
               readonly BUILD_TARGETS='linux/amd64'
@@ -161,7 +164,7 @@ jobs:
           condition:
             or:
               - << pipeline.parameters.ansible_role_changed >>
-              - equal: [master, << pipeline.git.branch >>]
+              - equal: [<< pipeline.parameters.build_branch >>, << pipeline.git.branch >>]
           steps:
             - run:
                 name: Skipping job because files weren't changed
@@ -289,12 +292,9 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
-          # Creating the bundle assumes an ARMv7 build, so we only do this on
-          # master, because it's slow building the ARMv7 binaries from a
-          # CircleCI AMD64 instance.
           filters:
             branches:
-              only: master
+              only: << pipeline.parameters.build_branch >>
       - verify_bundle:
           requires:
             - build_bundle
