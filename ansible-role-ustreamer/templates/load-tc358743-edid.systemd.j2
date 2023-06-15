@@ -1,0 +1,18 @@
+[Unit]
+Description=Load EDID for TC358743 HDMI capture chip.
+After=syslog.target
+# Give up if we restart on failure 20 times within 5 minutes (300 seconds).
+StartLimitIntervalSec=300
+StartLimitBurst=20
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=v4l2-ctl \
+  --set-edid=file={{ ustreamer_edids_dir }}/tc358743-edid.hex \
+  --fix-edid-checksums
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=local-fs.target

@@ -1,0 +1,10 @@
+memsink: {
+    object = "{{ ustreamer_h264_sink }}"
+}
+
+{% if ustreamer_capture_device == 'tc358743' -%}
+audio: {
+    device = "hw:1"
+    tc358743 = "/dev/video0"
+}
+{% endif -%}
