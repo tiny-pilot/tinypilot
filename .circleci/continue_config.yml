@@ -121,6 +121,9 @@ jobs:
           name: Install node dependencies
           command: npm install
       - run:
+          name: Complete Playwright install
+          command: npx playwright install
+      - run:
           name: Enable mock scripts
           command: sudo ./dev-scripts/enable-mock-scripts
       - run:
