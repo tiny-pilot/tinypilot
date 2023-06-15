@@ -11,10 +11,10 @@ test("shows about page, license, privacy policy, and dependency pages and licens
   ).toBeVisible();
 
   const licensePagePromise = page.waitForEvent("popup");
-  await page.getByRole("link", { name: "End-User License Agreement" }).click();
+  await page.getByRole("link", { name: "MIT license" }).click();
   const licensePage = await licensePagePromise;
   await expect(licensePage.locator("body")).toContainText(
-    "END-USER LICENSE AGREEMENT"
+    "Copyright 2022 TinyPilot, LLC"
   );
   await licensePage.close();
 
