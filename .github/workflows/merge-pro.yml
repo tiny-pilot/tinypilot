@@ -7,7 +7,7 @@ jobs:
   updateFork:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: tiny-pilot/tinypilot-pro
           token: ${{ secrets.PR_BOT_PAT }}
@@ -29,7 +29,7 @@ jobs:
           readonly COMMUNITY_PR_URL
           echo "COMMUNITY_PR_URL=${COMMUNITY_PR_URL}" >> "${GITHUB_ENV}"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_BOT_PAT }}
           branch: community-changes-${{ github.sha }}
