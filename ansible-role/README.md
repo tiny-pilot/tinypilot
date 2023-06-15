@@ -7,7 +7,6 @@ Available variables are listed below, along with default values (see [defaults/m
 ```yaml
 tinypilot_interface: "127.0.0.1"
 tinypilot_port: 8000
-tinypilot_keyboard_interface: /dev/hidg0
 # The client is responsible for specifying the path/URL to the TinyPilot Debian
 # package
 tinypilot_debian_package_path: null
