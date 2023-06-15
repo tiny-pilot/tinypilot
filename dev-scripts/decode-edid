@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Decode the EDID from the role defaults.
+# Decode the EDID from the ansible-role-ustreamer defaults.
 
 # This script facilitates debugging the EDID and creates helpful logs of EDID
 # changes in CI.
@@ -15,7 +15,7 @@ set -x
 set -u
 
 # Extract the EDID from the inline YAML definition.
-grep "ustreamer_edid:" -A16 defaults/main.yml | \
+grep "ustreamer_edid:" -A16 ansible-role-ustreamer/defaults/main.yml | \
   `# Strip the line with ustreamer_edid` \
   tail --lines=+2 | \
   `# Strip whitespace` \
