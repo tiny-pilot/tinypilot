@@ -5,7 +5,7 @@
 # Exit on unset variable.
 set -u
 
-# Exit build script on first failure
+# Exit on first failure.
 set -e
 
 print_help() {

@@ -23,7 +23,6 @@ python3 -m venv venv && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
   npm install && \
-  npm install -D @playwright/test && \
   sudo npx playwright install-deps && \
   ./dev-scripts/enable-multiarch-docker
 ```
