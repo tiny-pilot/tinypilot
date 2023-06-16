@@ -30,10 +30,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
 
   {
     const flaskProjectPagePromise = page.waitForEvent("popup");
-    await page
-      .getByRole("link", { name: "Flask", exact: true })
-      .first()
-      .click();
+    await page.getByRole("link", { name: "Flask" }).first().click();
     const flaskProjectPage = await flaskProjectPagePromise;
     await expect(flaskProjectPage).toHaveURL(
       new RegExp("https://flask.palletsprojects.com.*")
@@ -60,10 +57,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
 
   {
     const cryptographyProjectPagePromise = page.waitForEvent("popup");
-    await page
-      .getByRole("link", { name: "cryptography", exact: true })
-      .first()
-      .click();
+    await page.getByRole("link", { name: "cryptography" }).first().click();
     const cryptographyProjectPage = await cryptographyProjectPagePromise;
     await expect(cryptographyProjectPage).toHaveURL(
       new RegExp("https://cryptography.io.*")
@@ -85,7 +79,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     await cryptographyLicensePage.close();
   }
 
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "Close" }).click();
   await expect(
     page.getByRole("heading", { name: "About TinyPilot" })
   ).not.toBeVisible();

@@ -46,7 +46,7 @@ test("loads debug logs and generates a shareable URL for them", async ({
     "TinyPilot version: "
   );
 
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "Close" }).click();
   await expect(
     page.getByRole("heading", { name: "Debug Logs" })
   ).not.toBeVisible();
