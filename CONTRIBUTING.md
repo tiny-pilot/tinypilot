@@ -23,15 +23,30 @@ python3 -m venv venv && \
   pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
   npm install && \
+  sudo npx playwright install-deps && \
   ./dev-scripts/enable-multiarch-docker
 ```
 
-### Run automated tests
+### Run dev tests
 
 To run TinyPilot's build scripts, run:
 
 ```bash
 ./dev-scripts/build
+```
+
+### Run end-to-end tests
+
+To spawn a TinyPilot local dev server and run TinyPilot's end-to-end tests against that dev server, run:
+
+```bash
+./dev-scripts/run-e2e-tests
+```
+
+To run TinyPilot's end-to-end tests against a running TinyPilot device, first turn off HTTPS redirection. Open the device's page in your browser and click through the privacy error. Then, navigate the menu options `System > Security`. Turn off "Require encrypted connection (HTTPS)". Finally, run the tests by passing an http URL as the first argument like so:
+
+```bash
+./dev-scripts/run-e2e-tests http://tinypilot.local
 ```
 
 ### Enable Git hooks
@@ -42,7 +57,7 @@ If you're planning to contribute code to TinyPilot, it's a good idea to enable t
 ./hooks/enable_hooks
 ```
 
-### Enable mock scripts
+### Enable mock scripts and passwordless sudo access
 
 The TinyPilot server backend uses several privileged scripts (provisioned to [`/opt/tinypilot-privileged/scripts/`](debian-pkg/opt/tinypilot-privileged/scripts)). Those scripts exist on a provisioned TinyPilot device, but they don't exist on a dev machine.
 
@@ -50,6 +65,12 @@ To set up symlinks that mock out those scripts and facilitate development, run t
 
 ```bash
 sudo ./dev-scripts/enable-mock-scripts
+```
+
+If you do not already have passwordless sudo enabled in general, you also need to allow the server backend to execute these privileged scripts and other services without interactively prompting you for a password. To do that, run:
+
+```bash
+sudo ./dev-scripts/enable-passwordless-sudo
 ```
 
 ### Run in dev mode

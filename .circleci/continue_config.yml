@@ -94,6 +94,45 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/build-javascript
+  e2e:
+    docker:
+      # To run tests against the dev server, Playwright needs a CircleCI image
+      # with Python, Node, and a browser. While the build_python and
+      # build_javascript steps use python-3.7.4 and node-14.17.5 respectively,
+      # the CircleCI image with *both* python and node in the closest versions
+      # is python:3.7.11-browsers. It has python-3.7.11 and node-14.17.1.
+      #
+      # See: https://circleci.com/developer/images/image/cimg/python#tagging-scheme
+      - image: cimg/python:3.7.11-browsers
+    environment:
+      NODE_ENV: development
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install python requirements
+          command: |
+            . venv/bin/activate
+            pip install --requirement requirements.txt
+            pip install --requirement dev_requirements.txt
+      - run:
+          name: Install node dependencies
+          command: npm install
+      - run:
+          name: Enable mock scripts
+          command: sudo ./dev-scripts/enable-mock-scripts
+      - run:
+          name: Enable passwordless sudo
+          command: sudo ./dev-scripts/enable-passwordless-sudo
+      - run:
+          name: Run playwright tests
+          command: npx playwright test
+      - store_artifacts:
+          path: playwright-report
+      - store_artifacts:
+          path: e2e-results
   build_debian_package:
     docker:
       - image: cimg/base:stable
@@ -300,6 +339,7 @@ workflows:
       - build_python
       - build_javascript
       - build_debian_package
+      - e2e
       - lint_debian_package:
           requires:
             - build_debian_package
