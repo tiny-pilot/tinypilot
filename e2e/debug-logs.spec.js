@@ -31,8 +31,8 @@ test("loads debug logs and generates a shareable URL for them", async ({
 }) => {
   await page.goto("/");
 
-  await page.getByText("System", { exact: true }).hover();
-  await page.getByText("Logs", { exact: true }).click();
+  await page.getByRole("menuitem", { name: "System" }).hover();
+  await page.getByRole("menuitem", { name: "Logs" }).click();
   await expect(page.getByRole("heading", { name: "Debug Logs" })).toBeVisible();
 
   await page.getByRole("button", { name: "Get Shareable URL" }).click();
