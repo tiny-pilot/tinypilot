@@ -1,6 +1,6 @@
+# The user/group must match the one created by the uStreamer Debian package.
 ustreamer_group: ustreamer
 ustreamer_user: ustreamer
-ustreamer_dir: /opt/ustreamer
 
 # Path to file with persistent uStreamer settings to apply across role
 # runs.
