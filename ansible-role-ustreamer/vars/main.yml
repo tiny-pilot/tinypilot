@@ -1,4 +1,3 @@
-# The user/group must match the one created by the uStreamer Debian package.
 ustreamer_group: ustreamer
 ustreamer_user: ustreamer
 
