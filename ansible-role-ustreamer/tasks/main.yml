@@ -34,20 +34,6 @@
   include_tasks: install_janus.yml
   when: ustreamer_install_janus
 
-- name: create ustreamer group
-  group:
-    name: "{{ ustreamer_group }}"
-    state: present
-
-- name: create ustreamer user
-  user:
-    name: "{{ ustreamer_user }}"
-    group: "{{ ustreamer_group }}"
-    groups:
-      - video
-    system: yes
-    create_home: yes
-
 - name: check for a boot config file
   stat:
     path: /boot/config.txt
