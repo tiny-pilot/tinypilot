@@ -26,7 +26,7 @@ provisioner:
     # parameter. See
     # https://github.com/ansible-community/molecule/issues/3065#issuecomment-835897461
     extra-vars: >
-      ustreamer_debian_package_path=https://output.circle-artifacts.com/output/job/de0f3ea7-56d3-4220-b9c4-ccf4bd19f661/artifacts/0/build/linux_amd64/ustreamer_5.38-20230620124412_amd64.deb
+      ustreamer_debian_package_path=https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.38-20230620124412/ustreamer_5.38-20230620124412_amd64.deb
 verifier:
   name: ansible
 scenario:
