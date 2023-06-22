@@ -14,12 +14,8 @@ set -x
 # shellcheck disable=SC1091 # Don’t follow sourced script.
 . lib.sh
 
-readonly TMPDIR="${PWD}/tmp"
-export TMPDIR
-mkdir -p "${TMPDIR}"
-
 # Temporary file for installation settings.
-INSTALL_SETTINGS_FILE="$(mktemp --tmpdir="${TMPDIR}" --suffix .yml)"
+INSTALL_SETTINGS_FILE="$(mktemp --suffix .yml)"
 readonly INSTALL_SETTINGS_FILE
 
 # The eventual, permanent settings files. Note, that these might not exist

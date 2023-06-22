@@ -115,6 +115,11 @@ else
 fi
 readonly INSTALLER_DIR
 
+# Use a temporary directory within the installer directory.
+readonly TMPDIR="${INSTALLER_DIR}/tmp"
+export TMPDIR
+mkdir -p "${TMPDIR}"
+
 readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
 # Download tarball to RAMdisk.
