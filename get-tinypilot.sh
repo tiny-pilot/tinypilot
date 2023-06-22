@@ -111,7 +111,8 @@ if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
     --verbose
 else
   # Fall back to installing from disk.
-  INSTALLER_DIR="$(mktemp --directory)"
+  # TODO: Explain /var/tmp.
+  INSTALLER_DIR="$(mktemp --tmpdir='/var/tmp' --directory)"
 fi
 readonly INSTALLER_DIR
 
