@@ -14,13 +14,12 @@ set -x
 # shellcheck disable=SC1091 # Don’t follow sourced script.
 . lib.sh
 
-# HACK: If we let mktemp use the default /tmp directory, the system purges the
-# file before the end of the script for some reason. We use /var/tmp as a
-# workaround.
-readonly TEMP_DIR='/var/tmp'
+readonly TMPDIR="${PWD}/tmp"
+export TMPDIR
+mkdir -p "${TMPDIR}"
 
 # Temporary file for installation settings.
-INSTALL_SETTINGS_FILE="$(mktemp --tmpdir="${TEMP_DIR}" --suffix .yml)"
+INSTALL_SETTINGS_FILE="$(mktemp --tmpdir="${TMPDIR}" --suffix .yml)"
 readonly INSTALL_SETTINGS_FILE
 
 # The eventual, permanent settings files. Note, that these might not exist
