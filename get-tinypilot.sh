@@ -71,11 +71,11 @@ readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 #   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
 readonly RAMDISK_SIZE_MIB=500
 
-FREE_MEMORY_MIB="$(free --mebi |
+AVAILABLE_MEMORY_MIB="$(free --mebi |
   grep --fixed-strings 'Mem:' |
   tr --squeeze-repeats ' ' |
-  cut --delimiter ' ' --fields 4)"
-readonly FREE_MEMORY_MIB
+  cut --delimiter ' ' --fields 7)"
+readonly AVAILABLE_MEMORY_MIB
 
 # Assign a provisional installation directory for our `clean_up` function.
 INSTALLER_DIR='/mnt/tinypilot-installer'
@@ -93,7 +93,7 @@ trap 'clean_up' EXIT
 
 # Determine the installation directory. Use RAMdisk if there is enough memory,
 # otherwise, fall back to regular disk.
-if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
+if (( "${AVAILABLE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
   # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
