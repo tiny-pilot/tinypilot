@@ -121,7 +121,8 @@ else
 fi
 readonly INSTALLER_DIR
 
-# Use a temporary directory within the installer directory.
+# Use a temporary directory within the installer directory so that we take
+# advantage of RAMdisk if we're using one.
 readonly TMPDIR="${INSTALLER_DIR}/tmp"
 export TMPDIR
 sudo mkdir "${TMPDIR}"
