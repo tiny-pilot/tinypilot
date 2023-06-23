@@ -60,15 +60,6 @@ set -x
 
 readonly BUNDLE_PATH="$1"
 
-if [[ "${BUNDLE_PATH}" == http* ]]; then
-  cd "$(mktemp --directory)"
-  wget "${BUNDLE_PATH}"
-  BUNDLE_FILE_PATH="${PWD}/$(find . -name '*.tgz')"
-  readonly BUNDLE_FILE_PATH
-else
-  readonly BUNDLE_FILE_PATH="${BUNDLE_PATH}"
-fi
-
 # Historically, the TinyPilot bundle was unpacked to the device's disk, where it
 # persisted. Since then, we've moved to the use of a volatile RAMdisk, which
 # avoids excessive writes to the filesystem. As a result, this legacy installer
@@ -142,11 +133,22 @@ readonly TMPDIR="${INSTALLER_DIR}/tmp"
 export TMPDIR
 mkdir "${TMPDIR}"
 
+if [[ "${BUNDLE_PATH}" == http* ]]; then
+  readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
+  curl "${BUNDLE_PATH}" \
+    --location \
+    --output "${BUNDLE_FILE}" \
+    --show-error \
+    --silent
+else
+  readonly BUNDLE_FILE="${BUNDLE_PATH}"
+fi
+
 # Extract tarball to installer directory.
 tar \
   --gunzip \
   --extract \
-  --file "${BUNDLE_FILE_PATH}" \
+  --file "${BUNDLE_FILE}" \
   --directory "${INSTALLER_DIR}"
 
 # Run install.
