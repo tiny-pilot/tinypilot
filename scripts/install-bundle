@@ -81,10 +81,11 @@ readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
 #     script
+# - About 50 MiB of temporary files
 # - At least a 20% safety margin
 # Use the following command to help you estimate a sensible size allocation:
 #   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
-readonly RAMDISK_SIZE_MIB=500
+readonly RAMDISK_SIZE_MIB=560
 
 FREE_MEMORY_MIB="$(free --mebi |
   grep --fixed-strings 'Mem:' |
