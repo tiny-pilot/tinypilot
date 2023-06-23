@@ -134,6 +134,7 @@ mkdir "${TMPDIR}"
 if [[ "${BUNDLE_PATH}" == http* ]]; then
   readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
   curl "${BUNDLE_PATH}" \
+    --location \
     --output "${BUNDLE_FILE}" \
     --show-error \
     --silent
