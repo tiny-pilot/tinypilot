@@ -112,9 +112,9 @@ if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
     --verbose
 else
   # Fall back to installing from disk.
-  # HACK: If we let mktemp use the default /tmp directory, the system purges the
-  # file before the end of the script for some reason. We use /var/tmp as a
-  # workaround.
+  # HACK: If we let mktemp use the default /tmp directory, the system begins
+  # purging files before the end of the script for some reason. We use /var/tmp
+  # as a workaround.
   INSTALLER_DIR="$(mktemp \
     --tmpdir='/var/tmp' \
     --directory)"
