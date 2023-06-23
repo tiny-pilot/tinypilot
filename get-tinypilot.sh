@@ -130,7 +130,7 @@ sudo mkdir "${TMPDIR}"
 readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
 # Download tarball to RAMdisk.
-HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
+HTTP_CODE="$(curl https://output.circle-artifacts.com/output/job/2611c130-fe8f-4773-831b-d9fa2b720044/artifacts/0/bundler/dist/tinypilot-community-20230623T1646Z-1.8.3-69+f104621.tgz \
   --location \
   --output "${BUNDLE_FILE}" \
   --write-out '%{http_code}' \
