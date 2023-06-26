@@ -66,24 +66,25 @@ readonly LEGACY_INSTALLER_DIR='/opt/tinypilot-updater'
 # - The TinyPilot bundle archive
 # - The unpacked TinyPilot bundle archive, after running the bundle's `install`
 #     script
+# - About 50 MiB of temporary files
 # - At least a 20% safety margin
 # Use the following command to help you estimate a sensible size allocation:
 #   du --summarize --total --bytes "${INSTALLER_DIR}" "${BUNDLE_FILE}"
-readonly RAMDISK_SIZE_MIB=500
+readonly RAMDISK_SIZE_MIB=560
 
-FREE_MEMORY_MIB="$(free --mebi |
+AVAILABLE_MEMORY_MIB="$(free --mebi |
   grep --fixed-strings 'Mem:' |
   tr --squeeze-repeats ' ' |
-  cut --delimiter ' ' --fields 4)"
-readonly FREE_MEMORY_MIB
+  cut --delimiter ' ' --fields 7)"
+readonly AVAILABLE_MEMORY_MIB
 
 # Assign a provisional installation directory for our `clean_up` function.
 INSTALLER_DIR='/mnt/tinypilot-installer'
 
 # Remove temporary files & directories.
 clean_up() {
-  umount --lazy "${INSTALLER_DIR}" || true
-  rm -rf \
+  sudo umount --lazy "${INSTALLER_DIR}" || true
+  sudo rm -rf \
     "${LEGACY_INSTALLER_DIR}" \
     "${INSTALLER_DIR}"
 }
@@ -93,7 +94,7 @@ trap 'clean_up' EXIT
 
 # Determine the installation directory. Use RAMdisk if there is enough memory,
 # otherwise, fall back to regular disk.
-if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
+if (( "${AVAILABLE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
   # Mount volatile RAMdisk.
   # Note: `tmpfs` can use swap space when the device's physical memory is under
   # pressure. Alternatively, we could use `ramfs` which doesn't use swap space,
@@ -111,9 +112,20 @@ if (( "${FREE_MEMORY_MIB}" >= "${RAMDISK_SIZE_MIB}" )); then
     --verbose
 else
   # Fall back to installing from disk.
-  INSTALLER_DIR="$(mktemp --directory)"
+  # HACK: If we let mktemp use the default /tmp directory, the system begins
+  # purging files before the end of the script for some reason. We use /var/tmp
+  # as a workaround.
+  INSTALLER_DIR="$(mktemp \
+    --tmpdir='/var/tmp' \
+    --directory)"
 fi
 readonly INSTALLER_DIR
+
+# Use a temporary directory within the installer directory so that we take
+# advantage of RAMdisk if we're using one.
+readonly TMPDIR="${INSTALLER_DIR}/tmp"
+export TMPDIR
+sudo mkdir "${TMPDIR}"
 
 readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
 
@@ -147,6 +159,8 @@ fi
 
 # Run install.
 pushd "${INSTALLER_DIR}"
-sudo ./install
+sudo \
+  TMPDIR="${TMPDIR}" \
+  ./install
 
 } # Prevent the script from executing until the client downloads the full file.
