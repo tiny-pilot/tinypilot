@@ -114,6 +114,16 @@
   apt:
     deb: "{{ ustreamer_debian_package_path }}"
 
+- name: fix uStreamer folder permissions
+  file:
+    path: "{{ ustreamer_dir }}"
+    state: directory
+    owner: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    recurse: yes
+  tags:
+    - molecule-idempotence-notest
+
 - name: install uStreamer as a service
   template:
     src: ustreamer.systemd.j2
