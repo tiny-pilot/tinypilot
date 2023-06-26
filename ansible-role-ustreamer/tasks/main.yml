@@ -13,9 +13,6 @@
          or ustreamer_h264_sink_rm != None
          or ustreamer_h264_bitrate != None)
 
-# If the `build uStreamer` step should be run with the `WITH_JANUS` option, we
-# need to install the Janus Debian package beforehand, because it provides
-# C-headers.
 - name: determine whether to install Janus
   set_fact:
     ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
