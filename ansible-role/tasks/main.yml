@@ -23,6 +23,3 @@
   systemd:
     name: tinypilot
     enabled: yes
-
-- name: install nginx
-  import_tasks: nginx.yml

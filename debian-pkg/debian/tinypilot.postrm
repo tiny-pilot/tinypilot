@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Exit script on first failure.
+set -e
+
+# Exit on unset variable.
+set -u
+
+rm -f \
+  /etc/nginx/conf.d/tinypilot.conf \
+  /etc/nginx/sites-enabled/tinypilot
+
+#DEBHELPER#

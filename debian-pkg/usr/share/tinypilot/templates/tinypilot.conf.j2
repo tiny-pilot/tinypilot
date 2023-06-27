@@ -1,0 +1,80 @@
+upstream tinypilot {
+    server {{ tinypilot_interface }}:{{ tinypilot_port }} fail_timeout=1s max_fails=600;
+}
+upstream ustreamer {
+    server {{ ustreamer_interface }}:{{ ustreamer_port }} fail_timeout=1s max_fails=600;
+}
+upstream janus-ws {
+    server 127.0.0.1:8002 fail_timeout=1s max_fails=600;
+}
+
+server {
+    listen {{ tinypilot_external_port }} default_server;
+    listen [::]:{{ tinypilot_external_port }} default_server;
+
+    server_name tinypilot;
+
+    root /opt/tinypilot;
+
+    index index.html;
+
+    proxy_buffers 16 16k;
+    proxy_buffer_size 16k;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_http_version 1.1;
+
+    location /socket.io {
+        proxy_pass http://tinypilot;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        # Since this is a connection upgrade, we don't inherit the settings from
+        # above. We need these so that nginx forwards requests properly to
+        # Flask-SocketIO.
+        # See: https://github.com/miguelgrinberg/Flask-SocketIO/issues/1501#issuecomment-802082048
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    location /state {
+        proxy_pass http://ustreamer;
+    }
+    location /stream {
+        postpone_output 0;
+        proxy_buffering off;
+        proxy_ignore_headers X-Accel-Buffering;
+        proxy_pass http://ustreamer;
+    }
+    location /snapshot {
+        proxy_pass http://ustreamer;
+    }
+    location /janus/ws {
+        proxy_pass http://janus-ws;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    location / {
+        proxy_pass http://tinypilot;
+    }
+    location ~* ^/.+\.(html|js|js.map|css|woff|woff2)$ {
+        root "/opt/tinypilot/app/static";
+
+        # We cache assets to prevent the browser from making redundant
+        # requests to the same files while loading the page. (Observed on
+        # Chrome 91.) We don’t want caching otherwise, though, in order to
+        # avoid stale files after users update their device. Note, that in
+        # addition to `max-age`, the browser’s caching behaviour is relative
+        # to the `Last-Modified` header, so we make that seem recent.
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'public, max-age=10s';
+    }
+    location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
+        root "/opt/tinypilot/app/static";
+    }
+}

@@ -70,5 +70,20 @@ readonly SETTINGS_TEMPLATE
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
 popd
 
+readonly TINYPILOT_NGINX_TEMPLATE_FILE='/usr/share/tinypilot/templates/tinypilot.conf.j2'
+TINYPILOT_NGINX_TEMPLATE="$(cat "${TINYPILOT_NGINX_TEMPLATE_FILE}")"
+readonly TINYPILOT_NGINX_TEMPLATE
+readonly TINYPILOT_NGINX_FILE='/etc/nginx/conf.d/tinypilot.conf'
+pushd /opt/tinypilot
+. venv/bin/activate && \
+  PYTHONPATH=/opt/tinypilot/app \
+    ./scripts/render-template \
+  <<< "${TINYPILOT_NGINX_TEMPLATE}" \
+  > "${TINYPILOT_NGINX_FILE}" && \
+  deactivate
+popd
+chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_NGINX_FILE}"
+ln --symbolic "${TINYPILOT_NGINX_FILE}" /etc/nginx/sites-enabled/tinypilot
+systemctl reload nginx
 
 #DEBHELPER#
