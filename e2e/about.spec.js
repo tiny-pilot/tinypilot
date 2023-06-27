@@ -4,8 +4,8 @@ test("shows about page, license, privacy policy, and dependency pages and licens
   page,
 }) => {
   await page.goto("/");
-  await page.getByText("Help", { exact: true }).hover();
-  await page.getByText("About", { exact: true }).click();
+  await page.getByRole("menuitem", { name: "Help" }).hover();
+  await page.getByRole("menuitem", { name: "About" }).click();
   await expect(
     page.getByRole("heading", { name: "About TinyPilot" })
   ).toBeVisible();
