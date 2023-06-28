@@ -4,6 +4,9 @@
   tags:
     - ustreamer
 
+- name: install nginx
+  import_tasks: nginx.yml
+
 - name: install TinyPilot Debian package
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
