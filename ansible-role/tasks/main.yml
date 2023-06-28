@@ -8,17 +8,6 @@
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
 
-- name: create TinyPilot app settings
-  template:
-    src: tinypilot-app-settings.cfg.j2
-    dest: "{{ tinypilot_app_settings_file }}"
-    owner: "{{ tinypilot_user }}"
-    group: "{{ tinypilot_group }}"
-  notify:
-    - restart TinyPilot service
-  tags:
-    - app-settings
-
 - name: install TinyPilot as a service
   template:
     src: tinypilot.systemd.j2

@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# Run end-to-end tests of UI navigation.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first failure.
+set -e
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [target URL]
+Run end-to-end tests of UI navigation.
+  target URL: URL of running TinyPilot server to test against.
+    Must start with 'http'.
+    If not specified, the script first starts a local dev server.
+  -h Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while getopts 'h' opt; do
+  case "${opt}" in
+    h)
+      print_help
+      exit
+      ;;
+    *)
+      print_help >&2
+      exit 1
+  esac
+done
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+# If the first argument starts with http, strip it to export it as E2E_BASE_URL
+# That way, playwright.config.js can use it to override the default base URL and
+# will not start a local webserver.
+if [[ $# -gt 0 && "$1" =~ ^http ]]; then
+  export E2E_BASE_URL="$1"
+  readonly E2E_BASE_URL
+  shift
+fi
+
+npx playwright test

@@ -1,0 +1,227 @@
+---
+- name: include distribution-specific vars
+  include_vars: "{{ ansible_distribution }}.yml"
+
+- name: check that the H264 variables are in a consistent state
+  fail:
+    msg: >-
+      The H264 variables are in an inconsistent state. You must set the
+      ustreamer_h264_sink variable in order to set other H264 variables.
+  when: >-
+    ustreamer_h264_sink == None
+    and (ustreamer_h264_sink_mode != None
+         or ustreamer_h264_sink_rm != None
+         or ustreamer_h264_bitrate != None)
+
+# If the `build uStreamer` step should be run with the `WITH_JANUS` option, we
+# need to install the Janus Debian package beforehand, because it provides
+# C-headers.
+- name: determine whether to install Janus
+  set_fact:
+    ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
+
+- name: detect OS
+  set_fact:
+    ustreamer_is_os_raspbian: "{{ ansible_lsb.id is defined and ansible_lsb.id == 'Raspbian' }}"
+    ustreamer_is_os_debian: "{{ ansible_lsb.id is defined and ansible_lsb.id == 'Debian' }}"
+
+- name: decide whether to support audio streaming
+  set_fact:
+    # Audio streaming requires Janus because MJPEG can't carry audio.
+    ustreamer_enable_audio_streaming: "{{ ustreamer_install_janus }}"
+
+- name: install Janus
+  include_tasks: install_janus.yml
+  when: ustreamer_install_janus
+
+- name: create ustreamer group
+  group:
+    name: "{{ ustreamer_group }}"
+    state: present
+
+- name: create ustreamer user
+  user:
+    name: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    groups:
+      - video
+    system: yes
+    create_home: yes
+
+- name: check for a boot config file
+  stat:
+    path: /boot/config.txt
+  register: boot_config_result
+
+- name: save whether boot config file exists
+  set_fact:
+    boot_config_exists: "{{ boot_config_result.stat.exists }}"
+
+- name: check whether this machine has a uStreamer settings file
+  stat:
+    path: "{{ ustreamer_settings_file }}"
+  register: ustreamer_settings_file_result
+
+- name: read saved settings
+  import_tasks: check_saved_settings.yml
+  when: ustreamer_settings_file_result.stat.exists | bool
+
+- name: configure TC358743 HDMI capture chip
+  import_tasks: provision_tc358743.yml
+  when: ustreamer_capture_device == 'tc358743'
+
+- name: uninstall TC358743 settings if they're not in use
+  import_tasks: remove_tc358743.yml
+  when: ustreamer_capture_device != 'tc358743'
+
+- name: collect universal required apt packages
+  set_fact:
+    ustreamer_packages:
+      - build-essential
+      - git
+      - libevent-dev
+      - libbsd-dev
+      - uuid-dev
+
+- name: collect Raspberry Pi OS specific required apt packages
+  set_fact:
+    ustreamer_packages: "{{ ustreamer_packages }} + ['libjpeg9-dev']"
+  when: ustreamer_is_os_raspbian
+
+- name: collect Raspberry Pi OS and Debian specific required apt packages for audio
+  set_fact:
+    ustreamer_packages: "{{ ustreamer_packages }} + ['libasound2-dev', 'libspeex-dev', 'libspeexdsp-dev', 'libopus-dev']"
+  when: ustreamer_install_janus and ustreamer_enable_audio_streaming
+
+- name: collect Debian-specific required apt packages
+  set_fact:
+    ustreamer_packages: "{{ ustreamer_packages }} + ['libjpeg62-turbo-dev']"
+  when: ustreamer_is_os_debian
+
+- name: collect Ubuntu-specific required apt packages
+  set_fact:
+    ustreamer_packages: "{{ ustreamer_packages }} + ['gcc', 'libjpeg8', 'libjpeg-dev', 'libjpeg-turbo8', 'libuuid1', 'libbsd0', 'make']"
+  when: ansible_distribution == 'Ubuntu'
+
+- name: collect Janus WebRTC plugin specific required apt packages
+  set_fact:
+    ustreamer_packages: "{{ ustreamer_packages }} + ['libglib2.0-dev', 'libjansson-dev']"
+  when: ustreamer_install_janus
+
+- name: install uStreamer pre-requisite packages
+  apt:
+    name: "{{ ustreamer_packages }}"
+    state: present
+
+- name: install uStreamer Debian package
+  apt:
+    deb: "{{ ustreamer_debian_package_path }}"
+  when: ustreamer_debian_package_path != None
+
+- name: create uStreamer folder
+  file:
+    path: "{{ ustreamer_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes
+  tags:
+    # This fails the idempotency test because it must run on every provision
+    # to set the correct directory ownership that allows git to sync.
+    # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
+    - molecule-idempotence-notest
+  when: ustreamer_debian_package_path == None
+
+- name: get uStreamer repo
+  # Don't escalate privileges because only the directory owner can use git.
+  # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
+  become: no
+  git:
+    repo: "{{ ustreamer_repo }}"
+    dest: "{{ ustreamer_dir }}"
+    version: "{{ ustreamer_repo_version }}"
+  tags:
+    # This fails the idempotency test because we're also skipping the
+    # idempotency test on the previous task that allows git to sync.
+    # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
+    - molecule-idempotence-notest
+  when: ustreamer_debian_package_path == None
+
+# We always need to clean and build uStreamer to ensure that the uStreamer
+# service is in sync with its dependencies installed on the device.
+# Issue: https://github.com/tiny-pilot/ansible-role-tinypilot/issues/174
+- name: clean uStreamer repository
+  make:
+    chdir: "{{ ustreamer_dir }}"
+    target: clean
+  tags:
+    - molecule-idempotence-notest
+  when: ustreamer_debian_package_path == None
+
+- name: build uStreamer
+  make:
+    chdir: "{{ ustreamer_dir }}"
+    params:
+      WITH_JANUS: "{{ ustreamer_install_janus | int }}"
+  notify:
+    - restart uStreamer
+  tags:
+    - molecule-idempotence-notest
+  when: ustreamer_debian_package_path == None
+
+- name: fix uStreamer folder permissions
+  file:
+    path: "{{ ustreamer_dir }}"
+    state: directory
+    owner: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    recurse: yes
+  tags:
+    - molecule-idempotence-notest
+
+- name: install uStreamer as a service
+  template:
+    src: ustreamer.systemd.j2
+    dest: /lib/systemd/system/ustreamer.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - reload systemd config
+    - restart uStreamer
+    - restart Janus
+
+- name: enable systemd uStreamer service file
+  systemd:
+    name: ustreamer
+    enabled: yes
+
+- name: save uStreamer settings file
+  template:
+    src: config.yml.j2
+    dest: "{{ ustreamer_settings_file }}"
+    owner: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    mode: "0644"
+
+- name: create uStreamer Janus plugin config
+  template:
+    src: janus.plugin.ustreamer.jcfg.j2
+    dest: "{{ ustreamer_janus_configs_dir }}/janus.plugin.ustreamer.jcfg"
+  notify:
+    - restart Janus
+  when: ustreamer_install_janus
+
+- name: install uStreamer Janus plugin
+  copy:
+    remote_src: yes
+    # The `build uStreamer` step created and placed the `.so` file in case it
+    # had been run with the `WITH_JANUS` option.
+    src: "{{ ustreamer_dir }}/janus/libjanus_ustreamer.so"
+    dest: "{{ ustreamer_janus_plugins_dir }}"
+  notify:
+    - restart Janus
+  when: ustreamer_debian_package_path == None and ustreamer_install_janus
+
+- name: install uStreamer launcher
+  import_tasks: install_launcher.yml

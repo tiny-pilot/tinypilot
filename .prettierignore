@@ -1,2 +1,4 @@
 app/static/third-party
 venv
+e2e-results
+playwright-report

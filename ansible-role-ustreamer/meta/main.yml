@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: ustreamer
+  author: Michael Lynch
+  description: A lightweight, optimized video streaming service
+  license: MIT
+
+  min_ansible_version: 2.8
+
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - jammy
+
+  galaxy_tags:
+    - raspberrypi
+    - usb
+    - oss
+
+dependencies: []

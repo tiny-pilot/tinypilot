@@ -7,7 +7,7 @@ jobs:
   updateFork:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: tiny-pilot/tinypilot-pro
           token: ${{ secrets.PR_BOT_PAT }}
@@ -16,8 +16,20 @@ jobs:
           git remote add upstream https://github.com/tiny-pilot/tinypilot.git
           git fetch upstream master:upstream-master
           git reset --hard upstream-master
+      - name: Get the URL of the original community PR
+        run: |
+          set -ux
+          COMMUNITY_PR_URL="$(curl \
+            --silent \
+            --show-error \
+            https://api.github.com/repos/tiny-pilot/tinypilot/commits/${{ github.sha }}/pulls?per_page=1 | \
+            jq \
+              --raw-output \
+              '.[0].html_url | select (.!=null)')"
+          readonly COMMUNITY_PR_URL
+          echo "COMMUNITY_PR_URL=${COMMUNITY_PR_URL}" >> "${GITHUB_ENV}"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_BOT_PAT }}
           branch: community-changes-${{ github.sha }}
@@ -27,6 +39,8 @@ jobs:
           assignees: ${{ github.actor }}
           title: Merge changes from community repository
           body: |
+            Related ${{ env.COMMUNITY_PR_URL }}
+
             ${{ github.actor }}, please merge the last changes from community repository:
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}

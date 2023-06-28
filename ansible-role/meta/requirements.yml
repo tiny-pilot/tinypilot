@@ -1,3 +1,2 @@
 ---
-- src: https://github.com/tiny-pilot/ansible-role-ustreamer
 - src: https://github.com/tiny-pilot/ansible-role-nginx

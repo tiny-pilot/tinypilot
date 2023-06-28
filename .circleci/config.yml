@@ -14,5 +14,6 @@ workflows:
           name: build_pipeline_params
           mapping: |
             ansible-role/.* ansible_role_changed true
+            ansible-role-ustreamer/.* ansible_role_changed true
           base-revision: master
           config-path: .circleci/continue_config.yml

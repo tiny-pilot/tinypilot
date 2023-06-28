@@ -26,6 +26,7 @@ readonly OUTPUT_DIR='dist'
 
 readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
 readonly ANSIBLE_ROLE_TINYPILOT_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-tinypilot"
+readonly ANSIBLE_ROLE_USTREAMER_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-ustreamer"
 
 # Exclude the AMD64 package from the production bundle.
 rm -f "${BUNDLE_DIR}/tinypilot"*amd64.deb
@@ -76,12 +77,15 @@ pip install --requirement "${BUNDLE_DIR}/requirements.txt"
 rm -rf "${ANSIBLE_ROLES_DIR}"
 mkdir "${ANSIBLE_ROLES_DIR}"
 
-# Copy Ansible role.
+# Copy local Ansible roles.
 cp -r \
   --no-target-directory \
   ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
+cp -r \
+  --no-target-directory \
+  ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
 
-# Download Ansible role dependencies.
+# Download remote Ansible roles.
 ansible-galaxy install \
   --roles-path "${ANSIBLE_ROLES_DIR}" \
   --role-file "${ANSIBLE_ROLE_TINYPILOT_DIR}/meta/requirements.yml" \
