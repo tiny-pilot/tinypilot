@@ -11,8 +11,6 @@ Installs µStreamer via a Debian package and enables it as a systemd service.
 Required variables are listed below:
 
 ```yaml
-# Specifies the filesystem path or URL of a Debian package that installs
-# uStreamer.
 ustreamer_debian_package_path: ustreamer_0.0-00000000000000_armhf.deb
 ```
 
