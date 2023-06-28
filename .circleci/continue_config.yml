@@ -7,7 +7,7 @@ parameters:
   # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
   bundle_build_branch:
     type: string
-    default: master
+    default: << pipeline.git.branch >>
 jobs:
   check_whitespace:
     docker:
