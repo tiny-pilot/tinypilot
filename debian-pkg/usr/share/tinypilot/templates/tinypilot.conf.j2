@@ -9,8 +9,8 @@ upstream janus-ws {
 }
 
 server {
-    listen {{ tinypilot_external_port }} default_server;
-    listen [::]:{{ tinypilot_external_port }} default_server;
+    listen {{ tinypilot_external_port }};
+    listen [::]:{{ tinypilot_external_port }};
 
     server_name tinypilot;
 

@@ -85,7 +85,7 @@ pushd /opt/tinypilot > /dev/null
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_NGINX_FILE}"
 popd > /dev/null
 
-# Enable TinyPilot's virtual host.
+# Enable TinyPilot's NGINX server.
 readonly TINYPILOT_NGINX_ENABLE_LINK='/etc/nginx/sites-enabled/tinypilot.conf'
 if [[ ! -L "${TINYPILOT_NGINX_ENABLE_LINK}" ]]; then
   ln \
@@ -93,6 +93,10 @@ if [[ ! -L "${TINYPILOT_NGINX_ENABLE_LINK}" ]]; then
     "${TINYPILOT_NGINX_FILE}" \
     "${TINYPILOT_NGINX_ENABLE_LINK}"
 fi
+
+# Disable default NGINX server.
+rm -f \
+  /etc/nginx/sites-enabled/default
 
 # Test and reload NGINX config.
 nginx -t > /dev/null
