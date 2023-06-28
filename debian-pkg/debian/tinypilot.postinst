@@ -50,7 +50,7 @@ if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
 fi
 
 # Populate TinyPilot's Flask settings file.
-pushd /opt/tinypilot
+pushd /opt/tinypilot > /dev/null
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
 SETTINGS_TEMPLATE="$(cat <<-'EOF'
 # This configuration file is an actual Python file. Only variables in uppercase
@@ -68,7 +68,7 @@ readonly SETTINGS_TEMPLATE
   > "${TINYPILOT_APP_SETTINGS}" && \
   deactivate
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
-popd
+popd > /dev/null
 
 # Populate TinyPilot's NGINX config file.
 readonly TINYPILOT_NGINX_TEMPLATE_FILE='/usr/share/tinypilot/templates/tinypilot.conf.j2'
