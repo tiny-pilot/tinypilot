@@ -6,8 +6,12 @@ set -e
 # Exit on unset variable.
 set -u
 
+# Disable TinyPilot's virtual host and remove NGINX config.
 rm -f \
-  /etc/nginx/conf.d/tinypilot.conf \
-  /etc/nginx/sites-enabled/tinypilot
+  /etc/nginx/sites-enabled/tinypilot.conf \
+  /etc/nginx/sites-available/tinypilot.conf
+
+# Reload NGINX config.
+nginx -s reload || true
 
 #DEBHELPER#
