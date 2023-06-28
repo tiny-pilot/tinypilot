@@ -1,9 +1,4 @@
 ---
-# Specifies the filesystem path or URL of a Debian package that installs
-# uStreamer.
-ustreamer_debian_package_path: >-
-  {{ undef(hint='You must set the ustreamer_debian_package_path variable') }}
-
 # Network interface to listen for connections.
 ustreamer_interface: null
 
