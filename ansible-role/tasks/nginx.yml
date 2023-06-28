@@ -2,4 +2,3 @@
 - name: import nginx role
   import_role:
     name: ansible-role-nginx
-
