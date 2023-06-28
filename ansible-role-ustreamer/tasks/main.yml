@@ -13,9 +13,6 @@
          or ustreamer_h264_sink_rm != None
          or ustreamer_h264_bitrate != None)
 
-# If the `build uStreamer` step should be run with the `WITH_JANUS` option, we
-# need to install the Janus Debian package beforehand, because it provides
-# C-headers.
 - name: determine whether to install Janus
   set_fact:
     ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
@@ -116,58 +113,6 @@
 - name: install uStreamer Debian package
   apt:
     deb: "{{ ustreamer_debian_package_path }}"
-  when: ustreamer_debian_package_path != None
-
-- name: create uStreamer folder
-  file:
-    path: "{{ ustreamer_dir }}"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    recurse: yes
-  tags:
-    # This fails the idempotency test because it must run on every provision
-    # to set the correct directory ownership that allows git to sync.
-    # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
-    - molecule-idempotence-notest
-  when: ustreamer_debian_package_path == None
-
-- name: get uStreamer repo
-  # Don't escalate privileges because only the directory owner can use git.
-  # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
-  become: no
-  git:
-    repo: "{{ ustreamer_repo }}"
-    dest: "{{ ustreamer_dir }}"
-    version: "{{ ustreamer_repo_version }}"
-  tags:
-    # This fails the idempotency test because we're also skipping the
-    # idempotency test on the previous task that allows git to sync.
-    # Issue: https://github.com/tiny-pilot/tinypilot/issues/963
-    - molecule-idempotence-notest
-  when: ustreamer_debian_package_path == None
-
-# We always need to clean and build uStreamer to ensure that the uStreamer
-# service is in sync with its dependencies installed on the device.
-# Issue: https://github.com/tiny-pilot/ansible-role-tinypilot/issues/174
-- name: clean uStreamer repository
-  make:
-    chdir: "{{ ustreamer_dir }}"
-    target: clean
-  tags:
-    - molecule-idempotence-notest
-  when: ustreamer_debian_package_path == None
-
-- name: build uStreamer
-  make:
-    chdir: "{{ ustreamer_dir }}"
-    params:
-      WITH_JANUS: "{{ ustreamer_install_janus | int }}"
-  notify:
-    - restart uStreamer
-  tags:
-    - molecule-idempotence-notest
-  when: ustreamer_debian_package_path == None
 
 - name: fix uStreamer folder permissions
   file:
@@ -211,17 +156,6 @@
   notify:
     - restart Janus
   when: ustreamer_install_janus
-
-- name: install uStreamer Janus plugin
-  copy:
-    remote_src: yes
-    # The `build uStreamer` step created and placed the `.so` file in case it
-    # had been run with the `WITH_JANUS` option.
-    src: "{{ ustreamer_dir }}/janus/libjanus_ustreamer.so"
-    dest: "{{ ustreamer_janus_plugins_dir }}"
-  notify:
-    - restart Janus
-  when: ustreamer_debian_package_path == None and ustreamer_install_janus
 
 - name: install uStreamer launcher
   import_tasks: install_launcher.yml
