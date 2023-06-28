@@ -1,8 +1,4 @@
 ---
-# Specifies the filesystem path or URL of a Debian package that installs
-# uStreamer.
-ustreamer_debian_package_path: null
-
 # Network interface to listen for connections.
 ustreamer_interface: null
 
