@@ -8,12 +8,6 @@ Installs µStreamer via a Debian package and enables it as a systemd service.
 
 ## Role Variables
 
-Required variables are listed below:
-
-```yaml
-ustreamer_debian_package_path: ustreamer_0.0-00000000000000_armhf.deb
-```
-
 For a full list of options, see [defaults/main.yml](defaults/main.yml).
 
 ## Dependencies
@@ -33,11 +27,7 @@ None
 ### Running Example Playbook
 
 ```bash
-USTREAMER_DEBIAN_PACKAGE='ustreamer_0.0-00000000000000_armhf.deb'
-
-ansible-playbook \
-  example.yml \
-  --extra-vars "ustreamer_debian_package_path=${USTREAMER_DEBIAN_PACKAGE}"
+ansible-playbook example.yml
 ```
 
 ## License
