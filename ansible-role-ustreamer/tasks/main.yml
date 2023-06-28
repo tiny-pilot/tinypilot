@@ -101,14 +101,6 @@
     name: ustreamer
     enabled: yes
 
-- name: save uStreamer settings file
-  template:
-    src: config.yml.j2
-    dest: "{{ ustreamer_settings_file }}"
-    owner: "{{ ustreamer_user }}"
-    group: "{{ ustreamer_group }}"
-    mode: "0644"
-
 - name: create uStreamer Janus plugin config
   template:
     src: janus.plugin.ustreamer.jcfg.j2
@@ -142,6 +134,14 @@
 - name: uninstall TC358743 settings if they're not in use
   import_tasks: remove_tc358743.yml
   when: ustreamer_capture_device != 'tc358743'
+
+- name: save uStreamer settings file
+  template:
+    src: config.yml.j2
+    dest: "{{ ustreamer_settings_file }}"
+    owner: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    mode: "0644"
 
 - name: install uStreamer launcher
   import_tasks: install_launcher.yml
