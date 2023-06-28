@@ -110,6 +110,16 @@ print_info "Checking if SSH is enabled..."
   echo "SSH access: ${SSH_STATUS}"
 } >> "${LOG_FILE}"
 
+print_info "Checking network interfaces..."
+{
+  echo "Network interfaces:"
+  readonly INTERFACES="/sys/class/net"
+  for interface in "${INTERFACES}"/* ; do
+    ifname="${interface##*/}"
+    echo "  ${ifname} ($(cat ${INTERFACES}/"${ifname/}"/operstate))"
+  done
+} >> "${LOG_FILE}"
+
 print_info "Checking temperature..."
 printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
 
