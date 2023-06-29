@@ -15,20 +15,10 @@
     state: present
   when: ustreamer_is_os_raspbian or ustreamer_is_os_debian
 
-- name: install Janus package and C header files
+- name: install Janus package
   apt:
-    name:
-      - janus
-      - janus-dev
+    name: janus
     default_release: "{{ ustreamer_janus_apt_suite }}"
-
-# Allow Janus C header files to be included when compiling third-party plugins.
-# Issue: https://github.com/tiny-pilot/ansible-role-tinypilot/issues/192
-- name: patch Janus plugin.h file to successfully include refcount.h file
-  lineinfile:
-    path: /usr/include/janus/plugins/plugin.h
-    regexp: '^#include "refcount\.h"$'
-    line: '#include "../refcount.h"'
 
 - name: create Janus config files
   template:
@@ -42,15 +32,3 @@
     - janus.transport.websockets.jcfg
   notify:
     - restart Janus
-
-# To determine the correct path for Janus plugins, transports, and loggers we
-# need to determine the base multi-arch library path for the target machine.
-# https://wiki.osdev.org/Target_Triplet
-- name: get multi-arch target triplet (i.e., machine-vendor-operatingsystem)
-  shell: gcc -dumpmachine
-  register: ustreamer_multiarch_target_result
-  changed_when: false
-
-- name: determine Janus plugins directory
-  set_fact:
-    ustreamer_janus_plugins_dir: /usr/lib/{{ ustreamer_multiarch_target_result.stdout }}/janus/plugins
