@@ -248,7 +248,6 @@ jobs:
             pip install -r molecule/requirements.txt && \
             ansible --version && \
             molecule --version && \
-            ansible-galaxy install --role-file meta/requirements.yml && \
             molecule test
   build_bundle:
     docker:
