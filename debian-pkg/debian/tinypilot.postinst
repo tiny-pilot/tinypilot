@@ -87,12 +87,11 @@ popd > /dev/null
 
 # Enable TinyPilot's NGINX server.
 readonly TINYPILOT_NGINX_ENABLE_LINK='/etc/nginx/sites-enabled/tinypilot.conf'
-if [[ ! -L "${TINYPILOT_NGINX_ENABLE_LINK}" ]]; then
-  ln \
-    --symbolic \
-    "${TINYPILOT_NGINX_FILE}" \
-    "${TINYPILOT_NGINX_ENABLE_LINK}"
-fi
+ln \
+  --symbolic \
+  --force \
+  "${TINYPILOT_NGINX_FILE}" \
+  "${TINYPILOT_NGINX_ENABLE_LINK}"
 
 # Disable default NGINX server.
 rm -f \
