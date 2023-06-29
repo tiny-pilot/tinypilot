@@ -148,7 +148,7 @@ echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
 
 In order to test a change as complete bundle on device, perform the following steps:
 
-1. In `/.circleci/continue_config.yml`, change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
+1. In [the CircleCI configuration](`/.circleci/continue_config.yml`), change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
 1. Push your changes as branch to GitHub. The `build_bundle` CircleCI job will build a complete bundle off the branch, and store it as artifact on CircleCI.
 1. If your device doesn’t contain a TinyPilot installation yet, upload the [`install-bundle` script](scripts/install-bundle) via `scp` or `rsync`. Otherwise, you find it in `/opt/tinypilot/scripts/install-bundle`.
 1. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
