@@ -39,7 +39,7 @@ class UpdateSettingsTest(unittest.TestCase):
         settings_dict = update.settings.load().as_dict()
         self.assertEqual('/dev/hidg0',
                          settings_dict['tinypilot_keyboard_interface'])
-        self.assertEqual(10, len(settings_dict))
+        self.assertEqual(7, len(settings_dict))
 
     def test_populates_empty_file_with_blank_settings(self):
         self.make_mock_settings_file('')
