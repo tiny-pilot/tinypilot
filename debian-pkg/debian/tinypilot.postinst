@@ -70,4 +70,11 @@ readonly SETTINGS_TEMPLATE
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
 popd
 
+# Workaround to restore the default NGINX config that has been previously
+# modified by ansible-role-nginx. We can remove this on TinyPilot's next
+# checkpoint release.
+install \
+  /usr/share/tinypilot/nginx.conf \
+  /etc/nginx/nginx.conf
+
 #DEBHELPER#
