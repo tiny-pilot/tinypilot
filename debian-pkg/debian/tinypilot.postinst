@@ -79,10 +79,10 @@ install \
 
 # Test and reload NGINX config.
 nginx -t
-if systemctl is-active nginx; then
-  systemctl reload nginx
+if deb-systemd-invoke is-active nginx; then
+  deb-systemd-invoke reload nginx
 else
-  systemctl start nginx
+  deb-systemd-invoke start nginx
 fi
 
 #DEBHELPER#
