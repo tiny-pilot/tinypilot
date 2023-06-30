@@ -79,6 +79,10 @@ install \
 
 # Test and reload NGINX config.
 /usr/sbin/nginx -t
-/usr/sbin/nginx -s reload
+if systemctl is-active nginx; then
+  systemctl reload nginx
+else
+  systemctl start nginx
+fi
 
 #DEBHELPER#
