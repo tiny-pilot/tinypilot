@@ -77,4 +77,8 @@ install \
   /usr/share/tinypilot/nginx.conf \
   /etc/nginx/nginx.conf
 
+# Test and reload NGINX config.
+/usr/sbin/nginx -t
+/usr/sbin/nginx -s reload
+
 #DEBHELPER#
