@@ -78,7 +78,7 @@ install \
   /etc/nginx/nginx.conf
 
 # Test and reload NGINX config.
-/usr/sbin/nginx -t
+nginx -t
 if systemctl is-active nginx; then
   systemctl reload nginx
 else
