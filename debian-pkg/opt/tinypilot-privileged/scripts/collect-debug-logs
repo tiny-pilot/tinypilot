@@ -110,6 +110,17 @@ print_info "Checking if SSH is enabled..."
   echo "SSH access: ${SSH_STATUS}"
 } >> "${LOG_FILE}"
 
+print_info "Checking if mouse jiggler is enabled..."
+{
+  MOUSE_JIGGLER_STATUS="disabled"
+  if [[ -e /etc/cron.d/tinypilot-mouse-jiggle ]]; then
+    MOUSE_JIGGLER_STATUS="enabled"
+  fi
+
+  readonly MOUSE_JIGGLER_STATUS
+  echo "Mouse jiggler: ${MOUSE_JIGGLER_STATUS}"
+} >> "${LOG_FILE}"
+
 print_info "Checking temperature..."
 printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
 
