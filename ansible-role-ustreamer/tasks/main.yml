@@ -72,7 +72,7 @@
 
 - name: install uStreamer Debian package
   apt:
-    deb: "{{ ustreamer_debian_package_path }}"
+    deb: https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.38-20230620124412/ustreamer_5.38-20230620124412_armhf.deb
 
 - name: fix uStreamer folder permissions
   file:
