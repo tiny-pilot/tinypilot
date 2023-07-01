@@ -1,7 +1,4 @@
 ---
-- name: include distribution-specific vars
-  include_vars: "{{ ansible_distribution }}.yml"
-
 - name: check that the H264 variables are in a consistent state
   fail:
     msg: >-
