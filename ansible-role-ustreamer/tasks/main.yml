@@ -55,11 +55,6 @@
     ustreamer_packages: "{{ ustreamer_packages }} + ['libjpeg62-turbo-dev']"
   when: ustreamer_is_os_debian
 
-- name: collect Ubuntu-specific required apt packages
-  set_fact:
-    ustreamer_packages: "{{ ustreamer_packages }} + ['gcc', 'libjpeg8', 'libjpeg-dev', 'libjpeg-turbo8', 'libuuid1', 'libbsd0', 'make']"
-  when: ansible_distribution == 'Ubuntu'
-
 - name: collect Janus WebRTC plugin specific required apt packages
   set_fact:
     ustreamer_packages: "{{ ustreamer_packages }} + ['libglib2.0-dev', 'libjansson-dev']"
