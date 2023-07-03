@@ -116,7 +116,7 @@ print_info "Checking network interfaces..."
   readonly INTERFACES_ROOT="/sys/class/net"
   for interface_path in "${INTERFACES_ROOT}"/* ; do
     ifname="${interface_path##*/}"
-    echo "  ${ifname} ($(cat ${INTERFACES_ROOT}/"${ifname/}"/operstate))"
+    echo "  ${ifname} ($(cat ${INTERFACES_ROOT}/"${ifname}"/operstate))"
   done
 } >> "${LOG_FILE}"
 
