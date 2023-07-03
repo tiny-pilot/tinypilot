@@ -71,7 +71,6 @@ else
 fi
 
 # Set default installation settings
-yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_port" "58001"
 yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
