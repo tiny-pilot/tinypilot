@@ -99,6 +99,17 @@ if ! "${USE_TC358743_DEFAULTS}"; then
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
 fi
 
+# Remove settings that are not user-configurable.
+sed \
+  --in-place \
+  --expression '/tinypilot_dir/d' \
+  --expression '/tinypilot_external_port/d' \
+  --expression '/tinypilot_interface/d' \
+  --expression '/tinypilot_port/d' \
+  --expression '/ustreamer_interface/d' \
+  --expression '/ustreamer_port/d' \
+  "${INSTALL_SETTINGS_FILE}"
+
 echo "Final install settings:"
 cat "${INSTALL_SETTINGS_FILE}"
 
