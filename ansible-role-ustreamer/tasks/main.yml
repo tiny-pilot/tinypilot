@@ -14,11 +14,6 @@
   set_fact:
     ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
 
-- name: detect OS
-  set_fact:
-    ustreamer_is_os_raspbian: "{{ ansible_lsb.id is defined and ansible_lsb.id == 'Raspbian' }}"
-    ustreamer_is_os_debian: "{{ ansible_lsb.id is defined and ansible_lsb.id == 'Debian' }}"
-
 - name: decide whether to support audio streaming
   set_fact:
     # Audio streaming requires Janus because MJPEG can't carry audio.
@@ -27,40 +22,6 @@
 - name: install Janus
   include_tasks: install_janus.yml
   when: ustreamer_install_janus
-
-- name: collect universal required apt packages
-  set_fact:
-    ustreamer_packages:
-      - build-essential
-      - git
-      - libevent-dev
-      - libbsd-dev
-      - uuid-dev
-
-- name: collect Raspberry Pi OS specific required apt packages
-  set_fact:
-    ustreamer_packages: "{{ ustreamer_packages }} + ['libjpeg9-dev']"
-  when: ustreamer_is_os_raspbian
-
-- name: collect Raspberry Pi OS and Debian specific required apt packages for audio
-  set_fact:
-    ustreamer_packages: "{{ ustreamer_packages }} + ['libasound2-dev', 'libspeex-dev', 'libspeexdsp-dev', 'libopus-dev']"
-  when: ustreamer_install_janus and ustreamer_enable_audio_streaming
-
-- name: collect Debian-specific required apt packages
-  set_fact:
-    ustreamer_packages: "{{ ustreamer_packages }} + ['libjpeg62-turbo-dev']"
-  when: ustreamer_is_os_debian
-
-- name: collect Janus WebRTC plugin specific required apt packages
-  set_fact:
-    ustreamer_packages: "{{ ustreamer_packages }} + ['libglib2.0-dev', 'libjansson-dev']"
-  when: ustreamer_install_janus
-
-- name: install uStreamer pre-requisite packages
-  apt:
-    name: "{{ ustreamer_packages }}"
-    state: present
 
 - name: install uStreamer Debian package
   apt:
