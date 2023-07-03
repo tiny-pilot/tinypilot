@@ -11,9 +11,6 @@ galaxy_info:
     - name: Debian
       versions:
         - bullseye
-    - name: Ubuntu
-      versions:
-        - jammy
 
   galaxy_tags:
     - raspberrypi

@@ -11,6 +11,8 @@ ustreamer_dir: /opt/ustreamer
 # runs.
 ustreamer_settings_file: /home/{{ ustreamer_user }}/config.yml
 
+ustreamer_janus_apt_suite: "{{ ansible_distribution_release }}-backports"
+
 # These variables are only used within this role.
 ustreamer_janus_configs_dir: /etc/janus
 
