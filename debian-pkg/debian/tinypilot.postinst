@@ -50,7 +50,7 @@ if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
 fi
 
 # Populate TinyPilot's Flask settings file.
-pushd /opt/tinypilot > /dev/null
+pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
 SETTINGS_TEMPLATE="$(cat <<-'EOF'
 # This configuration file is an actual Python file. Only variables in uppercase
@@ -68,38 +68,21 @@ readonly SETTINGS_TEMPLATE
   > "${TINYPILOT_APP_SETTINGS}" && \
   deactivate
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
-popd > /dev/null
+popd
 
-# Populate TinyPilot's NGINX config file.
-readonly TINYPILOT_NGINX_TEMPLATE_FILE='/usr/share/tinypilot/templates/tinypilot.conf.j2'
-TINYPILOT_NGINX_TEMPLATE="$(cat "${TINYPILOT_NGINX_TEMPLATE_FILE}")"
-readonly TINYPILOT_NGINX_TEMPLATE
-readonly TINYPILOT_NGINX_FILE='/etc/nginx/sites-available/tinypilot.conf'
-pushd /opt/tinypilot > /dev/null
-. venv/bin/activate && \
-  PYTHONPATH=/opt/tinypilot/app \
-    ./scripts/render-template \
-  <<< "${TINYPILOT_NGINX_TEMPLATE}" \
-  > "${TINYPILOT_NGINX_FILE}" && \
-  deactivate
-chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_NGINX_FILE}"
-popd > /dev/null
-
-# Enable TinyPilot's NGINX server.
-readonly TINYPILOT_NGINX_ENABLE_LINK='/etc/nginx/sites-enabled/tinypilot.conf'
-if [[ ! -L "${TINYPILOT_NGINX_ENABLE_LINK}" ]]; then
-  ln \
-    --symbolic \
-    "${TINYPILOT_NGINX_FILE}" \
-    "${TINYPILOT_NGINX_ENABLE_LINK}"
-fi
-
-# Disable default NGINX server.
-rm -f \
-  /etc/nginx/sites-enabled/default
+# Workaround to restore the default NGINX config that has been previously
+# modified by ansible-role-nginx. We can remove this on TinyPilot's next
+# checkpoint release.
+install \
+  /usr/share/tinypilot/nginx.conf \
+  /etc/nginx/nginx.conf
 
 # Test and reload NGINX config.
-nginx -t > /dev/null
-nginx -s reload
+nginx -t
+if deb-systemd-invoke is-active nginx; then
+  deb-systemd-invoke reload nginx
+else
+  deb-systemd-invoke start nginx
+fi
 
 #DEBHELPER#
