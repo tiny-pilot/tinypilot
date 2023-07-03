@@ -7,13 +7,11 @@
   apt_key:
     url: https://ftp-master.debian.org/keys/archive-key-{{ ansible_distribution_major_version }}.asc
     state: present
-  when: ustreamer_is_os_raspbian or ustreamer_is_os_debian
 
 - name: enable Janus apt suite
   apt_repository:
     repo: deb http://deb.debian.org/debian {{ ustreamer_janus_apt_suite }} main
     state: present
-  when: ustreamer_is_os_raspbian or ustreamer_is_os_debian
 
 - name: install Janus package
   apt:
