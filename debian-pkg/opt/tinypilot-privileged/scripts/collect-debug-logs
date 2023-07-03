@@ -113,10 +113,10 @@ print_info "Checking if SSH is enabled..."
 print_info "Checking network interfaces..."
 {
   echo "Network interfaces:"
-  readonly INTERFACES="/sys/class/net"
-  for interface in "${INTERFACES}"/* ; do
-    ifname="${interface##*/}"
-    echo "  ${ifname} ($(cat ${INTERFACES}/"${ifname/}"/operstate))"
+  readonly INTERFACES_ROOT="/sys/class/net"
+  for interface_path in "${INTERFACES_ROOT}"/* ; do
+    ifname="${interface_path##*/}"
+    echo "  ${ifname} ($(cat ${INTERFACES_ROOT}/"${ifname/}"/operstate))"
   done
 } >> "${LOG_FILE}"
 
