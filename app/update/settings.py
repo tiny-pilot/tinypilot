@@ -27,7 +27,7 @@ _DEFAULTS = {
     'tinypilot_mouse_interface': '/dev/hidg1',
     'ustreamer_interface':
         '127.0.0.1',  # Must match ansible-role/vars/main.yml.
-    'ustreamer_port': 8001,  # Must match ansible-role/vars/main.yml.
+    'ustreamer_port': 58001,  # Must match ansible-role/vars/main.yml.
     'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,

@@ -75,7 +75,7 @@ The installation process:
 - Installs TinyPilot as a systemd service so it runs automatically on every boot.
 - Installs and configures TinyPilot's dependencies:
   - nginx, which listens on 0.0.0.0:80
-  - uStreamer, which listens on 127.0.0.1:8001
+  - uStreamer, which listens on 127.0.0.1:58001
 - Installs TinyPilot to the `/opt/tinypilot` directory.
 
 When your Pi reboots, you should be able to access TinyPilot by visiting your Pi hostname in the browser. For example, if your device is named `raspberrypi`:

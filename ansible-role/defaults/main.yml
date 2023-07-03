@@ -8,5 +8,5 @@ tinypilot_external_port: 80
 tinypilot_interface: "127.0.0.1"
 # Port on which TinyPilot's backend listens (accessible only from
 # tinypilot_interface).
-tinypilot_port: 8000
+tinypilot_port: 58000
 tinypilot_enable_debug_logging: no
