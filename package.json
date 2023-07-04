@@ -6,6 +6,6 @@
     "eslint-plugin-html": "7.1.0",
     "mocha": "10.2.0",
     "playwright": "1.35.1",
-    "prettier": "2.8.8"
+    "prettier": "2.0.5"
   }
 }
