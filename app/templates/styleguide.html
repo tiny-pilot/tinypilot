@@ -50,7 +50,7 @@
         <img src="/img/logo.svg" alt="Tiny Pilot" />
       </div>
 
-      <h1 style="text-align: center;">Style Guide</h1>
+      <h1 style="text-align: center">Style Guide</h1>
       <p>
         This style guide is an ongoing collection of all things visual that make
         up the brand, such as colours, fonts, patterns or UI components.
@@ -74,83 +74,80 @@
       <div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-metallic-dark);"
+          style="background-color: var(--brand-metallic-dark)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-metallic-medium);"
+          style="background-color: var(--brand-metallic-medium)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-metallic-light);"
+          style="background-color: var(--brand-metallic-light)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-metallic-bright);"
+          style="background-color: var(--brand-metallic-bright)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-metallic-brighter);"
+          style="background-color: var(--brand-metallic-brighter)"
         ></div>
-        <br style="clear: both;" />
+        <br style="clear: both" />
         <div
           class="colorcard"
-          style="background-color: var(--brand-blue-dark);"
-        ></div>
-        <div
-          class="colorcard"
-          style="background-color: var(--brand-blue);"
+          style="background-color: var(--brand-blue-dark)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-blue-light);"
-        ></div>
-        <br style="clear: both;" />
-        <div
-          class="colorcard"
-          style="background-color: var(--brand-red-dark);"
+          style="background-color: var(--brand-blue)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-red);"
+          style="background-color: var(--brand-blue-light)"
+        ></div>
+        <br style="clear: both" />
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-red-dark)"
+        ></div>
+        <div class="colorcard" style="background-color: var(--brand-red)"></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-red-light)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-red-light);"
+          style="background-color: var(--brand-red-background)"
+        ></div>
+        <br style="clear: both" />
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-green-dark)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-red-background);"
-        ></div>
-        <br style="clear: both;" />
-        <div
-          class="colorcard"
-          style="background-color: var(--brand-green-dark);"
+          style="background-color: var(--brand-green)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-green);"
+          style="background-color: var(--brand-green-light)"
+        ></div>
+        <br style="clear: both" />
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-orange-dark)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-green-light);"
-        ></div>
-        <br style="clear: both;" />
-        <div
-          class="colorcard"
-          style="background-color: var(--brand-orange-dark);"
+          style="background-color: var(--brand-orange-light)"
         ></div>
         <div
           class="colorcard"
-          style="background-color: var(--brand-orange-light);"
-        ></div>
-        <div
-          class="colorcard"
-          style="background-color: var(--brand-sand-light);"
+          style="background-color: var(--brand-sand-light)"
         ></div>
       </div>
 
-      <div style="clear: both;"></div>
+      <div style="clear: both"></div>
 
       <h2 class="section">Buttons</h2>
       <ul>
@@ -194,9 +191,7 @@
       <button class="btn-danger" disabled>(disabled)</button>
       <p>For destructive call-to-actions like “delete” or “shutdown”.</p>
       <h3>Dropdown Button</h3>
-      <p>
-        A button that groups multiple related actions.
-      </p>
+      <p>A button that groups multiple related actions.</p>
       <dropdown-button>
         <button slot="button" class="btn-action">
           Dropdown
@@ -266,21 +261,19 @@
       <div>
         <input
           type="text"
-          style="width: 15rem;"
+          style="width: 15rem"
           value="My name is Pilot. Tiny Pilot."
         />
         <button>Send</button>
       </div>
 
       <h3>For Monospace Text</h3>
-      <p>
-        Used for entering “technical” values, e.g. IP addresses.
-      </p>
+      <p>Used for entering “technical” values, e.g. IP addresses.</p>
       <div>
         <input
           type="text"
           class="monospace"
-          style="width: 15rem;"
+          style="width: 15rem"
           value="192.168.0.1"
         />
         <button>Send</button>
@@ -370,15 +363,9 @@
       <overlay-panel id="overlay-with-feature">
         <h3>Overlay with Feature</h3>
         <div>
-          <button class="btn-action" onclick="alert('Done.')">
-            Action 1
-          </button>
-          <button class="btn-action" onclick="alert('Done.')">
-            Action 2
-          </button>
-          <button class="btn-action" onclick="alert('Done.')">
-            Action 3
-          </button>
+          <button class="btn-action" onclick="alert('Done.')">Action 1</button>
+          <button class="btn-action" onclick="alert('Done.')">Action 2</button>
+          <button class="btn-action" onclick="alert('Done.')">Action 3</button>
         </div>
         <div>
           When the user can carry out “secondary” actions within the overlay
@@ -463,7 +450,7 @@
       </p>
       <progress-spinner></progress-spinner>
       <progress-spinner
-        style="--size: 2rem; --thickness: 5px;"
+        style="--size: 2rem; --thickness: 5px"
       ></progress-spinner>
     </main>
   </body>

@@ -98,9 +98,8 @@
         _checkVersion() {
           getVersion()
             .then(({ version }) => {
-              this.shadowRoot.getElementById(
-                "version-number"
-              ).innerText = this._formatVersion(version);
+              this.shadowRoot.getElementById("version-number").innerText =
+                this._formatVersion(version);
             })
             .catch((error) => {
               this.dispatchEvent(

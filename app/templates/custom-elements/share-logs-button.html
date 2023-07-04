@@ -199,9 +199,8 @@
           // one for the duration of the “copy to clipboard” operation. The user
           // shouldn’t notice anything about this.
           const previousDisplayText = this.elements.urlLink.textContent;
-          this.elements.urlLink.textContent = this.elements.urlLink.getAttribute(
-            "href"
-          );
+          this.elements.urlLink.textContent =
+            this.elements.urlLink.getAttribute("href");
           copyElementTextToClipboard(this.elements.urlLink);
           this.elements.urlLink.textContent = previousDisplayText;
 

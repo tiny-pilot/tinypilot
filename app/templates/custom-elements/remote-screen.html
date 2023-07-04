@@ -89,16 +89,13 @@
         constructor() {
           super();
           this.onWindowResize = this.onWindowResize.bind(this);
-          this._onGlobalUserInteraction = this._onGlobalUserInteraction.bind(
-            this
-          );
+          this._onGlobalUserInteraction =
+            this._onGlobalUserInteraction.bind(this);
           this.fillSpace = this.fillSpace.bind(this);
-          this._addScreenEventListeners = this._addScreenEventListeners.bind(
-            this
-          );
-          this._getCurrentScreenElement = this._getCurrentScreenElement.bind(
-            this
-          );
+          this._addScreenEventListeners =
+            this._addScreenEventListeners.bind(this);
+          this._getCurrentScreenElement =
+            this._getCurrentScreenElement.bind(this);
 
           // Prevent drag on screen for Firefox.
           this.addEventListener("dragstart", function (evt) {
@@ -278,9 +275,8 @@
 
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
-            const screenWrapper = this.shadowRoot.querySelector(
-              ".screen-wrapper"
-            );
+            const screenWrapper =
+              this.shadowRoot.querySelector(".screen-wrapper");
             if (screenWrapper.requestFullscreen) {
               screenWrapper.requestFullscreen();
             } else if (screenWrapper.mozRequestFullScreen) {
