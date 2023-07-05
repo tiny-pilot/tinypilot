@@ -2,8 +2,6 @@
 
 The bundler is responsible for creating a single-file distributable called “TinyPilot bundle”.
 
-Note that this repository (`tinypilot`) contains the source code of the TinyPilot web service. While the web service is the main component of the TinyPilot software, a complete installation has other TinyPilot-specific dependencies, which reside in separate repositories.
-
 ## Components
 
 ### Bundle

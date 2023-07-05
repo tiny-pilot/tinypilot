@@ -1,12 +1,8 @@
 upstream tinypilot {
-    # The host and port must match the variables in
-    # ansible-role/defaults/main.yml
-    server 127.0.0.1:58000 fail_timeout=1s max_fails=600;
+    server {{ tinypilot_interface }}:{{ tinypilot_port }} fail_timeout=1s max_fails=600;
 }
 upstream ustreamer {
-    # The host and port must match the variables in
-    # ansible-role/vars/main.yml
-    server 127.0.0.1:58001 fail_timeout=1s max_fails=600;
+    server {{ ustreamer_interface }}:{{ ustreamer_port }} fail_timeout=1s max_fails=600;
 }
 upstream janus-ws {
     # The host and port must match the variables in
@@ -15,14 +11,12 @@ upstream janus-ws {
 }
 
 server {
-    # The port must match the variable in ansible-role/defaults/main.yml
-    listen 80;
-    listen [::]:80;
+    listen {{ tinypilot_external_port }};
+    listen [::]:{{ tinypilot_external_port }};
 
     server_name tinypilot;
 
-    # The path must match the variable in ansible-role/vars/main.yml
-    root /opt/tinypilot;
+    root {{ tinypilot_dir }};
 
     index index.html;
 
@@ -73,8 +67,7 @@ server {
         proxy_pass http://tinypilot;
     }
     location ~* ^/.+\.(html|js|js.map|css|woff|woff2)$ {
-        # The path must match the variable in ansible-role/vars/main.yml
-        root "/opt/tinypilot/app/static";
+        root "{{ tinypilot_dir }}/app/static";
 
         # We cache assets to prevent the browser from making redundant
         # requests to the same files while loading the page. (Observed on
@@ -86,7 +79,6 @@ server {
         add_header Cache-Control 'public, max-age=10s';
     }
     location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
-        # The path must match the variable in ansible-role/vars/main.yml
-        root "/opt/tinypilot/app/static";
+        root "{{ tinypilot_dir }}/app/static";
     }
 }

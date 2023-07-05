@@ -6,7 +6,6 @@ tinypilot_interface: "127.0.0.1"
 # Port on which TinyPilot's backend listens (accessible only from
 # tinypilot_interface).
 tinypilot_port: 58000
-
 # TinyPilot's get-tinypilot.sh script (which it uses for installation and
 # updates) relies on the tinypilot user being named "tinypilot" so changing this
 # value will break updates.
