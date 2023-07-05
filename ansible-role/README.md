@@ -5,7 +5,6 @@
 Available variables are listed below, along with default values (see [defaults/main.yml](defaults/main.yml)):
 
 ```yaml
-tinypilot_interface: "127.0.0.1"
 tinypilot_port: 8000
 # The client is responsible for specifying the path/URL to the TinyPilot Debian
 # package

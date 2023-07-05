@@ -5,8 +5,6 @@ tinypilot_debian_package_path: null
 # Port on which TinyPilot frontend listens (accessible from other hosts on the
 # network).
 tinypilot_external_port: 80
-tinypilot_interface: "127.0.0.1"
-# Port on which TinyPilot's backend listens (accessible only from
-# tinypilot_interface).
+# Port on which TinyPilot's backend listens (accessible only from 127.0.0.1).
 tinypilot_port: 8000
 tinypilot_enable_debug_logging: no

@@ -28,8 +28,6 @@ _DEFAULTS = {
     'tinypilot_dir':
         '/opt/tinypilot',  # Must match ansible-role/defaults/main.yml.
     'tinypilot_external_port': 80,  # Must match ansible-role/defaults/main.yml.
-    'tinypilot_interface':
-        '127.0.0.1',  # Must match ansible-role/defaults/main.yml.
     'tinypilot_port': 8000,  # Must match ansible-role/defaults/main.yml.
     'ustreamer_interface':
         '127.0.0.1',  # Must match ansible-role/vars/main.yml.

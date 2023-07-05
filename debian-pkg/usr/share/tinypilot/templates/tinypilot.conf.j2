@@ -1,5 +1,5 @@
 upstream tinypilot {
-    server {{ tinypilot_interface }}:{{ tinypilot_port }} fail_timeout=1s max_fails=600;
+    server 127.0.0.1:{{ tinypilot_port }} fail_timeout=1s max_fails=600;
 }
 upstream ustreamer {
     server {{ ustreamer_interface }}:{{ ustreamer_port }} fail_timeout=1s max_fails=600;
