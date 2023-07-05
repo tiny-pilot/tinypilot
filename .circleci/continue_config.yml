@@ -10,7 +10,7 @@ parameters:
     # In order to enable bundle building on a feature branch, you can
     # temporarily change the below default to be: << pipeline.git.branch >>
     # Don’t forget to revert this before merging your branch!
-    default: master
+    default:  << pipeline.git.branch >>
 jobs:
   check_whitespace:
     docker:
