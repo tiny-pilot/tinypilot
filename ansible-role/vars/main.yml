@@ -1,4 +1,11 @@
 ---
+# Port on which TinyPilot frontend listens (accessible from other hosts on the
+# network).
+tinypilot_external_port: 80
+tinypilot_interface: "127.0.0.1"
+# Port on which TinyPilot's backend listens (accessible only from
+# tinypilot_interface).
+tinypilot_port: 8000
 # TinyPilot's get-tinypilot.sh script (which it uses for installation and
 # updates) relies on the tinypilot user being named "tinypilot" so changing this
 # value will break updates.
