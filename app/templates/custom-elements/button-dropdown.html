@@ -63,9 +63,8 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this._handleCloseOnOutsideClick = this._handleCloseOnOutsideClick.bind(
-            this
-          );
+          this._handleCloseOnOutsideClick =
+            this._handleCloseOnOutsideClick.bind(this);
 
           this.elements = {
             dropdownButton: this.shadowRoot.getElementById("dropdown-button"),
