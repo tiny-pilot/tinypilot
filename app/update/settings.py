@@ -25,6 +25,11 @@ _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
+    'tinypilot_dir': '/opt/tinypilot',  # Must match ansible-role/vars/main.yml.
+    'tinypilot_external_port': 80,  # Must match ansible-role/vars/main.yml.
+    'tinypilot_interface':
+        '127.0.0.1',  # Must match ansible-role/vars/main.yml.
+    'tinypilot_port': 8000,  # Must match ansible-role/vars/main.yml.
     'ustreamer_interface':
         '127.0.0.1',  # Must match ansible-role/vars/main.yml.
     'ustreamer_port': 8001,  # Must match ansible-role/vars/main.yml.
