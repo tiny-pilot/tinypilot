@@ -20,14 +20,11 @@ import video_service
 
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
-# Define default settings for TinyPilot values. The YAML data in
-# _SETTINGS_FILE_PATH take precedence over these defaults.
+# Define default values for user-configurable TinyPilot settings. The YAML data
+# in _SETTINGS_FILE_PATH take precedence over these defaults.
 _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
-    'ustreamer_interface':
-        '127.0.0.1',  # Must match ansible-role/vars/main.yml.
-    'ustreamer_port': 8001,  # Must match ansible-role/vars/main.yml.
     'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
