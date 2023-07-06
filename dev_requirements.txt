@@ -2,5 +2,5 @@ coverage==5.4
 isort[requirements]==4.3.21
 pyflakes==2.4.0
 pylint==2.14.2
-sqlfluff==1.3.2
+sqlfluff==2.1.2
 yapf==0.31.0
