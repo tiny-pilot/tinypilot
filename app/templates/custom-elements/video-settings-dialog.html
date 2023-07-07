@@ -6,12 +6,14 @@
 
     #loading,
     #edit,
+    #advanced-dialog,
     #saving {
       display: none;
     }
 
     :host([state="loading"]) #loading,
     :host([state="edit"]) #edit,
+    :host([state="advanced-dialog"]) #advanced-dialog,
     :host([state="saving"]) #saving {
       display: block;
     }
@@ -107,7 +109,7 @@
         </li>
       </dropdown-button>
     </div>
-    <div class="settings-container">
+    <div class="settings-container" style="margin-bottom: 1.5rem">
       <div class="setting">
         <label for="frame-rate-slider">Frame Rate</label>
         <input type="range" id="frame-rate-slider" min="1" max="30" />
@@ -139,12 +141,79 @@
         </div>
       </div>
     </div>
+    <style>
+      input:disabled {
+        background: #fafafa;
+      }
+      .advanced-settings {
+        display: none;
+      }
+      .toggle-advanced-label-hide {
+        display: none;
+      }
+      :host([show-advanced-settings=""]) .advanced-settings {
+        display: block;
+      }
+      :host([show-advanced-settings=""]) .toggle-advanced-label-hide {
+        display: inline;
+      }
+      :host([show-advanced-settings=""]) .toggle-advanced-label-show {
+        display: none;
+      }
+      :host([show-advanced-settings=""]) #toggle-advanced {
+        position: absolute;
+        right: 9em;
+        margin-top: 1.8em;
+            z-index: 9999999;
+      }
+      .advanced-settings h3 {
+        border-bottom: 1px solid black;
+        margin: 2.5em 5em 1.5em 5em;
+      }
+      input[type=checkbox] {
+        cursor: pointer;
+      }
+      .stun-input {
+        font-family: 'Overpass Mono', monospace !important;
+        width: 20.5em;
+        margin-left: 0.4em;
+        margin-right: 3em;
+        margin-top: 1.5em;
+        margin-bottom: 0.3em;
+      }
+    </style>
+    <div style="margin-bottom: 0.5em">
+      <span class="btn-text" style="font-size: 0.9em" id="toggle-advanced">
+        <span class="toggle-advanced-label-show">Show Advanced Settings</span>
+        <span class="toggle-advanced-label-hide">(Hide)</span>
+      </span>
+    </div>
+    <div class="advanced-settings" style="margin-bottom: 2rem; position: relative">
+      <h3>Advanced Settings</h3>
+      <input type="checkbox"> Enable STUN Server<br>
+      STUN Address
+      <input type="text" placeholder="stun.example.org:3478" class="stun-input">
+      <br>
+      <span class="stun-default btn-text" style="font-size: 0.9em">Use public STUN server operated by Google</span>
+    </div>
     <button class="save-btn btn-success" type="button">Apply</button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
     <h3>Applying Video Settings</h3>
     <progress-spinner></progress-spinner>
+  </div>
+  <div id="advanced-dialog">
+    <h3>Advanced Video Settings</h3>
+    <div style="margin: 2em 0">
+      <input type="checkbox"> Enable STUN Server<br>
+      STUN Address
+      <input type="text" placeholder="stun.example.org:3478" class="stun-input">
+      <br>
+      <span class="stun-default btn-text" style="font-size: 0.9em">Use public STUN server operated by Google</span>
+    </div>
+    <button class="save-btn btn-success" type="button">Apply</button>
+    <button class="close-btn" type="button">Back</button>
   </div>
 </template>
 
@@ -187,6 +256,16 @@
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+          this.shadowRoot.querySelector("#toggle-advanced").addEventListener("click", () => {
+            this.toggleAttribute("show-advanced-settings");
+            //this.setAttribute("state", "advanced-dialog");
+          });
+          this.shadowRoot.querySelectorAll(".stun-default").forEach(el => el.addEventListener("click", () => {
+            this.shadowRoot.querySelectorAll(".stun-input").forEach(el => {
+              el.value = "stun.l.google.com:19302";
+            })
+          }))
           this.elements = {
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
