@@ -16,8 +16,8 @@ tinypilot_port: 8000
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
 # in order to elevate their variable precedence. These variables will now
 # override the default variables in the uStreamer role.
-ustreamer_interface: "127.0.0.1"
-ustreamer_port: 8001
+ustreamer_interface: "127.0.0.1" # Must match app/update/settings.py.
+ustreamer_port: 8001 # Must match app/update/settings.py.
 # Assigning `ustreamer_h264_sink` will make the uStreamer role install the Janus
 # server on the system, and thus enable H264 video streaming.
 ustreamer_h264_sink: tinypilot::ustreamer::h264
