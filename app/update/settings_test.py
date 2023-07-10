@@ -85,7 +85,8 @@ ustreamer_port: 1234
 
         settings = update.settings.load()
         settings_dict = settings.as_dict()
-        # `8001` happens to be the constant ustreamer_port value.
+        # Verify that the constant value of ustreamer_port took precedence over
+        # the value in the settings file.
         self.assertEqual(8001, settings_dict['ustreamer_port'])
         update.settings.save(settings)
 
