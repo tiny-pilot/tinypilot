@@ -8,9 +8,7 @@ tinypilot_group: tinypilot
 tinypilot_dir: /opt/tinypilot
 tinypilot_privileged_dir: /opt/tinypilot-privileged
 
-tinypilot_interface: "127.0.0.1"
-# Port on which TinyPilot's backend listens (accessible only from
-# tinypilot_interface).
+# Port on which TinyPilot's backend listens (accessible only from 127.0.0.1).
 tinypilot_port: 8000
 
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
