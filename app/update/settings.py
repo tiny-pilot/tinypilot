@@ -60,8 +60,11 @@ class Settings:
     """
 
     def __init__(self, data):
-        # Merge defaults, data, and constants, where constants take the
-        # highest precedence.
+        # Merge the defaults with the data and constants. In case of conflicting
+        # keys, the precedence is:
+        # 1. Constants (highest precedence)
+        # 2. Data
+        # 3. Defaults (lowest precedence)
         self._data = {**_DEFAULTS, **(data if data else {}), **_CONSTANTS}
 
     def as_dict(self):
