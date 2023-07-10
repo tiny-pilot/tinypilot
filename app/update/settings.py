@@ -129,8 +129,7 @@ def _from_file(settings_file):
 
 
 def _to_file(settings, settings_file):
-    """Writes a Settings object to a file, excluding any constants or defaults.
-    """
+    """Writes a Settings object to a file, excluding constants and defaults."""
     # To avoid polluting the settings file with unnecessary default or constant
     # values, we exclude them instead of hard-coding their values in the file.
     settings_without_constants_or_defaults = {}
