@@ -89,7 +89,7 @@
     <h3>Change Video Settings</h3>
     <div>
       Streaming Mode:
-      <dropdown-button style="--dropdown-width: 9rem;">
+      <dropdown-button style="--dropdown-width: 9rem">
         <button slot="button" class="btn-action">
           <span class="streaming-mode-value-mjpeg">MJPEG</span>
           <span class="streaming-mode-value-h264">H.264</span>
@@ -139,9 +139,7 @@
         </div>
       </div>
     </div>
-    <button class="save-btn btn-success" type="button">
-      Apply
-    </button>
+    <button class="save-btn btn-success" type="button">Apply</button>
     <button class="close-btn" type="button">Cancel</button>
   </div>
   <div id="saving">
@@ -198,13 +196,11 @@
             streamingModeH264Button: this.shadowRoot.querySelector(
               "#streaming-mode-h264-button"
             ),
-            frameRateSlider: this.shadowRoot.querySelector(
-              "#frame-rate-slider"
-            ),
+            frameRateSlider:
+              this.shadowRoot.querySelector("#frame-rate-slider"),
             frameRateValue: this.shadowRoot.querySelector("#frame-rate-value"),
-            frameRateRestoreButton: this.shadowRoot.querySelector(
-              "#frame-rate-reset"
-            ),
+            frameRateRestoreButton:
+              this.shadowRoot.querySelector("#frame-rate-reset"),
             mjpegQualitySlider: this.shadowRoot.querySelector(
               "#mjpeg-quality-slider"
             ),

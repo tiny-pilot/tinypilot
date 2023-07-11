@@ -46,7 +46,7 @@
     <h3>Debug Logs</h3>
     <div class="action-buttons">
       <share-logs-button id="share-logs-button"></share-logs-button>
-      <div style="flex: 1;"><!-- Spacer --></div>
+      <div style="flex: 1"><!-- Spacer --></div>
       <div class="toggle-container">
         Hide Sensitive Data
         <label class="toggle">
@@ -104,9 +104,8 @@
               "include-sensitive-data"
             ),
             logsText: this.shadowRoot.querySelector("#logs-success .logs"),
-            shareLogsButton: this.shadowRoot.querySelector(
-              "#share-logs-button"
-            ),
+            shareLogsButton:
+              this.shadowRoot.querySelector("#share-logs-button"),
           };
           this.elements.includeSensitiveData.addEventListener(
             "input",

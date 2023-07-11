@@ -20,20 +20,21 @@ import video_service
 
 _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 
-# Define default settings for TinyPilot values. The YAML data in
-# _SETTINGS_FILE_PATH take precedence over these defaults.
-_DEFAULTS = {
-    'tinypilot_keyboard_interface': '/dev/hidg0',
-    'tinypilot_mouse_interface': '/dev/hidg1',
-    'tinypilot_dir':
-        '/opt/tinypilot',  # Must match ansible-role/defaults/main.yml.
-    'tinypilot_external_port': 80,  # Must match ansible-role/defaults/main.yml.
-    'tinypilot_interface':
-        '127.0.0.1',  # Must match ansible-role/defaults/main.yml.
-    'tinypilot_port': 8000,  # Must match ansible-role/defaults/main.yml.
+# Define constant values of the TinyPilot system. These constants take
+# precedence over the YAML data in _SETTINGS_FILE_PATH and _DEFAULTS. These
+# values are not user-configurable.
+_CONSTANTS = {
     'ustreamer_interface':
         '127.0.0.1',  # Must match ansible-role/vars/main.yml.
     'ustreamer_port': 8001,  # Must match ansible-role/vars/main.yml.
+}
+
+# Define default values for user-configurable TinyPilot settings. The YAML data
+# in _SETTINGS_FILE_PATH take precedence over these defaults.
+_DEFAULTS = {
+    'tinypilot_keyboard_interface': '/dev/hidg0',
+    'tinypilot_mouse_interface': '/dev/hidg1',
+    'tinypilot_external_port': 80,  # Must match ansible-role/defaults/main.yml.
     'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
@@ -60,8 +61,12 @@ class Settings:
     """
 
     def __init__(self, data):
-        # Merge the defaults with data, with data taking precedence.
-        self._data = {**_DEFAULTS, **(data if data else {})}
+        # Merge the defaults with the data and constants. In case of conflicting
+        # keys, the precedence is:
+        # 1. Constants (highest precedence)
+        # 2. Data
+        # 3. Defaults (lowest precedence)
+        self._data = {**_DEFAULTS, **(data if data else {}), **_CONSTANTS}
 
     def as_dict(self):
         return self._data
@@ -128,13 +133,15 @@ def _from_file(settings_file):
 
 
 def _to_file(settings, settings_file):
-    """Writes a Settings object to a file, excluding any default values."""
-    # To avoid polluting the settings file with unnecessary default values, we
-    # exclude them instead of hard-coding the defaults in the file.
-    settings_without_defaults = {}
+    """Writes a Settings object to a file, excluding constants and defaults."""
+    # To avoid polluting the settings file with unnecessary default or constant
+    # values, we exclude them instead of hard-coding their values in the file.
+    settings_without_constants_or_defaults = {}
     for key, value in settings.as_dict().items():
-        if (key not in _DEFAULTS) or (value != _DEFAULTS[key]):
-            settings_without_defaults[key] = value
+        if (key in _CONSTANTS) or (key in _DEFAULTS and
+                                   value == _DEFAULTS[key]):
+            continue
+        settings_without_constants_or_defaults[key] = value
 
-    if settings_without_defaults:
-        yaml.safe_dump(settings_without_defaults, settings_file)
+    if settings_without_constants_or_defaults:
+        yaml.safe_dump(settings_without_constants_or_defaults, settings_file)

@@ -46,7 +46,7 @@
   <div id="details-container">
     <div class="details-header">
       <div class="details-label">Details:</div>
-      <div style="flex: 1;"><!-- Spacer --></div>
+      <div style="flex: 1"><!-- Spacer --></div>
       <share-logs-button id="share-logs-button"></share-logs-button>
     </div>
     <pre id="details" class="monospace"></pre>
@@ -88,9 +88,8 @@
           this.shadowRoot.getElementById("title").innerText = title;
           this.shadowRoot.getElementById("message").innerText = message;
           this.shadowRoot.getElementById("details").innerText = details;
-          this.shadowRoot.getElementById(
-            "details-container"
-          ).style.display = details ? "block" : "none";
+          this.shadowRoot.getElementById("details-container").style.display =
+            details ? "block" : "none";
           this.shadowRoot
             .getElementById("share-logs-button")
             .initialize(/*getLogsTextCb=*/ () => String(details));
