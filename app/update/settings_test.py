@@ -35,11 +35,16 @@ class UpdateSettingsTest(unittest.TestCase):
         with open(self.settings_file_path, encoding='utf-8') as mock_file:
             return mock_file.read()
 
-    def test_as_dict_returns_default_settings_if_no_settings_file_exists(self):
+    def test_as_dict_returns_constant_and_default_settings_if_no_settings_file(
+            self):
         settings_dict = update.settings.load().as_dict()
+        # Check constant value.
+        self.assertEqual(8001, settings_dict['ustreamer_port'])
+        # Check default value.
         self.assertEqual('/dev/hidg0',
                          settings_dict['tinypilot_keyboard_interface'])
-        self.assertEqual(11, len(settings_dict))
+        # Count constant and default values.
+        self.assertEqual(8, len(settings_dict))
 
     def test_populates_empty_file_with_blank_settings(self):
         self.make_mock_settings_file('')
@@ -72,6 +77,20 @@ ustreamer_desired_fps: 25
         self.assertMultiLineEqual("""
 ustreamer_desired_fps: 10
 """.lstrip(), self.read_mock_settings_file())
+
+    def test_does_not_read_or_write_constant_value_to_file(self):
+        self.make_mock_settings_file("""
+ustreamer_port: 1234
+""".lstrip())
+
+        settings = update.settings.load()
+        settings_dict = settings.as_dict()
+        # Verify that the constant value of ustreamer_port took precedence over
+        # the value in the settings file.
+        self.assertEqual(8001, settings_dict['ustreamer_port'])
+        update.settings.save(settings)
+
+        self.assertEqual('', self.read_mock_settings_file())
 
     def test_does_not_populate_default_value_to_file(self):
         self.make_mock_settings_file('')

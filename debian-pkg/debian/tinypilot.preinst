@@ -11,6 +11,7 @@ fi
 
 # Workaround to remove TinyPilot's legacy NGINX config. We can remove this on
 # TinyPilot's next checkpoint release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
 rm -f \
   /etc/nginx/sites-enabled/tinypilot.conf
 
