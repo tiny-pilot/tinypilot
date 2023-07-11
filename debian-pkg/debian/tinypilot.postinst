@@ -89,7 +89,7 @@ popd
 # checkpoint release.
 # https://github.com/tiny-pilot/tinypilot-pro/issues/978
 if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
-  install \
+  cp \
     /usr/share/tinypilot/nginx.conf \
     /etc/nginx/nginx.conf
 fi
