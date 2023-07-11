@@ -34,7 +34,7 @@ _CONSTANTS = {
 _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
-    'tinypilot_external_port': 80,  # Must match ansible-role/defaults/main.yml.
+    'tinypilot_external_port': 80,
     'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,

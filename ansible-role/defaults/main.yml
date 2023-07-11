@@ -2,7 +2,4 @@
 # Specifies the filesystem path or URL of a Debian package that installs
 # TinyPilot.
 tinypilot_debian_package_path: null
-# Port on which TinyPilot frontend listens (accessible from other hosts on the
-# network).
-tinypilot_external_port: 80
 tinypilot_enable_debug_logging: no
