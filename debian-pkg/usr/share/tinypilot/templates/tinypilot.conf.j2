@@ -16,7 +16,7 @@ server {
 
     server_name tinypilot;
 
-    root {{ tinypilot_dir }};
+    root /opt/tinypilot;
 
     index index.html;
 
@@ -67,7 +67,7 @@ server {
         proxy_pass http://tinypilot;
     }
     location ~* ^/.+\.(html|js|js.map|css|woff|woff2)$ {
-        root "{{ tinypilot_dir }}/app/static";
+        root "/opt/tinypilot/app/static";
 
         # We cache assets to prevent the browser from making redundant
         # requests to the same files while loading the page. (Observed on
@@ -79,6 +79,6 @@ server {
         add_header Cache-Control 'public, max-age=10s';
     }
     location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
-        root "{{ tinypilot_dir }}/app/static";
+        root "/opt/tinypilot/app/static";
     }
 }
