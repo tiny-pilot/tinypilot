@@ -12,8 +12,7 @@ tinypilot_debian_package_path: null
 
 ## Dependencies
 
-- [tiny-pilot.ustreamer](https://github.com/tiny-pilot/ansible-role-ustreamer)
-- [tiny-pilot.nginx](https://github.com/tiny-pilot/ansible-role-nginx)
+- [tiny-pilot.ustreamer](../ansible-role-ustreamer)
 
 ## Example Playbook
 
@@ -42,7 +41,6 @@ This will produce a TinyPilot Debian package under `./debian-pkg/releases`.
 ### Running Example Playbook
 
 ```bash
-ansible-galaxy install --role-file meta/requirements.yml
 ansible-playbook example.yml
 ```
 
