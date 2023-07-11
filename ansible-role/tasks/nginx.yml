@@ -6,7 +6,7 @@
     nginx_upstreams:
       - name: tinypilot
         servers:
-          - "{{ tinypilot_interface }}:{{ tinypilot_port }} fail_timeout=1s max_fails=600"
+          - "127.0.0.1:{{ tinypilot_port }} fail_timeout=1s max_fails=600"
       - name: ustreamer
         servers:
           - "{{ ustreamer_interface }}:{{ ustreamer_port }} fail_timeout=1s max_fails=600"
