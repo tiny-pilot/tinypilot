@@ -70,5 +70,32 @@ readonly SETTINGS_TEMPLATE
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
 popd
 
+# Populate TinyPilot's NGINX config file.
+pushd /opt/tinypilot
+. venv/bin/activate && \
+  PYTHONPATH=/opt/tinypilot/app \
+    ./scripts/render-template \
+  < /usr/share/tinypilot/templates/tinypilot.conf.j2 \
+  > /etc/nginx/conf.d/tinypilot.conf && \
+  deactivate
+popd
+
+# Workaround to restore the default NGINX config that has been previously
+# modified by ansible-role-nginx. We can remove this on TinyPilot's next
+# checkpoint release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
+  cp \
+    /usr/share/tinypilot/nginx.conf \
+    /etc/nginx/nginx.conf
+fi
+
+# Test and reload NGINX config.
+nginx -t
+if deb-systemd-invoke is-active nginx; then
+  deb-systemd-invoke reload nginx
+else
+  deb-systemd-invoke start nginx
+fi
 
 #DEBHELPER#

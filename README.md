@@ -141,7 +141,7 @@ TinyPilot would not be possible without the excellent and generous work from man
 - [vdesktop](https://github.com/Botspot/vdesktop)
 - [litestream](https://litestream.io)
 - [Raspberry Pi](https://www.raspberrypi.org/)
-- [nginx](https://nginx.org/) and [ansible-role-nginx](https://github.com/geerlingguy/ansible-role-nginx)
+- [nginx](https://nginx.org/)
 
 ## Mailing list
 

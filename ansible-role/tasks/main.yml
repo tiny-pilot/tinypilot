@@ -7,6 +7,8 @@
 - name: install TinyPilot Debian package
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
+  notify:
+    - restart TinyPilot service
 
 - name: install TinyPilot as a service
   template:
@@ -23,6 +25,3 @@
   systemd:
     name: tinypilot
     enabled: yes
-
-- name: install nginx
-  import_tasks: nginx.yml

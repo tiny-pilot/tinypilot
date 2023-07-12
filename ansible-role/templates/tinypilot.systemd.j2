@@ -1,6 +1,7 @@
 [Unit]
 Description=TinyPilot - RPi-based virtual KVM
-After=syslog.target network.target
+BindsTo=nginx.service
+After=syslog.target network.target nginx.service
 StartLimitIntervalSec=0
 
 [Service]
