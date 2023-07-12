@@ -66,13 +66,6 @@ readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
-python3 -m venv venv
-. venv/bin/activate
-# Ensure we're using a version of pip that can use binary wheels where available
-# instead of building the packages locally.
-pip install "pip>=21.3.1"
-pip install --requirement "${BUNDLE_DIR}/requirements.txt"
-
 # Clear Ansible roles from any previous bundle builds.
 rm -rf "${ANSIBLE_ROLES_DIR}"
 mkdir "${ANSIBLE_ROLES_DIR}"
