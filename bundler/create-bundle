@@ -67,6 +67,7 @@ readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
 # Copy local Ansible roles.
+mkdir "${ANSIBLE_ROLES_DIR}"
 cp -r \
   --no-target-directory \
   ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
