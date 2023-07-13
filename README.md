@@ -73,7 +73,7 @@ When your Pi reboots, you should be able to access TinyPilot by visiting your Pi
 
 - [http://raspberrypi/](http://raspberrypi/)
 
-If you're using an HDMI to CSI capture chip (such as with a TinyPilot Voyager series device), see [the additional configuration steps](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#example-tc358743-hdmi-to-csi-capture-chip) required for video capture.
+If you're using an [HDMI to CSI capture chip](https://github.com/tiny-pilot/tinypilot/wiki/HDMI-Capture-Devices#toshiba-tc358743-capture-devices) (such as with a TinyPilot Voyager series device), see [the additional configuration steps](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#example-tc358743-hdmi-to-csi-capture-chip) required for video capture.
 
 ## Developer installation
 
