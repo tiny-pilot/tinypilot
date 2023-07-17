@@ -7,21 +7,3 @@
 - name: install TinyPilot Debian package
   apt:
     deb: "{{ tinypilot_debian_package_path }}"
-  notify:
-    - restart TinyPilot service
-
-- name: install TinyPilot as a service
-  template:
-    src: tinypilot.systemd.j2
-    dest: /lib/systemd/system/tinypilot.service
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - reload TinyPilot systemd config
-    - restart TinyPilot service
-
-- name: enable systemd TinyPilot service file
-  systemd:
-    name: tinypilot
-    enabled: yes
