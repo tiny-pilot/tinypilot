@@ -6,9 +6,9 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-User={{ tinypilot_user }}
-WorkingDirectory={{ tinypilot_dir }}
-ExecStart={{ tinypilot_dir }}/venv/bin/python app/main.py
+User=tinypilot
+WorkingDirectory=/opt/tinypilot
+ExecStart=/opt/tinypilot/venv/bin/python app/main.py
 Environment=APP_SETTINGS_FILE=/home/tinypilot/app_settings.cfg
 {% if tinypilot_enable_debug_logging %}
 Environment=DEBUG=1
