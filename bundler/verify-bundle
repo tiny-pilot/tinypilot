@@ -46,7 +46,6 @@ dpkg --contents tinypilot*armhf.deb
 
 # Check that Ansible roles exist.
 readonly ANSIBLE_ROLES=(
-  ansible-role-tinypilot
   ansible-role-ustreamer
 )
 for ansible_role in "${ANSIBLE_ROLES[@]}"; do
