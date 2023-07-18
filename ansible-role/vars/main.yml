@@ -1,7 +1,6 @@
 ---
 tinypilot_group: tinypilot
 
-tinypilot_dir: /opt/tinypilot
 tinypilot_privileged_dir: /opt/tinypilot-privileged
 
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
