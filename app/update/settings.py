@@ -25,8 +25,8 @@ _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 # values are not user-configurable.
 _CONSTANTS = {
     'ustreamer_interface':
-        '127.0.0.1',  # Must match ansible-role/vars/main.yml.
-    'ustreamer_port': 8001,  # Must match ansible-role/vars/main.yml.
+        '127.0.0.1',  # Must match bundler/bundle/install.yml.
+    'ustreamer_port': 8001,  # Must match bundler/bundle/install.yml.
 }
 
 # Define default values for user-configurable TinyPilot settings. The YAML data
