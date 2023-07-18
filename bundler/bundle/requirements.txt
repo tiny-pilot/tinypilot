@@ -13,4 +13,4 @@ MarkupSafe==2.1.1
 packaging==21.3
 pycparser==2.21
 pyparsing==3.0.9
-PyYAML==6.0.1
+PyYAML==6.0
