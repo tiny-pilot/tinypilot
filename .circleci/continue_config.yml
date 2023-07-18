@@ -229,13 +229,6 @@ jobs:
                 command: circleci-agent step halt
       - checkout:
           path: ~/project
-      - attach_workspace:
-          at: ./debian-pkgs
-      - run:
-          name: Add TinyPilot Debian package name as an environment variable
-          command: |
-            TINYPILOT_DEBIAN_PACKAGE="$(ls ./debian-pkgs/tinypilot*amd64.deb | xargs basename)"
-            echo "export TINYPILOT_DEBIAN_PACKAGE="${TINYPILOT_DEBIAN_PACKAGE}"" >> "${BASH_ENV}"
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
