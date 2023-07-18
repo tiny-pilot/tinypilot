@@ -15,6 +15,6 @@
         cache_valid_time: 600
     - name: Gather facts
       setup:
-    - name: Include ansible-role
+    - name: Include ansible-role-ustreamer
       include_role:
-        name: ansible-role
+        name: ansible-role-ustreamer
