@@ -94,7 +94,7 @@ _LICENSE_METADATA = [
         name='pyyaml',
         homepage_url='https://pyyaml.org',
         license_url=
-        'https://raw.githubusercontent.com/yaml/pyyaml/5.4.1/LICENSE',
+        'https://raw.githubusercontent.com/yaml/pyyaml/6.0.1/LICENSE',
     ),
     LicenseMetadata(
         name='bidict',
