@@ -1,6 +1,4 @@
 ---
-tinypilot_privileged_dir: /opt/tinypilot-privileged
-
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
 # in order to elevate their variable precedence. These variables will now
 # override the default variables in the uStreamer role.
