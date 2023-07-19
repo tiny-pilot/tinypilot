@@ -1,13 +1,4 @@
 ---
-# TinyPilot's get-tinypilot.sh script (which it uses for installation and
-# updates) relies on the tinypilot user being named "tinypilot" so changing this
-# value will break updates.
-tinypilot_user: tinypilot
-tinypilot_group: tinypilot
-
-tinypilot_dir: /opt/tinypilot
-tinypilot_privileged_dir: /opt/tinypilot-privileged
-
 # uStreamer variables are placed here, instead of in `defaults/main.yml`,
 # in order to elevate their variable precedence. These variables will now
 # override the default variables in the uStreamer role.

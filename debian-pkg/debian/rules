@@ -13,6 +13,7 @@ export DEB_BUILD_OPTIONS=noddebs
 	dh $@ --with python-virtualenv
 
 override_dh_installsystemd:
+	dh_installsystemd --name=tinypilot
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
 	dh_installsystemd --name=usb-gadget --no-start
 
