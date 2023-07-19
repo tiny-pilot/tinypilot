@@ -127,7 +127,7 @@ ansible-playbook \
   --extra-vars "@${INSTALL_SETTINGS_FILE}"
 
 # Install TinyPilot Debian package and resolve missing dependencies.
-apt-get install "${TINYPILOT_DEBIAN_PACKAGE}"
+apt-get install "./${TINYPILOT_DEBIAN_PACKAGE}"
 
 # Persist installation settings.
 cp "${INSTALL_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
