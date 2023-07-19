@@ -10,12 +10,92 @@
       TinyPilot web application doesn't seem to be running.
     </p>
     <p>
-      Please try reloading the page. If you continue to see this message, please
-      <a
-        href="https://github.com/tiny-pilot/tinypilot/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title="
-        >file a bug on GitHub</a
-      >
-      to let us know.
+      This error can occur if you tried to access the TinyPilot page too quickly
+      after starting your TinyPilot device.
     </p>
+
+    <p>Please reload the page.</p>
+
+    <button
+      type="button"
+      onclick="location.reload()"
+      style="font-size: 1.3em; padding: 0.3rem 0.8rem; margin-bottom: 160px"
+    >
+      Reload page
+    </button>
+
+    <p>
+      If you continue to see this message, please try the following
+      troubleshooting steps:
+    </p>
+
+    <h2>Solution 1: Restart the TinyPilot service</h2>
+    <p>
+      If you previously enabled
+      <a href="https://tinypilotkvm.com/faq/ssh-credentials">SSH</a> on your
+      TinyPilot, you can check whether the TinyPilot service is running by
+      logging in via SSH and running the following command:
+    </p>
+
+    <pre><code>sudo service tinypilot status</code></pre>
+
+    <p>
+      If the service is not listed as <code>Active: active (running)</code>,
+      restart the TinyPilot service with the following command:
+    </p>
+
+    <pre><code>sudo service tinypilot restart</code></pre>
+
+    <p>After the command completes, reload this page.</p>
+
+    <h2>Solution 2: Restart your TinyPilot</h2>
+    <p>
+      If you previously enabled SSH on your TinyPilot, log in via SSH and try
+      restarting your TinyPilot by running the following command:
+    </p>
+
+    <pre><code>sudo reboot</code></pre>
+
+    <p>
+      If you don't have SSH access, wait two minutes before powering off your
+      TinyPilot. Then, power on your TinyPilot, and wait a minute before
+      reloading this page.
+    </p>
+
+    <h2>Solution 3: Reset your TinyPilot to factory settings</h2>
+    <p>
+      If you have just updated your TinyPilot, or if your TinyPilot recently
+      experienced sudden power loss, your TinyPilot may have a corrupted
+      filesystem.
+    </p>
+    <p>
+      A <a href="https://tinypilotkvm.com/faq/factory-reset">factory reset</a>
+      will restore your TinyPilot back to a working state.
+    </p>
+
+    <h2>Still having issues?</h2>
+    <p>
+      If the above options have failed,
+      <a href="https://tinypilotkvm.com/contact"
+        >contact TinyPilot's support team</a
+      >
+      with the following information:
+    </p>
+    <ul>
+      <li>Model of your TinyPilot</li>
+      <li>
+        What you were doing before receiving this 502 error (e.g., updating your
+        TinyPilot software)?
+      </li>
+      <li>
+        A log URL from your TinyPilot (if you have SSH access)
+        <ul>
+          <li>
+            SSH into your TinyPilot and run
+            <code>sudo /opt/tinypilot-privileged/collect-debug-logs</code>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </body>
 </html>
