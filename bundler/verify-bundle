@@ -44,13 +44,8 @@ fi
 # List Debian package contents.
 dpkg --contents tinypilot*armhf.deb
 
-# Check that Ansible roles exist.
-readonly ANSIBLE_ROLES=(
-  ansible-role-ustreamer
-)
-for ansible_role in "${ANSIBLE_ROLES[@]}"; do
-  if [[ ! -d "roles/${ansible_role}" ]]; then
-    >&2 echo "Bundle is missing Ansible role: ${ansible_role}"
-    exit 1
-  fi
-done
+# Check that the Ansible role exists.
+if [[ ! -d 'roles/ansible-role-ustreamer' ]]; then
+  >&2 echo 'Bundle is missing Ansible role: ansible-role-ustreamer'
+  exit 1
+fi
