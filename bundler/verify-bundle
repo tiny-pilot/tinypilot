@@ -46,6 +46,6 @@ dpkg --contents tinypilot*armhf.deb
 
 # Check that the Ansible role exists.
 if [[ ! -d 'roles/ansible-role-ustreamer' ]]; then
-  >&2 echo 'Bundle is missing Ansible role: ansible-role-ustreamer'
+  >&2 echo 'Bundle is missing ansible-role-ustreamer'
   exit 1
 fi
