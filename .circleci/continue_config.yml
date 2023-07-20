@@ -3,13 +3,8 @@ parameters:
   ansible_role_changed:
     type: boolean
     default: false
-  # Creating the bundle assumes an ARMv7 build, so we only do this on master,
-  # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
   bundle_build_branch:
     type: string
-    # In order to enable bundle building on a feature branch, you can
-    # temporarily change the below default to be: << pipeline.git.branch >>
-    # Don’t forget to revert this before merging your branch!
     default: master
 jobs:
   check_whitespace:
