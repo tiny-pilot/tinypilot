@@ -15,8 +15,4 @@ fi
 rm -f \
   /etc/nginx/sites-enabled/tinypilot.conf
 
-# Disable default NGINX server.
-rm -f \
-  /etc/nginx/sites-enabled/default
-
 #DEBHELPER#
