@@ -139,6 +139,7 @@ jobs:
   build_debian_package:
     docker:
       - image: cimg/base:stable
+    resource_class: large
     steps:
       - checkout
       - setup_remote_docker:
