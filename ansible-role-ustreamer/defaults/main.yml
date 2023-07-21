@@ -1,7 +1,4 @@
 ---
-# Network interface to listen for connections.
-ustreamer_interface: null
-
 # Port to listen for connections.
 ustreamer_port: null
 

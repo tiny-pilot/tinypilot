@@ -40,7 +40,6 @@
     ustreamer_runtime_vars: "{{ ustreamer_runtime_vars | combine({ item: lookup('ansible.builtin.vars', item) }) }}"
   when: lookup('ansible.builtin.vars', item) != None
   loop:
-    - ustreamer_interface
     - ustreamer_port
     - ustreamer_video_path
     - ustreamer_encoder
