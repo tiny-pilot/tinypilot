@@ -44,7 +44,7 @@ class UpdateSettingsTest(unittest.TestCase):
         self.assertEqual('/dev/hidg0',
                          settings_dict['tinypilot_keyboard_interface'])
         # Count constant and default values.
-        self.assertEqual(8, len(settings_dict))
+        self.assertEqual(7, len(settings_dict))
 
     def test_populates_empty_file_with_blank_settings(self):
         self.make_mock_settings_file('')

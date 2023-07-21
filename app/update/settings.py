@@ -24,8 +24,6 @@ _SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
 # precedence over the YAML data in _SETTINGS_FILE_PATH and _DEFAULTS. These
 # values are not user-configurable.
 _CONSTANTS = {
-    'ustreamer_interface':
-        '127.0.0.1',  # Must match bundler/bundle/install.yml.
     'ustreamer_port': 8001,  # Must match bundler/bundle/install.yml.
 }
 
