@@ -146,15 +146,24 @@ echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
 
 ### Installing a nightly bundle
 
-In order to test a change as complete bundle on device, perform the following steps:
+The canonical way to build bundles is on CircleCI. By default, bundles are only built off the `master` branch. There are two methods available to build a bundle off a feature branch:
 
-1. In [the CircleCI configuration](/.circleci/continue_config.yml), change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
-1. Push your changes as branch to GitHub. The `build_bundle` CircleCI job will build a complete bundle off the branch, and store it as artifact on CircleCI.
+1. Temporarily enable bundle builds for all commits on a feature branch:
+   1. In [the CircleCI configuration](/.circleci/config.yml), change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
+   1. Push your changes as branch to GitHub. CircleCI will now automatically build bundles for all subsequent commits of that branch.
+   1. Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
+1. Manually trigger a bundle build as one-off:
+   1. On CircleCI’s overview page for the respective branch, click the “Trigger Pipeline” button.
+   1. In the dialog, enter `bundle_build_branch` as parameter name, and the (exact) name of the branch as parameter value.
+   1. Click the “Trigger Pipeline” button in the dialog. CircleCI will now build a bundle for the latest commit of that branch.
+
+In both cases, the `build_bundle` CircleCI job will store the built bundles as artifacts.
+
+In order to install a nightly bundle on device, follow these steps:
+
 1. If your device doesn’t contain a TinyPilot installation yet, upload the [`install-bundle` script](scripts/install-bundle) via `scp` or `rsync`. Otherwise, you find it in `/opt/tinypilot/scripts/install-bundle`.
 1. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
    - As an alternative, you can also upload the bundle directly, and use the file path as input argument.
-
-Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
 
 ### Scripting often-used procedures
 
