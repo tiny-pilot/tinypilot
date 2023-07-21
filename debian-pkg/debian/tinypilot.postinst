@@ -90,6 +90,10 @@ if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
     /etc/nginx/nginx.conf
 fi
 
+# Disable default NGINX server.
+rm -f \
+  /etc/nginx/sites-enabled/default
+
 # Test and reload NGINX config.
 nginx -t
 if deb-systemd-invoke is-active nginx; then

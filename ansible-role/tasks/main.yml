@@ -1,9 +1,0 @@
----
-- name: install uStreamer
-  import_tasks: ustreamer.yml
-  tags:
-    - ustreamer
-
-- name: install TinyPilot Debian package
-  apt:
-    deb: "{{ tinypilot_debian_package_path }}"

@@ -12,13 +12,12 @@ The [`create-bundle`](create-bundle) script generates the bundle from the [`bund
 
 - **The TinyPilot web service**
   - The root [`Dockerfile`](../Dockerfile) packs the TinyPilot web service as a Debian package from the source files.
-- **Ansible roles**
-  - The main roles are [`ansible-role-tinypilot`](../ansible-role) and [`ansible-role-ustreamer`](../ansible-role-ustreamer).
-  - The Ansible roles are responsible for configuring TinyPilot and its dependencies on the device.
+- **Ansible role**
+  - [`ansible-role-ustreamer`](../ansible-role-ustreamer) is responsible for configuring uStreamer on the device.
 - **Metadata**
   - E.g., version/build information
 
-The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It does some bootstrapping and then hands over to [`ansible-role-tinypilot`](../ansible-role), which contains most of the actual installation logic.
+The entrypoint for installing the bundle is the [`bundle/install`](bundle/install) script. It contains the installation logic that installs TinyPilot and all of its dependencies.
 
 ### Gatekeeper Web Service
 

@@ -9,7 +9,6 @@ platforms:
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - "${PWD}/debian-pkgs:/opt/debian-pkgs:ro"
     privileged: true
     pre_build_image: true
 provisioner:
@@ -20,7 +19,6 @@ provisioner:
       all:
         vars:
           ansible_user: root
-          tinypilot_debian_package_path: /opt/debian-pkgs/${TINYPILOT_DEBIAN_PACKAGE}
   options:
     # This variable expects a string, just like `--extra-vars` command-line
     # parameter. See

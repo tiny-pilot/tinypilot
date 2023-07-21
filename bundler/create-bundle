@@ -25,7 +25,6 @@ readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
 readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
-readonly ANSIBLE_ROLE_TINYPILOT_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-tinypilot"
 readonly ANSIBLE_ROLE_USTREAMER_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-ustreamer"
 
 # Exclude the AMD64 package from the production bundle.
@@ -71,9 +70,6 @@ rm -rf "${ANSIBLE_ROLES_DIR}"
 mkdir "${ANSIBLE_ROLES_DIR}"
 
 # Copy local Ansible roles.
-cp -r \
-  --no-target-directory \
-  ../ansible-role "${ANSIBLE_ROLE_TINYPILOT_DIR}"
 cp -r \
   --no-target-directory \
   ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
