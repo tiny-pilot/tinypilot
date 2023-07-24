@@ -26,7 +26,16 @@
     group: root
     mode: "0644"
   loop:
-    - janus.jcfg
     - janus.transport.websockets.jcfg
   notify:
     - restart Janus
+
+- name: install Janus config writer
+  copy:
+    src: write-janus-config
+    dest: "{{ ustreamer_janus_dir }}/write-janus-config"
+    owner: "{{ ustreamer_user }}"
+    group: "{{ ustreamer_group }}"
+    mode: "0755"
+  notify:
+    - write Janus configs

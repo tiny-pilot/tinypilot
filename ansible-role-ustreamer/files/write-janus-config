@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Writes the main Janus config file, rendered from the template in
+# /usr/share/ustreamer/templates/janus.jcfg.j2
+
+pushd /opt/tinypilot
+. venv/bin/activate && \
+  PYTHONPATH=/opt/tinypilot/app \
+    ./scripts/render-template \
+  < /usr/share/ustreamer/templates/janus.jcfg.j2 \
+  > /etc/janus/janus.jcfg && \
+  deactivate
+popd

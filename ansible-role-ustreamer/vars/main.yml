@@ -21,4 +21,6 @@ ustreamer_yq_version: v4.30.6
 ustreamer_launcher_dir: /opt/ustreamer-launcher
 ustreamer_launcher_script: "{{ ustreamer_launcher_dir }}/launch"
 
+ustreamer_janus_dir: "/opt/ustreamer-janus"
+
 ustreamer_launcher_configs_dir: "{{ ustreamer_launcher_dir }}/configs.d"

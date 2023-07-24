@@ -26,3 +26,6 @@
     name: janus
     state: restarted
   when: ustreamer_install_janus
+
+- name: write Janus configs
+  shell: {{ ustreamer_janus_dir }}/write-janus-config
