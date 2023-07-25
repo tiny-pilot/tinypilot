@@ -19,7 +19,7 @@ arrow==1.2.2
 bcrypt==3.2.2
 binaryornot==0.4.4
 Cerberus==1.3.4
-certifi==2022.12.7
+certifi==2023.7.22
 cffi==1.15.1
 chardet==5.0.0
 charset-normalizer==2.1.0
