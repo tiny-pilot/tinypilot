@@ -175,11 +175,29 @@
       }
       .stun-input {
         font-family: 'Overpass Mono', monospace !important;
-        width: 20.5em;
-        margin-left: 0.4em;
-        margin-right: 3em;
-        margin-top: 1.5em;
-        margin-bottom: 0.3em;
+        width: 18em;
+        color: black;
+        margin: 0.7em 3em 0.3em 0.4em;
+        cursor: not-allowed;
+      }
+      .item-checked:after {
+        position: absolute;
+        content: "✓";
+        left: 10px;
+        top: 5px;
+      }
+      .nat-label {
+        display: inline-block;
+        width: 5.8em;
+        white-space: nowrap;
+        margin-right: 0.3em;
+        text-align: right;
+      }
+      .stun-select {
+        position: absolute;
+          margin-top: -0.3em;
+          right: 10em;
+          --dropdown-width: 10em;
       }
     </style>
     <div style="margin-bottom: 0.5em">
@@ -190,11 +208,51 @@
     </div>
     <div class="advanced-settings" style="margin-bottom: 2rem; position: relative">
       <h3>Advanced Settings</h3>
-      <input type="checkbox"> Enable STUN Server<br>
-      STUN Address
-      <input type="text" placeholder="stun.example.org:3478" class="stun-input">
-      <br>
-      <span class="stun-default btn-text" style="font-size: 0.9em">Use public STUN server operated by Google</span>
+      <p style="    margin-left: 6em; margin-right: 6em;">
+        If your TinyPilot device resides in a remote network, and you access it
+        from a private IP address, you need to facilitate the H.264 connection
+        via external servers.<br>
+        Learn more in <a href="#">the documentation.</a>
+      </p>
+      <div>
+        <span>Connection Method:</span>
+        <dropdown-button>
+          <button slot="button">
+            STUN
+            <span class="icon-arrow"></span>
+          </button>
+          <li slot="item">
+            <div>Default</div>
+          </li>
+          <li slot="item" class="item-checked">
+            <div>STUN</div>
+          </li>
+          <li slot="item">
+            <div>1:1 Mapping</div>
+          </li>
+        </dropdown-button>
+      </div>
+      <div>
+        <span class="nat-label">STUN Server</span>
+        <input type="text" disabled="" value="stun.l.google.com:19302" class="stun-input">
+        <dropdown-button class="stun-select">
+          <button slot="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0">
+            <span class="icon-arrow"></span>
+          </button>
+          <li slot="item" class="item-checked">
+            <div>Google</div>
+            <div class="streaming-mode-hint">
+              Public STUN server<br/>operated by Google
+            </div>
+          </li>
+          <li slot="item">
+            <div>Custom</div>
+            <div class="streaming-mode-hint">
+              Specify your own<br/>STUN server
+            </div>
+          </li>
+        </dropdown-button>
+      </div>
     </div>
     <button class="save-btn btn-success" type="button">Apply</button>
     <button class="close-btn" type="button">Cancel</button>
@@ -202,18 +260,6 @@
   <div id="saving">
     <h3>Applying Video Settings</h3>
     <progress-spinner></progress-spinner>
-  </div>
-  <div id="advanced-dialog">
-    <h3>Advanced Video Settings</h3>
-    <div style="margin: 2em 0">
-      <input type="checkbox"> Enable STUN Server<br>
-      STUN Address
-      <input type="text" placeholder="stun.example.org:3478" class="stun-input">
-      <br>
-      <span class="stun-default btn-text" style="font-size: 0.9em">Use public STUN server operated by Google</span>
-    </div>
-    <button class="save-btn btn-success" type="button">Apply</button>
-    <button class="close-btn" type="button">Back</button>
   </div>
 </template>
 
