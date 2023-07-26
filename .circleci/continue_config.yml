@@ -31,7 +31,7 @@ jobs:
           command: ./dev-scripts/check-bash
   lint_sql:
     docker:
-      - image: cimg/python:3.7.4
+      - image: cimg/python:3.9.17
     steps:
       - checkout
       - run:
@@ -68,7 +68,7 @@ jobs:
           command: ./dev-scripts/decode-edid
   build_python:
     docker:
-      - image: cimg/python:3.7.4
+      - image: cimg/python:3.9.17
     steps:
       - checkout
       - run:
@@ -96,12 +96,12 @@ jobs:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
       # with Python, Node, and a browser. While the build_python and
-      # build_javascript steps use python-3.7.4 and node-18.16.1 respectively,
+      # build_javascript steps use python-3.9.17 and node-18.16.1 respectively,
       # the CircleCI image with *both* python and node in the closest versions
-      # is python:3.7.17-browsers. It has python-3.7.17 and node-18.16.0.
+      # is python:3.9.17-browsers. It has python-3.9.17 and node-18.16.0.
       #
       # See: https://circleci.com/developer/images/image/cimg/python#tagging-scheme
-      - image: cimg/python:3.7.17-browsers
+      - image: cimg/python:3.9.17-browsers
     environment:
       NODE_ENV: development
     steps:
@@ -239,7 +239,7 @@ jobs:
             molecule test
   build_bundle:
     docker:
-      - image: cimg/python:3.7.4
+      - image: cimg/python:3.9.17
     steps:
       - checkout
       - attach_workspace:
