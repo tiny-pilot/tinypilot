@@ -121,6 +121,12 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/greenlet-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
+        name='importlib-metadata',
+        homepage_url='https://importlib-metadata.readthedocs.io/',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/importlib_metadata-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
         name='itsdangerous',
         homepage_url='https://palletsprojects.com/p/itsdangerous/',
         license_glob_pattern=
@@ -163,6 +169,12 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/six-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
+        name='typing_extensions',
+        homepage_url='https://typing-extensions.readthedocs.io/',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/typing_extensions-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
         name='Werkzeug',
         homepage_url='https://palletsprojects.com/p/werkzeug/',
         license_glob_pattern=
@@ -173,6 +185,12 @@ _LICENSE_METADATA = [
         homepage_url='https://wtforms.readthedocs.io',
         license_glob_pattern=
         './venv/lib/python3.*/site-packages/WTForms-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
+        name='zipp',
+        homepage_url='https://github.com/jaraco/zipp',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/zipp-*.dist-info/LICENSE*',
     ),
 
     # Ansible dependencies that are not covered above. They are not available
