@@ -4,7 +4,7 @@ eventlet==0.31.0
 Flask==1.1.1
 Flask-SocketIO==5.3.4
 Flask-WTF==0.14.3
-pyyaml==6.0.1
+PyYAML==6.0.1
 
 # Indirect dependencies
 bidict==0.21.2
@@ -18,7 +18,6 @@ MarkupSafe==1.1.1
 monotonic==1.5
 python-engineio==4.5.1
 python-socketio==5.8.0
-PyYAML==6.0.1
 six==1.15.0
 typing_extensions==4.7.1
 Werkzeug==1.0.1
