@@ -165,8 +165,6 @@ In order to install a nightly bundle on device, follow these steps:
 1. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
    - As an alternative, you can also upload the bundle directly, and use the file path as input argument.
 
-Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
-
 ## Other dev workflows
 
 ### Scripting often-used procedures
