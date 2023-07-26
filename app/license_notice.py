@@ -62,7 +62,7 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='socket.io',
         homepage_url='https://socket.io',
-        license_url='https://github.com/socketio/socket.io/blob/3.1.2/LICENSE',
+        license_url='https://github.com/socketio/socket.io/blob/4.7.1/LICENSE',
     ),
 
     # Python dependencies, from requirements.txt.
