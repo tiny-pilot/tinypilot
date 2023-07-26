@@ -1,4 +1,5 @@
-# When modifying dependencies, update the credit in app/license_notice.py.
+# See the "Updating Python pip packages" section of CONTRIBUTING.md for
+# instructions about updating this file.
 
 eventlet==0.31.0
 Flask==1.1.1
