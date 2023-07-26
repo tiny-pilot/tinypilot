@@ -103,6 +103,12 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/bidict-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
+        name='blinker',
+        homepage_url='https://blinker.readthedocs.io/',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/blinker-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
         name='click',
         homepage_url='https://palletsprojects.com/p/click',
         license_glob_pattern=
@@ -145,12 +151,6 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/MarkupSafe-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
-        name='monotonic',
-        homepage_url='https://github.com/atdt/monotonic',
-        license_url=
-        'https://raw.githubusercontent.com/atdt/monotonic/1.5/LICENSE',
-    ),
-    LicenseMetadata(
         name='python-engineio',
         homepage_url='https://github.com/miguelgrinberg/python-engineio',
         license_glob_pattern=
@@ -167,12 +167,6 @@ _LICENSE_METADATA = [
         homepage_url='https://github.com/benjaminp/six',
         license_glob_pattern=
         './venv/lib/python3.*/site-packages/six-*.dist-info/LICENSE*',
-    ),
-    LicenseMetadata(
-        name='typing_extensions',
-        homepage_url='https://typing-extensions.readthedocs.io/',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/typing_extensions-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Werkzeug',
