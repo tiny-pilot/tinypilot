@@ -165,6 +165,10 @@ In order to install a nightly bundle on device, follow these steps:
 1. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
    - As an alternative, you can also upload the bundle directly, and use the file path as input argument.
 
+Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
+
+## Other dev workflows
+
 ### Scripting often-used procedures
 
 For common procedures that you need to repeat often, it’s useful to encode them as bash scripts. We currently don’t provide off-the-shelf scripts here, because the dev setups and environments are too different.
@@ -181,6 +185,19 @@ echo 'Hello ...'
 echo '... World!'
 ENDSSH
 ```
+
+### Updating Python pip packages
+
+We don't use any Python package management tools because we want to limit complexity, but it means our process for updating packages is a bit manual:
+
+1. `deactivate` to exit the virtual env (if you're in one).
+1. `rm -rf venv` to get rid of dev packages.
+1. `sed '/# Indirect dependencies/q' requirements.txt | tee requirements.txt` to delete all the indirect dependencies from `requirements.txt`
+1. Update the version number of the PyPI package you want to update.
+1. `python3 -m venv venv && . venv/bin/activate && pip install --requirement requirements.txt` to reinstall production dependencies.
+1. `pip freeze >> requirements.txt` to dump exact version numbers of all direct and indirect dependencies.
+1. `awk '!a[$0]++' requirements.txt | tee requirements.txt` to delete duplicate lines.
+1. Update `app/license_notice.py` to match any changes in `requirements.txt`.
 
 ## Architecture
 
