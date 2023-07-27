@@ -213,6 +213,9 @@
           const isEqualToInitialValue =
             this.elements.hostnameInput.value === this.initialHostname;
           this.elements.changeAndRestart.disabled = isEqualToInitialValue;
+          const isEmpty = this.elements.hostnameInput.value === "";
+          this.elements.changeAndRestart.disabled =
+            isEmpty || isEqualToInitialValue;
         }
 
         _doChangeHostname() {
