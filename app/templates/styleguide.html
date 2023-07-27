@@ -263,8 +263,46 @@
           was clicked with the mouse; that implies that the call-to-action
           shouldn’t trigger in case the button is in disabled state.
         </li>
+        <li>
+          If the input value is required to adhere to a certain format, use the
+          placeholder attribute to help the user intuitively grasp the expected
+          format. The placeholder text should be a made-up but semantically
+          correct value. The placeholder should make it obvious to the reader
+          that it’s just an example value by containing words like “example” or
+          artificial sequences like “1234”. Omit prefixes such as “<span
+            class="monospace"
+            >e.g., </span
+          >”.<br />
+          A placeholder is not needed for input fields that expect free text, or
+          when the validation rules are too trivial to allow for expressive or
+          meaningful demo usage.
+        </li>
+        <li>
+          Make the width of the input field so that it’s reasonably coherent
+          with the expected length of the input copy. Note, though, that there
+          might be other factors for determining a good width of the input
+          field, such as visual alignment with other nearby UI elements.
+        </li>
       </ul>
-      <h3>For Regular Text</h3>
+      <p>
+        <strong>Example:</strong><br />
+        Your Website:
+        <input
+          type="text"
+          placeholder="https://example.org"
+          style="width: 15em; margin-left: 0.5em"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+      </p>
+      <h3>Font Usage</h3>
+      <p>
+        Use the default font for input fields that expect “free” or regular
+        text. Use the monospace font for “technical” values, to help the user
+        examine the input copy character by character (e.g., IP addresses).
+      </p>
       <div>
         <input
           type="text"
@@ -273,9 +311,6 @@
         />
         <button>Send</button>
       </div>
-
-      <h3>For Monospace Text</h3>
-      <p>Used for entering “technical” values, e.g. IP addresses.</p>
       <div>
         <input
           type="text"
