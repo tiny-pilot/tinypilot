@@ -257,6 +257,13 @@
           <pre>spellcheck="false"</pre>
         </li>
         <li>
+          If there is a call-to-action button associated with an input field,
+          then pressing the “Enter”/“Return” key on the keyboard should trigger
+          the call-to-action. The behaviour should be the same as if the button
+          was clicked with the mouse; that implies that the call-to-action
+          shouldn’t trigger in case the button is in disabled state.
+        </li>
+        <li>
           If the input value is required to adhere to a certain format, use the
           placeholder attribute to help the user intuitively grasp the expected
           format. The placeholder text should be a made-up but semantically
