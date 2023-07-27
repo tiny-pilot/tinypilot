@@ -159,6 +159,11 @@
           this.elements.changeAndRestart.addEventListener("click", () => {
             this._doChangeHostname();
           });
+          this.elements.hostnameInput.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter") {
+              this.elements.changeAndRestart.click();
+            }
+          });
           this.elements.cancelInitialization.addEventListener("click", () => {
             this.dispatchEvent(new DialogClosedEvent());
           });
