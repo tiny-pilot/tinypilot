@@ -15,8 +15,8 @@ import hid.write
 # This was observed on a 2021 Macbook Pro M1 Max running OSX Ventura 13.2.1.
 #
 # [1] https://github.com/python/cpython/commit/17a5588740b3d126d546ad1a13bdac4e028e6d50
-# [2] https://docs.python.org/3.11/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
-# [3] https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled:~:text=(using%20def%2C%20not%20lambda)
+# [2] https://docs.python.org/3.9/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
+# [3] https://docs.python.org/3.9/library/pickle.html#what-can-be-pickled-and-unpickled:~:text=(using%20def%2C%20not%20lambda)
 
 
 def do_nothing():
