@@ -8,11 +8,14 @@ import local_system
 import request_parsers.errors
 import request_parsers.hostname
 import request_parsers.video_settings
+import request_parsers.bulk_keystrokes
 import update.launcher
 import update.settings
 import update.status
 import version
 import video_service
+from hid import keyboard as fake_keyboard
+from hid import write as hid_write
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -326,4 +329,22 @@ def settings_video_apply_post():
     """
     video_service.restart()
 
+    return json_response.success()
+
+
+@api_blueprint.route('/keystrokes', methods=['POST'])
+def keystrokes_post():
+    """Performs many keystrokes in series."""
+    try:
+        keystrokes = request_parsers.bulk_keystrokes.parse_keystrokes(
+            flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    for keystroke in keystrokes:
+        try:
+            fake_keyboard.send_keystroke(keyboard_path, keystroke.modifier,
+                                         keystroke.keycode)
+        except hid_write.WriteError as e:
+            return json_response.error(e), 500
     return json_response.success()

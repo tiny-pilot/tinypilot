@@ -9,6 +9,7 @@ import { sendKeystroke } from "./keystrokes.js";
 import { isPasteOverlayShowing, showPasteOverlay } from "./paste.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
+import { processKeystrokes } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -222,13 +223,12 @@ function onKeyUp(evt) {
 }
 
 // Translate a single character into a keystroke and sends it to the backend.
-function processTextCharacter(textCharacter, language) {
+function processTextCharacter(textCharacter) {
   // Ignore carriage returns.
   if (textCharacter === "\r") {
     return;
   }
 
-  const code = findKeyCode([textCharacter.toLowerCase()], language);
   let friendlyName = textCharacter;
   // Give cleaner names to keys so that they render nicely in the history.
   if (textCharacter === "\n") {
@@ -237,27 +237,35 @@ function processTextCharacter(textCharacter, language) {
     friendlyName = "Tab";
   }
 
-  processKeystroke({
-    metaLeft: false,
-    metaRight: false,
-    altLeft: false,
-    altRight: false,
-    shiftLeft: requiresShiftKey(textCharacter),
-    shiftRight: false,
-    ctrlLeft: false,
-    ctrlRight: false,
-    key: friendlyName,
-    code: code,
-  });
+  return friendlyName;
 }
 
 // Translate a string of text into individual keystrokes and sends them to the
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
+  const keystrokes = [];
   for (const textCharacter of textInput) {
-    processTextCharacter(textCharacter, language);
+    const key = processTextCharacter(textCharacter);
+    if (!key) {
+      continue;
+    }
+    const code = findKeyCode([textCharacter.toLowerCase()], language);
+    const keystroke = {
+      metaLeft: false,
+      metaRight: false,
+      altLeft: false,
+      altRight: false,
+      shiftLeft: requiresShiftKey(textCharacter),
+      shiftRight: false,
+      ctrlLeft: false,
+      ctrlRight: false,
+      key,
+      code,
+    };
+    keystrokes.push(keystroke);
   }
+  processKeystrokes(keystrokes);
 }
 
 function setCursor(cursor, save = true) {
