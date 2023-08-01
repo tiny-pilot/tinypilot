@@ -18,7 +18,7 @@ parameters:
     # For one-off builds, you can also specify this parameter when manually
     # triggering the build pipeline on CircleCI; in this case, the parameter
     # value needs to be the (literal) branch name.
-    default: master
+    default: << pipeline.git.branch >>
 workflows:
   build_pipeline:
     jobs:
@@ -26,6 +26,5 @@ workflows:
           name: build_pipeline_params
           mapping: |
             ansible-role-ustreamer/.* ansible_role_changed true
-          # testing
-          base-revision: << pipeline.git.branch >>
+          base-revision: master
           config-path: .circleci/continue_config.yml
