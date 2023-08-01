@@ -26,5 +26,6 @@ workflows:
           name: build_pipeline_params
           mapping: |
             ansible-role-ustreamer/.* ansible_role_changed true
-          base-revision: master
+          # testing
+          base-revision: << pipeline.git.branch >>
           config-path: .circleci/continue_config.yml
