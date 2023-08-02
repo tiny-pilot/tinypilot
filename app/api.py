@@ -7,12 +7,16 @@ import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.paste
 import request_parsers.video_settings
+import text_to_hid
 import update.launcher
 import update.settings
 import update.status
 import version
 import video_service
+from hid import keyboard as fake_keyboard
+from hid import write as hid_write
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -326,4 +330,22 @@ def settings_video_apply_post():
     """
     video_service.restart()
 
+    return json_response.success()
+
+
+@api_blueprint.route('/paste', methods=['POST'])
+def paste_post():
+    try:
+        text, language = request_parsers.paste.parse_text(flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    print(language)
+    for char in text:
+        hid_code, hid_modifier = text_to_hid.convert(char, language)
+        print(char, hid_code, hid_modifier)
+        keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+        try:
+            fake_keyboard.send_keystroke(keyboard_path, hid_modifier, hid_code)
+        except hid_write.WriteError as e:
+            return json_response.error(e), 500
     return json_response.success()

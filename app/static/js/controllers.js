@@ -323,3 +323,17 @@ export async function isMjpegStreamAvailable() {
     .then((response) => response.ok)
     .catch(() => false);
 }
+
+export async function pasteText(text, language) {
+  return fetch("/api/paste", {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ text, language }),
+  }).then(processJsonResponse);
+}
