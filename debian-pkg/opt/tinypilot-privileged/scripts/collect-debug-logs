@@ -134,7 +134,14 @@ print_info "Checking temperature..."
 printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
 
 print_info "Checking throttled state..."
-printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
+{
+  CPU_THROTTLED="Yes"
+  if vcgencmd get_throttled | grep -q "0x0" ; then
+    CPU_THROTTLED="No"
+  fi
+  readonly CPU_THROTTLED
+  echo "CPU throttled since boot: ${CPU_THROTTLED}"
+} >> "${LOG_FILE}"
 
 print_info "Checking for voltage issues..."
 {
