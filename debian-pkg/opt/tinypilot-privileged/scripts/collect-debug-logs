@@ -138,9 +138,13 @@ printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
 
 print_info "Checking for voltage issues..."
 {
-  echo "voltage logs"
-  journalctl -xe | grep -i "voltage"
-  printf "\n"
+  printf "\nVoltage issues: "
+  if LAST_VOLTAGE_LINE=$(journalctl -q -r -n 1 -g "voltage") ; then
+    printf "Yes - %s" "${LAST_VOLTAGE_LINE}"
+  else
+    printf "No"
+  fi
+  printf "\n\n"
 } >> "${LOG_FILE}"
 
 print_info "Checking TinyPilot settings..."
