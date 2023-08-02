@@ -28,7 +28,7 @@ click-completion==0.5.2
 click-help-colors==0.9.1
 commonmark==0.9.1
 cookiecutter==2.1.1
-cryptography==39.0.1
+cryptography==41.0.3
 distro==1.7.0
 docker==5.0.3
 enrich==1.2.7
