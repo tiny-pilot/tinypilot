@@ -1,6 +1,6 @@
 # Specifies the filesystem path or URL of a Debian package that installs
 # uStreamer.
-ustreamer_debian_package_path: https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.38-20230620124412/ustreamer_5.38-20230620124412_armhf.deb
+ustreamer_debian_package_path: https://github.com/tiny-pilot/ustreamer-debian/releases/download/ustreamer_5.38-20230802141939/ustreamer_5.38-20230802141939_armhf.deb
 
 # The user/group must match the one created by the uStreamer Debian package.
 ustreamer_group: ustreamer
