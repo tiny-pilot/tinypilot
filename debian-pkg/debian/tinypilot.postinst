@@ -103,11 +103,11 @@ else
 fi
 
 # Restore the Janus config files.
-mv \
+cp \
   /usr/share/tinypilot/janus.jcfg \
   /etc/janus/janus.jcfg
 
-mv \
+cp \
   /usr/share/tinypilot/janus.transport.websockets.jcfg \
   /etc/janus/janus.transport.websockets.jcfg
 
