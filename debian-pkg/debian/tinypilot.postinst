@@ -102,4 +102,12 @@ else
   deb-systemd-invoke start nginx
 fi
 
+# Restore the Janus config files.
+cp \
+  /usr/share/tinypilot/janus.jcfg \
+  /etc/janus/janus.jcfg
+cp \
+  /usr/share/tinypilot/janus.transport.websockets.jcfg \
+  /etc/janus/janus.transport.websockets.jcfg
+
 #DEBHELPER#
