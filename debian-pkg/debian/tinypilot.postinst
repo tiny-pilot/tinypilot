@@ -103,16 +103,12 @@ else
 fi
 
 # Workaround to restore the Janus config.
-if grep --silent 'tinypilot' /etc/janus.jcfg; then
-  mv \
-    /usr/share/tinypilot/janus.jcfg \
-    /etc/janus.jcfg
-fi
+mv \
+  /usr/share/tinypilot/janus.jcfg \
+  /etc/janus.jcfg
 
-if grep --silent 'tinypilot' /etc/janus.transport.websockets.jcfg; then
-  mv \
-    /usr/share/tinypilot/janus.transport.websockets.jcfg \
-    /etc/janus.transport.websockets.jcfg
-fi
+mv \
+  /usr/share/tinypilot/janus.transport.websockets.jcfg \
+  /etc/janus.transport.websockets.jcfg
 
 #DEBHELPER#
