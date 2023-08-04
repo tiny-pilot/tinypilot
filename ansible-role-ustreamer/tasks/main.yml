@@ -74,10 +74,6 @@
   import_tasks: provision_tc358743.yml
   when: ustreamer_capture_device == 'tc358743'
 
-- name: uninstall TC358743 settings if they're not in use
-  import_tasks: remove_tc358743.yml
-  when: ustreamer_capture_device != 'tc358743'
-
 - name: save uStreamer settings file
   template:
     src: config.yml.j2
