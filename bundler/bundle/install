@@ -21,7 +21,6 @@ readonly INSTALL_SETTINGS_FILE
 # The eventual, permanent settings files. Note, that these might not exist
 # yet before Ansible has run for the very first time.
 readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
-readonly USTREAMER_SETTINGS_FILE='/home/ustreamer/config.yml'
 
 # The filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
@@ -76,16 +75,10 @@ yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
 USE_TC358743_DEFAULTS=false
-if grep --silent "^ustreamer_capture_device:" "${INSTALL_SETTINGS_FILE}"; then
-  if grep --silent "^ustreamer_capture_device: tc358743$" "${INSTALL_SETTINGS_FILE}"; then
-    USE_TC358743_DEFAULTS=true
-  fi
-# Only check the existing config file if user has not set
-# ustreamer_capture_device install variable.
-elif [ -f "${USTREAMER_SETTINGS_FILE}" ] \
-     && grep --silent 'capture_device: "tc358743"' "${USTREAMER_SETTINGS_FILE}"; then
+if grep --silent "^dtoverlay=tc358743$" /boot/config.txt; then
   USE_TC358743_DEFAULTS=true
 fi
+readonly USE_TC358743_DEFAULTS
 
 # Write uStreamer settings.
 # If this system does not use a TC358743 capture chip, assume defaults for a

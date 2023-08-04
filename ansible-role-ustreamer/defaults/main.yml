@@ -41,12 +41,6 @@ ustreamer_drop_same_frames: null
 # Set TCP_NODELAY to reduce buffering on video stream.
 ustreamer_tcp_nodelay: null
 
-# Presets to use for the video capture device.
-# Options are:
-#   * uvc - For a device that appears as a regular UVC video source.
-#   * tc358743 - For HDMI to CSI devices based on the Toshiba TC358743 chip.
-ustreamer_capture_device: null
-
 # To create a new EDID:
 #  1. Convert the existing EDID to binary using "edid2bin".
 #  2. Edit the binary using "AW EDID Editor v.02.00.13".

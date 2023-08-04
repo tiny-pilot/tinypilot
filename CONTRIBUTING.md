@@ -140,8 +140,7 @@ adduser \
     tinypilot
 
 # Add uStreamer configuration.
-su tinypilot
-echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
+echo "dtoverlay=tc358743" | sudo tee --append /boot/config.txt
 ```
 
 ### Installing a nightly bundle
