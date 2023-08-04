@@ -20,6 +20,8 @@
     boot_config_exists: "{{ boot_config_result.stat.exists }}"
 
 - name: check if TC358743 settings (HDMI to CSI, such as Voyager series) are enabled
+  # We could theoretically use the "lineinfile" module to check for the presence
+  # but we're moving away from Ansible, and grep makes it easier to read.
   command: grep --silent '^dtoverlay=tc358743$' /boot/config.txt
   register: tc358743_result
   check_mode: no
