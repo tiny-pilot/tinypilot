@@ -10,6 +10,7 @@ import request_parsers.hostname
 import request_parsers.paste
 import request_parsers.video_settings
 import text_to_hid
+import threads
 import update.launcher
 import update.settings
 import update.status
@@ -348,4 +349,5 @@ def paste_post():
             fake_keyboard.send_keystroke(keyboard_path, hid_modifier, hid_code)
         except hid_write.WriteError as e:
             return json_response.error(e), 500
+        threads.reschedule()
     return json_response.success()
