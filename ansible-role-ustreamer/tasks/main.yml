@@ -33,6 +33,10 @@
   set_fact:
     is_tc358743_enabled: "{{ boot_config_exists and tc358743_result.changed }}"
 
+- name: print whether TC35843 settings are enabled
+  debug:
+    var: is_tc358743_enabled
+
 - name: determine whether to install Janus
   set_fact:
     ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
