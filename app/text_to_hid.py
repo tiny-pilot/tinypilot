@@ -107,9 +107,10 @@ NEEDS_SHIFT_REGEX = re.compile(r'[A-Z¬!"£$%^&*()_+{}|<>?:@~#]')
 
 
 def convert(char, language):
-    return {
+    hid_code = {
         "en-GB": GB_CHAR_TO_HID_MAP,
         "en-US": US_CHAR_TO_HID_MAP
-    }[language][
-        char.lower()], hid.KEYCODE_LEFT_SHIFT if NEEDS_SHIFT_REGEX.match(
-            char) else hid.KEYCODE_NONE
+    }[language][char.lower()]
+    hid_modifier = hid.MODIFIER_LEFT_SHIFT if NEEDS_SHIFT_REGEX.match(
+        char) else hid.KEYCODE_NONE
+    return hid_code, hid_modifier
