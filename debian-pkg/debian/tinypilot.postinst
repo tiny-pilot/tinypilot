@@ -109,4 +109,10 @@ if grep --silent 'tinypilot' /etc/janus.jcfg; then
     /etc/janus.jcfg
 fi
 
+if grep --silent 'tinypilot' /etc/janus.transport.websockets.jcfg; then
+  mv \
+    /usr/share/tinypilot/janus.transport.websockets.jcfg \
+    /etc/janus.transport.websockets.jcfg
+fi
+
 #DEBHELPER#
