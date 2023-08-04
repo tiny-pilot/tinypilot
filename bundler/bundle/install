@@ -74,6 +74,7 @@ yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_port" "8001"
 yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
+# TODO: Double check that we're not changing behavior here.
 USE_TC358743_DEFAULTS=false
 if grep --silent "^dtoverlay=tc358743$" /boot/config.txt; then
   USE_TC358743_DEFAULTS=true
