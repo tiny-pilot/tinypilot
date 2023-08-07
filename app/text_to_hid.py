@@ -94,6 +94,7 @@ GB_CHAR_TO_JS_MAP = COMMON_CHAR_TO_JS_MAP | {
     "@": "Quote",
 }
 
+# TODO(jason): Directly map char to HID modifier/keycode.
 US_CHAR_TO_HID_MAP = {
     char: js._MAPPING[js_code] for char, js_code in US_CHAR_TO_JS_MAP.items()  # pylint: disable=protected-access
 }
@@ -101,6 +102,7 @@ GB_CHAR_TO_HID_MAP = {
     char: js._MAPPING[js_code] for char, js_code in GB_CHAR_TO_JS_MAP.items()  # pylint: disable=protected-access
 }
 
+# TODO(jason): Make more robust.
 # I think this might be wrong and depends on the chosen language. It's just a
 # matter of time before shifted and non-shifted characters start conflicting.
 NEEDS_SHIFT_REGEX = re.compile(r'[A-Z¬!"£$%^&*()_+{}|<>?:@~#]')
