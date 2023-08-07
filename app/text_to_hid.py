@@ -3,6 +3,15 @@ import re
 import js_to_hid as js
 from hid import keycodes as hid
 
+
+class Error(Exception):
+    pass
+
+
+class UnsupportedCharacterError(Error):
+    pass
+
+
 # Mappings of characters to codes that are shared among different keyboard
 # layouts.
 COMMON_CHAR_TO_JS_MAP = {
@@ -119,7 +128,11 @@ def convert(char, language):
         # Default to en-US if no other language matches.
         language_map = US_CHAR_TO_HID_MAP
 
-    hid_keycode = language_map[char.lower()]
+    try:
+        hid_keycode = language_map[char.lower()]
+    except KeyError as e:
+        raise UnsupportedCharacterError(
+            f"Unsupported character {char.lower()}") from e
 
     if NEEDS_SHIFT_REGEX.match(char):
         hid_modifier = hid.MODIFIER_LEFT_SHIFT

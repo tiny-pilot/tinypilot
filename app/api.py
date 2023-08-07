@@ -1,3 +1,5 @@
+import logging
+
 import flask
 
 import db.settings
@@ -20,6 +22,8 @@ from hid import keyboard as fake_keyboard
 from hid import write as hid_write
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
+
+logger = logging.getLogger(__name__)
 
 
 @api_blueprint.route('/debugLogs', methods=['GET'])
@@ -343,7 +347,11 @@ def paste_post():
 
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     for char in text:
-        hid_modifier, hid_keycode = text_to_hid.convert(char, language)
+        try:
+            hid_modifier, hid_keycode = text_to_hid.convert(char, language)
+        except text_to_hid.UnsupportedCharacterError as e:
+            logger.warning(e)
+            continue
         try:
             fake_keyboard.send_keystroke(keyboard_path, hid_modifier,
                                          hid_keycode)
