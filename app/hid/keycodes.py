@@ -4,6 +4,8 @@
 # Source: HID Usage Tables for USB, v1.21, section "10 - Keyboard/Keypad Page"
 # https://usb.org/sites/default/files/hut1_21.pdf
 
+import dataclasses
+
 MODIFIER_LEFT_CTRL = 1 << 0
 MODIFIER_LEFT_SHIFT = 1 << 1
 MODIFIER_LEFT_ALT = 1 << 2
@@ -141,3 +143,9 @@ KEYCODE_RIGHT_ALT = 0xe6
 KEYCODE_RIGHT_META = 0xe7
 KEYCODE_MEDIA_PLAY_PAUSE = 0xe8
 KEYCODE_REFRESH = 0xfa
+
+
+@dataclasses.dataclass
+class Keystroke:
+    keycode: int
+    modifier: int = KEYCODE_NONE
