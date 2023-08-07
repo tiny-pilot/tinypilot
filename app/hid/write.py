@@ -69,7 +69,7 @@ def _write_to_hid_interface_immediately(hid_path, buffer):
             hid_path)
 
 
-def write_to_hid_interface(hid_path, buffer, timeout_seconds=0.5):
+def write_to_hid_interface(hid_path, buffer):
     # Avoid an unnecessary string formatting call in a write that requires low
     # latency.
     if logger.getEffectiveLevel() == logging.DEBUG:
@@ -83,7 +83,7 @@ def write_to_hid_interface(hid_path, buffer, timeout_seconds=0.5):
         args=(hid_path, buffer),
         daemon=True)
     write_process.start()
-    write_process.join(timeout=timeout_seconds)
+    write_process.join(timeout=0.5)
     if write_process.is_alive():
         write_process.kill()
         _wait_for_process_exit(write_process)

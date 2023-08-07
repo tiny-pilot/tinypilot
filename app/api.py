@@ -10,6 +10,7 @@ import request_parsers.hostname
 import request_parsers.paste
 import request_parsers.video_settings
 import text_to_hid
+import threads
 import update.launcher
 import update.settings
 import update.status
@@ -339,15 +340,14 @@ def paste_post():
         text, language = request_parsers.paste.parse_text(flask.request)
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
-    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
-    buffer = bytearray()
+    print(language)
     for char in text:
         hid_code, hid_modifier = text_to_hid.convert(char, language)
-        buffer += fake_keyboard.keystroke_to_buffer(hid_modifier, hid_code)
-    try:
-        hid_write.write_to_hid_interface(keyboard_path,
-                                         buffer,
-                                         timeout_seconds=10)
-    except hid_write.WriteError as e:
-        return json_response.error(e), 500
+        print(char, hid_code, hid_modifier)
+        keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+        try:
+            fake_keyboard.send_keystroke(keyboard_path, hid_modifier, hid_code)
+        except hid_write.WriteError as e:
+            return json_response.error(e), 500
+        threads.reschedule()
     return json_response.success()
