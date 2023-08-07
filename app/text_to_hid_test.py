@@ -16,6 +16,6 @@ class ConvertTextToHidTest(unittest.TestCase):
         self.assertEqual((hid.MODIFIER_LEFT_SHIFT, hid.KEYCODE_NUMBER_2),
                          text_to_hid.convert("@", "fake-language"))
 
-    def test_unsupported_character(self):
+    def test_raises_error_on_unsupported_character(self):
         with self.assertRaises(text_to_hid.UnsupportedCharacterError):
             text_to_hid.convert("\r", "en-US")
