@@ -138,7 +138,7 @@ printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
 
 print_info "Checking for voltage issues..."
 {
-  printf "\nVoltage issues: "
+  printf "Voltage issues: "
   if LAST_VOLTAGE_LINE="$(journalctl --quiet --reverse --lines=1 --grep='voltage')" ; then
     printf "yes - %s" "${LAST_VOLTAGE_LINE}"
   else
