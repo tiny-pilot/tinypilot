@@ -109,10 +109,21 @@ NEEDS_SHIFT_REGEX = re.compile(r'[A-Z¬!"£$%^&*()_+{}|<>?:@~#]')
 
 
 def convert(char, language):
-    hid_code = {
-        "en-GB": GB_CHAR_TO_HID_MAP,
-        "en-US": US_CHAR_TO_HID_MAP
-    }[language][char.lower()]
-    hid_modifier = hid.MODIFIER_LEFT_SHIFT if NEEDS_SHIFT_REGEX.match(
-        char) else hid.KEYCODE_NONE
-    return hid_code, hid_modifier
+    """Converts a language character into a HID modifier and keycode."""
+    try:
+        language_map = {
+            "en-GB": GB_CHAR_TO_HID_MAP,
+            "en-US": US_CHAR_TO_HID_MAP
+        }[language]
+    except KeyError:
+        # Default to en-US if no other language matches.
+        language_map = US_CHAR_TO_HID_MAP
+
+    hid_keycode = language_map[char.lower()]
+
+    if NEEDS_SHIFT_REGEX.match(char):
+        hid_modifier = hid.MODIFIER_LEFT_SHIFT
+    else:
+        hid_modifier = hid.KEYCODE_NONE
+
+    return hid_modifier, hid_keycode
