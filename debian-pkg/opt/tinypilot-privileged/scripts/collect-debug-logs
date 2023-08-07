@@ -75,7 +75,7 @@ cd /opt/ustreamer && \
 
 print_info "Checking OS version..."
 {
-  printf "OS version: %s\n" "$(uname -a)"
+  printf "OS version: %s\n" "$(uname --all)"
   printf "Distribution name: %s\n" "$(lsb_release --id --short)"
   printf "Distribution version: %s\n" "$(lsb_release --release --short)"
   printf "\n"
@@ -93,7 +93,7 @@ echo "TinyPilot state" >> "${LOG_FILE}"
 print_info "Checking if filesystem is read-only..."
 {
   READ_ONLY_FILESYSTEM="off"
-  if grep -q "boot=overlay" /proc/cmdline ; then
+  if grep --quiet "boot=overlay" /proc/cmdline ; then
     READ_ONLY_FILESYSTEM="on"
   fi
   readonly READ_ONLY_FILESYSTEM
@@ -139,7 +139,7 @@ printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
 print_info "Checking for voltage issues..."
 {
   echo "voltage logs"
-  journalctl -xe | grep -i "voltage"
+  journalctl --catalog --pager-end | grep --ignore-case "voltage"
   printf "\n"
 } >> "${LOG_FILE}"
 
@@ -160,14 +160,14 @@ print_info "Checking TinyPilot configuration..."
 print_info "Checking TinyPilot logs..."
 {
   printf "TinyPilot logs\n"
-  journalctl -u tinypilot | tail -n 200
+  journalctl --unit tinypilot | tail --lines 200
   printf "\n"
 } >> "${LOG_FILE}"
 
 print_info "Checking TinyPilot updater logs..."
 {
   printf "TinyPilot update logs\n"
-  "$(dirname "$0")/read-update-log" | tail -n 200
+  "$(dirname "$0")/read-update-log" | tail --lines 200
   printf "\n"
 } >> "${LOG_FILE}"
 
@@ -181,18 +181,18 @@ print_info "Checking uStreamer configuration..."
 print_info "Checking uStreamer logs..."
 {
   printf "uStreamer logs\n"
-  journalctl -u ustreamer | tail -n 80
+  journalctl --unit ustreamer | tail --lines 80
   printf "\n"
 } >> "${LOG_FILE}"
 
 print_info "Checking nginx logs..."
 {
   echo "nginx logs"
-  journalctl -u nginx
+  journalctl --unit nginx
   printf "\n\n"
-  tail -n 100 /var/log/nginx/error.log
+  tail --lines 100 /var/log/nginx/error.log
   printf "\n\n"
-  tail -n 30 /var/log/nginx/access.log
+  tail --lines 30 /var/log/nginx/access.log
   printf "\n"
 } >> "${LOG_FILE}"
 
@@ -223,6 +223,6 @@ else
     print_info "Log file not uploaded."
     print_info "If you decide to share it, run:"
     print_info ""
-    print_info "  curl -F \"_=@${LOG_FILE}\" ${LOG_UPLOAD_URL}"
+    print_info "  curl --form \"_=@${LOG_FILE}\" ${LOG_UPLOAD_URL}"
     print_info ""
 fi
