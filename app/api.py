@@ -1,4 +1,5 @@
 import logging
+import multiprocessing
 
 import flask
 
@@ -12,7 +13,6 @@ import request_parsers.hostname
 import request_parsers.paste
 import request_parsers.video_settings
 import text_to_hid
-import threads
 import update.launcher
 import update.settings
 import update.status
@@ -344,19 +344,14 @@ def paste_post():
         text, language = request_parsers.paste.parse_text(flask.request)
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
-
-    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    # Convert text to bytes.
+    buffer = bytearray()
     for char in text:
-        try:
-            hid_modifier, hid_keycode = text_to_hid.convert(char, language)
-        except text_to_hid.UnsupportedCharacterError as e:
-            logger.warning(e)
-            continue
-        try:
-            fake_keyboard.send_keystroke(keyboard_path, hid_modifier,
-                                         hid_keycode)
-        except hid_write.WriteError as e:
-            return json_response.error(e), 500
-        threads.reschedule()
-
+        hid_modifier, hid_keycode = text_to_hid.convert(char, language)
+        buffer += fake_keyboard.keystroke_to_buffer(hid_modifier, hid_keycode)
+    # Write bytes to HID keyboard asynchronous.
+    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    multiprocessing.Process(target=hid_write.write_to_hid_interface_immediately,
+                            args=(keyboard_path, buffer),
+                            daemon=True).start()
     return json_response.success()

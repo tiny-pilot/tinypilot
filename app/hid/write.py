@@ -59,7 +59,7 @@ class ProcessWithResult(multiprocessing.Process):
         return self.parent_conn.recv() if self.parent_conn.poll() else None
 
 
-def _write_to_hid_interface_immediately(hid_path, buffer):
+def write_to_hid_interface_immediately(hid_path, buffer):
     try:
         with open(hid_path, 'ab+') as hid_handle:
             hid_handle.write(bytearray(buffer))
@@ -78,10 +78,9 @@ def write_to_hid_interface(hid_path, buffer):
     # Writes can hang, for example, when TinyPilot is attempting to write to the
     # mouse interface, but the target system has no GUI. To avoid locking up the
     # main server process, perform the HID interface I/O in a separate process.
-    write_process = ProcessWithResult(
-        target=_write_to_hid_interface_immediately,
-        args=(hid_path, buffer),
-        daemon=True)
+    write_process = ProcessWithResult(target=write_to_hid_interface_immediately,
+                                      args=(hid_path, buffer),
+                                      daemon=True)
     write_process.start()
     write_process.join(timeout=0.5)
     if write_process.is_alive():
