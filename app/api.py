@@ -347,7 +347,11 @@ def paste_post():
     # Convert text to bytes.
     buffer = bytearray()
     for char in text:
-        hid_modifier, hid_keycode = text_to_hid.convert(char, language)
+        try:
+            hid_modifier, hid_keycode = text_to_hid.convert(char, language)
+        except text_to_hid.UnsupportedCharacterError as e:
+            logger.warning(e)
+            continue
         buffer += fake_keyboard.keystroke_to_buffer(hid_modifier, hid_keycode)
     # Write bytes to HID keyboard asynchronous.
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
