@@ -131,7 +131,9 @@ print_info "Checking if mouse jiggler is enabled..."
 } >> "${LOG_FILE}"
 
 print_info "Checking temperature..."
-printf "%s\n" "$(vcgencmd measure_temp)" >> "${LOG_FILE}"
+{
+  vcgencmd measure_temp | sed 's/temp=/CPU Temperature: /g'
+} >> "${LOG_FILE}"
 
 print_info "Checking throttled state..."
 printf "%s\n\n" "$(vcgencmd get_throttled)" >> "${LOG_FILE}"
