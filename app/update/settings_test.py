@@ -39,7 +39,7 @@ class UpdateSettingsTest(unittest.TestCase):
             self):
         settings_dict = update.settings.load().as_dict()
         # Check constant value.
-        self.assertEqual(8001, settings_dict['ustreamer_port'])
+        self.assertEqual(48001, settings_dict['ustreamer_port'])
         # Check default value.
         self.assertEqual('/dev/hidg0',
                          settings_dict['tinypilot_keyboard_interface'])
@@ -87,7 +87,7 @@ ustreamer_port: 1234
         settings_dict = settings.as_dict()
         # Verify that the constant value of ustreamer_port took precedence over
         # the value in the settings file.
-        self.assertEqual(8001, settings_dict['ustreamer_port'])
+        self.assertEqual(48001, settings_dict['ustreamer_port'])
         update.settings.save(settings)
 
         self.assertEqual('', self.read_mock_settings_file())
