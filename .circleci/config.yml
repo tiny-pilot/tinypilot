@@ -28,4 +28,3 @@ workflows:
             ansible-role-ustreamer/.* ansible_role_changed true
           base-revision: master
           config-path: .circleci/continue_config.yml
-          bundle_build_branch: << pipeline.git.branch >>
