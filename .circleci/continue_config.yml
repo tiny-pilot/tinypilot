@@ -13,7 +13,7 @@ parameters:
     # For one-off builds, you can also specify this parameter when manually
     # triggering the build pipeline on CircleCI; in this case, the parameter
     # value needs to be the (literal) branch name.
-    default: master
+    default: << pipeline.git.branch >>
 jobs:
   check_whitespace:
     docker:
