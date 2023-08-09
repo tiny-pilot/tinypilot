@@ -7,7 +7,7 @@ upstream ustreamer {
 upstream janus-ws {
     # The host and port must match the variables in
     # ansible-role-ustreamer/templates/janus.transport.websockets.jcfg.j2
-    server 127.0.0.1:8002 fail_timeout=1s max_fails=600;
+    server 127.0.0.1:48002 fail_timeout=1s max_fails=600;
 }
 
 server {
