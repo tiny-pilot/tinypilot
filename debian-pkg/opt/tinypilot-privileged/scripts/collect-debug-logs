@@ -148,9 +148,13 @@ print_info "Checking throttled state..."
 
 print_info "Checking for voltage issues..."
 {
-  echo "voltage logs"
-  journalctl --catalog --pager-end | grep --ignore-case "voltage"
-  printf "\n"
+  printf "Voltage issues: "
+  if LAST_VOLTAGE_LINE="$(journalctl --quiet --reverse --lines=1 --grep='voltage')" ; then
+    printf "yes - %s" "${LAST_VOLTAGE_LINE}"
+  else
+    printf "no"
+  fi
+  printf "\n\n"
 } >> "${LOG_FILE}"
 
 print_info "Checking TinyPilot settings..."
