@@ -23,7 +23,7 @@ ustreamer_launcher_script: "{{ ustreamer_launcher_dir }}/launch"
 
 ustreamer_launcher_configs_dir: "{{ ustreamer_launcher_dir }}/configs.d"
 
-ustreamer_port: 8001 # Must match app/update/settings.py.
+ustreamer_port: 8001
 # Assigning `ustreamer_h264_sink` will make the uStreamer role install the Janus
 # server on the system, and thus enable H264 video streaming.
 ustreamer_h264_sink: tinypilot::ustreamer::h264

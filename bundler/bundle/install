@@ -71,7 +71,6 @@ else
 fi
 
 # Set default installation settings
-yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_port" "8001"
 yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
 # Check if this system uses the TC358743 HDMI to CSI capture bridge.
@@ -98,6 +97,12 @@ if ! "${USE_TC358743_DEFAULTS}"; then
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_format" "jpeg"
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
 fi
+
+# Remove settings that are not user-configurable to avoid inconsistent config.
+sed \
+  --in-place \
+  --expression '/ustreamer_port/d' \
+  "${INSTALL_SETTINGS_FILE}"
 
 echo "Final install settings:"
 cat "${INSTALL_SETTINGS_FILE}"
