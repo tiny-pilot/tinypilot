@@ -211,7 +211,7 @@ TinyPilot accepts various options through environment variables:
 | Environment Variable | Default     | Description                                           |
 | -------------------- | ----------- | ----------------------------------------------------- |
 | `HOST`               | `127.0.0.1` | Network interface to listen for incoming connections. |
-| `PORT`               | `8000`      | HTTP port to listen for incoming connections.         |
+| `PORT`               | `48000`      | HTTP port to listen for incoming connections.         |
 | `DEBUG`              | undefined   | Set to `1` to enable debug logging.                   |
 
 ## Code style conventions
