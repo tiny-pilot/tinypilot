@@ -8,7 +8,7 @@ parameters:
   bundle_build_branch:
     type: string
     # In order to enable bundle building on a feature branch, you can
-    # temporarily change the below default to be: << pipeline.git.branch >>
+    # temporarily change the below `default` to be: << pipeline.git.branch >>
     # Don’t forget to revert this before merging your branch!
     # For one-off builds, you can also specify this parameter when manually
     # triggering the build pipeline on CircleCI; in this case, the parameter
