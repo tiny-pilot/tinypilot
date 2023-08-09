@@ -6,7 +6,7 @@
 version: 2.1
 setup: true
 orbs:
-  path-filtering: circleci/path-filtering@0.1.4
+  path-filtering: circleci/path-filtering@1.0.0
 parameters:
   # Creating the bundle assumes an ARMv7 build, so we only do this on master,
   # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
