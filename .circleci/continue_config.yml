@@ -5,7 +5,7 @@ parameters:
     default: false
   bundle_build_branch:
     type: string
-    default: master
+    default: << pipeline.git.branch >>
 jobs:
   check_whitespace:
     docker:
