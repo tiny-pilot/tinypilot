@@ -21,7 +21,7 @@
 
 - name: check if TC358743 settings (HDMI to CSI, such as Voyager series) are enabled
   # We could theoretically use the "lineinfile" module to check for the overlay,
-  # but we're moving away from Ansible, and grep makes it easier to read.
+  # but we're moving away from Ansible, and grep makes the logic easier to read.
   command: grep --silent '^dtoverlay=tc358743$' /boot/config.txt
   register: tc358743_result
   check_mode: no
