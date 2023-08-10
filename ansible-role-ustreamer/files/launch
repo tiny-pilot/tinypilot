@@ -19,7 +19,7 @@
 #   000-defaults.yml
 #   ---
 #   ustreamer_desired_fps: 30
-#   ustreamer_port: 8123
+#   ustreamer_resolution: 1280x720
 #
 #   100-other.yml
 #   ---
@@ -28,7 +28,7 @@
 #   Resulting uStreamer command-line:
 #   ustreamer \
 #     --desired-fps 20 \
-#     --port 8123
+#     --resolution 1280x720
 
 # Exit build script on first failure.
 set -e
@@ -85,8 +85,10 @@ append_arg_if_defined() {
   fi
 }
 
+USTREAMER_ARGS+=('--port')
+USTREAMER_ARGS+=('8001')
+
 append_arg_and_value_if_defined '.ustreamer_video_path'       '--device'
-append_arg_and_value_if_defined '.ustreamer_port'             '--port'
 append_arg_and_value_if_defined '.ustreamer_encoder'          '--encoder'
 append_arg_and_value_if_defined '.ustreamer_format'           '--format'
 append_arg_and_value_if_defined '.ustreamer_desired_fps'      '--desired-fps'
