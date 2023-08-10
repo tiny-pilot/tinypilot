@@ -98,7 +98,10 @@ if ! "${USE_TC358743_DEFAULTS}"; then
   yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
 fi
 
-# Remove settings that are not user-configurable to avoid inconsistent config.
+# Workaround to remove settings that are not user-configurable to avoid
+# inconsistent config. We can remove this on TinyPilot's next checkpoint
+# release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
 sed \
   --in-place \
   --expression '/ustreamer_port/d' \
