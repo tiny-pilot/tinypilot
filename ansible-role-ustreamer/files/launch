@@ -85,8 +85,10 @@ append_arg_if_defined() {
   fi
 }
 
+USTREAMER_ARGS+=('--port')
+USTREAMER_ARGS+=('8001')
+
 append_arg_and_value_if_defined '.ustreamer_video_path'       '--device'
-append_arg_and_value_if_defined '.ustreamer_port'             '--port'
 append_arg_and_value_if_defined '.ustreamer_encoder'          '--encoder'
 append_arg_and_value_if_defined '.ustreamer_format'           '--format'
 append_arg_and_value_if_defined '.ustreamer_desired_fps'      '--desired-fps'
