@@ -149,7 +149,7 @@ echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
 The canonical way to build bundles is on CircleCI. By default, bundles are only built off the `master` branch. There are two methods available to build a bundle off a feature branch:
 
 1. Temporarily enable bundle builds for all commits on a feature branch:
-   1. In [the CircleCI configuration](/.circleci/config.yml), change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
+   1. In [the CircleCI configuration](/.circleci/continue_config.yml), change the `bundle_build_branch` parameter’s `default` value from `master` to `<< pipeline.git.branch >>`.
    1. Push your changes as branch to GitHub. CircleCI will now automatically build bundles for all subsequent commits of that branch.
    1. Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
 1. Manually trigger a bundle build as one-off:
