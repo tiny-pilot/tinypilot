@@ -253,9 +253,6 @@ jobs:
       - attach_workspace:
           at: ./bundler/bundle/
       - run:
-          name: Install dependencies
-          command: sudo apt-get update && sudo apt-get install -y git
-      - run:
           name: Create the bundle
           command: ./bundler/create-bundle
       - store_artifacts:
