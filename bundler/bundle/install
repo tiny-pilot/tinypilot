@@ -73,15 +73,6 @@ EXTRA_PLAYBOOK_FLAGS=()
 if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
   EXTRA_PLAYBOOK_FLAGS+=(--extra-vars "@${TINYPILOT_SETTINGS_FILE}")
 
-  # Workaround to remove settings that are not user-configurable to avoid
-  # inconsistent config. We can remove this on TinyPilot's next checkpoint
-  # release.
-  # https://github.com/tiny-pilot/tinypilot-pro/issues/978
-  sed \
-    --in-place \
-    --expression '/ustreamer_port/d' \
-    "${INSTALL_SETTINGS_FILE}"
-
   echo "Final install settings:"
   cat "${INSTALL_SETTINGS_FILE}"
 fi

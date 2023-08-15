@@ -98,6 +98,15 @@ if [[ -f "${USTREAMER_ANSIBLE_CONFIG}" ]]; then
   rm "${USTREAMER_ANSIBLE_CONFIG}"
 fi
 
+# Workaround to remove settings that are not user-configurable to avoid
+# inconsistent config. We can remove this on TinyPilot's next checkpoint
+# release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+sed \
+  --in-place \
+  --expression '/ustreamer_port/d' \
+  "${INSTALL_SETTINGS_FILE}"
+
 # Disable default NGINX server.
 rm -f \
   /etc/nginx/sites-enabled/default
