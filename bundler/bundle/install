@@ -11,9 +11,6 @@ set -u
 # Echo commands before executing them, by default to stderr.
 set -x
 
-# shellcheck disable=SC1091 # Don’t follow sourced script.
-. lib.sh
-
 # The filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
