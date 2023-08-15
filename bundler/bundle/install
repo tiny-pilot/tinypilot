@@ -74,7 +74,7 @@ if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
   EXTRA_PLAYBOOK_FLAGS+=(--extra-vars "@${TINYPILOT_SETTINGS_FILE}")
 
   echo "Final install settings:"
-  cat "${INSTALL_SETTINGS_FILE}"
+  cat "${TINYPILOT_SETTINGS_FILE}"
 fi
 
 # Run Ansible.
