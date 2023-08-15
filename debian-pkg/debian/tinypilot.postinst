@@ -9,7 +9,6 @@ set -u
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
-readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
 readonly USTREAMER_CONFIG_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
 
 # Create tinypilot group if it doesn't already exist.
@@ -39,6 +38,14 @@ fi
 readonly BOOT_CONFIG_PATH='/boot/config.txt'
 if ! grep --quiet '^dtoverlay=dwc2$' "${BOOT_CONFIG_PATH}" ; then
   echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
+fi
+
+# Create TinyPilot settings file if it doesn't already exist.
+readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
+if [[ ! "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  touch "${TINYPILOT_SETTINGS_FILE}"
+  chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_SETTINGS_FILE}"
+  chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
 # Use TinyPilot's settings to override uStreamer's runtime variables.
@@ -105,7 +112,7 @@ fi
 sed \
   --in-place \
   --expression '/ustreamer_port/d' \
-  "${INSTALL_SETTINGS_FILE}"
+  "${TINYPILOT_SETTINGS_FILE}"
 
 # Disable default NGINX server.
 rm -f \
