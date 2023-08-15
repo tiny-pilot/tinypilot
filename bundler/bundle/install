@@ -14,22 +14,9 @@ set -x
 # shellcheck disable=SC1091 # Don’t follow sourced script.
 . lib.sh
 
-# Temporary file for installation settings.
-INSTALL_SETTINGS_FILE="$(mktemp --suffix .yml)"
-readonly INSTALL_SETTINGS_FILE
-
-# The eventual, permanent settings files. Note, that these might not exist
-# yet before Ansible has run for the very first time.
-readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
-
 # The filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
-
-# Remove temporary files & directories.
-clean_up() {
-  rm -rf "${INSTALL_SETTINGS_FILE}"
-}
 
 # Always clean up before exiting.
 trap 'clean_up' EXIT
@@ -61,21 +48,6 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   exit 1
 fi
 
-# Set default installation settings
-yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
-
-# Workaround to remove settings that are not user-configurable to avoid
-# inconsistent config. We can remove this on TinyPilot's next checkpoint
-# release.
-# https://github.com/tiny-pilot/tinypilot-pro/issues/978
-sed \
-  --in-place \
-  --expression '/ustreamer_port/d' \
-  "${INSTALL_SETTINGS_FILE}"
-
-echo "Final install settings:"
-cat "${INSTALL_SETTINGS_FILE}"
-
 # Bootstrap environment for installation.
 apt-get update --allow-releaseinfo-change-suite
 apt-get install -y \
@@ -94,20 +66,29 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install -r requirements.txt
 
+# If there's an existing TinyPilot settings file, pass it to Ansible to override
+# default vars.
+readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
+EXTRA_PLAYBOOK_FLAGS=()
+if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  EXTRA_PLAYBOOK_FLAGS+=(--extra-vars "@${TINYPILOT_SETTINGS_FILE}")
+
+  # Workaround to remove settings that are not user-configurable to avoid
+  # inconsistent config. We can remove this on TinyPilot's next checkpoint
+  # release.
+  # https://github.com/tiny-pilot/tinypilot-pro/issues/978
+  sed \
+    --in-place \
+    --expression '/ustreamer_port/d' \
+    "${INSTALL_SETTINGS_FILE}"
+fi
+
 # Run Ansible.
 ansible-playbook \
   --inventory localhost, \
   install.yml \
-  --extra-vars "@${INSTALL_SETTINGS_FILE}"
+  "${EXTRA_PLAYBOOK_FLAGS[@]}"
 
 # Install TinyPilot Debian package and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
-
-# Persist installation settings.
-cp "${INSTALL_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
-chown tinypilot:tinypilot "${TINYPILOT_SETTINGS_FILE}"
-
-# Make the installation settings file world readable so that the uStreamer
-# launcher script can access it via a symbolic link.
-chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
