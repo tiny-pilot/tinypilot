@@ -61,14 +61,6 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   exit 1
 fi
 
-# Check if there's already a settings file with extra installation settings.
-if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
-  echo "Using settings file at: ${TINYPILOT_SETTINGS_FILE}"
-  cp "${TINYPILOT_SETTINGS_FILE}" "${INSTALL_SETTINGS_FILE}"
-else
-  echo "No pre-existing settings file found at: ${TINYPILOT_SETTINGS_FILE}"
-fi
-
 # Set default installation settings
 yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
