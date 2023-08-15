@@ -81,6 +81,9 @@ if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
     --in-place \
     --expression '/ustreamer_port/d' \
     "${INSTALL_SETTINGS_FILE}"
+
+  echo "Final install settings:"
+  cat "${INSTALL_SETTINGS_FILE}"
 fi
 
 # Run Ansible.
