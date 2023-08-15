@@ -45,6 +45,9 @@ readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
 if [[ ! "${TINYPILOT_SETTINGS_FILE}" ]]; then
   touch "${TINYPILOT_SETTINGS_FILE}"
   chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_SETTINGS_FILE}"
+
+  # Make TinyPilot settings world readable so that the uStreamer launcher script
+  # can access it via a symbolic link.
   chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
