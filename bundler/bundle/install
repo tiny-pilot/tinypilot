@@ -64,26 +64,6 @@ fi
 # Set default installation settings
 yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
 
-# Check if this system uses the TC358743 HDMI to CSI capture bridge.
-# TODO: Double check that we're not changing behavior here.
-USE_TC358743_DEFAULTS=false
-if grep --silent "^dtoverlay=tc358743$" /boot/config.txt; then
-  USE_TC358743_DEFAULTS=true
-fi
-readonly USE_TC358743_DEFAULTS
-
-# Write uStreamer settings.
-# If this system does not use a TC358743 capture chip, assume defaults for a
-# MacroSilicon MS2109-based HDMI-to-USB capture dongle. The TC358743 defaults
-# are provided in the uStreamer Ansible role.
-# TODO: we might be able to remove these defaults from here.
-# See https://github.com/tiny-pilot/tinypilot/issues/1267
-if ! "${USE_TC358743_DEFAULTS}"; then
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_encoder" "hw"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_format" "jpeg"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
-fi
-
 # Workaround to remove settings that are not user-configurable to avoid
 # inconsistent config. We can remove this on TinyPilot's next checkpoint
 # release.
