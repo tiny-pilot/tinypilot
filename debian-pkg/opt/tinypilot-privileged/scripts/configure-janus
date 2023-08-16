@@ -1,6 +1,12 @@
 #!/bin/bash
-
+#
 # Writes the main Janus config file, rendered from the config template file.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
 
 pushd /opt/tinypilot
 . venv/bin/activate && \
