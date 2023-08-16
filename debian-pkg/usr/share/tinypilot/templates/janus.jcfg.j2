@@ -18,3 +18,14 @@ transports: {
 loggers: {
 	disable = "libjanus_jsonlog.so"
 }
+
+{% if ustreamer_janus_stun_server and ustreamer_janus_stun_port -%}
+nat: {
+  stun_server = {{ ustreamer_janus_stun_server }}
+  stun_port = {{ ustreamer_janus_stun_port }}
+}
+{% elif ustreamer_janus_1_1_mapping -%}
+nat: {
+  nat_1_1_mapping = {{ ustreamer_janus_1_1_mapping }}
+}
+{% endif -%}
