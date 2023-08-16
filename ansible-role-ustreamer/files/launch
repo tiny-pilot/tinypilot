@@ -86,7 +86,7 @@ append_arg_if_defined() {
 }
 
 USTREAMER_ARGS+=('--port')
-USTREAMER_ARGS+=('8001')
+USTREAMER_ARGS+=('48001')
 
 append_arg_and_value_if_defined '.ustreamer_video_path'       '--device'
 append_arg_and_value_if_defined '.ustreamer_encoder'          '--encoder'
