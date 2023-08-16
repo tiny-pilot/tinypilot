@@ -116,6 +116,10 @@ sed \
   --in-place \
   --expression '/ustreamer_port/d' \
   "${TINYPILOT_SETTINGS_FILE}"
+sed \
+  --in-place \
+  --expression '/ustreamer_persistent/d' \
+  "${TINYPILOT_SETTINGS_FILE}"
 
 # Disable default NGINX server.
 rm -f \
