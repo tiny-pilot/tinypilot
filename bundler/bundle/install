@@ -64,7 +64,8 @@ pip install -r requirements.txt
 # default vars.
 readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
 EXTRA_PLAYBOOK_FLAGS=()
-if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
+# Check that TinyPilot settings file exists and is non-empty.
+if [[ -s "${TINYPILOT_SETTINGS_FILE}" ]]; then
   EXTRA_PLAYBOOK_FLAGS+=('--extra-vars' "@${TINYPILOT_SETTINGS_FILE}")
 
   echo "Final install settings:"
