@@ -43,7 +43,9 @@ fi
 # Create TinyPilot settings file if it doesn't already exist.
 readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
 if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
-  touch "${TINYPILOT_SETTINGS_FILE}"
+  # Create the settings file with a YAML header so that it's valid YAML.
+  echo '---' > "${TINYPILOT_SETTINGS_FILE}"
+
   chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_SETTINGS_FILE}"
 
   # Make TinyPilot settings world readable so that the uStreamer launcher script
