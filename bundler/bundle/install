@@ -15,9 +15,6 @@ set -x
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
 
-# Always clean up before exiting.
-trap 'clean_up' EXIT
-
 # Prevent installation on the Raspberry Pi 3.
 if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
   echo 'You are trying to install on incompatible hardware.' >&2
