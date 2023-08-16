@@ -71,14 +71,6 @@
     name: ustreamer
     enabled: yes
 
-- name: create uStreamer Janus plugin config
-  template:
-    src: janus.plugin.ustreamer.jcfg.j2
-    dest: "{{ ustreamer_janus_configs_dir }}/janus.plugin.ustreamer.jcfg"
-  notify:
-    - restart Janus
-  when: ustreamer_install_janus
-
 - name: configure TC358743 HDMI capture chip
   import_tasks: provision_tc358743.yml
   when: is_tc358743_enabled | bool
