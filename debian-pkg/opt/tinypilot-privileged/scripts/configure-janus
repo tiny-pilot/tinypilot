@@ -8,6 +8,7 @@ set -u
 # Exit on first error.
 set -e
 
+# Generate and write config file from template.
 pushd /opt/tinypilot
 . venv/bin/activate && \
   PYTHONPATH=/opt/tinypilot/app \
@@ -16,3 +17,7 @@ pushd /opt/tinypilot
   > /etc/janus/janus.jcfg && \
   deactivate
 popd
+
+# Restart uStreamer and Janus systemd services.
+/usr/sbin/service ustreamer restart
+/usr/sbin/service janus restart
