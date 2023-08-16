@@ -56,6 +56,5 @@
     ustreamer_encoder: "{{ 'm2m-image' if ustreamer_encoder == None else ustreamer_encoder }}"
     ustreamer_format: "{{ 'uyvy' if ustreamer_format == None else ustreamer_format }}"
     ustreamer_workers: "{{ 3 if ustreamer_workers == None else ustreamer_workers }}"
-    ustreamer_persistent: "{{ True if ustreamer_persistent == None else ustreamer_persistent }}"
     ustreamer_use_dv_timings: "{{ True if ustreamer_use_dv_timings == None else ustreamer_use_dv_timings }}"
     ustreamer_drop_same_frames: "{{ 30 if ustreamer_drop_same_frames == None else ustreamer_drop_same_frames }}"

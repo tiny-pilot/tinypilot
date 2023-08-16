@@ -28,10 +28,6 @@ ustreamer_quality: null
 # depending on the hardware.
 ustreamer_brightness: null
 
-# Don't re-initialize device on timeout (for example when HDMI cable
-# was disconnected). Can be either true or false.
-ustreamer_persistent: null
-
 # Use DV-timings.
 ustreamer_use_dv_timings: null
 
