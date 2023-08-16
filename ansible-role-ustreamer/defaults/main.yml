@@ -1,7 +1,4 @@
 ---
-# Port to listen for connections.
-ustreamer_port: null
-
 # Path to video device, such as /dev/video1.
 ustreamer_video_path: null
 
