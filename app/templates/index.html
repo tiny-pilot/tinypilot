@@ -18,14 +18,34 @@
     {% endfor %}
 
     <div id="app" tabindex="0">
-      <div class="header-bar">
+      <div
+        class="header-bar"
+        {%
+        if
+        is_standalone_mode
+        %}
+        style="display: none"
+        {%
+        endif
+        %}
+      >
         <menu-bar id="menu-bar"></menu-bar>
       </div>
-      <div class="footer-bar">
+      <div
+        class="footer-bar"
+        {%
+        if
+        is_standalone_mode
+        %}
+        style="display: none"
+        {%
+        endif
+        %}
+      >
         <status-bar id="status-bar"></status-bar>
       </div>
 
-      <div class="page-content container">
+      <div>
         <overlay-panel id="error-overlay" variant="danger">
           <error-dialog id="error-dialog"></error-dialog>
         </overlay-panel>
@@ -58,6 +78,14 @@
         <remote-screen
           id="remote-screen"
           milliseconds-between-mouse-events="600"
+          {%
+          if
+          is_standalone_mode
+          %}
+          no-margin
+          {%
+          endif
+          %}
         ></remote-screen>
 
         <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>

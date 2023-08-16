@@ -345,6 +345,14 @@ menuBar.addEventListener("change-hostname-dialog-requested", () => {
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
+menuBar.addEventListener("popup-requested", () => {
+  const screenSize = document.getElementById("remote-screen").screenSize;
+  window.open(
+    "/?viewMode=standalone",
+    undefined,
+    `popup=true,width=${screenSize.width},height=${screenSize.height}`
+  );
+});
 menuBar.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-dialog").retrieveLogs();
   document.getElementById("debug-overlay").show();
