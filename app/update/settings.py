@@ -12,13 +12,12 @@ Typical usage example:
     update_settings.save(settings)
 """
 
-import os
-
 import yaml
 
+import env
 import video_service
 
-_SETTINGS_FILE_PATH = os.path.expanduser('~/settings.yml')
+_SETTINGS_FILE_PATH = env.abs_path_in_home_dir('settings.yml')
 
 # Define default values for user-configurable TinyPilot settings. The YAML data
 # in _SETTINGS_FILE_PATH take precedence over these defaults.
