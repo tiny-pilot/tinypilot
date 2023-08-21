@@ -7,10 +7,6 @@ ustreamer_group: ustreamer
 ustreamer_user: ustreamer
 ustreamer_dir: /opt/ustreamer
 
-# Path to file with persistent uStreamer settings to apply across role
-# runs.
-ustreamer_settings_file: /home/{{ ustreamer_user }}/config.yml
-
 ustreamer_janus_apt_suite: "{{ ansible_distribution_release }}-backports"
 
 # These variables are only used within this role.

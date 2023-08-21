@@ -10,6 +10,33 @@
          or ustreamer_h264_sink_rm != None
          or ustreamer_h264_bitrate != None)
 
+- name: check for a boot config file
+  stat:
+    path: /boot/config.txt
+  register: boot_config_result
+
+- name: save whether boot config file exists
+  set_fact:
+    boot_config_exists: "{{ boot_config_result.stat.exists }}"
+
+- name: check if TC358743 settings (HDMI to CSI, such as Voyager series) are enabled
+  # We could theoretically use the "lineinfile" module to check for the overlay,
+  # but we're moving away from Ansible, and grep makes the logic easier to read.
+  command: grep --silent '^dtoverlay=tc358743$' /boot/config.txt
+  register: tc358743_result
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+  when: boot_config_exists | bool
+
+- name: save whether TC358743 settings are enabled
+  set_fact:
+    is_tc358743_enabled: "{{ boot_config_exists and tc358743_result.rc == 0 }}"
+
+- name: print whether TC35843 settings are enabled
+  debug:
+    var: is_tc358743_enabled
+
 - name: determine whether to install Janus
   set_fact:
     ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
@@ -44,35 +71,18 @@
     name: ustreamer
     enabled: yes
 
-- name: check for a boot config file
-  stat:
-    path: /boot/config.txt
-  register: boot_config_result
-
-- name: save whether boot config file exists
-  set_fact:
-    boot_config_exists: "{{ boot_config_result.stat.exists }}"
-
-- name: check whether this machine has a uStreamer settings file
-  stat:
-    path: "{{ ustreamer_settings_file }}"
-  register: ustreamer_settings_file_result
-
-- name: read saved settings
-  import_tasks: check_saved_settings.yml
-  when: ustreamer_settings_file_result.stat.exists | bool
-
 - name: configure TC358743 HDMI capture chip
   import_tasks: provision_tc358743.yml
-  when: ustreamer_capture_device == 'tc358743'
+  when: is_tc358743_enabled | bool
 
-- name: save uStreamer settings file
-  template:
-    src: config.yml.j2
-    dest: "{{ ustreamer_settings_file }}"
-    owner: "{{ ustreamer_user }}"
-    group: "{{ ustreamer_group }}"
-    mode: "0644"
+# If this system does not use a TC358743 capture chip, assume defaults for a
+# MacroSilicon MS2109-based HDMI-to-USB capture dongle.
+- name: use custom settings for TC358743 chip for any facts not already defined
+  set_fact:
+    ustreamer_encoder: "{{ 'hw' if ustreamer_encoder == None else ustreamer_encoder }}"
+    ustreamer_format: "{{ 'jpeg' if ustreamer_format == None else ustreamer_format }}"
+    ustreamer_resolution: "{{ '1920x1080' if ustreamer_resolution == None else ustreamer_resolution }}"
+  when: not (is_tc358743_enabled | bool)
 
 - name: install uStreamer launcher
   import_tasks: install_launcher.yml

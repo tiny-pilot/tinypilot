@@ -9,7 +9,6 @@ set -u
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
-readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
 readonly USTREAMER_CONFIG_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
 
 # Create tinypilot group if it doesn't already exist.
@@ -39,6 +38,17 @@ fi
 readonly BOOT_CONFIG_PATH='/boot/config.txt'
 if ! grep --quiet '^dtoverlay=dwc2$' "${BOOT_CONFIG_PATH}" ; then
   echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
+fi
+
+# Create TinyPilot settings file if it doesn't already exist.
+readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
+if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  touch "${TINYPILOT_SETTINGS_FILE}"
+  chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_SETTINGS_FILE}"
+
+  # Make TinyPilot settings world readable so that the uStreamer launcher script
+  # can access it via a symbolic link.
+  chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
 # Use TinyPilot's settings to override uStreamer's runtime variables.
@@ -89,6 +99,24 @@ if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
     /usr/share/tinypilot/nginx.conf \
     /etc/nginx/nginx.conf
 fi
+
+# Clean up the legacy TinyPilot-specific config file for uStreamer. We can
+# remove this on TinyPilot's next checkpoint release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+readonly USTREAMER_ANSIBLE_CONFIG='/home/ustreamer/config.yml'
+if [[ -f "${USTREAMER_ANSIBLE_CONFIG}" ]]; then
+  rm "${USTREAMER_ANSIBLE_CONFIG}"
+fi
+
+# Workaround to remove settings that are not user-configurable to avoid
+# inconsistent config. We can remove this on TinyPilot's next checkpoint
+# release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+sed \
+  --in-place \
+  --expression '/ustreamer_port/d' \
+  --expression '/ustreamer_persistent/d' \
+  "${TINYPILOT_SETTINGS_FILE}"
 
 # Disable default NGINX server.
 rm -f \

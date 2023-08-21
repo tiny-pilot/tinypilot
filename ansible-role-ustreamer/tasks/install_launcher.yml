@@ -48,7 +48,6 @@
     - ustreamer_workers
     - ustreamer_quality
     - ustreamer_brightness
-    - ustreamer_persistent
     - ustreamer_use_dv_timings
     - ustreamer_drop_same_frames
     - ustreamer_tcp_nodelay
