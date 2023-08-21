@@ -71,6 +71,7 @@ if [[ -s "${TINYPILOT_SETTINGS_FILE}" ]]; then
   echo "Final install settings:"
   cat "${TINYPILOT_SETTINGS_FILE}"
 fi
+readonly EXTRA_PLAYBOOK_FLAGS
 
 # Run Ansible.
 ansible-playbook \
