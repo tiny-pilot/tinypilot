@@ -1,7 +1,8 @@
 import os
 import pathlib
 
-_TINYPILOT_HOME_DIR = os.environ.get('TINYPILOT_HOME_DIR', '/home/tinypilot')
+_TINYPILOT_HOME_PATH = pathlib.Path(
+    os.environ.get('TINYPILOT_HOME_DIR', '/home/tinypilot'))
 
 
 def abs_path_in_home_dir(relative_path):
@@ -21,7 +22,16 @@ def abs_path_in_home_dir(relative_path):
         relative_path: The path of a file or folder relative to the tinypilot
             home dir, without leading slash (as string).
 
+    Raises:
+        ValueError if input path has leading slash (i.e., is absolute), or if
+            resolved path would be outside tinypilot home dir.
+
     Returns:
         The eventual, absolute path (as string).
     """
-    return str(pathlib.Path(_TINYPILOT_HOME_DIR).joinpath(relative_path))
+    if relative_path.startswith('/'):
+        raise ValueError('Input path must not start with slash.')
+    target = _TINYPILOT_HOME_PATH.joinpath(relative_path).resolve()
+    if not target.is_relative_to(_TINYPILOT_HOME_PATH):
+        raise ValueError('Resolved path must be inside tinypilot home dir.')
+    return str(target)
