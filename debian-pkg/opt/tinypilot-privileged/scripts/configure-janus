@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-# Writes the main Janus config file, and restarts Janus and uStreamer to apply
-# changes. The config file is based on the config template, and it depends on
-# the values found in /home/tinypilot/settings.yml.
+# Writes the main Janus config file. The config file is based on the config
+# template, and it depends on the values found in /home/tinypilot/settings.yml.
+# Note that you have to restart both the Janus and uStreamer systemd services
+# after running this script, in order to effectuate the config changes.
 
 # Exit on unset variable.
 set -u
@@ -13,7 +14,7 @@ set -e
 print_help() {
   cat << EOF
 Usage: ${0##*/} [-h]
-(Re-)writes and applies the Janus configuration, based on the settings.yml file.
+(Re-)writes the Janus configuration, based on the settings.yml file.
   -h Display this help and exit.
 EOF
 }
@@ -40,7 +41,3 @@ pushd /opt/tinypilot
   > /etc/janus/janus.jcfg && \
   deactivate
 popd
-
-# Restart uStreamer and Janus systemd services.
-/usr/sbin/service ustreamer restart
-/usr/sbin/service janus restart
