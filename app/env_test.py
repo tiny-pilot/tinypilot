@@ -1,8 +1,15 @@
+import platform
 import unittest
 
 import env
 
 
+# On macOS (“Darwin”), the /home path is a symlink that points to
+# /System/Volumes/Data. Since `env.abs_path_in_home_dir` resolves symlinks under
+# the hood, the tests would yield false negative results on a macOS environment.
+# Therefore, we skip this test case when running on macOS, in order to not break
+# the dev setup.
+@unittest.skipIf(platform.system() == 'Darwin', 'Not executable on macOS.')
 class EnvTest(unittest.TestCase):
 
     def test_accepts_file_in_home_dir(self):
