@@ -21,7 +21,7 @@ loggers: {
 
 {% if ustreamer_janus_stun_server and ustreamer_janus_stun_port -%}
 nat: {
-  stun_server = {{ ustreamer_janus_stun_server }}
+  stun_server = "{{ ustreamer_janus_stun_server }}"
   stun_port = {{ ustreamer_janus_stun_port }}
 }
 {% endif -%}
