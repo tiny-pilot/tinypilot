@@ -10,6 +10,15 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    {% if is_standalone_mode %}
+    <style>
+      .header-bar,
+      .footer-bar,
+      #on-screen-keyboard {
+        display: none;
+      }
+    </style>
+    {% endif %}
   </head>
   <body>
     <!-- prettier-ignore -->
@@ -21,9 +30,13 @@
       <div class="header-bar">
         <menu-bar id="menu-bar"></menu-bar>
       </div>
+      <!-- prettier-ignore -->
       <remote-screen
         id="remote-screen"
         milliseconds-between-mouse-events="600"
+        {% if is_standalone_mode %}
+        no-margins
+        {% endif %}
       ></remote-screen>
       <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
       <div class="footer-bar">
