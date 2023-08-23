@@ -131,7 +131,7 @@ jobs:
   build_debian_package:
     docker:
       - image: cimg/base:2023.06
-    resource_class: arm.xlarge
+    resource_class: arm.medium
     steps:
       - checkout
       - setup_remote_docker:
