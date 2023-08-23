@@ -137,9 +137,6 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Enable multiarch builds with QEMU
-          command: ./dev-scripts/enable-multiarch-docker
-      - run:
           name: Build Debian package
           command: ./dev-scripts/build-debian-pkg linux/arm/v7
       - run:
