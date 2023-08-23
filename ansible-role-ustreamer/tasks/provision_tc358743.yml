@@ -15,15 +15,6 @@
     insertafter: EOF
   when: boot_config_exists | bool
 
-- name: check for a boot cmdline file
-  stat:
-    path: /boot/cmdline.txt
-  register: boot_cmdline_result
-
-- name: update /boot/cmdline.txt settings
-  import_tasks: update_boot_cmdline.yml
-  when: boot_cmdline_result.stat.exists | bool
-
 - name: create EDIDs folder
   file:
     path: "{{ ustreamer_edids_dir }}"
