@@ -21,47 +21,43 @@
       <div class="header-bar">
         <menu-bar id="menu-bar"></menu-bar>
       </div>
+      <remote-screen
+        id="remote-screen"
+        milliseconds-between-mouse-events="600"
+      ></remote-screen>
+      <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
       <div class="footer-bar">
         <status-bar id="status-bar"></status-bar>
       </div>
 
-      <div>
-        <overlay-panel id="error-overlay" variant="danger">
-          <error-dialog id="error-dialog"></error-dialog>
-        </overlay-panel>
-        <overlay-panel id="shutdown-overlay">
-          <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
-        </overlay-panel>
-        <overlay-panel id="update-overlay">
-          <update-dialog id="update-dialog"></update-dialog>
-        </overlay-panel>
-        <overlay-panel id="change-hostname-overlay">
-          <change-hostname-dialog
-            id="change-hostname-dialog"
-          ></change-hostname-dialog>
-        </overlay-panel>
-        <overlay-panel id="debug-overlay">
-          <debug-dialog id="debug-dialog"></debug-dialog>
-        </overlay-panel>
-        <overlay-panel id="about-overlay">
-          <about-dialog id="about-dialog"></about-dialog>
-        </overlay-panel>
-        <overlay-panel id="video-settings-overlay">
-          <video-settings-dialog
-            id="video-settings-dialog"
-          ></video-settings-dialog>
-        </overlay-panel>
-        <overlay-panel id="feature-pro-overlay">
-          <feature-pro-dialog id="feature-pro-dialog"></feature-pro-dialog>
-        </overlay-panel>
-
-        <remote-screen
-          id="remote-screen"
-          milliseconds-between-mouse-events="600"
-        ></remote-screen>
-
-        <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
-      </div>
+      <overlay-panel id="error-overlay" variant="danger">
+        <error-dialog id="error-dialog"></error-dialog>
+      </overlay-panel>
+      <overlay-panel id="shutdown-overlay">
+        <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
+      </overlay-panel>
+      <overlay-panel id="update-overlay">
+        <update-dialog id="update-dialog"></update-dialog>
+      </overlay-panel>
+      <overlay-panel id="change-hostname-overlay">
+        <change-hostname-dialog
+          id="change-hostname-dialog"
+        ></change-hostname-dialog>
+      </overlay-panel>
+      <overlay-panel id="debug-overlay">
+        <debug-dialog id="debug-dialog"></debug-dialog>
+      </overlay-panel>
+      <overlay-panel id="about-overlay">
+        <about-dialog id="about-dialog"></about-dialog>
+      </overlay-panel>
+      <overlay-panel id="video-settings-overlay">
+        <video-settings-dialog
+          id="video-settings-dialog"
+        ></video-settings-dialog>
+      </overlay-panel>
+      <overlay-panel id="feature-pro-overlay">
+        <feature-pro-dialog id="feature-pro-dialog"></feature-pro-dialog>
+      </overlay-panel>
     </div>
     {% include "components/paste-overlay.html" %}
     <script src="/third-party/socket.io/4.7.1/socket.io.min.js"></script>
