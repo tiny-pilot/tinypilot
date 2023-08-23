@@ -51,4 +51,4 @@ def _page_title_prefix():
 
 
 def _is_standalone_mode():
-    return flask.request.args.get("viewMode") == "standalone"
+    return flask.request.args.get('viewMode') == 'standalone'
