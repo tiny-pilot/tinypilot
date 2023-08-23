@@ -39,7 +39,7 @@
 
 - name: determine whether to install Janus
   set_fact:
-    ustreamer_install_janus: "{{ ustreamer_h264_sink != None }}"
+    ustreamer_install_janus: true
 
 - name: decide whether to support audio streaming
   set_fact:
