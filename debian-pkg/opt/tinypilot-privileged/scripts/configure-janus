@@ -13,21 +13,21 @@ set -e
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [-h]
+Usage: ${0##*/} [--help]
 (Re-)writes the Janus configuration, based on the settings.yml file.
-  -h Display this help and exit.
+  --help   Display this help and exit.
 EOF
 }
 
 # Parse command-line arguments.
-while getopts 'h' opt; do
-  case "${opt}" in
-    h)
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --help)
       print_help
       exit
       ;;
     *)
-      print_help >&2
+      >&2 print_help
       exit 1
   esac
 done
