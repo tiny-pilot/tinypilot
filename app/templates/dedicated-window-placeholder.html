@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>TinyPilot</title>
+    <script>
+      window.history.replaceState(null, null, "/");
+    </script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      @import "css/style.css";
+      @import "css/button.css";
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% for child_template in custom_elements_files %}
+      {% include child_template.replace('./app/templates/', '') %}
+    {% endfor %}
+
+    <div class="header-bar">
+      <menu-bar id="menu-bar" logo-only></menu-bar>
+    </div>
+
+    <p>
+      The remote screen has been opened in a dedicated window.<br />
+      You can close this window to continue using TinyPilot in the dedicated
+      window.<br />
+      If you want to restore this window to its original state, please refresh
+      the page.
+    </p>
+    <div>
+      <button
+        class="btn-action"
+        id="refresh-page"
+        onclick="window.location.reload()"
+      >
+        Refresh Page
+      </button>
+    </div>
+  </body>
+</html>

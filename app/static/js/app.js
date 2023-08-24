@@ -331,6 +331,20 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
+menuBar.addEventListener("dedicated-window-requested", () => {
+  // Determine current size of remote screen, and take it over as initial size
+  // for the popup window. This is just convenience functionality, e.g. to
+  // respect if the user had manually optimized the window size beforehand.
+  const size = document.getElementById("remote-screen").screenSize();
+  window.open(
+    "/?viewMode=standalone",
+    undefined,
+    `popup=true,width=${size.width},height=${size.height}`
+  );
+
+  // Redirect the user to the placeholder page.
+  window.location = "/dedicated-window-placeholder";
+});
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
