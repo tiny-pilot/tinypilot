@@ -1,15 +1,4 @@
 ---
-- name: check that the H264 variables are in a consistent state
-  fail:
-    msg: >-
-      The H264 variables are in an inconsistent state. You must set the
-      ustreamer_h264_sink variable in order to set other H264 variables.
-  when: >-
-    ustreamer_h264_sink == None
-    and (ustreamer_h264_sink_mode != None
-         or ustreamer_h264_sink_rm != None
-         or ustreamer_h264_bitrate != None)
-
 - name: check for a boot config file
   stat:
     path: /boot/config.txt
