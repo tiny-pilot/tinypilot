@@ -37,18 +37,8 @@
   debug:
     var: is_tc358743_enabled
 
-- name: determine whether to install Janus
-  set_fact:
-    ustreamer_install_janus: true
-
-- name: decide whether to support audio streaming
-  set_fact:
-    # Audio streaming requires Janus because MJPEG can't carry audio.
-    ustreamer_enable_audio_streaming: "{{ ustreamer_install_janus }}"
-
 - name: install Janus
   include_tasks: install_janus.yml
-  when: ustreamer_install_janus
 
 - name: install uStreamer Debian package
   apt:
@@ -93,4 +83,3 @@
     dest: "{{ ustreamer_janus_configs_dir }}/janus.plugin.ustreamer.jcfg"
   notify:
     - restart Janus
-  when: ustreamer_install_janus
