@@ -17,6 +17,12 @@
       #on-screen-keyboard {
         display: none;
       }
+
+      #remote-screen {
+        --menu-bar-height: 0px;
+        --status-bar-height: 0px;
+        --bar-padding: 0px;
+      }
     </style>
     {% endif %}
   </head>
@@ -30,13 +36,9 @@
       <div class="header-bar">
         <menu-bar id="menu-bar"></menu-bar>
       </div>
-      <!-- prettier-ignore -->
       <remote-screen
         id="remote-screen"
         milliseconds-between-mouse-events="600"
-        {% if is_standalone_mode %}
-        no-margins
-        {% endif %}
       ></remote-screen>
       <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
       <div class="footer-bar">
