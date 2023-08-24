@@ -5,12 +5,13 @@
     :host {
       --menu-bar-height: 45px;
       --status-bar-height: 31px;
+      --bar-padding: 10px;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
       height: 100vh;
-      padding-top: calc(var(--menu-bar-height) + 10px);
-      padding-bottom: calc(var(--status-bar-height) + 10px);
+      padding-top: calc(var(--menu-bar-height) + var(--bar-padding));
+      padding-bottom: calc(var(--status-bar-height) + var(--bar-padding));
       align-items: center;
     }
 

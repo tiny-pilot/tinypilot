@@ -10,6 +10,21 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    {% if is_standalone_mode %}
+    <style>
+      .header-bar,
+      .footer-bar,
+      #on-screen-keyboard {
+        display: none;
+      }
+
+      #remote-screen {
+        --menu-bar-height: 0;
+        --status-bar-height: 0;
+        --bar-padding: 0;
+      }
+    </style>
+    {% endif %}
   </head>
   <body>
     <!-- prettier-ignore -->
