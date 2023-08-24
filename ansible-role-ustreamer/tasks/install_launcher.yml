@@ -51,9 +51,6 @@
     - ustreamer_use_dv_timings
     - ustreamer_drop_same_frames
     - ustreamer_tcp_nodelay
-    - ustreamer_h264_sink
-    - ustreamer_h264_sink_mode
-    - ustreamer_h264_sink_rm
     - ustreamer_h264_bitrate
 
 - name: print uStreamer runtime variables

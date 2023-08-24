@@ -5,7 +5,7 @@
     path: /boot/config.txt
     line: "dtoverlay=tc358743-audio"
     insertafter: "^dtoverlay=tc358743$"
-  when: boot_config_exists and ustreamer_enable_audio_streaming
+  when: boot_config_exists
 
 - name: set GPU memory to 256MB in /boot/config.txt
   lineinfile:
