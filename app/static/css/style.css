@@ -61,15 +61,6 @@ body {
   }
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  margin: 0 auto;
-  padding-top: 55px; /* Account for menu bar plus some extra spacing */
-}
-
 .header-bar {
   position: fixed;
   top: 0;
