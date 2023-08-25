@@ -1,39 +1,4 @@
 ---
-# Path to video device, such as /dev/video1.
-ustreamer_video_path: null
-
-# Encoding method to use, such as `m2m-image`.
-ustreamer_encoder: null
-
-# Device input format, such as uyvy .
-ustreamer_format: null
-
-# Stream resolution, such as 1280x720.
-ustreamer_resolution: null
-
-# Desired frames per second.
-ustreamer_desired_fps: null
-
-# Number of workers.
-ustreamer_workers: null
-
-# Quality of the JPEG encoding from 1 to 100 (best).
-ustreamer_quality: null
-
-# Adjustment to stream brightness. This requires support from the
-# capture hardware, and the value is an integer in some range
-# depending on the hardware.
-ustreamer_brightness: null
-
-# Use DV-timings.
-ustreamer_use_dv_timings: null
-
-# Number of same frames to drop.
-ustreamer_drop_same_frames: null
-
-# Set TCP_NODELAY to reduce buffering on video stream.
-ustreamer_tcp_nodelay: null
-
 # To create a new EDID:
 #  1. Convert the existing EDID to binary using "edid2bin".
 #  2. Edit the binary using "AW EDID Editor v.02.00.13".
@@ -72,7 +37,3 @@ ustreamer_edid: |
 
 # Location to store EDID files.
 ustreamer_edids_dir: /home/{{ ustreamer_user }}/edids
-
-# Set the bitrate in Kb/s for the H264 stream (e.g., 2000). The range of allowed
-# values is [25, 20000]. Defaults to 5000 when not set.
-ustreamer_h264_bitrate: null
