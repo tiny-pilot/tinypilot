@@ -123,7 +123,8 @@ mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
 
-# If the base configuration file is a symlink to the wrong file, remove it.
+# If the base configuration file is not a symlink to the correct file, remove
+# it.
 if [[ -f "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
     [[ ! "${USTREAMER_BASE_CONFIG_FILE}" -ef "${USTREAMER_CONFIG_TARGET}" ]]; \
       then
