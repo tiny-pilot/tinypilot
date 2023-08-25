@@ -9,7 +9,6 @@ set -u
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
-readonly USTREAMER_CONFIG_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
 
 # Create tinypilot group if it doesn't already exist.
 getent group "${TINYPILOT_GROUP}" > /dev/null || \
@@ -52,11 +51,12 @@ if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
 fi
 
 # Use TinyPilot's settings to override uStreamer's runtime variables.
-if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
+readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
+if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
   ln \
     --symbolic \
     "${TINYPILOT_SETTINGS_FILE}" \
-    "${USTREAMER_CONFIG_FILE}"
+    "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
 fi
 
 # Populate TinyPilot's Flask settings file.
@@ -117,6 +117,37 @@ sed \
   --expression '/ustreamer_port/d' \
   --expression '/ustreamer_persistent/d' \
   "${TINYPILOT_SETTINGS_FILE}"
+
+
+readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
+readonly BOOT_CONFIG_PATH='/boot/config.txt'
+if [[ -f "${BOOT_CONFIG_PATH}" ]] && \
+    grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
+  USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
+fi
+readonly USTREAMER_CONFIG_TARGET
+
+readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
+readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
+
+# If the base configuration file is a symlink to the wrong file, remove it.
+if [[ -f "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
+    [[ ! "${USTREAMER_BASE_CONFIG_FILE}" -ef "${USTREAMER_CONFIG_TARGET}" ]]; \
+      then
+  rm "${USTREAMER_BASE_CONFIG_FILE}"
+fi
+
+# Create the base configuration file if it doesn't already exist as a symlink to
+# the correct uStreamer YAML settings file.
+if [[ ! -f "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
+  mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
+  ln --symbolic "${USTREAMER_CONFIG_TARGET}" "${USTREAMER_BASE_CONFIG_FILE}"
+fi
+
+readonly USTREAMER_USER="ustreamer"
+readonly USTREAMER_GROUP="ustreamer"
+chown -R "${USTREAMER_USER}:${USTREAMER_GROUP}" "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 # Disable default NGINX server.
 rm -f \

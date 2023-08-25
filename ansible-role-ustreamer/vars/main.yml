@@ -13,8 +13,3 @@ ustreamer_janus_apt_suite: "{{ ansible_distribution_release }}-backports"
 ustreamer_janus_configs_dir: /etc/janus
 
 ustreamer_yq_version: v4.30.6
-
-ustreamer_launcher_dir: /opt/ustreamer-launcher
-ustreamer_launcher_script: "{{ ustreamer_launcher_dir }}/launch"
-
-ustreamer_launcher_configs_dir: "{{ ustreamer_launcher_dir }}/configs.d"

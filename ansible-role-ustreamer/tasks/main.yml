@@ -33,38 +33,12 @@
   apt:
     deb: "{{ ustreamer_debian_package_path }}"
 
-- name: install uStreamer as a service
-  template:
-    src: ustreamer.systemd.j2
-    dest: /lib/systemd/system/ustreamer.service
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - reload systemd config
-    - restart uStreamer
-    - restart Janus
-
-- name: enable systemd uStreamer service file
-  systemd:
-    name: ustreamer
-    enabled: yes
-
 - name: configure TC358743 HDMI capture chip
   import_tasks: provision_tc358743.yml
   when: is_tc358743_enabled | bool
 
-# If this system does not use a TC358743 capture chip, assume defaults for a
-# MacroSilicon MS2109-based HDMI-to-USB capture dongle.
-- name: use custom settings for TC358743 chip for any facts not already defined
-  set_fact:
-    ustreamer_encoder: "{{ 'hw' if ustreamer_encoder == None else ustreamer_encoder }}"
-    ustreamer_format: "{{ 'jpeg' if ustreamer_format == None else ustreamer_format }}"
-    ustreamer_resolution: "{{ '1920x1080' if ustreamer_resolution == None else ustreamer_resolution }}"
-  when: not (is_tc358743_enabled | bool)
-
-- name: install uStreamer launcher
-  import_tasks: install_launcher.yml
+- name: install yq
+  import_tasks: install_yq.yml
 
 - name: create uStreamer Janus plugin config
   template:
