@@ -50,16 +50,10 @@ if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
   chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
-# Use TinyPilot's settings to override uStreamer's runtime variables.
+# Create a directory for uStreamer launcher configs.
 readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
 readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
-readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/100-tinypilot.yml"
-if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
-  ln \
-    --symbolic \
-    "${TINYPILOT_SETTINGS_FILE}" \
-    "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
-fi
+mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 # Populate TinyPilot's Flask settings file.
 pushd /opt/tinypilot
@@ -139,8 +133,19 @@ fi
 # Create the base configuration file if it doesn't already exist as a symlink to
 # the correct uStreamer YAML settings file.
 if [[ ! -f "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
-  mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
-  ln --symbolic "${USTREAMER_CONFIG_TARGET}" "${USTREAMER_BASE_CONFIG_FILE}"
+  ln \
+    --symbolic \
+    "${USTREAMER_CONFIG_TARGET}" \
+    "${USTREAMER_BASE_CONFIG_FILE}"
+fi
+
+# Use TinyPilot's settings to override uStreamer's runtime variables.
+readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/100-tinypilot.yml"
+if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
+  ln \
+    --symbolic \
+    "${TINYPILOT_SETTINGS_FILE}" \
+    "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
 fi
 
 readonly USTREAMER_USER='ustreamer'
