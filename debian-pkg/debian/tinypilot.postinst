@@ -149,10 +149,6 @@ if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
     "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
 fi
 
-readonly USTREAMER_USER='ustreamer'
-readonly USTREAMER_GROUP='ustreamer'
-chown -R "${USTREAMER_USER}:${USTREAMER_GROUP}" "${USTREAMER_LAUNCHER_CONFIG_DIR}"
-
 # Disable default NGINX server.
 rm -f \
   /etc/nginx/sites-enabled/default
