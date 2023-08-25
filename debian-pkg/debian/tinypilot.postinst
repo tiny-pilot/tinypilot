@@ -131,8 +131,7 @@ if [[ -e "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
   rm "${USTREAMER_BASE_CONFIG_FILE}"
 fi
 
-# Create the base configuration file if it doesn't already exist as a symlink to
-# the correct uStreamer YAML settings file.
+# Create the base configuration file if it doesn't already exist.
 if [[ ! -e "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
   ln \
     --symbolic \
