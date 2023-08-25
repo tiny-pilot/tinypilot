@@ -125,7 +125,7 @@ readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaul
 
 # If the base configuration file is not a symlink to the correct file, remove
 # it.
-if [[ -f "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
+if [[ -e "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
     [[ ! "${USTREAMER_BASE_CONFIG_FILE}" -ef "${USTREAMER_CONFIG_TARGET}" ]]; \
       then
   rm "${USTREAMER_BASE_CONFIG_FILE}"
@@ -133,7 +133,7 @@ fi
 
 # Create the base configuration file if it doesn't already exist as a symlink to
 # the correct uStreamer YAML settings file.
-if [[ ! -f "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
+if [[ ! -e "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
   ln \
     --symbolic \
     "${USTREAMER_CONFIG_TARGET}" \
