@@ -118,7 +118,6 @@ sed \
   --expression '/ustreamer_persistent/d' \
   "${TINYPILOT_SETTINGS_FILE}"
 
-
 readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
 USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
 readonly BOOT_CONFIG_PATH='/boot/config.txt'
