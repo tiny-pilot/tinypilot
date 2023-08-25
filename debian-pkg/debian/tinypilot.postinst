@@ -109,17 +109,17 @@ sed \
   --expression '/ustreamer_persistent/d' \
   "${TINYPILOT_SETTINGS_FILE}"
 
+# Create a directory for uStreamer launcher configs.
+readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
+mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
+
 # Figure out which uStreamer settings file to use.
 USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
 if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
 fi
 readonly USTREAMER_CONFIG_TARGET
-
-# Create a directory for uStreamer launcher configs.
-readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
-readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
-mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
 
