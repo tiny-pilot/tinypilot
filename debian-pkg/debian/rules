@@ -16,6 +16,7 @@ override_dh_installsystemd:
 	dh_installsystemd --name=tinypilot
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
 	dh_installsystemd --name=usb-gadget --no-start
+	dh_installsystemd --name=ustreamer
 
 override_dh_virtualenv:
 	# Skip install because TinyPilot doesn't need to run setup.py to install.

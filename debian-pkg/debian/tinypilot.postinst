@@ -51,7 +51,9 @@ if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
 fi
 
 # Use TinyPilot's settings to override uStreamer's runtime variables.
-readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
+readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
+readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/100-tinypilot.yml"
 if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
   ln \
     --symbolic \
@@ -118,7 +120,7 @@ sed \
   --expression '/ustreamer_persistent/d' \
   "${TINYPILOT_SETTINGS_FILE}"
 
-readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+# Figure out which uStreamer settings file to use.
 USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
 readonly BOOT_CONFIG_PATH='/boot/config.txt'
 if [[ -f "${BOOT_CONFIG_PATH}" ]] && \
@@ -127,7 +129,6 @@ if [[ -f "${BOOT_CONFIG_PATH}" ]] && \
 fi
 readonly USTREAMER_CONFIG_TARGET
 
-readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
 readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
 
 # If the base configuration file is a symlink to the wrong file, remove it.
@@ -144,8 +145,8 @@ if [[ ! -f "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
   ln --symbolic "${USTREAMER_CONFIG_TARGET}" "${USTREAMER_BASE_CONFIG_FILE}"
 fi
 
-readonly USTREAMER_USER="ustreamer"
-readonly USTREAMER_GROUP="ustreamer"
+readonly USTREAMER_USER='ustreamer'
+readonly USTREAMER_GROUP='ustreamer'
 chown -R "${USTREAMER_USER}:${USTREAMER_GROUP}" "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 # Disable default NGINX server.
