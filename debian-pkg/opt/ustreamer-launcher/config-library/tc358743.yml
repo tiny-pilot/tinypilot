@@ -1,8 +1,8 @@
 # Settings for TC358743 HDMI to CSI-2 bridge, which are included on the
 # TinyPilot Voyager series of devices.
 ---
-ustreamer_drop_same_frames: "30"
 ustreamer_encoder: m2m-image
 ustreamer_format: uyvy
 ustreamer_use_dv_timings: true
 ustreamer_workers: "3"
+ustreamer_drop_same_frames: "30"
