@@ -122,9 +122,7 @@ sed \
 
 # Figure out which uStreamer settings file to use.
 USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
-readonly BOOT_CONFIG_PATH='/boot/config.txt'
-if [[ -f "${BOOT_CONFIG_PATH}" ]] && \
-    grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
+if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
 fi
 readonly USTREAMER_CONFIG_TARGET
