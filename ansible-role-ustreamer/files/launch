@@ -88,6 +88,9 @@ append_arg_if_defined() {
 # Apply hardcoded settings that are not configurable via YAML.
 USTREAMER_ARGS+=('--port' '48001')
 USTREAMER_ARGS+=('--persistent')
+USTREAMER_ARGS+=('--h264-sink' 'tinypilot::ustreamer::h264')
+USTREAMER_ARGS+=('--h264-sink-mode' '777')
+USTREAMER_ARGS+=('--h264-sink-rm')
 
 append_arg_and_value_if_defined '.ustreamer_video_path'       '--device'
 append_arg_and_value_if_defined '.ustreamer_encoder'          '--encoder'
@@ -102,9 +105,6 @@ append_arg_and_value_if_defined '.ustreamer_brightness'       '--brightness'
 append_arg_if_defined           '.ustreamer_use_dv_timings'   '--dv-timings'
 append_arg_if_defined           '.ustreamer_tcp_nodelay'      '--tcp-nodelay'
 
-append_arg_and_value_if_defined '.ustreamer_h264_sink'        '--h264-sink'
-append_arg_and_value_if_defined '.ustreamer_h264_sink_mode'   '--h264-sink-mode'
-append_arg_if_defined           '.ustreamer_h264_sink_rm'     '--h264-sink-rm'
 append_arg_and_value_if_defined '.ustreamer_h264_bitrate'     '--h264-bitrate'
 
 # Echo commands to stdout.

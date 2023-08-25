@@ -73,17 +73,6 @@ ustreamer_edid: |
 # Location to store EDID files.
 ustreamer_edids_dir: /home/{{ ustreamer_user }}/edids
 
-# Use the specified shared memory object to sink H264 frames encoded by MMAL
-# (e.g., tinypilot::ustreamer::h264). Disabled by default.
-ustreamer_h264_sink: null
-
-# Set permissions bitmask for H264 shared memory object (e.g., 777). Defaults
-# to 660 when not set.
-ustreamer_h264_sink_mode: null
-
-# Remove shared memory on stop (e.g., yes). Defaults to no when not set.
-ustreamer_h264_sink_rm: null
-
 # Set the bitrate in Kb/s for the H264 stream (e.g., 2000). The range of allowed
 # values is [25, 20000]. Defaults to 5000 when not set.
 ustreamer_h264_bitrate: null

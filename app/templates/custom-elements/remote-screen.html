@@ -2,34 +2,31 @@
   <style>
     @import "css/cursors.css";
 
+    :host {
+      --menu-bar-height: 45px;
+      --status-bar-height: 31px;
+      --bar-padding: 10px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      height: 100vh;
+      padding-top: calc(var(--menu-bar-height) + var(--bar-padding));
+      padding-bottom: calc(var(--status-bar-height) + var(--bar-padding));
+      align-items: center;
+    }
+
+    .screen-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
     .screen {
       max-width: 100%;
-      max-height: 70vh;
+      max-height: 100%;
       object-fit: contain;
-    }
-
-    @media screen and (min-height: 450px) {
-      .screen {
-        max-height: 80vh;
-      }
-    }
-
-    @media screen and (min-height: 600px) {
-      .screen {
-        max-height: 85vh;
-      }
-    }
-
-    @media screen and (min-height: 900px) {
-      .screen {
-        max-height: 90vh;
-      }
-    }
-
-    @media screen and (min-height: 1180px) {
-      .screen {
-        max-height: 100vh;
-      }
     }
 
     :host([fullscreen="true"]) .screen-wrapper {

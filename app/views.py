@@ -19,6 +19,7 @@ def index_get():
         'index.html',
         use_webrtc_remote_screen=use_webrtc,
         page_title_prefix=_page_title_prefix(),
+        is_standalone_mode=_is_standalone_mode(),
         custom_elements_files=find_files.custom_elements_files())
 
 
@@ -47,3 +48,7 @@ def _page_title_prefix():
     if hostname.determine().lower() != _DEFAULT_HOSTNAME.lower():
         return f'{hostname.determine()} - '
     return ''
+
+
+def _is_standalone_mode():
+    return flask.request.args.get('viewMode') == 'standalone'
