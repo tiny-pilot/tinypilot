@@ -50,11 +50,6 @@ if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
   chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
-# Create a directory for uStreamer launcher configs.
-readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
-readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
-mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
-
 # Populate TinyPilot's Flask settings file.
 pushd /opt/tinypilot
 readonly TINYPILOT_APP_SETTINGS='/home/tinypilot/app_settings.cfg'
@@ -120,6 +115,11 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
 fi
 readonly USTREAMER_CONFIG_TARGET
+
+# Create a directory for uStreamer launcher configs.
+readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
+mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
 
