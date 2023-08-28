@@ -124,7 +124,9 @@ readonly USTREAMER_CONFIG_TARGET
 readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
 
 # If the base configuration file is not a symlink to the correct file, remove
-# it.
+# it. This can happen if the user has previously installed with a different
+# configuration (e.g., the user installs with the default HDMI to USB adapter
+# and then switches to the TC358743 adapter).
 if [[ -e "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
     [[ ! "${USTREAMER_BASE_CONFIG_FILE}" -ef "${USTREAMER_CONFIG_TARGET}" ]]; \
       then
