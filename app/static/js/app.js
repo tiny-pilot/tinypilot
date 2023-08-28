@@ -331,6 +331,18 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
+menuBar.addEventListener("dedicated-window-requested", () => {
+  // Open popup window in standalone view mode (without menu bar or status bar).
+  window.open("/?viewMode=standalone", undefined, "popup=true");
+
+  // Redirect the user to a placeholder page. We can’t keep the main window
+  // open as is, because then we’d have a duplicate video stream (which would
+  // result in twice the bandwidth consumption), or we’d risk inconsistent view
+  // state, or ambiguous control flows between the two windows.
+  // Leaving the main page via an external redirect is a rather pragmatic yet
+  // effective approach to ensure proper teardown of the main window resources.
+  window.location = "/dedicated-window-placeholder";
+});
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
