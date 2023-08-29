@@ -3,17 +3,6 @@ parameters:
   ansible_role_changed:
     type: boolean
     default: false
-  # Creating the bundle assumes an ARMv7 build, so we only do this on master,
-  # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
-  bundle_build_branch:
-    type: string
-    # In order to enable bundle building on a feature branch, you can
-    # temporarily change the below `default` to be: << pipeline.git.branch >>
-    # Don’t forget to revert this before merging your branch!
-    # For one-off builds, you can also specify this parameter when manually
-    # triggering the build pipeline on CircleCI; in this case, the parameter
-    # value needs to be the (literal) branch name.
-    default: master
 jobs:
   check_whitespace:
     docker:
@@ -141,43 +130,18 @@ jobs:
           path: e2e-results
   build_debian_package:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2023.06
+    resource_class: arm.medium
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.11
           docker_layer_caching: true
       - run:
-          name: Enable multiarch builds with QEMU
-          command: ./dev-scripts/enable-multiarch-docker
-      - run:
           name: Build Debian package
-          command: |
-            set -exu
-            if [[ "${CIRCLE_BRANCH}" == '<< pipeline.parameters.bundle_build_branch >>' ]]; then
-              readonly BUILD_TARGETS='linux/arm/v7,linux/amd64'
-            else
-              readonly BUILD_TARGETS='linux/amd64'
-            fi
-            ./dev-scripts/build-debian-pkg "${BUILD_TARGETS}"
-      - run:
-          name: Move Debian packages to a predictable location
-          # Building for multiple architectures at once, changes the path of the
-          # resulting Debian package. For example:
-          #   - Building for both AMD64 and ARMv7, produces files in:
-          #     - `releases/linux_arm_v7/*.deb`
-          #     - `releases/linux_amd64/*.deb`
-          #   - Building for only AMD64, produces files in:
-          #     - `releases/*.deb`
-          # For consistency, we move all packages to `releases/*.deb`.
-          command: find . -name '*.deb' -exec mv {} ./debian-pkg/releases/ \;
+          command: ./dev-scripts/build-debian-pkg linux/arm/v7
       - run:
           name: Print Debian package contents
-          command: |
-            set -exu
-            while read -r file; do
-              dpkg --contents "${file}"
-            done < <(ls ./debian-pkg/releases/*.deb)
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:
@@ -218,14 +182,7 @@ jobs:
     working_directory: ~/project/ansible-role-ustreamer
     steps:
       - unless:
-          condition:
-            or:
-              - << pipeline.parameters.ansible_role_changed >>
-              - equal:
-                  [
-                    << pipeline.parameters.bundle_build_branch >>,
-                    << pipeline.git.branch >>,
-                  ]
+          condition: << pipeline.parameters.ansible_role_changed >>
           steps:
             - run:
                 name: Skipping job because files weren't changed
@@ -344,9 +301,6 @@ workflows:
       - build_bundle:
           requires:
             - build_debian_package
-          filters:
-            branches:
-              only: << pipeline.parameters.bundle_build_branch >>
       - verify_bundle:
           requires:
             - build_bundle
