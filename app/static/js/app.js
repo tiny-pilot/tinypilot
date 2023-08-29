@@ -5,7 +5,7 @@ import {
   requiresShiftKey,
 } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
-import { sendKeystroke } from "./keystrokes.js";
+import { RateLimitedKeyboard } from "./keystrokes.js";
 import { isPasteOverlayShowing, showPasteOverlay } from "./paste.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
@@ -18,6 +18,7 @@ import { OverlayTracker } from "./overlays.js";
 const socket = io();
 let connectedToServer = false;
 
+const keyboard = new RateLimitedKeyboard(socket);
 const keyboardState = new KeyboardState();
 
 // Keep track of overlays, in order to properly deactivate keypress forwarding.
@@ -82,8 +83,8 @@ function processKeystroke(keystroke) {
     return;
   }
   const keystrokeHistoryEvent = keystrokeHistory.push(keystroke.key);
-  const result = sendKeystroke(socket, keystroke);
-  result
+  keyboard
+    .sendKeystroke(keystroke)
     .then(() => {
       keystrokeHistoryEvent.status = "succeeded";
     })
