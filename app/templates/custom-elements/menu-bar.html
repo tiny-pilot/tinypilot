@@ -48,6 +48,10 @@
       user-select: none;
     }
 
+    :host([logo-only]) ul {
+      display: none;
+    }
+
     .logo {
       position: relative;
       box-sizing: border-box;
@@ -263,6 +267,11 @@
         <li class="item" role="presentation">
           <a data-onclick-event="fullscreen-requested" role="menuitem"
             >Full Screen</a
+          >
+        </li>
+        <li class="item" role="presentation">
+          <a data-onclick-event="dedicated-window-requested" role="menuitem"
+            >Dedicated Window</a
           >
         </li>
       </ul>

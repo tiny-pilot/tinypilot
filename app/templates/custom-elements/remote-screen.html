@@ -270,6 +270,11 @@
           return ["fullscreen", "milliseconds-between-mouse-events"];
         }
 
+        size() {
+          const screen = this._getCurrentScreenElement();
+          return { width: screen.clientWidth, height: screen.clientHeight };
+        }
+
         attributeChangedCallback(name, oldValue, newValue) {
           if (name === "fullscreen" && newValue === "true") {
             const screenWrapper =

@@ -140,23 +140,8 @@ jobs:
           name: Build Debian package
           command: ./dev-scripts/build-debian-pkg linux/arm/v7
       - run:
-          name: Move Debian packages to a predictable location
-          # Building for multiple architectures at once, changes the path of the
-          # resulting Debian package. For example:
-          #   - Building for both AMD64 and ARMv7, produces files in:
-          #     - `releases/linux_arm_v7/*.deb`
-          #     - `releases/linux_amd64/*.deb`
-          #   - Building for only AMD64, produces files in:
-          #     - `releases/*.deb`
-          # For consistency, we move all packages to `releases/*.deb`.
-          command: find . -name '*.deb' -exec mv {} ./debian-pkg/releases/ \;
-      - run:
           name: Print Debian package contents
-          command: |
-            set -exu
-            while read -r file; do
-              dpkg --contents "${file}"
-            done < <(ls ./debian-pkg/releases/*.deb)
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
       - persist_to_workspace:
           root: ./debian-pkg/releases
           paths:

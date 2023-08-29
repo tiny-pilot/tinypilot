@@ -7,10 +7,6 @@ version: 2.1
 setup: true
 orbs:
   path-filtering: circleci/path-filtering@1.0.0
-parameters:
-  bundle_build_branch:
-    type: string
-    default: master
 workflows:
   build_pipeline:
     jobs:
