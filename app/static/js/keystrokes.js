@@ -13,6 +13,10 @@ export class RateLimitedKeyboard {
     eventFunc();
   }
 
+  _queueEvent(eventFunc) {
+    this._eventQueue.push(eventFunc);
+  }
+
   _handleKeystroke(keystroke, resolve, reject) {
     this._socket.emit("keystroke", keystroke, (result) => {
       if ("success" in result && result.success) {
@@ -26,9 +30,7 @@ export class RateLimitedKeyboard {
   // Enqueue a keystroke message to be sent to the backend.
   sendKeystroke(keystroke) {
     return new Promise((resolve, reject) => {
-      this._eventQueue.push(() =>
-        this._handleKeystroke(keystroke, resolve, reject)
-      );
+      this._queueEvent(() => this._handleKeystroke(keystroke, resolve, reject));
     });
   }
 }
