@@ -188,21 +188,26 @@ We don't use any Python package management tools because we want to limit comple
 
 We don't track indirect dependencies for our dev dependencies (in `dev_requirements.txt`), so you can update those by simply changing the version number for any package.
 
-### Building an ARMv7 bundle on AMD64
+### Building an ARMv7 bundle on a dev system
 
-You can build an ARMv7 bundle on an ARM64 machine by running the following commands:
-
-```bash
-sudo ./dev-scripts/enable-multiarch-docker
-```
+To build a TinyPilot install bundle on your dev system, you first need to configure a Docker builder for multi-architecture builds using QEMU. You only need to perform this step once per system:
 
 ```bash
-sudo ./dev-scripts/build-debian-pkg linux/arm/v7 && \
-  sudo mv debian-pkg/releases/tinypilot*armhf.deb bundler/bundle && \
-  cd bundler && \
-  sudo ./create-bundle && \
-  ./verify-bundle
+./dev-scripts/enable-multiarch-docker
 ```
+
+Once your dev system is configured for multi-architecture Docker builds, you can build install ARMv7 TinyPilot bundles with the following commands:
+
+```bash
+TARGET_PLATFORM='linux/arm/v7'
+
+(rm debian-pkg/releases/tinypilot*.deb || true) && \
+  ./dev-scripts/build-debian-pkg "${TARGET_PLATFORM}" && \
+  mv debian-pkg/releases/tinypilot*.deb bundler/bundle && \
+  ./bundler/create-bundle
+```
+
+The newly built install bundle will be in `./bundler/dist`.
 
 ## Architecture
 
