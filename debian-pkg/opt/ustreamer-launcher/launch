@@ -92,7 +92,6 @@ USTREAMER_ARGS+=('--h264-sink' 'tinypilot::ustreamer::h264')
 USTREAMER_ARGS+=('--h264-sink-mode' '777')
 USTREAMER_ARGS+=('--h264-sink-rm')
 
-append_arg_and_value_if_defined '.ustreamer_video_path'       '--device'
 append_arg_and_value_if_defined '.ustreamer_encoder'          '--encoder'
 append_arg_and_value_if_defined '.ustreamer_format'           '--format'
 append_arg_and_value_if_defined '.ustreamer_desired_fps'      '--desired-fps'
@@ -100,10 +99,8 @@ append_arg_and_value_if_defined '.ustreamer_resolution'       '--resolution'
 append_arg_and_value_if_defined '.ustreamer_workers'          '--workers'
 append_arg_and_value_if_defined '.ustreamer_quality'          '--quality'
 append_arg_and_value_if_defined '.ustreamer_drop_same_frames' '--drop-same-frames'
-append_arg_and_value_if_defined '.ustreamer_brightness'       '--brightness'
 
 append_arg_if_defined           '.ustreamer_use_dv_timings'   '--dv-timings'
-append_arg_if_defined           '.ustreamer_tcp_nodelay'      '--tcp-nodelay'
 
 append_arg_and_value_if_defined '.ustreamer_h264_bitrate'     '--h264-bitrate'
 
