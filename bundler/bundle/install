@@ -74,14 +74,6 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install -r requirements.txt
 
-
-
-# Install Debian packages and resolve missing dependencies.
-apt-get install -y \
-  "./${TINYPILOT_DEBIAN_PACKAGE}" \
-  "./${JANUS_DEBIAN_PACKAGE}" \
-  "./${USTREAMER_DEBIAN_PACKAGE}"
-
 # If there's an existing TinyPilot settings file, pass it to Ansible to override
 # default vars.
 readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
