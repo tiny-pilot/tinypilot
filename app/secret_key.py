@@ -19,8 +19,9 @@ import os
 import stat
 
 import atomic_file
+import env
 
-_SECRET_KEY_FILE = os.path.expanduser('~/.flask-secret-key')
+_SECRET_KEY_FILE = env.abs_path_in_home_dir('.flask-secret-key')
 _SECRET_KEY_FILE_PERMS = 0o600
 _SECRET_KEY_BYTE_LENGTH = 32
 

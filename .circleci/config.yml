@@ -6,19 +6,7 @@
 version: 2.1
 setup: true
 orbs:
-  path-filtering: circleci/path-filtering@0.1.4
-parameters:
-  # Creating the bundle assumes an ARMv7 build, so we only do this on master,
-  # because it's slow building ARMv7 binaries from a CircleCI AMD64 instance.
-  bundle_build_branch:
-    type: string
-    # In order to enable bundle building on a feature branch, you can
-    # temporarily change the below default to be: << pipeline.git.branch >>
-    # Don’t forget to revert this before merging your branch!
-    # For one-off builds, you can also specify this parameter when manually
-    # triggering the build pipeline on CircleCI; in this case, the parameter
-    # value needs to be the (literal) branch name.
-    default: master
+  path-filtering: circleci/path-filtering@1.0.0
 workflows:
   build_pipeline:
     jobs:

@@ -11,29 +11,9 @@ set -u
 # Echo commands before executing them, by default to stderr.
 set -x
 
-# shellcheck disable=SC1091 # Don’t follow sourced script.
-. lib.sh
-
-# Temporary file for installation settings.
-INSTALL_SETTINGS_FILE="$(mktemp --suffix .yml)"
-readonly INSTALL_SETTINGS_FILE
-
-# The eventual, permanent settings files. Note, that these might not exist
-# yet before Ansible has run for the very first time.
-readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
-readonly USTREAMER_SETTINGS_FILE='/home/ustreamer/config.yml'
-
 # The filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
-
-# Remove temporary files & directories.
-clean_up() {
-  rm -rf "${INSTALL_SETTINGS_FILE}"
-}
-
-# Always clean up before exiting.
-trap 'clean_up' EXIT
 
 # Prevent installation on the Raspberry Pi 3.
 if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
@@ -62,46 +42,6 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   exit 1
 fi
 
-# Check if there's already a settings file with extra installation settings.
-if [[ -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
-  echo "Using settings file at: ${TINYPILOT_SETTINGS_FILE}"
-  cp "${TINYPILOT_SETTINGS_FILE}" "${INSTALL_SETTINGS_FILE}"
-else
-  echo "No pre-existing settings file found at: ${TINYPILOT_SETTINGS_FILE}"
-fi
-
-# Set default installation settings
-yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_port" "8001"
-yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_persistent" "true"
-
-# Check if this system uses the TC358743 HDMI to CSI capture bridge.
-USE_TC358743_DEFAULTS=false
-if grep --silent "^ustreamer_capture_device:" "${INSTALL_SETTINGS_FILE}"; then
-  if grep --silent "^ustreamer_capture_device: tc358743$" "${INSTALL_SETTINGS_FILE}"; then
-    USE_TC358743_DEFAULTS=true
-  fi
-# Only check the existing config file if user has not set
-# ustreamer_capture_device install variable.
-elif [ -f "${USTREAMER_SETTINGS_FILE}" ] \
-     && grep --silent 'capture_device: "tc358743"' "${USTREAMER_SETTINGS_FILE}"; then
-  USE_TC358743_DEFAULTS=true
-fi
-
-# Write uStreamer settings.
-# If this system does not use a TC358743 capture chip, assume defaults for a
-# MacroSilicon MS2109-based HDMI-to-USB capture dongle. The TC358743 defaults
-# are provided in the uStreamer Ansible role.
-# TODO: we might be able to remove these defaults from here.
-# See https://github.com/tiny-pilot/tinypilot/issues/1267
-if ! "${USE_TC358743_DEFAULTS}"; then
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_encoder" "hw"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_format" "jpeg"
-  yaml_set_if_undefined "${INSTALL_SETTINGS_FILE}" "ustreamer_resolution" "1920x1080"
-fi
-
-echo "Final install settings:"
-cat "${INSTALL_SETTINGS_FILE}"
-
 # Bootstrap environment for installation.
 apt-get update --allow-releaseinfo-change-suite
 apt-get install -y \
@@ -120,20 +60,25 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install -r requirements.txt
 
+# If there's an existing TinyPilot settings file, pass it to Ansible to override
+# default vars.
+readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
+EXTRA_PLAYBOOK_FLAGS=()
+# Check that TinyPilot settings file exists and is non-empty.
+if [[ -s "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  EXTRA_PLAYBOOK_FLAGS+=('--extra-vars' "@${TINYPILOT_SETTINGS_FILE}")
+
+  echo "Final install settings:"
+  cat "${TINYPILOT_SETTINGS_FILE}"
+fi
+readonly EXTRA_PLAYBOOK_FLAGS
+
 # Run Ansible.
 ansible-playbook \
   --inventory localhost, \
   install.yml \
-  --extra-vars "@${INSTALL_SETTINGS_FILE}"
+  "${EXTRA_PLAYBOOK_FLAGS[@]}"
 
 # Install TinyPilot Debian package and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
-
-# Persist installation settings.
-cp "${INSTALL_SETTINGS_FILE}" "${TINYPILOT_SETTINGS_FILE}"
-chown tinypilot:tinypilot "${TINYPILOT_SETTINGS_FILE}"
-
-# Make the installation settings file world readable so that the uStreamer
-# launcher script can access it via a symbolic link.
-chmod 0644 "${TINYPILOT_SETTINGS_FILE}"

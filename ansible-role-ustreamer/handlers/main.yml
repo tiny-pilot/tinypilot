@@ -3,11 +3,6 @@
   systemd:
     daemon_reload: yes
 
-- name: restart uStreamer
-  service:
-    name: ustreamer
-    state: restarted
-
 - name: load TC358743 EDID file
   service:
     name: load-tc358743-edid
@@ -25,4 +20,3 @@
   service:
     name: janus
     state: restarted
-  when: ustreamer_install_janus

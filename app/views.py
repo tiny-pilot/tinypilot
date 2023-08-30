@@ -19,6 +19,7 @@ def index_get():
         'index.html',
         use_webrtc_remote_screen=use_webrtc,
         page_title_prefix=_page_title_prefix(),
+        is_standalone_mode=_is_standalone_mode(),
         custom_elements_files=find_files.custom_elements_files())
 
 
@@ -31,6 +32,12 @@ def styleguide_get():
             'styleguide.html',
             custom_elements_files=find_files.custom_elements_files())
     return flask.abort(404)
+
+
+@views_blueprint.route('/dedicated-window-placeholder', methods=['GET'])
+def dedicated_window_placeholder_get():
+    return flask.render_template('dedicated-window-placeholder.html',
+                                 page_title_prefix=_page_title_prefix())
 
 
 # On a real install, nginx redirects the /stream route to uStreamer, so a real
@@ -47,3 +54,7 @@ def _page_title_prefix():
     if hostname.determine().lower() != _DEFAULT_HOSTNAME.lower():
         return f'{hostname.determine()} - '
     return ''
+
+
+def _is_standalone_mode():
+    return flask.request.args.get('viewMode') == 'standalone'

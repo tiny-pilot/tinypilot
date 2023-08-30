@@ -1,5 +1,5 @@
 general: {
     ws = true
     ws_ip = "127.0.0.1"
-    ws_port = 8002
+    ws_port = 48002
 }

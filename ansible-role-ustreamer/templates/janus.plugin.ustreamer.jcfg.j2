@@ -1,8 +1,8 @@
 memsink: {
-    object = "{{ ustreamer_h264_sink }}"
+    object = "tinypilot::ustreamer::h264"
 }
 
-{% if ustreamer_capture_device == 'tc358743' -%}
+{% if is_tc358743_enabled -%}
 audio: {
     device = "hw:1"
     tc358743 = "/dev/video0"

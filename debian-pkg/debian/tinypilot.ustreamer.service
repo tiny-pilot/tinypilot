@@ -4,9 +4,9 @@ After=syslog.target network.target
 
 [Service]
 Type=simple
-User={{ ustreamer_user }}
-WorkingDirectory={{ ustreamer_launcher_dir }}
-ExecStart={{ ustreamer_launcher_script }}
+User=ustreamer
+WorkingDirectory=/opt/ustreamer-launcher
+ExecStart=/opt/ustreamer-launcher/launch
 Restart=always
 
 [Install]
