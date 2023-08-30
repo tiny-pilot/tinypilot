@@ -83,7 +83,12 @@ ansible-playbook \
 JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
 readonly JANUS_DEBIAN_PACKAGE
 
-# Install TinyPilot Debian package and resolve missing dependencies.
+# Get the filename of the uStreamer Debian package.
+USTREAMER_DEBIAN_PACKAGE="$(ls ustreamer*.deb)"
+readonly USTREAMER_DEBIAN_PACKAGE
+
+# Install Debian packages and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}" \
-  "./${JANUS_DEBIAN_PACKAGE}"
+  "./${JANUS_DEBIAN_PACKAGE}" \
+  "./${USTREAMER_DEBIAN_PACKAGE}" \

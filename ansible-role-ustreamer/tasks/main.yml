@@ -26,10 +26,6 @@
   debug:
     var: is_tc358743_enabled
 
-- name: install uStreamer Debian package
-  apt:
-    deb: "{{ ustreamer_debian_package_path }}"
-
 - name: configure TC358743 HDMI capture chip
   import_tasks: provision_tc358743.yml
   when: is_tc358743_enabled | bool
