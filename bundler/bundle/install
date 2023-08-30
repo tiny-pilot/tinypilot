@@ -11,9 +11,6 @@ set -u
 # Echo commands before executing them, by default to stderr.
 set -x
 
-# The filename of the TinyPilot Debian package.
-TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
-readonly TINYPILOT_DEBIAN_PACKAGE
 
 # Prevent installation on the Raspberry Pi 3.
 if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
@@ -42,6 +39,14 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   exit 1
 fi
 
+# The filename of the TinyPilot Debian package.
+TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
+readonly TINYPILOT_DEBIAN_PACKAGE
+
+# Get the filename of the uStreamer Debian package.
+USTREAMER_DEBIAN_PACKAGE="$(ls ustreamer*.deb)"
+readonly USTREAMER_DEBIAN_PACKAGE
+
 # Get the filename of the Janus Debian package.
 JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
 readonly JANUS_DEBIAN_PACKAGE
@@ -49,6 +54,7 @@ readonly JANUS_DEBIAN_PACKAGE
 # Install TinyPilot Debian package and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}" \
+  "./${USTREAMER_DEBIAN_PACKAGE}" \
   "./${JANUS_DEBIAN_PACKAGE}"
 
 # Bootstrap environment for installation.
@@ -69,13 +75,7 @@ python3 -m venv venv
 pip install "pip>=21.3.1"
 pip install -r requirements.txt
 
-# Get the filename of the Janus Debian package.
-JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
-readonly JANUS_DEBIAN_PACKAGE
 
-# Get the filename of the uStreamer Debian package.
-USTREAMER_DEBIAN_PACKAGE="$(ls ustreamer*.deb)"
-readonly USTREAMER_DEBIAN_PACKAGE
 
 # Install Debian packages and resolve missing dependencies.
 apt-get install -y \
