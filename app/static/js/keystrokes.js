@@ -2,7 +2,7 @@
  * A mechanism to rate-limit the keystrokes messages sent to backend so that
  * they don't flood the SocketIO server's message queue and starve the server of
  * PING/PONG messages, needed to keep the client-server connection alive.
- * 
+ *
  * The current rate-limiting implementation maintains an array of anonymous
  * functions that get executed in a first in, first out (FIFO) ordering at a
  * fixed rate of 20 functions per second (i.e., a function gets executed once
@@ -11,7 +11,7 @@
  */
 export class RateLimitedKeystrokes {
   /**
-   * @param {Socket} socket - https://socket.io/docs/v4/client-api/#socket 
+   * @param {Socket} socket - https://socket.io/docs/v4/client-api/#socket
    */
   constructor(socket) {
     this._socket = socket;
