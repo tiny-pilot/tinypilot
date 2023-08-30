@@ -1,4 +1,4 @@
-export class RateLimitedKeyboard {
+export class RateLimitedKeystrokes {
   constructor(socket) {
     this._socket = socket;
     this._eventQueue = [];
