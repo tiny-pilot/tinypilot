@@ -11,10 +11,6 @@ set -u
 # Echo commands before executing them, by default to stderr.
 set -x
 
-# The filename of the TinyPilot Debian package.
-TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
-readonly TINYPILOT_DEBIAN_PACKAGE
-
 # Prevent installation on the Raspberry Pi 3.
 if grep -q "^Model *: Raspberry Pi 3" /proc/cpuinfo ; then
   echo 'You are trying to install on incompatible hardware.' >&2
@@ -41,6 +37,10 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   echo 'See https://tinypilotkvm.com/faq/read-only-filesystem for details.' >&2
   exit 1
 fi
+
+# The filename of the TinyPilot Debian package.
+TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
+readonly TINYPILOT_DEBIAN_PACKAGE
 
 # Get the filename of the Janus Debian package.
 JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
