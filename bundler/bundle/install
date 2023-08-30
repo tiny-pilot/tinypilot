@@ -42,7 +42,7 @@ fi
 JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
 readonly JANUS_DEBIAN_PACKAGE
 
-# The filename of the TinyPilot Debian package.
+# Get the filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
 
