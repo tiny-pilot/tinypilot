@@ -1,20 +1,4 @@
 ---
-# Note that the tc358743-audio overlay depends on the tc358743 overlay.
-- name: enable TC358743-audio overlay in /boot/config.txt
-  lineinfile:
-    path: /boot/config.txt
-    line: "dtoverlay=tc358743-audio"
-    insertafter: "^dtoverlay=tc358743$"
-  when: boot_config_exists
-
-- name: set GPU memory to 256MB in /boot/config.txt
-  lineinfile:
-    path: /boot/config.txt
-    line: "gpu_mem=256"
-    regexp: "gpu_mem="
-    insertafter: EOF
-  when: boot_config_exists | bool
-
 - name: create EDIDs folder
   file:
     path: "{{ ustreamer_edids_dir }}"
