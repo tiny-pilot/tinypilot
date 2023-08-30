@@ -33,4 +33,7 @@ export class RateLimitedKeystrokes {
       this._queueEvent(() => this._handleKeystroke(keystroke, resolve, reject));
     });
   }
+  sendKeyRelease() {
+    this._queueEvent(() => this._socket.emit("keyRelease"));
+  }
 }

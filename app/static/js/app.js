@@ -218,7 +218,7 @@ function onKeyUp(evt) {
   }
 
   if (isModifierCode(canonicalCode)) {
-    socket.emit("keyRelease");
+    keystrokes.sendKeyRelease();
   }
 }
 
