@@ -93,7 +93,7 @@ fi
 
 # Enable TC358743-audio overlay in /boot/config.txt.
 # Note that the tc358743-audio overlay depends on the tc358743 overlay.
-if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then 
+if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
   sed --in-place '/dtoverlay=tc35843/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
 fi
