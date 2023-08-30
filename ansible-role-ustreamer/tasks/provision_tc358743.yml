@@ -1,5 +1,4 @@
 ---
-
 - name: create EDIDs folder
   file:
     path: "{{ ustreamer_edids_dir }}"
