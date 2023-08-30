@@ -71,6 +71,17 @@ readonly SETTINGS_TEMPLATE
 chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_APP_SETTINGS}"
 popd
 
+# Populate TinyPilot's EDID.
+pushd /opt/tinypilot
+. venv/bin/activate && \
+  PYTHONPATH=/opt/tinypilot/app \
+    ./scripts/render-template \
+  < /usr/share/tinypilot/templates/tinypilot.conf.j2 \
+  > /etc/nginx/conf.d/tinypilot.conf && \
+  deactivate
+popd
+
+
 # Populate TinyPilot's NGINX config file.
 pushd /opt/tinypilot
 . venv/bin/activate && \
