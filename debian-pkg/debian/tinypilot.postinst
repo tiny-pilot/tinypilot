@@ -91,18 +91,21 @@ if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
     /etc/nginx/nginx.conf
 fi
 
-# Enable TC358743-audio overlay in /boot/config.txt.
-# Note that the tc358743-audio overlay depends on the tc358743 overlay.
+tc358743_overlay_enabled='false'
 if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
+  tc358743_overlay_enabled='true'
+
+  # Enable TC358743-audio overlay in /boot/config.txt.
+  # Note that the tc358743-audio overlay depends on the tc358743 overlay.
   sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
   sed --in-place '/dtoverlay=tc35843/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
-fi
 
-# Set GPU memory to 256MB in /boot/config.txt
-if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
-  sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
-else
-  echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
+  # Set GPU memory to 256MB in /boot/config.txt
+  if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
+    sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
+  else
+    echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
+  fi
 fi
 
 # Clean up the legacy TinyPilot-specific config file for uStreamer. We can
@@ -130,7 +133,7 @@ mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 # Figure out which uStreamer settings file to use.
 USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
-if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
+if "${tc358743_overlay_enabled}" ; then
   USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
 fi
 readonly USTREAMER_CONFIG_TARGET
