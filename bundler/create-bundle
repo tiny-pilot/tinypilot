@@ -74,6 +74,11 @@ cp -r \
   --no-target-directory \
   ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
 
+# Download Janus Bullseye Backports Debian package.
+wget \
+  --directory-prefix="${BUNDLE_DIR}" \
+  http://ftp.us.debian.org/debian/pool/main/j/janus/janus_1.0.1-1~bpo11+1_armhf.deb
+
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"

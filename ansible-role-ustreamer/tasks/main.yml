@@ -26,9 +26,6 @@
   debug:
     var: is_tc358743_enabled
 
-- name: install Janus
-  include_tasks: install_janus.yml
-
 - name: install uStreamer Debian package
   apt:
     deb: "{{ ustreamer_debian_package_path }}"
