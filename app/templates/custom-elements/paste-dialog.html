@@ -1,0 +1,76 @@
+<template id="paste-dialog-template">
+  <style>
+    @import "css/style.css";
+
+    #paste-area {
+      display: block;
+      width: 100%;
+      height: 20rem;
+      box-sizing: border-box;
+      padding: 0.25rem 0.5rem;
+      background-color: white;
+      border: 1px solid var(--brand-metallic-dark);
+      border-radius: var(--border-radius);
+    }
+  </style>
+  <h3>Paste</h3>
+  <p>The target system needs to have an en-US or en-GB keyboard layout.</p>
+  <textarea id="paste-area" class="monospace"></textarea>
+  <button id="confirm-btn" class="btn-success">Paste</button>
+  <button id="cancel-btn">Cancel</button>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
+  (function () {
+    const template = document.querySelector("#paste-dialog-template");
+
+    customElements.define(
+      "paste-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.elements = {
+            confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
+            cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
+            pasteArea: this.shadowRoot.querySelector("#paste-area"),
+          };
+          this.elements.confirmButton.addEventListener("click", () =>
+            this._handleConfirmPaste()
+          );
+          this.elements.cancelButton.addEventListener("click", () =>
+            this._closeDialog()
+          );
+          this.elements.pasteArea.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter" && !evt.shiftKey) {
+              this.elements.confirmButton.click();
+            }
+          });
+        }
+
+        initialize() {
+          this.elements.pasteArea.value = "";
+          this.elements.pasteArea.focus();
+        }
+
+        _handleConfirmPaste() {
+          this.dispatchEvent(
+            new CustomEvent("paste-text", {
+              detail: this.elements.pasteArea.value,
+              bubbles: true,
+              composed: true,
+            })
+          );
+          this._closeDialog();
+        }
+
+        _closeDialog() {
+          this.dispatchEvent(new DialogClosedEvent());
+        }
+      }
+    );
+  })();
+</script>
