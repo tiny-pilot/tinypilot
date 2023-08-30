@@ -91,6 +91,20 @@ if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
     /etc/nginx/nginx.conf
 fi
 
+# Enable TC358743-audio overlay in /boot/config.txt.
+# Note that the tc358743-audio overlay depends on the tc358743 overlay.
+if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then 
+  sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
+  sed --in-place '/dtoverlay=tc35843/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
+fi
+
+# Set GPU memory to 256MB in /boot/config.txt
+if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
+  sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
+else
+  echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
+fi
+
 # Clean up the legacy TinyPilot-specific config file for uStreamer. We can
 # remove this on TinyPilot's next checkpoint release.
 # https://github.com/tiny-pilot/tinypilot-pro/issues/978
