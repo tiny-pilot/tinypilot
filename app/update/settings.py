@@ -1,9 +1,6 @@
 """Manages a TinyPilot update settings file.
 
-TinyPilot currently manages most settings through Ansible. When TinyPilot
-launches ansible, it passes an extra YAML file that controls properties of the
-install and configuration. This module is a wrapper around the YAML file that
-allows TinyPilot code to modify it cleanly.
+TODO: Rewrite.
 
 Typical usage example:
 

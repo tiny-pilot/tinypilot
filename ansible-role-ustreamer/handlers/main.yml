@@ -1,5 +1,0 @@
----
-- name: restart Janus
-  service:
-    name: janus
-    state: restarted
