@@ -115,7 +115,7 @@ JANUS_TEMPLATE="$(cat <<-EOF
 memsink: {
     object = "tinypilot::ustreamer::h264"
 }
-{% if is_tc358743_enabled -%}
+{% if tc358743_overlay_enabled -%}
 audio: {
     device = "hw:1"
     tc358743 = "/dev/video0"
