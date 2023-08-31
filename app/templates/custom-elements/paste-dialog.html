@@ -63,7 +63,10 @@
           );
           this.elements.pasteArea.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter" && !evt.shiftKey) {
+              evt.preventDefault();
               this.elements.confirmButton.click();
+              // Prevent this keystroke from being forwarded to the target system.
+              evt.stopPropagation();
             }
           });
         }
