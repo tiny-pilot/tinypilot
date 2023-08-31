@@ -45,9 +45,9 @@
             template.content.cloneNode(true)
           );
           this.elements = {
+            pasteArea: this.shadowRoot.querySelector("#paste-area"),
             confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
-            pasteArea: this.shadowRoot.querySelector("#paste-area"),
           };
           this.elements.confirmButton.addEventListener("click", () =>
             this._handleConfirmPaste()
