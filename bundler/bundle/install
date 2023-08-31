@@ -82,3 +82,6 @@ ansible-playbook \
 # Install TinyPilot Debian package and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
+
+mv yq /usr/bin/yq
+chmod 0755 /usr/bin/yq

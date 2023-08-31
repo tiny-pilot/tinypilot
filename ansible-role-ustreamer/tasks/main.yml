@@ -37,9 +37,6 @@
   import_tasks: provision_tc358743.yml
   when: is_tc358743_enabled | bool
 
-- name: install yq
-  import_tasks: install_yq.yml
-
 - name: create uStreamer Janus plugin config
   template:
     src: janus.plugin.ustreamer.jcfg.j2

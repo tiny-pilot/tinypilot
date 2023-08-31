@@ -74,6 +74,10 @@ cp -r \
   --no-target-directory \
   ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
 
+wget \
+  https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_arm \
+  --output-document="${BUNDLE_DIR}/yq"
+
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"
