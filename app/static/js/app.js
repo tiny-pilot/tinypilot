@@ -342,7 +342,11 @@ menuBar.addEventListener("dedicated-window-requested", () => {
   window.open(
     "/?viewMode=standalone",
     undefined,
-    `popup=true,width=${width},height=${height}`
+    // We need to add noopener to prevent a bug on Firefox where tearing down
+    // the existing page causes the browser to garbage collect resources that
+    // the popup tries to access.
+    // https://github.com/tiny-pilot/tinypilot/issues/1609
+    `popup=true,noopener,width=${width},height=${height}`
   );
 
   // Redirect the user to a placeholder page. We can’t keep the main window
