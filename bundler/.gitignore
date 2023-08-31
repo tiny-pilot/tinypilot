@@ -2,6 +2,7 @@
 /bundle/tinypilot
 /bundle/roles
 /bundle/*.deb
+/bundle/yq
 
 # Build artifacts.
 /dist

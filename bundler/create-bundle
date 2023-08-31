@@ -84,6 +84,11 @@ wget \
   --directory-prefix="${BUNDLE_DIR}" \
   https://github.com/tiny-pilot/ustreamer-debian/releases/download/ustreamer_5.38-20230802141939/ustreamer_5.38-20230802141939_armhf.deb
 
+# Download yq binary
+wget \
+  https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_arm \
+  --output-document="${BUNDLE_DIR}/yq"
+
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"
 ls -lahR "${BUNDLE_DIR}" > "${OUTPUT_DIR}/files.txt"

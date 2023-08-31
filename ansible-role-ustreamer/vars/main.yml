@@ -5,5 +5,3 @@ ustreamer_dir: /opt/ustreamer
 
 # These variables are only used within this role.
 ustreamer_janus_configs_dir: /etc/janus
-
-ustreamer_yq_version: v4.30.6

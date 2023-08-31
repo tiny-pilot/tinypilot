@@ -55,6 +55,10 @@ apt-get install -y \
   "./${USTREAMER_DEBIAN_PACKAGE}" \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
 
+# Install yq.
+mv yq /usr/bin/yq
+chmod 0755 /usr/bin/yq
+
 # Bootstrap environment for installation.
 apt-get update --allow-releaseinfo-change-suite
 apt-get install -y \
