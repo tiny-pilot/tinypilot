@@ -6,7 +6,6 @@ import {
 } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
-import { isPasteOverlayShowing, showPasteOverlay } from "./paste.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
 
@@ -116,7 +115,7 @@ function onSocketDisconnect() {
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyDown(evt) {
-  if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
+  if (overlayTracker.hasOverlays()) {
     return;
   }
 
@@ -205,10 +204,6 @@ function sendMouseEvent(
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyUp(evt) {
-  if (isPasteOverlayShowing()) {
-    return;
-  }
-
   const canonicalCode = keystrokeToCanonicalCode(evt);
   keyboardState.onKeyUp(evt);
 
@@ -292,6 +287,9 @@ document.addEventListener("overlay-toggled", (evt) => {
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
+});
+document.addEventListener("paste-text", (evt) => {
+  processTextInput(evt.detail);
 });
 
 // To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
@@ -389,8 +387,9 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-dialog").initialize();
   document.getElementById("video-settings-overlay").show();
 });
-menuBar.addEventListener("paste-requested", () => {
-  showPasteOverlay();
+menuBar.addEventListener("paste-dialog-requested", () => {
+  document.getElementById("paste-overlay").show();
+  document.getElementById("paste-dialog").initialize();
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
@@ -433,14 +432,6 @@ document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
 });
 
-document
-  .getElementById("paste-overlay")
-  .addEventListener("paste-text", (evt) => {
-    processTextInput(evt.detail);
-
-    // Give focus back to the app for normal text input.
-    document.getElementById("app").focus();
-  });
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", () => {
   // Hide the interactive elements of the page during shutdown.
