@@ -55,12 +55,6 @@
               this.elements.pasteArea.value.length === 0
             )
           );
-          this.elements.confirmButton.addEventListener("click", () =>
-            this._handleConfirmPaste()
-          );
-          this.elements.cancelButton.addEventListener("click", () =>
-            this._closeDialog()
-          );
           this.elements.pasteArea.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter" && !evt.shiftKey) {
               evt.preventDefault();
@@ -69,6 +63,12 @@
               evt.stopPropagation();
             }
           });
+          this.elements.confirmButton.addEventListener("click", () =>
+            this._handleConfirmPaste()
+          );
+          this.elements.cancelButton.addEventListener("click", () =>
+            this._closeDialog()
+          );
         }
 
         initialize() {
