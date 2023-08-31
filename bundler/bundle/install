@@ -42,12 +42,17 @@ fi
 JANUS_DEBIAN_PACKAGE="$(ls janus*.deb)"
 readonly JANUS_DEBIAN_PACKAGE
 
+# Get the filename of the uStreamer Debian package.
+USTREAMER_DEBIAN_PACKAGE="$(ls ustreamer*.deb)"
+readonly USTREAMER_DEBIAN_PACKAGE
+
 # Get the filename of the TinyPilot Debian package.
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
 
 apt-get install -y \
   "./${JANUS_DEBIAN_PACKAGE}" \
+  "./${USTREAMER_DEBIAN_PACKAGE}" \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
 
 # Bootstrap environment for installation.
