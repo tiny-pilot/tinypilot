@@ -49,6 +49,12 @@
             confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
           };
+          this.elements.pasteArea.addEventListener("input", () =>
+            this.elements.confirmButton.toggleAttribute(
+              "disabled",
+              this.elements.pasteArea.value.length === 0
+            )
+          );
           this.elements.confirmButton.addEventListener("click", () =>
             this._handleConfirmPaste()
           );
@@ -65,6 +71,7 @@
         initialize() {
           this.elements.pasteArea.value = "";
           this.elements.pasteArea.focus();
+          this.elements.confirmButton.toggleAttribute("disabled", true);
         }
 
         _handleConfirmPaste() {
