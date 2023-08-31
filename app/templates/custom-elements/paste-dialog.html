@@ -13,9 +13,19 @@
       border-radius: var(--border-radius);
     }
   </style>
-  <h3>Paste</h3>
-  <p>The target system needs to have an en-US or en-GB keyboard layout.</p>
-  <textarea id="paste-area" class="monospace"></textarea>
+  <h3>Paste Text to the Target System</h3>
+  <p>
+    The target system needs to have an <i>en-US</i> or <i>en-GB</i> keyboard
+    layout.
+  </p>
+  <textarea
+    id="paste-area"
+    class="monospace"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+  ></textarea>
   <button id="confirm-btn" class="btn-success">Paste</button>
   <button id="cancel-btn">Cancel</button>
 </template>
