@@ -116,7 +116,7 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
     <<< '{{ ustreamer_edid }}' \
     > /home/ustreamer/edids/tc358743-edid.hex && \
     deactivate
-    chmod 0644 /home/ustreamer/edids/tc358743-edid.hex
+  chmod 0644 /home/ustreamer/edids/tc358743-edid.hex
   popd
 fi
 
