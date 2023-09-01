@@ -121,12 +121,13 @@ fi
 
 # Populate TinyPilot's Janus settings file.
 readonly JANUS_PLUGIN_USTREAMER_CONFIG='/etc/janus/janus.plugin.ustreamer.jcfg'
-cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
+cat <<EOF > "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 memsink: {
     object = "tinypilot::ustreamer::h264"
 }
 EOF
 
+# Append audio settings if TC358743 support is enabled.
 if "${tc358743_overlay_enabled}" ; then
   cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 audio: {
