@@ -215,4 +215,7 @@ cp \
   /usr/share/tinypilot/janus.transport.websockets.jcfg \
   /etc/janus/janus.transport.websockets.jcfg
 
+# Restart Janus to pick up the new config files.
+deb-systemd-invoke restart janus
+
 #DEBHELPER#
