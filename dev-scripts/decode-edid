@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Decode the EDID from the ansible-role-ustreamer defaults.
+# Decode the EDID from the TinyPilot install defaults.
 
 # This script facilitates debugging the EDID and creates helpful logs of EDID
 # changes in CI.
@@ -14,10 +14,12 @@ set -x
 # Exit on unset variable.
 set -u
 
-# Extract the EDID from the inline YAML definition.
-grep "ustreamer_edid:" -A16 ansible-role-ustreamer/defaults/main.yml | \
-  `# Strip the line with ustreamer_edid` \
-  tail --lines=+2 | \
-  `# Strip whitespace` \
-  tr --delete "[:blank:]" | \
+# Change directory to repository root.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+PYTHONPATH=./app \
+  ./scripts/render-template \
+  <<< '{{ ustreamer_edid }}' | \
   edid-decode --check

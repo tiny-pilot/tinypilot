@@ -106,6 +106,18 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   else
     echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
   fi
+
+  # Populate TinyPilot's EDID.
+  mkdir -p /home/ustreamer/edids
+  pushd /opt/tinypilot
+  . venv/bin/activate && \
+    PYTHONPATH=/opt/tinypilot/app \
+      ./scripts/render-template \
+    <<< '{{ ustreamer_edid }}' \
+    > /home/ustreamer/edids/tc358743-edid.hex && \
+    deactivate
+  chmod 0644 /home/ustreamer/edids/tc358743-edid.hex
+  popd
 fi
 
 # Populate TinyPilot's Janus settings file.
