@@ -1,6 +1,5 @@
 # Dynamic dependencies from dist/ folder.
 /bundle/tinypilot
-/bundle/roles
 /bundle/*.deb
 /bundle/yq
 
