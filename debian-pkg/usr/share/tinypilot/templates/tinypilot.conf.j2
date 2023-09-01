@@ -6,7 +6,7 @@ upstream ustreamer {
 }
 upstream janus-ws {
     # The host and port must match the variables in
-    # debian-pkg/usr/share/tinypilot/templates/janus.jcfg.j2
+    # debian-pkg/usr/share/tinypilot/janus.transport.websockets.jcfg
     server 127.0.0.1:48002 fail_timeout=1s max_fails=600;
 }
 
