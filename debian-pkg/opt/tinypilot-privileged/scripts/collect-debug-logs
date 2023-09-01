@@ -71,11 +71,17 @@ cd /opt/tinypilot && \
 
 print_info "Checking uStreamer version..."
 cd /opt/ustreamer && \
-  printf "uStreamer version: %s\n" "$(/opt/ustreamer/ustreamer --version)" >> "${LOG_FILE}"
+  printf "uStreamer version: %s\n\n" "$(/opt/ustreamer/ustreamer --version)" \
+    >> "${LOG_FILE}"
 
-print_info "Checking OS version..."
+echo "System information" >> "${LOG_FILE}"
+
+print_info "Checking system information..."
 {
   printf "OS version: %s\n" "$(uname --all)"
+  printf "Kernel architecture: %s\n" "$(uname --machine)"
+  printf "Userland architecture: %s (%s)\n" "$(dpkg --print-architecture)" \
+    "$(getconf LONG_BIT)-bit"
   printf "Distribution name: %s\n" "$(lsb_release --id --short)"
   printf "Distribution version: %s\n" "$(lsb_release --release --short)"
   printf "\n"
