@@ -53,7 +53,7 @@ jobs:
           command: ./dev-scripts/check-style
   decode_edid:
     docker:
-      - image: cimg/base:2022.02
+      - image: cimg/python:3.9.17
     resource_class: small
     steps:
       - checkout
