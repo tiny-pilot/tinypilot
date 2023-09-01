@@ -109,28 +109,21 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
 fi
 
 # Populate TinyPilot's Janus settings file.
-pushd /opt/tinypilot
-readonly JANUS_PLUGIN_USTREAMER_CONFIG="/etc/janus/janus.plugin.ustreamer.jcfg"
-JANUS_TEMPLATE="$(cat <<-EOF
+readonly JANUS_PLUGIN_USTREAMER_CONFIG='/etc/janus/janus.plugin.ustreamer.jcfg'
+cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 memsink: {
     object = "tinypilot::ustreamer::h264"
 }
-{% if tc358743_overlay_enabled -%}
+EOF
+
+if "${tc358743_overlay_enabled}" ; then
+  cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 audio: {
     device = "hw:1"
     tc358743 = "/dev/video0"
 }
-{% endif -%}
 EOF
-)"
-readonly JANUS_TEMPLATE
-. venv/bin/activate && \
-  PYTHONPATH=/opt/tinypilot/app \
-    ./scripts/render-template \
-  <<< "${JANUS_TEMPLATE}" \
-  > "${JANUS_PLUGIN_USTREAMER_CONFIG}" && \
-  deactivate
-popd
+fi
 
 # Clean up the legacy TinyPilot-specific config file for uStreamer. We can
 # remove this on TinyPilot's next checkpoint release.
