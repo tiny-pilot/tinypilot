@@ -69,9 +69,6 @@ jobs:
             . venv/bin/activate
             pip install --requirement requirements.txt
             ./dev-scripts/decode-edid
-      - run:
-          name: Decode the EDID
-          command: ./dev-scripts/decode-edid
   build_python:
     docker:
       - image: cimg/python:3.9.17
