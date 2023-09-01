@@ -1,7 +1,8 @@
 # Dynamic dependencies from dist/ folder.
 /bundle/tinypilot
 /bundle/roles
-/bundle/tinypilot*.deb
+/bundle/*.deb
+/bundle/yq
 
 # Build artifacts.
 /dist
