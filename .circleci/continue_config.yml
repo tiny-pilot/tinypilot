@@ -61,6 +61,15 @@ jobs:
           name: Install edid-decode
           command: sudo apt-get update && sudo apt-get install --yes edid-decode
       - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements and decode the EDID
+          command: |
+            . venv/bin/activate
+            pip install --requirement requirements.txt
+            ./dev-scripts/decode-edid
+      - run:
           name: Decode the EDID
           command: ./dev-scripts/decode-edid
   build_python:
