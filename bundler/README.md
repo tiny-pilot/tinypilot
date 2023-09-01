@@ -12,8 +12,6 @@ The [`create-bundle`](create-bundle) script generates the bundle from the [`bund
 
 - **The TinyPilot web service**
   - The root [`Dockerfile`](../Dockerfile) packs the TinyPilot web service as a Debian package from the source files.
-- **Ansible role**
-  - [`ansible-role-ustreamer`](../ansible-role-ustreamer) is responsible for configuring uStreamer on the device.
 - **Metadata**
   - E.g., version/build information
 
