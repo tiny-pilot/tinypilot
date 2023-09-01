@@ -108,6 +108,7 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   fi
 
   # Populate TinyPilot's EDID.
+  mkdir -p /home/ustreamer/edids/
   pushd /opt/tinypilot
   . venv/bin/activate && \
     PYTHONPATH=/opt/tinypilot/app \
