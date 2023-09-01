@@ -59,30 +59,34 @@ test("shows about page, license, privacy policy, and dependency pages and licens
   }
 
   {
-    const cryptographyProjectPagePromise = page.waitForEvent("popup");
+    const janusProjectPagePromise = page.waitForEvent("popup");
     await page
-      .getByRole("link", { name: "cryptography", exact: true })
+      .getByRole("link", { name: "Janus", exact: true })
       .first()
       .click();
-    const cryptographyProjectPage = await cryptographyProjectPagePromise;
-    await expect(cryptographyProjectPage).toHaveURL(
-      new RegExp("https://cryptography.io.*")
+    const janusProjectPage = await janusProjectPagePromise;
+    await expect(janusProjectPage).toHaveURL(
+      new RegExp("https://janus.conf.meetecho.com.*")
     );
-    await expect(cryptographyProjectPage.locator("body")).not.toBeEmpty();
-    await cryptographyProjectPage.close();
+    await expect(janusProjectPage.locator("body")).not.toBeEmpty();
+    await janusProjectPage.close();
   }
 
   {
-    const cryptographyLicensePagePromise = page.waitForEvent("popup");
+    const janusLicensePagePromise = page.waitForEvent("popup");
     await page
       .getByRole("listitem")
-      .filter({ hasText: "cryptography (License)" })
+      .filter({ hasText: "Janus (License)" })
       .getByRole("link", { name: "License" })
       .click();
-    const cryptographyLicensePage = await cryptographyLicensePagePromise;
-    await expect(cryptographyLicensePage).toHaveURL(new RegExp("cryptography"));
-    await expect(cryptographyLicensePage.locator("body")).not.toBeEmpty();
-    await cryptographyLicensePage.close();
+    const janusLicensePage = await janusLicensePagePromise;
+    await expect(janusLicensePage).toHaveURL(
+      new RegExp(
+        "https://raw.githubusercontent.com/tiny-pilot/janus-gateway/.*"
+      )
+    );
+    await expect(janusLicensePage.locator("body")).not.toBeEmpty();
+    await janusLicensePage.close();
   }
 
   await page.getByRole("button", { name: "Close", exact: true }).click();
