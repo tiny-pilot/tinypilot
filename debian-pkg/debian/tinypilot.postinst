@@ -141,9 +141,9 @@ fi
 # Clean up the legacy TinyPilot-specific config file for uStreamer. We can
 # remove this on TinyPilot's next checkpoint release.
 # https://github.com/tiny-pilot/tinypilot-pro/issues/978
-readonly USTREAMER_CONFIG_FILE='/home/ustreamer/config.yml'
-if [[ -f "${USTREAMER_CONFIG_FILE}" ]]; then
-  rm "${USTREAMER_CONFIG_FILE}"
+readonly USTREAMER_ANSIBLE_CONFIG='/home/ustreamer/config.yml'
+if [[ -f "${USTREAMER_ANSIBLE_CONFIG}" ]]; then
+  rm "${USTREAMER_ANSIBLE_CONFIG}"
 fi
 
 # Workaround to remove settings that are not user-configurable to avoid
