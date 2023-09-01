@@ -9,7 +9,7 @@ StartLimitBurst=20
 Type=oneshot
 User=root
 ExecStart=v4l2-ctl \
-  --set-edid=file={{ ustreamer_edids_dir }}/tc358743-edid.hex \
+  --set-edid=file=/home/ustreamer/edids/tc358743-edid.hex \
   --fix-edid-checksums
 Restart=on-failure
 RestartSec=2
