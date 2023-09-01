@@ -66,7 +66,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
       .click();
     const janusProjectPage = await janusProjectPagePromise;
     await expect(janusProjectPage).toHaveURL(
-      new RegExp("https://janus.conf.meetecho.com/*")
+      new RegExp("https://janus.conf.meetecho.com.*")
     );
     await expect(janusProjectPage.locator("body")).not.toBeEmpty();
     await janusProjectPage.close();
