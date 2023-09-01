@@ -82,7 +82,6 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 ## Other installation options
 
 - [Advanced installation options](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#advanced-installation)
-- [Remote installation via Ansible](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#remote-installation)
 
 ## Updates
 

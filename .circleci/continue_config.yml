@@ -181,33 +181,6 @@ jobs:
                 --fail-on warning,error \
                 "${file}"
             done < <(ls *.deb)
-  build_ansible_role:
-    machine:
-      image: ubuntu-2004:202010-01
-    resource_class: large
-    working_directory: ~/project/ansible-role-ustreamer
-    steps:
-      - unless:
-          condition: << pipeline.parameters.ansible_role_changed >>
-          steps:
-            - run:
-                name: Skipping job because files weren't changed
-                command: circleci-agent step halt
-      - checkout:
-          path: ~/project
-      - run:
-          name: Create virtual environment
-          command: python3 -m venv venv
-      - run:
-          name: Test role with molecule
-          command: |
-            . venv/bin/activate && \
-            pip install --upgrade pip && \
-            pip install wheel==0.34.2 && \
-            pip install -r molecule/requirements.txt && \
-            ansible --version && \
-            molecule --version && \
-            molecule test
   build_bundle:
     docker:
       - image: cimg/python:3.9.17
@@ -299,9 +272,6 @@ workflows:
       - build_debian_package
       - e2e
       - lint_debian_package:
-          requires:
-            - build_debian_package
-      - build_ansible_role:
           requires:
             - build_debian_package
       - build_bundle:

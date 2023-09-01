@@ -24,9 +24,6 @@ cd ./bundler
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
-readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
-readonly ANSIBLE_ROLE_USTREAMER_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-ustreamer"
-
 # Exclude the AMD64 package from the production bundle.
 rm -f "${BUNDLE_DIR}/tinypilot"*amd64.deb
 
@@ -64,15 +61,6 @@ TINYPILOT_VERSION="$(print_tinypilot_version)"
 readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
-
-# Clear Ansible roles from any previous bundle builds.
-rm -rf "${ANSIBLE_ROLES_DIR}"
-mkdir "${ANSIBLE_ROLES_DIR}"
-
-# Copy local Ansible roles.
-cp -r \
-  --no-target-directory \
-  ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"

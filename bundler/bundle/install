@@ -42,43 +42,6 @@ if grep -q "boot=overlay" /proc/cmdline ; then
   exit 1
 fi
 
-# Bootstrap environment for installation.
-apt-get update --allow-releaseinfo-change-suite
-apt-get install -y \
-  git \
-  libffi-dev \
-  libssl-dev \
-  python3-dev \
-  python3-venv \
-  lsb-release
-
-python3 -m venv venv
-# shellcheck disable=SC1091 # Don’t follow sourced script.
-. venv/bin/activate
-# Ensure we're using a version of pip that can use binary wheels where available
-# instead of building the packages locally.
-pip install "pip>=21.3.1"
-pip install -r requirements.txt
-
-# If there's an existing TinyPilot settings file, pass it to Ansible to override
-# default vars.
-readonly TINYPILOT_SETTINGS_FILE='/home/tinypilot/settings.yml'
-EXTRA_PLAYBOOK_FLAGS=()
-# Check that TinyPilot settings file exists and is non-empty.
-if [[ -s "${TINYPILOT_SETTINGS_FILE}" ]]; then
-  EXTRA_PLAYBOOK_FLAGS+=('--extra-vars' "@${TINYPILOT_SETTINGS_FILE}")
-
-  echo "Final install settings:"
-  cat "${TINYPILOT_SETTINGS_FILE}"
-fi
-readonly EXTRA_PLAYBOOK_FLAGS
-
-# Run Ansible.
-ansible-playbook \
-  --inventory localhost, \
-  install.yml \
-  "${EXTRA_PLAYBOOK_FLAGS[@]}"
-
 # Install TinyPilot Debian package and resolve missing dependencies.
 apt-get install -y \
   "./${TINYPILOT_DEBIAN_PACKAGE}"
