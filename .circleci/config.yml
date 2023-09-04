@@ -1,8 +1,4 @@
 version: 2.1
-parameters:
-  ansible_role_changed:
-    type: boolean
-    default: false
 jobs:
   check_whitespace:
     docker:
