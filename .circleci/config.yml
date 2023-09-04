@@ -1,18 +1,290 @@
-# This file uses CircleCI's dynamic configuration feature, which can dynamically
-# generate pipeline parameters and/or YAML configurations. See
-# https://circleci.com/docs/dynamic-config/
-# In this case, we're dynamically loading the rest of our YAML configurations
-# (i.e., .circleci/continue_config.yml) at runtime.
 version: 2.1
-setup: true
-orbs:
-  path-filtering: circleci/path-filtering@1.0.0
+parameters:
+  ansible_role_changed:
+    type: boolean
+    default: false
+jobs:
+  check_whitespace:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - run:
+          name: Check for trailing whitespace
+          command: ./dev-scripts/check-trailing-whitespace
+      - run:
+          name: Check that all text files end in a trailing newline
+          command: ./dev-scripts/check-trailing-newline
+  check_bash:
+    docker:
+      - image: koalaman/shellcheck-alpine:v0.9.0
+    steps:
+      - run:
+          name: Install dependencies
+          command: apk add bash git openssh-client grep
+      - checkout
+      - run:
+          name: Run static analysis on bash scripts
+          command: ./dev-scripts/check-bash
+  lint_sql:
+    docker:
+      - image: cimg/python:3.9.17
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements and run lint script
+          command: |
+            . venv/bin/activate
+            pip install --requirement dev_requirements.txt
+            ./dev-scripts/lint-sql
+  check_style:
+    docker:
+      - image: cimg/node:18.16.1
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Check code style
+          command: ./dev-scripts/check-style
+  decode_edid:
+    docker:
+      - image: cimg/python:3.9.17
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install edid-decode
+          command: sudo apt-get update && sudo apt-get install --yes edid-decode
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements and decode the EDID
+          command: |
+            . venv/bin/activate
+            pip install --requirement requirements.txt
+            ./dev-scripts/decode-edid
+  build_python:
+    docker:
+      - image: cimg/python:3.9.17
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements and run build script
+          command: |
+            . venv/bin/activate
+            pip install --requirement requirements.txt
+            pip install --requirement dev_requirements.txt
+            ./dev-scripts/build-python
+  build_javascript:
+    docker:
+      - image: cimg/node:18.16.1
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run build script
+          command: ./dev-scripts/build-javascript
+  e2e:
+    docker:
+      # To run tests against the dev server, Playwright needs a CircleCI image
+      # with Python, Node, and a browser. While the build_python and
+      # build_javascript steps use python-3.9.17 and node-18.16.1 respectively,
+      # the CircleCI image with *both* python and node in the closest versions
+      # is python:3.9.17-browsers. It has python-3.9.17 and node-18.16.0.
+      #
+      # See: https://circleci.com/developer/images/image/cimg/python#tagging-scheme
+      - image: cimg/python:3.9.17-browsers
+    environment:
+      NODE_ENV: development
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install python requirements
+          command: |
+            . venv/bin/activate
+            pip install --requirement requirements.txt
+            pip install --requirement dev_requirements.txt
+      - run:
+          name: Install node dependencies
+          command: npm install
+      - run:
+          name: Enable mock scripts
+          command: sudo ./dev-scripts/enable-mock-scripts
+      - run:
+          name: Enable passwordless sudo
+          command: sudo ./dev-scripts/enable-passwordless-sudo
+      - run:
+          name: Run playwright tests
+          command: npx playwright test
+      - store_artifacts:
+          path: playwright-report
+      - store_artifacts:
+          path: e2e-results
+  build_debian_package:
+    docker:
+      - image: cimg/base:2023.06
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Debian package
+          command: ./dev-scripts/build-debian-pkg linux/arm/v7
+      - run:
+          name: Print Debian package contents
+          command: dpkg --contents debian-pkg/releases/tinypilot*.deb
+      - persist_to_workspace:
+          root: ./debian-pkg/releases
+          paths:
+            - "*.deb"
+  lint_debian_package:
+    docker:
+      - image: cimg/base:2022.11-22.04
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Update apt packages
+          command: sudo apt-get update
+      - run:
+          name: Install lintian
+          command: sudo apt-get install -y lintian=2.114.0ubuntu1
+      - run:
+          name: Print lintian version
+          command: lintian --version
+      - run:
+          name: Run lintian
+          command: |
+            set -exu
+            while read -r file; do
+              lintian \
+                --check \
+                --no-tag-display-limit \
+                --suppress-tags-from-file .lintianignore \
+                --no-cfg \
+                --fail-on warning,error \
+                "${file}"
+            done < <(ls *.deb)
+  build_bundle:
+    docker:
+      - image: cimg/python:3.9.17
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./bundler/bundle/
+      - run:
+          name: Create the bundle
+          command: ./bundler/create-bundle
+      - store_artifacts:
+          path: bundler/dist/
+      - persist_to_workspace:
+          root: ./bundler
+          paths:
+            - ./dist
+  verify_bundle:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Verify bundle integrity
+          command: ./bundler/verify-bundle
+  upload_bundle:
+    docker:
+      - image: cimg/base:2020.01
+    environment:
+      UPLOAD_PREFIX: community
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          # The LATEST file contains the filename of the latest TinyPilot
+          # bundle.
+          name: Create LATEST file
+          command: cd dist && ls tinypilot*.tgz | tee LATEST
+      - run:
+          name: Download Backblaze CLI tool
+          command: |
+            sudo apt-get update && sudo apt-get install -y wget
+            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux --output-document=./b2
+            chmod +x ./b2
+            ./b2 version
+      - run:
+          name: Authorize Backblaze CLI tool
+          command: |
+            set -u
+            ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+      - run:
+          name: Upload bundle to Backblaze
+          command: |
+            set -u
+            BUNDLE_FILENAME="$(cat dist/LATEST)"
+            ./b2 upload-file \
+              --noProgress \
+              "${UPLOAD_BUCKET}" \
+              "dist/${BUNDLE_FILENAME}" \
+              "${UPLOAD_PREFIX}/${BUNDLE_FILENAME}" \
+              > /dev/null # Hide output to avoid exposing bucket details in CI.
+      - run:
+          name: Update LATEST file to Backblaze
+          command: |
+            set -u
+            ./b2 upload-file \
+              --noProgress \
+              "${UPLOAD_BUCKET}" \
+              dist/LATEST \
+              "${UPLOAD_PREFIX}/version-index/LATEST" \
+              > /dev/null # Hide output to avoid exposing bucket details in CI.
+      - run:
+          name: Print friendly upload URL
+          command: |
+            set -u
+            BUNDLE_FILENAME="$(cat dist/LATEST)"
+            echo "Upload complete to https://bundles.tinypilotkvm.com/${UPLOAD_PREFIX}/${BUNDLE_FILENAME}"
 workflows:
-  build_pipeline:
+  test:
     jobs:
-      - path-filtering/filter:
-          name: build_pipeline_params
-          mapping: |
-            ansible-role-ustreamer/.* ansible_role_changed true
-          base-revision: master
-          config-path: .circleci/continue_config.yml
+      - check_whitespace
+      - check_bash
+      - lint_sql
+      - check_style
+      - decode_edid
+      - build_python
+      - build_javascript
+      - build_debian_package
+      - e2e
+      - lint_debian_package:
+          requires:
+            - build_debian_package
+      - build_bundle:
+          requires:
+            - build_debian_package
+      - verify_bundle:
+          requires:
+            - build_bundle
+      - upload_bundle:
+          requires:
+            - verify_bundle
+          # Uploading a new bundle affects Gatekeeper's view of the latest
+          # bundle available, so we should only do this on master.
+          filters:
+            branches:
+              only: master
