@@ -84,7 +84,7 @@ def write_to_hid_interface(hid_path, buffer):
         args=(hid_path, buffer),
         daemon=True)
     write_process.start()
-    write_process.join(timeout=0.5)
+    write_process.join(timeout=0.1)
     if write_process.is_alive():
         write_process.kill()
         _wait_for_process_exit(write_process)
