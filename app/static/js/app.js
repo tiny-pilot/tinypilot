@@ -8,6 +8,7 @@ import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
+import { sendKeystrokes } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -232,7 +233,7 @@ function processTextCharacter(textCharacter, language) {
     friendlyName = "Tab";
   }
 
-  processKeystroke({
+  return {
     metaLeft: false,
     metaRight: false,
     altLeft: false,
@@ -243,16 +244,23 @@ function processTextCharacter(textCharacter, language) {
     ctrlRight: false,
     key: friendlyName,
     code: code,
-  });
+  };
 }
 
 // Translate a string of text into individual keystrokes and sends them to the
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
+  const keystrokes = [];
   for (const textCharacter of textInput) {
-    processTextCharacter(textCharacter, language);
+    const keystroke = processTextCharacter(textCharacter, language);
+    if (!keystroke) {
+      continue;
+    }
+    keystrokes.push(keystroke);
   }
+  sendKeystrokes(keystrokes)
+    .then(() => console.debug(`Sent ${keystrokes.length} keystrokes`));
 }
 
 function setCursor(cursor, save = true) {
@@ -442,6 +450,10 @@ shutdownDialog.addEventListener("shutdown-started", () => {
 
 socket.on("connect", onSocketConnect);
 socket.on("disconnect", onSocketDisconnect);
+socket.io.on("ping", function() {
+  const receivedAt = new Date();
+  console.debug(`Ping received at ${receivedAt.toLocaleTimeString()}`);
+});
 
 // Initialize the remote screen content; use MJPEG by default.
 document.getElementById("remote-screen").enableMjpeg();

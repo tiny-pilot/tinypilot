@@ -323,3 +323,17 @@ export async function isMjpegStreamAvailable() {
     .then((response) => response.ok)
     .catch(() => false);
 }
+
+export async function sendKeystrokes(keystrokes) {
+  return fetch("/api/keystrokes", {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({keystrokes}),
+  }).then(processJsonResponse);
+}

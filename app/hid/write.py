@@ -13,6 +13,9 @@ class Error(Exception):
 class WriteError(Error):
     pass
 
+class TimeoutError(Error):
+    pass
+
 
 @dataclasses.dataclass
 class ProcessResult:
@@ -60,6 +63,9 @@ class ProcessWithResult(multiprocessing.Process):
 
 
 def _write_to_hid_interface_immediately(hid_path, buffer):
+    # Force timeout.
+    for _ in range(pow(10, 100)):
+        pass
     try:
         with open(hid_path, 'ab+') as hid_handle:
             hid_handle.write(bytearray(buffer))
@@ -70,11 +76,6 @@ def _write_to_hid_interface_immediately(hid_path, buffer):
 
 
 def write_to_hid_interface(hid_path, buffer):
-    # Avoid an unnecessary string formatting call in a write that requires low
-    # latency.
-    if logger.getEffectiveLevel() == logging.DEBUG:
-        logger.debug_sensitive('writing to HID interface %s: %s', hid_path,
-                               ' '.join([f'{x:#04x}' for x in buffer]))
     # Writes can hang, for example, when TinyPilot is attempting to write to the
     # mouse interface, but the target system has no GUI. To avoid locking up the
     # main server process, perform the HID interface I/O in a separate process.
@@ -90,7 +91,7 @@ def write_to_hid_interface(hid_path, buffer):
     result = write_process.result()
     # If the result is None, it means the write failed to complete in time.
     if result is None or not result.was_successful():
-        raise WriteError(f'Failed to write to HID interface: {hid_path}. '
+        raise TimeoutError(f'Failed to write to HID interface: {hid_path}. '
                          'Is USB cable connected?')
 
 
