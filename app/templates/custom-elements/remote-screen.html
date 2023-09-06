@@ -322,6 +322,25 @@
           }
         }
 
+        async enableWebrtc() {
+          // We optimistically unmute before we start the playback, because we
+          // cannot tell ahead of time whether audio is blocked by the
+          // UserAgent.
+          this.elements.video.muted = false;
+          // It’s important that we hold off on displaying the WebRTC stream
+          // until the video playback has started, to ensure a smooth visual
+          // transition of the remote screen without any flickering or 
+          // interruption.
+          try {
+            await this._playWebrtcVideo();
+          } catch {
+            return;
+          }
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+        }
+
         /**
          * Adds a track to the WebRTC media stream. If there any video tracks in
          * the stream, the WebRTC stream is displayed and the MJPEG stream is
@@ -338,7 +357,7 @@
          *
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        async enableWebrtcStreamTrack(mediaStreamTrack) {
+        async addWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           if (!video.srcObject) {
             // Lazy-initialize the media stream. (See comment in
@@ -364,28 +383,6 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-
-          // We only proceed switching to WebRTC if we have at least a video
-          // track. We don’t want to switch yet if the only thing we have is an
-          // audio track.
-          // It’s also important that we hold off on displaying the WebRTC
-          // stream until the video playback has started, to ensure a smooth
-          // visual transition of the remote screen without any flickering or
-          // interruption.
-          if (mediaStreamTrack.kind === "video") {
-            // We optimistically unmute before we start the playback, because we
-            // cannot tell ahead of time whether audio is blocked by the
-            // UserAgent.
-            video.muted = false;
-            try {
-              await this._playWebrtcVideo();
-            } catch {
-              return;
-            }
-            this.webrtcEnabled = true;
-            this.elements.image.removeAttribute("src");
-            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
-          }
         }
 
         /**
@@ -397,17 +394,13 @@
          *
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        disableWebrtcStreamTrack(mediaStreamTrack) {
+        removeWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           if (!video.srcObject) {
             return;
           }
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
-          if (stream.getVideoTracks().length === 0) {
-            video.pause();
-            this.enableMjpeg();
-          }
         }
 
         /**
