@@ -49,6 +49,21 @@ class ProcessWithResult(multiprocessing.Process):
 
 
 def with_timeout(seconds, function, *args, **kwargs):
+    """Executes a function in a child process with a specified timeout.
+
+    Args:
+        seconds: The execution time limit in seconds.
+        function: The function to be executed in a child process.
+        *args: Optional `function` arguments.
+        **kwargs: Optional `function` keyword argument.
+    
+    Returns:
+        The return value of the `function`.
+
+    Raises:
+        TimeoutError: If the execution time of the `function` exceeds the
+            timeout `seconds`.
+    """
     process = ProcessWithResult(target=function,
                                 args=args,
                                 kwargs=kwargs,
