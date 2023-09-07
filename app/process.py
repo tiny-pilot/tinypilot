@@ -46,3 +46,27 @@ class ProcessWithResult(multiprocessing.Process):
             Otherwise, a None object.
         """
         return self.parent_conn.recv() if self.parent_conn.poll() else None
+
+
+def with_timeout(seconds, function, *args, **kwargs):
+    process = ProcessWithResult(target=function,
+                                args=args,
+                                kwargs=kwargs,
+                                daemon=True)
+    process.start()
+    process.join(timeout=seconds)
+    if process.is_alive():
+        process.kill()
+        _wait_for_process_exit(process)
+    result = process.result()
+    if result is None:
+        raise TimeoutError(f'Process failed to complete in {seconds} seconds')
+    if not result.was_successful():
+        raise result.exception
+    return result.return_value
+
+
+def _wait_for_process_exit(target_process):
+    max_attempts = 3
+    for _ in range(max_attempts):
+        target_process.join(timeout=0.1)
