@@ -36,7 +36,7 @@ def return_string():
     return 'Done!'
 
 
-class WriteTest(unittest.TestCase):
+class ProcessTest(unittest.TestCase):
 
     def test_process_with_result_child_completed(self):
         process = ProcessWithResult(target=do_nothing, daemon=True)
