@@ -3,9 +3,7 @@ import time
 import unittest
 from unittest import mock
 
-from process import ProcessResult
-from process import ProcessWithResult
-from process import with_timeout
+import execute
 
 # Dummy functions to represent what can happen when a Human Interface Device
 # writes.
@@ -37,19 +35,19 @@ def return_string():
     return 'Done!'
 
 
-class ProcessTest(unittest.TestCase):
+class ExecuteTest(unittest.TestCase):
 
     def test_process_with_result_child_completed(self):
-        process = ProcessWithResult(target=do_nothing, daemon=True)
+        process = execute.ProcessWithResult(target=do_nothing, daemon=True)
         process.start()
         process.join()
         result = process.result()
         self.assertTrue(result.was_successful())
-        self.assertEqual(ProcessResult(return_value=None, exception=None),
-                         result)
+        self.assertEqual(
+            execute.ProcessResult(return_value=None, exception=None), result)
 
     def test_process_with_result_child_not_completed(self):
-        process = ProcessWithResult(target=sleep_1_second, daemon=True)
+        process = execute.ProcessWithResult(target=sleep_1_second, daemon=True)
         process.start()
         # Get the result before the child process has completed.
         self.assertIsNone(process.result())
@@ -61,33 +59,35 @@ class ProcessTest(unittest.TestCase):
         # Silence stderr while the child exception is being raised to avoid
         # polluting the terminal output.
         with mock.patch('sys.stderr', io.StringIO()):
-            process = ProcessWithResult(target=raise_exception, daemon=True)
+            process = execute.ProcessWithResult(target=raise_exception,
+                                                daemon=True)
             process.start()
             process.join()
         result = process.result()
         self.assertFalse(result.was_successful())
-        self.assertEqual(ProcessResult(return_value=None, exception=mock.ANY),
-                         result)
+        self.assertEqual(
+            execute.ProcessResult(return_value=None, exception=mock.ANY),
+            result)
         self.assertEqual('Child exception', str(result.exception))
 
     def test_process_with_result_return_value(self):
-        process = ProcessWithResult(target=return_string, daemon=True)
+        process = execute.ProcessWithResult(target=return_string, daemon=True)
         process.start()
         process.join()
         result = process.result()
         self.assertTrue(result.was_successful())
-        self.assertEqual(ProcessResult(return_value='Done!', exception=None),
-                         result)
+        self.assertEqual(
+            execute.ProcessResult(return_value='Done!', exception=None), result)
 
-    def test_process_with_timeout_and_timeout_reached(self):
+    def test_execute_with_timeout_and_timeout_reached(self):
         with self.assertRaises(TimeoutError):
-            with_timeout(0.5, sleep_1_second)
+            execute.with_timeout(0.5, sleep_1_second)
 
-    def test_process_with_timeout_return_value(self):
-        return_value = with_timeout(0.5, return_string)
+    def test_execute_with_timeout_return_value(self):
+        return_value = execute.with_timeout(0.5, return_string)
         self.assertEqual('Done!', return_value)
 
-    def test_process_with_timeout_child_exception(self):
+    def test_execute_with_timeout_child_exception(self):
         with self.assertRaises(Exception) as ctx:
-            with_timeout(0.5, raise_exception)
+            execute.with_timeout(0.5, raise_exception)
         self.assertEqual('Child exception', str(ctx.exception))

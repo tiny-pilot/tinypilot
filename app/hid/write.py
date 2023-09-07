@@ -1,6 +1,6 @@
 import logging
 
-import process
+import execute
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ def write_to_hid_interface(hid_path, buffer):
     # mouse interface, but the target system has no GUI. To avoid locking up the
     # main server process, perform the HID interface I/O in a separate process.
     try:
-        process.with_timeout(0.5, _write_to_hid_interface_immediately, hid_path,
+        execute.with_timeout(0.5, _write_to_hid_interface_immediately, hid_path,
                              buffer)
     except TimeoutError as e:
         raise WriteError(f'Failed to write to HID interface: {hid_path}. '
