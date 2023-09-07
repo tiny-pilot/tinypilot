@@ -56,7 +56,7 @@ def with_timeout(seconds, function, *args, **kwargs):
         function: The function to be executed in a child process.
         *args: Optional `function` arguments.
         **kwargs: Optional `function` keyword argument.
-    
+
     Returns:
         The return value of the `function`.
 
