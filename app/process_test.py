@@ -3,9 +3,9 @@ import time
 import unittest
 from unittest import mock
 
-from process import with_timeout
 from process import ProcessResult
 from process import ProcessWithResult
+from process import with_timeout
 
 # Dummy functions to represent what can happen when a Human Interface Device
 # writes.
