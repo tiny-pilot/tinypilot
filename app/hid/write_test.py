@@ -3,7 +3,8 @@ import time
 import unittest
 from unittest import mock
 
-import hid.write
+from process import ProcessResult
+from process import ProcessWithResult
 
 # Dummy functions to represent what can happen when a Human Interface Device
 # writes.
@@ -38,17 +39,16 @@ def return_string():
 class WriteTest(unittest.TestCase):
 
     def test_process_with_result_child_completed(self):
-        process = hid.write.ProcessWithResult(target=do_nothing, daemon=True)
+        process = ProcessWithResult(target=do_nothing, daemon=True)
         process.start()
         process.join()
         result = process.result()
         self.assertTrue(result.was_successful())
-        self.assertEqual(
-            hid.write.ProcessResult(return_value=None, exception=None), result)
+        self.assertEqual(ProcessResult(return_value=None, exception=None),
+                         result)
 
     def test_process_with_result_child_not_completed(self):
-        process = hid.write.ProcessWithResult(target=sleep_1_second,
-                                              daemon=True)
+        process = ProcessWithResult(target=sleep_1_second, daemon=True)
         process.start()
         # Get the result before the child process has completed.
         self.assertIsNone(process.result())
@@ -60,23 +60,20 @@ class WriteTest(unittest.TestCase):
         # Silence stderr while the child exception is being raised to avoid
         # polluting the terminal output.
         with mock.patch('sys.stderr', io.StringIO()):
-            process = hid.write.ProcessWithResult(target=raise_exception,
-                                                  daemon=True)
+            process = ProcessWithResult(target=raise_exception, daemon=True)
             process.start()
             process.join()
         result = process.result()
         self.assertFalse(result.was_successful())
-        self.assertEqual(
-            hid.write.ProcessResult(return_value=None, exception=mock.ANY),
-            result)
+        self.assertEqual(ProcessResult(return_value=None, exception=mock.ANY),
+                         result)
         self.assertEqual('Child exception', str(result.exception))
 
     def test_process_with_result_return_value(self):
-        process = hid.write.ProcessWithResult(target=return_string, daemon=True)
+        process = ProcessWithResult(target=return_string, daemon=True)
         process.start()
         process.join()
         result = process.result()
         self.assertTrue(result.was_successful())
-        self.assertEqual(
-            hid.write.ProcessResult(return_value='Done!', exception=None),
-            result)
+        self.assertEqual(ProcessResult(return_value='Done!', exception=None),
+                         result)
