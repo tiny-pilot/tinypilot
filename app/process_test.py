@@ -3,6 +3,7 @@ import time
 import unittest
 from unittest import mock
 
+from process import with_timeout
 from process import ProcessResult
 from process import ProcessWithResult
 
@@ -77,3 +78,16 @@ class ProcessTest(unittest.TestCase):
         self.assertTrue(result.was_successful())
         self.assertEqual(ProcessResult(return_value='Done!', exception=None),
                          result)
+
+    def test_process_with_timeout_and_timeout_reached(self):
+        with self.assertRaises(TimeoutError):
+            with_timeout(0.5, sleep_1_second)
+
+    def test_process_with_timeout_return_value(self):
+        return_value = with_timeout(0.5, return_string)
+        self.assertEqual('Done!', return_value)
+
+    def test_process_with_timeout_child_exception(self):
+        with self.assertRaises(Exception) as ctx:
+            with_timeout(0.5, raise_exception)
+        self.assertEqual('Child exception', str(ctx.exception))
