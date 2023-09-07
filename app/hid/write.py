@@ -33,8 +33,9 @@ def write_to_hid_interface(hid_path, buffer):
     # mouse interface, but the target system has no GUI. To avoid locking up the
     # main server process, perform the HID interface I/O in a separate process.
     try:
-        execute.with_timeout(0.5, _write_to_hid_interface_immediately, hid_path,
-                             buffer)
+        execute.with_timeout(
+            lambda: _write_to_hid_interface_immediately(hid_path, buffer),
+            timeout_in_seconds=0.5)
     except TimeoutError as e:
         raise WriteError(f'Failed to write to HID interface: {hid_path}. '
                          'Is USB cable connected?') from e

@@ -81,13 +81,14 @@ class ExecuteTest(unittest.TestCase):
 
     def test_execute_with_timeout_and_timeout_reached(self):
         with self.assertRaises(TimeoutError):
-            execute.with_timeout(0.5, sleep_1_second)
+            execute.with_timeout(sleep_1_second, timeout_in_seconds=0.5)
 
     def test_execute_with_timeout_return_value(self):
-        return_value = execute.with_timeout(0.5, return_string)
+        return_value = execute.with_timeout(return_string,
+                                            timeout_in_seconds=0.5)
         self.assertEqual('Done!', return_value)
 
     def test_execute_with_timeout_child_exception(self):
         with self.assertRaises(Exception) as ctx:
-            execute.with_timeout(0.5, raise_exception)
+            execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
         self.assertEqual('Child exception', str(ctx.exception))

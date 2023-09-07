@@ -48,14 +48,16 @@ class ProcessWithResult(multiprocessing.Process):
         return self.parent_conn.recv() if self.parent_conn.poll() else None
 
 
-def with_timeout(seconds, function, *args, **kwargs):
+def with_timeout(function, timeout_in_seconds):
     """Executes a function in a child process with a specified timeout.
 
+    Usage example:
+
+        with_timeout(lambda: do_work(task), timeout_in_seconds=0.5)
+
     Args:
-        seconds: The execution time limit in seconds.
         function: The function to be executed in a child process.
-        *args: Optional `function` arguments.
-        **kwargs: Optional `function` keyword argument.
+        timeout_in_seconds: The execution time limit in seconds.
 
     Returns:
         The return value of the `function`.
@@ -64,18 +66,16 @@ def with_timeout(seconds, function, *args, **kwargs):
         TimeoutError: If the execution time of the `function` exceeds the
             timeout `seconds`.
     """
-    process = ProcessWithResult(target=function,
-                                args=args,
-                                kwargs=kwargs,
-                                daemon=True)
+    process = ProcessWithResult(target=function, daemon=True)
     process.start()
-    process.join(timeout=seconds)
+    process.join(timeout=timeout_in_seconds)
     if process.is_alive():
         process.kill()
         _wait_for_process_exit(process)
     result = process.result()
     if result is None:
-        raise TimeoutError(f'Process failed to complete in {seconds} seconds')
+        raise TimeoutError(
+            f'Process failed to complete in {timeout_in_seconds} seconds')
     if not result.was_successful():
         raise result.exception
     return result.return_value
