@@ -216,7 +216,7 @@ function onKeyUp(evt) {
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
-  pasteText(textInput, language);
+  return pasteText(textInput, language);
 }
 
 function setCursor(cursor, save = true) {
@@ -252,8 +252,13 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
 });
-document.addEventListener("paste-text", (evt) => {
-  processTextInput(evt.detail);
+document.addEventListener("paste-text", ({ detail: text }) => {
+  processTextInput(text).catch((error) => {
+    showError({
+      title: "Failed to Paste Text",
+      details: error,
+    });
+  });
 });
 
 // To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
