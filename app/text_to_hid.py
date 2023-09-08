@@ -139,4 +139,4 @@ def convert(char, language):
     else:
         hid_modifier = hid.KEYCODE_NONE
 
-    return hid_modifier, hid_keycode
+    return hid.Keystroke(keycode=hid_keycode, modifier=hid_modifier)

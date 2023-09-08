@@ -20,3 +20,8 @@ def send_keystroke(keyboard_path, control_keys, hid_keycode):
 
 def release_keys(keyboard_path):
     hid_write.write_to_hid_interface(keyboard_path, [0] * 8)
+
+
+def send_keystrokes(keyboard_path, keystrokes):
+    for keystroke in keystrokes:
+        send_keystroke(keyboard_path, keystroke.modifier, keystroke.keycode)

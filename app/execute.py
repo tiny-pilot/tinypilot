@@ -1,5 +1,6 @@
 import dataclasses
 import multiprocessing
+import threading
 import typing
 
 
@@ -88,3 +89,12 @@ def _wait_for_process_exit(target_process):
     max_attempts = 3
     for _ in range(max_attempts):
         target_process.join(timeout=0.1)
+
+
+def background_thread(function, args=None):
+    # Never wait or join a regular thread because it will block the SocketIO
+    # server:
+    # https://github.com/miguelgrinberg/Flask-SocketIO/issues/1264#issuecomment-620653614
+    thread = threading.Thread(target=function, args=args or ())
+    thread.start()
+    return thread.ident
