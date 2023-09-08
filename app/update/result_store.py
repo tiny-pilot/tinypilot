@@ -22,11 +22,12 @@ import glob
 import logging
 import os
 
+import env
 import update.result
 
 logger = logging.getLogger(__name__)
 
-_RESULT_FILE_DIR = os.path.expanduser('~/logs')
+_RESULT_FILE_DIR = env.abs_path_in_home_dir('logs')
 
 _RESULT_PATH = os.path.join(_RESULT_FILE_DIR, 'latest-update-result.json')
 

@@ -19,7 +19,7 @@ import views
 from find_files import find as find_files
 
 host = os.environ.get('HOST', '127.0.0.1')
-port = int(os.environ.get('PORT', 8000))
+port = int(os.environ.get('PORT', 48000))
 debug = 'DEBUG' in os.environ
 use_reloader = os.environ.get('USE_RELOADER', '0') == '1'
 

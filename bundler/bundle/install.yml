@@ -1,6 +1,0 @@
-- hosts: localhost
-  connection: local
-  become: true
-  become_method: sudo
-  roles:
-    - role: ansible-role-ustreamer

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      // Reset the actual URL path of this page to `/`, to make it look and feel
+      // as if the user was still on the main app page. The fact that we issued
+      // an external redirect should be kept away from the user as good as
+      // possible, so e.g. the real path of this page also shouldn’t appear in
+      // the browser history. As an additional benefit, the user is able to
+      // restore the main app UI by simply triggering a page refresh.
+      // In order to avoid initial flickering in the address bar, the URL
+      // replacement operation has to happen as first thing while the browser
+      // parses this HTML document (in any event prior to fetching assets).
+      window.history.replaceState(null, null, "/");
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title_prefix }}TinyPilot</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        text-align: center;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: var(--brand-creme-light);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'custom-elements/menu-bar.html' %}
+
+    <div class="header-bar">
+      <!-- Display a non-interactive, stripped down version of the menu bar,
+           to make the page look like the main app UI. -->
+      <menu-bar id="menu-bar" logo-only></menu-bar>
+    </div>
+
+    <p>
+      The remote screen is displaying in another browser window.<br />
+      To restore the remote screen in this window, please refresh the page.
+    </p>
+    <button class="btn-action" onclick="window.location.reload()">
+      Refresh Page
+    </button>
+  </body>
+</html>

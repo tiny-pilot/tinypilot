@@ -1,0 +1,5 @@
+# Settings for an HDMI to USB video capture dongle.
+---
+ustreamer_encoder: hw
+ustreamer_format: jpeg
+ustreamer_resolution: "1920x1080"

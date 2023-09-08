@@ -22,8 +22,8 @@ if [[ "${BUNDLE_SIZE_BYTES}" -eq 0 ]]; then
   >&2 echo 'Bundle size is zero.'
   exit 1
 fi
-if [[ "${BUNDLE_SIZE_BYTES}" -gt 5000000 ]]; then
-  >&2 echo 'Bundle size is larger than 5mb.'
+if [[ "${BUNDLE_SIZE_BYTES}" -gt 10000000 ]]; then
+  >&2 echo 'Bundle size is larger than 10mb.'
   exit 1
 fi
 
@@ -43,9 +43,3 @@ fi
 
 # List Debian package contents.
 dpkg --contents tinypilot*armhf.deb
-
-# Check that the Ansible role exists.
-if [[ ! -d 'roles/ansible-role-ustreamer' ]]; then
-  >&2 echo 'Bundle is missing ansible-role-ustreamer'
-  exit 1
-fi

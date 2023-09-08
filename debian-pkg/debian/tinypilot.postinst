@@ -9,8 +9,6 @@ set -u
 readonly TINYPILOT_USER="tinypilot"
 readonly TINYPILOT_GROUP="tinypilot"
 readonly TINYPILOT_HOME_DIR="/home/${TINYPILOT_USER}"
-readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
-readonly USTREAMER_CONFIG_FILE="/opt/ustreamer-launcher/configs.d/100-tinypilot.yml"
 
 # Create tinypilot group if it doesn't already exist.
 getent group "${TINYPILOT_GROUP}" > /dev/null || \
@@ -41,12 +39,15 @@ if ! grep --quiet '^dtoverlay=dwc2$' "${BOOT_CONFIG_PATH}" ; then
   echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
 fi
 
-# Use TinyPilot's settings to override uStreamer's runtime variables.
-if [[ ! -L "${USTREAMER_CONFIG_FILE}" ]]; then
-  ln \
-    --symbolic \
-    "${TINYPILOT_SETTINGS_FILE}" \
-    "${USTREAMER_CONFIG_FILE}"
+# Create TinyPilot settings file if it doesn't already exist.
+readonly TINYPILOT_SETTINGS_FILE="${TINYPILOT_HOME_DIR}/settings.yml"
+if [[ ! -f "${TINYPILOT_SETTINGS_FILE}" ]]; then
+  touch "${TINYPILOT_SETTINGS_FILE}"
+  chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_SETTINGS_FILE}"
+
+  # Make TinyPilot settings world readable so that the uStreamer launcher script
+  # can access it via a symbolic link.
+  chmod 0644 "${TINYPILOT_SETTINGS_FILE}"
 fi
 
 # Populate TinyPilot's Flask settings file.
@@ -90,6 +91,112 @@ if grep --silent 'tinypilot' /etc/nginx/nginx.conf; then
     /etc/nginx/nginx.conf
 fi
 
+tc358743_overlay_enabled='false'
+if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
+  tc358743_overlay_enabled='true'
+
+  # Enable TC358743-audio overlay in /boot/config.txt.
+  # Note that the tc358743-audio overlay depends on the tc358743 overlay.
+  sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
+  sed --in-place '/dtoverlay=tc358743/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
+
+  # Set GPU memory to 256MB in /boot/config.txt
+  if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
+    sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
+  else
+    echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
+  fi
+
+  # Populate TinyPilot's EDID.
+  mkdir -p /home/ustreamer/edids
+  pushd /opt/tinypilot
+  . venv/bin/activate && \
+    PYTHONPATH=/opt/tinypilot/app \
+      ./scripts/render-template \
+    <<< '{{ ustreamer_edid }}' \
+    > /home/ustreamer/edids/tc358743-edid.hex && \
+    deactivate
+  chmod 0644 /home/ustreamer/edids/tc358743-edid.hex
+  popd
+fi
+
+# Populate TinyPilot's Janus settings file.
+readonly JANUS_PLUGIN_USTREAMER_CONFIG='/etc/janus/janus.plugin.ustreamer.jcfg'
+cat <<EOF > "${JANUS_PLUGIN_USTREAMER_CONFIG}"
+memsink: {
+    object = "tinypilot::ustreamer::h264"
+}
+EOF
+
+# Append audio settings if TC358743 support is enabled.
+if "${tc358743_overlay_enabled}" ; then
+  cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
+audio: {
+    device = "hw:1"
+    tc358743 = "/dev/video0"
+}
+EOF
+fi
+
+# Clean up the legacy TinyPilot-specific config file for uStreamer. We can
+# remove this on TinyPilot's next checkpoint release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+readonly USTREAMER_ANSIBLE_CONFIG='/home/ustreamer/config.yml'
+if [[ -f "${USTREAMER_ANSIBLE_CONFIG}" ]]; then
+  rm "${USTREAMER_ANSIBLE_CONFIG}"
+fi
+
+# Workaround to remove settings that are not user-configurable to avoid
+# inconsistent config. We can remove this on TinyPilot's next checkpoint
+# release.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/978
+sed \
+  --in-place \
+  --expression '/ustreamer_port/d' \
+  --expression '/ustreamer_persistent/d' \
+  "${TINYPILOT_SETTINGS_FILE}"
+
+# Create a directory for uStreamer launcher configs.
+readonly USTREAMER_LAUNCHER_BASE_DIR='/opt/ustreamer-launcher'
+readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d"
+mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
+
+# Figure out which uStreamer settings file to use.
+USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
+if "${tc358743_overlay_enabled}" ; then
+  USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
+fi
+readonly USTREAMER_CONFIG_TARGET
+
+readonly USTREAMER_BASE_CONFIG_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/000-defaults.yml"
+
+# If the base configuration file is not a symlink to the correct file, remove
+# it. This can happen if the user has previously installed with a different
+# configuration (e.g., the user installs with the default HDMI to USB adapter
+# and then switches to the TC358743 adapter).
+if [[ -e "${USTREAMER_BASE_CONFIG_FILE}" ]] && \
+    [[ ! "${USTREAMER_BASE_CONFIG_FILE}" -ef "${USTREAMER_CONFIG_TARGET}" ]]; \
+      then
+  rm "${USTREAMER_BASE_CONFIG_FILE}"
+fi
+
+# Create the base configuration file if it doesn't already exist.
+if [[ ! -e "${USTREAMER_BASE_CONFIG_FILE}" ]]; then
+  ln \
+    --symbolic \
+    "${USTREAMER_CONFIG_TARGET}" \
+    "${USTREAMER_BASE_CONFIG_FILE}"
+fi
+
+# Use TinyPilot's settings to override uStreamer's runtime variables.
+readonly TINYPILOT_USTREAMER_OVERRIDES_FILE="${USTREAMER_LAUNCHER_CONFIG_DIR}/100-tinypilot.yml"
+if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
+  ln \
+    --symbolic \
+    "${TINYPILOT_SETTINGS_FILE}" \
+    "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
+fi
+
 # Disable default NGINX server.
 rm -f \
   /etc/nginx/sites-enabled/default
@@ -101,5 +208,14 @@ if deb-systemd-invoke is-active nginx; then
 else
   deb-systemd-invoke start nginx
 fi
+
+# Restore the Janus config files.
+/opt/tinypilot-privileged/scripts/configure-janus
+cp \
+  /usr/share/tinypilot/janus.transport.websockets.jcfg \
+  /etc/janus/janus.transport.websockets.jcfg
+
+# Restart Janus to pick up the new config files.
+deb-systemd-invoke restart janus
 
 #DEBHELPER#
