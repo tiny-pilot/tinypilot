@@ -343,7 +343,7 @@
           // track. We don’t want to switch yet if the only thing we have is an
           // audio track.
           const stream = video.srcObject;
-          if (stream.getVideoTracks().length > 0) {
+          if (stream.getVideoTracks().length === 0) {
             return;
           }
 
