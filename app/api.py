@@ -1,5 +1,3 @@
-import logging
-
 import flask
 
 import db.settings
@@ -20,8 +18,6 @@ import video_service
 from hid import keyboard as fake_keyboard
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
-
-logger = logging.getLogger(__name__)
 
 
 @api_blueprint.route('/debugLogs', methods=['GET'])
