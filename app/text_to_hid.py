@@ -118,7 +118,21 @@ NEEDS_SHIFT_REGEX = re.compile(r'[A-Z¬!"£$%^&*()_+{}|<>?:@~#]')
 
 
 def convert(char, language):
-    """Converts a language character into a HID modifier and keycode."""
+    """Converts a character from the specified language into a HID keystroke.
+
+    If the specified language is not supported, the language defaults to
+    "en-US".
+
+    Args:
+        char: A single character string.
+        language: A string presenting the language, as defined by RFC 5646
+            https://datatracker.ietf.org/doc/html/rfc5646
+
+    Raises:
+        UnsupportedCharacterError: If the character cannot be converted into a
+            HID keystroke.
+    """
+
     try:
         language_map = {
             "en-GB": GB_CHAR_TO_HID_MAP,
