@@ -27,7 +27,7 @@ def send_keystrokes(keyboard_path, keystrokes):
 
     Args:
         keyboard_path: The file path to the keyboard interface.
-        keystokes: A list of HID Keystroke objects.
+        keystrokes: A list of HID Keystroke objects.
 
     Raises:
         WriteError: If a keystroke fails to be written to the HID interface.
