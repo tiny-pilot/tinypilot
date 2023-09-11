@@ -277,4 +277,4 @@ def convert(char, language):
     except KeyError as e:
         raise UnsupportedCharacterError(f"Unsupported character {char}") from e
 
-    return hid_keystroke.modifier, hid_keystroke.keycode
+    return hid_keystroke

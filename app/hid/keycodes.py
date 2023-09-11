@@ -1,3 +1,5 @@
+import dataclasses
+
 # USB Usage ID values for the keycodes that TinyPilot can emit to the target
 # computer through the USB keyboard interface.
 #
