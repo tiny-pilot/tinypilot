@@ -24,9 +24,6 @@ cd ./bundler
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
-readonly ANSIBLE_ROLES_DIR="${BUNDLE_DIR}/roles"
-readonly ANSIBLE_ROLE_USTREAMER_DIR="${ANSIBLE_ROLES_DIR}/ansible-role-ustreamer"
-
 # Exclude the AMD64 package from the production bundle.
 rm -f "${BUNDLE_DIR}/tinypilot"*amd64.deb
 
@@ -65,14 +62,20 @@ readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
-# Clear Ansible roles from any previous bundle builds.
-rm -rf "${ANSIBLE_ROLES_DIR}"
-mkdir "${ANSIBLE_ROLES_DIR}"
+# Download Janus Bullseye Backports Debian package.
+wget \
+  --directory-prefix="${BUNDLE_DIR}" \
+  http://ftp.us.debian.org/debian/pool/main/j/janus/janus_1.0.1-1~bpo11+1_armhf.deb
 
-# Copy local Ansible roles.
-cp -r \
-  --no-target-directory \
-  ../ansible-role-ustreamer "${ANSIBLE_ROLE_USTREAMER_DIR}"
+# Download uStreamer Debian package.
+wget \
+  --directory-prefix="${BUNDLE_DIR}" \
+  https://github.com/tiny-pilot/ustreamer-debian/releases/download/ustreamer_5.38-20230802141939/ustreamer_5.38-20230802141939_armhf.deb
+
+# Download yq binary
+wget \
+  https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_arm \
+  --output-document="${BUNDLE_DIR}/yq"
 
 # Generate tarball bundle and meta file.
 mkdir -p "${OUTPUT_DIR}"

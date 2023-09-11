@@ -140,24 +140,12 @@ adduser \
     tinypilot
 
 # Add uStreamer configuration.
-su tinypilot
-echo 'ustreamer_capture_device: tc358743' >> ~/settings.yml
+echo "dtoverlay=tc358743" | sudo tee --append /boot/config.txt
 ```
 
 ### Installing a nightly bundle
 
-The canonical way to build bundles is on CircleCI. By default, bundles are only built off the `master` branch. There are two methods available to build a bundle off a feature branch:
-
-1. Temporarily enable bundle builds for all commits on a feature branch:
-   1. In [the CircleCI configuration](/.circleci/config.yml), change the `bundle_build_branch` parameter’s default value from `master` to `<< pipeline.git.branch >>`.
-   1. Push your changes as branch to GitHub. CircleCI will now automatically build bundles for all subsequent commits of that branch.
-   1. Before eventually merging your feature branch, remember to revert the `bundle_build_branch` parameter to the original value (i.e., `master`).
-1. Manually trigger a bundle build as one-off:
-   1. On CircleCI’s overview page for the respective branch, click the “Trigger Pipeline” button.
-   1. In the dialog, enter `bundle_build_branch` as parameter name, and the (exact) name of the branch as parameter value.
-   1. Click the “Trigger Pipeline” button in the dialog. CircleCI will now build a bundle for the latest commit of that branch.
-
-In both cases, the `build_bundle` CircleCI job will store the built bundles as artifacts.
+The canonical way to build bundles is on CircleCI. The `build_bundle` CircleCI job will store built bundles as artifacts.
 
 In order to install a nightly bundle on device, follow these steps:
 
@@ -200,6 +188,27 @@ We don't use any Python package management tools because we want to limit comple
 
 We don't track indirect dependencies for our dev dependencies (in `dev_requirements.txt`), so you can update those by simply changing the version number for any package.
 
+### Building an ARMv7 bundle on a dev system
+
+To build a TinyPilot install bundle on your dev system, you first need to configure a Docker builder for multi-architecture builds using QEMU. You only need to perform this step once per system:
+
+```bash
+./dev-scripts/enable-multiarch-docker
+```
+
+Once your dev system is configured for multi-architecture Docker builds, you can build install ARMv7 TinyPilot bundles with the following commands:
+
+```bash
+TARGET_PLATFORM='linux/arm/v7'
+
+(rm debian-pkg/releases/tinypilot*.deb || true) && \
+  ./dev-scripts/build-debian-pkg "${TARGET_PLATFORM}" && \
+  mv debian-pkg/releases/tinypilot*.deb bundler/bundle && \
+  ./bundler/create-bundle
+```
+
+The newly built install bundle will be in `./bundler/dist`.
+
 ## Architecture
 
 For a high-level view of TinyPilot's architecture, see the [ARCHITECTURE](ARCHITECTURE.md) file.
@@ -211,7 +220,7 @@ TinyPilot accepts various options through environment variables:
 | Environment Variable | Default     | Description                                           |
 | -------------------- | ----------- | ----------------------------------------------------- |
 | `HOST`               | `127.0.0.1` | Network interface to listen for incoming connections. |
-| `PORT`               | `8000`      | HTTP port to listen for incoming connections.         |
+| `PORT`               | `48000`     | HTTP port to listen for incoming connections.         |
 | `DEBUG`              | undefined   | Set to `1` to enable debug logging.                   |
 
 ## Code style conventions

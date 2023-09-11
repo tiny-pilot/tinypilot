@@ -1,0 +1,97 @@
+<template id="paste-dialog-template">
+  <style>
+    @import "css/style.css";
+
+    #paste-area {
+      display: block;
+      width: 100%;
+      height: 20rem;
+      resize: none;
+      box-sizing: border-box;
+      padding: 0.25rem 0.5rem;
+      background-color: white;
+      border: 1px solid var(--brand-metallic-dark);
+      border-radius: var(--border-radius);
+    }
+  </style>
+  <h3>Paste Text</h3>
+  <p>
+    Note: The target system must have an <span class="monospace">en-US</span> or
+    <span class="monospace">en-GB</span> keyboard layout.
+  </p>
+  <textarea
+    id="paste-area"
+    class="monospace"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+  ></textarea>
+  <button id="confirm-btn" class="btn-success">Paste</button>
+  <button id="cancel-btn">Cancel</button>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
+  (function () {
+    const template = document.querySelector("#paste-dialog-template");
+
+    customElements.define(
+      "paste-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.elements = {
+            pasteArea: this.shadowRoot.querySelector("#paste-area"),
+            confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
+            cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
+          };
+          this.elements.pasteArea.addEventListener("input", () =>
+            this.elements.confirmButton.toggleAttribute(
+              "disabled",
+              this.elements.pasteArea.value.length === 0
+            )
+          );
+          this.elements.pasteArea.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter" && !evt.shiftKey) {
+              evt.preventDefault();
+              this.elements.confirmButton.click();
+              // Prevent this keystroke from being forwarded to the target system.
+              evt.stopPropagation();
+            }
+          });
+          this.elements.confirmButton.addEventListener("click", () =>
+            this._handleConfirmPaste()
+          );
+          this.elements.cancelButton.addEventListener("click", () =>
+            this._closeDialog()
+          );
+        }
+
+        initialize() {
+          this.elements.pasteArea.value = "";
+          this.elements.pasteArea.focus();
+          this.elements.confirmButton.toggleAttribute("disabled", true);
+        }
+
+        _handleConfirmPaste() {
+          this.dispatchEvent(
+            new CustomEvent("paste-text", {
+              detail: this.elements.pasteArea.value,
+              bubbles: true,
+              composed: true,
+            })
+          );
+          this._closeDialog();
+        }
+
+        _closeDialog() {
+          this.dispatchEvent(new DialogClosedEvent());
+        }
+      }
+    );
+  })();
+</script>

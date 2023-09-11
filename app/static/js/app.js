@@ -1,7 +1,6 @@
 import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
-import { isPasteOverlayShowing, showPasteOverlay } from "./paste.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
 import { pasteText } from "./controllers.js";
@@ -112,7 +111,7 @@ function onSocketDisconnect() {
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyDown(evt) {
-  if (isPasteOverlayShowing() || overlayTracker.hasOverlays()) {
+  if (overlayTracker.hasOverlays()) {
     return;
   }
 
@@ -201,10 +200,6 @@ function sendMouseEvent(
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyUp(evt) {
-  if (isPasteOverlayShowing()) {
-    return;
-  }
-
   const canonicalCode = keystrokeToCanonicalCode(evt);
   keyboardState.onKeyUp(evt);
 
@@ -221,7 +216,7 @@ function onKeyUp(evt) {
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
-  pasteText(textInput, language);
+  return pasteText(textInput, language);
 }
 
 function setCursor(cursor, save = true) {
@@ -256,6 +251,14 @@ document.addEventListener("overlay-toggled", (evt) => {
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
+});
+document.addEventListener("paste-text", ({ detail: text }) => {
+  processTextInput(text).catch((error) => {
+    showError({
+      title: "Failed to Paste Text",
+      details: error,
+    });
+  });
 });
 
 // To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
@@ -295,6 +298,32 @@ menuBar.addEventListener("keystroke-history-toggled", () => {
 menuBar.addEventListener("keyboard-visibility-toggled", () => {
   onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
+menuBar.addEventListener("dedicated-window-requested", () => {
+  // Open popup window in standalone view mode (without menu bar or status bar).
+  // Determine the current size of the remote screen, and take it over as
+  // initial size for the popup window. This is just convenience functionality:
+  // it subtly illustrates the mechanism of the remote screen “popping out” to
+  // its own window as is, and it also respects if the user had manually
+  // adjusted the window size to optimize ergonomics.
+  const { width, height } = document.getElementById("remote-screen").size();
+  window.open(
+    "/?viewMode=standalone",
+    undefined,
+    // We need to add noopener to prevent a bug on Firefox where tearing down
+    // the existing page causes the browser to garbage collect resources that
+    // the popup tries to access.
+    // https://github.com/tiny-pilot/tinypilot/issues/1609
+    `popup=true,noopener,width=${width},height=${height}`
+  );
+
+  // Redirect the user to a placeholder page. We can’t keep the main window
+  // open as is, because then we’d have a duplicate video stream (which would
+  // result in twice the bandwidth consumption), or we’d risk inconsistent view
+  // state, or ambiguous control flows between the two windows.
+  // Leaving the main page via an external redirect is a rather pragmatic yet
+  // effective approach to ensure proper teardown of the main window resources.
+  window.location = "/dedicated-window-placeholder";
+});
 menuBar.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
@@ -327,8 +356,9 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-dialog").initialize();
   document.getElementById("video-settings-overlay").show();
 });
-menuBar.addEventListener("paste-requested", () => {
-  showPasteOverlay();
+menuBar.addEventListener("paste-dialog-requested", () => {
+  document.getElementById("paste-overlay").show();
+  document.getElementById("paste-dialog").initialize();
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
@@ -371,14 +401,6 @@ document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
 });
 
-document
-  .getElementById("paste-overlay")
-  .addEventListener("paste-text", (evt) => {
-    processTextInput(evt.detail);
-
-    // Give focus back to the app for normal text input.
-    document.getElementById("app").focus();
-  });
 const shutdownDialog = document.getElementById("shutdown-dialog");
 shutdownDialog.addEventListener("shutdown-started", () => {
   // Hide the interactive elements of the page during shutdown.

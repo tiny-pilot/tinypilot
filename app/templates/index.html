@@ -10,6 +10,21 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    {% if is_standalone_mode %}
+    <style>
+      .header-bar,
+      .footer-bar,
+      #on-screen-keyboard {
+        display: none;
+      }
+
+      #remote-screen {
+        --menu-bar-height: 0;
+        --status-bar-height: 0;
+        --bar-padding: 0;
+      }
+    </style>
+    {% endif %}
   </head>
   <body>
     <!-- prettier-ignore -->
@@ -21,49 +36,47 @@
       <div class="header-bar">
         <menu-bar id="menu-bar"></menu-bar>
       </div>
+      <remote-screen
+        id="remote-screen"
+        milliseconds-between-mouse-events="600"
+      ></remote-screen>
+      <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
       <div class="footer-bar">
         <status-bar id="status-bar"></status-bar>
       </div>
 
-      <div class="page-content container">
-        <overlay-panel id="error-overlay" variant="danger">
-          <error-dialog id="error-dialog"></error-dialog>
-        </overlay-panel>
-        <overlay-panel id="shutdown-overlay">
-          <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
-        </overlay-panel>
-        <overlay-panel id="update-overlay">
-          <update-dialog id="update-dialog"></update-dialog>
-        </overlay-panel>
-        <overlay-panel id="change-hostname-overlay">
-          <change-hostname-dialog
-            id="change-hostname-dialog"
-          ></change-hostname-dialog>
-        </overlay-panel>
-        <overlay-panel id="debug-overlay">
-          <debug-dialog id="debug-dialog"></debug-dialog>
-        </overlay-panel>
-        <overlay-panel id="about-overlay">
-          <about-dialog id="about-dialog"></about-dialog>
-        </overlay-panel>
-        <overlay-panel id="video-settings-overlay">
-          <video-settings-dialog
-            id="video-settings-dialog"
-          ></video-settings-dialog>
-        </overlay-panel>
-        <overlay-panel id="feature-pro-overlay">
-          <feature-pro-dialog id="feature-pro-dialog"></feature-pro-dialog>
-        </overlay-panel>
-
-        <remote-screen
-          id="remote-screen"
-          milliseconds-between-mouse-events="600"
-        ></remote-screen>
-
-        <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
-      </div>
+      <overlay-panel id="error-overlay" variant="danger">
+        <error-dialog id="error-dialog"></error-dialog>
+      </overlay-panel>
+      <overlay-panel id="shutdown-overlay">
+        <shutdown-dialog id="shutdown-dialog"></shutdown-dialog>
+      </overlay-panel>
+      <overlay-panel id="update-overlay">
+        <update-dialog id="update-dialog"></update-dialog>
+      </overlay-panel>
+      <overlay-panel id="change-hostname-overlay">
+        <change-hostname-dialog
+          id="change-hostname-dialog"
+        ></change-hostname-dialog>
+      </overlay-panel>
+      <overlay-panel id="debug-overlay">
+        <debug-dialog id="debug-dialog"></debug-dialog>
+      </overlay-panel>
+      <overlay-panel id="about-overlay">
+        <about-dialog id="about-dialog"></about-dialog>
+      </overlay-panel>
+      <overlay-panel id="video-settings-overlay">
+        <video-settings-dialog
+          id="video-settings-dialog"
+        ></video-settings-dialog>
+      </overlay-panel>
+      <overlay-panel id="feature-pro-overlay">
+        <feature-pro-dialog id="feature-pro-dialog"></feature-pro-dialog>
+      </overlay-panel>
+      <overlay-panel id="paste-overlay">
+        <paste-dialog id="paste-dialog"></paste-dialog>
+      </overlay-panel>
     </div>
-    {% include "components/paste-overlay.html" %}
     <script src="/third-party/socket.io/4.7.1/socket.io.min.js"></script>
     <script type="module" src="/js/app.js"></script>
 
