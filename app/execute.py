@@ -92,9 +92,16 @@ def _wait_for_process_exit(target_process):
 
 
 def background_thread(function, args=None):
+    """Runs the given function in a background thread.
+
+    Note: The function is executed in a "fire and forget" manner.
+
+    Args:
+        function: The function to be executed in a thread.
+        args: Optional `function` arguments as a tuple.
+    """
     # Never wait or join a regular thread because it will block the SocketIO
     # server:
     # https://github.com/miguelgrinberg/Flask-SocketIO/issues/1264#issuecomment-620653614
     thread = threading.Thread(target=function, args=args or ())
     thread.start()
-    return thread.ident

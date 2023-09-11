@@ -92,3 +92,9 @@ class ExecuteTest(unittest.TestCase):
         with self.assertRaises(Exception) as ctx:
             execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
         self.assertEqual('Child exception', str(ctx.exception))
+
+    def test_background_thread_ignores_function_successful(self):
+        self.assertEqual(None, execute.background_thread(return_string))
+
+    def test_background_thread_ignores_function_exception(self):
+        self.assertEqual(None, execute.background_thread(raise_exception))
