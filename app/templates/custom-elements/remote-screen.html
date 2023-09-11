@@ -325,18 +325,29 @@
         /**
          * Displays the WebRTC stream while hiding the MJPEG stream.
          *
-         * Autoplay of the WebRTC stream might be restricted by the UserAgent,
+         * Autoplay of WebRTC media tracks might be restricted by the UserAgent,
          * either through explicit user settings, or due to automatic detection
          * mechanisms, such as whether the user had interacted with the website
          * prior to the playback (i.e., by clicking somewhere). Our strategy is:
-         * - If the audio is blocked, then we will display video, and try to
+         * - If both video and audio are blocked, we stay on MJPEG.
+         * - If only audio is blocked, then we will display video, and try to
          *   unmute the audio track. (Which might not succeed, though.)
          */
         async enableWebrtc() {
+          const video = this.elements.video;
+          const stream = video.srcObject;
+          
+          // We only proceed enabling WebRTC if we have at least one video
+          // track. We don’t want to switch yet if the only thing we have is an
+          // audio track.
+          if (stream !== null && stream.getVideoTracks().length > 0) {
+            return;
+          }
+
           // We optimistically unmute before we start the playback, because we
           // cannot tell ahead of time whether audio is blocked by the
           // UserAgent.
-          this.elements.video.muted = false;
+          video.muted = false;
           // It’s important that we hold off on displaying the WebRTC stream
           // until the video playback has started, to ensure a smooth visual
           // transition of the remote screen without any flickering or

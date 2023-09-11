@@ -181,9 +181,7 @@ function attachToJanusPlugin() {
 
       if (added) {
         await remoteScreen.addWebrtcStreamTrack(track);
-        if (!remoteScreen.webrtcEnabled) {
-          await remoteScreen.enableWebrtc();
-        }
+        await remoteScreen.enableWebrtc();
       } else {
         await remoteScreen.removeWebrtcStreamTrack(track);
       }
