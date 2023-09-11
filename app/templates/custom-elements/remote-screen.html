@@ -335,12 +335,15 @@
          */
         async enableWebrtc() {
           const video = this.elements.video;
-          const stream = video.srcObject;
+          if (!video.srcObject) {
+            return;
+          }
           
           // We only proceed enabling WebRTC if we have at least one video
           // track. We don’t want to switch yet if the only thing we have is an
           // audio track.
-          if (stream !== null && stream.getVideoTracks().length > 0) {
+          const stream = video.srcObject;
+          if (stream.getVideoTracks().length > 0) {
             return;
           }
 
