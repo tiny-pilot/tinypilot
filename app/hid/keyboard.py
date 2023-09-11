@@ -23,5 +23,14 @@ def release_keys(keyboard_path):
 
 
 def send_keystrokes(keyboard_path, keystrokes):
+    """Sends multiple keystrokes to the HID interface, one after the other.
+
+    Args:
+        keyboard_path: The file path to the keyboard interface.
+        keystokes: A list of HID Keystroke objects.
+
+    Raises:
+        WriteError: If a keystroke fails to be written to the HID interface.
+    """
     for keystroke in keystrokes:
         send_keystroke(keyboard_path, keystroke.modifier, keystroke.keycode)
