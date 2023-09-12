@@ -323,10 +323,10 @@
         }
 
         /**
-         * Adds a track to the WebRTC media stream. If there any video tracks in
-         * the stream, the WebRTC stream is displayed and the MJPEG stream is
-         * hidden. However, if there are only audio tracks in the stream, the
-         * MJPEG stream will continue to be displayed.
+         * Displays the WebRTC stream while hiding the MJPEG stream.
+         *
+         * Enabling WebRTC only succeeds if there is a "video" stream track
+         * available. Otherwise, calling this method is a no-op.
          *
          * Autoplay of WebRTC media tracks might be restricted by the UserAgent,
          * either through explicit user settings, or due to automatic detection
@@ -335,10 +335,45 @@
          * - If both video and audio are blocked, we stay on MJPEG.
          * - If only audio is blocked, then we will display video, and try to
          *   unmute the audio track. (Which might not succeed, though.)
+         */
+        async enableWebrtc() {
+          const video = this.elements.video;
+          if (!video.srcObject) {
+            return;
+          }
+
+          // We only proceed enabling WebRTC if we have at least one video
+          // track. We don’t want to switch yet if the only thing we have is an
+          // audio track.
+          const stream = video.srcObject;
+          if (stream.getVideoTracks().length === 0) {
+            return;
+          }
+
+          // We optimistically unmute before we start the playback, because we
+          // cannot tell ahead of time whether audio is blocked by the
+          // UserAgent.
+          video.muted = false;
+          // It’s important that we hold off on displaying the WebRTC stream
+          // until the video playback has started, to ensure a smooth visual
+          // transition of the remote screen without any flickering or
+          // interruption.
+          try {
+            await this._playWebrtcVideo();
+          } catch {
+            return;
+          }
+          this.webrtcEnabled = true;
+          this.elements.image.removeAttribute("src");
+          this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
+        }
+
+        /**
+         * Adds a track to the WebRTC media stream.
          *
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        async enableWebrtcStreamTrack(mediaStreamTrack) {
+        async addWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           if (!video.srcObject) {
             // Lazy-initialize the media stream. (See comment in
@@ -364,50 +399,20 @@
           // the addTrack method has no effect.
           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/addTrack
           stream.addTrack(mediaStreamTrack);
-
-          // We only proceed switching to WebRTC if we have at least a video
-          // track. We don’t want to switch yet if the only thing we have is an
-          // audio track.
-          // It’s also important that we hold off on displaying the WebRTC
-          // stream until the video playback has started, to ensure a smooth
-          // visual transition of the remote screen without any flickering or
-          // interruption.
-          if (mediaStreamTrack.kind === "video") {
-            // We optimistically unmute before we start the playback, because we
-            // cannot tell ahead of time whether audio is blocked by the
-            // UserAgent.
-            video.muted = false;
-            try {
-              await this._playWebrtcVideo();
-            } catch {
-              return;
-            }
-            this.webrtcEnabled = true;
-            this.elements.image.removeAttribute("src");
-            this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
-          }
         }
 
         /**
-         * Removes a track from the WebRTC media stream. If there are no more
-         * video tracks in the stream, the MJPEG stream is displayed and the
-         * WebRTC stream is hidden. However, if there are no more audio tracks
-         * in the stream, the WebRTC stream will continue to be displayed
-         * because it's still better than the MJPEG stream.
+         * Removes a track from the WebRTC media stream.
          *
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
-        disableWebrtcStreamTrack(mediaStreamTrack) {
+        removeWebrtcStreamTrack(mediaStreamTrack) {
           const video = this.elements.video;
           if (!video.srcObject) {
             return;
           }
           const stream = video.srcObject;
           stream.removeTrack(mediaStreamTrack);
-          if (stream.getVideoTracks().length === 0) {
-            video.pause();
-            this.enableMjpeg();
-          }
         }
 
         /**

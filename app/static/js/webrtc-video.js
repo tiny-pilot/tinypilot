@@ -174,15 +174,16 @@ function attachToJanusPlugin() {
      * @param {string} mid - The Media-ID.
      * @param {boolean} added - Whether the track was added or removed.
      */
-    onremotetrack: function (track, mid, added) {
+    onremotetrack: async function (track, mid, added) {
       console.debug(
         `Remote ${track.kind} track "${mid}" ${added ? "added" : "removed"}.`
       );
 
       if (added) {
-        remoteScreen.enableWebrtcStreamTrack(track);
+        await remoteScreen.addWebrtcStreamTrack(track);
+        await remoteScreen.enableWebrtc();
       } else {
-        remoteScreen.disableWebrtcStreamTrack(track);
+        await remoteScreen.removeWebrtcStreamTrack(track);
       }
     },
   });
