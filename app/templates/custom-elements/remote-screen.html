@@ -325,6 +325,9 @@
         /**
          * Displays the WebRTC stream while hiding the MJPEG stream.
          *
+         * Enabling WebRTC only succeeds if there is a "video" stream track
+         * available. Otherwise, calling this method is a no-op.
+         * 
          * Autoplay of WebRTC media tracks might be restricted by the UserAgent,
          * either through explicit user settings, or due to automatic detection
          * mechanisms, such as whether the user had interacted with the website
