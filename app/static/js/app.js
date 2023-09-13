@@ -1,13 +1,9 @@
-import {
-  isModifierCode,
-  findKeyCode,
-  keystrokeToCanonicalCode,
-  requiresShiftKey,
-} from "./keycodes.js";
+import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
+import { pasteText } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -216,43 +212,11 @@ function onKeyUp(evt) {
   }
 }
 
-// Translate a single character into a keystroke and sends it to the backend.
-function processTextCharacter(textCharacter, language) {
-  // Ignore carriage returns.
-  if (textCharacter === "\r") {
-    return;
-  }
-
-  const code = findKeyCode([textCharacter.toLowerCase()], language);
-  let friendlyName = textCharacter;
-  // Give cleaner names to keys so that they render nicely in the history.
-  if (textCharacter === "\n") {
-    friendlyName = "Enter";
-  } else if (textCharacter === "\t") {
-    friendlyName = "Tab";
-  }
-
-  processKeystroke({
-    metaLeft: false,
-    metaRight: false,
-    altLeft: false,
-    altRight: false,
-    shiftLeft: requiresShiftKey(textCharacter),
-    shiftRight: false,
-    ctrlLeft: false,
-    ctrlRight: false,
-    key: friendlyName,
-    code: code,
-  });
-}
-
 // Translate a string of text into individual keystrokes and sends them to the
 // backend.
 function processTextInput(textInput) {
   const language = browserLanguage();
-  for (const textCharacter of textInput) {
-    processTextCharacter(textCharacter, language);
-  }
+  return pasteText(textInput, language);
 }
 
 function setCursor(cursor, save = true) {
@@ -288,8 +252,13 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
 });
-document.addEventListener("paste-text", (evt) => {
-  processTextInput(evt.detail);
+document.addEventListener("paste-text", ({ detail: text }) => {
+  processTextInput(text).catch((error) => {
+    showError({
+      title: "Failed to Paste Text",
+      details: error,
+    });
+  });
 });
 
 // To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
