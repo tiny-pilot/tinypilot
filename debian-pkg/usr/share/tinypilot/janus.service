@@ -1,0 +1,17 @@
+[Unit]
+Description=Janus WebRTC gateway
+After=network.target
+Documentation=https://janus.conf.meetecho.com/docs/index.html
+# Give up if we restart on failure 20 times within 5 minutes (300 seconds).
+StartLimitIntervalSec=300
+StartLimitBurst=20
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/janus --disable-colors --daemon --log-stdout
+Restart=on-failure
+RestartSec=1
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

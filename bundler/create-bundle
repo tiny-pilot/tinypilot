@@ -63,6 +63,9 @@ readonly TINYPILOT_VARIANT='community'
 readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
 
 # Download Janus Bullseye Backports Debian package.
+# Note: before bumping the Janus package version, be sure to compare our Janus
+# systemd config file (debian-pkg/usr/share/tinypilot/janus.service) to that of
+# upstream and verify that the diff is the same as before.
 wget \
   --directory-prefix="${BUNDLE_DIR}" \
   http://ftp.us.debian.org/debian/pool/main/j/janus/janus_1.0.1-1~bpo11+1_armhf.deb
