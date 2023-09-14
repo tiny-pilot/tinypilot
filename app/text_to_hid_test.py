@@ -6,6 +6,16 @@ from hid import keycodes as hid
 
 class ConvertTextToHidTest(unittest.TestCase):
 
+    def test_keystroke_without_modifier(self):
+        self.assertEqual(hid.Keystroke(keycode=hid.KEYCODE_A),
+                         text_to_hid.convert("a", "en-US"))
+
+    def test_keystroke_with_modifier(self):
+        self.assertEqual(
+            hid.Keystroke(keycode=hid.KEYCODE_A,
+                          modifier=hid.MODIFIER_LEFT_SHIFT),
+            text_to_hid.convert("A", "en-US"))
+
     def test_language_mapping(self):
         self.assertEqual(
             hid.Keystroke(hid.KEYCODE_NUMBER_2, hid.MODIFIER_LEFT_SHIFT),
