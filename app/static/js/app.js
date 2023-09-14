@@ -3,7 +3,6 @@ import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
-import { pasteText } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -57,13 +56,6 @@ function recalculateMouseEventThrottle(
 
 function unixTime() {
   return new Date().getTime();
-}
-
-function browserLanguage() {
-  if (navigator.languages) {
-    return navigator.languages[0];
-  }
-  return navigator.language || navigator.userLanguage;
 }
 
 const keystrokeHistory = document.getElementById("status-bar").keystrokeHistory;
@@ -212,13 +204,6 @@ function onKeyUp(evt) {
   }
 }
 
-// Translate a string of text into individual keystrokes and sends them to the
-// backend.
-function processTextInput(textInput) {
-  const language = browserLanguage();
-  return pasteText(textInput, language);
-}
-
 function setCursor(cursor, save = true) {
   // Ensure the correct cursor option displays as active in the navbar.
   if (save) {
@@ -251,14 +236,6 @@ document.addEventListener("overlay-toggled", (evt) => {
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
-});
-document.addEventListener("paste-text", ({ detail: text }) => {
-  processTextInput(text).catch((error) => {
-    showError({
-      title: "Failed to Paste Text",
-      details: error,
-    });
-  });
 });
 
 // To allow for keycode combinations to be pressed (e.g., Alt + Tab), the
