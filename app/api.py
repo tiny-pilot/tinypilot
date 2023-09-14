@@ -339,7 +339,7 @@ def paste_post():
     Expects a JSON data structure in the request body that contains the
     following parameters:
     - text: string
-    - language: string
+    - language: string as an IETF language tag
 
     Returns:
         Empty response on success, error object otherwise.
