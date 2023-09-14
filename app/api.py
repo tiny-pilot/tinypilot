@@ -341,6 +341,12 @@ def paste_post():
     - text: string
     - language: string as an IETF language tag
 
+    Example of request body:
+    {
+        "text": "Hello, World!",
+        "language": "en-US"
+    }
+
     Returns:
         Empty response on success, error object otherwise.
     """
