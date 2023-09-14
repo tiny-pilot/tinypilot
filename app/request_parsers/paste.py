@@ -24,12 +24,18 @@ def parse_keystrokes(request):
      language) = json.parse_json_body(request,
                                       required_fields=['text', 'language'])
     keystrokes = []
+    unsupported_chars_found = []
     for char in text:
         try:
             keystroke = text_to_hid.convert(char, language)
-        except text_to_hid.UnsupportedCharacterError as e:
-            raise errors.UnsupportedPastedCharacterError(
-                f'This character is not supported: {char}') from e
+        except text_to_hid.UnsupportedCharacterError:
+            if char not in unsupported_chars_found:
+                unsupported_chars_found.append(char)
+            continue
         keystrokes.append(keystroke)
+    if unsupported_chars_found:
+        raise errors.UnsupportedPastedCharacterError(
+            f'These characters are not supported: '
+            f'{", ".join(map(repr, unsupported_chars_found))}')
 
     return keystrokes
