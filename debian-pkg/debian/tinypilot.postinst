@@ -215,6 +215,11 @@ cp \
   /usr/share/tinypilot/janus.transport.websockets.jcfg \
   /etc/janus/janus.transport.websockets.jcfg
 
+# Override Janus systemd config.
+cp \
+  /usr/share/tinypilot/janus.service \
+  /etc/systemd/system/janus.service
+
 # Restart Janus to pick up the new config files.
 deb-systemd-invoke restart janus
 

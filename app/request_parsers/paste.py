@@ -32,6 +32,9 @@ def parse_keystrokes(request):
         except text_to_hid.UnsupportedCharacterError:
             unsupported_chars_found[char] = True
             continue
+        # Skip ignored characters.
+        if keystroke is None:
+            continue
         keystrokes.append(keystroke)
     if unsupported_chars_found:
         raise errors.UnsupportedPastedCharacterError(

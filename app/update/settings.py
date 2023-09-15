@@ -34,7 +34,7 @@ _SETTINGS_FILE_PATH = env.abs_path_in_home_dir('settings.yml')
 #  2. Save the EDID to set correct bytes in the "Display Range Limits" block
 #  3. Re-open the EDID in "AW EDID Editor v.02.00.13" and re-set
 #     the screen size dimensions to 0 (both vertical and horizontal)
-_DEFAULT_TC358743_EDID = '''
+_DEFAULT_TC358743_EDID = """
 00ffffffffffff005262769800888888
 2d1e0103800000781aee91a3544c9926
 0f50547fef8081c08140810081809500
@@ -51,7 +51,7 @@ a9c081406140271f80f07138164038c0
 00000000000000000000000000000000
 00000000000000000000000000000000
 0000000000000000000000000000008e
-'''.strip()
+""".strip()
 
 # Define default values for user-configurable TinyPilot settings. The YAML data
 # in _SETTINGS_FILE_PATH take precedence over these defaults.
