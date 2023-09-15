@@ -11,7 +11,7 @@ class MissingFieldError(Error):
 
 
 class InvalidHostnameError(Error):
-    code = "INVALID_HOSTNAME"
+    code = 'INVALID_HOSTNAME'
 
 
 class InvalidVideoSettingError(Error):
