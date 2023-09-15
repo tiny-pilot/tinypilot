@@ -325,7 +325,8 @@
 
           try {
             await this._waitForUpdateToFinish();
-            this.elements.updateLogs.textContent += "Restarting to complete update...\n";
+            this.elements.updateLogs.textContent +=
+              "Restarting to complete update...\n";
             await this._performRestart();
             // Wait at least 10 seconds to ensure reboot has started before
             // checking whether the system is back up.
