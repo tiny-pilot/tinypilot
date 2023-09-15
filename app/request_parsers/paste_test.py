@@ -45,3 +45,16 @@ class KeystrokesParserTest(unittest.TestCase):
                 }))
         self.assertEqual("These characters are not supported: '“', '”', '—'",
                          str(ctx.exception))
+
+    def test_skips_ignored_character(self):
+        self.assertEqual([
+            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_1),
+            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2),
+            hid.Keystroke(keycode=hid.KEYCODE_ENTER),
+            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_3),
+        ],
+                         paste.parse_keystrokes(
+                             make_mock_request({
+                                 'text': '12\r\n3',
+                                 'language': 'en-US'
+                             })))
