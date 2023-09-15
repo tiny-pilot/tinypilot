@@ -11,7 +11,7 @@ class UnsupportedCharacterError(Error):
 
 # Mappings of characters to codes that are shared among different keyboard
 # layouts.
-COMMON_CHAR_TO_HID_MAP = {
+_COMMON_CHAR_TO_HID_MAP = {
     '\t':
         hid.Keystroke(keycode=hid.KEYCODE_TAB),
     '\n':
@@ -210,7 +210,7 @@ COMMON_CHAR_TO_HID_MAP = {
         hid.Keystroke(keycode=hid.KEYCODE_SINGLE_QUOTE),
 }
 
-US_CHAR_TO_HID_MAP = COMMON_CHAR_TO_HID_MAP | {
+_US_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
     '@':
         hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
@@ -232,7 +232,7 @@ US_CHAR_TO_HID_MAP = COMMON_CHAR_TO_HID_MAP | {
                       modifier=hid.MODIFIER_LEFT_SHIFT),
 }
 
-GB_CHAR_TO_HID_MAP = COMMON_CHAR_TO_HID_MAP | {
+_GB_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
     '"':
         hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
@@ -265,12 +265,12 @@ def convert(char, language):
     """Converts a language character into a HID modifier and keycode."""
     try:
         language_map = {
-            'en-GB': GB_CHAR_TO_HID_MAP,
-            'en-US': US_CHAR_TO_HID_MAP
+            'en-GB': _GB_CHAR_TO_HID_MAP,
+            'en-US': _US_CHAR_TO_HID_MAP
         }[language]
     except KeyError:
         # Default to en-US if no other language matches.
-        language_map = US_CHAR_TO_HID_MAP
+        language_map = _US_CHAR_TO_HID_MAP
 
     try:
         hid_keystroke = language_map[char]
