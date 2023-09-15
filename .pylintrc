@@ -11,6 +11,10 @@ jobs=0
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
 
+string-quote=single
+triple-quote=double
+docstring-quote=double
+
 [MESSAGES CONTROL]
 
 # Disable the message, report, category or checker with the given id(s). You
