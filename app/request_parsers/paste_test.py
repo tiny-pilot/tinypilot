@@ -33,7 +33,7 @@ class KeystrokesParserTest(unittest.TestCase):
                     'text': 'Monday–Friday',
                     'language': 'en-US'
                 }))
-        self.assertEqual("These characters are not supported: '–'",
+        self.assertEqual("""These characters are not supported: '–'""",
                          str(ctx.exception))
 
     def test_rejects_unsupported_characters_preserving_order(self):
@@ -43,8 +43,9 @@ class KeystrokesParserTest(unittest.TestCase):
                     'text': '“Hello, World!” — Programmer',
                     'language': 'en-US'
                 }))
-        self.assertEqual("These characters are not supported: '“', '”', '—'",
-                         str(ctx.exception))
+        self.assertEqual(
+            """These characters are not supported: '“', '”', '—'""",
+            str(ctx.exception))
 
     def test_skips_ignored_character(self):
         self.assertEqual([
