@@ -12,6 +12,8 @@ class UnsupportedCharacterError(Error):
 # Mappings of characters to codes that are shared among different keyboard
 # layouts.
 _COMMON_CHAR_TO_HID_MAP = {
+    '\r':
+        None,
     '\t':
         hid.Keystroke(keycode=hid.KEYCODE_TAB),
     '\n':
