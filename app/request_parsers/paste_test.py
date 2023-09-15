@@ -26,7 +26,17 @@ class KeystrokesParserTest(unittest.TestCase):
                                  'language': 'en-US'
                              })))
 
-    def test_rejects_unsupported_characters(self):
+    def test_rejects_unsupported_character(self):
+        with self.assertRaises(errors.UnsupportedPastedCharacterError) as ctx:
+            paste.parse_keystrokes(
+                make_mock_request({
+                    'text': 'Monday–Friday',
+                    'language': 'en-US'
+                }))
+        self.assertEqual("These characters are not supported: '–'",
+                         str(ctx.exception))
+
+    def test_rejects_unsupported_characters_preserving_order(self):
         with self.assertRaises(errors.UnsupportedPastedCharacterError) as ctx:
             paste.parse_keystrokes(
                 make_mock_request({
