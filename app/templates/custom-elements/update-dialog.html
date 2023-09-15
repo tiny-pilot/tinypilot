@@ -325,6 +325,7 @@
 
           try {
             await this._waitForUpdateToFinish();
+            this.elements.updateLogs.textContent += "Restarting to complete update...\n";
             await this._performRestart();
             // Wait at least 10 seconds to ensure reboot has started before
             // checking whether the system is back up.
@@ -344,6 +345,7 @@
             return;
           }
           updateLogsStreamer.stop();
+          this.elements.updateLogs.textContent += "Update is now complete.\n";
         }
       }
     );
