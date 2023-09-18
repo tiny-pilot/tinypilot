@@ -31,10 +31,6 @@ def on_keystroke(message):
         logger.warning_sensitive('Unrecognized key: %s (keycode=%s)',
                                  keystroke.key, keystroke.code)
         return {'success': False}
-    if hid_keystroke is None:
-        logger.info_sensitive('Ignoring %s key (keycode=%s)', keystroke.key,
-                              keystroke.code)
-        return {'success': False}
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.send_keystroke(keyboard_path, hid_keystroke)
