@@ -245,6 +245,8 @@
           return shutdown(/*restart=*/ true)
             .then(() => {
               this._state = this.states.RESTARTING;
+              this.elements.updateLogs.textContent +=
+                "Restarting to complete update...\n";
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -265,6 +267,8 @@
           })
             .then(() => {
               this._state = this.states.UPDATE_FINISHED;
+              this.elements.updateLogs.textContent +=
+                "Update is now complete.\n";
             })
             .catch((error) => {
               this.dispatchEvent(

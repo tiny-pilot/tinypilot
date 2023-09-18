@@ -2,7 +2,7 @@ import tempfile
 import unittest
 
 from hid import keyboard
-from hid import keycodes
+from hid import keycodes as hid
 
 
 class KeyboardTest(unittest.TestCase):
@@ -11,8 +11,7 @@ class KeyboardTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
-                control_keys=keycodes.KEYCODE_NONE,
-                hid_keycode=keycodes.KEYCODE_A,
+                keystroke=hid.Keystroke(keycode=hid.KEYCODE_A),
             )
             input_file.seek(0)
             # Press the key then release the key.
@@ -24,8 +23,8 @@ class KeyboardTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
-                control_keys=keycodes.MODIFIER_LEFT_SHIFT,
-                hid_keycode=keycodes.KEYCODE_NONE,
+                keystroke=hid.Keystroke(keycode=hid.KEYCODE_NONE,
+                                        modifier=hid.MODIFIER_LEFT_SHIFT),
             )
             input_file.seek(0)
             # Press the key, but do not release the key. This is to allow for
@@ -37,8 +36,8 @@ class KeyboardTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as input_file:
             keyboard.send_keystroke(
                 keyboard_path=input_file.name,
-                control_keys=keycodes.MODIFIER_LEFT_SHIFT,
-                hid_keycode=keycodes.KEYCODE_A,
+                keystroke=hid.Keystroke(keycode=hid.KEYCODE_A,
+                                        modifier=hid.MODIFIER_LEFT_SHIFT),
             )
             input_file.seek(0)
             # Press the key then release the key.
