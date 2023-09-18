@@ -146,7 +146,8 @@ _MAPPING = {
 
 
 def convert(keystroke):
-    return _map_modifier_keys(keystroke), _map_keycode(keystroke)
+    return hid.Keystroke(keycode=_map_keycode(keystroke),
+                         modifier=_map_modifier_keys(keystroke))
 
 
 def _map_modifier_keys(keystroke):

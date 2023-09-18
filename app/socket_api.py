@@ -25,20 +25,19 @@ def on_keystroke(message):
     except keystroke_request.Error as e:
         logger.error_sensitive('Failed to parse keystroke request: %s', e)
         return {'success': False}
-    hid_keycode = None
     try:
-        control_keys, hid_keycode = js_to_hid.convert(keystroke)
+        hid_keystroke = js_to_hid.convert(keystroke)
     except js_to_hid.UnrecognizedKeyCodeError:
         logger.warning_sensitive('Unrecognized key: %s (keycode=%s)',
                                  keystroke.key, keystroke.code)
         return {'success': False}
-    if hid_keycode is None:
+    if hid_keystroke is None:
         logger.info_sensitive('Ignoring %s key (keycode=%s)', keystroke.key,
                               keystroke.code)
         return {'success': False}
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
-        fake_keyboard.send_keystroke(keyboard_path, control_keys, hid_keycode)
+        fake_keyboard.send_keystroke(keyboard_path, hid_keystroke)
     except hid_write.WriteError as e:
         logger.error_sensitive('Failed to write key: %s (keycode=%s). %s',
                                keystroke.key, keystroke.code, e)
