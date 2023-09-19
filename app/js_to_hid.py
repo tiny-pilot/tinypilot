@@ -152,12 +152,12 @@ def convert(keystroke):
         keystroke: A JavaScript-esque Keystroke object, as defined in
             `app/request_parsers/keystroke.py`
 
+    Returns:
+        A HID Keystroke object.
+
     Raises:
         UnrecognizedKeyCodeError: If the JavaScript-esque Keystroke's keycode is
             unrecognized.
-
-    Returns:
-        A HID Keystroke object.
     """
     return hid.Keystroke(keycode=_map_keycode(keystroke),
                          modifier=_map_modifier_keys(keystroke))
