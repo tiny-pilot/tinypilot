@@ -264,7 +264,18 @@ _GB_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
 
 
 def convert(char, language):
-    """Converts a language character into a HID modifier and keycode."""
+    """Converts a language character into a HID Keystroke object.
+
+    Args:
+        char: A single character as a string.
+        language: An IETF language tag as a string.
+
+    Returns:
+        A HID Keystroke object.
+
+    Raises:
+        UnsupportedCharacterError: If the character is not supported.
+    """
     try:
         language_map = {
             'en-GB': _GB_CHAR_TO_HID_MAP,
