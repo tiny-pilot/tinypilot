@@ -32,7 +32,8 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent } from "/js/events.js";
+  import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
+  import { pasteText } from "/js/controllers.js";
 
   (function () {
     const template = document.querySelector("#paste-dialog-template");
@@ -78,14 +79,25 @@
         }
 
         _handleConfirmPaste() {
-          this.dispatchEvent(
-            new CustomEvent("paste-text", {
-              detail: this.elements.pasteArea.value,
-              bubbles: true,
-              composed: true,
-            })
-          );
-          this._closeDialog();
+          const text = this.elements.pasteArea.value;
+          const language = this._browserLanguage();
+          pasteText(text, language)
+            .then(() => this._closeDialog())
+            .catch((error) =>
+              this.dispatchEvent(
+                new DialogFailedEvent({
+                  title: "Failed to Paste Text",
+                  details: error,
+                })
+              )
+            );
+        }
+
+        _browserLanguage() {
+          if (navigator.languages) {
+            return navigator.languages[0];
+          }
+          return navigator.language || navigator.userLanguage;
         }
 
         _closeDialog() {
