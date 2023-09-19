@@ -33,4 +33,4 @@ def send_keystrokes(keyboard_path, keystrokes):
         WriteError: If a keystroke fails to be written to the HID interface.
     """
     for keystroke in keystrokes:
-        send_keystroke(keyboard_path, keystroke.modifier, keystroke.keycode)
+        send_keystroke(keyboard_path, keystroke)
