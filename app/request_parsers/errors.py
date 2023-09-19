@@ -16,3 +16,7 @@ class InvalidHostnameError(Error):
 
 class InvalidVideoSettingError(Error):
     pass
+
+
+class UnsupportedPastedCharacterError(Error):
+    pass

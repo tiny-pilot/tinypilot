@@ -50,3 +50,19 @@ class KeyboardTest(unittest.TestCase):
             keyboard.release_keys(keyboard_path=input_file.name)
             self.assertEqual(b'\x00\x00\x00\x00\x00\x00\x00\x00',
                              input_file.read())
+
+    def test_send_multiple_keystrokes_to_hid_interface(self):
+        with tempfile.NamedTemporaryFile() as input_file:
+            keyboard.send_keystrokes(keyboard_path=input_file.name,
+                                     keystrokes=[
+                                         hid.Keystroke(keycode=hid.KEYCODE_A),
+                                         hid.Keystroke(keycode=hid.KEYCODE_B),
+                                         hid.Keystroke(keycode=hid.KEYCODE_C)
+                                     ])
+            self.assertEqual(
+                b'\x00\x00\x04\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00\x05\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00'
+                b'\x00\x00\x06\x00\x00\x00\x00\x00'
+                b'\x00\x00\x00\x00\x00\x00\x00\x00', input_file.read())

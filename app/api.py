@@ -2,17 +2,20 @@ import flask
 
 import db.settings
 import debug_logs
+import execute
 import hostname
 import json_response
 import local_system
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.paste
 import request_parsers.video_settings
 import update.launcher
 import update.settings
 import update.status
 import version
 import video_service
+from hid import keyboard as fake_keyboard
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
@@ -325,5 +328,35 @@ def settings_video_apply_post():
         Empty response.
     """
     video_service.restart()
+
+    return json_response.success()
+
+
+@api_blueprint.route('/paste', methods=['POST'])
+def paste_post():
+    """Pastes text onto the target machine.
+
+    Expects a JSON data structure in the request body that contains the
+    following parameters:
+    - text: string
+    - language: string as an IETF language tag
+
+    Example of request body:
+    {
+        "text": "Hello, World!",
+        "language": "en-US"
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        keystrokes = request_parsers.paste.parse_keystrokes(flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+
+    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    execute.background_thread(fake_keyboard.send_keystrokes,
+                              args=(keyboard_path, keystrokes))
 
     return json_response.success()
