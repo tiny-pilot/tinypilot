@@ -7,10 +7,10 @@ _HOSTNAME_PATTERN = re.compile(r'^[-0-9a-z]{1,63}$')
 
 
 def parse_hostname(request):
-    """Parses the hostname property from the request.
-
-    Parses the hostname and checks whether the hostname is valid according to
-    the rules in https://man7.org/linux/man-pages/man7/hostname.7.html.
+    """
+    Parses the hostname property from the request.
+    Checks whether the hostname is valid according to the rules in
+    https://man7.org/linux/man-pages/man7/hostname.7.html
 
     Args:
         request: Flask request with the hostname field as string.
