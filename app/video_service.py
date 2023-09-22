@@ -44,8 +44,21 @@ def _restart_ustreamer():
 def _restart_janus():
     """Restarts Janus in a best-effort manner.
 
+    It also updates the Janus configuration (based on the settings file) before
+    restarting.
+
     In case the restart invocation failed, it ignores (but logs) the error.
     """
+    logger.info('Writing janus configuration...')
+    try:
+        subprocess.check_output(
+            ['sudo', '/opt/tinypilot-privileged/scripts/configure-janus', '-q'],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        logger.error('Failed to configure janus: %s', e)
+        return
+
     logger.info('Triggering janus restart...')
     try:
         subprocess.check_output(

@@ -116,6 +116,22 @@ class Settings:
     def ustreamer_h264_bitrate(self, value):
         self._data['ustreamer_h264_bitrate'] = value
 
+    @property
+    def janus_stun_server(self):
+        return self._data['janus_stun_server']
+
+    @janus_stun_server.setter
+    def janus_stun_server(self, value):
+        self._data['janus_stun_server'] = value
+
+    @property
+    def janus_stun_port(self):
+        return self._data['janus_stun_port']
+
+    @janus_stun_port.setter
+    def janus_stun_port(self, value):
+        self._data['janus_stun_port'] = value
+
 
 def load():
     """Retrieves the current TinyPilot update settings

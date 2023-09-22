@@ -250,13 +250,24 @@ def settings_video_get():
     streaming_mode = db.settings.Settings().get_streaming_mode().value
 
     return json_response.success({
-        'streamingMode': streaming_mode,
-        'frameRate': update_settings.ustreamer_desired_fps,
-        'defaultFrameRate': video_service.DEFAULT_FRAME_RATE,
-        'mjpegQuality': update_settings.ustreamer_quality,
-        'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
-        'h264Bitrate': update_settings.ustreamer_h264_bitrate,
-        'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE
+        'streamingMode':
+            streaming_mode,
+        'frameRate':
+            update_settings.ustreamer_desired_fps,
+        'defaultFrameRate':
+            video_service.DEFAULT_FRAME_RATE,
+        'mjpegQuality':
+            update_settings.ustreamer_quality,
+        'defaultMjpegQuality':
+            video_service.DEFAULT_MJPEG_QUALITY,
+        'h264Bitrate':
+            update_settings.ustreamer_h264_bitrate,
+        'defaultH264Bitrate':
+            video_service.DEFAULT_H264_BITRATE,
+        # TODO join address correctly, also for ipv6; https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlunsplit
+        'stunAddress':
+            update_settings.janus_stun_server + ':' +
+            update_settings.janus_stun_port
     })
 
 
@@ -273,13 +284,15 @@ def settings_video_put():
     - frameRate: int
     - mjpegQuality: int
     - h264Bitrate: int
+    - stunAddress: string (hostname / IP address and port, delimited by colon)
 
     Example of request body:
     {
         "streamingMode": "MJPEG",
         "frameRate": 12,
         "mjpegQuality": 80,
-        "h264Bitrate": 450
+        "h264Bitrate": 450,
+        "stunAddress": "stun.example.com:3478"
     }
 
     Returns:
@@ -294,6 +307,8 @@ def settings_video_put():
             flask.request)
         h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
+        stun_server, stun_port = \
+            request_parsers.video_settings.parse_stun_address(flask.request)
     except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
 
@@ -305,6 +320,8 @@ def settings_video_put():
     update_settings.ustreamer_desired_fps = frame_rate
     update_settings.ustreamer_quality = mjpeg_quality
     update_settings.ustreamer_h264_bitrate = h264_bitrate
+    update_settings.janus_stun_server = stun_server
+    update_settings.janus_stun_port = stun_port
 
     # Store the new parameters. Note: we only actually persist anything if *all*
     # values have passed the validation.

@@ -1,3 +1,5 @@
+import urllib.parse
+
 import db.settings
 from request_parsers import errors
 from request_parsers import json
@@ -55,6 +57,23 @@ def parse_streaming_mode(request):
     except ValueError as e:
         raise errors.InvalidVideoSettingError(
             'The video streaming mode must be `MJPEG` or `H264`.') from e
+
+
+def parse_stun_address(request):
+    """Parses a STUN address from a request.
+
+    Args:
+        request: Flask request object.
+
+    Returns:
+        A tuple containing (1) the hostname as string, and (2) the port as int.
+    """
+    # pylint: disable=unbalanced-tuple-unpacking
+    (stun_address,) = json.parse_json_body(request,
+                                           required_fields=['stunAddress'])
+    # TODO make validation more robust and add more tests
+    split_result = urllib.parse.urlsplit('//' + stun_address)
+    return split_result.hostname, split_result.port
 
 
 def _as_int(string):
