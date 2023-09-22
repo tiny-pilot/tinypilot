@@ -1,5 +1,4 @@
 coverage==7.2.7
-isort[requirements]==4.3.21
 pylint==2.14.2
 pylint-quotes==0.2.3
 ruff==0.0.290

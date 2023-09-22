@@ -41,16 +41,6 @@ coverage report
 # Check that source has correct formatting.
 yapf --diff --recursive ./
 
-# Check correct sorting for imports.
-isort \
-  --recursive \
-  --force-single-line-imports \
-  --top log \
-  --diff \
-  --check-only \
-  --skip-glob=third_party/* \
-  --skip-glob=venv/*
-
 # Run static analysis for Python bugs/cruft.
 ruff check \
   "${SOURCE_DIR}/" \
