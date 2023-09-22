@@ -70,6 +70,8 @@ jobs:
       - image: cimg/python:3.9.17
     steps:
       - checkout
+      - restore_cache:
+          key: &deps-cache venv-cache-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
@@ -80,6 +82,10 @@ jobs:
             pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
+      - save_cache:
+          key: *deps1-cache
+          paths:
+            - "venv"
   build_javascript:
     docker:
       - image: cimg/node:18.16.1
