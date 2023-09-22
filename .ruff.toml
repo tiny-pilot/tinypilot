@@ -1,3 +1,5 @@
+src = ["app"]
+
 select = [
   "F", # Enable pyflakes rules.
   "I", # Enable isort rules.
