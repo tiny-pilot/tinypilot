@@ -71,7 +71,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: venv-cache-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
+          key: &venv-cache venv-cache-v1-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
@@ -83,7 +83,7 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
       - save_cache:
-          key: venv-cache-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
+          key: *venv-cache
           paths:
             - "venv"
   build_javascript:
