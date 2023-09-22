@@ -20,6 +20,7 @@ target-version = "py39"
 # Use consistent quotes regardless of whether it allows us to minimize escape
 # sequences.
 avoid-escape = false
+
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
