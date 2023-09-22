@@ -1,5 +1,6 @@
 select = [
   "F", # Enable pyflakes rules.
+  "I", # Enable isort rules.
   ]
 ignore = []
 
@@ -11,3 +12,7 @@ exclude = [
 
 # Assume Python 3.9
 target-version = "py39"
+
+[isort]
+force-single-line = true
+force-to-top = ["log"]
