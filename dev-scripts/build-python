@@ -52,7 +52,9 @@ isort \
   --skip-glob=venv/*
 
 # Run static analysis for Python bugs/cruft.
-pyflakes "${SOURCE_DIR}/" "${ADDITIONAL_PY_SCRIPTS[@]}"
+ruff check \
+  "${SOURCE_DIR}/" \
+  "${ADDITIONAL_PY_SCRIPTS[@]}"
 
 # Check for other style violations.
 PYTHONPATH="${SOURCE_DIR}" \
