@@ -56,6 +56,8 @@ jobs:
       - run:
           name: Install edid-decode
           command: sudo apt-get update && sudo apt-get install --yes edid-decode
+      - restore_cache:
+          key: &venv-cache venv-cache-v1-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
@@ -65,6 +67,10 @@ jobs:
             . venv/bin/activate
             pip install --requirement requirements.txt
             ./dev-scripts/decode-edid
+      - save_cache:
+          key: *venv-cache
+          paths:
+            - "venv"
   build_python:
     docker:
       - image: cimg/python:3.9.17
@@ -111,6 +117,8 @@ jobs:
       NODE_ENV: development
     steps:
       - checkout
+      - restore_cache:
+          key: &venv-cache venv-cache-v1-{{ checksum "requirements.txt" }}-{{ checksum "dev_requirements.txt" }}
       - run:
           name: Create virtual environment
           command: python3 -m venv venv
@@ -132,6 +140,10 @@ jobs:
       - run:
           name: Run playwright tests
           command: npx playwright test
+      - save_cache:
+          key: *venv-cache
+          paths:
+            - "venv"
       - store_artifacts:
           path: playwright-report
       - store_artifacts:
