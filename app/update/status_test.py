@@ -30,7 +30,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /lib/dummy-b
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
 root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/scripts/update
-""".lstrip().encode('utf-8')
+""".lstrip().encode('utf-8')  # noqa: E501
         mock_read_update_result.return_value = None
 
         status_actual, error_actual = update.status.get()
@@ -47,7 +47,7 @@ root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0 224928  8612 ?        Ss   Apr03   0:01 /sbin/dummy-a
 root        51  0.0  0.0 103152 21264 ?        Ss   Apr03   0:00 /opt/tinypilot-privileged/scripts/update
-""".lstrip().encode('utf-8')
+""".lstrip().encode('utf-8')  # noqa: E501
         # get should ignore this result because an update process
         # is currently running, which takes priority over the previous result.
         mock_read_update_result.return_value = update.result.Result(
