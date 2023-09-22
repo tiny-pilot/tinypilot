@@ -3,6 +3,7 @@ src = ["app"]
 select = [
   "F", # Enable pyflakes rules.
   "I", # Enable isort rules.
+  "Q", # Enable flake8-quotes rules.
   ]
 ignore = []
 
@@ -14,6 +15,14 @@ exclude = [
 
 # Assume Python 3.9
 target-version = "py39"
+
+[flake8-quotes]
+# Use consistent quotes regardless of whether it allows us to minimize escape
+# sequences.
+avoid-escape = false
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
 
 [isort]
 force-single-line = true
