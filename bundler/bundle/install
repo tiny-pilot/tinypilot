@@ -50,7 +50,10 @@ readonly USTREAMER_DEBIAN_PACKAGE
 TINYPILOT_DEBIAN_PACKAGE="$(ls tinypilot*.deb)"
 readonly TINYPILOT_DEBIAN_PACKAGE
 
-apt-get update
+# Update apt package index files, allowing the apt repos to change suite name.
+# See https://github.com/tiny-pilot/tinypilot/issues/764
+apt-get update --allow-releaseinfo-change-suite
+
 apt-get install -y \
   "./${JANUS_DEBIAN_PACKAGE}" \
   "./${USTREAMER_DEBIAN_PACKAGE}" \
