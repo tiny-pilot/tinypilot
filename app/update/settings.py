@@ -118,7 +118,7 @@ class Settings:
 
 
 def load():
-    """Retrieves the current TinyPilot update settings
+    """Retrieves the current TinyPilot update settings.
 
     Parses the contents of settings file and generates a settings object that
     represents the values in the settings file.

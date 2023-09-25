@@ -1,11 +1,24 @@
 src = ["app"]
 
 select = [
+  "D", # Enable pydocstyle rules.
   "F", # Enable pyflakes rules.
   "I", # Enable isort rules.
   "Q", # Enable flake8-quotes rules.
   ]
-ignore = []
+ignore = [
+  # Disable rules that require everything to have a docstring.
+  "D100", # Missing docstring in public module
+  "D101", # Missing docstring in public class
+  "D102", # Missing docstring in public method
+  "D103", # Missing docstring in public function
+  "D104", # Missing docstring in public package
+  "D105", # Missing docstring in magic method
+  "D106", # Missing docstring in public nested class
+  "D107", # Missing docstring in __init__
+  # We sometimes do our own indenting that contradicts pydocstyle expectations.
+  "D214", # Section is over-indented
+]
 
 exclude = [
     ".git",
@@ -28,3 +41,6 @@ multiline-quotes = "double"
 [isort]
 force-single-line = true
 force-to-top = ["log"]
+
+[pydocstyle]
+convention = "google"

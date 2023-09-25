@@ -1,4 +1,5 @@
-"""
+"""Manages database access and schema migrations.
+
 For evolving our database schema over time, we follow the idea of “evolutionary
 database design” (https://www.martinfowler.com/articles/evodb.html), which is
 also used by DB migration tools like Liquibase or the one in Django.

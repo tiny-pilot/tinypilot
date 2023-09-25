@@ -78,7 +78,6 @@ def update_get():
             "updateError": null
         }
     """
-
     status, error = update.status.get()
     return json_response.success({'status': str(status), 'updateError': error})
 
@@ -179,7 +178,7 @@ def hostname_get():
 
 @api_blueprint.route('/hostname', methods=['PUT'])
 def hostname_set():
-    """Changes the machine’s hostname
+    """Changes the machine’s hostname.
 
     Expects a JSON data structure in the request body that contains the
     new hostname as string. Example:

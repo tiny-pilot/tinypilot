@@ -14,8 +14,10 @@ class ProcessResult:
 
 
 class ProcessWithResult(multiprocessing.Process):
-    """A multiprocessing.Process object that keeps track of the child process'
-    result (i.e., the return value and exception raised).
+    """Extension of Process that Keeps track of the child process' result.
+
+    This class is useful for executing a function in a child process and storing
+    the result (i.e., the return value and exception raised).
 
     Inspired by:
     https://stackoverflow.com/a/33599967/3769045

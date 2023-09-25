@@ -4,8 +4,7 @@ from request_parsers import json
 
 
 def parse_keystrokes(request):
-    """
-    Parses HID keystrokes from the request.
+    """Parses HID keystrokes from the request.
 
     Args:
         request: Flask request with the following fields in the JSON body:
