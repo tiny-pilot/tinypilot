@@ -49,5 +49,4 @@ ruff check \
 # Check for other style violations.
 PYTHONPATH="${SOURCE_DIR}" \
   pylint \
-  --load-plugins pylint_quotes \
   "${SOURCE_DIR}" "${ADDITIONAL_PY_SCRIPTS[@]}"

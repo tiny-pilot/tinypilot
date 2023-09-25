@@ -11,11 +11,6 @@ jobs=0
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
 
-# Enforce consistent string quoting rules with the pylint-quotes plugin.
-string-quote=single
-triple-quote=double
-docstring-quote=double
-
 [MESSAGES CONTROL]
 
 # Disable the message, report, category or checker with the given id(s). You
@@ -115,7 +110,7 @@ no-docstring-rgx=^test_
 docstring-min-length=60
 
 [STRING]
-check-quote-consistency=yes
+check-quote-consistency=no
 
 [ELIF]
 
