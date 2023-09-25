@@ -1,0 +1,137 @@
+<template id="video-settings-stun-dropdown-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+    @import "css/icons.css";
+
+    :host {
+      display: flex;
+    }
+
+    .option-hint {
+      font-size: 0.85em;
+      opacity: 0.85;
+    }
+
+    #address {
+      display: none;
+      width: 17em;
+      margin: 1em 0 1em 1em;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 0;
+    }
+
+    :host([selection="custom"]) #address {
+      display: block;
+    }
+
+    :host([selection="custom"]) button {
+      margin-left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    :host(:not([selection="disabled"])) #stun-server-value-disabled,
+    :host(:not([selection="google"])) #stun-server-value-google,
+    :host(:not([selection="ucsb"])) #stun-server-value-ucsb,
+    :host(:not([selection="whoi"])) #stun-server-value-whoi,
+    :host(:not([selection="barracuda"])) #stun-server-value-barracuda {
+      display: none;
+    }
+  </style>
+
+  <input
+    type="text"
+    class="monospace"
+    id="address"
+    placeholder="stun.example.org:3478"
+  />
+  <dropdown-button style="--dropdown-width: 16rem">
+    <button slot="button" class="btn-action">
+      <span id="stun-server-value-disabled">Disabled</span>
+      <span id="stun-server-value-google">Google</span>
+      <span id="stun-server-value-ucsb">UCSB</span>
+      <span id="stun-server-value-whoi">WHOI</span>
+      <span id="stun-server-value-barracuda">Barracuda Networks</span>
+      <span class="icon-arrow"></span>
+    </button>
+    <li slot="item" id="stun-server-option-disabled">
+      <div>Disabled</div>
+      <div class="option-hint"></div>
+    </li>
+    <li slot="item" id="stun-server-option-google">
+      <div>Google</div>
+    </li>
+    <li slot="item" id="stun-server-option-ucsb">
+      <div>UCSB</div>
+      <div class="option-hint">University of California, Santa Barbara</div>
+    </li>
+    <li slot="item" id="stun-server-option-whoi">
+      <div>WHOI</div>
+      <div class="option-hint">Woods Hole Oceanographic Institution</div>
+    </li>
+    <li slot="item" id="stun-server-option-barracuda">
+      <div>Barracuda Networks</div>
+    </li>
+    <li slot="item" id="stun-server-option-gmx">
+      <div>GMX</div>
+    </li>
+    <li slot="item" id="stun-server-option-custom">
+      <div>Custom</div>
+      <div class="option-hint">Specify manually</div>
+    </li>
+  </dropdown-button>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector(
+      "#video-settings-stun-dropdown-template"
+    );
+
+    const OPTIONS = [
+      { name: "disabled", address: null },
+      { name: "google", address: "stun.l.google.com:19302" },
+      { name: "ucsb", address: "stun.ucsb.edu:3478" },
+      { name: "whoi", address: "stun.whoi.edu:3478" },
+      { name: "barracuda", address: "stun.barracuda.com:3478" },
+      { name: "gmx", address: "stun.gmx.de:3478" },
+      { name: "custom", address: "" },
+    ];
+
+    customElements.define(
+      "video-settings-stun-dropdown",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.elements = {
+            address: this.shadowRoot.querySelector("#address"),
+          };
+          OPTIONS.forEach((option) =>
+            this.shadowRoot
+              .querySelector(`#stun-server-option-${option.name}`)
+              .addEventListener("click", () => {
+                this.setAttribute("selection", option.name);
+                this.elements.address.value = option.address;
+              })
+          );
+        }
+
+        getValue() {
+          return this.elements.address.value;
+        }
+
+        initialize(stunAddress) {
+          const option = OPTIONS.find(
+            (option) => option.address === stunAddress
+          );
+          this.setAttribute("selection", option ? option.name : "custom");
+          this.elements.address.value = stunAddress;
+        }
+      }
+    );
+  })();
+</script>

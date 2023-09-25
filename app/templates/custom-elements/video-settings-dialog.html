@@ -27,14 +27,9 @@
       margin-bottom: 1.5rem;
     }
 
-    .setting-mjpeg,
-    .setting-h264 {
+    :host(:not([streaming-mode="MJPEG"])) .setting-mjpeg,
+    :host(:not([streaming-mode="H264"])) .setting-h264 {
       display: none;
-    }
-
-    :host([streaming-mode="MJPEG"]) .setting-mjpeg,
-    :host([streaming-mode="H264"]) .setting-h264 {
-      display: flex;
     }
 
     .streaming-mode-value-mjpeg,
@@ -79,6 +74,48 @@
     .streaming-mode-hint {
       font-size: 0.85em;
       opacity: 0.85;
+    }
+
+    .advanced-settings {
+      display: none;
+      margin-left: 10%;
+      margin-right: 10%;
+      position: relative;
+    }
+
+    #advanced-settings-show {
+      font-size: 0.9em;
+    }
+
+    :host([show-advanced-h264-settings]) .advanced-settings {
+      display: block;
+    }
+
+    :host([show-advanced-h264-settings]) #advanced-settings-show {
+      display: none;
+    }
+
+    h4 {
+      border-bottom: 1px solid #6c6c6c;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
+    }
+
+    .setting-stun {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #advanced-settings-hide {
+      position: absolute;
+      right: 0.5em;
+      font-size: 0.9em;
+      margin-top: 0.1em;
+    }
+
+    .stun-explanation {
+      margin-bottom: 0;
     }
   </style>
   <div id="loading">
@@ -136,6 +173,21 @@
         <div id="h264-bitrate-value" class="setting-value"></div>
         <div id="h264-bitrate-reset" class="btn-text reset-button">
           Reset to Default
+        </div>
+      </div>
+      <div id="advanced-settings-show" class="btn-text">Show Advanced Settings</div>
+      <div class="setting-h264 advanced-settings">
+        <span id="advanced-settings-hide" class="btn-text">(Hide)</span>
+        <h4>Advanced Settings</h4>
+        <p class="stun-explanation">
+          If your TinyPilot device resides in a remote network, and you access
+          it from a non-public IP address, you need to facilitate the H.264
+          connection via an external STUN server. Learn more in the
+          <a href="#">TinyPilot online documentation</a>.
+        </p>
+        <div class="setting-stun">
+          <div>STUN Server:</div>
+          <video-settings-stun-dropdown></video-settings-stun-dropdown>
         </div>
       </div>
     </div>
@@ -219,6 +271,9 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
+            stunDropdown: this.shadowRoot.querySelector(
+              "video-settings-stun-dropdown"
+            ),
           };
           this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
@@ -265,6 +320,12 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
+          this.shadowRoot.querySelector("#advanced-settings-show").addEventListener("click", () => {
+            this.toggleAttribute("show-advanced-h264-settings", true);
+          });
+          this.shadowRoot.querySelector("#advanced-settings-hide").addEventListener("click", () => {
+            this.toggleAttribute("show-advanced-h264-settings", false);
+          });
         }
 
         get state() {
@@ -310,6 +371,10 @@
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
+
+                this.elements.stunDropdown.initialize(
+                  /*stunAddress=*/ "stun.l.foo.com:19302"
+                );
               }
             )
             .catch((error) => {
