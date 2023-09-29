@@ -15,5 +15,5 @@ HOST=0.0.0.0 \
   DEBUG=1 \
   USE_RELOADER=1 \
   APP_SETTINGS_FILE=../dev_app_settings.cfg \
-  TINYPILOT_HOME_DIR="$(realpath ~)" \
+  TINYPILOT_HOME_DIR="${TINYPILOT_HOME_DIR:-$(realpath ~)}" \
   ./app/main.py
