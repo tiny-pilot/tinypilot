@@ -125,7 +125,7 @@ jobs:
           command: sudo ./dev-scripts/enable-passwordless-sudo
       - run:
           name: Run playwright tests
-          command: npx playwright test
+          command: ./dev-scripts/run-e2e-tests
       - store_artifacts:
           path: playwright-report
       - store_artifacts:
