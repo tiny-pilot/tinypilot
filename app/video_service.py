@@ -6,6 +6,8 @@ import db.settings
 DEFAULT_FRAME_RATE = 30
 DEFAULT_MJPEG_QUALITY = 80
 DEFAULT_H264_BITRATE = 5000
+DEFAULT_H264_STUN_SERVER = None
+DEFAULT_H264_STUN_PORT = None
 
 logger = logging.getLogger(__name__)
 

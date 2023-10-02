@@ -63,8 +63,8 @@ _DEFAULTS = {
     'ustreamer_edid': _DEFAULT_TC358743_EDID,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
-    'janus_stun_server': '',
-    'janus_stun_port': '',
+    'janus_stun_server': video_service.DEFAULT_H264_STUN_SERVER,
+    'janus_stun_port': video_service.DEFAULT_H264_STUN_PORT,
 }
 
 
