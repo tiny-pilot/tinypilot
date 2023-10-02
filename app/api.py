@@ -249,6 +249,7 @@ def settings_video_get():
 
     streaming_mode = db.settings.Settings().get_streaming_mode().value
 
+    h264_stun_address = None
     if update_settings.janus_stun_server:
         # TODO join address correctly, also for ipv6; https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlunsplit
         h264_stun_address = update_settings.janus_stun_server + ':' + str(update_settings.janus_stun_port)
