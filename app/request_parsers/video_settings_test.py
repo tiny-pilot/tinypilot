@@ -160,28 +160,30 @@ class VideoStreamingModeParserTest(unittest.TestCase):
                 make_mock_request({'something': 'MJPEG'}))
 
 
-class VideoStreamingStunParserTest(unittest.TestCase):
+class VideoH264StunParserTest(unittest.TestCase):
 
     def test_accept_valid_values(self):
         self.assertEqual(
             ('stun.example.com', 5672),
             video_settings.parse_stun_address(
-                make_mock_request({'stunAddress': 'stun.example.com:5672'})))
+                make_mock_request({'h264StunAddress': 'stun.example.com:5672'
+                                  })))
 
         self.assertEqual(
             ('192.168.12.82', 15985),
             video_settings.parse_stun_address(
-                make_mock_request({'stunAddress': '192.168.12.82:15985'})))
+                make_mock_request({'h264StunAddress': '192.168.12.82:15985'})))
 
         self.assertEqual(
             ('0000:0000:0000:0000:0000:ffff:c0a8:0c52', 5672),
             video_settings.parse_stun_address(
                 make_mock_request({
-                    'stunAddress':
+                    'h264StunAddress':
                         '[0000:0000:0000:0000:0000:ffff:c0a8:0c52]:5672'
                 })))
 
         self.assertEqual(
             ('::ffff:c0a8:c52', 5672),
             video_settings.parse_stun_address(
-                make_mock_request({'stunAddress': '[::ffff:c0a8:c52]:5672'})))
+                make_mock_request({'h264StunAddress': '[::ffff:c0a8:c52]:5672'
+                                  })))
