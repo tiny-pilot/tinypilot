@@ -70,8 +70,10 @@ def parse_stun_address(request):
     """
     # pylint: disable=unbalanced-tuple-unpacking
     (stun_address,) = json.parse_json_body(request,
-                                           required_fields=['stunAddress'])
+                                           required_fields=['h264StunAddress'])
     # TODO make validation more robust and add more tests
+    if stun_address is None:
+        return None, None
     split_result = urllib.parse.urlsplit('//' + stun_address)
     return split_result.hostname, split_result.port
 
