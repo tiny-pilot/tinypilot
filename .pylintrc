@@ -11,11 +11,6 @@ jobs=0
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
 
-# Enforce consistent string quoting rules with the pylint-quotes plugin.
-string-quote=single
-triple-quote=double
-docstring-quote=double
-
 [MESSAGES CONTROL]
 
 # Disable the message, report, category or checker with the given id(s). You
@@ -39,10 +34,10 @@ disable=
   missing-class-docstring,
   superfluous-parens,
   too-many-lines,       # We can decide on our own which files are too long
-  multiple-imports,     # We're using isort to lint imports
-  ungrouped-imports,    # We're using isort to lint imports
-  wrong-import-order,   # We're using isort to lint imports
-  wrong-import-position # We're using isort to lint imports
+  multiple-imports,     # We're using ruff to lint imports
+  ungrouped-imports,    # We're using ruff to lint imports
+  wrong-import-order,   # We're using ruff to lint imports
+  wrong-import-position # We're using ruff to lint imports
 
 [REPORTS]
 
@@ -115,7 +110,7 @@ no-docstring-rgx=^test_
 docstring-min-length=60
 
 [STRING]
-check-quote-consistency=yes
+check-quote-consistency=no
 
 [ELIF]
 

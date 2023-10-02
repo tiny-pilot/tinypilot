@@ -78,7 +78,6 @@ def update_get():
             "updateError": null
         }
     """
-
     status, error = update.status.get()
     return json_response.success({'status': str(status), 'updateError': error})
 
@@ -179,7 +178,7 @@ def hostname_get():
 
 @api_blueprint.route('/hostname', methods=['PUT'])
 def hostname_set():
-    """Changes the machine’s hostname
+    """Changes the machine’s hostname.
 
     Expects a JSON data structure in the request body that contains the
     new hostname as string. Example:
@@ -249,25 +248,20 @@ def settings_video_get():
 
     streaming_mode = db.settings.Settings().get_streaming_mode().value
 
+    h264_stun_address = None
     if update_settings.janus_stun_server:
         # TODO join address correctly, also for ipv6; https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlunsplit
-        h264_stun_address = update_settings.janus_stun_server + ':' + str(update_settings.janus_stun_port)
+        h264_stun_address = update_settings.janus_stun_server + ':' + str(
+            update_settings.janus_stun_port)
 
     return json_response.success({
-        'streamingMode':
-            streaming_mode,
-        'frameRate':
-            update_settings.ustreamer_desired_fps,
-        'defaultFrameRate':
-            video_service.DEFAULT_FRAME_RATE,
-        'mjpegQuality':
-            update_settings.ustreamer_quality,
-        'defaultMjpegQuality':
-            video_service.DEFAULT_MJPEG_QUALITY,
-        'h264Bitrate':
-            update_settings.ustreamer_h264_bitrate,
-        'defaultH264Bitrate':
-            video_service.DEFAULT_H264_BITRATE,
+        'streamingMode': streaming_mode,
+        'frameRate': update_settings.ustreamer_desired_fps,
+        'defaultFrameRate': video_service.DEFAULT_FRAME_RATE,
+        'mjpegQuality': update_settings.ustreamer_quality,
+        'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
+        'h264Bitrate': update_settings.ustreamer_h264_bitrate,
+        'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE,
         'h264StunAddress': h264_stun_address,
         'defaultH264StunAddress': None,
     })
