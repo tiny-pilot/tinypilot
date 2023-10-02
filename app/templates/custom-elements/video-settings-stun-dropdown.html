@@ -35,8 +35,7 @@
     :host(:not([selection="disabled"])) #stun-server-value-disabled,
     :host(:not([selection="google"])) #stun-server-value-google,
     :host(:not([selection="ucsb"])) #stun-server-value-ucsb,
-    :host(:not([selection="whoi"])) #stun-server-value-whoi,
-    :host(:not([selection="barracuda"])) #stun-server-value-barracuda {
+    :host(:not([selection="gmx"])) #stun-server-value-gmx {
       display: none;
     }
   </style>
@@ -52,8 +51,7 @@
       <span id="stun-server-value-disabled">Disabled</span>
       <span id="stun-server-value-google">Google</span>
       <span id="stun-server-value-ucsb">UCSB</span>
-      <span id="stun-server-value-whoi">WHOI</span>
-      <span id="stun-server-value-barracuda">Barracuda Networks</span>
+      <span id="stun-server-value-gmx">GMX</span>
       <span class="icon-arrow"></span>
     </button>
     <li slot="item" id="stun-server-option-disabled">
@@ -66,13 +64,6 @@
     <li slot="item" id="stun-server-option-ucsb">
       <div>UCSB</div>
       <div class="option-hint">University of California, Santa Barbara</div>
-    </li>
-    <li slot="item" id="stun-server-option-whoi">
-      <div>WHOI</div>
-      <div class="option-hint">Woods Hole Oceanographic Institution</div>
-    </li>
-    <li slot="item" id="stun-server-option-barracuda">
-      <div>Barracuda Networks</div>
     </li>
     <li slot="item" id="stun-server-option-gmx">
       <div>GMX</div>
@@ -94,8 +85,6 @@
       { name: "disabled", address: null },
       { name: "google", address: "stun.l.google.com:19302" },
       { name: "ucsb", address: "stun.ucsb.edu:3478" },
-      { name: "whoi", address: "stun.whoi.edu:3478" },
-      { name: "barracuda", address: "stun.barracuda.com:3478" },
       { name: "gmx", address: "stun.gmx.de:3478" },
       { name: "custom", address: "" },
     ];
@@ -115,21 +104,35 @@
               .querySelector(`#stun-server-option-${option.name}`)
               .addEventListener("click", () => {
                 this.setAttribute("selection", option.name);
-                this.elements.address.value = option.address;
               })
           );
         }
 
         getValue() {
-          return this.elements.address.value;
+          const selectedOption = this._findOption(
+            (option) => option.name === this.getAttribute("selection")
+          );
+          if (selectedOption.name === "custom") {
+            return this.elements.address.value;
+          }
+          return selectedOption.address;
         }
 
         initialize(stunAddress) {
-          const option = OPTIONS.find(
+          const selectedOption = this._findOption(
             (option) => option.address === stunAddress
           );
-          this.setAttribute("selection", option ? option.name : "custom");
-          this.elements.address.value = stunAddress;
+          this.setAttribute("selection", selectedOption.name);
+          if (selectedOption.name === "custom") {
+            this.elements.address.value = stunAddress;
+          }
+        }
+
+        _findOption(predicate) {
+          return (
+            OPTIONS.find(predicate) ||
+            OPTIONS.find((option) => option.name === "custom")
+          );
         }
       }
     );
