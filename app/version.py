@@ -22,7 +22,9 @@ _VERSION_FILE = './VERSION'
 
 @dataclasses.dataclass
 class UpdateInfo:
-    """This data structure reflects the response of Gatekeeper’s
+    """Metadata about a TinyPilot update package.
+
+    This data structure reflects the response of Gatekeeper’s
     `/available-update` routes.
     """
     version: str
@@ -63,8 +65,7 @@ def local_version():
 
 
 def latest_version():
-    """Requests info about the latest release from the TinyPilot Gatekeeper REST
-    API.
+    """Requests the latest release info from the TinyPilot Gatekeeper REST API.
 
     Returns:
         An UpdateInfo object, containing the information about the release.
