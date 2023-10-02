@@ -175,19 +175,24 @@
           Reset to Default
         </div>
       </div>
-      <div id="advanced-settings-show" class="btn-text">Show Advanced Settings</div>
-      <div class="setting-h264 advanced-settings">
-        <span id="advanced-settings-hide" class="btn-text">(Hide)</span>
-        <h4>Advanced Settings</h4>
-        <p class="stun-explanation">
-          If your TinyPilot device resides in a remote network, and you access
-          it from a non-public IP address, you need to facilitate the H.264
-          connection via an external STUN server. Learn more in the
-          <a href="#">TinyPilot online documentation</a>.
-        </p>
-        <div class="setting-stun">
-          <div>STUN Server:</div>
-          <video-settings-stun-dropdown></video-settings-stun-dropdown>
+      <div class="setting-h264">
+        <div id="advanced-settings-show" class="btn-text">
+          Show Advanced Settings
+        </div>
+        <div class="advanced-settings">
+          <span id="advanced-settings-hide" class="btn-text">(Hide)</span>
+          <h4>Advanced Settings</h4>
+          <p class="stun-explanation">
+            A STUN server enables H.264 streaming when your web browser is
+            unable to make a direct network connection to your TinyPilot device.
+            <a href="https://tinypilotkvm.com/faq/stun-server"
+              >Do I need a STUN server?</a
+            >
+          </p>
+          <div class="setting-stun">
+            <div>STUN Server:</div>
+            <video-settings-stun-dropdown></video-settings-stun-dropdown>
+          </div>
         </div>
       </div>
     </div>
@@ -320,12 +325,16 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
-          this.shadowRoot.querySelector("#advanced-settings-show").addEventListener("click", () => {
-            this.toggleAttribute("show-advanced-h264-settings", true);
-          });
-          this.shadowRoot.querySelector("#advanced-settings-hide").addEventListener("click", () => {
-            this.toggleAttribute("show-advanced-h264-settings", false);
-          });
+          this.shadowRoot
+            .querySelector("#advanced-settings-show")
+            .addEventListener("click", () => {
+              this.toggleAttribute("show-advanced-h264-settings", true);
+            });
+          this.shadowRoot
+            .querySelector("#advanced-settings-hide")
+            .addEventListener("click", () => {
+              this.toggleAttribute("show-advanced-h264-settings", false);
+            });
         }
 
         get state() {
@@ -353,6 +362,8 @@
                 defaultMjpegQuality,
                 h264Bitrate,
                 defaultH264Bitrate,
+                h264StunAddress,
+                defaultH264StunAddress,
               }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
@@ -369,12 +380,12 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
+                this._setH264StunAddress(h264StunAddress);
+                this._initialSettings.stunAddress = h264StunAddress;
+                this._defaultSettings.stunAddress = defaultH264StunAddress;
+
                 this._refreshButtons();
                 this.state = this.states.EDIT;
-
-                this.elements.stunDropdown.initialize(
-                  /*stunAddress=*/ "stun.l.foo.com:19302"
-                );
               }
             )
             .catch((error) => {
@@ -459,6 +470,14 @@
           this._refreshButtons();
         }
 
+        _getH264StunAddress() {
+          return this.elements.stunDropdown.getValue();
+        }
+
+        _setH264StunAddress(h264StunAddress) {
+          this.elements.stunDropdown.initialize(h264StunAddress);
+        }
+
         /**
          * Adjust all buttons in the dialog, since they might need to respond to
          * the currently selected input values.
@@ -470,6 +489,7 @@
             [this._getFrameRate(), this._initialSettings.frameRate],
             [this._getMjpegQuality(), this._initialSettings.mjpegQuality],
             [this._getH264Bitrate(), this._initialSettings.h264Bitrate],
+            [this._getH264StunAddress(), this._initialSettings.h264StunAddress],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
 
@@ -506,6 +526,7 @@
             frameRate: this._getFrameRate(),
             mjpegQuality: this._getMjpegQuality(),
             h264Bitrate: this._getH264Bitrate(),
+            h264StunAddress: this._getH264StunAddress(),
           })
             .then(applyVideoSettings)
             .then(() =>
