@@ -1,0 +1,195 @@
+<template id="video-settings-stun-input-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+    @import "css/icons.css";
+
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .option-hint {
+      font-size: 0.85em;
+      opacity: 0.85;
+    }
+
+    .row-custom input {
+      margin-left: 0.5em;
+      margin-right: 1em;
+    }
+
+    :host(:not([selection="custom"])) .row-custom {
+      display: none;
+    }
+
+    #server {
+      flex: 1;
+      max-width: 18em;
+    }
+
+    #port {
+      width: 6ch; /* The maximum port number can be 65535. */
+    }
+
+    :host(:not([selection="disabled"])) #stun-server-value-disabled,
+    :host(:not([selection="google"])) #stun-server-value-google,
+    :host(:not([selection="ucsb"])) #stun-server-value-ucsb,
+    :host(:not([selection="gmx"])) #stun-server-value-gmx,
+    :host(:not([selection="custom"])) #stun-server-value-custom {
+      display: none;
+    }
+  </style>
+
+  <div class="row">
+    <div>STUN Server:</div>
+    <dropdown-button style="--dropdown-width: 16rem">
+      <button slot="button" class="btn-action">
+        <span id="stun-server-value-disabled">Disabled</span>
+        <span id="stun-server-value-google">Google</span>
+        <span id="stun-server-value-ucsb">UCSB</span>
+        <span id="stun-server-value-gmx">GMX</span>
+        <span id="stun-server-value-custom">Custom</span>
+        <span class="icon-arrow"></span>
+      </button>
+      <li slot="item" id="stun-server-option-disabled">
+        <div>Disabled</div>
+        <div class="option-hint"></div>
+      </li>
+      <li slot="item" id="stun-server-option-google">
+        <div>Google</div>
+      </li>
+      <li slot="item" id="stun-server-option-ucsb">
+        <div>UCSB</div>
+        <div class="option-hint">University of California, Santa Barbara</div>
+      </li>
+      <li slot="item" id="stun-server-option-gmx">
+        <div>GMX</div>
+      </li>
+      <li slot="item" id="stun-server-option-custom">
+        <div>Custom</div>
+        <div class="option-hint">Specify manually</div>
+      </li>
+    </dropdown-button>
+  </div>
+
+  <div class="row row-custom">
+    Host:
+    <input
+      type="text"
+      class="monospace"
+      id="server"
+      placeholder="stun.example.org"
+    />
+    Port:
+    <input
+      type="text"
+      class="monospace"
+      id="port"
+      placeholder="3478"
+      maxlength="5"
+    />
+  </div>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector(
+      "#video-settings-stun-input-template"
+    );
+
+    const OPTIONS = [
+      { name: "disabled", server: null, port: null },
+      { name: "google", server: "stun.l.google.com", port: 19302 },
+      { name: "ucsb", server: "stun.ucsb.edu", port: 3478 },
+      { name: "gmx", server: "stun.gmx.de", port: 3478 },
+      { name: "custom", server: "", port: null },
+    ];
+
+    class InputChangedEvent extends CustomEvent {
+      constructor() {
+        super("h264-stun-value-changed", {
+          bubbles: true,
+          composed: true,
+        });
+      }
+    }
+
+    customElements.define(
+      "video-settings-stun-input",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.elements = {
+            server: this.shadowRoot.querySelector("#server"),
+            port: this.shadowRoot.querySelector("#port"),
+          };
+          this.elements.port.addEventListener("change", () => {
+            this.dispatchEvent(new InputChangedEvent());
+          });
+          this.elements.port.addEventListener("change", () => {
+            this.dispatchEvent(new InputChangedEvent());
+          });
+          OPTIONS.forEach((option) =>
+            this.shadowRoot
+              .querySelector(`#stun-server-option-${option.name}`)
+              .addEventListener("click", () => {
+                this.setAttribute("selection", option.name);
+                this.dispatchEvent(new InputChangedEvent());
+              })
+          );
+        }
+
+        /**
+         * @returns {{server, port}}
+         */
+        getValue() {
+          const selectedOption = this._findOption(
+            (option) => option.name === this.getAttribute("selection")
+          );
+          if (selectedOption.name === "custom") {
+            return {
+              h264StunServer: this.elements.server.value,
+              h264StunPort: this.elements.port.value,
+            };
+          }
+          return {
+            h264StunServer: selectedOption.server,
+            h264StunPort: selectedOption.port,
+          };
+        }
+
+        /**
+         * @param {string} h264StunServer
+         * @param {number} h264StunPort
+         */
+        initialize(h264StunServer, h264StunPort) {
+          const selectedOption = this._findOption(
+            (option) =>
+              option.server === h264StunServer && option.port === h264StunPort
+          );
+          this.setAttribute("selection", selectedOption.name);
+          if (selectedOption.name === "custom") {
+            this.elements.server.value = h264StunServer;
+            this.elements.port.value = h264StunPort;
+          }
+        }
+
+        _findOption(predicate) {
+          return (
+            OPTIONS.find(predicate) ||
+            OPTIONS.find((option) => option.name === "custom")
+          );
+        }
+      }
+    );
+  })();
+</script>

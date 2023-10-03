@@ -101,12 +101,6 @@
       margin-top: 2em;
     }
 
-    .setting-stun {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     #advanced-settings-hide {
       position: absolute;
       right: 0.5em;
@@ -189,10 +183,7 @@
               >Do I need a STUN server?</a
             >
           </p>
-          <div class="setting-stun">
-            <div>STUN Server:</div>
-            <video-settings-stun-dropdown></video-settings-stun-dropdown>
-          </div>
+          <video-settings-stun-input></video-settings-stun-input>
         </div>
       </div>
       <inline-message variant="error" id="stun-input-error">
@@ -281,8 +272,8 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
-            h264StunDropdown: this.shadowRoot.querySelector(
-              "video-settings-stun-dropdown"
+            h264StunInput: this.shadowRoot.querySelector(
+              "video-settings-stun-input"
             ),
             h264StunInputError:
               this.shadowRoot.querySelector("#stun-input-error"),
@@ -332,8 +323,8 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
-          this.elements.h264StunDropdown.addEventListener(
-            "h264-stun-address-changed",
+          this.elements.h264StunInput.addEventListener(
+            "h264-stun-value-changed",
             () => {
               this._refreshButtons();
             }
@@ -376,8 +367,10 @@
                 defaultMjpegQuality,
                 h264Bitrate,
                 defaultH264Bitrate,
-                h264StunAddress,
-                defaultH264StunAddress,
+                h264StunServer,
+                defaultH264StunServer,
+                h264StunPort,
+                defaultH264StunPort,
               }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
@@ -394,9 +387,14 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
-                this.elements.h264StunDropdown.initialize(h264StunAddress);
-                this._initialSettings.h264StunAddress = h264StunAddress;
-                this._defaultSettings.h264StunAddress = defaultH264StunAddress;
+                this.elements.h264StunInput.initialize(
+                  h264StunServer,
+                  h264StunPort
+                );
+                this._initialSettings.h264StunServer = h264StunServer;
+                this._defaultSettings.h264StunServer = defaultH264StunServer;
+                this._initialSettings.h264StunPort = h264StunPort;
+                this._defaultSettings.h264StunPort = defaultH264StunPort;
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
@@ -485,24 +483,21 @@
         }
 
         /**
-         * @returns {string}
-         */
-        _getH264StunAddress() {
-          return this.elements.h264StunDropdown.getValue();
-        }
-
-        /**
          * Adjust all buttons in the dialog, since they might need to respond to
          * the currently selected input values.
          */
         _refreshButtons() {
+          const { h264StunServer, h264StunPort } =
+            this.elements.h264StunInput.getValue();
+
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
             [this._getStreamingMode(), this._initialSettings.streamingMode],
             [this._getFrameRate(), this._initialSettings.frameRate],
             [this._getMjpegQuality(), this._initialSettings.mjpegQuality],
             [this._getH264Bitrate(), this._initialSettings.h264Bitrate],
-            [this._getH264StunAddress(), this._initialSettings.h264StunAddress],
+            [h264StunServer, this._initialSettings.h264StunServer],
+            [h264StunPort, this._initialSettings.h264StunPort],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
 
@@ -534,12 +529,16 @@
 
         _saveSettings() {
           this.state = this.states.SAVING;
+
+          const { h264StunServer, h264StunPort } =
+            this.elements.h264StunInput.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),
             mjpegQuality: this._getMjpegQuality(),
             h264Bitrate: this._getH264Bitrate(),
-            h264StunAddress: this._getH264StunAddress(),
+            h264StunServer,
+            h264StunPort,
           })
             .then(applyVideoSettings)
             .then(() =>
