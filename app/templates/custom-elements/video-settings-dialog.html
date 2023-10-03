@@ -83,16 +83,8 @@
       position: relative;
     }
 
-    #advanced-settings-show {
-      font-size: 0.9em;
-    }
-
     :host([show-advanced-h264-settings]) .advanced-settings {
       display: block;
-    }
-
-    :host([show-advanced-h264-settings]) #advanced-settings-show {
-      display: none;
     }
 
     h4 {
@@ -101,11 +93,19 @@
       margin-top: 2em;
     }
 
-    #advanced-settings-hide {
-      position: absolute;
-      right: 0.5em;
+    #advanced-settings-show-button {
       font-size: 0.9em;
+    }
+
+    :host([show-advanced-h264-settings]) #advanced-settings-show-button {
+      display: none;
+    }
+
+    #advanced-settings-hide-button {
+      position: absolute;
       margin-top: 0.1em;
+      margin-left: 6em;
+      font-size: 0.9em;
     }
 
     .stun-explanation {
@@ -170,11 +170,13 @@
         </div>
       </div>
       <div class="setting-h264">
-        <div id="advanced-settings-show" class="btn-text">
+        <div id="advanced-settings-show-button" class="btn-text">
           Show Advanced Settings
         </div>
         <div class="advanced-settings">
-          <span id="advanced-settings-hide" class="btn-text">(Hide)</span>
+          <span id="advanced-settings-hide-button" class="btn-text"
+            >(Hide)</span
+          >
           <h4>Advanced Settings</h4>
           <p class="stun-explanation">
             A STUN server enables H.264 streaming when your web browser is
@@ -330,12 +332,12 @@
             }
           );
           this.shadowRoot
-            .querySelector("#advanced-settings-show")
+            .querySelector("#advanced-settings-show-button")
             .addEventListener("click", () => {
               this.toggleAttribute("show-advanced-h264-settings", true);
             });
           this.shadowRoot
-            .querySelector("#advanced-settings-hide")
+            .querySelector("#advanced-settings-hide-button")
             .addEventListener("click", () => {
               this.toggleAttribute("show-advanced-h264-settings", false);
             });
