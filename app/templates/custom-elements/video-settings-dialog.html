@@ -358,7 +358,12 @@
 
         initialize() {
           this.state = this.states.LOADING;
+
+          // Reset all transient view state.
           this.elements.h264StunInputError.hide();
+          this.toggleAttribute("show-advanced-h264-settings", false);
+
+          // Fetch and fill in data from server.
           getVideoSettings()
             .then(
               ({
