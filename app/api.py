@@ -248,12 +248,6 @@ def settings_video_get():
 
     streaming_mode = db.settings.Settings().get_streaming_mode().value
 
-    h264_stun_address = None
-    if update_settings.janus_stun_server:
-        # TODO join address correctly, also for ipv6; https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlunsplit
-        h264_stun_address = update_settings.janus_stun_server + ':' + str(
-            update_settings.janus_stun_port)
-
     return json_response.success({
         'streamingMode': streaming_mode,
         'frameRate': update_settings.ustreamer_desired_fps,
@@ -262,8 +256,10 @@ def settings_video_get():
         'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
         'h264Bitrate': update_settings.ustreamer_h264_bitrate,
         'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE,
-        'h264StunAddress': h264_stun_address,
-        'defaultH264StunAddress': None,
+        'h264StunServer': update_settings.janus_stun_server,
+        'defaultH264StunServer': video_service.DEFAULT_H264_STUN_SERVER,
+        'h264StunPort': update_settings.janus_stun_port,
+        'defaultH264StunPort': video_service.DEFAULT_H264_STUN_PORT,
     })
 
 
@@ -280,7 +276,8 @@ def settings_video_put():
     - frameRate: int
     - mjpegQuality: int
     - h264Bitrate: int
-    - h264StunAddress: string (hostname / IP address and port, colon-delimited)
+    - h264StunServer: string (hostname or IP address)
+    - h264StunPort: int
 
     Example of request body:
     {
@@ -288,7 +285,8 @@ def settings_video_put():
         "frameRate": 12,
         "mjpegQuality": 80,
         "h264Bitrate": 450,
-        "h264StunAddress": "stun.example.com:3478"
+        "h264StunServer": "stun.example.com",
+        "h264StunPort": 3478
     }
 
     Returns:
@@ -304,7 +302,8 @@ def settings_video_put():
         h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
         h264_stun_server, h264_stun_port = \
-            request_parsers.video_settings.parse_stun_address(flask.request)
+            request_parsers.video_settings.parse_h264_stun_address(
+                flask.request)
     except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
 
