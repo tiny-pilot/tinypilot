@@ -1,4 +1,4 @@
-<template id="video-settings-stun-input-template">
+<template id="video-settings-stun-section-template">
   <style>
     @import "css/style.css";
     @import "css/button.css";
@@ -7,6 +7,10 @@
     :host {
       display: flex;
       flex-direction: column;
+    }
+
+    p {
+      margin: 0 1em;
     }
 
     .row {
@@ -47,6 +51,17 @@
     }
   </style>
 
+  <p>
+    A STUN server enables H.264 streaming when your web browser is unable to
+    make a direct network connection to your TinyPilot device.
+    <a
+      href="https://tinypilotkvm.com/faq/stun-server"
+      target="_blank"
+      rel="noopener noreferer"
+    >
+      Do I need a STUN server?
+    </a>
+  </p>
   <div class="row">
     <div>STUN Server:</div>
     <dropdown-button style="--dropdown-width: 16rem">
@@ -101,7 +116,7 @@
 <script type="module">
   (function () {
     const template = document.querySelector(
-      "#video-settings-stun-input-template"
+      "#video-settings-stun-section-template"
     );
 
     const OPTIONS = [
@@ -109,7 +124,7 @@
       { name: "google", server: "stun.l.google.com", port: 19302 },
       { name: "ucsb", server: "stun.ucsb.edu", port: 3478 },
       { name: "gmx", server: "stun.gmx.de", port: 3478 },
-      { name: "custom", server: "", port: null },
+      { name: "custom" },
     ];
 
     class InputChangedEvent extends CustomEvent {
@@ -122,7 +137,7 @@
     }
 
     customElements.define(
-      "video-settings-stun-input",
+      "video-settings-stun-section",
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
@@ -132,10 +147,10 @@
             server: this.shadowRoot.querySelector("#server"),
             port: this.shadowRoot.querySelector("#port"),
           };
-          this.elements.port.addEventListener("change", () => {
+          this.elements.server.addEventListener("input", () => {
             this.dispatchEvent(new InputChangedEvent());
           });
-          this.elements.port.addEventListener("change", () => {
+          this.elements.port.addEventListener("input", () => {
             this.dispatchEvent(new InputChangedEvent());
           });
           OPTIONS.forEach((option) =>
@@ -149,16 +164,22 @@
         }
 
         /**
-         * @returns {{server, port}}
+         * @typedef {Object} StunAddress
+         * @property {string} h264StunServer
+         * @property {number} [h264StunPort]
+         *
+         * @returns {StunAddress}
          */
         getValue() {
           const selectedOption = this._findOption(
             (option) => option.name === this.getAttribute("selection")
           );
           if (selectedOption.name === "custom") {
+            const server = this.elements.server.value;
+            const port = parseInt(this.elements.port.value);
             return {
-              h264StunServer: this.elements.server.value,
-              h264StunPort: this.elements.port.value,
+              h264StunServer: server.trim() || null,
+              h264StunPort: Number.isNaN(port) ? null : port,
             };
           }
           return {

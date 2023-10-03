@@ -107,10 +107,6 @@
       margin-left: 6em;
       font-size: 0.9em;
     }
-
-    .stun-explanation {
-      margin-bottom: 0;
-    }
   </style>
   <div id="loading">
     <h3>Retrieving Video Settings</h3>
@@ -178,20 +174,13 @@
             >(Hide)</span
           >
           <h4>Advanced Settings</h4>
-          <p class="stun-explanation">
-            A STUN server enables H.264 streaming when your web browser is
-            unable to make a direct network connection to your TinyPilot device.
-            <a href="https://tinypilotkvm.com/faq/stun-server"
-              >Do I need a STUN server?</a
-            >
-          </p>
-          <video-settings-stun-input></video-settings-stun-input>
+          <video-settings-stun-section></video-settings-stun-section>
         </div>
       </div>
-      <inline-message variant="error" id="stun-input-error">
-        <strong>Invalid STUN address:</strong> the address must consist of a
-        host part and a port, delimited by a colon. The host part can either be
-        a hostname or an IP address.
+      <inline-message variant="error" id="stun-validation-error">
+        <strong>Invalid STUN address:</strong> the server address must consist
+        of a host and port value. The host part can either be a hostname or an
+        IP address.
       </inline-message>
     </div>
     <button class="save-btn btn-success" type="button">Apply</button>
@@ -274,11 +263,12 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
-            h264StunInput: this.shadowRoot.querySelector(
-              "video-settings-stun-input"
+            h264StunSection: this.shadowRoot.querySelector(
+              "video-settings-stun-section"
             ),
-            h264StunInputError:
-              this.shadowRoot.querySelector("#stun-input-error"),
+            h264StunValidationError: this.shadowRoot.querySelector(
+              "#stun-validation-error"
+            ),
           };
           this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
@@ -325,7 +315,7 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
-          this.elements.h264StunInput.addEventListener(
+          this.elements.h264StunSection.addEventListener(
             "h264-stun-value-changed",
             () => {
               this._refreshButtons();
@@ -360,7 +350,7 @@
           this.state = this.states.LOADING;
 
           // Reset all transient view state.
-          this.elements.h264StunInputError.hide();
+          this.elements.h264StunValidationError.hide();
           this.toggleAttribute("show-advanced-h264-settings", false);
 
           // Fetch and fill in data from server.
@@ -394,7 +384,7 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
-                this.elements.h264StunInput.initialize(
+                this.elements.h264StunSection.initialize(
                   h264StunServer,
                   h264StunPort
                 );
@@ -495,7 +485,7 @@
          */
         _refreshButtons() {
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunInput.getValue();
+            this.elements.h264StunSection.getValue();
 
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
@@ -538,7 +528,7 @@
           this.state = this.states.SAVING;
 
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunInput.getValue();
+            this.elements.h264StunSection.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),
@@ -571,7 +561,7 @@
               if (error.code === "INVALID_STUN_ADDRESS") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
-                this.elements.h264StunInputError.show();
+                this.elements.h264StunValidationError.show();
                 this.state = this.states.EDIT;
                 return;
               }
