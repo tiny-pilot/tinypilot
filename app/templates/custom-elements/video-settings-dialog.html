@@ -195,6 +195,11 @@
           </div>
         </div>
       </div>
+      <inline-message variant="error" id="stun-input-error">
+        <strong>Invalid STUN address:</strong> the address must consist of a
+        host part and a port, delimited by a colon. The host part can either be
+        a hostname or an IP address.
+      </inline-message>
     </div>
     <button class="save-btn btn-success" type="button">Apply</button>
     <button class="close-btn" type="button">Cancel</button>
@@ -276,9 +281,11 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
-            stunDropdown: this.shadowRoot.querySelector(
+            h264StunDropdown: this.shadowRoot.querySelector(
               "video-settings-stun-dropdown"
             ),
+            h264StunInputError:
+              this.shadowRoot.querySelector("#stun-input-error"),
           };
           this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
@@ -325,6 +332,12 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
+          this.elements.h264StunDropdown.addEventListener(
+            "h264-stun-address-changed",
+            () => {
+              this._refreshButtons();
+            }
+          );
           this.shadowRoot
             .querySelector("#advanced-settings-show")
             .addEventListener("click", () => {
@@ -352,6 +365,7 @@
 
         initialize() {
           this.state = this.states.LOADING;
+          this.elements.h264StunInputError.hide();
           getVideoSettings()
             .then(
               ({
@@ -380,9 +394,9 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
-                this._setH264StunAddress(h264StunAddress);
-                this._initialSettings.stunAddress = h264StunAddress;
-                this._defaultSettings.stunAddress = defaultH264StunAddress;
+                this.elements.h264StunDropdown.initialize(h264StunAddress);
+                this._initialSettings.h264StunAddress = h264StunAddress;
+                this._defaultSettings.h264StunAddress = defaultH264StunAddress;
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
@@ -470,12 +484,11 @@
           this._refreshButtons();
         }
 
+        /**
+         * @returns {string}
+         */
         _getH264StunAddress() {
-          return this.elements.stunDropdown.getValue();
-        }
-
-        _setH264StunAddress(h264StunAddress) {
-          this.elements.stunDropdown.initialize(h264StunAddress);
+          return this.elements.h264StunDropdown.getValue();
         }
 
         /**
@@ -549,6 +562,13 @@
               location.reload();
             })
             .catch((error) => {
+              if (error.code === "INVALID_STUN_ADDRESS") {
+                // Display validation errors inline in order to make it more
+                // convenient for the user to correct them.
+                this.elements.h264StunInputError.show();
+                this.state = this.states.EDIT;
+                return;
+              }
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Change Video Settings",

@@ -89,6 +89,15 @@
       { name: "custom", address: "" },
     ];
 
+    class AddressChangedEvent extends CustomEvent {
+      constructor() {
+        super("h264-stun-address-changed", {
+          bubbles: true,
+          composed: true,
+        });
+      }
+    }
+
     customElements.define(
       "video-settings-stun-dropdown",
       class extends HTMLElement {
@@ -99,11 +108,15 @@
           this.elements = {
             address: this.shadowRoot.querySelector("#address"),
           };
+          this.elements.address.addEventListener("change", () => {
+            this.dispatchEvent(new AddressChangedEvent());
+          });
           OPTIONS.forEach((option) =>
             this.shadowRoot
               .querySelector(`#stun-server-option-${option.name}`)
               .addEventListener("click", () => {
                 this.setAttribute("selection", option.name);
+                this.dispatchEvent(new AddressChangedEvent());
               })
           );
         }
