@@ -73,7 +73,7 @@ wget \
 # Download uStreamer Debian package.
 wget \
   --directory-prefix="${BUNDLE_DIR}" \
-  https://github.com/tiny-pilot/ustreamer-debian/releases/download/ustreamer_5.38-20230802141939/ustreamer_5.38-20230802141939_armhf.deb
+  https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.43-20231004144402/ustreamer_5.43-20231004144402_armhf.deb
 
 # Download yq binary
 wget \
