@@ -47,6 +47,12 @@ if [[ $# -gt 0 && "$1" =~ ^http ]]; then
   export E2E_BASE_URL="$1"
   readonly E2E_BASE_URL
   shift
+else
+  # When running against a local dev server, use a fresh home directory on each
+  # test run so that database state in one run doesn't affect subsequent runs.
+  TINYPILOT_HOME_DIR="$(mktemp --directory)"
+  export TINYPILOT_HOME_DIR
+  readonly TINYPILOT_HOME_DIR
 fi
 
 npx playwright test
