@@ -44,7 +44,6 @@
 
     :host(:not([selection="disabled"])) #stun-server-value-disabled,
     :host(:not([selection="google"])) #stun-server-value-google,
-    :host(:not([selection="ucsb"])) #stun-server-value-ucsb,
     :host(:not([selection="gmx"])) #stun-server-value-gmx,
     :host(:not([selection="custom"])) #stun-server-value-custom {
       display: none;
@@ -68,7 +67,6 @@
       <button slot="button" class="btn-action">
         <span id="stun-server-value-disabled">Disabled</span>
         <span id="stun-server-value-google">Google</span>
-        <span id="stun-server-value-ucsb">UCSB</span>
         <span id="stun-server-value-gmx">GMX</span>
         <span id="stun-server-value-custom">Custom</span>
         <span class="icon-arrow"></span>
@@ -79,10 +77,6 @@
       </li>
       <li slot="item" id="stun-server-option-google">
         <div>Google</div>
-      </li>
-      <li slot="item" id="stun-server-option-ucsb">
-        <div>UCSB</div>
-        <div class="option-hint">University of California, Santa Barbara</div>
       </li>
       <li slot="item" id="stun-server-option-gmx">
         <div>GMX</div>
@@ -122,7 +116,6 @@
     const OPTIONS = [
       { name: "disabled", server: null, port: null },
       { name: "google", server: "stun.l.google.com", port: 19302 },
-      { name: "ucsb", server: "stun.ucsb.edu", port: 3478 },
       { name: "gmx", server: "stun.gmx.de", port: 3478 },
       { name: "custom" },
     ];
