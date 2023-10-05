@@ -63,6 +63,20 @@ def parse_streaming_mode(request):
 
 
 def parse_h264_stun_address(request):
+    """Parses the STUN address (server + port) from a request.
+
+    The server can be a valid domain name, or an IP address (IPv4 / IPv6). The
+    server and port values must either both be present, or both absent.
+
+    Args:
+        request: A Flask request object.
+
+    Returns:
+        A tuple containing (1) the server as string, and (2) the port as int.
+
+    Raises:
+        InvalidVideoSettingStunAddress
+    """
     # pylint: disable=unbalanced-tuple-unpacking
     (
         server,
