@@ -186,6 +186,11 @@
          * @param {number} h264StunPort
          */
         initialize(h264StunServer, h264StunPort) {
+          // Clear any potentially previous view state.
+          this.elements.server.value = "";
+          this.elements.port.value = "";
+
+          // Determine selection and set up UI.
           const selectedOption = this._findOption(
             (option) =>
               option.server === h264StunServer && option.port === h264StunPort
