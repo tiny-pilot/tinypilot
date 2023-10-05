@@ -276,8 +276,11 @@ def settings_video_put():
     - frameRate: int
     - mjpegQuality: int
     - h264Bitrate: int
-    - h264StunServer: string (hostname or IP address)
-    - h264StunPort: int
+    - h264StunServer: string (hostname or IP address), or null
+    - h264StunPort: int, or null
+
+    Note that the h264StunServer and h264StunPort parameters must either both be
+    present, or both absent.
 
     Example of request body:
     {
