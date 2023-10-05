@@ -1,4 +1,4 @@
-<template id="video-settings-stun-section-template">
+<template id="video-settings-h264-stun-template">
   <style>
     @import "css/style.css";
     @import "css/button.css";
@@ -116,7 +116,7 @@
 <script type="module">
   (function () {
     const template = document.querySelector(
-      "#video-settings-stun-section-template"
+      "#video-settings-h264-stun-template"
     );
 
     const OPTIONS = [
@@ -137,7 +137,7 @@
     }
 
     customElements.define(
-      "video-settings-stun-section",
+      "video-settings-h264-stun",
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(

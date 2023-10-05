@@ -178,7 +178,7 @@
             >(Hide)</span
           >
           <h4>Advanced Settings</h4>
-          <video-settings-stun-section></video-settings-stun-section>
+          <video-settings-h264-stun></video-settings-h264-stun>
         </div>
       </div>
       <inline-message variant="error" id="stun-validation-error">
@@ -267,8 +267,8 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
-            h264StunSection: this.shadowRoot.querySelector(
-              "video-settings-stun-section"
+            h264StunSettings: this.shadowRoot.querySelector(
+              "video-settings-h264-stun"
             ),
             h264StunValidationError: this.shadowRoot.querySelector(
               "#stun-validation-error"
@@ -319,7 +319,7 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
-          this.elements.h264StunSection.addEventListener(
+          this.elements.h264StunSettings.addEventListener(
             "h264-stun-value-changed",
             () => {
               this._refreshButtons();
@@ -388,7 +388,7 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
-                this.elements.h264StunSection.initialize(
+                this.elements.h264StunSettings.initialize(
                   h264StunServer,
                   h264StunPort
                 );
@@ -489,7 +489,7 @@
          */
         _refreshButtons() {
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunSection.getValue();
+            this.elements.h264StunSettings.getValue();
 
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
@@ -532,7 +532,7 @@
           this.state = this.states.SAVING;
 
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunSection.getValue();
+            this.elements.h264StunSettings.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),
