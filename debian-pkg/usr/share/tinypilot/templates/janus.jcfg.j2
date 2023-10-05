@@ -21,7 +21,13 @@ loggers: {
 
 {% if janus_stun_server and janus_stun_port -%}
 nat: {
+	# The server value can be either a fully qualified domain name (such as
+	# stun.example.org), or an IP address (IPv4 or IPv6).
 	stun_server = "{{ janus_stun_server }}"
+	# Janus itself doesn’t enforce the port value, and would default to 3478 if
+	# the port number is not given. In order to be independent of this behavior,
+	# and to make the server address more explicit in the UI, we request our users
+	# to always specify both values.
 	stun_port = {{ janus_stun_port }}
 }
 {% endif -%}
