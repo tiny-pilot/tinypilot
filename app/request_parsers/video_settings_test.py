@@ -185,10 +185,10 @@ class VideoH264StunAddressParserTest(unittest.TestCase):
                     'h264StunPort': 5672
                 })))
         self.assertEqual(
-            ('a' * 63, 5672),  # Longest possible hostname
+            ('a' * 255, 5672),  # Longest possible hostname
             video_settings.parse_h264_stun_address(
                 make_mock_request({
-                    'h264StunServer': 'a' * 63,
+                    'h264StunServer': 'a' * 255,
                     'h264StunPort': 5672
                 })))
         self.assertEqual(
@@ -241,6 +241,50 @@ class VideoH264StunAddressParserTest(unittest.TestCase):
                     'h264StunPort': 5672
                 }))
 
+    def test_reject_invalid_server(self):
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': 'https://example.org',
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': 'example.org/stun',
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': 'stun@example',
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': '',
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': 'a' * 256,  # Too long
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': False,
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
+                    'h264StunServer': 5672,
+                    'h264StunPort': 5672
+                }))
+
     def test_reject_invalid_port(self):
         with self.assertRaises(errors.InvalidVideoSettingStunAddress):
             video_settings.parse_h264_stun_address(
@@ -271,48 +315,4 @@ class VideoH264StunAddressParserTest(unittest.TestCase):
                 make_mock_request({
                     'h264StunServer': 'stun.example.com',
                     'h264StunPort': False
-                }))
-
-    def test_reject_invalid_server(self):
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': 'https://example.org',
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': 'example.org/stun',
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': 'stun@example',
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': '',
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': 'a' * 64,  # Too long
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': False,
-                    'h264StunPort': 5672
-                }))
-        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
-            video_settings.parse_h264_stun_address(
-                make_mock_request({
-                    'h264StunServer': 5672,
-                    'h264StunPort': 5672
                 }))
