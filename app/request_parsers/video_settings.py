@@ -105,7 +105,8 @@ def _parse_h264_stun_port(port):
             raise ValueError
     except ValueError as e:
         raise errors.InvalidVideoSettingStunAddress(
-            'The port must be a positive integer.') from e
+            'The port must be a positive integer, not greater than 65535.') \
+            from e
     return port
 
 
