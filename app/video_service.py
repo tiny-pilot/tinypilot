@@ -54,7 +54,7 @@ def _restart_janus():
     logger.info('Writing janus configuration...')
     try:
         subprocess.check_output(
-            ['sudo', '/opt/tinypilot-privileged/scripts/configure-janus', '-q'],
+            ['sudo', '/opt/tinypilot-privileged/scripts/configure-janus'],
             stderr=subprocess.STDOUT,
             universal_newlines=True)
     except subprocess.CalledProcessError as e:
