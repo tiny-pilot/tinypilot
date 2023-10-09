@@ -5,7 +5,7 @@ import db.settings
 from request_parsers import errors
 from request_parsers import json
 
-_SERVER_PATTERN = re.compile(r'^[0-9a-z-.]{1,255}$')
+_DOMAIN_PATTERN = re.compile(r'^[0-9a-z-.]{1,255}$')
 
 
 def parse_frame_rate(request):
@@ -104,7 +104,7 @@ def _parse_h264_stun_server(server):
         return server
     except ValueError:
         pass
-    if _SERVER_PATTERN.match(server) is None:
+    if _DOMAIN_PATTERN.match(server) is None:
         raise errors.InvalidVideoSettingStunAddress(
             'The server must be a valid domain name or IP address (IPv4/IPv6).')
     return server
