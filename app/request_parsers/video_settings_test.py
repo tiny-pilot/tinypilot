@@ -245,6 +245,12 @@ class VideoH264StunAddressParserTest(unittest.TestCase):
         with self.assertRaises(errors.InvalidVideoSettingStunAddress):
             video_settings.parse_h264_stun_address(
                 make_mock_request({
+                    'h264StunServer': 'EXAMPLE.ORG',
+                    'h264StunPort': 5672
+                }))
+        with self.assertRaises(errors.InvalidVideoSettingStunAddress):
+            video_settings.parse_h264_stun_address(
+                make_mock_request({
                     'h264StunServer': 'https://example.org',
                     'h264StunPort': 5672
                 }))
