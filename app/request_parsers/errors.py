@@ -18,7 +18,7 @@ class InvalidVideoSettingError(Error):
     pass
 
 
-class InvalidVideoSettingStunAddress(Error):
+class InvalidVideoSettingStunAddressError(Error):
     code = 'INVALID_STUN_ADDRESS'
 
 
