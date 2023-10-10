@@ -18,5 +18,9 @@ class InvalidVideoSettingError(Error):
     pass
 
 
+class InvalidVideoSettingStunAddressError(Error):
+    code = 'INVALID_STUN_ADDRESS'
+
+
 class UnsupportedPastedCharacterError(Error):
     pass

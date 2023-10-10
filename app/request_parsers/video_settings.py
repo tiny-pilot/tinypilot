@@ -1,6 +1,11 @@
+import ipaddress
+import re
+
 import db.settings
 from request_parsers import errors
 from request_parsers import json
+
+_DOMAIN_PATTERN = re.compile(r'^[0-9a-z-.]{1,255}$')
 
 
 def parse_frame_rate(request):
@@ -55,6 +60,68 @@ def parse_streaming_mode(request):
     except ValueError as e:
         raise errors.InvalidVideoSettingError(
             'The video streaming mode must be `MJPEG` or `H264`.') from e
+
+
+def parse_h264_stun_address(request):
+    """Parses the STUN address (server + port) from a request.
+
+    The server can be a valid domain name, or an IP address (IPv4 / IPv6). The
+    server and port values must either both be present, or both absent.
+
+    Args:
+        request: A Flask request object.
+
+    Returns:
+        A tuple containing (1) the server as string, and (2) the port as int.
+
+    Raises:
+        InvalidVideoSettingStunAddress
+    """
+    # pylint: disable=unbalanced-tuple-unpacking
+    (
+        server,
+        port,
+    ) = json.parse_json_body(request,
+                             required_fields=['h264StunServer', 'h264StunPort'])
+    server = _parse_h264_stun_server(server)
+    port = _parse_h264_stun_port(port)
+    if (server is None and port is not None) or (server is not None and
+                                                 port is None):
+        raise errors.InvalidVideoSettingStunAddressError(
+            'The server and port values must either both be given, or both '
+            'absent.')
+    return server, port
+
+
+def _parse_h264_stun_server(server):
+    if server is None:
+        return None
+    if not isinstance(server, str):
+        raise errors.InvalidVideoSettingStunAddressError(
+            'The server value must be of type string.')
+    try:
+        ipaddress.ip_address(server)
+        return server
+    except ValueError:
+        pass
+    if not _DOMAIN_PATTERN.match(server):
+        raise errors.InvalidVideoSettingStunAddressError(
+            'The server must be a valid domain name or IP address (IPv4/IPv6).')
+    return server
+
+
+def _parse_h264_stun_port(port):
+    if port is None:
+        return None
+    try:
+        port = _as_int(port)
+        if not 1 <= port <= 65535:
+            raise ValueError
+    except ValueError as e:
+        raise errors.InvalidVideoSettingStunAddressError(
+            'The port must be a positive integer, not greater than 65535.') \
+            from e
+    return port
 
 
 def _as_int(string):
