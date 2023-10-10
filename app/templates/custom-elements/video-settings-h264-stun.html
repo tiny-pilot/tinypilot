@@ -235,8 +235,8 @@
          * Returns the first STUN option in the list of available options that
          * matches the given predicate. If no option matches, it returns the
          * “custom” option.
-         * The predicate receives an option as argument (see `this._options`),
-         * and is supposed to return a bool.
+         * @param {function} predicate - A function that receives an option as
+         *     argument (see `this._options`), and returns a bool.
          */
         _findOption(predicate) {
           return (
