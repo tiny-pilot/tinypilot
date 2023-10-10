@@ -288,6 +288,8 @@ export async function saveVideoSettings({
       frameRate,
       mjpegQuality,
       h264Bitrate,
+      h264StunServer: null, // TODO(jotaen) Remove placeholder once FE is done
+      h264StunPort: null, // TODO(jotaen) Remove placeholder once FE is done
     }),
   }).then(processJsonResponse);
 }

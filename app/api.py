@@ -255,7 +255,11 @@ def settings_video_get():
         'mjpegQuality': update_settings.ustreamer_quality,
         'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
         'h264Bitrate': update_settings.ustreamer_h264_bitrate,
-        'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE
+        'defaultH264Bitrate': video_service.DEFAULT_H264_BITRATE,
+        'h264StunServer': update_settings.janus_stun_server,
+        'defaultH264StunServer': video_service.DEFAULT_H264_STUN_SERVER,
+        'h264StunPort': update_settings.janus_stun_port,
+        'defaultH264StunPort': video_service.DEFAULT_H264_STUN_PORT,
     })
 
 
@@ -272,13 +276,20 @@ def settings_video_put():
     - frameRate: int
     - mjpegQuality: int
     - h264Bitrate: int
+    - h264StunServer: string (hostname or IP address), or null
+    - h264StunPort: int, or null
+
+    Note that the h264StunServer and h264StunPort parameters must either both be
+    present, or both absent.
 
     Example of request body:
     {
         "streamingMode": "MJPEG",
         "frameRate": 12,
         "mjpegQuality": 80,
-        "h264Bitrate": 450
+        "h264Bitrate": 450,
+        "h264StunServer": "stun.example.com",
+        "h264StunPort": 3478
     }
 
     Returns:
@@ -293,6 +304,9 @@ def settings_video_put():
             flask.request)
         h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
             flask.request)
+        h264_stun_server, h264_stun_port = \
+            request_parsers.video_settings.parse_h264_stun_address(
+                flask.request)
     except request_parsers.errors.InvalidVideoSettingError as e:
         return json_response.error(e), 400
 
@@ -304,6 +318,8 @@ def settings_video_put():
     update_settings.ustreamer_desired_fps = frame_rate
     update_settings.ustreamer_quality = mjpeg_quality
     update_settings.ustreamer_h264_bitrate = h264_bitrate
+    update_settings.janus_stun_server = h264_stun_server
+    update_settings.janus_stun_port = h264_stun_port
 
     # Store the new parameters. Note: we only actually persist anything if *all*
     # values have passed the validation.
