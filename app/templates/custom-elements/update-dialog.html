@@ -220,6 +220,23 @@
               }
             })
             .catch((error) => {
+              if (error.code === "CERTIFICATE_NOT_YET_VALID") {
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Unable to Connect to TinyPilot Update Server",
+                    message:
+                      "Your TinyPilot device's date differs signifcantly " +
+                      "from the date on the TinyPilot update server. This " +
+                      "can happen if your TinyPilot device does not have " +
+                      "Internet access or your network blocks access to " +
+                      "time servers (NTP servers).\n\nWait for up to five " +
+                      "minutes to give your TinyPilot device time to " +
+                      "synchronize its clock, and then try updating again.",
+                    details: error,
+                  })
+                );
+                return;
+              }
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Retrieve Version Information",
