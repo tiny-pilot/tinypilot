@@ -80,6 +80,11 @@ def latest_version():
                 timeout=10) as response:
             response_bytes = response.read()
     except urllib.error.URLError as e:
+        if (hasattr(e.reason, 'reason') and
+                e.reason.reason == 'CERTIFICATE_VERIFY_FAILED' and
+                e.reason.verify_message == 'certificate is not yet valid'):
+            raise VersionRequestError(
+                f'Is the date shown in System > Logs correct? {e}') from e
         raise VersionRequestError(
             f'Failed to request latest available version: {e}') from e
 
