@@ -152,7 +152,9 @@
 
           // Compile JS representation of all available STUN dropdown options.
           this._options = Array.from(
-            this.shadowRoot.querySelectorAll("dropdown-button li")
+            this.shadowRoot.querySelectorAll(
+              "dropdown-button li[data-stun-option-id]"
+            )
           ).map((element) => ({
             id: element.dataset.stunOptionId,
             server: element.dataset.stunServer || null,
