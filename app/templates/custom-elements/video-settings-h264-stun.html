@@ -71,10 +71,7 @@
         <span id="stun-server-value-custom">Custom</span>
         <span class="icon-arrow"></span>
       </button>
-      <li
-        slot="item"
-        data-stun-option-id="disabled"
-      >
+      <li slot="item" data-stun-option-id="disabled">
         <div>Disabled</div>
         <div class="option-hint"></div>
       </li>
@@ -94,10 +91,7 @@
       >
         <div>GMX</div>
       </li>
-      <li
-        slot="item"
-        data-stun-option-id="custom"
-      >
+      <li slot="item" data-stun-option-id="custom">
         <div>Custom</div>
         <div class="option-hint">Specify manually</div>
       </li>
@@ -169,7 +163,9 @@
           });
           this._options.forEach((option) =>
             this.shadowRoot
-              .querySelector(`dropdown-button li[data-stun-option-id=${option.id}]`)
+              .querySelector(
+                `dropdown-button li[data-stun-option-id=${option.id}]`
+              )
               .addEventListener("click", () => {
                 this._select(option);
                 this.dispatchEvent(new InputChangedEvent());
@@ -232,7 +228,9 @@
         _select(newOption) {
           this._options.forEach((option) =>
             this.shadowRoot
-              .querySelector(`dropdown-button li[data-stun-option-id=${option.id}]`)
+              .querySelector(
+                `dropdown-button li[data-stun-option-id=${option.id}]`
+              )
               .classList.toggle("disabled", newOption.id === option.id)
           );
           this.setAttribute("selection", newOption.id);
