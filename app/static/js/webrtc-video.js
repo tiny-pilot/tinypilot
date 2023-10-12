@@ -205,8 +205,6 @@ function createIceServerUrls(stunServer, stunPort) {
   // If the server value contains a colon, it’s an IPv6 address. In this case,
   // we need to wrap the server part into square brackets, in order to be able
   // to join it correctly with the port.
-  if (stunServer.includes(":")) {
-    stunServer = `[${stunServer}]`;
-  }
-  return [{ urls: `stun:${stunServer}:${stunPort}` }];
+  const server = stunServer.includes(":") ? `[${stunServer}]` : stunServer;
+  return [{ urls: `stun:${server}:${stunPort}` }];
 }
