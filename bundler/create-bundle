@@ -50,17 +50,17 @@ print_tinypilot_version() {
 # Compose bundle file name, which consists of these hyphen-separated parts:
 # 1. `tinypilot`
 # 2. The TinyPilot variant: `community` or `pro`
-# 3. A timestamp (which allows lexical sorting of bundles by their file names).
-# 4. The SemVer-compliant TinyPilot version.
+# 3. The SemVer-compliant TinyPilot version.
+# 4. A timestamp (which allows lexical sorting of bundles by their file names).
 # Examples for bundle names:
-# - `tinypilot-pro-20220620T1713Z-2.4.1.tgz` (Pro)
-# - `tinypilot-community-20220620T1611Z-1.8.0-23+649a6b2.tgz` (Community)
-TIMESTAMP="$(date --iso-8601=minutes | sed 's/[:-]//g' | sed 's/+0000/Z/g')"
+# - `tinypilot-pro-2.4.1-2022-06-20T1713Z.tgz` (Pro)
+# - `tinypilot-community-1.8.0-23+649a6b2-2022-06-20T1611Z.tgz` (Community)
+TIMESTAMP="$(date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g')"
 readonly TIMESTAMP
 TINYPILOT_VERSION="$(print_tinypilot_version)"
 readonly TINYPILOT_VERSION
 readonly TINYPILOT_VARIANT='community'
-readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILOT_VERSION}.tgz"
+readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TINYPILOT_VERSION}-${TIMESTAMP}.tgz"
 
 # Download Janus Bullseye Backports Debian package.
 # Note: before bumping the Janus package version, be sure to compare our Janus
