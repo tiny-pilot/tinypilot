@@ -1,5 +1,6 @@
 import dataclasses
 import json
+import ssl
 import urllib.request
 from datetime import date
 
@@ -85,8 +86,7 @@ def latest_version():
                 timeout=10) as response:
             response_bytes = response.read()
     except urllib.error.URLError as e:
-        if (hasattr(e.reason, 'reason') and
-                e.reason.reason == 'CERTIFICATE_VERIFY_FAILED' and
+        if (isinstance(e.reason, ssl.SSLCertVerificationError) and
                 e.reason.verify_message == 'certificate is not yet valid'):
             raise CertificateNotYetValidError(
                 'Server\'s certificate start date is ahead of TinyPilot\'s'
