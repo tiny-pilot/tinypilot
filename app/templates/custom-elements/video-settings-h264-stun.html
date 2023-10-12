@@ -73,7 +73,6 @@
       </button>
       <li
         slot="item"
-        id="stun-server-option-disabled"
         data-stun-option-id="disabled"
       >
         <div>Disabled</div>
@@ -81,7 +80,6 @@
       </li>
       <li
         slot="item"
-        id="stun-server-option-google"
         data-stun-option-id="google"
         data-stun-server="stun.l.google.com"
         data-stun-port="19302"
@@ -90,7 +88,6 @@
       </li>
       <li
         slot="item"
-        id="stun-server-option-gmx"
         data-stun-option-id="gmx"
         data-stun-server="stun.gmx.de"
         data-stun-port="3478"
@@ -99,7 +96,6 @@
       </li>
       <li
         slot="item"
-        id="stun-server-option-custom"
         data-stun-option-id="custom"
       >
         <div>Custom</div>
@@ -173,7 +169,7 @@
           });
           this._options.forEach((option) =>
             this.shadowRoot
-              .querySelector(`#stun-server-option-${option.id}`)
+              .querySelector(`dropdown-button li[data-stun-option-id=${option.id}]`)
               .addEventListener("click", () => {
                 this._select(option);
                 this.dispatchEvent(new InputChangedEvent());
@@ -236,7 +232,7 @@
         _select(newOption) {
           this._options.forEach((option) =>
             this.shadowRoot
-              .querySelector(`#stun-server-option-${option.id}`)
+              .querySelector(`dropdown-button li[data-stun-option-id=${option.id}]`)
               .classList.toggle("disabled", newOption.id === option.id)
           );
           this.setAttribute("selection", newOption.id);
