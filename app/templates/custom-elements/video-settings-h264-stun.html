@@ -173,7 +173,7 @@
             this.shadowRoot
               .querySelector(`#stun-server-option-${option.id}`)
               .addEventListener("click", () => {
-                this.setAttribute("selection", option.id);
+                this._select(option);
                 this.dispatchEvent(new InputChangedEvent());
               })
           );
@@ -224,11 +224,20 @@
             (option) =>
               option.server === h264StunServer && option.port === h264StunPort
           );
-          this.setAttribute("selection", selectedOption.id);
           if (selectedOption.id === "custom") {
             this.elements.server.value = h264StunServer;
             this.elements.port.value = h264StunPort;
           }
+          this._select(selectedOption);
+        }
+
+        _select(newOption) {
+          this._options.forEach((option) =>
+            this.shadowRoot
+              .querySelector(`#stun-server-option-${option.id}`)
+              .classList.toggle("disabled", newOption.id === option.id)
+          );
+          this.setAttribute("selection", newOption.id);
         }
 
         /**
