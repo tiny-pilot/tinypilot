@@ -1,6 +1,8 @@
 import dataclasses
 import json
+import ssl
 import urllib.request
+from datetime import date
 
 import flask
 
@@ -11,6 +13,10 @@ class Error(Exception):
 
 class VersionFileError(Error):
     pass
+
+
+class CertificateNotYetValidError(Error):
+    code = 'CERTIFICATE_NOT_YET_VALID'
 
 
 class VersionRequestError(Error):
@@ -80,6 +86,12 @@ def latest_version():
                 timeout=10) as response:
             response_bytes = response.read()
     except urllib.error.URLError as e:
+        if (isinstance(e.reason, ssl.SSLCertVerificationError) and
+                e.reason.verify_message == 'certificate is not yet valid'):
+            raise CertificateNotYetValidError(
+                'Server\'s certificate start date is ahead of TinyPilot\'s'
+                f' system date of {date.today():%Y-%m-%d}. Check the system'
+                f' date to ensure that it is accurate. {e}') from e
         raise VersionRequestError(
             f'Failed to request latest available version: {e}') from e
 

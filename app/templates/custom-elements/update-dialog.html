@@ -220,6 +220,27 @@
               }
             })
             .catch((error) => {
+              if (error.code === "CERTIFICATE_NOT_YET_VALID") {
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Unable to Connect to TinyPilot Update Server",
+                    message:
+                      "Your TinyPilot device couldn't establish a secure " +
+                      "connection to the update server, as the date on your " +
+                      "TinyPilot device and the date on the server are too " +
+                      "far apart. Your TinyPilot device might not know the " +
+                      "correct date if it hasn't been able to synchronize " +
+                      "with a network time server (NTP server).\n\nWait a " +
+                      "few minutes for your TinyPilot device to synchronize " +
+                      "its clock, then try again. If the error persists, " +
+                      "SSH in to your TinyPilot device to set the date " +
+                      "manually or check that your network allows " +
+                      "connections to NTP servers.",
+                    details: error,
+                  })
+                );
+                return;
+              }
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Retrieve Version Information",
