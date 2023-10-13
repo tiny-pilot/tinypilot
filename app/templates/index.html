@@ -89,6 +89,18 @@
       type="text/javascript"
       src="/third-party/janus-gateway/1.0.0/janus.js"
     ></script>
+    {% if janus_stun_server and janus_stun_port %}
+    <script>
+      window.TINYPILOT_JANUS_STUN_SERVER = "{{ janus_stun_server }}";
+      // ESLint wouldn’t be able to parse the following line if there was just
+      // the “naked” Jinja2 template expression on the right-hand side of the
+      // assignment. Hence, we have to wrap the value into a string and call
+      // `parseInt` to obtain the original value.
+      // It wouldn’t be possible here to use an ESLint directive, since the
+      // error already happens at parsing stage.
+      window.TINYPILOT_JANUS_STUN_PORT = parseInt("{{ janus_stun_port }}");
+    </script>
+    {% endif %}
     <script type="module" src="/js/webrtc-video.js"></script>
     {% endif %}
 

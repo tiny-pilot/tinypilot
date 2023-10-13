@@ -35,6 +35,9 @@ const config = {
 
   // The number of seconds within which the watch request can be retried.
   watchRequestRetryTimeoutSeconds: 60,
+
+  stunServer: window.TINYPILOT_JANUS_STUN_SERVER,
+  stunPort: window.TINYPILOT_JANUS_STUN_PORT,
 };
 
 // Initialize library.
@@ -49,6 +52,10 @@ const remoteScreen = document.getElementById("remote-screen");
 const janus = new Janus({
   server: `${config.useSSL ? "wss" : "ws"}://${config.deviceHostname}/janus/ws`,
   success: attachToJanusPlugin,
+  iceServers:
+    config.stunServer && config.stunPort
+      ? createIceServerUrls(config.stunServer, config.stunPort)
+      : undefined,
 
   /**
    * This callback is triggered if either the initial connection couldn’t be
@@ -187,4 +194,17 @@ function attachToJanusPlugin() {
       }
     },
   });
+}
+
+/**
+ * @param {string} stunServer
+ * @param {number} stunPort
+ * @returns {Object[]} - Array of URL objects according to https://developer.mozilla.org/en-US/docs/Web/API/RTCIceServer/urls.
+ */
+function createIceServerUrls(stunServer, stunPort) {
+  // If the server value contains a colon, it’s an IPv6 address. In this case,
+  // we need to wrap the server part into square brackets, in order to be able
+  // to join it correctly with the port.
+  const server = stunServer.includes(":") ? `[${stunServer}]` : stunServer;
+  return [{ urls: `stun:${server}:${stunPort}` }];
 }
