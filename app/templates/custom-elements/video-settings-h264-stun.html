@@ -145,11 +145,16 @@
             this.shadowRoot.querySelectorAll(
               "dropdown-button li[data-stun-option-id]"
             )
-          ).map((element) => ({
-            id: element.dataset.stunOptionId,
-            server: element.dataset.stunServer || null,
-            port: parseInt(element.dataset.stunPort) || null,
-          }));
+          ).map((element) => {
+            const option = {
+              id: element.dataset.stunOptionId,
+            };
+            if (element.dataset.stunServer !== "custom") {
+              option.server = element.dataset.stunServer || null;
+              option.port = parseInt(element.dataset.stunPort) || null;
+            }
+            return option;
+          });
 
           this.elements = {
             server: this.shadowRoot.querySelector("#server"),
