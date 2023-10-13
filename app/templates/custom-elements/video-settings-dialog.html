@@ -326,6 +326,12 @@
               this.elements.h264StunValidationError.hide();
             }
           );
+          this.elements.h264StunSettings.addEventListener(
+            "h264-stun-submission-requested",
+            () => {
+              this.elements.saveButton.click();
+            }
+          );
           this.shadowRoot
             .querySelector("#advanced-settings-show-button")
             .addEventListener("click", () => {

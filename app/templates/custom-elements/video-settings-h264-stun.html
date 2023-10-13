@@ -132,6 +132,15 @@
       }
     }
 
+    class SubmissionRequestedEvent extends CustomEvent {
+      constructor() {
+        super("h264-stun-submission-requested", {
+          bubbles: true,
+          composed: true,
+        });
+      }
+    }
+
     customElements.define(
       "video-settings-h264-stun",
       class extends HTMLElement {
@@ -165,6 +174,16 @@
           });
           this.elements.port.addEventListener("input", () => {
             this.dispatchEvent(new InputChangedEvent());
+          });
+          this.elements.server.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter") {
+              this.dispatchEvent(new SubmissionRequestedEvent());
+            }
+          });
+          this.elements.port.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter") {
+              this.dispatchEvent(new SubmissionRequestedEvent());
+            }
           });
           this._options.forEach((option) =>
             this.shadowRoot
