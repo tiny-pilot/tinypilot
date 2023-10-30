@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Prints TinyPilot's preferred video streaming mode, either H264 or MJPEG.
+
+# Exit on first failure.
+set -e
+
+# Exit on unset variable.
+set -u
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+. ./venv/bin/activate
+
+TINYPILOT_HOME_DIR="$(realpath ~)"
+readonly TINYPILOT_HOME_DIR
+export TINYPILOT_HOME_DIR
+
+# Create a dummy app settings file. The flask app needs a settings file to
+# start, but it's not necessary for this simple script, so we use a blank,
+# dummy version.
+APP_SETTINGS_FILE="$(mktemp)"
+readonly APP_SETTINGS_FILE
+export APP_SETTINGS_FILE
+
+export FLASK_APP='app/main.py'
+flask cli streaming-mode
