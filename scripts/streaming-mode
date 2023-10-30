@@ -13,10 +13,6 @@ readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 . ./venv/bin/activate
 
-TINYPILOT_HOME_DIR="$(realpath ~)"
-readonly TINYPILOT_HOME_DIR
-export TINYPILOT_HOME_DIR
-
 # Create a dummy app settings file. The flask app needs a settings file to
 # start, but it's not necessary for this simple script, so we use a blank,
 # dummy version.
