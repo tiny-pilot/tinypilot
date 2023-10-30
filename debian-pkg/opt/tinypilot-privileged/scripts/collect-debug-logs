@@ -163,6 +163,19 @@ print_info "Checking for voltage issues..."
   printf "\n\n"
 } >> "${LOG_FILE}"
 
+print_info "Checking TinyPilot streaming mode..."
+{
+  echo "Streaming mode"
+  echo "Selected mode: H.264"
+  printf "Current mode: "
+  if LAST_JANUS_VIDEO_LINE="$(journalctl --unit janus.service --quiet --reverse --lines 1 --grep 'ustreamer/video')" && [[ "${LAST_JANUS_VIDEO_LINE}" =~ 'Memsink opened; reading frames' ]]; then
+    printf "H.264"
+  else
+    printf "MJPEG"
+  fi
+  printf "\n\n"
+} >> "${LOG_FILE}"
+
 print_info "Checking TinyPilot settings..."
 {
   printf "TinyPilot settings.yml\n"
