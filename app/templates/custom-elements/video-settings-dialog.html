@@ -27,14 +27,9 @@
       margin-bottom: 1.5rem;
     }
 
-    .setting-mjpeg,
-    .setting-h264 {
+    :host(:not([streaming-mode="MJPEG"])) .setting-mjpeg,
+    :host(:not([streaming-mode="H264"])) .setting-h264 {
       display: none;
-    }
-
-    :host([streaming-mode="MJPEG"]) .setting-mjpeg,
-    :host([streaming-mode="H264"]) .setting-h264 {
-      display: flex;
     }
 
     .streaming-mode-value-mjpeg,
@@ -79,6 +74,42 @@
     .streaming-mode-hint {
       font-size: 0.85em;
       opacity: 0.85;
+    }
+
+    .advanced-settings {
+      display: none;
+      margin-left: 10%;
+      margin-right: 10%;
+      position: relative;
+    }
+
+    :host([show-advanced-h264-settings]) .advanced-settings {
+      display: block;
+    }
+
+    h4 {
+      border-bottom: 1px solid #6c6c6c;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
+    }
+
+    #advanced-settings-show-button {
+      font-size: 0.9em;
+    }
+
+    :host([show-advanced-h264-settings]) #advanced-settings-show-button {
+      display: none;
+    }
+
+    #advanced-settings-hide-button {
+      position: absolute;
+      margin-top: 0.1em;
+      margin-left: 6em;
+      font-size: 0.9em;
+    }
+
+    #stun-validation-error {
+      margin-top: 2em;
     }
   </style>
   <div id="loading">
@@ -138,6 +169,23 @@
           Reset to Default
         </div>
       </div>
+      <div class="setting-h264">
+        <div id="advanced-settings-show-button" class="btn-text">
+          Show Advanced Settings
+        </div>
+        <div class="advanced-settings">
+          <span id="advanced-settings-hide-button" class="btn-text"
+            >(Hide)</span
+          >
+          <h4>Advanced Settings</h4>
+          <video-settings-h264-stun></video-settings-h264-stun>
+        </div>
+      </div>
+      <inline-message variant="error" id="stun-validation-error">
+        <strong>Invalid STUN address:</strong> the server address must consist
+        of valid host and port values. The host part can either be a (fully
+        qualified) domain name, or an IP address.
+      </inline-message>
     </div>
     <button class="save-btn btn-success" type="button">Apply</button>
     <button class="close-btn" type="button">Cancel</button>
@@ -219,6 +267,12 @@
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
               "#h264-bitrate-reset"
             ),
+            h264StunSettings: this.shadowRoot.querySelector(
+              "video-settings-h264-stun"
+            ),
+            h264StunValidationError: this.shadowRoot.querySelector(
+              "#stun-validation-error"
+            ),
           };
           this.elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
@@ -265,6 +319,29 @@
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
+          this.elements.h264StunSettings.addEventListener(
+            "h264-stun-value-changed",
+            () => {
+              this._refreshButtons();
+              this.elements.h264StunValidationError.hide();
+            }
+          );
+          this.elements.h264StunSettings.addEventListener(
+            "h264-stun-submission-requested",
+            () => {
+              this.elements.saveButton.click();
+            }
+          );
+          this.shadowRoot
+            .querySelector("#advanced-settings-show-button")
+            .addEventListener("click", () => {
+              this.toggleAttribute("show-advanced-h264-settings", true);
+            });
+          this.shadowRoot
+            .querySelector("#advanced-settings-hide-button")
+            .addEventListener("click", () => {
+              this.toggleAttribute("show-advanced-h264-settings", false);
+            });
         }
 
         get state() {
@@ -282,6 +359,12 @@
 
         initialize() {
           this.state = this.states.LOADING;
+
+          // Reset all transient view state.
+          this.elements.h264StunValidationError.hide();
+          this.toggleAttribute("show-advanced-h264-settings", false);
+
+          // Fetch and fill in data from server.
           getVideoSettings()
             .then(
               ({
@@ -292,6 +375,10 @@
                 defaultMjpegQuality,
                 h264Bitrate,
                 defaultH264Bitrate,
+                h264StunServer,
+                defaultH264StunServer,
+                h264StunPort,
+                defaultH264StunPort,
               }) => {
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
@@ -307,6 +394,15 @@
                 this._setH264Bitrate(h264Bitrate);
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
+
+                this.elements.h264StunSettings.initialize(
+                  h264StunServer,
+                  h264StunPort
+                );
+                this._initialSettings.h264StunServer = h264StunServer;
+                this._defaultSettings.h264StunServer = defaultH264StunServer;
+                this._initialSettings.h264StunPort = h264StunPort;
+                this._defaultSettings.h264StunPort = defaultH264StunPort;
 
                 this._refreshButtons();
                 this.state = this.states.EDIT;
@@ -399,12 +495,17 @@
          * the currently selected input values.
          */
         _refreshButtons() {
+          const { h264StunServer, h264StunPort } =
+            this.elements.h264StunSettings.getValue();
+
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
             [this._getStreamingMode(), this._initialSettings.streamingMode],
             [this._getFrameRate(), this._initialSettings.frameRate],
             [this._getMjpegQuality(), this._initialSettings.mjpegQuality],
             [this._getH264Bitrate(), this._initialSettings.h264Bitrate],
+            [h264StunServer, this._initialSettings.h264StunServer],
+            [h264StunPort, this._initialSettings.h264StunPort],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
           this.elements.saveButton.disabled = !hasChangedValues;
 
@@ -436,11 +537,16 @@
 
         _saveSettings() {
           this.state = this.states.SAVING;
+
+          const { h264StunServer, h264StunPort } =
+            this.elements.h264StunSettings.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),
             mjpegQuality: this._getMjpegQuality(),
             h264Bitrate: this._getH264Bitrate(),
+            h264StunServer,
+            h264StunPort,
           })
             .then(applyVideoSettings)
             .then(() =>
@@ -463,6 +569,13 @@
               location.reload();
             })
             .catch((error) => {
+              if (error.code === "INVALID_STUN_ADDRESS") {
+                // Display validation errors inline in order to make it more
+                // convenient for the user to correct them.
+                this.elements.h264StunValidationError.show();
+                this.state = this.states.EDIT;
+                return;
+              }
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Change Video Settings",

@@ -1,0 +1,279 @@
+<template id="video-settings-h264-stun-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+    @import "css/icons.css";
+
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+
+    p {
+      margin: 0 1em;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .option-hint {
+      font-size: 0.85em;
+      opacity: 0.85;
+    }
+
+    .row-custom input {
+      margin-left: 0.5em;
+      margin-right: 1em;
+    }
+
+    :host(:not([selection="custom"])) .row-custom {
+      display: none;
+    }
+
+    #server {
+      flex: 1;
+      max-width: 18em;
+    }
+
+    #port {
+      width: 6ch; /* The maximum port number can be 65535. */
+    }
+
+    :host(:not([selection="disabled"])) #stun-server-value-disabled,
+    :host(:not([selection="google"])) #stun-server-value-google,
+    :host(:not([selection="gmx"])) #stun-server-value-gmx,
+    :host(:not([selection="custom"])) #stun-server-value-custom {
+      display: none;
+    }
+  </style>
+
+  <p>
+    A STUN server enables H.264 streaming when your web browser is unable to
+    make a direct network connection to your TinyPilot device.
+    <a
+      href="https://tinypilotkvm.com/faq/stun-server"
+      target="_blank"
+      rel="noopener noreferer"
+    >
+      Do I need a STUN server?
+    </a>
+  </p>
+  <div class="row">
+    <div>STUN Server:</div>
+    <dropdown-button style="--dropdown-width: 16rem">
+      <button slot="button" class="btn-action">
+        <span id="stun-server-value-disabled">Disabled</span>
+        <span id="stun-server-value-google">Google</span>
+        <span id="stun-server-value-gmx">GMX</span>
+        <span id="stun-server-value-custom">Custom</span>
+        <span class="icon-arrow"></span>
+      </button>
+      <li slot="item" data-stun-option-id="disabled">
+        <div>Disabled</div>
+        <div class="option-hint"></div>
+      </li>
+      <li
+        slot="item"
+        data-stun-option-id="google"
+        data-stun-server="stun.l.google.com"
+        data-stun-port="19302"
+      >
+        <div>Google</div>
+      </li>
+      <li
+        slot="item"
+        data-stun-option-id="gmx"
+        data-stun-server="stun.gmx.de"
+        data-stun-port="3478"
+      >
+        <div>GMX</div>
+      </li>
+      <li slot="item" data-stun-option-id="custom">
+        <div>Custom</div>
+        <div class="option-hint">Specify manually</div>
+      </li>
+    </dropdown-button>
+  </div>
+
+  <div class="row row-custom">
+    Host:
+    <input
+      type="text"
+      class="monospace"
+      id="server"
+      placeholder="stun.example.org"
+    />
+    Port:
+    <input
+      type="text"
+      class="monospace"
+      id="port"
+      placeholder="123"
+      maxlength="5"
+    />
+  </div>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector(
+      "#video-settings-h264-stun-template"
+    );
+
+    class InputChangedEvent extends CustomEvent {
+      constructor() {
+        super("h264-stun-value-changed", {
+          bubbles: true,
+          composed: true,
+        });
+      }
+    }
+
+    class SubmissionRequestedEvent extends CustomEvent {
+      constructor() {
+        super("h264-stun-submission-requested", {
+          bubbles: true,
+          composed: true,
+        });
+      }
+    }
+
+    customElements.define(
+      "video-settings-h264-stun",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+
+          // Compile JS representation of all available STUN dropdown options.
+          this._options = Array.from(
+            this.shadowRoot.querySelectorAll(
+              "dropdown-button li[data-stun-option-id]"
+            )
+          ).map((element) => {
+            const option = {
+              id: element.dataset.stunOptionId,
+            };
+            if (element.dataset.stunServer !== "custom") {
+              option.server = element.dataset.stunServer || null;
+              option.port = parseInt(element.dataset.stunPort) || null;
+            }
+            return option;
+          });
+
+          this.elements = {
+            server: this.shadowRoot.querySelector("#server"),
+            port: this.shadowRoot.querySelector("#port"),
+          };
+          this.elements.server.addEventListener("input", () => {
+            this.dispatchEvent(new InputChangedEvent());
+          });
+          this.elements.port.addEventListener("input", () => {
+            this.dispatchEvent(new InputChangedEvent());
+          });
+          this.elements.server.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter") {
+              this.dispatchEvent(new SubmissionRequestedEvent());
+            }
+          });
+          this.elements.port.addEventListener("keydown", (evt) => {
+            if (evt.code === "Enter") {
+              this.dispatchEvent(new SubmissionRequestedEvent());
+            }
+          });
+          this._options.forEach((option) =>
+            this.shadowRoot
+              .querySelector(
+                `dropdown-button li[data-stun-option-id=${option.id}]`
+              )
+              .addEventListener("click", () => {
+                this._select(option);
+                this.dispatchEvent(new InputChangedEvent());
+              })
+          );
+        }
+
+        /**
+         * @typedef {Object} StunAddress
+         * @property {string} [h264StunServer]
+         * @property {number} [h264StunPort]
+         *
+         * @returns {StunAddress}
+         */
+        getValue() {
+          // Determine currently selected option.
+          const selectedOption = this._findOption(
+            (option) => option.id === this.getAttribute("selection")
+          );
+
+          // If the selection is “custom”, read the data from the input fields.
+          // Otherwise, return the presets from the option.
+          if (selectedOption.id === "custom") {
+            const server = this.elements.server.value;
+            const port = parseInt(this.elements.port.value);
+            return {
+              h264StunServer: server.trim() || null,
+              h264StunPort: Number.isNaN(port) ? null : port,
+            };
+          }
+          return {
+            h264StunServer: selectedOption.server,
+            h264StunPort: selectedOption.port,
+          };
+        }
+
+        /**
+         * @param {string} h264StunServer
+         * @param {number} h264StunPort
+         */
+        initialize(h264StunServer, h264StunPort) {
+          // Clear any potentially previous view state.
+          this.elements.server.value = "";
+          this.elements.port.value = "";
+
+          // Determine selection by finding an option with matching server and
+          // port values. If there is no such option, assume the selection to be
+          // “custom”.
+          const selectedOption = this._findOption(
+            (option) =>
+              option.server === h264StunServer && option.port === h264StunPort
+          );
+          if (selectedOption.id === "custom") {
+            this.elements.server.value = h264StunServer;
+            this.elements.port.value = h264StunPort;
+          }
+          this._select(selectedOption);
+        }
+
+        _select(newOption) {
+          this._options.forEach((option) =>
+            this.shadowRoot
+              .querySelector(
+                `dropdown-button li[data-stun-option-id=${option.id}]`
+              )
+              .classList.toggle("disabled", newOption.id === option.id)
+          );
+          this.setAttribute("selection", newOption.id);
+        }
+
+        /**
+         * Returns the first STUN option in the list of available options that
+         * matches the given predicate. If no option matches, it returns the
+         * “custom” option.
+         * @param {function} predicate - A function that receives an option as
+         *     argument (see `this._options`), and returns a bool.
+         */
+        _findOption(predicate) {
+          return (
+            this._options.find(predicate) ||
+            this._options.find((option) => option.id === "custom")
+          );
+        }
+      }
+    );
+  })();
+</script>

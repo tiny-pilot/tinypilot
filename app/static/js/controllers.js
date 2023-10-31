@@ -258,6 +258,10 @@ export async function getVideoSettings() {
         "defaultMjpegQuality",
         "h264Bitrate",
         "defaultH264Bitrate",
+        "h264StunServer",
+        "defaultH264StunServer",
+        "h264StunPort",
+        "defaultH264StunPort",
       ].forEach((field) => {
         // eslint-disable-next-line no-prototype-builtins
         if (!data.hasOwnProperty(field)) {
@@ -273,6 +277,8 @@ export async function saveVideoSettings({
   frameRate,
   mjpegQuality,
   h264Bitrate,
+  h264StunServer,
+  h264StunPort,
 }) {
   return fetch("/api/settings/video", {
     method: "PUT",
@@ -288,8 +294,8 @@ export async function saveVideoSettings({
       frameRate,
       mjpegQuality,
       h264Bitrate,
-      h264StunServer: null, // TODO(jotaen) Remove placeholder once FE is done
-      h264StunPort: null, // TODO(jotaen) Remove placeholder once FE is done
+      h264StunServer,
+      h264StunPort,
     }),
   }).then(processJsonResponse);
 }
