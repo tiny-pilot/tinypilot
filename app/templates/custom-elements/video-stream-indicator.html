@@ -63,6 +63,9 @@
   <span class="label-mjpeg">MJPEG</span>
   <span class="label-h264">H.264</span>
   <div class="status-bar-tooltip">
+    <!-- For menu breadcrumbs (e.g., `“System” > “Logs”`) in the tooltip
+         message, make it so that line breaks always occur after the `>` token.
+         -->
     <div class="tooltip-text-info">
       <p>
         TinyPilot is currently using
@@ -71,8 +74,8 @@
         compression to stream the video output of your target device.
       </p>
       <p>
-        You can configure the streaming mode in the
-        “System”&nbsp;&gt;&nbsp;“Video&nbsp;Settings” dialog.
+        You can configure the streaming mode in the “System”&nbsp;&gt;
+        “Video&nbsp;Settings” dialog.
       </p>
     </div>
     <div class="tooltip-text-h264-failure">
@@ -80,8 +83,12 @@
         TinyPilot failed to stream video output from your target device using
         H.264 compression.
       </p>
-      <p>See “System”&nbsp;&gt;&nbsp;“Logs” for diagnostic details.</p>
-      <p>Refreshing the page or restarting your device may fix the issue.</p>
+      <p>
+        You may be able to resolve this issue by using a STUN server. Go to
+        “System”&nbsp;&gt; “Video&nbsp;Settings”&nbsp;&gt;
+        “Show&nbsp;Advanced&nbsp;Settings” to enable this option.
+      </p>
+      <p>See “System”&nbsp;&gt; “Logs” for diagnostic details.</p>
     </div>
   </div>
   <img src="/img/warning-icon.svg" class="warning-icon" alt="Warning" />
