@@ -163,6 +163,23 @@ print_info "Checking for voltage issues..."
   printf "\n\n"
 } >> "${LOG_FILE}"
 
+print_info "Checking TinyPilot streaming mode..."
+{
+  echo "Streaming mode"
+  echo "Selected mode: $(/opt/tinypilot/scripts/streaming-mode)"
+  printf "Current mode: "
+  # H264 mode is considered active when the last Janus video log line contains
+  # "Memsink opened; reading frames".
+  # https://github.com/tiny-pilot/ustreamer/blob/89fd83bfc187ed592e9582be077fa1a005098532/janus/src/plugin.c#L148
+  if LAST_JANUS_VIDEO_LINE="$(journalctl --unit janus.service --quiet --reverse --lines 1 --grep 'ustreamer/video')" &&
+      [[ "${LAST_JANUS_VIDEO_LINE}" =~ 'Memsink opened; reading frames' ]]; then
+    printf "H264"
+  else
+    printf "MJPEG"
+  fi
+  printf "\n\n"
+} >> "${LOG_FILE}"
+
 print_info "Checking TinyPilot settings..."
 {
   printf "TinyPilot settings.yml\n"
