@@ -329,6 +329,9 @@ menuBar.addEventListener("mass-storage-dialog-requested", () => {
 menuBar.addEventListener("wake-on-lan-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
+menuBar.addEventListener("static-ip-dialog-requested", () => {
+  document.getElementById("feature-pro-overlay").show();
+});
 menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-dialog").initialize();
   document.getElementById("video-settings-overlay").show();
