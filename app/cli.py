@@ -12,7 +12,7 @@ def streaming_mode():
     """Prints TinyPilot's preferred video streaming mode, either H264 or MJPEG.
 
     Note: this doesn't represent the currently active video streaming mode
-    because H264 can fail and fallback to MJPEG.
+    because H264 can fail and fall back to MJPEG.
 
     Example of invocation:
         flask cli streaming-mode
