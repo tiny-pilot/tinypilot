@@ -30,6 +30,15 @@ if [[ "$(lsb_release --id --short)" == 'Raspbian' ]] \
   exit 1
 fi
 
+# Prevent installation on Raspberry Pi OS 12 "Bookworm".
+if [[ "$(lsb_release --id --short)" == 'Raspbian' ]] \
+    && (( "$(lsb_release --release --short)" > 11 )); then
+  echo "TinyPilot is not yet compatible with Raspberry Pi OS 12 \"Bookworm\"." >&2
+  echo "You can track our progress by visiting https://github.com/tiny-pilot/tinypilot/issues/1668" >&2
+  echo "To install TinyPilot, you'll need to downgrade your operating system to Raspberry Pi OS 11 \"Bullseye\"." >&2
+  exit 1
+fi
+
 # Abort installation if the read-only filesystem is enabled
 if grep -q "boot=overlay" /proc/cmdline ; then
   echo 'The read-only filesystem is enabled.' >&2
