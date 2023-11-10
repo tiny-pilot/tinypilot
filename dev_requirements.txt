@@ -1,4 +1,5 @@
--r requirements.txt
+--requirements requirements.txt
+
 coverage==7.2.7
 pylint==2.14.2
 ruff==0.0.290
