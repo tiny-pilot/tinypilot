@@ -20,7 +20,6 @@ To install TinyPilot's dev packages, run the following command:
 ```bash
 python3 -m venv venv && \
   . venv/bin/activate && \
-  pip install --requirement requirements.txt && \
   pip install --requirement dev_requirements.txt && \
   npm install && \
   sudo npx playwright install-deps && \

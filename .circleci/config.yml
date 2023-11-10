@@ -77,7 +77,6 @@ jobs:
           name: Install requirements and run build script
           command: |
             . venv/bin/activate
-            pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
   build_javascript:
@@ -112,7 +111,6 @@ jobs:
           name: Install python requirements
           command: |
             . venv/bin/activate
-            pip install --requirement requirements.txt
             pip install --requirement dev_requirements.txt
       - run:
           name: Install node dependencies
