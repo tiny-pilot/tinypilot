@@ -1,4 +1,4 @@
---requirements requirements.txt
+--requirement requirements.txt
 
 coverage==7.2.7
 pylint==2.14.2
