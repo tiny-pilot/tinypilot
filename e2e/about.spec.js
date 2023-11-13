@@ -89,6 +89,16 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     await janusLicensePage.close();
   }
 
+  // Click all license page links and check HTTP response status is 2xx.
+  for (const link of await page.locator("a.license").all()) {
+    const popupPromise = page.waitForEvent("popup");
+    await link.click();
+    const popup = await popupPromise;
+    const response = await popup.waitForResponse();
+    expect(response.ok()).toBeTruthy();
+    await popup.close()
+  }
+
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "About TinyPilot" })
