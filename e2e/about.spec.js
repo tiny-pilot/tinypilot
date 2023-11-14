@@ -91,12 +91,13 @@ test("shows about page, license, privacy policy, and dependency pages and licens
 
   // Click all license page links and check HTTP response status is 2xx.
   for (const link of await page.locator("a.license").all()) {
+    const responsePromise = page.waitForRequest();
     const popupPromise = page.waitForEvent("popup");
     await link.click();
-    const popup = await popupPromise;
-    const response = await popup.waitForResponse();
+    const response = await responsePromise;
     expect(response.ok()).toBeTruthy();
-    await popup.close()
+    const popup = await popupPromise;
+    await popup.close();
   }
 
   await page.getByRole("button", { name: "Close", exact: true }).click();
