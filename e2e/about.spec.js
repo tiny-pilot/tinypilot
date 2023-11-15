@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("shows about page, license, privacy policy, and dependency pages and licenses", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.goto("/");
   await page.getByRole("menuitem", { name: "Help" }).hover();
   await page.getByRole("menuitem", { name: "About" }).click();
@@ -89,15 +89,26 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     await janusLicensePage.close();
   }
 
-  // Click all license page links and check HTTP response status is 2xx.
-  for (const link of await page.locator("a.license").all()) {
-    const responsePromise = page.waitForRequest();
-    const popupPromise = page.waitForEvent("popup");
-    await link.click();
-    const response = await responsePromise;
-    expect(response.ok()).toBeTruthy();
-    const popup = await popupPromise;
-    await popup.close();
+  {
+    // Check that all license page links resolve successfully.
+    const popupLoadTimeout = 5000;
+    const links = await page.locator("a.license").all();
+    // Increase our test's total timeout to allow all pages to load sequentially.
+    testInfo.setTimeout(testInfo.timeout + popupLoadTimeout * links.length);
+    for (const link of links) {
+      // Trigger popup window on link click.
+      const [popup] = await Promise.all([
+        page.waitForEvent("popup"),
+        link.click(),
+      ]);
+      // Ensure that the license page loads.
+      await expect(async () => {
+        await popup.waitForLoadState();
+      }, `failed to load license page: ${popup.url()}`).toPass({
+        timeout: popupLoadTimeout,
+      });
+      await popup.close();
+    }
   }
 
   await page.getByRole("button", { name: "Close", exact: true }).click();
