@@ -94,7 +94,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     const links = await page.locator("a.license").all();
     // Increase our test's total timeout to allow for all popups pages to load.
     const popupLoadTimeout = 5000;
-    testInfo.setTimeout(testInfo.timeout + (popupLoadTimeout * links.length));
+    testInfo.setTimeout(testInfo.timeout + popupLoadTimeout * links.length);
     for (const link of links) {
       // Prepare to capture popup page.
       const popupPromise = page.waitForEvent("popup");
