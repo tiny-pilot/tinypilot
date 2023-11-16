@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("shows about page, license, privacy policy, and dependency pages and licenses", async ({
   page,
+  context,
 }, testInfo) => {
   await page.goto("/");
   await page.getByRole("menuitem", { name: "Help" }).hover();
@@ -90,24 +91,33 @@ test("shows about page, license, privacy policy, and dependency pages and licens
   }
 
   {
-    // Check that all license page links resolve successfully.
-    const popupLoadTimeout = 5000;
     const links = await page.locator("a.license").all();
-    // Increase our test's total timeout to allow all pages to load sequentially.
-    testInfo.setTimeout(testInfo.timeout + popupLoadTimeout * links.length);
+    // Increase our test's total timeout to allow for all popups pages to load.
+    const popupLoadTimeout = 5000;
+    testInfo.setTimeout(testInfo.timeout + (popupLoadTimeout * links.length));
     for (const link of links) {
-      // Trigger popup window on link click.
-      const [popup] = await Promise.all([
-        page.waitForEvent("popup"),
-        link.click(),
-      ]);
-      // Ensure that the license page loads.
-      await expect(async () => {
-        await popup.waitForLoadState();
-      }, `failed to load license page: ${popup.url()}`).toPass({
+      // Prepare to capture popup page.
+      const popupPromise = page.waitForEvent("popup");
+      // Prepare to capture final page response that isn't a redirect.
+      const responsePromise = context.waitForEvent("response", {
+        predicate: (response) => {
+          const isRedirect =
+            response.status() >= 300 && response.status() <= 399;
+          return !isRedirect;
+        },
         timeout: popupLoadTimeout,
       });
-      await popup.close();
+      // Trigger popup page.
+      await link.click();
+      try {
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+      } catch (error) {
+        // Log the failing popup page URL.
+        const popup = await popupPromise;
+        console.error(`failed to load license page: ${popup.url()}`);
+        throw error;
+      }
     }
   }
 
