@@ -92,7 +92,7 @@ test("shows about page, license, privacy policy, and dependency pages and licens
 
   {
     const links = await page.locator("a.license").all();
-    // Increase our test's total timeout to allow for all popups pages to load.
+    // Increase our test's total timeout to allow for all popup pages to load.
     const popupLoadTimeout = 5000;
     testInfo.setTimeout(testInfo.timeout + popupLoadTimeout * links.length);
     for (const link of links) {
@@ -109,15 +109,16 @@ test("shows about page, license, privacy policy, and dependency pages and licens
       });
       // Trigger popup page.
       await link.click();
+      const popup = await popupPromise;
       try {
         const response = await responsePromise;
         expect(response.status()).toBe(200);
       } catch (error) {
         // Log the failing popup page URL.
-        const popup = await popupPromise;
         console.error(`failed to load license page: ${popup.url()}`);
         throw error;
       }
+      await popup.close();
     }
   }
 
