@@ -1,24 +1,26 @@
 import { test, expect } from "@playwright/test";
 
-test("shows about page, license, privacy policy, and dependency pages and licenses", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page.getByRole("menuitem", { name: "Help" }).hover();
-  await page.getByRole("menuitem", { name: "About" }).click();
-  await expect(
-    page.getByRole("heading", { name: "About TinyPilot" })
-  ).toBeVisible();
+test.describe("about dialog", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("menuitem", { name: "Help" }).hover();
+    await page.getByRole("menuitem", { name: "About" }).click();
+    await expect(
+      page.getByRole("heading", { name: "About TinyPilot" })
+    ).toBeVisible();
+  });
 
-  const licensePagePromise = page.waitForEvent("popup");
-  await page.getByRole("link", { name: "MIT license" }).click();
-  const licensePage = await licensePagePromise;
-  await expect(licensePage.locator("body")).toContainText(
-    "Copyright 2022 TinyPilot, LLC"
-  );
-  await licensePage.close();
+  test("shows license", async ({ page }) => {
+    const licensePagePromise = page.waitForEvent("popup");
+    await page.getByRole("link", { name: "MIT license" }).click();
+    const licensePage = await licensePagePromise;
+    await expect(licensePage.locator("body")).toContainText(
+      "Copyright 2022 TinyPilot, LLC"
+    );
+    await licensePage.close();
+  });
 
-  {
+  test("shows privacy policy", async ({ page }) => {
     const privacyPolicyPagePromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Privacy Policy" }).click();
     const privacyPolicyPage = await privacyPolicyPagePromise;
@@ -26,9 +28,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
       "PRIVACY POLICY"
     );
     await privacyPolicyPage.close();
-  }
+  });
 
-  {
+  test("has link to Flask website", async ({ page }) => {
     const flaskProjectPagePromise = page.waitForEvent("popup");
     await page
       .getByRole("link", { name: "Flask", exact: true })
@@ -38,12 +40,12 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     await expect(flaskProjectPage).toHaveURL(
       new RegExp("https://flask.palletsprojects.com.*")
     );
-    // We assert the presense of some text so the trace report shows the page render.
+    // We assert the presence of some text so the trace report shows the page render.
     await expect(flaskProjectPage.locator("body")).not.toBeEmpty();
     await flaskProjectPage.close();
-  }
+  });
 
-  {
+  test("shows Flask license", async ({ page }) => {
     const flaskLicensePagePromise = page.waitForEvent("popup");
     await page
       .getByRole("listitem")
@@ -56,9 +58,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(flaskLicensePage.locator("body")).not.toBeEmpty();
     await flaskLicensePage.close();
-  }
+  });
 
-  {
+  test("has link to Janus website", async ({ page }) => {
     const janusProjectPagePromise = page.waitForEvent("popup");
     await page
       .getByRole("link", { name: "Janus", exact: true })
@@ -70,9 +72,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(janusProjectPage.locator("body")).not.toBeEmpty();
     await janusProjectPage.close();
-  }
+  });
 
-  {
+  test("shows Janus license", async ({ page }) => {
     const janusLicensePagePromise = page.waitForEvent("popup");
     await page
       .getByRole("listitem")
@@ -87,12 +89,14 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(janusLicensePage.locator("body")).not.toBeEmpty();
     await janusLicensePage.close();
-  }
+  });
 
-  await page.getByRole("button", { name: "Close", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "About TinyPilot" })
-  ).not.toBeVisible();
+  test("closes dialog", async ({ page }) => {
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "About TinyPilot" })
+    ).not.toBeVisible();
 
-  await page.close();
+    await page.close();
+  });
 });
