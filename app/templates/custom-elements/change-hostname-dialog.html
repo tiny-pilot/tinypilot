@@ -39,7 +39,6 @@
     <div>
       <progress-spinner></progress-spinner>
     </div>
-    <button id="cancel-initialization" type="button">Cancel</button>
   </div>
 
   <div id="prompt">
@@ -133,7 +132,10 @@
           PROMPT: "prompt",
           CHANGING: "changing",
         };
-        statesWithoutDialogClose = new Set([this.states.CHANGING]);
+        statesWithoutDialogClose = new Set([
+          this.states.CHANGING,
+          this.states.INITIALIZING,
+        ]);
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
@@ -144,9 +146,6 @@
             hostnameInput: this.shadowRoot.getElementById("hostname-input"),
             changeAndRestart:
               this.shadowRoot.getElementById("change-and-restart"),
-            cancelInitialization: this.shadowRoot.getElementById(
-              "cancel-initialization"
-            ),
             cancelHostnameChange: this.shadowRoot.getElementById(
               "cancel-hostname-change"
             ),
@@ -163,9 +162,6 @@
             if (evt.code === "Enter") {
               this.elements.changeAndRestart.click();
             }
-          });
-          this.elements.cancelInitialization.addEventListener("click", () => {
-            this.dispatchEvent(new DialogClosedEvent());
           });
           this.elements.cancelHostnameChange.addEventListener("click", () => {
             this.dispatchEvent(new DialogClosedEvent());
