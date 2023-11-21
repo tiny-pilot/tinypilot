@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("shows about page, license, privacy policy, and dependency pages and licenses", async ({
   page,
+  baseURL,
 }) => {
   await page.goto("/");
   await page.getByRole("menuitem", { name: "Help" }).hover();
@@ -87,6 +88,23 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(janusLicensePage.locator("body")).not.toBeEmpty();
     await janusLicensePage.close();
+  }
+
+  {
+    const links = await page.locator("a.license").all();
+    const paths = await Promise.all(
+      links.map((link) => link.getAttribute("href"))
+    );
+    const responses = await Promise.all(
+      paths.map((path) => fetch(`${baseURL}${path}`))
+    );
+    const failedResponses = responses.filter((res) => res.status !== 200);
+    expect(
+      failedResponses.length,
+      `License link broken for URLs: ${failedResponses
+        .map((response) => response.url)
+        .join(", ")}`
+    ).toBe(0);
   }
 
   await page.getByRole("button", { name: "Close", exact: true }).click();
