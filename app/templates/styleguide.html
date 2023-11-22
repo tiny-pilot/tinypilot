@@ -371,16 +371,21 @@
       </button>
       <overlay-panel id="overlay-with-primary-action">
         <h3>Overlay with Primary Action</h3>
-        <div>
+        <p>
           This overlay style is used for linear and straightforward flows that
-          have a single purpose or end state, like a prompt or confirmation. It
-          contains a call-to-action button and a cancel button (in that order)
-          at the bottom. When clicked, they also terminate the dialog.
-        </div>
+          have a single purpose or end state, like a prompt or confirmation.
+        </p>
+        <p>
+          In the bottom row, the overlay should contain a call-to-action button,
+          and a button for aborting the flow.<br />
+          The button for aborting the flow should be labelled “Close”, and it
+          should be the rightmost one. We deliberately don’t say “Cancel”, to be
+          transparent that clicking the button will terminate the overlay.
+        </p>
         <button class="close-overlay-with-primary-action btn-success">
           Confirm
         </button>
-        <button class="close-overlay-with-primary-action">Cancel</button>
+        <button class="close-overlay-with-primary-action">Close</button>
       </overlay-panel>
       <script type="module">
         import { DialogClosedEvent } from "/js/events.js";
@@ -400,28 +405,76 @@
       </script>
       <!-- Overlay with feature: -->
       <button id="show-overlay-with-feature-btn" class="btn-action">
-        Overlay with Feature
+        Overlay with Feature Panel
       </button>
       <overlay-panel id="overlay-with-feature">
-        <h3>Overlay with Feature</h3>
-        <div>
-          <button class="btn-action" onclick="alert('Done.')">Action 1</button>
-          <button class="btn-action" onclick="alert('Done.')">Action 2</button>
-          <button class="btn-action" onclick="alert('Done.')">Action 3</button>
+        <div id="overlay-with-feature-initial-state">
+          <h3>Overlay with Feature Panel</h3>
+          <div>
+            <button class="btn-action" onclick="alert('I’m an alert!')">
+              Show an Alert
+            </button>
+            <button
+              class="btn-action"
+              id="overlay-with-feature-secondary-state-btn"
+            >
+              Go to Secondary State
+            </button>
+          </div>
+          <p>
+            This overlay style is used for more comprehensive, non-linear
+            features.
+          </p>
+          <p>
+            In the bottom row, the overlay should contain a single button, which
+            is labelled “Close” and terminates the dialog.
+          </p>
+          <p>
+            The overlay may contain “secondary” actions that advance the overlay
+            into a different state. The corresponding buttons shouldn’t be
+            primary ones, and they shouldn’t appear in the bottom row.
+          </p>
+          <button id="close-overlay-with-feature-btn">Close</button>
         </div>
-        <div>
-          When the user can carry out “secondary” actions within the overlay
-          that don’t terminate the dialog itself, the blue action buttons should
-          be used for that. They also shouldn’t appear at the bottom.
+        <div id="overlay-with-feature-secondary-state">
+          <h3>Secondary State</h3>
+          <p>
+            The secondary state should have buttons in the bottom row, which
+            follow the same rules as in the “Overlay with Primary Action”,
+            except that …:
+          </p>
+          <ul style="text-align: left">
+            <li>
+              The buttons take the user back to the initial overlay state
+              instead of terminating the overlay.
+            </li>
+            <li>
+              The rightmost button is labelled “Back” instead of “Close”. We
+              deliberately don’t say “Cancel”, as that would make it unclear
+              whether the button terminates the overlay.
+            </li>
+          </ul>
+          <button class="btn-success overlay-with-feature-initialize-btn">
+            Confirm
+          </button>
+          <button class="overlay-with-feature-initialize-btn">Back</button>
         </div>
-        <button id="close-overlay-with-feature-btn">Close</button>
       </overlay-panel>
       <script type="module">
         import { DialogClosedEvent } from "/js/events.js";
 
+        function setDialogState(newState /* = "initial" or "secondary" */) {
+          document.getElementById(
+            "overlay-with-feature-initial-state"
+          ).style.display = newState === "initial" ? "block" : "none";
+          document.getElementById(
+            "overlay-with-feature-secondary-state"
+          ).style.display = newState === "initial" ? "none" : "block";
+        }
         document
           .getElementById("show-overlay-with-feature-btn")
           .addEventListener("click", () => {
+            setDialogState("initial");
             document.getElementById("overlay-with-feature").show();
           });
         document
@@ -429,6 +482,18 @@
           .addEventListener("click", (evt) => {
             evt.target.dispatchEvent(new DialogClosedEvent());
           });
+        document
+          .getElementById("overlay-with-feature-secondary-state-btn")
+          .addEventListener("click", () => {
+            setDialogState("secondary");
+          });
+        document
+          .querySelectorAll(".overlay-with-feature-initialize-btn")
+          .forEach((el) =>
+            el.addEventListener("click", () => {
+              setDialogState("initial");
+            })
+          );
       </script>
       <!-- Error overlay: -->
       <overlay-panel id="error-overlay" variant="danger">
@@ -479,10 +544,6 @@
         The buttons for primary actions should be located at the bottom of the
         dialog. These primary actions should either advance the dialog into a
         different state, or they should terminate the dialog altogether.
-      </p>
-      <p>
-        If there is a primary button for closing or canceling the dialog, it
-        should always be the rightmost one.
       </p>
 
       <h2 class="section">Progress Indicator</h2>
