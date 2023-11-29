@@ -1,14 +1,25 @@
 """Manages a TinyPilot update settings file.
 
-TinyPilot currently manages some of its settings in a database and some of its
-settings in a YAML settings file. This module is a wrapper around the YAML
-settings file that allows TinyPilot code to modify it cleanly.
+This module is a wrapper around the YAML settings file (settings.yml) that
+allows TinyPilot code to modify it cleanly.
 
 Typical usage example:
 
     settings = update_settings.load()
     settings.ustreamer_desired_fps = 15
     update_settings.save(settings)
+
+Note that we consider the use of settings.yml to be mostly deprecated nowadays.
+Historically, settings.yml was used as we relied on Ansible to manage and
+update the device system state. (The canonical way for configuration in Ansible
+is files in YAML format.) As of mid 2023, we have finished migrating away from
+Ansible, so there is no hard requirement for us to continue using the
+settings.yml file, except for backwards compatibility with existing files.
+
+The default place to store settings and configuration is the SQlite database.
+We should only add new properties to settings.yml in exceptional cases, e.g.:
+- Settings that are supposed to be manually overridden by users
+- Settings that are closely related to already existing legacy settings
 """
 
 import yaml
