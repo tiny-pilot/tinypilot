@@ -9,17 +9,21 @@ Typical usage example:
     settings.ustreamer_desired_fps = 15
     update_settings.save(settings)
 
-Note that we consider the use of settings.yml to be mostly deprecated nowadays.
-Historically, settings.yml was used as we relied on Ansible to manage and
-update the device system state. (The canonical way for configuration in Ansible
-is files in YAML format.) As of mid 2023, we have finished migrating away from
-Ansible, so there is no hard requirement for us to continue using the
-settings.yml file, except for backwards compatibility with existing files.
-
-The default place to store settings and configuration is the SQlite database.
-We should only add new properties to settings.yml in exceptional cases, e.g.:
+Note that we consider the use of settings.yml to be deprecated nowadays. The
+default place to store settings and configuration is the SQlite database. We
+should only add new properties to settings.yml in exceptional cases, such as:
 - Settings that are supposed to be manually overridden by users
 - Settings that are closely related to already existing legacy settings
+
+Historically, settings.yml was used as we relied on Ansible to manage and
+update the device system state. The canonical way for configuration in Ansible
+is files in YAML format, so a YAML file was an obvious choice here. This
+wrapper module resides in the update package, since settings.yml was only
+processed throughout the update process initially. Over time, we also added a
+few other settings, which are independent of the update context.
+As of mid 2023, we have finished migrating away from Ansible, so there is no
+hard requirement for us to continue using the settings.yml file, except for
+backwards compatibility with existing TinyPilot installations.
 """
 
 import yaml
