@@ -1,25 +1,34 @@
 import { test, expect } from "@playwright/test";
 
-test("shows about page, license, privacy policy, and dependency pages and licenses", async ({
-  page,
-  baseURL,
-}) => {
-  await page.goto("/");
-  await page.getByRole("menuitem", { name: "Help" }).hover();
-  await page.getByRole("menuitem", { name: "About" }).click();
-  await expect(
-    page.getByRole("heading", { name: "About TinyPilot" })
-  ).toBeVisible();
+test.describe("about dialog", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("menuitem", { name: "Help" }).hover();
+    await page.getByRole("menuitem", { name: "About" }).click();
+    await expect(
+      page.getByRole("heading", { name: "About TinyPilot" })
+    ).toBeVisible();
+  });
 
-  const licensePagePromise = page.waitForEvent("popup");
-  await page.getByRole("link", { name: "MIT license" }).click();
-  const licensePage = await licensePagePromise;
-  await expect(licensePage.locator("body")).toContainText(
-    "Copyright 2022 TinyPilot, LLC"
-  );
-  await licensePage.close();
+  test("closes about dialog", async ({ page }) => {
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "About TinyPilot" })
+    ).not.toBeVisible();
+    await page.close();
+  });
 
-  {
+  test("shows license", async ({ page }) => {
+    const licensePagePromise = page.waitForEvent("popup");
+    await page.getByRole("link", { name: "MIT license" }).click();
+    const licensePage = await licensePagePromise;
+    await expect(licensePage.locator("body")).toContainText(
+      "Copyright 2022 TinyPilot, LLC"
+    );
+    await licensePage.close();
+  });
+
+  test("shows privacy policy", async ({ page }) => {
     const privacyPolicyPagePromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Privacy Policy" }).click();
     const privacyPolicyPage = await privacyPolicyPagePromise;
@@ -27,9 +36,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
       "PRIVACY POLICY"
     );
     await privacyPolicyPage.close();
-  }
+  });
 
-  {
+  test("links to dependency’s project page (Flask)", async ({ page }) => {
     const flaskProjectPagePromise = page.waitForEvent("popup");
     await page
       .getByRole("link", { name: "Flask", exact: true })
@@ -39,12 +48,12 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     await expect(flaskProjectPage).toHaveURL(
       new RegExp("https://flask.palletsprojects.com.*")
     );
-    // We assert the presense of some text so the trace report shows the page render.
+    // We assert the presence of some text so the trace report shows the page render.
     await expect(flaskProjectPage.locator("body")).not.toBeEmpty();
     await flaskProjectPage.close();
-  }
+  });
 
-  {
+  test("links to dependency’s license page (Flask)", async ({ page }) => {
     const flaskLicensePagePromise = page.waitForEvent("popup");
     await page
       .getByRole("listitem")
@@ -57,9 +66,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(flaskLicensePage.locator("body")).not.toBeEmpty();
     await flaskLicensePage.close();
-  }
+  });
 
-  {
+  test("links to dependency’s project page (Janus)", async ({ page }) => {
     const janusProjectPagePromise = page.waitForEvent("popup");
     await page
       .getByRole("link", { name: "Janus", exact: true })
@@ -71,9 +80,9 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(janusProjectPage.locator("body")).not.toBeEmpty();
     await janusProjectPage.close();
-  }
+  });
 
-  {
+  test("links to dependency’s license page (Janus)", async ({ page }) => {
     const janusLicensePagePromise = page.waitForEvent("popup");
     await page
       .getByRole("listitem")
@@ -88,9 +97,12 @@ test("shows about page, license, privacy policy, and dependency pages and licens
     );
     await expect(janusLicensePage.locator("body")).not.toBeEmpty();
     await janusLicensePage.close();
-  }
+  });
 
-  {
+  test("checks that all license URLs are valid and reachable", async ({
+    page,
+    baseURL,
+  }) => {
     const links = await page.locator("a.license").all();
     const paths = await Promise.all(
       links.map((link) => link.getAttribute("href"))
@@ -105,12 +117,5 @@ test("shows about page, license, privacy policy, and dependency pages and licens
         .map((response) => response.url)
         .join(", ")}`
     ).toBe(0);
-  }
-
-  await page.getByRole("button", { name: "Close", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "About TinyPilot" })
-  ).not.toBeVisible();
-
-  await page.close();
+  });
 });
