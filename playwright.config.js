@@ -10,8 +10,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Opt out of parallel tests, until we have fixed our test setup in that
+     regard. See https://github.com/tiny-pilot/tinypilot/issues/1694 */
+  workers: 1,
   reporter: "html",
   use: {
     baseURL: process.env.E2E_BASE_URL || "http://0.0.0.0:9000",
