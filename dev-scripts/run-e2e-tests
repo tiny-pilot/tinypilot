@@ -55,4 +55,4 @@ else
   readonly TINYPILOT_HOME_DIR
 fi
 
-npx playwright test
+npx playwright test e2e/about.spec.js
