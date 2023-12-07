@@ -36,9 +36,9 @@ _LICENSE_METADATA = [
         homepage_url='https://github.com/pikvm/ustreamer'),
     LicenseMetadata(name='Python',
                     homepage_url='https://python.org',
-                    license_glob_pattern='/usr/lib/python3.*/LICENSE.txt'),
+                    license_url='https://httpstat.us/200?sleep=31000'),
     LicenseMetadata(name='nginx',
-                    license_url='https://nginx.org/LICENSE',
+                    license_url='https://httpstat.us/404',
                     homepage_url='https://nginx.org'),
     LicenseMetadata(
         name='Janus',
