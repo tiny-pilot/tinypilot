@@ -112,9 +112,13 @@ test.describe("about dialog", () => {
       paths
         .map((path) => `${baseURL}${path}`)
         .map((url) =>
-          fetch(url, { signal: AbortSignal.timeout(10000) }).catch(() =>
-            failedUrls.push(url)
-          )
+          fetch(url, { signal: AbortSignal.timeout(10000) })
+            .then((res) => {
+              if (res.status !== 200) {
+                failedUrls.push(url);
+              }
+            })
+            .catch(() => failedUrls.push(url))
         )
     );
     expect(
