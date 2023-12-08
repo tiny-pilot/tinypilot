@@ -107,15 +107,23 @@ test.describe("about dialog", () => {
     const paths = await Promise.all(
       links.map((link) => link.getAttribute("href"))
     );
-    const responses = await Promise.all(
-      paths.map((path) => fetch(`${baseURL}${path}`))
+    const failedUrls = [];
+    await Promise.all(
+      paths
+        .map((path) => `${baseURL}${path}`)
+        .map((url) =>
+          fetch(url, { signal: AbortSignal.timeout(10000) })
+            .then((res) => {
+              if (res.status !== 200) {
+                failedUrls.push(url);
+              }
+            })
+            .catch(() => failedUrls.push(url))
+        )
     );
-    const failedResponses = responses.filter((res) => res.status !== 200);
     expect(
-      failedResponses.length,
-      `License link broken for URLs: ${failedResponses
-        .map((response) => response.url)
-        .join(", ")}`
+      failedUrls.length,
+      `License link broken for URLs: ${failedUrls.join(", ")}`
     ).toBe(0);
   });
 });
