@@ -271,7 +271,10 @@
     </div>
 
     <div class="keyboard-block" style="--columns: 3">
-      <keyboard-key code="PrintScreen">Print</keyboard-key>
+      <keyboard-key code="PrintScreen">
+        <slot>Print</slot>
+        <span slot="bottom">SysRq</span>
+      </keyboard-key>
       <keyboard-key code="ScrollLock">Scroll Lock</keyboard-key>
       <keyboard-key code="Pause">Pause</keyboard-key>
       <!-- Row break -->
