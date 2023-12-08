@@ -29,6 +29,7 @@ export function isModifierCode(code) {
     "MetaRight",
     "ShiftLeft",
     "ShiftRight",
+    "PrintScreen",
   ];
   return modifierCodes.indexOf(code) >= 0;
 }

@@ -343,7 +343,12 @@
 
           this.emitKeyEvent("keydown", key, code);
 
-          if (!isModifier) {
+          if (
+            !isModifier ||
+            (code === "PrintScreen" &&
+              !this.isModifierKeyPressed("AltLeft") &&
+              !this.isModifierKeyPressed("AltRight"))
+          ) {
             this.emitKeyEvent("keyup", key, code);
 
             // Remove pressed state from all modifier keys if non-modifier key
