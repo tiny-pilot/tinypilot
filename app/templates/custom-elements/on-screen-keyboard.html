@@ -220,8 +220,7 @@
       <!-- Row break -->
       <keyboard-key
         code="ShiftLeft"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 2.5"
         >Shift</keyboard-key
       >
@@ -246,39 +245,35 @@
       </keyboard-key>
       <keyboard-key
         code="ShiftRight"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 2.5"
         >Shift</keyboard-key
       >
       <!-- Row break -->
       <keyboard-key
         code="ControlLeft"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 2"
         >Control</keyboard-key
       >
       <keyboard-key
         code="MetaLeft"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 1.5"
         >Meta</keyboard-key
       >
-      <keyboard-key code="AltLeft" modifier="true" class="modifier accented"
+      <keyboard-key code="AltLeft" class="accented"
         >Alt</keyboard-key
       >
       <keyboard-key code="Space" class="key-space" style="--span: 4.5"
         >Space</keyboard-key
       >
-      <keyboard-key code="AltRight" modifier="true" class="modifier accented"
+      <keyboard-key code="AltRight" class="accented"
         >Alt</keyboard-key
       >
       <keyboard-key
         code="MetaRight"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 1.5"
         >Meta</keyboard-key
       >
@@ -291,8 +286,7 @@
       >
       <keyboard-key
         code="ControlRight"
-        modifier="true"
-        class="modifier accented"
+        class="accented"
         style="--span: 2"
         >Control</keyboard-key
       >
@@ -383,7 +377,7 @@
         isModifierKeyPressed(keyCode) {
           return (
             this.shadowRoot.querySelectorAll(
-              `.modifier[code=${keyCode}][pressed=true]`
+              `[code=${keyCode}][pressed=true]`
             ).length > 0
           );
         }
@@ -413,7 +407,7 @@
 
         clearPressedKeys() {
           this.shadowRoot
-            .querySelectorAll("[modifier=true][pressed=true]")
+            .querySelectorAll("[pressed=true]")
             .forEach((key) => {
               key.isPressed = false;
               this.emitKeyEvent("keyup", key.key, key.code);
