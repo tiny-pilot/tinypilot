@@ -244,11 +244,11 @@ document.addEventListener("video-streaming-mode-changed", (evt) => {
 // for example, then the browser would only receive the "keydown" event for Alt,
 // since the Tab press is intercepted by the operating system and switches focus
 // to another application. That way, the modifier key appears stuck on the
-// target machine. To avoid this, we release any modifier keycodes being pressed
-// when the browser window loses focus.
+// target machine. To avoid this, we release all keys being pressed when the
+// browser window loses focus.
 window.addEventListener("blur", () => {
   keyboardState
-    .getAllPressedModifierKeys()
+    .getAllPressedKeys()
     .forEach((keyCode) =>
       onKeyUp(new KeyboardEvent("keyup", { code: keyCode }))
     );
