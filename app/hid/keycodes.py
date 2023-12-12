@@ -1,4 +1,5 @@
 import dataclasses
+from typing import List
 
 # USB Usage ID values for the keycodes that TinyPilot can emit to the target
 # computer through the USB keyboard interface.
@@ -144,8 +145,19 @@ KEYCODE_RIGHT_META = 0xe7
 KEYCODE_MEDIA_PLAY_PAUSE = 0xe8
 KEYCODE_REFRESH = 0xfa
 
+KEYCODE_TO_MODIFIER_MAP = {
+    KEYCODE_LEFT_CTRL: MODIFIER_LEFT_CTRL,
+    KEYCODE_LEFT_SHIFT: MODIFIER_LEFT_SHIFT,
+    KEYCODE_LEFT_ALT: MODIFIER_LEFT_ALT,
+    KEYCODE_LEFT_META: MODIFIER_LEFT_META,
+    KEYCODE_RIGHT_CTRL: MODIFIER_RIGHT_CTRL,
+    KEYCODE_RIGHT_SHIFT: MODIFIER_RIGHT_SHIFT,
+    KEYCODE_RIGHT_ALT: MODIFIER_RIGHT_ALT,
+    KEYCODE_RIGHT_META: MODIFIER_RIGHT_META,
+}
+
 
 @dataclasses.dataclass
 class Keystroke:
-    keycode: int
+    keycodes: List[int]
     modifier: int = KEYCODE_NONE

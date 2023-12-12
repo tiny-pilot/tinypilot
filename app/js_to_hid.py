@@ -9,17 +9,6 @@ class UnrecognizedKeyCodeError(Error):
     pass
 
 
-_MODIFIER_KEYCODES = [
-    'AltLeft',
-    'AltRight',
-    'ControlLeft',
-    'ControlRight',
-    'MetaLeft',
-    'MetaRight',
-    'ShiftLeft',
-    'ShiftRight',
-]
-
 _MAPPING = {
     'AltLeft': hid.KEYCODE_LEFT_ALT,
     'AltRight': hid.KEYCODE_RIGHT_ALT,
@@ -145,73 +134,29 @@ _MAPPING = {
 }
 
 
-def convert(keystroke):
-    """Converts a JavaScript-esque Keystroke object into a HID Keystroke object.
+def convert(codes):
+    """Converts a JavaScript KeyboardEvent codes into a HID Keystroke object.
 
     Args:
-        keystroke: A JavaScript-esque Keystroke object, as defined in
-            `app/request_parsers/keystroke.py`
+        codes: A list of JavaScript KeyboardEvent codes.
 
     Returns:
         A HID Keystroke object.
 
     Raises:
-        UnrecognizedKeyCodeError: If the JavaScript-esque Keystroke's keycode is
+        UnrecognizedKeyCodeError: If the JavaScript KeyboardEvent code is
             unrecognized.
     """
-    return hid.Keystroke(keycode=_map_keycode(keystroke),
-                         modifier=_map_modifier_keys(keystroke))
-
-
-def _map_modifier_keys(keystroke):
-    modifier_bitmask = 0
-
-    if keystroke.left_ctrl_modifier:
-        modifier_bitmask |= hid.MODIFIER_LEFT_CTRL
-    if keystroke.right_ctrl_modifier:
-        modifier_bitmask |= hid.MODIFIER_RIGHT_CTRL
-
-    if keystroke.left_shift_modifier:
-        modifier_bitmask |= hid.MODIFIER_LEFT_SHIFT
-    if keystroke.right_shift_modifier:
-        modifier_bitmask |= hid.MODIFIER_RIGHT_SHIFT
-
-    if keystroke.left_alt_modifier:
-        modifier_bitmask |= hid.MODIFIER_LEFT_ALT
-    if keystroke.right_alt_modifier:
-        modifier_bitmask |= hid.MODIFIER_RIGHT_ALT
-
-    if keystroke.left_meta_modifier:
-        modifier_bitmask |= hid.MODIFIER_LEFT_META
-    if keystroke.right_meta_modifier:
-        modifier_bitmask |= hid.MODIFIER_RIGHT_META
-
-    return modifier_bitmask
-
-
-def _map_keycode(keystroke):
-    # If the current key press is a modifier key and it's the *only* modifier
-    # being pressed, treat it as a special case where we remap the HID code to
-    # KEYCODE_NONE. This is based on a report that certain KVMs only recognize
-    # a modifier keystroke if the HID code is KEYCODE_NONE, but we should verify
-    # that it matches behavior from normal USB keyboards.
-    if (keystroke.code in _MODIFIER_KEYCODES and
-            _count_modifiers(keystroke) == 1):
-        return hid.KEYCODE_NONE
-
-    try:
-        return _MAPPING[keystroke.code]
-    except KeyError as e:
-        raise UnrecognizedKeyCodeError(
-            f'Unrecognized key code {keystroke.key} {keystroke.code}') from e
-
-
-def _count_modifiers(keystroke):
-    return (int(keystroke.left_ctrl_modifier) +
-            int(keystroke.right_ctrl_modifier) +
-            int(keystroke.left_shift_modifier) +
-            int(keystroke.right_shift_modifier) +
-            int(keystroke.left_alt_modifier) +
-            int(keystroke.right_alt_modifier) +
-            int(keystroke.left_meta_modifier) +
-            int(keystroke.right_meta_modifier))
+    keycodes = []
+    modifier = hid.KEYCODE_NONE
+    for code in codes:
+        try:
+            keycode = _MAPPING[code]
+        except KeyError as e:
+            raise UnrecognizedKeyCodeError(
+                f'Unrecognized key code {code}') from e
+        try:
+            modifier |= hid.KEYCODE_TO_MODIFIER_MAP[keycode]
+        except KeyError:
+            keycodes.append(keycode)
+    return hid.Keystroke(keycodes, modifier)

@@ -21,22 +21,18 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 def on_keystroke(message):
     logger.debug_sensitive('received keystroke message: %s', message)
     try:
-        keystroke = keystroke_request.parse_keystroke(message)
+        hid_keystroke = keystroke_request.parse_keystroke(message)
     except keystroke_request.Error as e:
         logger.error_sensitive('Failed to parse keystroke request: %s', e)
         return {'success': False}
-    try:
-        hid_keystroke = js_to_hid.convert(keystroke)
-    except js_to_hid.UnrecognizedKeyCodeError:
-        logger.warning_sensitive('Unrecognized key: %s (keycode=%s)',
-                                 keystroke.key, keystroke.code)
+    except js_to_hid.UnrecognizedKeyCodeError as e:
+        logger.warning_sensitive('Unrecognized key: %s', e)
         return {'success': False}
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     try:
         fake_keyboard.send_keystroke(keyboard_path, hid_keystroke)
     except hid_write.WriteError as e:
-        logger.error_sensitive('Failed to write key: %s (keycode=%s). %s',
-                               keystroke.key, keystroke.code, e)
+        logger.error_sensitive('Failed to write key: %s', e)
         return {'success': False}
     return {'success': True}
 

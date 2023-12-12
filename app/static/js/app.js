@@ -150,7 +150,7 @@ function onKeyDown(evt) {
       keyboardState.isKeyPressed("ControlRight") ||
       onScreenKeyboard.isModifierKeyPressed("ControlRight"),
     key: evt.key,
-    code: canonicalCode,
+    codes: keyboardState.getAllPressedKeys(),
   });
 }
 
@@ -347,19 +347,19 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
   processKeystroke({
     ctrlLeft: true,
     key: "Control",
-    code: "ControlLeft",
+    codes: ["ControlLeft"],
   });
   processKeystroke({
     ctrlLeft: true,
     altLeft: true,
     key: "Alt",
-    code: "AltLeft",
+    codes: ["ControlLeft", "AltLeft"],
   });
   processKeystroke({
     ctrlLeft: true,
     altLeft: true,
     key: "Delete",
-    code: "Delete",
+    codes: ["ControlLeft", "AltLeft", "Delete"],
   });
 });
 
