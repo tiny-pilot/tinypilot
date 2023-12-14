@@ -38,6 +38,12 @@ export class KeyboardState {
     if (!isModifierCode(canonicalCode)) {
       this._fixInternalModifierStates(evt);
     }
+    console.debug(
+      "keyDown",
+      canonicalCode,
+      "_isKeyPressed",
+      Object.keys(this._isKeyPressed).filter((key) => this._isKeyPressed[key])
+    );
   }
 
   /**
@@ -46,6 +52,12 @@ export class KeyboardState {
   onKeyUp(evt) {
     const canonicalCode = keystrokeToCanonicalCode(evt);
     this._isKeyPressed[canonicalCode] = false;
+    console.debug(
+      "keyUp",
+      canonicalCode,
+      "_isKeyPressed",
+      Object.keys(this._isKeyPressed).filter((key) => this._isKeyPressed[key])
+    );
   }
 
   /**
