@@ -132,57 +132,83 @@ _COMMON_CHAR_TO_HID_MAP = {
     'z':
         hid.Keystroke(keycodes=[hid.KEYCODE_Z]),
     'A':
-        hid.Keystroke(keycodes=[hid.KEYCODE_A], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_A],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'B':
-        hid.Keystroke(keycodes=[hid.KEYCODE_B], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_B],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'C':
-        hid.Keystroke(keycodes=[hid.KEYCODE_C], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_C],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'D':
-        hid.Keystroke(keycodes=[hid.KEYCODE_D], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_D],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'E':
-        hid.Keystroke(keycodes=[hid.KEYCODE_E], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_E],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'F':
-        hid.Keystroke(keycodes=[hid.KEYCODE_F], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_F],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'G':
-        hid.Keystroke(keycodes=[hid.KEYCODE_G], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_G],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'H':
-        hid.Keystroke(keycodes=[hid.KEYCODE_H], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_H],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'I':
-        hid.Keystroke(keycodes=[hid.KEYCODE_I], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_I],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'J':
-        hid.Keystroke(keycodes=[hid.KEYCODE_J], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_J],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'K':
-        hid.Keystroke(keycodes=[hid.KEYCODE_K], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_K],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'L':
-        hid.Keystroke(keycodes=[hid.KEYCODE_L], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_L],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'M':
-        hid.Keystroke(keycodes=[hid.KEYCODE_M], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_M],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'N':
-        hid.Keystroke(keycodes=[hid.KEYCODE_N], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_N],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'O':
-        hid.Keystroke(keycodes=[hid.KEYCODE_O], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_O],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'P':
-        hid.Keystroke(keycodes=[hid.KEYCODE_P], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_P],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'Q':
-        hid.Keystroke(keycodes=[hid.KEYCODE_Q], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_Q],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'R':
-        hid.Keystroke(keycodes=[hid.KEYCODE_R], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_R],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'S':
-        hid.Keystroke(keycodes=[hid.KEYCODE_S], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_S],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'T':
-        hid.Keystroke(keycodes=[hid.KEYCODE_T], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_T],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'U':
-        hid.Keystroke(keycodes=[hid.KEYCODE_U], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_U],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'V':
-        hid.Keystroke(keycodes=[hid.KEYCODE_V], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_V],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'W':
-        hid.Keystroke(keycodes=[hid.KEYCODE_W], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_W],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'X':
-        hid.Keystroke(keycodes=[hid.KEYCODE_X], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_X],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'Y':
-        hid.Keystroke(keycodes=[hid.KEYCODE_Y], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_Y],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     'Z':
-        hid.Keystroke(keycodes=[hid.KEYCODE_Z], modifier=hid.MODIFIER_LEFT_SHIFT),
+        hid.Keystroke(keycodes=[hid.KEYCODE_Z],
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
     ',':
         hid.Keystroke(keycodes=[hid.KEYCODE_COMMA]),
     '<':

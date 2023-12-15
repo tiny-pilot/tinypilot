@@ -53,12 +53,13 @@ class KeyboardTest(unittest.TestCase):
 
     def test_send_multiple_keystrokes_to_hid_interface(self):
         with tempfile.NamedTemporaryFile() as input_file:
-            keyboard.send_keystrokes(keyboard_path=input_file.name,
-                                     keystrokes=[
-                                         hid.Keystroke(keycodes=[hid.KEYCODE_A]),
-                                         hid.Keystroke(keycodes=[hid.KEYCODE_B]),
-                                         hid.Keystroke(keycodes=[hid.KEYCODE_C])
-                                     ])
+            keyboard.send_keystrokes(
+                keyboard_path=input_file.name,
+                keystrokes=[
+                    hid.Keystroke(keycodes=[hid.KEYCODE_A]),
+                    hid.Keystroke(keycodes=[hid.KEYCODE_B]),
+                    hid.Keystroke(keycodes=[hid.KEYCODE_C])
+                ])
             self.assertEqual(
                 b'\x00\x00\x04\x00\x00\x00\x00\x00'
                 b'\x00\x00\x00\x00\x00\x00\x00\x00'

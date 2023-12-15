@@ -18,15 +18,18 @@ class ConvertTextToHidTest(unittest.TestCase):
 
     def test_language_mapping(self):
         self.assertEqual(
-            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_2], modifier=hid.MODIFIER_LEFT_SHIFT),
+            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_2],
+                          modifier=hid.MODIFIER_LEFT_SHIFT),
             text_to_hid.convert('@', 'en-US'))
         self.assertEqual(
-            hid.Keystroke(keycodes=[hid.KEYCODE_SINGLE_QUOTE], modifier=hid.MODIFIER_LEFT_SHIFT),
+            hid.Keystroke(keycodes=[hid.KEYCODE_SINGLE_QUOTE],
+                          modifier=hid.MODIFIER_LEFT_SHIFT),
             text_to_hid.convert('@', 'en-GB'))
 
     def test_defaults_to_us_english_language_mapping(self):
         self.assertEqual(
-            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_2], modifier=hid.MODIFIER_LEFT_SHIFT),
+            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_2],
+                          modifier=hid.MODIFIER_LEFT_SHIFT),
             text_to_hid.convert('@', 'fake-language'))
 
     def test_raises_error_on_unsupported_character(self):

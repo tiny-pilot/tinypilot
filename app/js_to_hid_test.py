@@ -71,8 +71,8 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 key='Control',
                                 code='ControlLeft'))
         self.assertEqual(
-            hid.Keystroke(keycodes=[],
-                          modifier=hid.MODIFIER_LEFT_CTRL), hid_keystroke)
+            hid.Keystroke(keycodes=[], modifier=hid.MODIFIER_LEFT_CTRL),
+            hid_keystroke)
 
     def test_converts_right_ctrl_keystroke(self):
         hid_keystroke = js_to_hid.convert(
@@ -87,8 +87,8 @@ class ConvertJsToHIDTest(unittest.TestCase):
                                 key='Control',
                                 code='ControlRight'))
         self.assertEqual(
-            hid.Keystroke(keycodes=[],
-                          modifier=hid.MODIFIER_RIGHT_CTRL), hid_keystroke)
+            hid.Keystroke(keycodes=[], modifier=hid.MODIFIER_RIGHT_CTRL),
+            hid_keystroke)
 
     def test_converts_left_ctrl_with_shift_left_keystroke(self):
         hid_keystroke = js_to_hid.convert(
