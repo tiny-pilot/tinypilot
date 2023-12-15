@@ -16,9 +16,9 @@ class KeystrokesParserTest(unittest.TestCase):
 
     def test_accepts(self):
         self.assertEqual([
-            hid.Keystroke(keycode=hid.KEYCODE_A),
-            hid.Keystroke(keycode=hid.KEYCODE_B),
-            hid.Keystroke(keycode=hid.KEYCODE_C),
+            hid.Keystroke(keycodes=[hid.KEYCODE_A]),
+            hid.Keystroke(keycodes=[hid.KEYCODE_B]),
+            hid.Keystroke(keycodes=[hid.KEYCODE_C]),
         ],
                          paste.parse_keystrokes(
                              make_mock_request({
@@ -49,10 +49,10 @@ class KeystrokesParserTest(unittest.TestCase):
 
     def test_skips_ignored_character(self):
         self.assertEqual([
-            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_1),
-            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2),
-            hid.Keystroke(keycode=hid.KEYCODE_ENTER),
-            hid.Keystroke(keycode=hid.KEYCODE_NUMBER_3),
+            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_1]),
+            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_2]),
+            hid.Keystroke(keycodes=[hid.KEYCODE_ENTER]),
+            hid.Keystroke(keycodes=[hid.KEYCODE_NUMBER_3]),
         ],
                          paste.parse_keystrokes(
                              make_mock_request({

@@ -1,4 +1,5 @@
 import dataclasses
+from typing import List
 
 # USB Usage ID values for the keycodes that TinyPilot can emit to the target
 # computer through the USB keyboard interface.
@@ -147,5 +148,5 @@ KEYCODE_REFRESH = 0xfa
 
 @dataclasses.dataclass
 class Keystroke:
-    keycode: int
+    keycodes: List[int] = list
     modifier: int = KEYCODE_NONE

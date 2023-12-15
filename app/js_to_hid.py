@@ -159,7 +159,7 @@ def convert(keystroke):
         UnrecognizedKeyCodeError: If the JavaScript-esque Keystroke's keycode is
             unrecognized.
     """
-    return hid.Keystroke(keycode=_map_keycode(keystroke),
+    return hid.Keystroke(keycodes=_map_keycodes(keystroke),
                          modifier=_map_modifier_keys(keystroke))
 
 
@@ -189,7 +189,7 @@ def _map_modifier_keys(keystroke):
     return modifier_bitmask
 
 
-def _map_keycode(keystroke):
+def _map_keycodes(keystroke):
     # If the current key press is a modifier key and it's the *only* modifier
     # being pressed, treat it as a special case where we remap the HID code to
     # KEYCODE_NONE. This is based on a report that certain KVMs only recognize
@@ -197,10 +197,10 @@ def _map_keycode(keystroke):
     # that it matches behavior from normal USB keyboards.
     if (keystroke.code in _MODIFIER_KEYCODES and
             _count_modifiers(keystroke) == 1):
-        return hid.KEYCODE_NONE
+        return []
 
     try:
-        return _MAPPING[keystroke.code]
+        return [_MAPPING[keystroke.code]]
     except KeyError as e:
         raise UnrecognizedKeyCodeError(
             f'Unrecognized key code {keystroke.key} {keystroke.code}') from e

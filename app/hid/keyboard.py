@@ -4,7 +4,8 @@ from hid import write as hid_write
 def send_keystroke(keyboard_path, keystroke):
     buf = [0] * 8
     buf[0] = keystroke.modifier
-    buf[2] = keystroke.keycode
+    for i, keycode in enumerate(keystroke.keycodes, start=2):
+        buf[i] = keycode
     hid_write.write_to_hid_interface(keyboard_path, buf)
 
     # If it's a normal keycode (i.e. not a standalone modifier key), add a
@@ -14,7 +15,7 @@ def send_keystroke(keyboard_path, keystroke):
     # events. However, auto-releasing has the disadvantage of preventing
     # genuinely long key presses (see
     # https://github.com/tiny-pilot/tinypilot/issues/1093).
-    if keystroke.keycode:
+    if keystroke.keycodes:
         release_keys(keyboard_path)
 
 
