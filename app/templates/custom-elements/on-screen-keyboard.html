@@ -353,7 +353,8 @@
         }
 
         isModifierKeyPressed(keyCode) {
-          // Note: Only modifier keys can be "pressed" (i.e., pressed and held).
+          // Note: Only modifier keys can be considered "pressed" (i.e.,
+          // pressed and held).
           return (
             this.shadowRoot.querySelectorAll(
               `keyboard-key[code=${keyCode}][pressed=true]`
