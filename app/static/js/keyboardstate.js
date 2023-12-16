@@ -83,9 +83,9 @@ export class KeyboardState {
   /**
    * @returns {string[]} An unordered array of canonical key codes.
    */
-  getAllPressedModifierKeys() {
+  getAllPressedKeys() {
     return Object.entries(this._isKeyPressed)
-      .filter(([keyCode, isPressed]) => isPressed && isModifierCode(keyCode))
+      .filter(([, isPressed]) => isPressed)
       .map(([keyCode]) => keyCode);
   }
 }
