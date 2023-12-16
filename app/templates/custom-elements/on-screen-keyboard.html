@@ -218,11 +218,7 @@
         >Enter</keyboard-key
       >
       <!-- Row break -->
-      <keyboard-key
-        code="ShiftLeft"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 2.5"
+      <keyboard-key code="ShiftLeft" class="accented" style="--span: 2.5"
         >Shift</keyboard-key
       >
       <keyboard-key code="KeyZ">Z</keyboard-key>
@@ -244,42 +240,22 @@
         <slot>?</slot>
         <span slot="bottom">/</span>
       </keyboard-key>
-      <keyboard-key
-        code="ShiftRight"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 2.5"
+      <keyboard-key code="ShiftRight" class="accented" style="--span: 2.5"
         >Shift</keyboard-key
       >
       <!-- Row break -->
-      <keyboard-key
-        code="ControlLeft"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 2"
+      <keyboard-key code="ControlLeft" class="accented" style="--span: 2"
         >Control</keyboard-key
       >
-      <keyboard-key
-        code="MetaLeft"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 1.5"
+      <keyboard-key code="MetaLeft" class="accented" style="--span: 1.5"
         >Meta</keyboard-key
       >
-      <keyboard-key code="AltLeft" modifier="true" class="modifier accented"
-        >Alt</keyboard-key
-      >
+      <keyboard-key code="AltLeft" class="accented">Alt</keyboard-key>
       <keyboard-key code="Space" class="key-space" style="--span: 4.5"
         >Space</keyboard-key
       >
-      <keyboard-key code="AltRight" modifier="true" class="modifier accented"
-        >Alt</keyboard-key
-      >
-      <keyboard-key
-        code="MetaRight"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 1.5"
+      <keyboard-key code="AltRight" class="accented">Alt</keyboard-key>
+      <keyboard-key code="MetaRight" class="accented" style="--span: 1.5"
         >Meta</keyboard-key
       >
       <keyboard-key
@@ -289,11 +265,7 @@
         style="--span: 1.5"
         >Menu</keyboard-key
       >
-      <keyboard-key
-        code="ControlRight"
-        modifier="true"
-        class="modifier accented"
-        style="--span: 2"
+      <keyboard-key code="ControlRight" class="accented" style="--span: 2"
         >Control</keyboard-key
       >
     </div>
@@ -381,9 +353,11 @@
         }
 
         isModifierKeyPressed(keyCode) {
+          // Note: Only modifier keys can be considered "pressed" (i.e.,
+          // pressed and held).
           return (
             this.shadowRoot.querySelectorAll(
-              `.modifier[code=${keyCode}][pressed=true]`
+              `keyboard-key[code=${keyCode}][pressed=true]`
             ).length > 0
           );
         }
@@ -413,7 +387,7 @@
 
         clearPressedKeys() {
           this.shadowRoot
-            .querySelectorAll("[modifier=true][pressed=true]")
+            .querySelectorAll("keyboard-key[pressed=true]")
             .forEach((key) => {
               key.isPressed = false;
               this.emitKeyEvent("keyup", key.key, key.code);

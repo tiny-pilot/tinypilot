@@ -62,6 +62,8 @@
 </template>
 
 <script type="module">
+  import { isModifierCode } from "/js/keycodes.js";
+
   (function () {
     const template = document.querySelector("#key-template");
 
@@ -135,7 +137,7 @@
         }
 
         get isModifier() {
-          return this.getAttribute("modifier") === "true";
+          return isModifierCode(this.code);
         }
 
         get isPressed() {
