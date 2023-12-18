@@ -1,3 +1,4 @@
+import contextlib
 import io
 import time
 import unittest
@@ -35,6 +36,14 @@ def return_string():
     return 'Done!'
 
 
+@contextlib.contextmanager
+def silence_stderr():
+    """Silences stderr to avoid polluting the terminal output of the
+    test runner, e.g. with exceptions from a child process."""
+    with mock.patch('sys.stderr', io.StringIO()):
+        yield None
+
+
 class ExecuteTest(unittest.TestCase):
 
     def test_process_with_result_child_completed(self):
@@ -58,7 +67,7 @@ class ExecuteTest(unittest.TestCase):
     def test_process_with_result_child_exception(self):
         # Silence stderr while the child exception is being raised to avoid
         # polluting the terminal output.
-        with mock.patch('sys.stderr', io.StringIO()):
+        with silence_stderr():
             process = execute.ProcessWithResult(target=raise_exception,
                                                 daemon=True)
             process.start()
@@ -89,12 +98,14 @@ class ExecuteTest(unittest.TestCase):
         self.assertEqual('Done!', return_value)
 
     def test_execute_with_timeout_child_exception(self):
-        with self.assertRaises(Exception) as ctx:
-            execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
+        with silence_stderr():
+            with self.assertRaises(Exception) as ctx:
+                execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
         self.assertEqual('Child exception', str(ctx.exception))
 
     def test_background_thread_ignores_function_successful(self):
         self.assertEqual(None, execute.background_thread(return_string))
 
     def test_background_thread_ignores_function_exception(self):
-        self.assertEqual(None, execute.background_thread(raise_exception))
+        with silence_stderr():
+            self.assertEqual(None, execute.background_thread(raise_exception))
