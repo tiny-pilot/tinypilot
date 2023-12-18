@@ -38,8 +38,7 @@ def return_string():
 
 @contextlib.contextmanager
 def silence_stderr():
-    """Silences stderr to avoid polluting the terminal output of the
-    test runner, e.g. with exceptions from a child process."""
+    """Silences stderr to avoid polluting the terminal output of the tests."""
     with mock.patch('sys.stderr', io.StringIO()):
         yield None
 
