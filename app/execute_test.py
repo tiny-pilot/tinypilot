@@ -1,3 +1,4 @@
+import contextlib
 import io
 import time
 import unittest
@@ -12,11 +13,16 @@ import execute
 # processes[1], which pickles these functions[2]. So, they must be defined
 # using `def` at the top level of a module[3].
 #
+# Another by-effect of this is that the `silence_stderr` context manager
+# doesn’t have any effect on MacOS systems, so we cannot prevent the stacktrace
+# printing there.[4]
+#
 # This was observed on a 2021 Macbook Pro M1 Max running OSX Ventura 13.2.1.
 #
 # [1] https://github.com/python/cpython/commit/17a5588740b3d126d546ad1a13bdac4e028e6d50
 # [2] https://docs.python.org/3.9/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
 # [3] https://docs.python.org/3.9/library/pickle.html#what-can-be-pickled-and-unpickled:~:text=(using%20def%2C%20not%20lambda)
+# [4] https://github.com/tiny-pilot/tinypilot/issues/1713
 
 
 def do_nothing():
@@ -33,6 +39,14 @@ def raise_exception():
 
 def return_string():
     return 'Done!'
+
+
+@contextlib.contextmanager
+def silence_stderr():
+    """Silences stderr to avoid polluting the terminal output of the tests."""
+    # Note: on MacOS systems, this doesn’t have an effect (see comment above).
+    with mock.patch('sys.stderr', io.StringIO()):
+        yield None
 
 
 class ExecuteTest(unittest.TestCase):
@@ -58,7 +72,7 @@ class ExecuteTest(unittest.TestCase):
     def test_process_with_result_child_exception(self):
         # Silence stderr while the child exception is being raised to avoid
         # polluting the terminal output.
-        with mock.patch('sys.stderr', io.StringIO()):
+        with silence_stderr():
             process = execute.ProcessWithResult(target=raise_exception,
                                                 daemon=True)
             process.start()
@@ -89,12 +103,14 @@ class ExecuteTest(unittest.TestCase):
         self.assertEqual('Done!', return_value)
 
     def test_execute_with_timeout_child_exception(self):
-        with self.assertRaises(Exception) as ctx:
-            execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
+        with silence_stderr():
+            with self.assertRaises(Exception) as ctx:
+                execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
         self.assertEqual('Child exception', str(ctx.exception))
 
     def test_background_thread_ignores_function_successful(self):
         self.assertEqual(None, execute.background_thread(return_string))
 
     def test_background_thread_ignores_function_exception(self):
-        self.assertEqual(None, execute.background_thread(raise_exception))
+        with silence_stderr():
+            self.assertEqual(None, execute.background_thread(raise_exception))
