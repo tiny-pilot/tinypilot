@@ -13,11 +13,16 @@ import execute
 # processes[1], which pickles these functions[2]. So, they must be defined
 # using `def` at the top level of a module[3].
 #
+# Another by-effect of this is that the `silence_stderr` context manager
+# doesn’t have any effect on MacOS systems, so we cannot prevent the stacktrace
+# printing there.[4]
+#
 # This was observed on a 2021 Macbook Pro M1 Max running OSX Ventura 13.2.1.
 #
 # [1] https://github.com/python/cpython/commit/17a5588740b3d126d546ad1a13bdac4e028e6d50
 # [2] https://docs.python.org/3.9/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
 # [3] https://docs.python.org/3.9/library/pickle.html#what-can-be-pickled-and-unpickled:~:text=(using%20def%2C%20not%20lambda)
+# [4] https://github.com/tiny-pilot/tinypilot/issues/1713
 
 
 def do_nothing():
@@ -39,6 +44,7 @@ def return_string():
 @contextlib.contextmanager
 def silence_stderr():
     """Silences stderr to avoid polluting the terminal output of the tests."""
+    # Note: on MacOS systems, this doesn’t have an effect (see comment above).
     with mock.patch('sys.stderr', io.StringIO()):
         yield None
 
