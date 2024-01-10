@@ -4,6 +4,7 @@
 
 # Test files.
 **/*_test.py
+**/*.bats
 
 /debian-pkg/Dockerfile
 /debian-pkg/releases/
