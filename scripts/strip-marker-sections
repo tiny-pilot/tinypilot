@@ -2,9 +2,11 @@
 #
 # Strips TinyPilot marker sections from a file.
 #
-# If the target file contains marker sections, it removes the markers and any
-# content in between them. If the file doesn’t contain marker sections, this is
-# a noop.
+# If the target file contains marker sections, this script removes the markers
+# and any content in between them.
+# If the target file doesn’t contain marker sections, running this script is a
+# noop.
+# If the target file contains unmatched/orphaned markers, this script fails.
 #
 # We use the marker section technique to add TinyPilot-specific configuration
 # to system config files. Wrapping up such addendums into markers allows us to
