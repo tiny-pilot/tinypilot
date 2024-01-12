@@ -10,7 +10,6 @@ set -x
 set -u
 
 # Run bats tests.
-# (For more info on bats, see https://bats-core.readthedocs.io/)
 bats \
   --recursive \
   scripts/ \
