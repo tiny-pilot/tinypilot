@@ -98,10 +98,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            git clone https://github.com/bats-core/bats-core.git
+            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
             cd bats-core
-            git checkout v1.10.0
-            ./install.sh /usr/local
+            sudo ./install.sh /usr/local
       - run:
           name: Run build script
           command: ./dev-scripts/build-bash
