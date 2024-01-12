@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Run bats tests.
+# (For more info on bats, see https://bats-core.readthedocs.io/)
+bats \
+  --recursive \
+  scripts/ \
+  debian-pkg/ \
+  dev-scripts/
