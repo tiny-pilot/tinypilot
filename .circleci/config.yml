@@ -90,6 +90,21 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/build-javascript
+  build_bash:
+    docker:
+      - image: cimg/base:2024.01
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            git clone https://github.com/bats-core/bats-core.git
+            cd bats-core
+            git checkout v1.10.0
+            ./install.sh /usr/local
+      - run:
+          name: Run build script
+          command: ./dev-scripts/build-bash
   e2e:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
