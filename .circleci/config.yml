@@ -278,6 +278,7 @@ workflows:
       - decode_edid
       - build_python
       - build_javascript
+      - build_bash
       - build_debian_package
       - e2e
       - lint_debian_package:
