@@ -36,6 +36,7 @@ while true; do
       shift 1
       ;;
     --interface)
+      # See https://github.com/tiny-pilot/tinypilot/issues/1710#issuecomment-1885680744.
       echo 'The --interface flag is no longer supported' >&2
       exit 1
       ;;
