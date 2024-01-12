@@ -1,7 +1,8 @@
 #!/bin/bash
 
 {
-  # Workaround to silence shellcheck for global bats variables.
+  # Silence shellcheck for global bats variables.
+  # https://github.com/tiny-pilot/tinypilot/issues/1718
   # shellcheck disable=SC2154
   echo "${output}" "${status}" "${lines}" >/dev/null
 }
