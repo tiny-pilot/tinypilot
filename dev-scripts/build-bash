@@ -13,4 +13,6 @@ set -u
 # (For more info on bats, see https://bats-core.readthedocs.io/)
 bats \
   --recursive \
-  scripts/
+  scripts/ \
+  debian-pkg/ \
+  dev-scripts/
