@@ -22,6 +22,10 @@ Sets a static local IP address for the TinyPilot device.
                       Defaults to eth0.
   --help:             Display this help text.
 
+Note: there can only be one custom static IP configuration at a time. Running
+      this script will clear any potentially existing custom configuration
+      that might have been added previously by this script.
+
 Examples:
 
 1. Set static IP to 10.0.105 on a 10.0.0.x network.
@@ -134,7 +138,7 @@ fi
 set -u
 
 # Use the unset-static-ip script to remove any existing configuration.
-"${SCRIPT_DIR}/unset-static-ip" --quiet --interface "${INTERFACE}"
+"${SCRIPT_DIR}/unset-static-ip" --quiet
 
 # Only proceed if no other configuration exists.
 if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
