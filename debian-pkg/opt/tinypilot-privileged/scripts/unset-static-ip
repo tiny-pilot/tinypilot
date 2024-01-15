@@ -75,6 +75,11 @@ while IFS= read -r line; do
   dhcpcd_original+=("${line}")
 done < "${CONFIG_FILE}"
 
+if "${is_in_marker_section}"; then
+  echo 'Unclosed marker section' >&2
+  exit 1
+fi
+
 # Convert array of lines to a single string.
 OLD_CONFIG_FILE=$(printf "%s\n" "${dhcpcd_original[@]}")
 readonly OLD_CONFIG_FILE
