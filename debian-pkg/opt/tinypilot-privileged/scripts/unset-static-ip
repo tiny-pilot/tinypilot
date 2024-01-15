@@ -10,7 +10,7 @@ print_help() {
 Usage: ${0##*/} [--quiet] [--help]
 
 Reverts any changes made by the set-static-ip script.
-  --quiet:          Optional. Suppress the confirmation message.
+  --quiet:          Suppress the confirmation message.
   --help:           Display this help text.
 EOF
 }
