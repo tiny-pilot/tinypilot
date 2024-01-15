@@ -59,33 +59,8 @@ fi
 # Exit on unset variable
 set -u
 
-# Remove any existing auto-generated configuration as populated by the
-# set-static-ip script.
-dhcpcd_original=()
-is_in_marker_section='false'
-while IFS= read -r line; do
-  if "${is_in_marker_section}" && [[ "${line}" == "${MARKER_END}" ]]; then
-    is_in_marker_section='false'
-    continue
-  fi
-  if "${is_in_marker_section}" || [[ "${line}" == "${MARKER_START}" ]]; then
-    is_in_marker_section='true'
-    continue
-  fi
-  dhcpcd_original+=("${line}")
-done < "${CONFIG_FILE}"
-
-if "${is_in_marker_section}"; then
-  echo 'Unclosed marker section' >&2
-  exit 1
-fi
-
-# Convert array of lines to a single string.
-OLD_CONFIG_FILE=$(printf "%s\n" "${dhcpcd_original[@]}")
-readonly OLD_CONFIG_FILE
-
-# Write original file contents back to the file.
-echo "${OLD_CONFIG_FILE}" | sudo tee "${CONFIG_FILE}" > /dev/null
+# Remove any existing marker sections from the config file.
+/opt/tinypilot/scripts/strip-marker-sections "${CONFIG_FILE}"
 
 # Changes require a reboot so prompt the user.
 if [[ "${QUIET}" == "false" ]] ; then
