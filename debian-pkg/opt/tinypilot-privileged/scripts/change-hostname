@@ -62,7 +62,7 @@ fi
 printf "%s\n" "${NEW_HOSTNAME}" > /etc/hostname
 
 # Remove any existing marker sections from the `/etc/hosts` file.
-/opt/tinypilot/scripts/strip-marker-sections /etc/hosts
+"${SCRIPT_DIR}/strip-marker-sections" /etc/hosts
 
 # Populate new entry to `/etc/hosts`.
 # Note that the first matching entry takes precedence, which is why we prepend

@@ -60,7 +60,7 @@ fi
 set -u
 
 # Remove any existing marker sections from the config file.
-/opt/tinypilot/scripts/strip-marker-sections "${CONFIG_FILE}"
+"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
 # Changes require a reboot so prompt the user.
 if [[ "${QUIET}" == "false" ]] ; then
