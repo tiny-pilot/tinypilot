@@ -15,10 +15,10 @@ strip-marker-sections() {
 prints-help() { #@test
   run strip-marker-sections --help
   expected_output="$(cat << EOF
-Usage: strip-marker-sections [--help] target_file
+Usage: strip-marker-sections [--help] TARGET_FILE
 Strips TinyPilot marker sections from a file.
-  target_file: Path to file with marker sections.
-  --help Display this help and exit.
+  TARGET_FILE   Path to file with marker sections.
+  --help        Display this help and exit.
 EOF
   )"
 
