@@ -59,7 +59,7 @@ fi
 set -u
 
 # Remove any existing marker sections from the config file.
-"${SCRIPT_DIR}/strip-marker-sections" "/etc/dhcpcd.conf"
+"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
 # Changes require a reboot so prompt the user.
 if [[ "${QUIET}" == "false" ]] ; then
