@@ -8,6 +8,16 @@
 # noop.
 # If the target file contains unmatched/orphaned markers, this script fails.
 
+# We don’t use `set -x`, because it would output every single iteration of the
+# while loop when iterating through the lines of the target file, and hence
+# generate a lot of noise.
+
+# Exit on first failure.
+set -e
+
+# Exit on unset variable.
+set -u
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
@@ -15,14 +25,15 @@ readonly SCRIPT_DIR
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [--help] target_file
+Usage: ${0##*/} [--help] TARGET_FILE
 Strips TinyPilot marker sections from a file.
-  target_file: Path to file with marker sections.
-  --help Display this help and exit.
+  TARGET_FILE   Path to file with marker sections.
+  --help        Display this help and exit.
 EOF
 }
 
 # Parse command-line arguments.
+TARGET_FILE=''
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
     --help)
