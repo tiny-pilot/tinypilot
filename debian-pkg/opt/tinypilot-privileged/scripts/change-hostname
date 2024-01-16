@@ -56,11 +56,6 @@ if ! [[ "${NEW_HOSTNAME}" =~ $VALID_HOSTNAME_PATTERN ]] \
   exit 1
 fi
 
-# Populate new hostname to `/etc/hostname`.
-# Note that the value must be newline-terminated, see:
-# https://manpages.debian.org/stretch/systemd/hostname.5.en.html
-printf "%s\n" "${NEW_HOSTNAME}" > /etc/hostname
-
 # Remove any existing marker sections from the `/etc/hosts` file.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/hosts
 
@@ -72,3 +67,8 @@ readonly OLD_ETC_HOSTS
 printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
   "${MARKER_START}" "${NEW_HOSTNAME}" "${MARKER_END}" "${OLD_ETC_HOSTS}" \
   > /etc/hosts
+
+# Populate new hostname to `/etc/hostname`.
+# Note that the value must be newline-terminated, see:
+# https://manpages.debian.org/stretch/systemd/hostname.5.en.html
+printf "%s\n" "${NEW_HOSTNAME}" > /etc/hostname
