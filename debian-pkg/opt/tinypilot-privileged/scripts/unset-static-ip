@@ -17,7 +17,6 @@ EOF
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
-readonly CONFIG_FILE="/etc/dhcpcd.conf"
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
 
@@ -60,7 +59,7 @@ fi
 set -u
 
 # Remove any existing marker sections from the config file.
-"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+"${SCRIPT_DIR}/strip-marker-sections" "/etc/dhcpcd.conf"
 
 # Changes require a reboot so prompt the user.
 if [[ "${QUIET}" == "false" ]] ; then
