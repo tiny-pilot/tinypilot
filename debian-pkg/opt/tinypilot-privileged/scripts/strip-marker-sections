@@ -24,10 +24,10 @@ readonly SCRIPT_DIR
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [--help] target_file
+Usage: ${0##*/} [--help] TARGET_FILE
 Strips TinyPilot marker sections from a file.
-  target_file: Path to file with marker sections.
-  --help Display this help and exit.
+  TARGET_FILE   Path to file with marker sections.
+  --help        Display this help and exit.
 EOF
 }
 
