@@ -138,7 +138,7 @@ fi
 set -u
 
 # Use the unset-static-ip script to remove any existing configuration.
-"${SCRIPT_DIR}/unset-static-ip" --quiet
+"${SCRIPT_DIR}/unset-static-ip" --quiet --no-apply
 
 # Only proceed if no other configuration exists.
 if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
@@ -157,11 +157,11 @@ fi
   echo "${MARKER_END}"
 } | sudo tee --append "${CONFIG_FILE}" > /dev/null
 
-# Changes require a reboot so prompt the user.
+# Apply changes.
+"${SCRIPT_DIR}/apply-static-ip"
+
 echo "A static local IP address has been set."
 echo "  Interface: ${INTERFACE}"
 echo "  IP Address: ${IP_ADDRESS}"
 echo "  Routers: ${ROUTERS}"
 echo "  Domain Name Servers: ${DNS}"
-echo ""
-echo "Reboot your TinyPilot device to apply the changes."

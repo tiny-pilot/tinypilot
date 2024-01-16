@@ -87,9 +87,9 @@ readonly OLD_CONFIG_FILE
 # Write original file contents back to the file.
 echo "${OLD_CONFIG_FILE}" | sudo tee "${CONFIG_FILE}" > /dev/null
 
-# Changes require a reboot so prompt the user.
+# Apply changes.
+"${SCRIPT_DIR}/apply-static-ip"
+
 if [[ "${QUIET}" == "false" ]] ; then
   echo "Any changes made by the set-static-ip script have been reverted."
-  echo ""
-  echo "Reboot your TinyPilot device to apply the changes."
 fi
