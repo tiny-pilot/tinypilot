@@ -30,7 +30,7 @@ rejects-missing-input-arg() { #@test
   run strip-marker-sections
 
   [[ "${status}" == 1 ]]
-  [[ "${output}" == 'Input parameter missing: target_file' ]]
+  [[ "${output}" == 'Input parameter missing: TARGET_FILE' ]]
 }
 
 rejects-illegal-flag() { #@test
