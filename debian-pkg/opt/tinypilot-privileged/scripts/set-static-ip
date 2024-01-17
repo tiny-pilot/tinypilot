@@ -137,8 +137,8 @@ fi
 # Exit on unset variable.
 set -u
 
-# Use the unset-static-ip script to remove any existing configuration.
-"${SCRIPT_DIR}/unset-static-ip" --quiet --no-apply
+# Remove any existing automated configuration.
+"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
 # Only proceed if no other configuration exists.
 if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
