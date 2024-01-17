@@ -40,6 +40,10 @@ while [[ "$#" -gt 0 ]]; do
       print_help
       exit
       ;;
+    -*)
+      echo "Illegal option: $1" >&2
+      exit 1
+      ;;
     *)
       TARGET_FILE="$1"
       shift
@@ -50,7 +54,7 @@ readonly TARGET_FILE
 
 # Ensure target file is specified.
 if [[ -z "${TARGET_FILE}" ]]; then
-  echo 'Input parameter missing: target_file' >&2
+  echo 'Input parameter missing: TARGET_FILE' >&2
   exit 1
 fi
 
