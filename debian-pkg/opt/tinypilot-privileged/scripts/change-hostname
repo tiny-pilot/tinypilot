@@ -56,36 +56,19 @@ if ! [[ "${NEW_HOSTNAME}" =~ $VALID_HOSTNAME_PATTERN ]] \
   exit 1
 fi
 
-# Retrieve original `/etc/hosts`.
-# - Read file line by line, make sure to preserve all whitespace.
-# - Remove all marker sections.
-etc_hosts_original=()
-is_in_marker_section='false'
-while IFS= read -r line; do
-  if "${is_in_marker_section}" && [[ "${line}" == "${MARKER_END}" ]]; then
-    is_in_marker_section='false'
-    continue
-  fi
-  if "${is_in_marker_section}" || [[ "${line}" == "${MARKER_START}" ]]; then
-    is_in_marker_section='true'
-    continue
-  fi
-  etc_hosts_original+=("${line}")
-done < /etc/hosts
+# Remove any existing marker sections from the `/etc/hosts` file.
+"${SCRIPT_DIR}/strip-marker-sections" /etc/hosts
 
-if "${is_in_marker_section}"; then
-  echo 'Unclosed marker section' >&2
-  exit 1
-fi
+# Populate new entry to `/etc/hosts`.
+# Note that the first matching entry takes precedence, which is why we prepend
+# our new entry.
+OLD_ETC_HOSTS="$(</etc/hosts)"
+readonly OLD_ETC_HOSTS
+printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
+  "${MARKER_START}" "${NEW_HOSTNAME}" "${MARKER_END}" "${OLD_ETC_HOSTS}" \
+  > /etc/hosts
 
 # Populate new hostname to `/etc/hostname`.
 # Note that the value must be newline-terminated, see:
 # https://manpages.debian.org/stretch/systemd/hostname.5.en.html
 printf "%s\n" "${NEW_HOSTNAME}" > /etc/hostname
-
-# Populate corresponding entry to `etc/hosts`.
-OLD_ETC_HOSTS=$(printf "%s\n" "${etc_hosts_original[@]}")
-readonly OLD_ETC_HOSTS
-printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
-  "${MARKER_START}" "${NEW_HOSTNAME}" "${MARKER_END}" "${OLD_ETC_HOSTS}" \
-  > /etc/hosts
