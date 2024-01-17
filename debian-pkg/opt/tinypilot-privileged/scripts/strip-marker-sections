@@ -54,7 +54,7 @@ readonly TARGET_FILE
 
 # Ensure target file is specified.
 if [[ -z "${TARGET_FILE}" ]]; then
-  echo 'Input parameter missing: target_file' >&2
+  echo 'Input parameter missing: TARGET_FILE' >&2
   exit 1
 fi
 
