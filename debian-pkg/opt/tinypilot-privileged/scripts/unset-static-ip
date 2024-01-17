@@ -7,11 +7,10 @@ set -e
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [--quiet] [--no-apply] [--help]
+Usage: ${0##*/} [--quiet] [--help]
 
 Reverts any changes made by the set-static-ip script.
   --quiet:          Suppress the confirmation message.
-  --no-apply:       Make changes without applying them to the system.
   --help:           Display this help text.
 EOF
 }
@@ -22,7 +21,7 @@ readonly SCRIPT_DIR
 . "${SCRIPT_DIR}/lib/markers.sh"
 
 # Parse command-line arguments.
-if ! NEW_ARGS=$(getopt -q -o "" -l "quiet,no-apply,help,interface:" -- "$@"); then
+if ! NEW_ARGS=$(getopt -q -o "" -l "quiet,help,interface:" -- "$@"); then
   print_help
   exit 1
 fi
@@ -44,10 +43,6 @@ while true; do
       print_help
       exit
       ;;
-    --no-apply)
-      readonly APPLY_CHANGES="false"
-      shift 1
-      ;;
     --)
       shift
       break
@@ -60,20 +55,14 @@ if [[ -z "${QUIET}" ]] ; then
   readonly QUIET="false"
 fi
 
-# Default to applying changes.
-if [[ -z "${APPLY_CHANGES}" ]] ; then
-  readonly APPLY_CHANGES="true"
-fi
-
 # Exit on unset variable
 set -u
 
 # Remove any existing marker sections from the config file.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
-if [[ "${APPLY_CHANGES}" == "true" ]] ; then
-  "${SCRIPT_DIR}/apply-static-ip"
-fi
+# Apply changes.
+"${SCRIPT_DIR}/apply-static-ip"
 
 if [[ "${QUIET}" == "false" ]] ; then
   echo "Any changes made by the set-static-ip script have been reverted."
