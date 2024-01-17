@@ -61,9 +61,9 @@ set -u
 # Remove any existing marker sections from the config file.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
-# Changes require a reboot so prompt the user.
+# Apply changes.
+"${SCRIPT_DIR}/apply-static-ip"
+
 if [[ "${QUIET}" == "false" ]] ; then
   echo "Any changes made by the set-static-ip script have been reverted."
-  echo ""
-  echo "Reboot your TinyPilot device to apply the changes."
 fi

@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Immediately apply the current static IP config to the device.
+
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Ignore hangup signals to avoid exiting the shell when the network interface
+# is flushed and a new IP is assigned. This was an issue when running the script
+# manually via a remote shell.
+trap '' HUP
+ip address flush dev eth0
+systemctl restart \
+  dhcpcd.service
