@@ -33,6 +33,13 @@ rejects-missing-input-arg() { #@test
   [[ "${output}" == 'Input parameter missing: target_file' ]]
 }
 
+rejects-illegal-flag() { #@test
+  run strip-marker-sections --foo
+
+  [[ "${status}" == 1 ]]
+  [[ "${output}" == 'Illegal option: --foo' ]]
+}
+
 rejects-non-existing-file() { #@test
   run strip-marker-sections foo-file.txt
 
