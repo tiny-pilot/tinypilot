@@ -40,6 +40,10 @@ while [[ "$#" -gt 0 ]]; do
       print_help
       exit
       ;;
+    -*)
+      echo "Illegal option: $1" >&2
+      exit 1
+      ;;
     *)
       TARGET_FILE="$1"
       shift
