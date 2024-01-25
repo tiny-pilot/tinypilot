@@ -202,8 +202,13 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='libwebsockets',
         homepage_url='https://libwebsockets.org',
+        # In the past, we used to link to the license that was hosted on the
+        # git mirror at libwebsockets.org/git. We repeatedly experienced
+        # outages of their website, however, so for reliability reasons, we now
+        # link to Github instead.
+        # (See https://github.com/tiny-pilot/tinypilot/pull/1727)
         license_url=
-        'https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable',
+        'https://github.com/warmcat/libwebsockets/blob/v3.2.2/LICENSE',
     ),
 
     # Fonts.
