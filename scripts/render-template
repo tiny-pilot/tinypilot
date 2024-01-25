@@ -13,6 +13,7 @@ EOF
 # pylint:disable=invalid-name
 
 import argparse
+import os
 import sys
 
 import jinja2
@@ -25,6 +26,12 @@ def main(_):
 
     print(jinja2.Template(sys.stdin.read()).render(settings.as_dict()))
 
+
+if os.geteuid() == 0:
+    print('This script doesn\'t require root privileges.', file=sys.stderr)
+    print('Please re-run as tinypilot:', file=sys.stderr)
+    print('  sudo su tinypilot', ''.join(sys.argv), file=sys.stderr)
+    sys.exit(1)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
