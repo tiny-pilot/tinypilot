@@ -203,7 +203,7 @@ _LICENSE_METADATA = [
         name='libwebsockets',
         homepage_url='https://libwebsockets.org',
         license_url=
-        'https://libwebsockets.org/git/libwebsockets/tree/LICENSE?h=v3.2-stable',
+        'https://github.com/warmcat/libwebsockets/blob/v3.2.2/LICENSE',
     ),
 
     # Fonts.
