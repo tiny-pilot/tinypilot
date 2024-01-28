@@ -28,9 +28,11 @@ def main(_):
 
 
 if os.geteuid() == 0:
-    print('This script doesn\'t require root privileges.', file=sys.stderr)
+    print("This script doesn't require root privileges.", file=sys.stderr)
     print('Please re-run as tinypilot:', file=sys.stderr)
-    print('  sudo su tinypilot', ''.join(sys.argv), file=sys.stderr)
+    print('  runuser tinypilot --command',
+          f"'{' '.join(sys.argv)}'",
+          file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
