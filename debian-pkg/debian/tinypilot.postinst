@@ -63,8 +63,8 @@ EOF
 )"
 readonly SETTINGS_TEMPLATE
 . venv/bin/activate
-PYTHONPATH=/opt/tinypilot/app \
-  ./scripts/render-template \
+runuser tinypilot \
+  --command 'PYTHONPATH=/opt/tinypilot/app ./scripts/render-template' \
   <<< "${SETTINGS_TEMPLATE}" \
   > "${TINYPILOT_APP_SETTINGS}"
 deactivate
@@ -74,8 +74,8 @@ popd
 # Populate TinyPilot's NGINX config file.
 pushd /opt/tinypilot
 . venv/bin/activate
-PYTHONPATH=/opt/tinypilot/app \
-  ./scripts/render-template \
+runuser tinypilot \
+  --command 'PYTHONPATH=/opt/tinypilot/app ./scripts/render-template' \
   < /usr/share/tinypilot/templates/tinypilot.conf.j2 \
   > /etc/nginx/conf.d/tinypilot.conf
 deactivate
@@ -111,8 +111,8 @@ if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   mkdir -p /home/ustreamer/edids
   pushd /opt/tinypilot
   . venv/bin/activate
-  PYTHONPATH=/opt/tinypilot/app \
-    ./scripts/render-template \
+  runuser tinypilot \
+    --command 'PYTHONPATH=/opt/tinypilot/app ./scripts/render-template' \
     <<< '{{ ustreamer_edid }}' \
     > /home/ustreamer/edids/tc358743-edid.hex
   deactivate
