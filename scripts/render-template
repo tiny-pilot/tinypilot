@@ -27,17 +27,17 @@ def main(_):
     print(jinja2.Template(sys.stdin.read()).render(settings.as_dict()))
 
 
-# Ensure that the script doesn't have unnecessary privileges.
-# https://github.com/tiny-pilot/tinypilot-pro/issues/1190
-if os.geteuid() == 0:
-    print("This script doesn't require root privileges.", file=sys.stderr)
-    print('Please re-run as tinypilot:', file=sys.stderr)
-    print('  runuser tinypilot --command',
-          f"'{' '.join(sys.argv)}'",
-          file=sys.stderr)
-    sys.exit(1)
-
 if __name__ == '__main__':
+    # Ensure that the script doesn't have unnecessary privileges.
+    # https://github.com/tiny-pilot/tinypilot-pro/issues/1190
+    if os.geteuid() == 0:
+        print("This script doesn't require root privileges.", file=sys.stderr)
+        print('Please re-run as tinypilot:', file=sys.stderr)
+        print('  runuser tinypilot --command',
+              f"'{' '.join(sys.argv)}'",
+              file=sys.stderr)
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(
         prog='TinyPilot Template Renderer',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
