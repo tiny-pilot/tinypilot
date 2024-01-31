@@ -8,6 +8,10 @@ StartLimitBurst=20
 [Service]
 Type=oneshot
 User=root
+ExecCondition=grep \
+  --regexp '^dtoverlay=tc358743$' \
+  --silent \
+  /boot/config.txt
 ExecStart=v4l2-ctl \
   --set-edid=file=/home/ustreamer/edids/tc358743-edid.hex \
   --fix-edid-checksums
