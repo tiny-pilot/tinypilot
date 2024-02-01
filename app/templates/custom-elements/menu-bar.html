@@ -31,12 +31,17 @@
     }
 
     li > ul {
+      /* For the fade-out duration, we need to find a good compromise between
+         keeping the menu open long enough so that it doesn’t immediately
+         disappear when the user leaves the menu area for a split second
+         (e.g., if they accidentally “overshoot” with their cursor.) But it
+         also shouldn’t be so long that the menu feels sluggish or sticky. */
       transition: 300ms;
-      /* For the fade out effect, slow down the transition in the initial
+      /* For the fade-out timing, slow down the transition in the initial
          moment when the cursor leaves the menu area, and only make the
          fade-out kick in after that initial “threshold”. Otherwise, if the
          user would accidentally leave the menu area for a split second, the
-         menu would immediately start to disappear, which is distracting. */
+         menu would _immediately_ start to disappear, which is distracting. */
       transition-timing-function: cubic-bezier(0.5, 0, 1, 0.25);
     }
 
@@ -44,7 +49,8 @@
       /* Some browsers (e.g., Safari) apply transitions on page load as well,
          in which case the menu would briefly flicker when opening the page.
          Therefore, we suppress transitions here, and remove this CSS class via
-         JS in the connectCallback after the transition duration has elapsed. */
+         JS in the connectCallback after the initial transition duration has
+         elapsed. */
       transition: none !important;
     }
 
@@ -406,12 +412,12 @@
             cursorList.appendChild(listItem);
           }
 
-          // Handle flicker prevention (see comment above).
+          // Undo flicker prevention (see CSS comment above).
           setTimeout(() => {
             this.shadowRoot
               .getElementById("menu")
               .classList.remove("prevent-transition-on-page-load");
-          }, 400);
+          }, 300);
         }
 
         set isKeyboardVisible(isVisible) {
