@@ -27,8 +27,25 @@
     li:hover > ul {
       visibility: visible;
       opacity: 1;
-      -webkit-transition: 0.3s;
-      transition: 0.3s;
+      transition: 300ms;
+    }
+
+    li > ul {
+      transition: 300ms;
+      /* For the fade out effect, slow down the transition in the initial
+         moment when the cursor leaves the menu area, and only make the
+         fade-out kick in after that initial “threshold”. Otherwise, if the
+         user would accidentally leave the menu area for a split second, the
+         menu would immediately start to disappear, which is distracting. */
+      transition-timing-function: cubic-bezier(0.5, 0, 1, 0.25);
+    }
+
+    .prevent-transition-on-page-load li > ul {
+      /* Some browsers (e.g., Safari) apply transitions on page load as well,
+         in which case the menu would briefly flicker when opening the page.
+         Therefore, we suppress transitions here, and remove this CSS class via
+         JS in the connectCallback after the transition duration has elapsed. */
+      transition: none !important;
     }
 
     :host {
@@ -178,8 +195,12 @@
 
   <div class="logo"><img src="/img/logo.svg" alt="TinyPilot logo" /></div>
 
-  <!-- The “System” menu is used for managing the TinyPilot device itself. -->
-  <ul class="groups header-item" role="menubar">
+  <ul
+    class="groups header-item prevent-transition-on-page-load"
+    id="menu"
+    role="menubar"
+  >
+    <!-- The “System” menu is used for managing the TinyPilot device itself. -->
     <li class="group" role="presentation">
       <a role="menuitem">System</a>
       <ul class="items" role="group">
@@ -384,6 +405,13 @@
             listItem.setAttribute("role", "presentation");
             cursorList.appendChild(listItem);
           }
+
+          // Handle flicker prevention (see comment above).
+          setTimeout(() => {
+            this.shadowRoot
+              .getElementById("menu")
+              .classList.remove("prevent-transition-on-page-load");
+          }, 400);
         }
 
         set isKeyboardVisible(isVisible) {
