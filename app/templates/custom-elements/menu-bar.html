@@ -45,12 +45,11 @@
       transition-timing-function: cubic-bezier(0.5, 0, 1, 0.25);
     }
 
-    .prevent-transition-on-page-load li > ul {
+    .prevent-flickering-on-page-load li > ul {
       /* Some browsers (e.g., Safari) apply transitions on page load as well,
          in which case the menu would briefly flicker when opening the page.
          Therefore, we suppress transitions here, and remove this CSS class via
-         JS in the connectCallback after the initial transition duration has
-         elapsed. */
+         JS in the connectCallback after the DOM has finished loading. */
       transition: none !important;
     }
 
@@ -202,7 +201,7 @@
   <div class="logo"><img src="/img/logo.svg" alt="TinyPilot logo" /></div>
 
   <ul
-    class="groups header-item prevent-transition-on-page-load"
+    class="groups header-item prevent-flickering-on-page-load"
     id="menu"
     role="menubar"
   >
@@ -366,6 +365,13 @@
             template.content.cloneNode(true)
           );
 
+          this._undoInitialFlickerPrevention =
+            this._undoInitialFlickerPrevention.bind(this);
+          document.addEventListener(
+            "DOMContentLoaded",
+            this._undoInitialFlickerPrevention
+          );
+
           // Handle “simple”/standard menu items that just emit a custom event
           // without further ado.
           this.shadowRoot
@@ -411,13 +417,13 @@
             listItem.setAttribute("role", "presentation");
             cursorList.appendChild(listItem);
           }
+        }
 
-          // Undo flicker prevention (see CSS comment above).
-          setTimeout(() => {
-            this.shadowRoot
-              .getElementById("menu")
-              .classList.remove("prevent-transition-on-page-load");
-          }, 300);
+        disconnectedCallback() {
+          document.removeEventListener(
+            "DOMContentLoaded",
+            this._undoInitialFlickerPrevention
+          );
         }
 
         set isKeyboardVisible(isVisible) {
@@ -451,6 +457,13 @@
               newCursor === cursorListItem.getAttribute("cursor")
             );
           }
+        }
+
+        _undoInitialFlickerPrevention() {
+          // (See CSS comment in .prevent-flickering-on-page-load class.)
+          this.shadowRoot
+            .getElementById("menu")
+            .classList.remove("prevent-flickering-on-page-load");
         }
       }
     );
