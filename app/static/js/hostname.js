@@ -1,19 +1,19 @@
 /**
- * Figure out the new URL under which TinyPilot will become
- * available after rebooting.
- * @param {Location} currentLocation
+ * Determines the new base URL (i.e., origin) of the TinyPilot device, given a
+ * new hostname.
+ * @param {URL} currentLocation
  * @param {string} oldHostname
  * @param {string} newHostname
  * @returns {string}
  */
-export function determineFutureLocation(
+export function determineFutureOrigin(
   currentLocation,
   oldHostname,
   newHostname
 ) {
   const protocol = currentLocation.protocol + "//";
   let fqdn = currentLocation.hostname;
-  if (fqdn.startsWith(oldHostname + ".")) {
+  if (oldHostname && fqdn.startsWith(oldHostname + ".")) {
     // When the fqdn (fully qualified domain name) starts with the old
     // hostname followed by a dot, then we replace the old one by the
     // new one in order to preserve the domain part.

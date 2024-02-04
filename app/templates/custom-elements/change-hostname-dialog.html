@@ -93,7 +93,7 @@
     determineHostname,
     shutdown,
   } from "/js/controllers.js";
-  import { determineFutureLocation } from "/js/hostname.js";
+  import { determineFutureOrigin } from "/js/hostname.js";
 
   (function () {
     const template = document.querySelector("#change-hostname-template");
@@ -198,8 +198,8 @@
               return shutdown(/*restart=*/ true).then(() => newHostname);
             })
             .then((newHostname) => {
-              return determineFutureLocation(
-                window.location,
+              return determineFutureOrigin(
+                new URL(window.location),
                 this.initialHostname,
                 newHostname
               );
