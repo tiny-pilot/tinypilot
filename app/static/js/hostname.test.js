@@ -65,4 +65,32 @@ describe("determineFutureOrigin", () => {
       "https://new-tinypilot:8080"
     );
   });
+  it("maintains protocol", () => {
+    assert.strictEqual(
+      determineFutureOrigin(
+        new URL("http://old-tinypilot/"),
+        "old-tinypilot",
+        "new-tinypilot"
+      ),
+      "http://new-tinypilot"
+    );
+    assert.strictEqual(
+      determineFutureOrigin(
+        new URL("ftp://old-tinypilot/"),
+        "old-tinypilot",
+        "new-tinypilot"
+      ),
+      "ftp://new-tinypilot"
+    );
+  });
+  it("strips pathname", () => {
+    assert.strictEqual(
+      determineFutureOrigin(
+        new URL("http://old-tinypilot/some-path/"),
+        "old-tinypilot",
+        "new-tinypilot"
+      ),
+      "http://new-tinypilot"
+    );
+  });
 });
