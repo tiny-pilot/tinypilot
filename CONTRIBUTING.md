@@ -229,7 +229,7 @@ See [tinypilot/style-guides](https://github.com/tiny-pilot/style-guides).
 
 ## User interface style guide
 
-We document UI patterns and components in a style guide, to maintain a consistent user experience throughout the web application. 
+We document UI patterns and components in a style guide, to maintain a consistent user experience throughout the web application.
 
 After launching TinyPilot in debug mode, the style guide is available at [localhost:8000/styleguide](http://localhost:8000/styleguide).
 
