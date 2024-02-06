@@ -4,6 +4,9 @@ jobs:
     docker:
       - image: cimg/base:2020.01
     steps:
+      - run:
+          name: DEMONSTRATE CONTEXT (ACCESS FAILS)
+          command: echo "TESTING_123='${TESTING_123}'"
       - checkout
       - run:
           name: Check for trailing whitespace
@@ -15,6 +18,9 @@ jobs:
     docker:
       - image: koalaman/shellcheck-alpine:v0.9.0
     steps:
+      - run:
+          name: DEMONSTRATE CONTEXT (ACCESS SUCCEEDS)
+          command: echo "TESTING_123='${TESTING_123}'"
       - run:
           name: Install dependencies
           command: apk add bash git openssh-client grep
@@ -271,7 +277,9 @@ workflows:
   test:
     jobs:
       - check_whitespace
-      - check_bash
+      - check_bash:
+          context:
+            - production
       - lint_sql
       - check_style
       - decode_edid
