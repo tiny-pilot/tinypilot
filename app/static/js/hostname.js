@@ -1,6 +1,6 @@
 /**
- * Determines the new base URL (i.e., origin) of the TinyPilot device, given a
- * new hostname.
+ * Determines the new base URL (i.e., the origin of the URL, without the
+ * pathname or search parameters) of the TinyPilot device, given a new hostname.
  *
  * @example
  * // returns 'https://new-hostname.local'
