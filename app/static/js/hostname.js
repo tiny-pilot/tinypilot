@@ -1,6 +1,15 @@
 /**
  * Determines the new base URL (i.e., origin) of the TinyPilot device, given a
  * new hostname.
+ *
+ * @example
+ * // returns 'https://new-hostname.local'
+ * determineFutureOrigin(
+ *  new URL('https://old-hostname.local/some-path/'),
+ *  'old-hostname',
+ *  'new-hostname'
+ * );
+ *
  * @param {URL} currentLocation
  * @param {string} oldHostname
  * @param {string} newHostname
