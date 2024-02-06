@@ -227,6 +227,12 @@ TinyPilot accepts various options through environment variables:
 
 See [tinypilot/style-guides](https://github.com/tiny-pilot/style-guides).
 
+## User interface style guide
+
+We document UI patterns and components in a style guide, to maintain a consistent user experience throughout the web application.
+
+After launching TinyPilot in debug mode, the style guide is available at [localhost:8000/styleguide](http://localhost:8000/styleguide).
+
 ## Web Components Conventions
 
 TinyPilot implements most of its UI components through standard JavaScript, using [web components](https://css-tricks.com/an-introduction-to-web-components/). TinyPilot does not use any heavy frontend frameworks like Angular or React, nor does it use any broad libraries such as jQuery.
