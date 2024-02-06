@@ -279,7 +279,7 @@ workflows:
       - check_whitespace
       - check_bash:
           context:
-            - production
+            - production # Foo
       - lint_sql
       - check_style
       - decode_edid
