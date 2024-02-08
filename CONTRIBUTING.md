@@ -143,15 +143,90 @@ adduser \
 echo "dtoverlay=tc358743" | sudo tee --append /boot/config.txt
 ```
 
-### Installing a nightly bundle
+### Install from source
+
+To build and install your changes on device, perform the following steps:
+
+1. [Install Docker](https://docs.docker.com/engine/install/raspbian/#install-using-the-convenience-script) (if you haven't already):
+   ```bash
+   curl -fsSL https://get.docker.com | sudo bash -
+   ```
+1. On the device, clone the TinyPilot repo to a temporary directory.
+1. Check out the branch that has your changes.
+1. Run the [`dev-scripts/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
+   ```bash
+   sudo dev-scripts/install-from-source
+   ```
+
+### Installing a TinyPilot bundle
 
 The canonical way to build bundles is on CircleCI. The `build_bundle` CircleCI job will store built bundles as artifacts.
 
-In order to install a nightly bundle on device, follow these steps:
+For TinyPilot Community, you can just copy the URL to the artifact directly on CircleCI.
 
-1. If your device doesn’t contain a TinyPilot installation yet, upload the [`install-bundle` script](scripts/install-bundle) via `scp` or `rsync`. Otherwise, you find it in `/opt/tinypilot/scripts/install-bundle`.
-1. On your device, execute the `install-bundle` script with the download URL of the bundle artifact as input argument.
-   - As an alternative, you can also upload the bundle directly, and use the file path as input argument.
+For TinyPilot Pro, CircleCI prevents anonymous downloads of CircleCI artifacts. To make the bundle URL available, you'll need to move the bundle from CircleCI to PicoShare:
+
+1. Download the bundle file from CircleCI.
+1. Upload the bundle file to TinyPilot's PicoShare server.
+   - [See this (org-private) Wiki page for our internal sharing URL](https://github.com/tiny-pilot/tinypilot-pro/wiki/PicoShare-Server-for-Uploading-Dev-Bundles).
+1. Copy the PicoShare URL for the TinyPilot bundle.
+
+In order to install a TinyPilot bundle on device, run the following command:
+
+```bash
+curl \
+  --silent \
+  --show-error \
+  --location \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/scripts/install-bundle | \
+  sudo bash -s -- \
+    url-to-bundle-file # replace this line with your bundle URL
+```
+
+### Build a uStreamer Debian package
+
+CircleCI builds the uStreamer Debian package for both `amd64`- and `armhf`-based architectures on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
+
+Follow these steps:
+
+1. Make changes to the [`ustreamer-debian` Github repo](https://github.com/tiny-pilot/ustreamer-debian).
+1. Push your changes to a branch on Github.
+1. Find your job in `ustreamer-debian`'s CircleCI dashboard and click the `test` workflow.
+1. Click the `build_debian_package` job.
+   - If the [`build_debian_package` CircleCI job](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/.circleci/config.yml#L25) fails for some reason, you can manually debug the code in CircleCI by clicking "rerun job with SSH" in the CircleCI dashboard and following their SSH instructions. Remember to cancel the CircleCI job once you're done debugging, in order to reduce CI costs.
+1. When the job completes, go to the "Artifacts" tab of the `build_debian_package` job on CircleCI to find the uStreamer Debian packages.
+
+   - We use `amd64`-based builds only for testing in CircleCI.
+   - We use `armhf`-based builds on physical devices.
+   - [Docker platform names don't match Debian architecture names:](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/Dockerfile#L46C1-L48)
+
+     > Docker's platform names don't match Debian's platform names, so we translate
+     > the platform name from the Docker version to the Debian version...
+
+     Which means that when Docker's target platform is:
+
+     - `linux/amd64`, CircleCI creates a `amd64` Debian package
+     - `linux/arm/v7`, CircleCI creates a `armhf` Debian package
+
+### Install a uStreamer Debian package
+
+Follow these steps to install a uStreamer Debian package on a physical device:
+
+1. [Build a uStreamer Debian package](CONTRIBUTING.md#build-a-uStreamer-Debian-package).
+1. Copy the URL of the uStreamer Debian package created in step (1).
+1. SSH onto the device and run the following command:
+
+   ```bash
+   DEBIAN_PACKAGE_PATH=url-to-debian-package # Replace the Debian package URL here.
+   DEBIAN_PACKAGE_FILE="$(mktemp)"
+   curl \
+     --silent \
+     --show-error \
+     --location \
+     --output "${DEBIAN_PACKAGE_FILE}" \
+     "${DEBIAN_PACKAGE_PATH}" && \
+     sudo apt-get install --yes "${DEBIAN_PACKAGE_FILE}"
+   ```
 
 ## Other dev workflows
 
