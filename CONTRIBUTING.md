@@ -168,7 +168,7 @@ For TinyPilot Pro, CircleCI prevents anonymous downloads of CircleCI artifacts. 
 
 1. Download the bundle file from CircleCI.
 1. Upload the bundle file to TinyPilot's PicoShare server.
-   - https://p.tinypilotkvm.com/g/5PbZ3L4qbFyyKmo9
+   - [See this (org-private) Wiki page for our internal sharing URL](https://github.com/tiny-pilot/tinypilot-pro/wiki/PicoShare-Server-for-Uploading-Dev-Bundles).
 1. Copy the PicoShare URL for the TinyPilot bundle.
 
 In order to install a TinyPilot bundle on device, run the following command:
