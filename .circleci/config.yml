@@ -55,8 +55,6 @@ jobs:
       - run:
           name: Check code style
           command: ./dev-scripts/check-style
-  check_privileges:
-
   decode_edid:
     docker:
       - image: cimg/python:3.9.17
