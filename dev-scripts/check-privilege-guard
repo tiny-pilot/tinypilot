@@ -8,7 +8,7 @@ set -e
 # Exit on unset variable.
 set -u
 
-if ! MATCH="$(grep \
+if MATCH="$(grep \
   --files-without-match \
   --fixed-strings \
   --regexp 'This script requires root privileges.' \
