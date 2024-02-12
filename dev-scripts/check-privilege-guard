@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# Checks that the TinyPilot scripts can't be run with unnecessary privileges.
+
+# Exit on first failing command.
+set -e
+
+# Exit on unset variable.
+set -u
+
+if ! MATCH="$(grep \
+  --files-without-match \
+  --fixed-strings \
+  --regexp 'This script requires root privileges.' \
+  --regexp "This script doesn't require root privileges." \
+  scripts/*)"; then
+  >&2 echo 'These files are missing a guard against privilege escalation:'
+  >&2 echo "${MATCH}"
+  >&2 echo 'Please add the following check (or similar) to the above scripts:'
+  >&2 cat <<'EOF'
+if [[ "${EUID}" == 0 ]]; then
+  >&2 echo 'This script doesn'\''t require root privileges.'
+  >&2 echo 'Please re-run as tinypilot:'
+  >&2 echo "  runuser tinypilot --command '$0'"
+  exit 1
+fi
+EOF
+  exit 1
+fi
