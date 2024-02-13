@@ -8,6 +8,13 @@ set -e
 # Exit on unset variable.
 set -u
 
+if [[ "${EUID}" == 0 ]]; then
+  >&2 echo "This script doesn't require root privileges."
+  >&2 echo 'Please re-run as tinypilot:'
+  >&2 echo "  runuser tinypilot --command '$0 $*'"
+  exit 1
+fi
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
