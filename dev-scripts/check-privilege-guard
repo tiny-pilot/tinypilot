@@ -51,6 +51,9 @@ while read -r filepath; do
     --recursive \
     debian-pkg/opt/tinypilot-privileged; true)"
   if [[ -n "${matches}" ]]; then
+    # Ignore shellcheck's warning about expressions that don't expand in single
+    # quotes, this is intentional.
+    # shellcheck disable=SC2016
     >&2 echo 'These privileged scripts dangerously reference `'"${filepath}"'` which is both writable by `tinypilot` and requires root privileges:'
     >&2 echo "${matches}"
     exit 1
