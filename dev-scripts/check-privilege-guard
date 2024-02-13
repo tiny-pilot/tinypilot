@@ -26,7 +26,7 @@ if MATCH="$(grep \
   >&2 echo 'Please add the following check (or similar) to the above scripts:'
   >&2 cat <<'EOF'
 if [[ "${EUID}" == 0 ]]; then
-  >&2 echo 'This script doesn'\''t require root privileges.'
+  >&2 echo "This script doesn't require root privileges."
   >&2 echo 'Please re-run as tinypilot:'
   >&2 echo "  runuser tinypilot --command '$0'"
   exit 1
