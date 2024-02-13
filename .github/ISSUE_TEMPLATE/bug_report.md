@@ -28,6 +28,18 @@ _Your answer_
 
 _If applicable, add screenshots to help explain your problem._
 
+## Capture hardware
+
+If your issue relates to video capture, please report which HDMI capture device you're using (e.g., "MacroSilicon MS2109 HDMI to USB"). Refer to the capture device wiki if you're unsure: https://github.com/tiny-pilot/tinypilot/wiki/HDMI-Capture-Devices
+
 ## Logs
 
-Please paste the URL you see when you run `/opt/tinypilot/dev-scripts/dump-logs`
+Please share a link to a TinyPilot log for review.
+
+If you have access to the TinyPilot web interface, navigate to _System > Logs_ in the menu and click _Get Shareable URL_ to copy the URL.
+
+If you don't have access to the TinyPilot web interface, please share the URL you see when you run:
+
+```
+sudo /opt/tinypilot-privileged/collect-debug-logs
+```
