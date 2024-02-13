@@ -15,14 +15,16 @@ set -e
 # Exit on unset variable.
 set -u
 
-if MATCH="$(grep \
+MATCHES="$(grep \
   --files-without-match \
   --fixed-strings \
   --regexp 'This script requires root privileges.' \
   --regexp "This script doesn't require root privileges." \
-  scripts/*)"; then
+  scripts/*; true)"
+readonly MATCHES
+if [[ -n "${MATCHES}" ]]; then
   >&2 echo 'These files are missing a guard against privilege escalation:'
-  >&2 echo "${MATCH}"
+  >&2 echo "${MATCHES}"
   >&2 echo 'Please add the following check (or similar) to the above scripts:'
   >&2 cat <<'EOF'
 if [[ "${EUID}" == 0 ]]; then
