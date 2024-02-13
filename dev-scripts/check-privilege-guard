@@ -1,6 +1,13 @@
 #!/bin/bash
 #
-# Checks that the TinyPilot scripts can't be run with unnecessary privileges.
+# Check that the TinyPilot scripts contain a guard against privilege escalation.
+#
+# This script enforces a pattern of ensuring that scripts which are writable by
+# the `tinypilot` user don't get executed with unnecessary root privileges.
+#
+# In some rare cases, root privileges are necessary (e.g.,
+# `scripts/install-bundle`) and so the opposite should be enforced (i.e.,
+# ensure that the script is only executed with root privileges).
 
 # Exit on first failing command.
 set -e
