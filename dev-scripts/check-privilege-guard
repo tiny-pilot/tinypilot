@@ -4,13 +4,6 @@
 #
 # This script enforces a pattern of ensuring that scripts which are writable by
 # the `tinypilot` user don't get executed with unnecessary root privileges.
-#
-# In some rare cases, root privileges are necessary (e.g.,
-# `scripts/install-bundle`, `scripts/upgrade`) and so the opposite should be
-# enforced (i.e., ensure that the script is only executed with root privileges).
-# Additionally, this script ensures that theses TinyPilot scripts that are
-# marked as needing root privileges aren't referenced by any of the device's
-# privileged scripts (i.e., `/opt/tinypilot-privileged/scripts`).
 
 # Exit on first failing command.
 set -e
@@ -22,7 +15,6 @@ set -u
 MATCHES="$(grep \
   --files-without-match \
   --fixed-strings \
-  --regexp 'This script requires root privileges.' \
   --regexp "This script doesn't require root privileges." \
   scripts/*; true)"
 readonly MATCHES
@@ -40,26 +32,3 @@ fi
 EOF
   exit 1
 fi
-
-# Find privileged scripts that dangerously reference scripts that are writable
-# by `tinypilot` and requires root privileges.
-while read -r filepath; do
-  matches="$(grep \
-    --files-with-matches \
-    --fixed-strings \
-    --regexp "${filepath}" \
-    --recursive \
-    debian-pkg/opt/tinypilot-privileged; true)"
-  if [[ -n "${matches}" ]]; then
-    # Ignore shellcheck's warning about expressions that don't expand in single
-    # quotes, this is intentional.
-    # shellcheck disable=SC2016
-    >&2 echo 'These privileged scripts dangerously reference `'"${filepath}"'` which is both writable by `tinypilot` and requires root privileges:'
-    >&2 echo "${matches}"
-    exit 1
-  fi
-done < <(grep \
-  --files-with-matches \
-  --fixed-strings \
-  --regexp 'This script requires root privileges.' \
-  scripts/*)
