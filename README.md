@@ -88,7 +88,7 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 To update to the latest version of TinyPilot, run the update script:
 
 ```bash
-/opt/tinypilot/scripts/upgrade && sudo reboot
+sudo /opt/tinypilot-privileged/scripts/update && sudo reboot
 ```
 
 ## Diagnostics
