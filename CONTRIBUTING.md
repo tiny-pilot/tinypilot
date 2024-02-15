@@ -178,7 +178,7 @@ curl \
   --silent \
   --show-error \
   --location \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/scripts/install-bundle | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/install-bundle | \
   sudo bash -s -- \
     url-to-bundle-file # replace this line with your bundle URL
 ```
