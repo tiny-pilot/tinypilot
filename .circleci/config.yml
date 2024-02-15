@@ -22,6 +22,14 @@ jobs:
       - run:
           name: Run static analysis on bash scripts
           command: ./dev-scripts/check-bash
+  check_privilege_guard:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - run:
+          name: Check for unnecessary privilege escalation
+          command: ./dev-scripts/check-privilege-guard
   lint_sql:
     docker:
       - image: cimg/python:3.9.17
@@ -272,6 +280,7 @@ workflows:
     jobs:
       - check_whitespace
       - check_bash
+      - check_privilege_guard
       - lint_sql
       - check_style
       - decode_edid

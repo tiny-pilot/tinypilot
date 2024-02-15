@@ -109,7 +109,7 @@ print_info "Checking if filesystem is read-only..."
 print_info "Checking if SSH is enabled..."
 {
   SSH_STATUS="disabled"
-  if /opt/tinypilot/scripts/is-ssh-enabled ; then
+  if runuser tinypilot --command '/opt/tinypilot/scripts/is-ssh-enabled' ; then
     SSH_STATUS="enabled"
   fi
   readonly SSH_STATUS
@@ -166,7 +166,7 @@ print_info "Checking for voltage issues..."
 print_info "Checking TinyPilot streaming mode..."
 {
   echo "Streaming mode"
-  echo "Selected mode: $(/opt/tinypilot/scripts/streaming-mode)"
+  echo "Selected mode: $(runuser tinypilot --command '/opt/tinypilot/scripts/streaming-mode')"
   printf "Current mode: "
   # H264 mode is considered active when the last Janus video log line contains
   # "Memsink opened; reading frames".

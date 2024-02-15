@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# Check that the TinyPilot scripts contain a guard against privilege escalation.
+#
+# This script enforces a pattern of ensuring that scripts which are writable by
+# the `tinypilot` user don't get executed with unnecessary root privileges.
+
+# Exit on first failing command.
+set -e
+
+# Exit on unset variable.
+set -u
+
+# Find TinyPilot scripts that don't guard against privilege escalation.
+MATCHES="$(grep \
+  --files-without-match \
+  --fixed-strings \
+  --regexp "This script doesn't require root privileges." \
+  scripts/*; true)"
+readonly MATCHES
+if [[ -n "${MATCHES}" ]]; then
+  >&2 echo 'These files are missing a guard against privilege escalation:'
+  >&2 echo "${MATCHES}"
+  >&2 echo 'Please add the following check (or similar) to the above scripts:'
+  >&2 cat <<'EOF'
+if [[ "${EUID}" == 0 ]]; then
+  >&2 echo "This script doesn't require root privileges."
+  >&2 echo 'Please re-run as tinypilot:'
+  >&2 echo "  runuser tinypilot --command '$0 $*'"
+  exit 1
+fi
+EOF
+  exit 1
+fi

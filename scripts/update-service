@@ -10,7 +10,9 @@
 
 import argparse
 import logging
+import os
 import subprocess
+import sys
 
 # We’re importing the log package first because it needs to overwrite the
 # app-wide logger class before any other module loads it.
@@ -61,6 +63,15 @@ def main(_):
 
 
 if __name__ == '__main__':
+    # Ensure that the script doesn't have unnecessary privileges.
+    if os.geteuid() == 0:
+        print("This script doesn't require root privileges.", file=sys.stderr)
+        print('Please re-run as tinypilot:', file=sys.stderr)
+        print('  runuser tinypilot --command',
+              f"'{' '.join(sys.argv)}'",
+              file=sys.stderr)
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(
         prog='TinyPilot Update Service',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
