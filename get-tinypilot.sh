@@ -44,7 +44,7 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
     printf "Community Edition.\n\n"
     printf "You probably want to update to the latest version of TinyPilot "
     printf "Pro instead:\n\n"
-    printf "  /opt/tinypilot/scripts/upgrade && sudo reboot\n"
+    printf "  sudo /opt/tinypilot-privileged/scripts/update && sudo reboot\n"
     printf "\n"
     printf "If you *really* want to downgrade to TinyPilot Community Edition, "
     printf "type the following:\n\n"
