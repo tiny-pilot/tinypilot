@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Setup the Backblaze CLI tool for a Linux based system.
-# 
+# Setup and configure the Backblaze CLI tool for a Linux based system.
+#
 # This includes the download, installation, and account authorization.
 
 # Exit script on first failure.
