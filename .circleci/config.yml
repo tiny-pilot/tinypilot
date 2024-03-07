@@ -225,10 +225,11 @@ jobs:
           command: ./bundler/verify-bundle
   upload_bundle:
     docker:
-      - image: cimg/base:2020.01
+      - image: cimg/base:2024.02
     environment:
       UPLOAD_PREFIX: community
     steps:
+      - checkout
       - attach_workspace:
           at: ./
       - run:
@@ -238,11 +239,7 @@ jobs:
           command: cd dist && ls tinypilot*.tgz | tee LATEST
       - run:
           name: Download Backblaze CLI tool
-          command: |
-            sudo apt-get update && sudo apt-get install -y wget
-            wget https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v3.4.0/b2-linux --output-document=./b2
-            chmod +x ./b2
-            ./b2 version
+          command: ./bundler/install-b2-linux
       - run:
           name: Authorize Backblaze CLI tool
           command: |
