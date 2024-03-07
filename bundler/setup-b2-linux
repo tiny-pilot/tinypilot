@@ -7,9 +7,6 @@
 # Exit script on first failure.
 set -e
 
-# Echo commands before executing them, by default to stderr.
-set -x
-
 # Determine if there are any account credentials available.
 if [[ -n "${BACKBLAZE_KEY_ID}" ]] && [[ -n "${BACKBLAZE_KEY}" ]]; then
   readonly HAS_CREDENTIALS='true'
@@ -25,7 +22,8 @@ if [[ ! -f ./b2 ]]; then
   readonly VERSION='3.4.0'
   wget \
     "https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v${VERSION}/b2-linux" \
-    --output-document ./b2
+    --output-document ./b2 \
+    --no-verbose
   chmod +x ./b2
 fi
 
@@ -35,4 +33,8 @@ fi
 # Authorize the Backblaze account, if account credentials are available.
 if "${HAS_CREDENTIALS}"; then
   ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+else
+  echo 'No Backblaze account credentials were found.'
+  echo 'Manually authorize your account using the following command:'
+  echo '  ./b2 authorize-account'
 fi
