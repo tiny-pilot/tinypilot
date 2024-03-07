@@ -15,5 +15,5 @@ readonly VERSION='3.4.0'
 wget \
   "https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v${VERSION}/b2-linux" \
   --output-document b2
-chmod +x ./b2
+chmod +x b2
 b2 version
