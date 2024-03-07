@@ -238,13 +238,8 @@ jobs:
           name: Create LATEST file
           command: cd dist && ls tinypilot*.tgz | tee LATEST
       - run:
-          name: Download Backblaze CLI tool
-          command: ./bundler/install-b2-linux
-      - run:
-          name: Authorize Backblaze CLI tool
-          command: |
-            set -u
-            ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+          name: Setup Backblaze CLI tool
+          command: ./bundler/setup-b2-linux
       - run:
           name: Upload bundle to Backblaze
           command: |
