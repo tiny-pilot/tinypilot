@@ -6,6 +6,9 @@ executors:
   python:
     docker:
       - image: cimg/python:3.9.17
+  node:
+    docker:
+      - image: cimg/node:18.16.1
 jobs:
   check_whitespace:
     executor: ubuntu
@@ -49,8 +52,7 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./dev-scripts/lint-sql
   check_style:
-    docker:
-      - image: cimg/node:18.16.1
+    executor: node
     steps:
       - checkout
       - run:
@@ -90,8 +92,7 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
   build_javascript:
-    docker:
-      - image: cimg/node:18.16.1
+    executor: node
     steps:
       - checkout
       - run:
