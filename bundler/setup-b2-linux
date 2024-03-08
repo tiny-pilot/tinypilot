@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# Setup and configure the Backblaze CLI tool for a Linux based system.
+#
+# This includes the download, installation, and account authorization.
+
+# Exit script on first failure.
+set -e
+
+# Determine if there are any account credentials available.
+if [[ -n "${BACKBLAZE_KEY_ID}" ]] && [[ -n "${BACKBLAZE_KEY}" ]]; then
+  readonly HAS_CREDENTIALS='true'
+else
+  readonly HAS_CREDENTIALS='false'
+fi
+
+# Exit on unset variable.
+set -u
+
+# Download and install the Backblaze CLI tool, if it doesn't already exist.
+if [[ ! -f ./b2 ]]; then
+  readonly VERSION='3.4.0'
+  wget \
+    "https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v${VERSION}/b2-linux" \
+    --output-document ./b2 \
+    --no-verbose
+  chmod +x ./b2
+fi
+
+# Print current version.
+./b2 version
+
+# Authorize the Backblaze account, if account credentials are available.
+if "${HAS_CREDENTIALS}"; then
+  ./b2 authorize-account "${BACKBLAZE_KEY_ID}" "${BACKBLAZE_KEY}"
+else
+  echo 'No Backblaze account credentials were found.'
+  echo 'Manually authorize your account using the following command:'
+  echo '  ./b2 authorize-account'
+fi
