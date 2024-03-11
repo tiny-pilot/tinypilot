@@ -1,8 +1,17 @@
 version: 2.1
+executors:
+  ubuntu:
+    docker:
+      - image: cimg/base:2024.02
+  python:
+    docker:
+      - image: cimg/python:3.9.17
+  node:
+    docker:
+      - image: cimg/node:18.16.1
 jobs:
   check_whitespace:
-    docker:
-      - image: cimg/base:2020.01
+    executor: ubuntu
     steps:
       - checkout
       - run:
@@ -23,16 +32,14 @@ jobs:
           name: Run static analysis on bash scripts
           command: ./dev-scripts/check-bash
   check_privilege_guard:
-    docker:
-      - image: cimg/base:2020.01
+    executor: ubuntu
     steps:
       - checkout
       - run:
           name: Check for unnecessary privilege escalation
           command: ./dev-scripts/check-privilege-guard
   lint_sql:
-    docker:
-      - image: cimg/python:3.9.17
+    executor: python
     steps:
       - checkout
       - run:
@@ -45,8 +52,7 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./dev-scripts/lint-sql
   check_style:
-    docker:
-      - image: cimg/node:18.16.1
+    executor: node
     steps:
       - checkout
       - run:
@@ -56,8 +62,7 @@ jobs:
           name: Check code style
           command: ./dev-scripts/check-style
   decode_edid:
-    docker:
-      - image: cimg/python:3.9.17
+    executor: python
     resource_class: small
     steps:
       - checkout
@@ -74,8 +79,7 @@ jobs:
             pip install --requirement requirements.txt
             ./dev-scripts/decode-edid
   build_python:
-    docker:
-      - image: cimg/python:3.9.17
+    executor: python
     steps:
       - checkout
       - run:
@@ -88,8 +92,7 @@ jobs:
             pip install --requirement dev_requirements.txt
             ./dev-scripts/build-python
   build_javascript:
-    docker:
-      - image: cimg/node:18.16.1
+    executor: node
     steps:
       - checkout
       - run:
@@ -99,8 +102,7 @@ jobs:
           name: Run build script
           command: ./dev-scripts/build-javascript
   build_bash:
-    docker:
-      - image: cimg/base:2024.01
+    executor: ubuntu
     steps:
       - checkout
       - run:
@@ -151,8 +153,7 @@ jobs:
       - store_artifacts:
           path: e2e-results
   build_debian_package:
-    docker:
-      - image: cimg/base:2023.06
+    executor: ubuntu
     resource_class: arm.medium
     steps:
       - checkout
@@ -169,8 +170,7 @@ jobs:
           paths:
             - "*.deb"
   lint_debian_package:
-    docker:
-      - image: cimg/base:2022.11-22.04
+    executor: ubuntu
     steps:
       - checkout
       - attach_workspace:
@@ -198,8 +198,7 @@ jobs:
                 "${file}"
             done < <(ls *.deb)
   build_bundle:
-    docker:
-      - image: cimg/python:3.9.17
+    executor: python
     steps:
       - checkout
       - attach_workspace:
@@ -214,8 +213,7 @@ jobs:
           paths:
             - ./dist
   verify_bundle:
-    docker:
-      - image: cimg/base:2020.01
+    executor: ubuntu
     steps:
       - checkout
       - attach_workspace:
@@ -224,8 +222,7 @@ jobs:
           name: Verify bundle integrity
           command: ./bundler/verify-bundle
   upload_bundle:
-    docker:
-      - image: cimg/base:2024.02
+    executor: ubuntu
     environment:
       UPLOAD_PREFIX: community
     steps:
