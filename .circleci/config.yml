@@ -21,6 +21,7 @@ commands:
           command: |
             if [[ -z "${BACKBLAZE_KEY}"
                || -z "${BACKBLAZE_KEY_ID}"
+               || -z "${UPLOAD_BUCKET}"
             ]]; then
               >&2 echo 'Missing environment variables'
               exit 1
