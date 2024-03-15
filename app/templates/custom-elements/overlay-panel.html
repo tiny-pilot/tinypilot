@@ -101,11 +101,16 @@
             .getElementById("close-button")
             .addEventListener("click", () => this.show(false));
 
+          // Prevent keyword forwarding to device while overlay is open.
           this.shadowRoot.addEventListener("keydown", (evt) => {
-            // Prevent keyword forwarding to device while overlay is open.
             if (this.isShown()) {
               evt.stopPropagation();
             }
+          });
+
+          // Prevent auto-close if the user presses the ESC key.
+          this.elements.dialog.addEventListener("cancel", (evt) => {
+            evt.preventDefault();
           });
         }
 
