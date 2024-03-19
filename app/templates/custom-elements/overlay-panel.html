@@ -5,8 +5,10 @@
     #panel {
       position: relative;
       border: none;
-      width: 800px;
+      width: min(800px, 100%);
+      box-sizing: border-box;
       margin: 100px auto;
+      max-height: none; /* Unset default max-height from native <dialog> */
       padding: 2rem;
       text-align: center;
       border-radius: var(--border-radius);
@@ -101,14 +103,8 @@
             .getElementById("close-button")
             .addEventListener("click", () => this.show(false));
 
-          // Prevent keyword forwarding to device while overlay is open.
-          this.shadowRoot.addEventListener("keydown", (evt) => {
-            if (this.isShown()) {
-              evt.stopPropagation();
-            }
-          });
-
-          // Prevent auto-close if the user presses the ESC key.
+          // Prevent auto-close behavior of native <dialog> if the user presses
+          // the ESC key.
           this.elements.dialog.addEventListener("cancel", (evt) => {
             evt.preventDefault();
           });
@@ -120,6 +116,13 @@
           } else {
             this.elements.dialog.close();
           }
+          this.dispatchEvent(
+            new CustomEvent("overlay-toggled", {
+              detail: { isShown },
+              bubbles: true,
+              composed: true,
+            })
+          );
         }
 
         isShown() {
