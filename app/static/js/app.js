@@ -2,6 +2,7 @@ import { isModifierCode, keystrokeToCanonicalCode } from "./keycodes.js";
 import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
+import { OverlayTracker } from "./overlays.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -12,6 +13,9 @@ const socket = io();
 let connectedToServer = false;
 
 const keyboardState = new KeyboardState();
+
+// Keep track of overlays, in order to properly deactivate keypress forwarding.
+const overlayTracker = new OverlayTracker();
 
 /**
  * @see `DialogFailedEvent` for parameter `errorInfo`
@@ -99,6 +103,10 @@ function onSocketDisconnect() {
  * @param {KeyboardEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  */
 function onKeyDown(evt) {
+  if (overlayTracker.hasOverlays()) {
+    return;
+  }
+
   const canonicalCode = keystrokeToCanonicalCode(evt);
 
   if (isIgnoredKeystroke(canonicalCode)) {
@@ -222,6 +230,9 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
+document.addEventListener("overlay-toggled", (evt) => {
+  overlayTracker.trackStatus(evt.target, evt.detail.isShown);
+});
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
     evt.detail.mode;
