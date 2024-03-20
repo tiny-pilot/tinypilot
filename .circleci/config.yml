@@ -307,7 +307,7 @@ workflows:
             - build_bundle
       - upload_bundle:
           context:
-            - production
+            - community-production
           requires:
             - verify_bundle
           # Uploading a new bundle affects Gatekeeper's view of the latest
