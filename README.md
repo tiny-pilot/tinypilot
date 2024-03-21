@@ -83,14 +83,6 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 - [Advanced installation options](https://github.com/tiny-pilot/tinypilot/wiki/Installation-Options#advanced-installation)
 
-## Updates
-
-To update to the latest version of TinyPilot, run the update script:
-
-```bash
-sudo /opt/tinypilot-privileged/scripts/update && sudo reboot
-```
-
 ## Diagnostics
 
 If you're having trouble with TinyPilot, you can retrive logs from the web dashboard by clicking "Logs" in the bottom of the main dashboard.
