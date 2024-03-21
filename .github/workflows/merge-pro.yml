@@ -41,7 +41,7 @@ jobs:
           body: |
             Related ${{ env.COMMUNITY_PR_URL }}
 
-            ${{ github.actor }}, please merge the last changes from community repository:
+            @${{ github.actor }}, please review these changes yourself and merge them from the community repository:
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
 
