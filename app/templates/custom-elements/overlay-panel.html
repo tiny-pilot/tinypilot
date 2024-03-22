@@ -2,31 +2,20 @@
   <style>
     @import "css/style.css";
 
-    :host {
-      display: none;
-      position: fixed;
-      overflow: auto;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: var(--z-index-overlay);
-    }
-
-    :host([show="true"]) {
-      display: block;
-    }
-
     #panel {
       position: relative;
-      max-width: 800px;
+      border: none;
+      width: min(800px, 100%);
+      box-sizing: border-box;
       margin: 100px auto;
+      max-height: none; /* Unset default max-height from native <dialog> */
       padding: 2rem;
       text-align: center;
       border-radius: var(--border-radius);
+    }
+
+    #panel::backdrop {
+      background-color: rgba(0, 0, 0, 0.7);
     }
 
     #close-button {
@@ -63,7 +52,7 @@
     }
   </style>
 
-  <div id="panel">
+  <dialog id="panel">
     <button id="close-button" title="Close Overlay">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
         <path
@@ -73,7 +62,7 @@
       </svg>
     </button>
     <slot></slot>
-  </div>
+  </dialog>
 </template>
 
 <script type="module">
@@ -87,6 +76,9 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
+          this.elements = {
+            dialog: this.shadowRoot.querySelector("#panel"),
+          };
           this.show = this.show.bind(this);
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
@@ -110,10 +102,20 @@
           this.shadowRoot
             .getElementById("close-button")
             .addEventListener("click", () => this.show(false));
+
+          // Prevent auto-close behavior of native <dialog> if the user presses
+          // the ESC key.
+          this.elements.dialog.addEventListener("cancel", (evt) => {
+            evt.preventDefault();
+          });
         }
 
         show(isShown = true) {
-          this.setAttribute("show", isShown ? "true" : "false");
+          if (isShown) {
+            this.elements.dialog.showModal();
+          } else {
+            this.elements.dialog.close();
+          }
           this.dispatchEvent(
             new CustomEvent("overlay-toggled", {
               detail: { isShown },
@@ -124,7 +126,7 @@
         }
 
         isShown() {
-          return this.getAttribute("show") === "true";
+          return this.elements.dialog.open;
         }
       }
     );
