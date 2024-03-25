@@ -344,7 +344,7 @@ class extends HTMLElement {
 The class attribute `states` can then be used in the JavaScript component code:
 
 ```javascript
-this.state = this.states.FETCH_FROM_URL;
+this._state = this.states.FETCH_FROM_URL;
 ```
 
 We then use CSS rules based on the `state` attribute to control the component's appearance:
