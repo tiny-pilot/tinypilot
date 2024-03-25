@@ -145,13 +145,13 @@
             this._handleCopyToClipboard();
           });
 
-          this._state = this.states.INITIAL;
+          this._state = this._states.INITIAL;
         }
 
         set state(newValue) {
           this.setAttribute("state", newValue);
           this._elements.getUrlButton.disabled =
-            newValue === this.states.LOADING;
+            newValue === this._states.LOADING;
         }
 
         /**
@@ -164,11 +164,11 @@
          */
         initialize(getLogsTextCb) {
           this.getLogsText = getLogsTextCb;
-          this._state = this.states.INITIAL;
+          this._state = this._states.INITIAL;
         }
 
         async _handleRequestShareableUrl() {
-          this._state = this.states.LOADING;
+          this._state = this._states.LOADING;
 
           try {
             const url = await textToShareableUrl(this.getLogsText());
@@ -189,7 +189,7 @@
             return;
           }
 
-          this._state = this.states.DISPLAY_LINK;
+          this._state = this._states.DISPLAY_LINK;
         }
 
         _handleCopyToClipboard() {

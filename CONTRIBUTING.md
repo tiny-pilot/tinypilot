@@ -344,7 +344,7 @@ class extends HTMLElement {
 The class attribute `states` can then be used in the JavaScript component code:
 
 ```javascript
-this._state = this.states.FETCH_FROM_URL;
+this._state = this._states.FETCH_FROM_URL;
 ```
 
 We then use CSS rules based on the `state` attribute to control the component's appearance:
@@ -393,7 +393,7 @@ class extends HTMLElement {
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
     };
-    statesWithoutDialogClose = new Set([this.states.INITIALIZING]);
+    statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 ```
 
 Note: for consistency, we always use a `Set` here, even if it only contains a single element.
