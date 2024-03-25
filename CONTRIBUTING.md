@@ -322,7 +322,7 @@ In a framework like React or Vue, we'd use conditional rendering to change the U
 
 ```javascript
 get _state() {
-  return ))("state");
+  return this.getAttribute("state");
 }
 
 set _state(newValue) {
