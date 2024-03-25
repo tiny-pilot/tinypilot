@@ -393,7 +393,7 @@ class extends HTMLElement {
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
     };
-    statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
+    _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 ```
 
 Note: for consistency, we always use a `Set` here, even if it only contains a single element.
