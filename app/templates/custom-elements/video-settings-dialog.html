@@ -295,9 +295,12 @@
           this._elements.frameRateSlider.addEventListener("input", (event) => {
             this._setFrameRate(parseInt(event.target.value, 10));
           });
-          this._elements.frameRateRestoreButton.addEventListener("click", () => {
-            this._setFrameRate(this._defaultSettings.frameRate);
-          });
+          this._elements.frameRateRestoreButton.addEventListener(
+            "click",
+            () => {
+              this._setFrameRate(this._defaultSettings.frameRate);
+            }
+          );
           this._elements.mjpegQualitySlider.addEventListener(
             "input",
             (event) => {
@@ -310,9 +313,12 @@
               this._setMjpegQuality(this._defaultSettings.mjpegQuality);
             }
           );
-          this._elements.h264BitrateSlider.addEventListener("input", (event) => {
-            this._setH264Bitrate(parseInt(event.target.value, 10));
-          });
+          this._elements.h264BitrateSlider.addEventListener(
+            "input",
+            (event) => {
+              this._setH264Bitrate(parseInt(event.target.value, 10));
+            }
+          );
           this._elements.h264BitrateRestoreButton.addEventListener(
             "click",
             () => {
