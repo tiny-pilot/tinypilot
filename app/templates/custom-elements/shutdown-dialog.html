@@ -91,7 +91,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.state = this.states.PROMPT;
+          this._state = this.states.PROMPT;
 
           this.shadowRoot
             .getElementById("confirm-shutdown")
@@ -128,13 +128,13 @@
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {
-                this.state = this.states.RESTARTING;
+                this._state = this.states.RESTARTING;
               } else {
-                this.state = this.states.SHUTTING_DOWN;
+                this._state = this.states.SHUTTING_DOWN;
                 // We can't tell when the system has fully shut down, but assume
                 // that it's done after 30 seconds.
                 setTimeout(() => {
-                  this.state = this.states.SHUTDOWN_COMPLETE;
+                  this._state = this.states.SHUTDOWN_COMPLETE;
                 }, 30 * 1000);
               }
             })

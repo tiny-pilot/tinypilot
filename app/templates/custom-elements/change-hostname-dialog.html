@@ -165,13 +165,13 @@
 
         initialize() {
           this._elements.inputError.hide();
-          this.state = this.states.INITIALIZING;
+          this._state = this.states.INITIALIZING;
           determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
               this._elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
-              this.state = this.states.PROMPT;
+              this._state = this.states.PROMPT;
               this._elements.hostnameInput.focus();
             })
             .catch((error) => {
@@ -207,7 +207,7 @@
             .then((redirectURL) => {
               this._elements.futureLocation.innerText = redirectURL;
               this._elements.futureLocation.href = redirectURL;
-              this.state = this.states.CHANGING;
+              this._state = this.states.CHANGING;
               return this._waitForReboot(redirectURL);
             })
             .catch((error) => {
@@ -215,7 +215,7 @@
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
                 this._elements.inputError.show();
-                this.state = this.states.PROMPT;
+                this._state = this.states.PROMPT;
                 return;
               }
               this.dispatchEvent(

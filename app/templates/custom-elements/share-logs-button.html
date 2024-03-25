@@ -145,7 +145,7 @@
             this._handleCopyToClipboard();
           });
 
-          this.state = this.states.INITIAL;
+          this._state = this.states.INITIAL;
         }
 
         set state(newValue) {
@@ -164,11 +164,11 @@
          */
         initialize(getLogsTextCb) {
           this.getLogsText = getLogsTextCb;
-          this.state = this.states.INITIAL;
+          this._state = this.states.INITIAL;
         }
 
         async _handleRequestShareableUrl() {
-          this.state = this.states.LOADING;
+          this._state = this.states.LOADING;
 
           try {
             const url = await textToShareableUrl(this.getLogsText());
@@ -189,7 +189,7 @@
             return;
           }
 
-          this.state = this.states.DISPLAY_LINK;
+          this._state = this.states.DISPLAY_LINK;
         }
 
         _handleCopyToClipboard() {
