@@ -384,7 +384,7 @@ Prefer to change a web component's appearance based on attributes and CSS rules 
 
 For a component that is used within an overlay, there might be certain states that should prevent the user from closing the dialog. That’s typically the case when we are waiting for an action to complete (for example when loading something).
 
-These particular states are listed in the `statesWithoutDialogClose` class property, like so:
+These particular states are listed in the `_statesWithoutDialogClose` class property, like so:
 
 ```javascript
 class extends HTMLElement {
