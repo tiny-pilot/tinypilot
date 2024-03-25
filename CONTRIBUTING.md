@@ -334,7 +334,7 @@ We enumerate all possible state values in the states property on the web compone
 
 ```javascript
 class extends HTMLElement {
-    states = {
+    _states = {
         INITIALIZING: "initializing",
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
@@ -388,7 +388,7 @@ These particular states are listed in the `statesWithoutDialogClose` class prope
 
 ```javascript
 class extends HTMLElement {
-    states = {
+    _states = {
         INITIALIZING: "initializing",
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
