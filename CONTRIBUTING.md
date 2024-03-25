@@ -322,7 +322,7 @@ In a framework like React or Vue, we'd use conditional rendering to change the U
 
 ```javascript
 get _state() {
-  return this.getAttribute("state");
+  return ))("state");
 }
 
 set _state(newValue) {
@@ -405,7 +405,7 @@ set _state(newValue) {
     this.setAttribute("state", newValue);
     this.dispatchEvent(
     new DialogCloseStateChangedEvent(
-        !this.statesWithoutDialogClose.has(newValue)
+        !this._statesWithoutDialogClose.has(newValue)
     )
     );
 }
