@@ -115,7 +115,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.elements = {
+          this._elements = {
             inputError: this.shadowRoot.getElementById("input-error"),
             hostnameInput: this.shadowRoot.getElementById("hostname-input"),
             changeAndRestart:
@@ -126,18 +126,18 @@
             futureLocation: this.shadowRoot.getElementById("future-location"),
           };
 
-          this.elements.hostnameInput.addEventListener("input", () => {
+          this._elements.hostnameInput.addEventListener("input", () => {
             this._onInputChanged();
           });
-          this.elements.changeAndRestart.addEventListener("click", () => {
+          this._elements.changeAndRestart.addEventListener("click", () => {
             this._doChangeHostname();
           });
-          this.elements.hostnameInput.addEventListener("keydown", (evt) => {
+          this._elements.hostnameInput.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter") {
-              this.elements.changeAndRestart.click();
+              this._elements.changeAndRestart.click();
             }
           });
-          this.elements.cancelHostnameChange.addEventListener("click", () => {
+          this._elements.cancelHostnameChange.addEventListener("click", () => {
             this.dispatchEvent(new DialogClosedEvent());
           });
         }
@@ -164,15 +164,15 @@
         }
 
         initialize() {
-          this.elements.inputError.hide();
+          this._elements.inputError.hide();
           this.state = this.states.INITIALIZING;
           determineHostname()
             .then((hostname) => {
               this.initialHostname = hostname;
-              this.elements.hostnameInput.value = hostname;
+              this._elements.hostnameInput.value = hostname;
               this._onInputChanged(hostname);
               this.state = this.states.PROMPT;
-              this.elements.hostnameInput.focus();
+              this._elements.hostnameInput.focus();
             })
             .catch((error) => {
               this.dispatchEvent(
@@ -186,14 +186,14 @@
 
         _onInputChanged() {
           const isEqualToInitialValue =
-            this.elements.hostnameInput.value === this.initialHostname;
-          const isEmpty = this.elements.hostnameInput.value === "";
-          this.elements.changeAndRestart.disabled =
+            this._elements.hostnameInput.value === this.initialHostname;
+          const isEmpty = this._elements.hostnameInput.value === "";
+          this._elements.changeAndRestart.disabled =
             isEmpty || isEqualToInitialValue;
         }
 
         _doChangeHostname() {
-          changeHostname(this.elements.hostnameInput.value)
+          changeHostname(this._elements.hostnameInput.value)
             .then((newHostname) => {
               return shutdown(/*restart=*/ true).then(() => newHostname);
             })
@@ -205,8 +205,8 @@
               );
             })
             .then((redirectURL) => {
-              this.elements.futureLocation.innerText = redirectURL;
-              this.elements.futureLocation.href = redirectURL;
+              this._elements.futureLocation.innerText = redirectURL;
+              this._elements.futureLocation.href = redirectURL;
               this.state = this.states.CHANGING;
               return this._waitForReboot(redirectURL);
             })
@@ -214,7 +214,7 @@
               if (error.code === "INVALID_HOSTNAME") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
-                this.elements.inputError.show();
+                this._elements.inputError.show();
                 this.state = this.states.PROMPT;
                 return;
               }

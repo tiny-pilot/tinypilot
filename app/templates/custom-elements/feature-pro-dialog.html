@@ -30,12 +30,12 @@
         this.attachShadow({ mode: "open" }).appendChild(
           template.content.cloneNode(true)
         );
-        this.elements = {
+        this._elements = {
           cancelUpgradeToPro: this.shadowRoot.getElementById(
             "cancel-upgrade-to-pro"
           ),
         };
-        this.elements.cancelUpgradeToPro.addEventListener("click", () => {
+        this._elements.cancelUpgradeToPro.addEventListener("click", () => {
           this.dispatchEvent(new DialogClosedEvent());
         });
       }

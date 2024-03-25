@@ -235,7 +235,7 @@
 
         connectedCallback() {
           this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.elements = {
+          this._elements = {
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
             streamingModeMjpegButton: this.shadowRoot.querySelector(
@@ -274,62 +274,62 @@
               "#stun-validation-error"
             ),
           };
-          this.elements.closeButton.addEventListener("click", () =>
+          this._elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );
-          this.elements.saveButton.addEventListener("click", () =>
+          this._elements.saveButton.addEventListener("click", () =>
             this._saveSettings()
           );
-          this.elements.streamingModeMjpegButton.addEventListener(
+          this._elements.streamingModeMjpegButton.addEventListener(
             "click",
             () => {
               this._setStreamingMode("MJPEG");
             }
           );
-          this.elements.streamingModeH264Button.addEventListener(
+          this._elements.streamingModeH264Button.addEventListener(
             "click",
             () => {
               this._setStreamingMode("H264");
             }
           );
-          this.elements.frameRateSlider.addEventListener("input", (event) => {
+          this._elements.frameRateSlider.addEventListener("input", (event) => {
             this._setFrameRate(parseInt(event.target.value, 10));
           });
-          this.elements.frameRateRestoreButton.addEventListener("click", () => {
+          this._elements.frameRateRestoreButton.addEventListener("click", () => {
             this._setFrameRate(this._defaultSettings.frameRate);
           });
-          this.elements.mjpegQualitySlider.addEventListener(
+          this._elements.mjpegQualitySlider.addEventListener(
             "input",
             (event) => {
               this._setMjpegQuality(parseInt(event.target.value, 10));
             }
           );
-          this.elements.mjpegQualityRestoreButton.addEventListener(
+          this._elements.mjpegQualityRestoreButton.addEventListener(
             "click",
             () => {
               this._setMjpegQuality(this._defaultSettings.mjpegQuality);
             }
           );
-          this.elements.h264BitrateSlider.addEventListener("input", (event) => {
+          this._elements.h264BitrateSlider.addEventListener("input", (event) => {
             this._setH264Bitrate(parseInt(event.target.value, 10));
           });
-          this.elements.h264BitrateRestoreButton.addEventListener(
+          this._elements.h264BitrateRestoreButton.addEventListener(
             "click",
             () => {
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
             }
           );
-          this.elements.h264StunSettings.addEventListener(
+          this._elements.h264StunSettings.addEventListener(
             "h264-stun-value-changed",
             () => {
               this._refreshButtons();
-              this.elements.h264StunValidationError.hide();
+              this._elements.h264StunValidationError.hide();
             }
           );
-          this.elements.h264StunSettings.addEventListener(
+          this._elements.h264StunSettings.addEventListener(
             "h264-stun-submission-requested",
             () => {
-              this.elements.saveButton.click();
+              this._elements.saveButton.click();
             }
           );
           this.shadowRoot
@@ -361,7 +361,7 @@
           this.state = this.states.LOADING;
 
           // Reset all transient view state.
-          this.elements.h264StunValidationError.hide();
+          this._elements.h264StunValidationError.hide();
           this.toggleAttribute("show-advanced-h264-settings", false);
 
           // Fetch and fill in data from server.
@@ -395,7 +395,7 @@
                 this._initialSettings.h264Bitrate = h264Bitrate;
                 this._defaultSettings.h264Bitrate = defaultH264Bitrate;
 
-                this.elements.h264StunSettings.initialize(
+                this._elements.h264StunSettings.initialize(
                   h264StunServer,
                   h264StunPort
                 );
@@ -429,11 +429,11 @@
          * @param {string} streamingMode
          */
         _setStreamingMode(streamingMode) {
-          this.elements.streamingModeMjpegButton.classList.toggle(
+          this._elements.streamingModeMjpegButton.classList.toggle(
             "disabled",
             streamingMode === "MJPEG"
           );
-          this.elements.streamingModeH264Button.classList.toggle(
+          this._elements.streamingModeH264Button.classList.toggle(
             "disabled",
             streamingMode === "H264"
           );
@@ -445,15 +445,15 @@
          * @returns {number}
          */
         _getFrameRate() {
-          return parseInt(this.elements.frameRateSlider.value, 10);
+          return parseInt(this._elements.frameRateSlider.value, 10);
         }
 
         /**
          * @param {number} frameRate
          */
         _setFrameRate(frameRate) {
-          this.elements.frameRateSlider.value = frameRate;
-          this.elements.frameRateValue.innerHTML = `${frameRate} fps`;
+          this._elements.frameRateSlider.value = frameRate;
+          this._elements.frameRateValue.innerHTML = `${frameRate} fps`;
           this._refreshButtons();
         }
 
@@ -461,15 +461,15 @@
          * @returns {number}
          */
         _getMjpegQuality() {
-          return parseInt(this.elements.mjpegQualitySlider.value, 10);
+          return parseInt(this._elements.mjpegQualitySlider.value, 10);
         }
 
         /**
          * @param {number} mjpegQuality
          */
         _setMjpegQuality(mjpegQuality) {
-          this.elements.mjpegQualitySlider.value = mjpegQuality;
-          this.elements.mjpegQualityValue.innerHTML = `${mjpegQuality} %`;
+          this._elements.mjpegQualitySlider.value = mjpegQuality;
+          this._elements.mjpegQualityValue.innerHTML = `${mjpegQuality} %`;
           this._refreshButtons();
         }
 
@@ -477,16 +477,16 @@
          * @returns {number}
          */
         _getH264Bitrate() {
-          return parseInt(this.elements.h264BitrateSlider.value, 10);
+          return parseInt(this._elements.h264BitrateSlider.value, 10);
         }
 
         /**
          * @param {number} h264Bitrate
          */
         _setH264Bitrate(h264Bitrate) {
-          this.elements.h264BitrateSlider.value = h264Bitrate;
+          this._elements.h264BitrateSlider.value = h264Bitrate;
           const h264BitrateValue = (h264Bitrate / 1000).toFixed(2);
-          this.elements.h264BitrateValue.innerHTML = `${h264BitrateValue} Mb/s`;
+          this._elements.h264BitrateValue.innerHTML = `${h264BitrateValue} Mb/s`;
           this._refreshButtons();
         }
 
@@ -496,7 +496,7 @@
          */
         _refreshButtons() {
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunSettings.getValue();
+            this._elements.h264StunSettings.getValue();
 
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
@@ -507,7 +507,7 @@
             [h264StunServer, this._initialSettings.h264StunServer],
             [h264StunPort, this._initialSettings.h264StunPort],
           ].some(([actualValue, initialValue]) => actualValue !== initialValue);
-          this.elements.saveButton.disabled = !hasChangedValues;
+          this._elements.saveButton.disabled = !hasChangedValues;
 
           // Reset Buttons: only show if the respective slider value differs
           // from the default setting.
@@ -515,17 +515,17 @@
             [
               this._getFrameRate(),
               this._defaultSettings.frameRate,
-              this.elements.frameRateRestoreButton,
+              this._elements.frameRateRestoreButton,
             ],
             [
               this._getMjpegQuality(),
               this._defaultSettings.mjpegQuality,
-              this.elements.mjpegQualityRestoreButton,
+              this._elements.mjpegQualityRestoreButton,
             ],
             [
               this._getH264Bitrate(),
               this._defaultSettings.h264Bitrate,
-              this.elements.h264BitrateRestoreButton,
+              this._elements.h264BitrateRestoreButton,
             ],
           ].forEach(([actualValue, defaultValue, resetButton]) => {
             resetButton.classList.toggle(
@@ -539,7 +539,7 @@
           this.state = this.states.SAVING;
 
           const { h264StunServer, h264StunPort } =
-            this.elements.h264StunSettings.getValue();
+            this._elements.h264StunSettings.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
             frameRate: this._getFrameRate(),
@@ -572,7 +572,7 @@
               if (error.code === "INVALID_STUN_ADDRESS") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
-                this.elements.h264StunValidationError.show();
+                this._elements.h264StunValidationError.show();
                 this.state = this.states.EDIT;
                 return;
               }

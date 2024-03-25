@@ -165,22 +165,22 @@
             return option;
           });
 
-          this.elements = {
+          this._elements = {
             server: this.shadowRoot.querySelector("#server"),
             port: this.shadowRoot.querySelector("#port"),
           };
-          this.elements.server.addEventListener("input", () => {
+          this._elements.server.addEventListener("input", () => {
             this.dispatchEvent(new InputChangedEvent());
           });
-          this.elements.port.addEventListener("input", () => {
+          this._elements.port.addEventListener("input", () => {
             this.dispatchEvent(new InputChangedEvent());
           });
-          this.elements.server.addEventListener("keydown", (evt) => {
+          this._elements.server.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter") {
               this.dispatchEvent(new SubmissionRequestedEvent());
             }
           });
-          this.elements.port.addEventListener("keydown", (evt) => {
+          this._elements.port.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter") {
               this.dispatchEvent(new SubmissionRequestedEvent());
             }
@@ -213,8 +213,8 @@
           // If the selection is “custom”, read the data from the input fields.
           // Otherwise, return the presets from the option.
           if (selectedOption.id === "custom") {
-            const server = this.elements.server.value;
-            const port = parseInt(this.elements.port.value);
+            const server = this._elements.server.value;
+            const port = parseInt(this._elements.port.value);
             return {
               h264StunServer: server.trim() || null,
               h264StunPort: Number.isNaN(port) ? null : port,
@@ -232,8 +232,8 @@
          */
         initialize(h264StunServer, h264StunPort) {
           // Clear any potentially previous view state.
-          this.elements.server.value = "";
-          this.elements.port.value = "";
+          this._elements.server.value = "";
+          this._elements.port.value = "";
 
           // Determine selection by finding an option with matching server and
           // port values. If there is no such option, assume the selection to be
@@ -243,8 +243,8 @@
               option.server === h264StunServer && option.port === h264StunPort
           );
           if (selectedOption.id === "custom") {
-            this.elements.server.value = h264StunServer;
-            this.elements.port.value = h264StunPort;
+            this._elements.server.value = h264StunServer;
+            this._elements.port.value = h264StunPort;
           }
           this._select(selectedOption);
         }

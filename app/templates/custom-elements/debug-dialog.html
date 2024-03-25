@@ -99,7 +99,7 @@
             redacted: null, // The text with sensitive data being redacted.
           };
 
-          this.elements = {
+          this._elements = {
             includeSensitiveData: this.shadowRoot.getElementById(
               "include-sensitive-data"
             ),
@@ -107,7 +107,7 @@
             shareLogsButton:
               this.shadowRoot.querySelector("#share-logs-button"),
           };
-          this.elements.includeSensitiveData.addEventListener(
+          this._elements.includeSensitiveData.addEventListener(
             "input",
             (event) => {
               this.includeSensitiveData = !event.target.checked;
@@ -168,7 +168,7 @@
         }
 
         _getLogTextAsDisplayed() {
-          return this.elements.logsText.textContent;
+          return this._elements.logsText.textContent;
         }
 
         /**
@@ -182,8 +182,8 @@
           const logsDisplayText = this.includeSensitiveData
             ? this._logText.original
             : this._logText.redacted;
-          this.elements.logsText.textContent = logsDisplayText;
-          this.elements.shareLogsButton.initialize(
+          this._elements.logsText.textContent = logsDisplayText;
+          this._elements.shareLogsButton.initialize(
             /*getLogsTextCb=*/ () => logsDisplayText
           );
         }

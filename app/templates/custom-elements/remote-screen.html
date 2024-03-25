@@ -129,7 +129,7 @@
             template.content.cloneNode(true)
           );
 
-          this.elements = {
+          this._elements = {
             video: this.shadowRoot.getElementById("webrtc-output"),
             image: this.shadowRoot.getElementById("mjpeg-output"),
           };
@@ -140,10 +140,10 @@
           // spinner for the browser tab. Therefore, we need to initialize the
           // source object lazily whenever we want to access it, and clear it
           // when we don’t need it anymore.
-          this.elements.video.srcObject = null;
+          this._elements.video.srcObject = null;
 
-          this._addScreenEventListeners(this.elements.video);
-          this._addScreenEventListeners(this.elements.image);
+          this._addScreenEventListeners(this._elements.video);
+          this._addScreenEventListeners(this._elements.image);
 
           window.addEventListener("resize", this.onWindowResize);
 
@@ -337,7 +337,7 @@
          *   unmute the audio track. (Which might not succeed, though.)
          */
         async enableWebrtc() {
-          const video = this.elements.video;
+          const video = this._elements.video;
           if (!video.srcObject) {
             return;
           }
@@ -364,7 +364,7 @@
             return;
           }
           this.webrtcEnabled = true;
-          this.elements.image.removeAttribute("src");
+          this._elements.image.removeAttribute("src");
           this.dispatchEvent(new VideoStreamingModeChangedEvent("H264"));
         }
 
@@ -374,7 +374,7 @@
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         async addWebrtcStreamTrack(mediaStreamTrack) {
-          const video = this.elements.video;
+          const video = this._elements.video;
           if (!video.srcObject) {
             // Lazy-initialize the media stream. (See comment in
             // `connectedCallback`.)
@@ -407,7 +407,7 @@
          * @param {MediaStreamTrack} mediaStreamTrack - https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack
          */
         removeWebrtcStreamTrack(mediaStreamTrack) {
-          const video = this.elements.video;
+          const video = this._elements.video;
           if (!video.srcObject) {
             return;
           }
@@ -425,7 +425,7 @@
          * retry playing, so that we at least end up having video active.
          */
         async _playWebrtcVideo(shouldRetryWithMuting = true) {
-          const video = this.elements.video;
+          const video = this._elements.video;
 
           try {
             await video.play();
@@ -472,7 +472,7 @@
          * eligible. We have to act on best guess basis here.
          */
         _onGlobalUserInteraction() {
-          const video = this.elements.video;
+          const video = this._elements.video;
           if (!this.webrtcEnabled || video.muted === false) {
             return;
           }
@@ -489,21 +489,21 @@
          * Displays the MJPEG stream while hiding the WebRTC stream.
          */
         enableMjpeg() {
-          if (this.elements.image.hasAttribute("src")) {
+          if (this._elements.image.hasAttribute("src")) {
             return;
           }
-          this.elements.image.src = "/stream?advance_headers=1";
+          this._elements.image.src = "/stream?advance_headers=1";
           this.webrtcEnabled = false;
           // Clean up the media stream. (See comment in `connectedCallback`.)
-          this.elements.video.srcObject = null;
+          this._elements.video.srcObject = null;
           this.dispatchEvent(new VideoStreamingModeChangedEvent("MJPEG"));
         }
 
         _getCurrentScreenElement() {
           if (this.webrtcEnabled) {
-            return this.elements.video;
+            return this._elements.video;
           } else {
-            return this.elements.image;
+            return this._elements.image;
           }
         }
       }

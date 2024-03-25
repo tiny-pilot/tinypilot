@@ -66,11 +66,11 @@
           this._handleCloseOnOutsideClick =
             this._handleCloseOnOutsideClick.bind(this);
 
-          this.elements = {
+          this._elements = {
             dropdownButton: this.shadowRoot.getElementById("dropdown-button"),
             dropdownItems: this.shadowRoot.getElementById("dropdown-items"),
           };
-          this.elements.dropdownButton.addEventListener("click", () =>
+          this._elements.dropdownButton.addEventListener("click", () =>
             this._toggleDropdown()
           );
         }
@@ -91,18 +91,18 @@
         }
 
         _isDropdownShowing() {
-          return this.elements.dropdownItems.style.display === "block";
+          return this._elements.dropdownItems.style.display === "block";
         }
 
         _showDropdown() {
-          this.elements.dropdownItems.style.display = "block";
+          this._elements.dropdownItems.style.display = "block";
           // `addEventListener` will only register a function once, so it’s safe
           // to call this method multiple times.
           document.addEventListener("click", this._handleCloseOnOutsideClick);
         }
 
         _closeDropdown() {
-          this.elements.dropdownItems.style.display = "none";
+          this._elements.dropdownItems.style.display = "none";
           document.removeEventListener(
             "click",
             this._handleCloseOnOutsideClick
