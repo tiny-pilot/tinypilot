@@ -148,7 +148,7 @@
           this._state = this.states.INITIAL;
         }
 
-        set state(newValue) {
+        set _state(newValue) {
           this.setAttribute("state", newValue);
           this._elements.getUrlButton.disabled =
             newValue === this.states.LOADING;
