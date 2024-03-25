@@ -110,11 +110,11 @@
             });
         }
 
-        get state() {
+        get _state() {
           return this.getAttribute("state");
         }
 
-        set state(newValue) {
+        set _state(newValue) {
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
