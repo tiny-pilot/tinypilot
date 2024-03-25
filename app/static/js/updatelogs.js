@@ -11,7 +11,7 @@ export class UpdateLogsStreamer {
   constructor() {
     // Initilize a Socket on the "/updateLogs" namespace and automatically
     // establish a connection.
-    this.socket = io("/updateLogs");
+    this._socket = io("/updateLogs");
   }
 
   /**
@@ -23,14 +23,14 @@ export class UpdateLogsStreamer {
    */
   onNewLogs(fn) {
     // Register the event listener.
-    this.socket.on("logs", fn);
+    this._socket.on("logs", fn);
   }
 
   start() {
-    this.socket.emit("start");
+    this._socket.emit("start");
   }
 
   stop() {
-    this.socket.emit("stop");
+    this._socket.emit("stop");
   }
 }
