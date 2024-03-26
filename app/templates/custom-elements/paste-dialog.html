@@ -1,24 +1,51 @@
 <template id="paste-dialog-template">
   <style>
     @import "css/style.css";
+    @import "css/button.css";
+    @import "css/toggle.css";
 
     #paste-area {
       display: block;
       width: 100%;
-      height: 20rem;
-      resize: none;
+      height: 15rem;
+      min-height: 5rem;
+      resize: vertical;
       box-sizing: border-box;
       padding: 0.25rem 0.5rem;
       background-color: white;
       border: 1px solid var(--brand-metallic-dark);
       border-radius: var(--border-radius);
     }
+
+    .input-invisible {
+      -webkit-text-fill-color: white;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      margin: 0.5em;
+    }
+
+    .toggle-container label {
+      margin-left: 0.5em;
+    }
+
+    .hint {
+      margin: 0.5em 0 1em 0;
+      color: #333;
+      font-size: 0.9em;
+    }
   </style>
   <h3>Paste Text</h3>
-  <p>
-    Note: The target system must have an <span class="monospace">en-US</span> or
-    <span class="monospace">en-GB</span> keyboard layout.
-  </p>
+  <div class="toggle-container">
+    Hide Input
+    <label class="toggle">
+      <input type="checkbox" id="mask-input" />
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
   <textarea
     id="paste-area"
     class="monospace"
@@ -27,6 +54,10 @@
     autocapitalize="off"
     spellcheck="false"
   ></textarea>
+  <div class="hint">
+    The target system must have an <span class="monospace">en-US</span> or
+    <span class="monospace">en-GB</span> keyboard layout.
+  </div>
   <button id="confirm-btn" class="btn-success">Paste</button>
   <button id="cancel-btn">Close</button>
 </template>
@@ -49,6 +80,7 @@
             pasteArea: this.shadowRoot.querySelector("#paste-area"),
             confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
+            maskInputButton: this.shadowRoot.querySelector("#mask-input"),
           };
           this.elements.pasteArea.addEventListener("input", () =>
             this.elements.confirmButton.toggleAttribute(
@@ -70,12 +102,38 @@
           this.elements.cancelButton.addEventListener("click", () =>
             this._closeDialog()
           );
+          const variant = new URL(window.location).searchParams.get("variant");
+          this.elements.maskInputButton.addEventListener("input", (event) => {
+            if (variant === "invisible") {
+              this.elements.pasteArea.classList.toggle(
+                "input-invisible",
+                event.target.checked
+              );
+            } else if (variant === "hidden") {
+              this._maskInput = event.target.checked;
+              this._renderInputField();
+            }
+          });
+          this.elements.pasteArea.addEventListener("input", () => {
+            if (variant === "hidden") {
+              this._renderInputField();
+            }
+          });
         }
 
         initialize() {
           this.elements.pasteArea.value = "";
           this.elements.pasteArea.focus();
           this.elements.confirmButton.toggleAttribute("disabled", true);
+        }
+
+        _renderInputField() {
+          if (this._maskInput) {
+            this.elements.pasteArea.placeholder = "(Input Hidden)";
+            this.elements.pasteArea.value = "";
+          } else {
+            this.elements.pasteArea.placeholder = "";
+          }
         }
 
         _handleConfirmPaste() {

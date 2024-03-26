@@ -110,5 +110,21 @@
       <span class="monospace"></span>
       <strong></strong>
     </div>
+
+    {% if is_debug %}
+    <script type="module">
+      const goto = new URL(window.location).searchParams.get("goto");
+      if (goto) {
+        const menuBar = document.getElementById("menu-bar");
+        menuBar.dispatchEvent(
+          new CustomEvent(`${goto}-requested`, {
+            detail: {},
+            bubbles: true,
+            composed: true,
+          })
+        );
+      }
+    </script>
+    {% endif %}
   </body>
 </html>
