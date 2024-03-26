@@ -111,12 +111,17 @@
               );
             } else if (variant === "hidden") {
               this._maskInput = event.target.checked;
-              this._renderInputField();
+              this._renderInputFieldHidden();
+            } else if (variant === "asterisk") {
+              this._maskInput = event.target.checked;
+              this._renderInputFieldAsterisk();
             }
           });
-          this.elements.pasteArea.addEventListener("input", () => {
+          this.elements.pasteArea.addEventListener("input", (evt) => {
             if (variant === "hidden") {
-              this._renderInputField();
+              this._renderInputFieldHidden();
+            } else if (variant === "asterisk") {
+              this._renderInputFieldAsterisk();
             }
           });
         }
@@ -127,12 +132,20 @@
           this.elements.confirmButton.toggleAttribute("disabled", true);
         }
 
-        _renderInputField() {
+        _renderInputFieldHidden() {
           if (this._maskInput) {
             this.elements.pasteArea.placeholder = "(Input Hidden)";
             this.elements.pasteArea.value = "";
           } else {
             this.elements.pasteArea.placeholder = "";
+          }
+        }
+
+        _renderInputFieldAsterisk() {
+          if (this._maskInput) {
+            this.elements.pasteArea.value = "*".repeat(
+              this.elements.pasteArea.value.length
+            );
           }
         }
 
