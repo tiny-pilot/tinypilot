@@ -76,7 +76,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.elements = {
+          this._elements = {
             dialog: this.shadowRoot.querySelector("#panel"),
           };
           this.show = this.show.bind(this);
@@ -105,16 +105,16 @@
 
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
-          this.elements.dialog.addEventListener("cancel", (evt) => {
+          this._elements.dialog.addEventListener("cancel", (evt) => {
             evt.preventDefault();
           });
         }
 
         show(isShown = true) {
           if (isShown) {
-            this.elements.dialog.showModal();
+            this._elements.dialog.showModal();
           } else {
-            this.elements.dialog.close();
+            this._elements.dialog.close();
           }
           this.dispatchEvent(
             new CustomEvent("overlay-toggled", {
@@ -126,7 +126,7 @@
         }
 
         isShown() {
-          return this.elements.dialog.open;
+          return this._elements.dialog.open;
         }
       }
     );

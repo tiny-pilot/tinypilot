@@ -154,7 +154,7 @@
             template.content.cloneNode(true)
           );
 
-          this.elements = {
+          this._elements = {
             updateLogs: this.shadowRoot.querySelector(
               "#update-container .logs"
             ),
@@ -173,13 +173,13 @@
               location.reload();
             });
 
-          this.elements.updatePromptAutomatic.addEventListener(
+          this._elements.updatePromptAutomatic.addEventListener(
             "update-prompt-confirmed",
             () => {
               this._doUpdate();
             }
           );
-          this.elements.updatePromptAutomatic.addEventListener(
+          this._elements.updatePromptAutomatic.addEventListener(
             "update-prompt-canceled",
             () => {
               this.dispatchEvent(new DialogClosedEvent());
@@ -266,7 +266,7 @@
           return shutdown(/*restart=*/ true)
             .then(() => {
               this._state = this.states.RESTARTING;
-              this.elements.updateLogs.textContent +=
+              this._elements.updateLogs.textContent +=
                 "Restarting to complete update...\n";
             })
             .catch((error) => {
@@ -288,7 +288,7 @@
           })
             .then(() => {
               this._state = this.states.UPDATE_FINISHED;
-              this.elements.updateLogs.textContent +=
+              this._elements.updateLogs.textContent +=
                 "Update is now complete.\n";
             })
             .catch((error) => {
@@ -327,11 +327,11 @@
 
           const updateLogsStreamer = new UpdateLogsStreamer();
           // Let the user know that the update logs are loading.
-          this.elements.updateLogs.textContent =
+          this._elements.updateLogs.textContent =
             "Retrieving update logs from TinyPilot device...\n";
           // Display new update logs as they come in.
           updateLogsStreamer.onNewLogs((logs) => {
-            this.elements.updateLogs.textContent += logs;
+            this._elements.updateLogs.textContent += logs;
           });
           updateLogsStreamer.start();
 
@@ -362,7 +362,7 @@
                 title: "Failed to Complete Update",
                 // Include full update logs in the error details, as it likely
                 // contains specific information about the error.
-                details: `${error}\n\n${this.elements.updateLogs.textContent}`,
+                details: `${error}\n\n${this._elements.updateLogs.textContent}`,
                 isShareable: true,
               })
             );

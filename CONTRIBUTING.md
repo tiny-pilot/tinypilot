@@ -415,13 +415,13 @@ This event will be picked up by the `overlay-panel` which will hide the X close 
 
 ### Create element references in `connectedCallback()`
 
-If a component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this.elements`
+If a component's JavaScript requires access to any of the elements in the web component's HTML, assign those elements an `id` attribute and store them in a member object called `this._elements`
 
 ```javascript
 connectedCallback() {
   this.attachShadow({ mode: "open" });
   this.shadowRoot.appendChild(template.content.cloneNode(true));
-  this.elements = {
+  this._elements = {
     noFilesText: this.shadowRoot.getElementById("no-backing-files"),
     table: this.shadowRoot.getElementById("backing-files-table"),
     tableBody: this.shadowRoot.getElementById("table-body"),

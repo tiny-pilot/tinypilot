@@ -132,16 +132,16 @@
             template.content.cloneNode(true)
           );
 
-          this.elements = {
+          this._elements = {
             getUrlButton: this.shadowRoot.querySelector("#get-url-button"),
             urlLink: this.shadowRoot.querySelector("#display-link a"),
             copyButton: this.shadowRoot.querySelector("#copy-button"),
           };
 
-          this.elements.getUrlButton.addEventListener("click", () => {
+          this._elements.getUrlButton.addEventListener("click", () => {
             this._handleRequestShareableUrl();
           });
-          this.elements.copyButton.addEventListener("click", () => {
+          this._elements.copyButton.addEventListener("click", () => {
             this._handleCopyToClipboard();
           });
 
@@ -150,7 +150,7 @@
 
         set state(newValue) {
           this.setAttribute("state", newValue);
-          this.elements.getUrlButton.disabled =
+          this._elements.getUrlButton.disabled =
             newValue === this.states.LOADING;
         }
 
@@ -174,11 +174,11 @@
             const url = await textToShareableUrl(this.getLogsText());
             // For the displayed URL, strip the protocol prefix, to make it
             // look a bit slimmer.
-            this.elements.urlLink.textContent = url
+            this._elements.urlLink.textContent = url
               .replace("http://", "")
               .replace("https://", "");
-            this.elements.urlLink.setAttribute("href", url);
-            this.elements.urlLink.setAttribute("title", url);
+            this._elements.urlLink.setAttribute("href", url);
+            this._elements.urlLink.setAttribute("title", url);
           } catch (error) {
             console.error("Failed to upload logs: " + error);
             // In case of failure, we just reset the button, since we cannot
@@ -198,15 +198,15 @@
           // To do that, we briefly replace the display URL with the canonical
           // one for the duration of the “copy to clipboard” operation. The user
           // shouldn’t notice anything about this.
-          const previousDisplayText = this.elements.urlLink.textContent;
-          this.elements.urlLink.textContent =
-            this.elements.urlLink.getAttribute("href");
-          copyElementTextToClipboard(this.elements.urlLink);
-          this.elements.urlLink.textContent = previousDisplayText;
+          const previousDisplayText = this._elements.urlLink.textContent;
+          this._elements.urlLink.textContent =
+            this._elements.urlLink.getAttribute("href");
+          copyElementTextToClipboard(this._elements.urlLink);
+          this._elements.urlLink.textContent = previousDisplayText;
 
-          this.elements.copyButton.classList.add("copied");
+          this._elements.copyButton.classList.add("copied");
           setTimeout(() => {
-            this.elements.copyButton.classList.remove("copied");
+            this._elements.copyButton.classList.remove("copied");
           }, 2000);
         }
       }

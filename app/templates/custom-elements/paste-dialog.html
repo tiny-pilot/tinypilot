@@ -45,41 +45,41 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.elements = {
+          this._elements = {
             pasteArea: this.shadowRoot.querySelector("#paste-area"),
             confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
           };
-          this.elements.pasteArea.addEventListener("input", () =>
-            this.elements.confirmButton.toggleAttribute(
+          this._elements.pasteArea.addEventListener("input", () =>
+            this._elements.confirmButton.toggleAttribute(
               "disabled",
-              this.elements.pasteArea.value.length === 0
+              this._elements.pasteArea.value.length === 0
             )
           );
-          this.elements.pasteArea.addEventListener("keydown", (evt) => {
+          this._elements.pasteArea.addEventListener("keydown", (evt) => {
             if (evt.code === "Enter" && !evt.shiftKey) {
               evt.preventDefault();
-              this.elements.confirmButton.click();
+              this._elements.confirmButton.click();
               // Prevent this keystroke from being forwarded to the target system.
               evt.stopPropagation();
             }
           });
-          this.elements.confirmButton.addEventListener("click", () =>
+          this._elements.confirmButton.addEventListener("click", () =>
             this._handleConfirmPaste()
           );
-          this.elements.cancelButton.addEventListener("click", () =>
+          this._elements.cancelButton.addEventListener("click", () =>
             this._closeDialog()
           );
         }
 
         initialize() {
-          this.elements.pasteArea.value = "";
-          this.elements.pasteArea.focus();
-          this.elements.confirmButton.toggleAttribute("disabled", true);
+          this._elements.pasteArea.value = "";
+          this._elements.pasteArea.focus();
+          this._elements.confirmButton.toggleAttribute("disabled", true);
         }
 
         _handleConfirmPaste() {
-          const text = this.elements.pasteArea.value;
+          const text = this._elements.pasteArea.value;
           const language = this._browserLanguage();
           pasteText(text, language)
             .then(() => this._closeDialog())
