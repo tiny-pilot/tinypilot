@@ -318,14 +318,14 @@ Strangely, it's uncommon for web applications to use web components directly as 
 
 It's common for a component to change its appearance based on its internal state. For example, a dialog might be in an "initializing" state when it first opens and then reach a "ready" state when it's ready for user input.
 
-In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. With raw web components, conditional rendering is not possible. Instead, TinyPilot's convention is to add a `state` attribute to the root element with getter and setter methods that look like this:
+In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. With raw web components, conditional rendering is not possible. Instead, TinyPilot's convention is to add a `_state` attribute to the root element with getter and setter methods that look like this:
 
 ```javascript
-get state() {
+get _state() {
   return this.getAttribute("state");
 }
 
-set state(newValue) {
+set _state(newValue) {
   this.setAttribute("state", newValue);
 }
 ```
@@ -344,7 +344,7 @@ class extends HTMLElement {
 The class attribute `states` can then be used in the JavaScript component code:
 
 ```javascript
-this.state = this.states.FETCH_FROM_URL;
+this._state = this.states.FETCH_FROM_URL;
 ```
 
 We then use CSS rules based on the `state` attribute to control the component's appearance:
@@ -401,7 +401,7 @@ Note: for consistency, we always use a `Set` here, even if it only contains a si
 In the state setter, we emit an event to inform the enclosing overlay whether or not to show the `x` close button.
 
 ```javascript
-set state(newValue) {
+set _state(newValue) {
     this.setAttribute("state", newValue);
     this.dispatchEvent(
     new DialogCloseStateChangedEvent(

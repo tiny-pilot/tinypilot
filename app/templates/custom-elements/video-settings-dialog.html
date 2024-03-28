@@ -350,11 +350,11 @@
             });
         }
 
-        get state() {
+        get _state() {
           return this.getAttribute("state");
         }
 
-        set state(newValue) {
+        set _state(newValue) {
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
@@ -364,7 +364,7 @@
         }
 
         initialize() {
-          this.state = this.states.LOADING;
+          this._state = this.states.LOADING;
 
           // Reset all transient view state.
           this._elements.h264StunValidationError.hide();
@@ -411,7 +411,7 @@
                 this._defaultSettings.h264StunPort = defaultH264StunPort;
 
                 this._refreshButtons();
-                this.state = this.states.EDIT;
+                this._state = this.states.EDIT;
               }
             )
             .catch((error) => {
@@ -542,7 +542,7 @@
         }
 
         _saveSettings() {
-          this.state = this.states.SAVING;
+          this._state = this.states.SAVING;
 
           const { h264StunServer, h264StunPort } =
             this._elements.h264StunSettings.getValue();
@@ -579,7 +579,7 @@
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
                 this._elements.h264StunValidationError.show();
-                this.state = this.states.EDIT;
+                this._state = this.states.EDIT;
                 return;
               }
               this.dispatchEvent(

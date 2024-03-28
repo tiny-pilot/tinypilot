@@ -121,11 +121,11 @@
           });
         }
 
-        get state() {
+        get _state() {
           return this.getAttribute("state");
         }
 
-        set state(newValue) {
+        set _state(newValue) {
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
@@ -147,7 +147,7 @@
         }
 
         retrieveLogs() {
-          this.state = this.states.LOGS_LOADING;
+          this._state = this.states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
               this._logText = {
@@ -155,7 +155,7 @@
                 redacted: redactSensitiveData(text),
               };
               this._renderLogDisplayText();
-              this.state = this.states.LOGS_SUCCESS;
+              this._state = this.states.LOGS_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(
