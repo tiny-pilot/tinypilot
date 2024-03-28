@@ -135,7 +135,7 @@
     customElements.define(
       "update-dialog",
       class extends HTMLElement {
-        states = {
+        _states = {
           CHECKING: "checking",
           UPDATE_AVAILABLE: "update-available",
           LATEST: "latest",
@@ -144,9 +144,9 @@
           UPDATE_FINISHED: "update-finished",
         };
         statesWithoutDialogClose = new Set([
-          this.states.CHECKING,
-          this.states.UPDATING,
-          this.states.RESTARTING,
+          this._states.CHECKING,
+          this._states.UPDATING,
+          this._states.RESTARTING,
         ]);
 
         connectedCallback() {
@@ -208,15 +208,15 @@
         }
 
         checkVersion() {
-          this._state = this.states.CHECKING;
+          this._state = this._states.CHECKING;
 
           Promise.all([getVersion(), getLatestRelease()])
             .then(([localVersion, latestRelease]) => {
               if (localVersion.version === latestRelease.version) {
-                this._state = this.states.LATEST;
+                this._state = this._states.LATEST;
               } else {
                 this._renderPrompt(latestRelease);
-                this._state = this.states.UPDATE_AVAILABLE;
+                this._state = this._states.UPDATE_AVAILABLE;
               }
             })
             .catch((error) => {
@@ -265,7 +265,7 @@
         _performRestart() {
           return shutdown(/*restart=*/ true)
             .then(() => {
-              this._state = this.states.RESTARTING;
+              this._state = this._states.RESTARTING;
               this._elements.updateLogs.textContent +=
                 "Restarting to complete update...\n";
             })
@@ -287,7 +287,7 @@
             timeout: 180 * 1000,
           })
             .then(() => {
-              this._state = this.states.UPDATE_FINISHED;
+              this._state = this._states.UPDATE_FINISHED;
               this._elements.updateLogs.textContent +=
                 "Update is now complete.\n";
             })
@@ -323,7 +323,7 @@
         }
 
         async _doUpdate() {
-          this._state = this.states.UPDATING;
+          this._state = this._states.UPDATING;
 
           const updateLogsStreamer = new UpdateLogsStreamer();
           // Let the user know that the update logs are loading.

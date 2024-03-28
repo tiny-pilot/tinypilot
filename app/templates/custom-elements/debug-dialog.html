@@ -74,11 +74,11 @@
     customElements.define(
       "debug-dialog",
       class DebugDialog extends HTMLElement {
-        states = {
+        _states = {
           LOGS_LOADING: "logs-loading",
           LOGS_SUCCESS: "logs-success",
         };
-        statesWithoutDialogClose = new Set([this.states.LOGS_LOADING]);
+        statesWithoutDialogClose = new Set([this._states.LOGS_LOADING]);
 
         constructor() {
           super();
@@ -147,7 +147,7 @@
         }
 
         retrieveLogs() {
-          this._state = this.states.LOGS_LOADING;
+          this._state = this._states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {
               this._logText = {
@@ -155,7 +155,7 @@
                 redacted: redactSensitiveData(text),
               };
               this._renderLogDisplayText();
-              this._state = this.states.LOGS_SUCCESS;
+              this._state = this._states.LOGS_SUCCESS;
             })
             .catch((error) => {
               this.dispatchEvent(

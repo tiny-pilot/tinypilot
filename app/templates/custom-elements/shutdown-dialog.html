@@ -71,16 +71,16 @@
     customElements.define(
       "shutdown-dialog",
       class extends HTMLElement {
-        states = {
+        _states = {
           PROMPT: "prompt",
           RESTARTING: "restarting",
           SHUTTING_DOWN: "shutting-down",
           SHUTDOWN_COMPLETE: "shutdown-complete",
         };
         statesWithoutDialogClose = new Set([
-          this.states.RESTARTING,
-          this.states.SHUTTING_DOWN,
-          this.states.SHUTDOWN_COMPLETE,
+          this._states.RESTARTING,
+          this._states.SHUTTING_DOWN,
+          this._states.SHUTDOWN_COMPLETE,
         ]);
 
         constructor() {
@@ -91,7 +91,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this._state = this.states.PROMPT;
+          this._state = this._states.PROMPT;
 
           this.shadowRoot
             .getElementById("confirm-shutdown")
@@ -128,13 +128,13 @@
             .then(() => {
               this._emitShutdownStartedEvent(restart);
               if (restart) {
-                this._state = this.states.RESTARTING;
+                this._state = this._states.RESTARTING;
               } else {
-                this._state = this.states.SHUTTING_DOWN;
+                this._state = this._states.SHUTTING_DOWN;
                 // We can't tell when the system has fully shut down, but assume
                 // that it's done after 30 seconds.
                 setTimeout(() => {
-                  this._state = this.states.SHUTDOWN_COMPLETE;
+                  this._state = this._states.SHUTDOWN_COMPLETE;
                 }, 30 * 1000);
               }
             })
