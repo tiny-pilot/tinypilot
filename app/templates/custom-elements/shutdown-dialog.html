@@ -77,7 +77,7 @@
           SHUTTING_DOWN: "shutting-down",
           SHUTDOWN_COMPLETE: "shutdown-complete",
         };
-        statesWithoutDialogClose = new Set([
+        _statesWithoutDialogClose = new Set([
           this._states.RESTARTING,
           this._states.SHUTTING_DOWN,
           this._states.SHUTDOWN_COMPLETE,
@@ -118,7 +118,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this.statesWithoutDialogClose.has(newValue)
+              !this._statesWithoutDialogClose.has(newValue)
             )
           );
         }

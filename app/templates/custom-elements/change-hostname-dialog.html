@@ -106,7 +106,7 @@
           PROMPT: "prompt",
           CHANGING: "changing",
         };
-        statesWithoutDialogClose = new Set([
+        _statesWithoutDialogClose = new Set([
           this._states.CHANGING,
           this._states.INITIALIZING,
         ]);
@@ -150,7 +150,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this.statesWithoutDialogClose.has(newValue)
+              !this._statesWithoutDialogClose.has(newValue)
             )
           );
         }

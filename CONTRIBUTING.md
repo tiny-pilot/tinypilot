@@ -384,7 +384,7 @@ Prefer to change a web component's appearance based on attributes and CSS rules 
 
 For a component that is used within an overlay, there might be certain states that should prevent the user from closing the dialog. That’s typically the case when we are waiting for an action to complete (for example when loading something).
 
-These particular states are listed in the `statesWithoutDialogClose` class property, like so:
+These particular states are listed in the `_statesWithoutDialogClose` class property, like so:
 
 ```javascript
 class extends HTMLElement {
@@ -393,7 +393,7 @@ class extends HTMLElement {
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
     };
-    statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
+    _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 ```
 
 Note: for consistency, we always use a `Set` here, even if it only contains a single element.
@@ -405,7 +405,7 @@ set _state(newValue) {
     this.setAttribute("state", newValue);
     this.dispatchEvent(
     new DialogCloseStateChangedEvent(
-        !this.statesWithoutDialogClose.has(newValue)
+        !this._statesWithoutDialogClose.has(newValue)
     )
     );
 }

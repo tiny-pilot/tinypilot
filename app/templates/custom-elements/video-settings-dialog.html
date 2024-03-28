@@ -221,7 +221,7 @@
           EDIT: "edit",
           SAVING: "saving",
         };
-        statesWithoutDialogClose = new Set([
+        _statesWithoutDialogClose = new Set([
           this._states.LOADING,
           this._states.SAVING,
         ]);
@@ -358,7 +358,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this.statesWithoutDialogClose.has(newValue)
+              !this._statesWithoutDialogClose.has(newValue)
             )
           );
         }
