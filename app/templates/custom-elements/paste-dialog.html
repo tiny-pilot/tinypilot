@@ -17,8 +17,16 @@
       border-radius: var(--border-radius);
     }
 
-    .input-invisible {
-      -webkit-text-fill-color: white;
+    :host([mask-input=""]) #paste-area {
+      /* Redacting the text by making it all black is a simple technique that
+         visually masks the characters while still preserving the original copy
+         as is. (There is no such thing as `type=password` for <textarea>
+         elements.) The strike-through thickness must be so that even “tall”
+         characters are fully hidden, e.g., `Ü` (high) or `p` (low). It should
+         not, however, merge with adjacent lines.*/
+      color: #333;
+      text-decoration: line-through;
+      text-decoration-thickness: 1.3em;
     }
 
     .toggle-container {
@@ -40,7 +48,7 @@
   </style>
   <h3>Paste Text</h3>
   <div class="toggle-container">
-    Hide Input
+    Mask Input
     <label class="toggle">
       <input type="checkbox" id="mask-input" />
       <span class="toggle-slider"></span>
@@ -65,6 +73,7 @@
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
   import { pasteText } from "/js/controllers.js";
+  import { isPasteAreaMasked, setPasteAreaMasked } from "/js/settings.js";
 
   (function () {
     const template = document.querySelector("#paste-dialog-template");
@@ -102,51 +111,19 @@
           this.elements.cancelButton.addEventListener("click", () =>
             this._closeDialog()
           );
-          const variant = new URL(window.location).searchParams.get("variant");
           this.elements.maskInputButton.addEventListener("input", (event) => {
-            if (variant === "invisible") {
-              this.elements.pasteArea.classList.toggle(
-                "input-invisible",
-                event.target.checked
-              );
-            } else if (variant === "hidden") {
-              this._maskInput = event.target.checked;
-              this._renderInputFieldHidden();
-            } else if (variant === "asterisk") {
-              this._maskInput = event.target.checked;
-              this._renderInputFieldAsterisk();
-            }
-          });
-          this.elements.pasteArea.addEventListener("input", (evt) => {
-            if (variant === "hidden") {
-              this._renderInputFieldHidden();
-            } else if (variant === "asterisk") {
-              this._renderInputFieldAsterisk();
-            }
+            const isMasked = event.target.checked;
+            this.toggleAttribute("mask-input", isMasked);
+            setPasteAreaMasked(isMasked);
           });
         }
 
         initialize() {
           this.elements.pasteArea.value = "";
-          this.elements.pasteArea.focus();
           this.elements.confirmButton.toggleAttribute("disabled", true);
-        }
-
-        _renderInputFieldHidden() {
-          if (this._maskInput) {
-            this.elements.pasteArea.placeholder = "(Input Hidden)";
-            this.elements.pasteArea.value = "";
-          } else {
-            this.elements.pasteArea.placeholder = "";
-          }
-        }
-
-        _renderInputFieldAsterisk() {
-          if (this._maskInput) {
-            this.elements.pasteArea.value = "*".repeat(
-              this.elements.pasteArea.value.length
-            );
-          }
+          this.toggleAttribute("mask-input", isPasteAreaMasked());
+          this.elements.maskInputButton.checked = isPasteAreaMasked();
+          this.elements.pasteArea.focus();
         }
 
         _handleConfirmPaste() {
