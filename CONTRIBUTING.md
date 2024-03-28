@@ -318,7 +318,7 @@ Strangely, it's uncommon for web applications to use web components directly as 
 
 It's common for a component to change its appearance based on its internal state. For example, a dialog might be in an "initializing" state when it first opens and then reach a "ready" state when it's ready for user input.
 
-In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. With raw web components, conditional rendering is not possible. Instead, TinyPilot's convention is to add a `_state` attribute to the root element with getter and setter methods that look like this:
+In a framework like React or Vue, we'd use conditional rendering to change the UI depending on the component's internal state. With raw web components, conditional rendering is not possible. Instead, TinyPilot's convention is to add a `state` attribute to the root element with getter and setter methods that look like this:
 
 ```javascript
 get _state() {
@@ -330,7 +330,7 @@ set _state(newValue) {
 }
 ```
 
-We enumerate all possible state values in the states property on the web component class, like so:
+We enumerate all possible state values in the `_states` property on the web component class, like so:
 
 ```javascript
 class extends HTMLElement {
@@ -341,7 +341,7 @@ class extends HTMLElement {
     };
 ```
 
-The class attribute `states` can then be used in the JavaScript component code:
+The class property `_states` can then be used in the JavaScript component code:
 
 ```javascript
 this._state = this._states.FETCH_FROM_URL;
