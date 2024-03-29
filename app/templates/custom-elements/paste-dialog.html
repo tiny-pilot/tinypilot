@@ -1,6 +1,8 @@
 <template id="paste-dialog-template">
   <style>
     @import "css/style.css";
+    @import "css/button.css";
+    @import "css/toggle.css";
 
     #paste-area {
       display: block;
@@ -13,12 +15,48 @@
       border: 1px solid var(--brand-metallic-dark);
       border-radius: var(--border-radius);
     }
+
+    :host([mask-input=""]) #paste-area {
+      /* We mask the input text by making it look redacted. This is kind of a
+         workaround, since there is no such thing as `type=password` for
+         <textarea> elements, and <input> elements don’t support multiline
+         values.
+         The strike-through thickness must be so that even “tall”
+         characters are fully concealed, e.g., `Ü` (high) or `p` (low). It
+         should not, however, merge with adjacent lines.
+         The caret color is so that it differentiates itself in both contexts,
+         i.e. against redacted text and against the white background. */
+      color: #333;
+      text-decoration: line-through;
+      text-decoration-thickness: 1.25em;
+      caret-color: #999;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      margin: 0.5em;
+    }
+
+    .toggle-container label {
+      margin-left: 0.5em;
+    }
+
+    .hint {
+      margin: 0.5em 0 1em 0;
+      color: #333;
+      font-size: 0.9em;
+    }
   </style>
   <h3>Paste Text</h3>
-  <p>
-    Note: The target system must have an <span class="monospace">en-US</span> or
-    <span class="monospace">en-GB</span> keyboard layout.
-  </p>
+  <div class="toggle-container">
+    Mask Input
+    <label class="toggle">
+      <input type="checkbox" id="mask-input" />
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
   <textarea
     id="paste-area"
     class="monospace"
@@ -27,6 +65,10 @@
     autocapitalize="off"
     spellcheck="false"
   ></textarea>
+  <div class="hint">
+    The target system must have an <span class="monospace">en-US</span> or
+    <span class="monospace">en-GB</span> keyboard layout.
+  </div>
   <button id="confirm-btn" class="btn-success">Paste</button>
   <button id="cancel-btn">Close</button>
 </template>
@@ -49,6 +91,7 @@
             pasteArea: this.shadowRoot.querySelector("#paste-area"),
             confirmButton: this.shadowRoot.querySelector("#confirm-btn"),
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
+            maskInputButton: this.shadowRoot.querySelector("#mask-input"),
           };
           this._elements.pasteArea.addEventListener("input", () =>
             this._elements.confirmButton.toggleAttribute(
@@ -70,9 +113,15 @@
           this._elements.cancelButton.addEventListener("click", () =>
             this._closeDialog()
           );
+          this._elements.maskInputButton.addEventListener("input", (event) => {
+            const isMasked = event.target.checked;
+            this.toggleAttribute("mask-input", isMasked);
+          });
         }
 
         initialize() {
+          this.toggleAttribute("mask-input", false);
+          this._elements.maskInputButton.checked = false;
           this._elements.pasteArea.value = "";
           this._elements.pasteArea.focus();
           this._elements.confirmButton.toggleAttribute("disabled", true);
