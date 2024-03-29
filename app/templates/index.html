@@ -112,9 +112,6 @@
     </div>
 
     {% if is_debug %}
-    <!-- Dev utility that triggers a dialog right after opening the page.
-         Usage: Append query parameter `goto`, and use the HTML id of the
-         desired dialog as value. Example: localhost:8000?goto=about-dialog -->
     <script type="module">
       const goto = new URL(window.location).searchParams.get("goto");
       if (goto) {
