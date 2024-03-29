@@ -76,6 +76,7 @@
 <script type="module">
   import { DialogClosedEvent, DialogFailedEvent } from "/js/events.js";
   import { pasteText } from "/js/controllers.js";
+  import { isPasteAreaMasked, setPasteAreaMasked } from "/js/settings.js";
 
   (function () {
     const template = document.querySelector("#paste-dialog-template");
@@ -116,12 +117,13 @@
           this._elements.maskInputButton.addEventListener("input", (event) => {
             const isMasked = event.target.checked;
             this.toggleAttribute("mask-input", isMasked);
+            setPasteAreaMasked(isMasked);
           });
         }
 
         initialize() {
-          this.toggleAttribute("mask-input", false);
-          this._elements.maskInputButton.checked = false;
+          this.toggleAttribute("mask-input", isPasteAreaMasked());
+          this._elements.maskInputButton.checked = isPasteAreaMasked();
           this._elements.pasteArea.value = "";
           this._elements.pasteArea.focus();
           this._elements.confirmButton.toggleAttribute("disabled", true);
