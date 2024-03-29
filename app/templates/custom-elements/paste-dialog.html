@@ -115,9 +115,7 @@
             this._closeDialog()
           );
           this._elements.maskInputButton.addEventListener("input", (event) => {
-            const isMasked = event.target.checked;
-            this.toggleAttribute("mask-input", isMasked);
-            setPasteAreaMasked(isMasked);
+            this._onToggleMaskInput(event.target.checked);
           });
         }
 
@@ -153,6 +151,12 @@
 
         _closeDialog() {
           this.dispatchEvent(new DialogClosedEvent());
+        }
+
+        _onToggleMaskInput(isMasked) {
+          setPasteAreaMasked(isMasked);
+          this.toggleAttribute("mask-input", isMasked);
+          this._elements.pasteArea.focus();
         }
       }
     );
