@@ -10,27 +10,44 @@ set -e
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [target URL]
+Usage: ${0##*/} [E2E_BASE_URL] [PLAYWRIGHT_ARGS]
 Run end-to-end tests of UI navigation.
-  target URL: URL of running TinyPilot server to test against.
-    Must start with 'http'.
-    If not specified, the script first starts a local dev server.
-  -h Display this help and exit.
+  --help            Display this help and exit.
+  E2E_BASE_URL      Optional. The base URL of the running TinyPilot server to test
+                    against. Must start with 'http'. If not specified, the script
+                    will start a local dev server.
+  PLAYWRIGHT_ARGS   Optional. Additional Playwright CLI test options.
+                    See https://playwright.dev/docs/test-cli#reference
 EOF
 }
 
 # Parse command-line arguments.
-while getopts 'h' opt; do
-  case "${opt}" in
-    h)
+POSITIONAL_ARGS=()
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --help)
       print_help
       exit
       ;;
     *)
-      print_help >&2
-      exit 1
+      POSITIONAL_ARGS+=("$1") # Save positional argument.
+      shift
+      ;;
   esac
 done
+readonly POSITIONAL_ARGS
+
+# If the first positional argument starts with 'http', strip it to export it as
+# E2E_BASE_URL. That way, playwright.config.js can use it to override the
+# default base URL and will not start a local webserver.
+if [[ "${#POSITIONAL_ARGS[@]}" -gt 0 && "${POSITIONAL_ARGS[0]}" =~ ^http ]]; then
+  readonly E2E_BASE_URL="${POSITIONAL_ARGS[0]}"
+  export E2E_BASE_URL
+  readonly PLAYWRIGHT_ARGS=("${POSITIONAL_ARGS[@]:1}")
+else
+  readonly E2E_BASE_URL=''
+  readonly PLAYWRIGHT_ARGS=("${POSITIONAL_ARGS[@]}")
+fi
 
 # Echo commands before executing them, by default to stderr.
 set -x
@@ -40,14 +57,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
-# If the first argument starts with http, strip it to export it as E2E_BASE_URL
-# That way, playwright.config.js can use it to override the default base URL and
-# will not start a local webserver.
-if [[ $# -gt 0 && "$1" =~ ^http ]]; then
-  export E2E_BASE_URL="$1"
-  readonly E2E_BASE_URL
-  shift
-else
+if [[ -z "${E2E_BASE_URL}" ]]; then
   # When running against a local dev server, use a fresh home directory on each
   # test run so that database state in one run doesn't affect subsequent runs.
   TINYPILOT_HOME_DIR="$(mktemp --directory)"
@@ -55,4 +65,4 @@ else
   readonly TINYPILOT_HOME_DIR
 fi
 
-npx playwright test
+npx playwright test "${PLAYWRIGHT_ARGS[@]}"
