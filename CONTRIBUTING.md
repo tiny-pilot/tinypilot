@@ -89,6 +89,8 @@ For convenience, you can append a parameter called `request` to the page URL, an
 
 Example: `http://localhost:8000?request=about-dialog`
 
+Technically, this assembles a `about-dialog-requested` event and dispatches it to the menu bar component.
+
 ## QA/Testing on a TinyPilot device
 
 It’s useful to have a TinyPilot device set up for testing changes end-to-end and in a real production environment.
