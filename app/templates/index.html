@@ -113,11 +113,11 @@
 
     {% if is_debug %}
     <script type="module">
-      const goto = new URL(window.location).searchParams.get("goto");
-      if (goto) {
+      const action = new URL(window.location).searchParams.get("request");
+      if (action) {
         const menuBar = document.getElementById("menu-bar");
         menuBar.dispatchEvent(
-          new CustomEvent(`${goto}-requested`, {
+          new CustomEvent(`${action}-requested`, {
             detail: {},
             bubbles: true,
             composed: true,

@@ -85,9 +85,9 @@ To run TinyPilot on a non-Pi machine, run:
 
 If you are doing UI development in a dialog, it can be cumbersome to having to open a dialog via the menu after every page refresh.
 
-For convenience, you can append a parameter called `goto` to the page URL, and specify the HTML id of the dialog as value. That will open the respective dialog straight away.
+For convenience, you can append a parameter called `request` to the page URL, and specify the HTML id of the dialog as value. That will open the respective dialog straight away.
 
-Example: `http://localhost:8000?goto=about-dialog`
+Example: `http://localhost:8000?request=about-dialog`
 
 ## QA/Testing on a TinyPilot device
 
