@@ -26,4 +26,5 @@ if [[ -d .git/hooks ]]; then
   rm -rf .git/hooks
 fi
 
-ln --symbolic --force ../dev-scripts/git-hooks .git/hooks
+# Use short flag names for compatibility with macOS systems.
+ln -s -f ../dev-scripts/git-hooks .git/hooks
