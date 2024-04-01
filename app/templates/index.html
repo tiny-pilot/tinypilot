@@ -110,5 +110,21 @@
       <span class="monospace"></span>
       <strong></strong>
     </div>
+
+    {% if is_debug %}
+    <script type="module">
+      const action = new URL(window.location).searchParams.get("request");
+      if (action) {
+        const menuBar = document.getElementById("menu-bar");
+        menuBar.dispatchEvent(
+          new CustomEvent(`${action}-requested`, {
+            detail: {},
+            bubbles: true,
+            composed: true,
+          })
+        );
+      }
+    </script>
+    {% endif %}
   </body>
 </html>
