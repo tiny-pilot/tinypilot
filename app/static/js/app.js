@@ -314,6 +314,9 @@ menuBar.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-dialog").checkVersion();
 });
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
+  // Note: we have to call `initialize()` after `show()`, to ensure that the
+  // dialog is able to focus the main input element.
+  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("change-hostname-overlay").show();
   document.getElementById("change-hostname-dialog").initialize();
 });
@@ -342,8 +345,11 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-overlay").show();
 });
 menuBar.addEventListener("paste-dialog-requested", () => {
-  document.getElementById("paste-dialog").initialize();
+  // Note: we have to call `initialize()` after `show()`, to ensure that the
+  // dialog is able to focus the main input element.
+  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("paste-overlay").show();
+  document.getElementById("paste-dialog").initialize();
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
