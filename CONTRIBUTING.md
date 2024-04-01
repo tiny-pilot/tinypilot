@@ -81,6 +81,16 @@ To run TinyPilot on a non-Pi machine, run:
 ./dev-scripts/serve-dev
 ```
 
+### Open dialogs after page load
+
+If you are doing UI development in a dialog, it can be cumbersome to having to open a dialog via the menu after every page refresh.
+
+For convenience, you can append a parameter called `request` to the page URL, and specify the HTML id of the dialog as value. That will open the respective dialog straight away.
+
+Example: `http://localhost:8000?request=about-dialog`
+
+Technically, this assembles a `about-dialog-requested` event and dispatches it to the menu bar component.
+
 ## QA/Testing on a TinyPilot device
 
 It’s useful to have a TinyPilot device set up for testing changes end-to-end and in a real production environment.

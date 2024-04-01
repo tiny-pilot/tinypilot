@@ -23,6 +23,7 @@ def index_get():
 
     return flask.render_template(
         'index.html',
+        is_debug=flask.current_app.debug,
         use_webrtc_remote_screen=use_webrtc,
         janus_stun_server=update_settings.janus_stun_server,
         janus_stun_port=update_settings.janus_stun_port,
