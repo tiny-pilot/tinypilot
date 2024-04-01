@@ -54,7 +54,7 @@ To run TinyPilot's end-to-end tests against a running TinyPilot device, first tu
 If you're planning to contribute code to TinyPilot, it's a good idea to enable the standard Git hooks so that build scripts run before you commit. That way, you can see if basic tests pass in a few seconds rather than waiting a few minutes to watch them run in CircleCI.
 
 ```bash
-./hooks/enable_hooks
+./dev-scripts/enable-git-hooks
 ```
 
 ### Enable mock scripts and passwordless sudo access
