@@ -342,8 +342,8 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-overlay").show();
 });
 menuBar.addEventListener("paste-dialog-requested", () => {
-  document.getElementById("paste-overlay").show();
   document.getElementById("paste-dialog").initialize();
+  document.getElementById("paste-overlay").show();
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
