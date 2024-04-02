@@ -10,27 +10,62 @@ set -e
 
 print_help() {
   cat << EOF
-Usage: ${0##*/} [target URL]
+Usage: ${0##*/} [--help] [--base-url E2E_BASE_URL] [-- [PLAYWRIGHT_ARGS]]
 Run end-to-end tests of UI navigation.
-  target URL: URL of running TinyPilot server to test against.
-    Must start with 'http'.
-    If not specified, the script first starts a local dev server.
-  -h Display this help and exit.
+  --help                  Optional. Display this help and exit.
+  --base-url E2E_BASE_URL Optional. The base URL of the running TinyPilot server
+                          to test against. Must start with 'http'. If not
+                          specified, the script will start a local dev server.
+  -- PLAYWRIGHT_ARGS      Optional. Indicate the end of this script's CLI
+                          options and add Playwright CLI test options.
+                          See https://playwright.dev/docs/test-cli#reference
+                          For example:
+                            run-e2e-tests -- --grep 'shows privacy policy'
+
 EOF
 }
 
 # Parse command-line arguments.
-while getopts 'h' opt; do
-  case "${opt}" in
-    h)
+E2E_BASE_URL=''
+PLAYWRIGHT_ARGS=()
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --help)
       print_help
       exit
       ;;
+    --base-url)
+      if [[ "$#" -lt 2 ]]; then
+        shift;
+        break;
+      fi
+      E2E_BASE_URL="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --)
+      # Stop parsing command-line arguments, and capture all remaining
+      # args to pass them through to Playwright.
+      shift
+      PLAYWRIGHT_ARGS=("$@")
+      break
+      ;;
     *)
-      print_help >&2
+      >&2 echo "Unknown flag: $1"
+      >&2 print_help
       exit 1
+      ;;
   esac
 done
+readonly E2E_BASE_URL
+readonly PLAYWRIGHT_ARGS
+
+if [[ -n "${E2E_BASE_URL}" && ! "${E2E_BASE_URL[0]}" =~ ^http ]]; then
+  >&2 echo "Invalid base URL: ${E2E_BASE_URL}"
+  >&2 echo 'The base URL must start with "http"'
+  >&2 print_help
+  exit 1
+fi
 
 # Echo commands before executing them, by default to stderr.
 set -x
@@ -40,13 +75,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
-# If the first argument starts with http, strip it to export it as E2E_BASE_URL
-# That way, playwright.config.js can use it to override the default base URL and
-# will not start a local webserver.
-if [[ $# -gt 0 && "$1" =~ ^http ]]; then
-  export E2E_BASE_URL="$1"
-  readonly E2E_BASE_URL
-  shift
+if [[ -n "${E2E_BASE_URL}" ]]; then
+  # Indicate to playwright.config.js to override the default base URL and not to
+  # start a local webserver.
+  export E2E_BASE_URL
 else
   # When running against a local dev server, use a fresh home directory on each
   # test run so that database state in one run doesn't affect subsequent runs.
@@ -55,4 +87,7 @@ else
   readonly TINYPILOT_HOME_DIR
 fi
 
-npx playwright test
+# To avoid an "unbound variable" error, we only expand the PLAYWRIGHT_ARGS when
+# the array is not empty.
+# https://stackoverflow.com/a/7577209/3769045
+npx playwright test "${PLAYWRIGHT_ARGS[@]+"${PLAYWRIGHT_ARGS[@]}"}"
