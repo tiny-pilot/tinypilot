@@ -28,6 +28,7 @@ EOF
 
 # Parse command-line arguments.
 E2E_BASE_URL=''
+PLAYWRIGHT_ARGS=()
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
     --help)
@@ -44,8 +45,10 @@ while [[ "$#" -gt 0 ]]; do
       shift # For flag value.
       ;;
     --)
-      # Stop parsing command-line arguments.
+      # Stop parsing command-line arguments, and capture all remaining
+      # args to pass them through to Playwright.
       shift
+      PLAYWRIGHT_ARGS=("$@")
       break
       ;;
     *)
@@ -56,7 +59,7 @@ while [[ "$#" -gt 0 ]]; do
   esac
 done
 readonly E2E_BASE_URL
-readonly PLAYWRIGHT_ARGS=("$@")
+readonly PLAYWRIGHT_ARGS
 
 if [[ -n "${E2E_BASE_URL}" && ! "${E2E_BASE_URL[0]}" =~ ^http ]]; then
   >&2 echo "Invalid base URL: ${E2E_BASE_URL}"
