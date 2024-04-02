@@ -37,6 +37,7 @@ jobs:
           # If the committer to the community repo (github.actor) has no access
           # to the pro repo, the PR will be unassigned.
           assignees: ${{ github.actor }}
+          reviewers: ${{ github.actor }}
           title: Merge changes from community repository
           body: |
             Related ${{ env.COMMUNITY_PR_URL }}
@@ -45,8 +46,13 @@ jobs:
 
             https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}
 
-            **Do not use "Squash and merge"!**
+            1. Update this branch with latest `master`
+            1. Check whether you need to make any Pro-specific adjustments to the code
+            1. Approve your changes
+               - You usually do this yourself. In case you had to make non-trivial adjustments, it’s also okay to request a proper peer review.
+            1. Set the merge style to “Create a merge commit” (regular merge)
+               - **Do not use “Squash and merge”!** If you accidentally squash, it’s not a disaster, but it will create a bit of noise on the subsequent PR from Community.
+               - We want a regular merge to preserve the commit history from Community
+            1. Merge the PR
 
-            Merge this PR with a merge commit, keeping the commit history.
-
-            (If you accidentally squash, it's not a disaster, but it will create a bit of noise on the subsequent PR from Community)
+            Note that Github remembers the merge style of your last PR in this repo, so for your next “regular” PR, you have to manually set it to “Squash and merge” again.
