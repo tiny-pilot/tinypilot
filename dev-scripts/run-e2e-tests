@@ -16,9 +16,8 @@ Run end-to-end tests of UI navigation.
   --base-url E2E_BASE_URL Optional. The base URL of the running TinyPilot server
                           to test against. Must start with 'http'. If not
                           specified, the script will start a local dev server.
-  --                      Optional. Indicate the end of this script's CLI
-                          options.
-  PLAYWRIGHT_ARGS         Optional. Additional Playwright CLI test options.
+  -- PLAYWRIGHT_ARGS      Optional. Indicate the end of this script's CLI
+                          options and add Playwright CLI test options.
                           See https://playwright.dev/docs/test-cli#reference
                           For example:
                             run-e2e-tests -- --grep 'shows privacy policy'
