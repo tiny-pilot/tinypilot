@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# Enable TinyPilot WiFi access point.
+
+set -eux
+
+
+# Choose the name for the Wi-Fi network that TinyPilot will create.
+NETWORK_NAME="TinyPilotWiFi"
+
+# Choose a password for TinyPilot's Wi-Fi network.
+# The leading space on the next line excludes it from the shell's history.
+NETWORK_PASSWORD="CHOOSE-A-SECURE-PASSWORD"
+
+# Choose IP addresses and ranges to use.
+WIFI_AP_IP_ADDRESS='192.168.50.1'
+WIFI_AP_CLIENT_IP_RANGE_START='192.168.50.2'
+WIFI_AP_CLIENT_IP_RANGE_END='192.168.50.100'
+
+# Enter your country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+WIFI_COUNTRY="US"
+
+sudo apt install hostapd dnsmasq --yes && \
+  sudo sed --in-place '/interface wlan0/d' /etc/dhcpcd.conf && \
+  sudo sed --in-place "/ip_address=${WIFI_AP_IP_ADDRESS}/d" /etc/dhcpcd.conf && \
+  sudo sed --in-place '/nohook wpa_supplicant/d' /etc/dhcpcd.conf
+
+. /opt/tinypilot-privileged/scripts/lib/markers.sh
+cat << EOF | sudo tee --append /etc/dhcpcd.conf
+${MARKER_START}
+interface wlan0
+static ip_address=${WIFI_AP_IP_ADDRESS}/24
+nohook wpa_supplicant
+${MARKER_END}
+EOF
+
+cat << EOF | sudo tee /etc/hostapd/hostapd.conf
+country_code=${WIFI_COUNTRY}
+interface=wlan0
+ssid=${NETWORK_NAME}
+hw_mode=g
+channel=7
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=${NETWORK_PASSWORD}
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+EOF
+
+cat << EOF | sudo tee /etc/dnsmasq.conf
+interface=wlan0
+dhcp-range=${WIFI_AP_CLIENT_IP_RANGE_START},${WIFI_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
+domain=wlan
+address=/gw.wlan/${WIFI_AP_IP_ADDRESS}
+EOF
+
+sudo cp --no-clobber /etc/wpa_supplicant/wpa_supplicant.conf \
+  /etc/wpa_supplicant/wpa_supplicant.conf.bak
+
+if ! rfkill list wlan | grep -q "yes"; then
+  sudo touch /etc/wpa_supplicant/wlan_enabled
+fi
+
+cat << EOF | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+EOF
+
+sudo rfkill unblock wlan && \
+  sudo systemctl unmask hostapd dnsmasq && \
+  sudo systemctl enable hostapd dnsmasq && \
+  sudo systemctl restart hostapd dnsmasq
+

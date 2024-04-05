@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Disable TinyPilot WiFi access point.
+
+set -eux
+
+. /opt/tinypilot-privileged/scripts/lib/markers.sh
+
+dhcpcd_original=()
+is_in_marker_section='false'
+while IFS= read -r line; do
+  if "${is_in_marker_section}" && [[ "${line}" == "${MARKER_END}" ]]; then
+    is_in_marker_section='false'
+    continue
+  fi
+  if "${is_in_marker_section}" || [[ "${line}" == "${MARKER_START}" ]]; then
+    is_in_marker_section='true'
+    continue
+  fi
+  dhcpcd_original+=("${line}")
+done < /etc/dhcpcd.conf
+
+if "${is_in_marker_section}"; then
+  echo 'Unclosed marker section' >&2
+  exit 1
+fi
+
+printf "%s\n" "${dhcpcd_original[@]}" | sudo tee /etc/dhcpcd.conf
+
+sudo mv /etc/wpa_supplicant/wpa_supplicant.conf.bak \
+  /etc/wpa_supplicant/wpa_supplicant.conf
+
+if [[ -e /etc/wpa_supplicant/wlan_enabled ]]; then
+  sudo rm --force /etc/wpa_supplicant/wlan_enabled
+else
+  sudo rfkill block wlan
+fi
+
+sudo systemctl stop hostapd dnsmasq && \
+  sudo rm --force /etc/hostapd/hostapd.conf && \
+  sudo rm --force /etc/dnsmasq.conf && \
+  sudo apt remove hostapd dnsmasq --yes
