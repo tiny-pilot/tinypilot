@@ -4,13 +4,51 @@
 
 set -eux
 
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help] [--password NETWORK_PASSWORD]
+Enable TinyPilot WiFi access point.
+  --help                      Display this help and exit.
+  --password NETWORK_PASSWORD The network password. If not specified, you will
+                              be prompted for a password.
+EOF
+}
+
+# Parse command-line arguments.
+
+NETWORK_PASSWORD=''
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    --password)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_PASSWORD="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    *)
+      >&2 echo "Unknown agrument: $1"
+      >&2 print_help
+      exit 1
+      ;;
+  esac
+done
+
+# Validate command-line arguments.
+
+if [[ -z "${NETWORK_PASSWORD}" ]]; then
+  read -s -p 'Set a WiFi password: ' NETWORK_PASSWORD
+fi
+readonly NETWORK_PASSWORD
 
 # Choose the name for the Wi-Fi network that TinyPilot will create.
 NETWORK_NAME="TinyPilotWiFi"
-
-# Choose a password for TinyPilot's Wi-Fi network.
-# The leading space on the next line excludes it from the shell's history.
-NETWORK_PASSWORD="CHOOSE-A-SECURE-PASSWORD"
 
 # Choose IP addresses and ranges to use.
 WIFI_AP_IP_ADDRESS='192.168.50.1'
