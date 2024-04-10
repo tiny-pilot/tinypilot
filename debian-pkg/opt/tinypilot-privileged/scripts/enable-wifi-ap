@@ -2,7 +2,14 @@
 #
 # Enable TinyPilot WiFi access point.
 
-set -eux
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
 
 if (( "${EUID}" != 0 )); then
   >&2 echo 'This script requires root privileges.'
@@ -50,7 +57,7 @@ done
 # Validate command-line arguments.
 
 if [[ -z "${NETWORK_PASSWORD}" ]]; then
-  read -s -p 'Set a WiFi password: ' NETWORK_PASSWORD
+  read -r -s -p 'Set a WiFi password: ' NETWORK_PASSWORD
 fi
 readonly NETWORK_PASSWORD
 
@@ -65,13 +72,17 @@ WIFI_AP_CLIENT_IP_RANGE_END='192.168.50.100'
 # Enter your country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 WIFI_COUNTRY="US"
 
-apt install hostapd dnsmasq --yes && \
-  sed --in-place '/interface wlan0/d' /etc/dhcpcd.conf && \
-  sed --in-place "/ip_address=${WIFI_AP_IP_ADDRESS}/d" /etc/dhcpcd.conf && \
-  sed --in-place '/nohook wpa_supplicant/d' /etc/dhcpcd.conf
+apt install hostapd dnsmasq --yes
+sed --in-place '/interface wlan0/d' /etc/dhcpcd.conf
+sed --in-place "/ip_address=${WIFI_AP_IP_ADDRESS}/d" /etc/dhcpcd.conf
+sed --in-place '/nohook wpa_supplicant/d' /etc/dhcpcd.conf
 
-. /opt/tinypilot-privileged/scripts/lib/markers.sh
-cat << EOF | tee --append /etc/dhcpcd.conf
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+cat <<EOF | tee --append /etc/dhcpcd.conf
 ${MARKER_START}
 interface wlan0
 static ip_address=${WIFI_AP_IP_ADDRESS}/24
@@ -79,7 +90,7 @@ nohook wpa_supplicant
 ${MARKER_END}
 EOF
 
-cat << EOF | tee /etc/hostapd/hostapd.conf
+cat <<EOF | tee /etc/hostapd/hostapd.conf
 country_code=${WIFI_COUNTRY}
 interface=wlan0
 ssid=${NETWORK_NAME}
@@ -95,26 +106,28 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 EOF
 
-cat << EOF | tee /etc/dnsmasq.conf
+cat <<EOF | tee /etc/dnsmasq.conf
 interface=wlan0
 dhcp-range=${WIFI_AP_CLIENT_IP_RANGE_START},${WIFI_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
 domain=wlan
 address=/gw.wlan/${WIFI_AP_IP_ADDRESS}
 EOF
 
-cp --no-clobber /etc/wpa_supplicant/wpa_supplicant.conf \
+cp \
+  --no-clobber \
+  /etc/wpa_supplicant/wpa_supplicant.conf \
   /etc/wpa_supplicant/wpa_supplicant.conf.bak
 
 if ! rfkill list wlan | grep -q "yes"; then
   touch /etc/wpa_supplicant/wlan_enabled
 fi
 
-cat << EOF | tee /etc/wpa_supplicant/wpa_supplicant.conf
+cat <<'EOF' | tee /etc/wpa_supplicant/wpa_supplicant.conf
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 EOF
 
-rfkill unblock wlan && \
-  systemctl unmask hostapd dnsmasq && \
-  systemctl enable hostapd dnsmasq && \
-  systemctl restart hostapd dnsmasq
+rfkill unblock wlan
+systemctl unmask hostapd dnsmasq
+systemctl enable hostapd dnsmasq
+systemctl restart hostapd dnsmasq
