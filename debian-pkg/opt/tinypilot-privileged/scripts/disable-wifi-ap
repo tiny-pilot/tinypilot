@@ -36,6 +36,7 @@ else
 fi
 
 systemctl stop hostapd dnsmasq
-rm --force /etc/hostapd/hostapd.conf
-rm --force /etc/dnsmasq.conf
+rm --force \
+  /etc/hostapd/hostapd.conf \
+  /etc/dnsmasq.conf
 apt remove hostapd dnsmasq --yes

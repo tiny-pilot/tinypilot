@@ -62,7 +62,7 @@ fi
 readonly NETWORK_PASSWORD
 
 # Choose the name for the Wi-Fi network that TinyPilot will create.
-NETWORK_NAME="TinyPilotWiFi"
+NETWORK_NAME='TinyPilotWiFi'
 
 # Choose IP addresses and ranges to use.
 WIFI_AP_IP_ADDRESS='192.168.50.1'
@@ -70,17 +70,16 @@ WIFI_AP_CLIENT_IP_RANGE_START='192.168.50.2'
 WIFI_AP_CLIENT_IP_RANGE_END='192.168.50.100'
 
 # Enter your country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-WIFI_COUNTRY="US"
+WIFI_COUNTRY='US'
 
 apt install hostapd dnsmasq --yes
-sed --in-place '/interface wlan0/d' /etc/dhcpcd.conf
-sed --in-place "/ip_address=${WIFI_AP_IP_ADDRESS}/d" /etc/dhcpcd.conf
-sed --in-place '/nohook wpa_supplicant/d' /etc/dhcpcd.conf
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
+
+"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
 cat <<EOF | tee --append /etc/dhcpcd.conf
 ${MARKER_START}
@@ -118,7 +117,7 @@ cp \
   /etc/wpa_supplicant/wpa_supplicant.conf \
   /etc/wpa_supplicant/wpa_supplicant.conf.bak
 
-if ! rfkill list wlan | grep -q "yes"; then
+if ! rfkill list wlan | grep -q 'yes'; then
   touch /etc/wpa_supplicant/wlan_enabled
 fi
 
