@@ -2,41 +2,40 @@
 #
 # Disable TinyPilot WiFi access point.
 
-set -eux
+# Exit on first failure.
+set -e
 
-. /opt/tinypilot-privileged/scripts/lib/markers.sh
+# Echo commands before executing them, by default to stderr.
+set -x
 
-dhcpcd_original=()
-is_in_marker_section='false'
-while IFS= read -r line; do
-  if "${is_in_marker_section}" && [[ "${line}" == "${MARKER_END}" ]]; then
-    is_in_marker_section='false'
-    continue
-  fi
-  if "${is_in_marker_section}" || [[ "${line}" == "${MARKER_START}" ]]; then
-    is_in_marker_section='true'
-    continue
-  fi
-  dhcpcd_original+=("${line}")
-done < /etc/dhcpcd.conf
+# Exit on unset variable.
+set -u
 
-if "${is_in_marker_section}"; then
-  echo 'Unclosed marker section' >&2
-  exit 1
+if (( "${EUID}" != 0 )); then
+  >&2 echo 'This script requires root privileges.'
+  >&2 echo 'Please re-run with sudo:' >&2
+  >&2 echo "  sudo $0 $*" >&2
+  >&2 exit 1
 fi
 
-printf "%s\n" "${dhcpcd_original[@]}" | sudo tee /etc/dhcpcd.conf
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
 
-sudo mv /etc/wpa_supplicant/wpa_supplicant.conf.bak \
+"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
+
+mv \
+  /etc/wpa_supplicant/wpa_supplicant.conf.bak \
   /etc/wpa_supplicant/wpa_supplicant.conf
 
 if [[ -e /etc/wpa_supplicant/wlan_enabled ]]; then
-  sudo rm --force /etc/wpa_supplicant/wlan_enabled
+  rm --force /etc/wpa_supplicant/wlan_enabled
 else
-  sudo rfkill block wlan
+  rfkill block wlan
 fi
 
-sudo systemctl stop hostapd dnsmasq && \
-  sudo rm --force /etc/hostapd/hostapd.conf && \
-  sudo rm --force /etc/dnsmasq.conf && \
-  sudo apt remove hostapd dnsmasq --yes
+systemctl stop hostapd dnsmasq
+rm --force /etc/hostapd/hostapd.conf
+rm --force /etc/dnsmasq.conf
+apt remove hostapd dnsmasq --yes
