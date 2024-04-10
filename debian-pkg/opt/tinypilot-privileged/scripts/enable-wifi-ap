@@ -61,6 +61,12 @@ if [[ -z "${NETWORK_PASSWORD}" ]]; then
 fi
 readonly NETWORK_PASSWORD
 
+if [[ -z "${NETWORK_PASSWORD}" ]]; then
+  >&2 echo "The WiFi password can't be empty"
+  >&2 print_help
+  exit 1
+fi
+
 # Choose the name for the Wi-Fi network that TinyPilot will create.
 NETWORK_NAME='TinyPilotWiFi'
 
