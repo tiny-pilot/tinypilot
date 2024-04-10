@@ -71,6 +71,7 @@
 
 <script type="module">
   import { RateLimitedMouse } from "/js/mouse.js";
+  import { TouchToMouseAdapter } from "/js/touch.js";
   import { VideoStreamingModeChangedEvent } from "/js/events.js";
 
   (function () {
@@ -199,6 +200,20 @@
           screenElement.addEventListener("wheel", (evt) => {
             evt.preventDefault();
             this.rateLimitedMouse.onWheel(evt);
+          });
+
+          const touchToMouseAdapter = new TouchToMouseAdapter();
+          screenElement.addEventListener("touchstart", (evt) => {
+            const mouseEvent = touchToMouseAdapter.fromTouchStart(evt);
+            this.rateLimitedMouse.onMouseDown(mouseEvent);
+          });
+          screenElement.addEventListener("touchend", (evt) => {
+            const mouseEvent = touchToMouseAdapter.fromTouchEndOrCancel(evt);
+            this.rateLimitedMouse.onMouseUp(mouseEvent);
+          });
+          screenElement.addEventListener("touchcancel", (evt) => {
+            const mouseEvent = touchToMouseAdapter.fromTouchEndOrCancel(evt);
+            this.rateLimitedMouse.onMouseUp(mouseEvent);
           });
 
           // Ignore the context menu so that it doesn't block the screen when
