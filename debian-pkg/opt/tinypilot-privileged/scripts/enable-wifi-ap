@@ -18,13 +18,20 @@ if (( "${EUID}" != 0 )); then
   >&2 exit 1
 fi
 
+NETWORK_NAME='TinyPilotWiFi'
+NETWORK_COUNTRY='US'
+
 print_help() {
   cat <<EOF
-Usage: ${0##*/} [--help] [--password NETWORK_PASSWORD]
+Usage: ${0##*/} [--help] [--password NETWORK_PASSWORD] [--ssid NETWORK_NAME] [--country NETWORK_COUNTRY]
 Enable TinyPilot WiFi access point.
   --help                      Display this help and exit.
   --password NETWORK_PASSWORD The network password. If not specified, you will
                               be prompted for a password.
+  --ssid NETWORK_NAME         The network name. Defaults to: ${NETWORK_NAME}
+  --country NETWORK_COUNTRY   The network country in ISO 3166-1 alpha-2 format.
+                              See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+                              Defaults to: ${NETWORK_COUNTRY}
 EOF
 }
 
@@ -43,6 +50,24 @@ while (( "$#" > 0 )); do
         break;
       fi
       NETWORK_PASSWORD="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --ssid)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_NAME="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --country)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_COUNTRY="$2"
       shift # For flag name.
       shift # For flag value.
       ;;
@@ -67,16 +92,9 @@ if [[ -z "${NETWORK_PASSWORD}" ]]; then
   exit 1
 fi
 
-# Choose the name for the Wi-Fi network that TinyPilot will create.
-NETWORK_NAME='TinyPilotWiFi'
-
-# Choose IP addresses and ranges to use.
-WIFI_AP_IP_ADDRESS='192.168.50.1'
-WIFI_AP_CLIENT_IP_RANGE_START='192.168.50.2'
-WIFI_AP_CLIENT_IP_RANGE_END='192.168.50.100'
-
-# Enter your country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-WIFI_COUNTRY='US'
+NETWORK_AP_IP_ADDRESS='192.168.50.1'
+NETWORK_AP_CLIENT_IP_RANGE_START='192.168.50.2'
+NETWORK_AP_CLIENT_IP_RANGE_END='192.168.50.100'
 
 apt install hostapd dnsmasq --yes
 
@@ -90,13 +108,13 @@ readonly SCRIPT_DIR
 cat <<EOF | tee --append /etc/dhcpcd.conf
 ${MARKER_START}
 interface wlan0
-static ip_address=${WIFI_AP_IP_ADDRESS}/24
+static ip_address=${NETWORK_AP_IP_ADDRESS}/24
 nohook wpa_supplicant
 ${MARKER_END}
 EOF
 
 cat <<EOF | tee /etc/hostapd/hostapd.conf
-country_code=${WIFI_COUNTRY}
+country_code=${NETWORK_COUNTRY}
 interface=wlan0
 ssid=${NETWORK_NAME}
 hw_mode=g
@@ -113,9 +131,9 @@ EOF
 
 cat <<EOF | tee /etc/dnsmasq.conf
 interface=wlan0
-dhcp-range=${WIFI_AP_CLIENT_IP_RANGE_START},${WIFI_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
+dhcp-range=${NETWORK_AP_CLIENT_IP_RANGE_START},${NETWORK_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
 domain=wlan
-address=/gw.wlan/${WIFI_AP_IP_ADDRESS}
+address=/gw.wlan/${NETWORK_AP_IP_ADDRESS}
 EOF
 
 cp \
