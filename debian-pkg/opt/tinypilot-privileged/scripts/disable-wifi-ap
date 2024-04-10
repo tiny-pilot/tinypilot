@@ -13,8 +13,8 @@ set -u
 
 if (( "${EUID}" != 0 )); then
   >&2 echo 'This script requires root privileges.'
-  >&2 echo 'Please re-run with sudo:' >&2
-  >&2 echo "  sudo $0 $*" >&2
+  >&2 echo 'Please re-run with sudo:'
+  >&2 echo "  sudo $0 $*"
   >&2 exit 1
 fi
 
