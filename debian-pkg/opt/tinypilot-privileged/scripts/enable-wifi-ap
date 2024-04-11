@@ -97,6 +97,12 @@ if [[ -z "${NETWORK_PASSWORD}" ]]; then
   exit 1
 fi
 
+if [[ -z "${NETWORK_NAME}" ]]; then
+  >&2 echo "The network name can't be empty"
+  >&2 print_help
+  exit 1
+fi
+
 if (( "${#NETWORK_COUNTRY}" != 2 )); then
   >&2 echo "Invalid network country: ${NETWORK_COUNTRY}"
   >&2 echo 'The country must be a 2 character country code (e.g., US)'
