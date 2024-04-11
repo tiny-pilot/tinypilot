@@ -92,6 +92,13 @@ if [[ -z "${NETWORK_PASSWORD}" ]]; then
   exit 1
 fi
 
+if (( "${#NETWORK_COUNTRY}" != 2 )); then
+  >&2 echo "Invalid network country: ${NETWORK_COUNTRY}"
+  >&2 echo 'The country must be a 2 character country code (e.g., US)'
+  >&2 print_help
+  exit 1
+fi
+
 readonly NETWORK_AP_IP_ADDRESS='192.168.50.1'
 readonly NETWORK_AP_CLIENT_IP_RANGE_START='192.168.50.2'
 readonly NETWORK_AP_CLIENT_IP_RANGE_END='192.168.50.100'
