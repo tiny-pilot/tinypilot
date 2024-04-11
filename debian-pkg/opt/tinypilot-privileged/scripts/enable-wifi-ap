@@ -78,6 +78,8 @@ while (( "$#" > 0 )); do
       ;;
   esac
 done
+readonly NETWORK_NAME
+readonly NETWORK_COUNTRY
 
 # Validate command-line arguments.
 
