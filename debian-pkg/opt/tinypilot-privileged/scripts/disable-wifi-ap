@@ -18,6 +18,34 @@ if (( "${EUID}" != 0 )); then
   >&2 exit 1
 fi
 
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help]
+Disable TinyPilot WiFi access point.
+  --help  Display this help and exit.
+
+Note: Running this script will clear any potentially existing custom static IP
+      configuration that might have been added previously by the set-static-ip
+      script.
+
+EOF
+}
+
+# Parse command-line arguments.
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    *)
+      >&2 echo "Unknown agrument: $1"
+      >&2 print_help
+      exit 1
+      ;;
+  esac
+done
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
