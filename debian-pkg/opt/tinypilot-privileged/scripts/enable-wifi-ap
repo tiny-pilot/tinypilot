@@ -28,8 +28,8 @@ Enable TinyPilot WiFi access point.
   --help                      Display this help and exit.
   --password NETWORK_PASSWORD The network password. If not specified, you will
                               be prompted for a password.
-  --ssid NETWORK_NAME         The network name. Defaults to: ${NETWORK_NAME}
-  --country NETWORK_COUNTRY   The network country in ISO 3166-1 alpha-2 format.
+  --ssid NETWORK_NAME         Optional. The network name. Defaults to: ${NETWORK_NAME}
+  --country NETWORK_COUNTRY   Optional. The network country in ISO 3166-1 alpha-2 format.
                               See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                               Defaults to: ${NETWORK_COUNTRY}
 EOF
