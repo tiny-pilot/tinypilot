@@ -12,10 +12,16 @@ export class TouchToMouseAdapter {
   _lastTouchPosition = { clientX: 0, clientY: 0 };
 
   /**
-   * @param {TouchEvent} evt See:
+   * Synthetic mouse event that includes all properties that the
+   * `RateLimitedMouse.parseMouseEvent()` method relies on.
+   * @typedef {Object} SyntheticMouseEvent
+   */
+
+  /**
+   * @param {TouchEvent} evt - See:
    *     - https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
    *     - https://developer.mozilla.org/en-US/docs/Web/API/Element/touchstart_event
-   * @returns {object}
+   * @returns {SyntheticMouseEvent}
    */
   fromTouchStart(evt) {
     // The corresponding `touchend` event won’t have the `touches` property
@@ -26,12 +32,11 @@ export class TouchToMouseAdapter {
   }
 
   /**
-   * @param {TouchEvent} evt
+   * @param {TouchEvent} evt - See:
    *     - https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
    *     - https://developer.mozilla.org/en-US/docs/Web/API/Element/touchend_event
    *     - https://developer.mozilla.org/en-US/docs/Web/API/Element/touchcancel_event
-   * @returns {object} - Synthetic mouse event that includes all properties
-   *     that the `RateLimitedMouse.parseMouseEvent()` method relies on.
+   * @returns {SyntheticMouseEvent}
    */
   fromTouchEndOrCancel(evt) {
     return mouseClickEvent(evt.target, this._lastTouchPosition, 0);
