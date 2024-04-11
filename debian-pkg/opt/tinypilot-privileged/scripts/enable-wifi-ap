@@ -32,6 +32,11 @@ Enable TinyPilot WiFi access point.
   --country NETWORK_COUNTRY   Optional. The network country in ISO 3166-1 alpha-2 format.
                               See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                               Defaults to: ${NETWORK_COUNTRY}
+
+Note: Running this script will clear any potentially existing custom static IP
+      configuration that might have been added previously by the set-static-ip
+      script.
+
 EOF
 }
 
