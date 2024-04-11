@@ -36,7 +36,6 @@ EOF
 }
 
 # Parse command-line arguments.
-
 NETWORK_PASSWORD=''
 while (( "$#" > 0 )); do
   case "$1" in
@@ -82,7 +81,6 @@ readonly NETWORK_NAME
 readonly NETWORK_COUNTRY
 
 # Validate command-line arguments.
-
 if [[ -z "${NETWORK_PASSWORD}" ]]; then
   read -r -s -p 'Set a WiFi password: ' NETWORK_PASSWORD
 fi
