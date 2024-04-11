@@ -202,16 +202,20 @@
             this.rateLimitedMouse.onWheel(evt);
           });
 
+          // Process touch activity and forward it as if it was mouse input.
           const touchToMouseAdapter = new TouchToMouseAdapter();
           screenElement.addEventListener("touchstart", (evt) => {
+            evt.preventDefault();
             const mouseEvent = touchToMouseAdapter.fromTouchStart(evt);
             this.rateLimitedMouse.onMouseDown(mouseEvent);
           });
           screenElement.addEventListener("touchend", (evt) => {
+            evt.preventDefault();
             const mouseEvent = touchToMouseAdapter.fromTouchEndOrCancel(evt);
             this.rateLimitedMouse.onMouseUp(mouseEvent);
           });
           screenElement.addEventListener("touchcancel", (evt) => {
+            evt.preventDefault();
             const mouseEvent = touchToMouseAdapter.fromTouchEndOrCancel(evt);
             this.rateLimitedMouse.onMouseUp(mouseEvent);
           });
