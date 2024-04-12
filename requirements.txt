@@ -1,7 +1,7 @@
 # See the "Updating Python pip packages" section of CONTRIBUTING.md for
 # instructions about updating this file.
 
-eventlet==0.33.3
+eventlet==0.35.2
 Flask==2.3.2
 Flask-SocketIO==5.3.4
 Flask-WTF==1.1.1
