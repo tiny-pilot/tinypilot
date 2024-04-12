@@ -95,7 +95,7 @@ readonly NETWORK_PASSWORD
 if [[ -z "${NETWORK_PASSWORD}" ]] || \
   (( "${#NETWORK_PASSWORD}" < 8 )) || \
   (( "${#NETWORK_PASSWORD}" > 63 )); then
-  >&2 echo "The WiFi password must be 8–63 characters in length"
+  >&2 echo 'The WiFi password must be 8–63 characters in length'
   >&2 print_help
   exit 1
 fi
