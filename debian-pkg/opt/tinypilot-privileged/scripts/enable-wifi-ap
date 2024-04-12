@@ -175,3 +175,11 @@ rfkill unblock wlan
 systemctl unmask hostapd dnsmasq
 systemctl enable hostapd dnsmasq
 systemctl restart hostapd dnsmasq
+
+cat <<EOF
+TinyPilot is now running a WiFi access point with the following details:
+SSID: ${NETWORK_NAME}
+Country: ${NETWORK_COUNTRY}
+IP Address: ${NETWORK_AP_IP_ADDRESS}
+IP Range: ${NETWORK_AP_CLIENT_IP_RANGE_START} - ${NETWORK_AP_CLIENT_IP_RANGE_END}
+EOF

@@ -68,3 +68,5 @@ rm --force \
   /etc/hostapd/hostapd.conf \
   /etc/dnsmasq.conf
 apt remove hostapd dnsmasq --yes
+
+echo 'TinyPilot has disabled its WiFi access point.'
