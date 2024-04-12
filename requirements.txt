@@ -11,7 +11,7 @@ PyYAML==6.0.1
 bidict==0.22.1
 blinker==1.6.2
 click==8.1.6
-dnspython==2.4.1
+dnspython==2.6.1
 greenlet==2.0.2
 importlib-metadata==6.8.0
 itsdangerous==2.1.2
