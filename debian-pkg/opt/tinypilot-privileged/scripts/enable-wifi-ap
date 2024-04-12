@@ -124,6 +124,7 @@ readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
 
+# Clear existing TinyPilot network configurations.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
 # Enable wireless network interface.
@@ -160,7 +161,7 @@ domain=wlan
 address=/gw.wlan/${NETWORK_AP_IP_ADDRESS}
 EOF
 
-# Backup WPA config.
+# Backup WPA configurations.
 cp \
   --no-clobber \
   /etc/wpa_supplicant/wpa_supplicant.conf \
@@ -170,7 +171,7 @@ if ! rfkill list wlan | grep -q 'yes'; then
   touch /etc/wpa_supplicant/wlan_enabled
 fi
 
-# Clear WPA config.
+# Clear WPA configurations.
 cat <<'EOF' | tee /etc/wpa_supplicant/wpa_supplicant.conf
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
