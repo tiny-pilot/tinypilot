@@ -1,0 +1,185 @@
+#!/bin/bash
+#
+# Enable TinyPilot WiFi access point.
+
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+if (( "${EUID}" != 0 )); then
+  >&2 echo 'This script requires root privileges.'
+  >&2 echo 'Please re-run with sudo:'
+  >&2 echo "  sudo $0 $*"
+  >&2 exit 1
+fi
+
+NETWORK_NAME='TinyPilotWiFi'
+NETWORK_COUNTRY='US'
+
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help] [--password NETWORK_PASSWORD] [--ssid NETWORK_NAME] [--country NETWORK_COUNTRY]
+Enable TinyPilot WiFi access point.
+  --help                      Display this help and exit.
+  --password NETWORK_PASSWORD The network password. Must be 8–63 characters in
+                              length. If not specified, you will be prompted for
+                              a password.
+  --ssid NETWORK_NAME         Optional. The network name. Defaults to: ${NETWORK_NAME}
+  --country NETWORK_COUNTRY   Optional. The network country in ISO 3166-1 alpha-2 format.
+                              See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+                              Defaults to: ${NETWORK_COUNTRY}
+
+Note: Running this script will clear any potentially existing custom static IP
+      configuration that might have been added previously by the set-static-ip
+      script.
+
+EOF
+}
+
+# Parse command-line arguments.
+NETWORK_PASSWORD=''
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    --password)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_PASSWORD="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --ssid)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_NAME="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --country)
+      if (( "$#" < 2 )); then
+        shift;
+        break;
+      fi
+      NETWORK_COUNTRY="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    *)
+      >&2 echo "Unknown agrument: $1"
+      >&2 print_help
+      exit 1
+      ;;
+  esac
+done
+readonly NETWORK_NAME
+readonly NETWORK_COUNTRY
+
+# Validate command-line arguments.
+if [[ -z "${NETWORK_PASSWORD}" ]]; then
+  read -r -s -p 'Set a WiFi password: ' NETWORK_PASSWORD
+fi
+readonly NETWORK_PASSWORD
+
+if [[ -z "${NETWORK_PASSWORD}" ]] || \
+  (( "${#NETWORK_PASSWORD}" < 8 )) || \
+  (( "${#NETWORK_PASSWORD}" > 63 )); then
+  >&2 echo 'The WiFi password must be 8–63 characters in length'
+  >&2 print_help
+  exit 1
+fi
+
+if [[ -z "${NETWORK_NAME}" ]]; then
+  >&2 echo "The network name can't be empty"
+  >&2 print_help
+  exit 1
+fi
+
+if (( "${#NETWORK_COUNTRY}" != 2 )); then
+  >&2 echo "Invalid network country: ${NETWORK_COUNTRY}"
+  >&2 echo 'The country must be a 2 character country code (e.g., US)'
+  >&2 print_help
+  exit 1
+fi
+
+readonly NETWORK_AP_IP_ADDRESS='192.168.50.1'
+readonly NETWORK_AP_CLIENT_IP_RANGE_START='192.168.50.2'
+readonly NETWORK_AP_CLIENT_IP_RANGE_END='192.168.50.100'
+
+apt install hostapd dnsmasq --yes
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
+
+cat <<EOF | tee --append /etc/dhcpcd.conf
+${MARKER_START}
+interface wlan0
+static ip_address=${NETWORK_AP_IP_ADDRESS}/24
+nohook wpa_supplicant
+${MARKER_END}
+EOF
+
+cat <<EOF | tee /etc/hostapd/hostapd.conf
+country_code=${NETWORK_COUNTRY}
+interface=wlan0
+ssid=${NETWORK_NAME}
+hw_mode=g
+channel=7
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=${NETWORK_PASSWORD}
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+EOF
+
+cat <<EOF | tee /etc/dnsmasq.conf
+interface=wlan0
+dhcp-range=${NETWORK_AP_CLIENT_IP_RANGE_START},${NETWORK_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
+domain=wlan
+address=/gw.wlan/${NETWORK_AP_IP_ADDRESS}
+EOF
+
+cp \
+  --no-clobber \
+  /etc/wpa_supplicant/wpa_supplicant.conf \
+  /etc/wpa_supplicant/wpa_supplicant.conf.bak
+
+if ! rfkill list wlan | grep -q 'yes'; then
+  touch /etc/wpa_supplicant/wlan_enabled
+fi
+
+cat <<'EOF' | tee /etc/wpa_supplicant/wpa_supplicant.conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+EOF
+
+rfkill unblock wlan
+systemctl unmask hostapd dnsmasq
+systemctl enable hostapd dnsmasq
+systemctl restart hostapd dnsmasq
+
+cat <<EOF
+TinyPilot is now running a WiFi access point with the following details:
+SSID: ${NETWORK_NAME}
+Country: ${NETWORK_COUNTRY}
+IP Address: ${NETWORK_AP_IP_ADDRESS}
+IP Range: ${NETWORK_AP_CLIENT_IP_RANGE_START} - ${NETWORK_AP_CLIENT_IP_RANGE_END}
+EOF
