@@ -217,6 +217,7 @@ function normalizeWheelDelta(delta) {
  * @property {number} horizontalWheelDelta - A -1, 0, or 1 representing movement
  *     of the mouse's horizontal scroll wheel.
  *
+ * @param {MouseEvent} evt - https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
  * @returns {MouseEventData}
  */
 function parseMouseEvent(evt) {
