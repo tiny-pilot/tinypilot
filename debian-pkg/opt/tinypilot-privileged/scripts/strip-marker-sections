@@ -34,7 +34,7 @@ EOF
 
 # Parse command-line arguments.
 TARGET_FILE=''
-while [[ "$#" -gt 0 ]]; do
+while (( "$#" > 0 )); do
   case "$1" in
     --help)
       print_help

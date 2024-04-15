@@ -28,14 +28,14 @@ EOF
 # Parse command-line arguments.
 E2E_BASE_URL=''
 PLAYWRIGHT_ARGS=()
-while [[ "$#" -gt 0 ]]; do
+while (( "$#" > 0 )); do
   case "$1" in
     --help)
       print_help
       exit
       ;;
     --base-url)
-      if [[ "$#" -lt 2 ]]; then
+      if (( "$#" < 2 )); then
         shift;
         break;
       fi
