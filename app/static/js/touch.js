@@ -27,8 +27,12 @@ export class TouchToMouseAdapter {
     // The corresponding `touchend` event won’t have the `touches` property
     // set, so we need to preserve the latest one to be able to reconstruct the
     // cursor position for the touch/mouse release.
-    this._lastTouchPosition = evt.touches[0];
-    return mouseClickEvent(evt.target, evt.touches[0], 1);
+    const touch = evt.touches[0];
+    this._lastTouchPosition = {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    };
+    return mouseClickEvent(evt.target, this._lastTouchPosition, 1);
   }
 
   /**
