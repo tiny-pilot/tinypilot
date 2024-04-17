@@ -6,15 +6,15 @@ It is no longer possible to make changes to TinyPilot's undocumented settings th
 
 The following settings are supported and remain configurable through `settings.yml`:
 
+- `janus_stun_server`
+- `janus_stun_port`
 - `tinypilot_external_port`
 - `tinypilot_external_tls_port` (Pro only)
 - `tinypilot_manage_tls_keys` (Pro only)
-- `ustreamer_edid`
 - `ustreamer_desired_fps`
-- `ustreamer_quality`
+- `ustreamer_edid`
 - `ustreamer_h264_bitrate`
-- `janus_stun_server`
-- `janus_stun_port`
+- `ustreamer_quality`
 
 ## Unsupported Settings (Legacy)
 
@@ -22,5 +22,9 @@ The following settings are configurable through `settings.yml`, but we may remov
 
 - `tinypilot_keyboard_interface`
 - `tinypilot_mouse_interface`
-- `ustreamer_*`
-  - Any uStreamer specific settings that are not explicitly supported above.
+- `ustreamer_drop_same_frames`
+- `ustreamer_encoder`
+- `ustreamer_format`
+- `ustreamer_resolution`
+- `ustreamer_use_dv_timings`
+- `ustreamer_workers`
