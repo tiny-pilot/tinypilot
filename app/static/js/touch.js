@@ -79,8 +79,9 @@ function mouseClickEvent(target, touchPosition, buttons) {
  * (double tap). This is true if both touches occur within a short time span,
  * and if their location is close to each other. Note that in contrast to a
  * mouse device, tapping twice on a touch screen almost never yields the exact
- * same position for both touches, in which case the target operating system
- * might not recognize the two clicks as proper double click.
+ * same position for both touches. In this case, the user might accidentally
+ * click in the wrong place, or the target operating system might not recognize
+ * the two clicks as proper double click.
  */
 function isDoubleClick(touchInfo1, touchInfo2) {
   return (
