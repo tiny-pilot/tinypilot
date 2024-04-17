@@ -6,8 +6,8 @@ It is no longer possible to make changes to TinyPilot's undocumented settings th
 
 The following settings are supported and remain configurable through `settings.yml`:
 
-- `janus_stun_server`
 - `janus_stun_port`
+- `janus_stun_server`
 - `tinypilot_external_port`
 - `tinypilot_external_tls_port` (Pro only)
 - `tinypilot_manage_tls_keys` (Pro only)
@@ -16,7 +16,7 @@ The following settings are supported and remain configurable through `settings.y
 - `ustreamer_h264_bitrate`
 - `ustreamer_quality`
 
-## Unsupported Settings (Legacy)
+## Deprecated Settings (Legacy)
 
 The following settings are configurable through `settings.yml`, but we may remove configuration support for them in the future:
 
@@ -28,3 +28,13 @@ The following settings are configurable through `settings.yml`, but we may remov
 - `ustreamer_resolution`
 - `ustreamer_use_dv_timings`
 - `ustreamer_workers`
+
+## Unsupported Settings (Non-configurable)
+
+The following settings are no longer configurable through `settings.yml`:
+
+- `tinypilot_install_janus`
+- `ustreamer_compile_janus_plugin`
+- `ustreamer_h264_sink`
+- `ustreamer_h264_sink_mode`
+- `ustreamer_h264_sink_rm`
