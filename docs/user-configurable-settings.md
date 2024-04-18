@@ -1,6 +1,6 @@
 # User Configurable Settings
 
-It is no longer possible to make changes to TinyPilot's undocumented settings through the `/home/tinypilot/settings.yml` file.
+It is no longer possible to make changes to TinyPilot's undocumented settings through the `/home/tinypilot/settings.yml` files. This document outlines which settings are supported, deprecated, and unsupported.
 
 ## Supported Settings
 
@@ -18,7 +18,7 @@ The following settings are supported and remain configurable through `settings.y
 
 ## Deprecated Settings (Legacy)
 
-The following settings are configurable through `settings.yml`, but we may remove configuration support for them in the future:
+The following settings are still configurable through `settings.yml`, but we may remove configuration support for them in the future:
 
 - `tinypilot_keyboard_interface`
 - `tinypilot_mouse_interface`
@@ -31,10 +31,25 @@ The following settings are configurable through `settings.yml`, but we may remov
 
 ## Unsupported Settings (Non-configurable)
 
-The following settings are no longer configurable through `settings.yml`:
+The following settings are unsupported and no longer configurable through `settings.yml`:
 
+- `tinypilot_debian_package_path`
+- `tinypilot_enable_debug_logging`
 - `tinypilot_install_janus`
+- `tinypilot_interface`
+- `tinypilot_port`
+- `ustreamer_brightness`
+- `ustreamer_capture_device`
 - `ustreamer_compile_janus_plugin`
+- `ustreamer_debian_package_path`
+- `ustreamer_edids_dir`
 - `ustreamer_h264_sink`
 - `ustreamer_h264_sink_mode`
 - `ustreamer_h264_sink_rm`
+- `ustreamer_interface`
+- `ustreamer_persistent`
+- `ustreamer_port`
+- `ustreamer_repo`
+- `ustreamer_repo_version`
+- `ustreamer_tcp_nodelay`
+- `ustreamer_video_path`
