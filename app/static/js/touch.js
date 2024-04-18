@@ -11,11 +11,13 @@
  *   - Double left click
  */
 export class TouchToMouseAdapter {
-  _lastTouchInfo = {
-    timestamp: new Date(),
-    clientX: 0,
-    clientY: 0,
-  };
+  constructor() {
+    this._lastTouchInfo = {
+      timestamp: new Date(),
+      clientX: 0,
+      clientY: 0,
+    };
+  }
 
   /**
    * Synthetic mouse event that includes all properties that the
