@@ -42,8 +42,6 @@ export class TouchToMouseAdapter {
     }));
 
     const button = (() => {
-      // If this touch was a right click, use the mouse coordinates from the
-      // first touch point as primary touch.
       if (isRightClick(touchInfos)) {
         return 2;
       }
