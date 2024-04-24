@@ -7,8 +7,10 @@
  *
  * We currently only provide basic support for touch devices. So for now, this
  * adapter can emulate the following mouse actions:
- *   - Single left click
- *   - Double left click
+ *   - Single left click (i.e., touch with single finger)
+ *   - Double left click (i.e., two consecutive taps with single finger)
+ *   - Right click (i.e., touch with two fingers simultaneously)
+ * For all other gestures, this adapter may not behave in a well-defined way.
  */
 export class TouchToMouseAdapter {
   constructor() {
@@ -32,22 +34,32 @@ export class TouchToMouseAdapter {
    * @returns {SyntheticMouseEvent}
    */
   fromTouchStart(evt) {
-    const touchInfo = {
-      timestamp: new Date(),
-      clientX: evt.touches[0].clientX,
-      clientY: evt.touches[0].clientY,
-    };
+    const timestamp = new Date();
+    const touchInfos = Array.from(evt.touches).map((t) => ({
+      timestamp,
+      clientX: t.clientX,
+      clientY: t.clientY,
+    }));
 
-    // If this touch was a double click, use the mouse coordinates from the
-    // previous touch, so that the position is exactly the same. (See comment
-    // of `isDoubleClick` for why this is important.)
-    if (isDoubleClick(touchInfo, this._lastTouchInfo)) {
-      touchInfo.clientX = this._lastTouchInfo.clientX;
-      touchInfo.clientY = this._lastTouchInfo.clientY;
-    }
+    const button = (() => {
+      if (isRightClick(touchInfos)) {
+        return 2;
+      }
 
-    this._lastTouchInfo = touchInfo;
-    return mouseClickEvent(evt.target, this._lastTouchInfo, 1);
+      // If this touch was a double click, use the mouse coordinates from the
+      // previous touch, so that the position is exactly the same. (See comment
+      // of `isDoubleClick` for why this is important.)
+      if (isDoubleClick(touchInfos, this._lastTouchInfo)) {
+        touchInfos[0].clientX = this._lastTouchInfo.clientX;
+        touchInfos[0].clientY = this._lastTouchInfo.clientY;
+      }
+
+      return 1;
+    })();
+
+    // Interpret the first touch point as primary one.
+    this._lastTouchInfo = touchInfos[0];
+    return mouseClickEvent(evt.target, this._lastTouchInfo, button);
   }
 
   /**
@@ -85,10 +97,23 @@ function mouseClickEvent(target, touchPosition, buttons) {
  * click in the wrong place, or the target operating system might not recognize
  * the two clicks as proper double click.
  */
-function isDoubleClick(touchInfo1, touchInfo2) {
+function isDoubleClick(touchInfos, lastTouchInfo) {
   return (
-    distancePx(touchInfo1, touchInfo2) < 50 &&
-    delayMs(touchInfo1.timestamp, touchInfo2.timestamp) < 500
+    touchInfos.length === 1 &&
+    distancePx(touchInfos[0], lastTouchInfo) < 50 &&
+    delayMs(touchInfos[0].timestamp, lastTouchInfo.timestamp) < 500
+  );
+}
+
+/**
+ * Checks whether two simultaneous touches are intended to be a right click
+ * (context click). This is true if both touches appear close to each other,
+ * due to the user tapping with both fingers – either at the same time, or one
+ * after the other.
+ */
+function isRightClick(touchInfos) {
+  return (
+    touchInfos.length === 2 && distancePx(touchInfos[0], touchInfos[1]) < 200
   );
 }
 
