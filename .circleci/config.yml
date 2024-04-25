@@ -41,12 +41,16 @@ jobs:
     docker:
       - image: koalaman/shellcheck-alpine:v0.9.0
     steps:
-      - run:
-          name: Install dependencies
-          command: apk add bash git openssh-client grep
       - checkout
       - run:
-          name: Run static analysis on bash scripts
+          name: Install dependencies
+          command: |
+            apk add bash git openssh-client grep
+            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
+            cd bats-core
+            sudo ./install.sh /usr/local
+      - run:
+          name: Run check and static analysis on bash scripts
           command: ./dev-scripts/check-bash
   check_privilege_guard:
     executor: ubuntu
@@ -67,7 +71,7 @@ jobs:
           command: |
             . venv/bin/activate
             pip install --requirement dev_requirements.txt
-            ./dev-scripts/lint-sql
+            ./dev-scripts/check-sql
   check_style:
     executor: node
     steps:
@@ -107,7 +111,7 @@ jobs:
           command: |
             . venv/bin/activate
             pip install --requirement dev_requirements.txt
-            ./dev-scripts/build-python
+            ./dev-scripts/check-python
   build_javascript:
     executor: node
     steps:
@@ -117,20 +121,7 @@ jobs:
           command: npm install
       - run:
           name: Run build script
-          command: ./dev-scripts/build-javascript
-  build_bash:
-    executor: ubuntu
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
-            cd bats-core
-            sudo ./install.sh /usr/local
-      - run:
-          name: Run build script
-          command: ./dev-scripts/build-bash
+          command: ./dev-scripts/check-javascript
   e2e:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
@@ -164,7 +155,7 @@ jobs:
           command: sudo ./dev-scripts/enable-passwordless-sudo
       - run:
           name: Run playwright tests
-          command: ./dev-scripts/run-e2e-tests
+          command: ./dev-scripts/check-e2e
       - store_artifacts:
           path: playwright-report
       - store_artifacts:
@@ -203,17 +194,7 @@ jobs:
           command: lintian --version
       - run:
           name: Run lintian
-          command: |
-            set -exu
-            while read -r file; do
-              lintian \
-                --check \
-                --no-tag-display-limit \
-                --suppress-tags-from-file .lintianignore \
-                --no-cfg \
-                --fail-on warning,error \
-                "${file}"
-            done < <(ls *.deb)
+          command: ./dev-scripts/check-debian-pkg
   build_bundle:
     executor: python
     steps:
@@ -293,7 +274,6 @@ workflows:
       - decode_edid
       - build_python
       - build_javascript
-      - build_bash
       - build_debian_package
       - e2e
       - lint_debian_package:
