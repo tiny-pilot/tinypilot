@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Executes all check scripts.
+#
+# It only skips ones that are very resource-heavy (e.g., `check-e2e`) or that
+# require special prerequisites (e.g., `check-debian-pkg`).
+
 # Exit on first failure.
 set -e
 
