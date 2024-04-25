@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Perform static analysis on all .deb files in the working directory.
+
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+while read -r file; do
+  lintian \
+    --check \
+    --no-tag-display-limit \
+    --suppress-tags-from-file .lintianignore \
+    --no-cfg \
+    --fail-on warning,error \
+    "${file}"
+done < <(ls -- *.deb)
