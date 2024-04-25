@@ -163,9 +163,9 @@ To build and install your changes on device, perform the following steps:
    ```
 1. On the device, clone the TinyPilot repo to a temporary directory.
 1. Check out the branch that has your changes.
-1. Run the [`dev-scripts/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
+1. Run the [`dev-scripts/device/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
    ```bash
-   sudo dev-scripts/install-from-source
+   sudo dev-scripts/device/install-from-source
    ```
 
 ### Installing a TinyPilot bundle
@@ -188,7 +188,7 @@ curl \
   --silent \
   --show-error \
   --location \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/install-bundle | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/device/install-bundle | \
   sudo bash -s -- \
     url-to-bundle-file # replace this line with your bundle URL
 ```
