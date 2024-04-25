@@ -48,7 +48,7 @@ jobs:
             apk add bash git openssh-client grep
             git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
             cd bats-core
-            sudo ./install.sh /usr/local
+            ./install.sh /usr/local
       - run:
           name: Run check and static analysis on bash scripts
           command: ./dev-scripts/check-bash
@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Check for unnecessary privilege escalation
           command: ./dev-scripts/check-privilege-guard
-  lint_sql:
+  check_sql:
     executor: python
     steps:
       - checkout
@@ -99,7 +99,7 @@ jobs:
             . venv/bin/activate
             pip install --requirement requirements.txt
             ./dev-scripts/decode-edid
-  build_python:
+  check_python:
     executor: python
     steps:
       - checkout
@@ -112,7 +112,7 @@ jobs:
             . venv/bin/activate
             pip install --requirement dev_requirements.txt
             ./dev-scripts/check-python
-  build_javascript:
+  check_javascript:
     executor: node
     steps:
       - checkout
@@ -125,8 +125,8 @@ jobs:
   e2e:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
-      # with Python, Node, and a browser. While the build_python and
-      # build_javascript steps use python-3.9.17 and node-18.16.1 respectively,
+      # with Python, Node, and a browser. While the check_python and
+      # check_javascript steps use python-3.9.17 and node-18.16.1 respectively,
       # the CircleCI image with *both* python and node in the closest versions
       # is python:3.9.17-browsers. It has python-3.9.17 and node-18.16.0.
       #
@@ -160,7 +160,7 @@ jobs:
           path: playwright-report
       - store_artifacts:
           path: e2e-results
-  build_debian_package:
+  check_debian_package:
     executor: ubuntu
     resource_class: arm.medium
     steps:
@@ -269,19 +269,19 @@ workflows:
       - check_whitespace
       - check_bash
       - check_privilege_guard
-      - lint_sql
+      - check_sql
       - check_style
       - decode_edid
-      - build_python
-      - build_javascript
-      - build_debian_package
+      - check_python
+      - check_javascript
+      - check_debian_package
       - e2e
       - lint_debian_package:
           requires:
-            - build_debian_package
+            - check_debian_package
       - build_bundle:
           requires:
-            - build_debian_package
+            - check_debian_package
       - verify_bundle:
           requires:
             - build_bundle
