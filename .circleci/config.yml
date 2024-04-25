@@ -50,7 +50,7 @@ jobs:
             cd bats-core
             ./install.sh /usr/local
       - run:
-          name: Run check and static analysis on bash scripts
+          name: Run tests and static analysis on bash scripts
           command: ./dev-scripts/check-bash
   check_privilege_guard:
     executor: ubuntu
