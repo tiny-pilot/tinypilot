@@ -19,4 +19,4 @@ while read -r file; do
     --no-cfg \
     --fail-on warning,error \
     "${file}"
-done < <(ls *.deb)
+done < <(ls -- *.deb)
