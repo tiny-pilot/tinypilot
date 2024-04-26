@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Runs tests and static analysis on bash scripts.
+# Run tests and static analysis on bash scripts.
 
 # Exit on first failure.
 set -e
