@@ -41,12 +41,16 @@ jobs:
     docker:
       - image: koalaman/shellcheck-alpine:v0.9.0
     steps:
-      - run:
-          name: Install dependencies
-          command: apk add bash git openssh-client grep
       - checkout
       - run:
-          name: Run static analysis on bash scripts
+          name: Install dependencies
+          command: |
+            apk add bash git openssh-client grep
+            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
+            cd bats-core
+            ./install.sh /usr/local
+      - run:
+          name: Run tests and static analysis on bash scripts
           command: ./dev-scripts/check-bash
   check_privilege_guard:
     executor: ubuntu
@@ -55,7 +59,7 @@ jobs:
       - run:
           name: Check for unnecessary privilege escalation
           command: ./dev-scripts/check-privilege-guard
-  lint_sql:
+  check_sql:
     executor: python
     steps:
       - checkout
@@ -67,7 +71,7 @@ jobs:
           command: |
             . venv/bin/activate
             pip install --requirement dev_requirements.txt
-            ./dev-scripts/lint-sql
+            ./dev-scripts/check-sql
   check_style:
     executor: node
     steps:
@@ -95,7 +99,7 @@ jobs:
             . venv/bin/activate
             pip install --requirement requirements.txt
             ./dev-scripts/decode-edid
-  build_python:
+  check_python:
     executor: python
     steps:
       - checkout
@@ -107,8 +111,8 @@ jobs:
           command: |
             . venv/bin/activate
             pip install --requirement dev_requirements.txt
-            ./dev-scripts/build-python
-  build_javascript:
+            ./dev-scripts/check-python
+  check_javascript:
     executor: node
     steps:
       - checkout
@@ -117,25 +121,12 @@ jobs:
           command: npm install
       - run:
           name: Run build script
-          command: ./dev-scripts/build-javascript
-  build_bash:
-    executor: ubuntu
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
-            cd bats-core
-            sudo ./install.sh /usr/local
-      - run:
-          name: Run build script
-          command: ./dev-scripts/build-bash
-  e2e:
+          command: ./dev-scripts/check-javascript
+  run_e2e_tests:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
-      # with Python, Node, and a browser. While the build_python and
-      # build_javascript steps use python-3.9.17 and node-18.16.1 respectively,
+      # with Python, Node, and a browser. While the check_python and
+      # check_javascript steps use python-3.9.17 and node-18.16.1 respectively,
       # the CircleCI image with *both* python and node in the closest versions
       # is python:3.9.17-browsers. It has python-3.9.17 and node-18.16.0.
       #
@@ -186,7 +177,7 @@ jobs:
           root: ./debian-pkg/releases
           paths:
             - "*.deb"
-  lint_debian_package:
+  check_debian_package:
     executor: ubuntu
     steps:
       - checkout
@@ -288,15 +279,14 @@ workflows:
       - check_whitespace
       - check_bash
       - check_privilege_guard
-      - lint_sql
+      - check_sql
       - check_style
       - decode_edid
-      - build_python
-      - build_javascript
-      - build_bash
+      - check_python
+      - check_javascript
+      - run_e2e_tests
       - build_debian_package
-      - e2e
-      - lint_debian_package:
+      - check_debian_package:
           requires:
             - build_debian_package
       - build_bundle:

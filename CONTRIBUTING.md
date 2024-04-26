@@ -32,7 +32,7 @@ python3 -m venv venv && \
 To run TinyPilot's build scripts, run:
 
 ```bash
-./dev-scripts/build
+./dev-scripts/check-all
 ```
 
 ### Run end-to-end tests
