@@ -40,13 +40,13 @@ To run TinyPilot's build scripts, run:
 To spawn a TinyPilot local dev server and run TinyPilot's end-to-end tests against that dev server, run:
 
 ```bash
-./dev-scripts/check-e2e
+./dev-scripts/run-e2e-tests
 ```
 
 To run TinyPilot's end-to-end tests against a running TinyPilot device, first turn off HTTPS redirection. Open the device's page in your browser and click through the privacy error. Then, navigate the menu options `System > Security`. Turn off "Require encrypted connection (HTTPS)". Finally, run the tests by passing an http URL as the first argument like so:
 
 ```bash
-./dev-scripts/check-e2e http://tinypilot.local
+./dev-scripts/run-e2e-tests http://tinypilot.local
 ```
 
 ### Enable Git hooks

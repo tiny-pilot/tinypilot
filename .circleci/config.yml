@@ -122,7 +122,7 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/check-javascript
-  check_e2e:
+  run_e2e_tests:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
       # with Python, Node, and a browser. While the check_python and
@@ -155,7 +155,7 @@ jobs:
           command: sudo ./dev-scripts/enable-passwordless-sudo
       - run:
           name: Run playwright tests
-          command: ./dev-scripts/check-e2e
+          command: ./dev-scripts/run-e2e-tests
       - store_artifacts:
           path: playwright-report
       - store_artifacts:
@@ -284,7 +284,7 @@ workflows:
       - decode_edid
       - check_python
       - check_javascript
-      - check_e2e
+      - run_e2e_tests
       - build_debian_package
       - check_debian_package:
           requires:
