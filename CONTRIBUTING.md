@@ -195,7 +195,7 @@ curl \
 
 ### Build a uStreamer Debian package
 
-CircleCI builds the uStreamer Debian package for both `amd64`- and `armhf`-based architectures on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
+CircleCI builds the uStreamer Debian package for the `armhf` architecture on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
 
 Follow these steps:
 
@@ -206,8 +206,7 @@ Follow these steps:
    - If the [`build_debian_package` CircleCI job](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/.circleci/config.yml#L25) fails for some reason, you can manually debug the code in CircleCI by clicking "rerun job with SSH" in the CircleCI dashboard and following their SSH instructions. Remember to cancel the CircleCI job once you're done debugging, in order to reduce CI costs.
 1. When the job completes, go to the "Artifacts" tab of the `build_debian_package` job on CircleCI to find the uStreamer Debian packages.
 
-   - We use `amd64`-based builds only for testing in CircleCI.
-   - We use `armhf`-based builds on physical devices.
+   - We use `armhf`-based builds on physical devices and for testing in CircleCI.
    - [Docker platform names don't match Debian architecture names:](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/Dockerfile#L46C1-L48)
 
      > Docker's platform names don't match Debian's platform names, so we translate
@@ -215,7 +214,6 @@ Follow these steps:
 
      Which means that when Docker's target platform is:
 
-     - `linux/amd64`, CircleCI creates a `amd64` Debian package
      - `linux/arm/v7`, CircleCI creates a `armhf` Debian package
 
 ### Install a uStreamer Debian package
