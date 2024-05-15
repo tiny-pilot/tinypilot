@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Installs the local directory's version of TinyPilot's code onto the current
 # system.
 #

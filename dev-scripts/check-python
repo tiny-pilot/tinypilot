@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Runs tests and static analysis on Python files.
 
 # Exit on first failure.
 set -e

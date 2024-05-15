@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Creates a symlink from /opt/tinypilot-privileged/scripts to dev-scripts/mock-scripts
 # to facilitate development on non-TinyPilot systems.
 

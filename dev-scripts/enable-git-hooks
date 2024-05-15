@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Enables all git hooks for this project.
 
 # Exit on first failure.
