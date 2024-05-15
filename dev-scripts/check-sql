@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Checks for SQL script anti-patterns.
 
 # Exit on first failure.

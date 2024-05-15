@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Executes all check scripts.
 #
 # It only skips `check-debian-pkg`, because that one has special prerequisites.

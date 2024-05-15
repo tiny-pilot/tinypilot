@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Runs tests and static analysis on JavaScript files.
 
 # Exit on first failure.
