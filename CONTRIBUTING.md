@@ -163,7 +163,7 @@ To build and install your changes on device, perform the following steps:
    ```
 1. On the device, clone the TinyPilot repo to a temporary directory.
 1. Check out the branch that has your changes.
-1. Run the [`dev-scripts/device/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
+1. Run the [`dev-scripts/device/install-from-source`](dev-scripts/device/install-from-source) script to build and install your branch's code. For example:
    ```bash
    sudo dev-scripts/device/install-from-source
    ```
