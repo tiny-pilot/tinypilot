@@ -44,6 +44,7 @@ jobs:
       - run:
           name: Install BATS
           command: |
+            set -eux
             git clone --branch v1.10.0 --depth 1 \
               https://github.com/bats-core/bats-core.git
             cd ./bats-core
@@ -52,6 +53,7 @@ jobs:
       - run:
           name: Install ShellCheck
           command: |
+            set -eux
             readonly SHELLCHECK_VERSION='v0.9.0'
             wget --quiet --output-document - \
               "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" |
