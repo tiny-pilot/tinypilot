@@ -38,17 +38,27 @@ jobs:
           name: Check that all text files end in a trailing newline
           command: ./dev-scripts/check-trailing-newline
   check_bash:
-    docker:
-      - image: koalaman/shellcheck-alpine:v0.9.0
+    executor: ubuntu
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install BATS
           command: |
-            apk add bash git openssh-client grep
-            git clone --depth 1 --branch v1.10.0 https://github.com/bats-core/bats-core.git
-            cd bats-core
-            ./install.sh /usr/local
+            git clone --branch v1.10.0 --depth 1 \
+              https://github.com/bats-core/bats-core.git
+            cd ./bats-core
+            sudo ./install.sh /usr
+            bats --version
+      - run:
+          name: Install ShellCheck
+          command: |
+            readonly SHELLCHECK_VERSION='v0.9.0'
+            wget --quiet --output-document - \
+              "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" |
+              tar --extract --xz --verbose
+            cd "./shellcheck-${SHELLCHECK_VERSION}"
+            sudo cp shellcheck /usr/bin
+            shellcheck --version
       - run:
           name: Run tests and static analysis on bash scripts
           command: ./dev-scripts/check-bash
