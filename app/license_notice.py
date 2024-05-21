@@ -70,7 +70,7 @@ _LICENSE_METADATA = [
         name='eventlet',
         homepage_url='https://eventlet.net',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/eventlet-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/eventlet-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='Flask',
@@ -118,7 +118,7 @@ _LICENSE_METADATA = [
         name='dnspython',
         homepage_url='https://www.dnspython.org',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/dnspython-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/dnspython-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='greenlet',
@@ -142,7 +142,7 @@ _LICENSE_METADATA = [
         name='Jinja2',
         homepage_url='https://palletsprojects.com/p/jinja/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/Jinja2-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/jinja2-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='MarkupSafe',
@@ -172,7 +172,7 @@ _LICENSE_METADATA = [
         name='Werkzeug',
         homepage_url='https://palletsprojects.com/p/werkzeug/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/Werkzeug-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/werkzeug-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='WTForms',
