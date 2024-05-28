@@ -8,6 +8,11 @@ set -u
 # Exit on first error.
 set -e
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
 readonly VALID_HOSTNAME_PATTERN='^[-0-9A-Za-z]+$'
 
 print_help() {
@@ -50,6 +55,18 @@ if ! [[ "${NEW_HOSTNAME}" =~ $VALID_HOSTNAME_PATTERN ]] \
   echo 'Invalid hostname' >&2
   exit 1
 fi
+
+# Remove any existing marker sections from the `/etc/hosts` file.
+"${SCRIPT_DIR}/strip-marker-sections" /etc/hosts
+
+# Populate new entry to `/etc/hosts`.
+# Note that the first matching entry takes precedence, which is why we prepend
+# our new entry.
+OLD_ETC_HOSTS="$(</etc/hosts)"
+readonly OLD_ETC_HOSTS
+printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
+  "${MARKER_START}" "${NEW_HOSTNAME}" "${MARKER_END}" "${OLD_ETC_HOSTS}" \
+  > /etc/hosts
 
 # We use `hostnamectl set-hostname xyz` instead of `hostnamectl hostname xyz`
 # because `set-hostname` is backwards compatible with the Bullseye version of
