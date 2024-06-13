@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Exit on first error.
+set -e
+
+# TODO parse these parameters from CLI args.
+readonly WIFI_COUNTRY='DE'
+readonly WIFI_SSID='my-home-network'
+readonly WIFI_PSK='p4ssw0rd'
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+# Remove any existing automated configuration.
+"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+
+# Write out the new configuration.
+{
+  echo "${MARKER_START}"
+  echo "country=${WIFI_COUNTRY}"
+  echo "$(wpa_passphrase "${WIFI_SSID}" "${WIFI_PSK}" | sed '/^\t#psk=.*/d')"
+  echo "${MARKER_END}"
+} | sudo tee --append "${CONFIG_FILE}" > /dev/null
+
+# Effectuate changes.
+rfkill unblock wifi
+wpa_cli -i wlan0 reconfigure

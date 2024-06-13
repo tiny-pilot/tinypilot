@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Exit on first error.
+set -e
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
+
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+# Remove any existing automated configuration.
+"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+
+# Block (deactivate) WLAN, which will take effect instantly.
+rfkill block wlan
