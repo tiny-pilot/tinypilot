@@ -21,7 +21,7 @@ readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
 {
   echo "${MARKER_START}"
   echo "country=${WIFI_COUNTRY}"
-  echo "$(wpa_passphrase "${WIFI_SSID}" "${WIFI_PSK}" | sed '/^\t#psk=.*/d')"
+  wpa_passphrase "${WIFI_SSID}" "${WIFI_PSK}" | sed '/^\t#psk=.*/d'
   echo "${MARKER_END}"
 } | sudo tee --append "${CONFIG_FILE}" > /dev/null
 
