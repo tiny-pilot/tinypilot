@@ -4,9 +4,9 @@
 set -e
 
 # TODO parse these parameters from CLI args.
-readonly WIFI_COUNTRY='DE'
-readonly WIFI_SSID='my-home-network'
-readonly WIFI_PSK='p4ssw0rd'
+readonly WIFI_COUNTRY="$1"
+readonly WIFI_SSID="$2"
+readonly WIFI_PSK="$3"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
