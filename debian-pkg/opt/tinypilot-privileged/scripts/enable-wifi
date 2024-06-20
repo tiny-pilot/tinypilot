@@ -1,23 +1,100 @@
 #!/bin/bash
+#
+# Enables a WiFi network connection.
 
-# Exit on first error.
+# Exit on first failure.
 set -e
 
-# TODO parse these parameters from CLI args.
-readonly WIFI_COUNTRY='DE'
-readonly WIFI_SSID='my-home-network'
-readonly WIFI_PSK='p4ssw0rd'
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help] [--country COUNTRY] [--ssid SSID] [--psk PSK]
+Enables a WiFi network connection.
+  --help              Optional. Display this help and exit.
+  --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
+  --ssid SSID         The name (SSID) of the WiFi network.
+  --psk PSK           Optional. The password for authenticating.
+EOF
+}
+
+# Parse command-line arguments.
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    --country)
+      if (( "$#" < 2 )); then
+        shift
+        break
+      fi
+      WIFI_COUNTRY="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --ssid)
+      if (( "$#" < 2 )); then
+        shift
+        break
+      fi
+      WIFI_SSID="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --psk)
+      if (( "$#" < 2 )); then
+        shift
+        break
+      fi
+      WIFI_PSK="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    *)
+      >&2 echo "Unknown flag/argument: $1"
+      >&2 echo "Use the '--help' flag for more information"
+      exit 1
+      ;;
+  esac
+done
+readonly WIFI_COUNTRY
+readonly WIFI_SSID
+readonly WIFI_PSK="${WIFI_PSK:-''}"
+
+if [[ -z "${WIFI_COUNTRY}" ]]; then
+  >&2 echo 'Missing argument: COUNTRY'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+if [[ "$(echo -n "${WIFI_COUNTRY}" | wc --bytes)" != 2 ]]; then
+  >&2 echo 'Invalid argument: COUNTRY'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+if [[ -z "${WIFI_SSID}" ]]; then
+  >&2 echo 'Missing argument: SSID'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
-readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
-# shellcheck source=lib/markers.sh
-. "${SCRIPT_DIR}/lib/markers.sh"
 
 # Remove any existing automated configuration.
+readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
 "${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
 # Write out the new configuration.
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
 {
   echo "${MARKER_START}"
   echo "country=${WIFI_COUNTRY}"
