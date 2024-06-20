@@ -44,25 +44,28 @@ def status():
     return network_status
 
 
-def read_settings():
+def read_wifi_settings():
     """...
     """
-    return WiFiSettings('DE', 'Downunder', 'Dragon76012__burgerZ*((-')
+    # TODO parse from wpa_supplicant.conf file
+    return WiFiSettings('US', 'wlan-184722', None)
 
 
-def enable(wifi_settings):
+def enable_wifi(wifi_settings):
     """...
     """
     try:
         return subprocess.Popen([
             'sudo', '/opt/tinypilot-privileged/scripts/enable-wifi',
-            wifi_settings.country_code, wifi_settings.ssid, wifi_settings.psk
+            '--country', wifi_settings.country_code,
+            '--ssid', wifi_settings.ssid,
+            '--psk', wifi_settings.psk
         ])
     except subprocess.CalledProcessError as e:
         raise WifiApplyError(str(e.output).strip()) from e
 
 
-def disable():
+def disable_wifi():
     """...
     """
     try:

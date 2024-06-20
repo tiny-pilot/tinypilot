@@ -6,17 +6,17 @@ import execute
 import hostname
 import json_response
 import local_system
+import network
 import request_parsers.errors
 import request_parsers.hostname
 import request_parsers.paste
 import request_parsers.video_settings
-import request_parsers.wifi
+import request_parsers.network
 import update.launcher
 import update.settings
 import update.status
 import version
 import video_service
-import wifi
 from hid import keyboard as fake_keyboard
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -205,7 +205,7 @@ def hostname_set():
 def network_status():
     """...
     """
-    status = wifi.status()
+    status = network.status()
     return json_response.success({
         'ethernet': status.ethernet,
         'wifi': status.wifi,
@@ -216,7 +216,7 @@ def network_status():
 def network_wifi_get():
     """...
     """
-    wifi_settings = wifi.read_settings()
+    wifi_settings = network.read_wifi_settings()
     return json_response.success({
         'countryCode': wifi_settings.country_code,
         'ssid': wifi_settings.ssid,
@@ -228,12 +228,12 @@ def network_wifi_enable():
     """...
     """
     try:
-        wifi_settings = request_parsers.wifi.parse_wifi_settings(flask.request)
-        wifi.enable(wifi_settings)
+        wifi_settings = request_parsers.network.parse_wifi_settings(flask.request)
+        network.enable_wifi(wifi_settings)
         return json_response.success()
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
-    except wifi.Error as e:
+    except network.Error as e:
         return json_response.error(e), 500
 
 
@@ -242,11 +242,11 @@ def network_wifi_disable():
     """...
     """
     try:
-        wifi.disable()
+        network.disable_wifi()
         return json_response.success()
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
-    except wifi.Error as e:
+    except network.Error as e:
         return json_response.error(e), 500
 
 
