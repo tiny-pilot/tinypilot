@@ -110,7 +110,8 @@ test.describe("about dialog", () => {
     const failedUrls = [];
     for (const path of paths) {
       const url = `${baseURL}${path}`;
-      await page.goto(url, { timeout: 10000 })
+      await page
+        .goto(url, { timeout: 10000 })
         .then((res) => {
           if (res.status() !== 200) {
             failedUrls.push(url);
