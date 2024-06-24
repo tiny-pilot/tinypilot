@@ -108,19 +108,18 @@ test.describe("about dialog", () => {
       links.map((link) => link.getAttribute("href"))
     );
     const failedUrls = [];
-    await Promise.all(
-      paths
-        .map((path) => `${baseURL}${path}`)
-        .map((url) =>
-          fetch(url, { signal: AbortSignal.timeout(10000) })
-            .then((res) => {
-              if (res.status !== 200) {
-                failedUrls.push(url);
-              }
-            })
-            .catch(() => failedUrls.push(url))
-        )
-    );
+    for (const path of paths) {
+      const url = `${baseURL}${path}`;
+      await page.goto(url, { timeout: 10000 })
+        .then((res) => {
+          if (res.status() !== 200) {
+            failedUrls.push(url);
+          }
+        })
+        .catch(() => {
+          failedUrls.push(url);
+        });
+    }
     expect(
       failedUrls.length,
       `License link broken for URLs: ${failedUrls.join(", ")}`
