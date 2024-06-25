@@ -114,9 +114,10 @@ test.describe("about dialog", () => {
         .map((path) => `${baseURL}${path}`)
         .map(async (url) => {
           const page = await context.newPage();
-          await page.goto(url, { timeout: 10000 })
+          await page
+            .goto(url, { timeout: 10000 })
             .then((res) => {
-              if (res.status !== 200) {
+              if (res.status() !== 200) {
                 failedUrls.push(url);
               }
             })
