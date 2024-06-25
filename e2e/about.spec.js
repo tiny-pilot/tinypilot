@@ -102,25 +102,27 @@ test.describe("about dialog", () => {
   test("checks that all license URLs are valid and reachable", async ({
     page,
     baseURL,
+    context,
   }) => {
     const links = await page.locator("a.license").all();
     const paths = await Promise.all(
       links.map((link) => link.getAttribute("href"))
     );
     const failedUrls = [];
-    for (const path of paths) {
-      const url = `${baseURL}${path}`;
-      await page
-        .goto(url, { timeout: 10000 })
-        .then((res) => {
-          if (res.status() !== 200) {
-            failedUrls.push(url);
-          }
+    await Promise.all(
+      paths
+        .map((path) => `${baseURL}${path}`)
+        .map(async (url) => {
+          const page = await context.newPage();
+          await page.goto(url, { timeout: 10000 })
+            .then((res) => {
+              if (res.status !== 200) {
+                failedUrls.push(url);
+              }
+            })
+            .catch(() => failedUrls.push(url));
         })
-        .catch(() => {
-          failedUrls.push(url);
-        });
-    }
+    );
     expect(
       failedUrls.length,
       `License link broken for URLs: ${failedUrls.join(", ")}`
