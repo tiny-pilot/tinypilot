@@ -112,17 +112,17 @@ test.describe("about dialog", () => {
     await Promise.all(
       paths
         .map((path) => `${baseURL}${path}`)
-        .map((url) =>
-          context
-            .newPage()
+        .map(async (url) => {
+          const page = await context.newPage();
+          await page
             .goto(url, { timeout: 10000 })
             .then((res) => {
               if (res.status() !== 200) {
                 failedUrls.push(url);
               }
             })
-            .catch(() => failedUrls.push(url))
-        )
+            .catch(() => failedUrls.push(url));
+        })
     );
     expect(
       failedUrls.length,
