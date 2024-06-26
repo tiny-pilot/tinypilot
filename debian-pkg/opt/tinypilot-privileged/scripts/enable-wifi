@@ -12,7 +12,8 @@ Enables a WiFi network connection.
   --help              Optional. Display this help and exit.
   --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
   --ssid SSID         The name (SSID) of the WiFi network.
-  --psk PSK           Optional. The password for authenticating.
+  --psk PSK           Optional. The password for authenticating. If specified,
+                      it must be 8-63 characters in length.
 EOF
 }
 
@@ -59,16 +60,10 @@ while (( "$#" > 0 )); do
 done
 readonly WIFI_COUNTRY
 readonly WIFI_SSID
-readonly WIFI_PSK="${WIFI_PSK:-''}"
+readonly WIFI_PSK="${WIFI_PSK:-}"
 
 if [[ -z "${WIFI_COUNTRY}" ]]; then
   >&2 echo 'Missing argument: COUNTRY'
-  >&2 echo "Use the '--help' flag for more information"
-  exit 1
-fi
-
-if [[ "$(echo -n "${WIFI_COUNTRY}" | wc --bytes)" != 2 ]]; then
-  >&2 echo 'Invalid argument: COUNTRY'
   >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
@@ -77,6 +72,17 @@ if [[ -z "${WIFI_SSID}" ]]; then
   >&2 echo 'Missing argument: SSID'
   >&2 echo "Use the '--help' flag for more information"
   exit 1
+fi
+
+# If a password is specified, it has to be 8-63 characters in length.
+if [[ -n "${WIFI_PSK}" ]]; then
+  PSK_LENGTH="$(echo -n "${WIFI_PSK}" | wc --bytes)"
+  readonly PSK_LENGTH
+  if (( "${PSK_LENGTH}" < 8 || "${PSK_LENGTH}" > 63 )); then
+    >&2 echo 'Invalid argument: PSK'
+    >&2 echo "Use the '--help' flag for more information"
+    exit 1
+  fi
 fi
 
 # Echo commands before executing them, by default to stderr.
@@ -89,7 +95,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 
 # Remove any existing automated configuration.
-readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
+readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
 "${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
 # Write out the new configuration.
@@ -98,11 +104,24 @@ readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
 {
   echo "${MARKER_START}"
   echo "country=${WIFI_COUNTRY}"
-  # Generate the "network" block of the config. The `wpa_passphrase` command
-  # hashes the WiFi password so that it is not persisted in clear text.
-  # However, the command still outputs the original password as a comment line,
-  # so we strip off that line (which starts with `#psk=`).
-  wpa_passphrase "${WIFI_SSID}" "${WIFI_PSK}" | sed '/^\t#psk=.*/d'
+
+  # Generate the "network" block of the config.
+  # - If a password is specified, we use the `wpa_passphrase` command. This
+  #   outputs a complete "network" block, and hashes the password instead of
+  #   storing it in clear text. Note that it still includes the original
+  #   password as comment line in the output, so we have to strip off that line
+  #   (which starts with `#psk=`)
+  # - If no password is specified, we assemble the "network" block manually. In
+  #   this case, we also have to set `key_mgmt=NONE` to denote an open network.
+  if [[ -n "${WIFI_PSK}" ]]; then
+    wpa_passphrase "${WIFI_SSID}" "${WIFI_PSK}" | sed '/^\t#psk=.*/d'
+  else
+    echo 'network={'
+    echo -e "\tssid=\"${WIFI_SSID}\""
+    echo -e '\tkey_mgmt=NONE'
+    echo '}'
+  fi
+
   echo "${MARKER_END}"
 } | sudo tee --append "${CONFIG_FILE}" > /dev/null
 

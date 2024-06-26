@@ -9,7 +9,7 @@ print_help() {
   cat <<EOF
 Usage: ${0##*/} [--help]
 Disable the WiFi network connection.
-  --help                   Optional. Display this help and exit.
+  --help   Optional. Display this help and exit.
 EOF
 }
 
@@ -36,10 +36,10 @@ set -u
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
-readonly CONFIG_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
+readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
 
 # Remove any existing automated configuration.
 "${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
-# Block (deactivate) WLAN. This will take effect instantly.
+# Effectuate changes. This will disable the WiFi connection instantly.
 rfkill block wlan
