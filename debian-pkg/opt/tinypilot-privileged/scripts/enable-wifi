@@ -138,7 +138,7 @@ readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
   fi
 
   echo "${MARKER_END}"
-} | sudo tee --append "${CONFIG_FILE}" > /dev/null
+} >> "${CONFIG_FILE}"
 
 # Effectuate changes.
 rfkill unblock wifi
