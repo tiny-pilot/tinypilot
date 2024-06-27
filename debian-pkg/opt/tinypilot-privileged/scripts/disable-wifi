@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# Disable the WiFi network connection.
+
+# Exit on first failure.
+set -e
+
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help]
+Disable the WiFi network connection.
+  --help   Optional. Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    *)
+      >&2 echo "Unknown flag/argument: $1"
+      >&2 echo "Use the '--help' flag for more information"
+      exit 1
+      ;;
+  esac
+done
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
+
+# Remove any existing automated configuration.
+"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+
+# Effectuate changes. This will disable the WiFi connection instantly.
+rfkill block wlan

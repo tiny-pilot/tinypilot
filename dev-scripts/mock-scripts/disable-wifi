@@ -1,0 +1,3 @@
+#!/bin/bash
+
+# Mock version of /opt/tinypilot-privileged/scripts/disable-wifi
