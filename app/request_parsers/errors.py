@@ -14,6 +14,10 @@ class InvalidHostnameError(Error):
     code = 'INVALID_HOSTNAME'
 
 
+class InvalidWifiSettings(Error):
+    code = 'INVALID_WIFI_SETTINGS'
+
+
 class InvalidVideoSettingError(Error):
     pass
 
