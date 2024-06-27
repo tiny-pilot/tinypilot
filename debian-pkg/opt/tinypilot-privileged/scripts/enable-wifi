@@ -7,7 +7,7 @@ set -e
 
 print_help() {
   cat <<EOF
-Usage: ${0##*/} [--help] [--country COUNTRY] [--ssid SSID] [--psk PSK]
+Usage: ${0##*/} [--help] --country COUNTRY --ssid SSID [--psk PSK]
 Enables a WiFi network connection.
   --help              Optional. Display this help and exit.
   --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
