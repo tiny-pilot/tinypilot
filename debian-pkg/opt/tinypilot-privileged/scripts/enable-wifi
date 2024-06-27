@@ -7,13 +7,19 @@ set -e
 
 print_help() {
   cat <<EOF
-Usage: ${0##*/} [--help] [--country COUNTRY] [--ssid SSID] [--psk PSK]
+Usage: ${0##*/} [--help] --country COUNTRY --ssid SSID [--psk PSK]
 Enables a WiFi network connection.
   --help              Optional. Display this help and exit.
   --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
   --ssid SSID         The name (SSID) of the WiFi network.
   --psk PSK           Optional. The password for authenticating. If specified,
                       it must be 8-63 characters in length.
+
+Note: this script only stores the WiFi configuration and triggers its
+activation, but it doesn't (and cannot) verify whether the device can actually
+connect to the wireless network successfully. In that sense, enabling WiFi
+means that the device will *attempt* to connect to the wireless network, and
+otherwise fall back to the wired Ethernet connection.
 EOF
 }
 
@@ -64,6 +70,15 @@ readonly WIFI_PSK="${WIFI_PSK:-}"
 
 if [[ -z "${WIFI_COUNTRY}" ]]; then
   >&2 echo 'Missing argument: COUNTRY'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+# According to ISO 3166-1 alpha-2, the country code has to contain 2 letters.
+COUNTRY_LENGTH="$(echo -n "${WIFI_COUNTRY}" | wc --bytes)"
+readonly COUNTRY_LENGTH
+if (( "${COUNTRY_LENGTH}" != 2 )); then
+  >&2 echo 'Invalid argument: COUNTRY'
   >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
@@ -123,7 +138,7 @@ readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
   fi
 
   echo "${MARKER_END}"
-} | sudo tee --append "${CONFIG_FILE}" > /dev/null
+} >> "${CONFIG_FILE}"
 
 # Effectuate changes.
 rfkill unblock wifi
