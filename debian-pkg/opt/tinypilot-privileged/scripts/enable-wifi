@@ -74,6 +74,15 @@ if [[ -z "${WIFI_COUNTRY}" ]]; then
   exit 1
 fi
 
+# According to ISO 3166-1 alpha-2, the country code has to contain 2 letters.
+COUNTRY_LENGTH="$(echo -n "${WIFI_COUNTRY}" | wc --bytes)"
+readonly COUNTRY_LENGTH
+if (( "${COUNTRY_LENGTH}" != 2 )); then
+  >&2 echo 'Invalid argument: COUNTRY'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
 if [[ -z "${WIFI_SSID}" ]]; then
   >&2 echo 'Missing argument: SSID'
   >&2 echo "Use the '--help' flag for more information"
