@@ -51,18 +51,24 @@ readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
 
+# Clear existing TinyPilot network configurations.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
-mv \
-  /etc/wpa_supplicant/wpa_supplicant.conf.bak \
-  /etc/wpa_supplicant/wpa_supplicant.conf
+# Restore previously backed up WPA configurations.
+if [[ -e /etc/wpa_supplicant/wpa_supplicant.conf.bak ]]; then
+  mv \
+    /etc/wpa_supplicant/wpa_supplicant.conf.bak \
+    /etc/wpa_supplicant/wpa_supplicant.conf
+fi
 
+# Disable WPA.
 if [[ -e /etc/wpa_supplicant/wlan_enabled ]]; then
   rm --force /etc/wpa_supplicant/wlan_enabled
 else
   rfkill block wlan
 fi
 
+# Stop wireless access point.
 systemctl stop hostapd dnsmasq
 rm --force \
   /etc/hostapd/hostapd.conf \
