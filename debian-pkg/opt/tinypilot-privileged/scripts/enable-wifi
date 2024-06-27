@@ -14,6 +14,12 @@ Enables a WiFi network connection.
   --ssid SSID         The name (SSID) of the WiFi network.
   --psk PSK           Optional. The password for authenticating. If specified,
                       it must be 8-63 characters in length.
+
+Note: this script only stores the WiFi configuration and triggers its
+activation, but it doesn't (and cannot) verify whether the device can actually
+connect to the wireless network successfully. In that sense, enabling WiFi
+means that the device will *attempt* to connect to the wireless network, and
+otherwise fall back to the wired Ethernet connection.
 EOF
 }
 
