@@ -111,7 +111,8 @@ input[type="password"] {
   box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
 }
 
-input[type="text"].monospace {
+input[type="text"].monospace,
+input[type="password"].monospace {
   font-family: "Overpass Mono", monospace;
   /* Since the monospace font has different characteristics than the regular
      font, we need to set the height here explicitly. In the end, the input
