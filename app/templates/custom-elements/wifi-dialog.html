@@ -40,14 +40,19 @@
       flex-direction: column;
       align-items: start;
       gap: 1em;
-      margin: 1.5em 0;
+      margin-top: 1.5em;
       padding-left: 6em;
     }
+
     .container-row {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5em;
+    }
+
+    .button-row {
+      margin-top: 1em;
     }
   </style>
 
@@ -91,7 +96,7 @@
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
-          placeholder="******************"
+          placeholder="(hidden)"
         />
       </div>
       <div class="container-row">
@@ -108,18 +113,21 @@
           spellcheck="false"
           placeholder="US"
         />
-        <inline-message variant="error" id="input-error">
-          <strong>Invalid WiFi Settings:</strong> ...
-        </inline-message>
       </div>
     </div>
-    <button id="disable-button" class="btn-danger" type="button">
-      Disable
-    </button>
-    <button id="enable-button" class="btn-success" type="button">
-      Enable
-    </button>
-    <button class="close-button" type="button">Close</button>
+    <inline-message variant="error" id="input-error">
+      <strong>Invalid WiFi Settings:</strong>
+      <span id="input-error-reason"></span>
+    </inline-message>
+    <div class="button-row">
+      <button id="disable-button" class="btn-danger" type="button">
+        Disable
+      </button>
+      <button id="enable-button" class="btn-success" type="button">
+        Enable
+      </button>
+      <button class="close-button" type="button">Close</button>
+    </div>
   </div>
 
   <div id="changing">
@@ -170,6 +178,7 @@
           this._elements = {
             noEthernetWarning: this.shadowRoot.querySelector("#no-ethernet-warning"),
             inputError: this.shadowRoot.querySelector("#input-error"),
+            inputErrorReason: this.shadowRoot.querySelector("#input-error-reason"),
             ssidInput: this.shadowRoot.querySelector("#ssid-input"),
             pskInput: this.shadowRoot.querySelector("#psk-input"),
             countryCodeInput: this.shadowRoot.querySelector("#country-code-input"),
@@ -220,9 +229,9 @@
             psk: "",
             countryCode: "",
           };
-          this._elements.pskInput.placeholder = "************";
-          this._elements.enableButton.disabled = true;
-          this._elements.disableButton.disabled = true;
+          this._elements.ssidInput.value = "";
+          this._elements.pskInput.value = "";
+          this._elements.countryCodeInput.value = "";
           this._elements.noEthernetWarning.hide();
           this._elements.inputError.hide();
 
@@ -237,11 +246,12 @@
           const wifiSettings = await getWifiSettings();
           if (wifiSettings) {
             this._elements.ssidInput.value = wifiSettings.ssid;
-            this._elements.pskInput.placeholder = "(hidden)";
             this._elements.countryCodeInput.value = wifiSettings.countryCode;
             this._elements.disableButton.disabled = false;
             this._initialWiFiSettings = { ...this._initialWiFiSettings, ...wifiSettings };
           }
+
+          this._refreshButtons();
           this._state = this._states.PROMPT;
         }
 
@@ -256,7 +266,17 @@
               inputChanged = true;
             }
           });
-          this._elements.enableButton.disabled = !inputChanged;
+          let mandatoryInputMissing = false;
+          [
+            this._elements.ssidInput,
+            this._elements.countryCodeInput,
+          ].forEach((el) => {
+            if (el.value === "") {
+              mandatoryInputMissing = true;
+            }
+          });
+          this._elements.enableButton.disabled = !inputChanged || mandatoryInputMissing;
+          this._elements.disableButton.disabled = this._initialWiFiSettings.ssid === "";
         }
 
         _enable() {
@@ -269,9 +289,10 @@
               this._state = this._states.SUCCESS;
             })
             .catch((error) => {
-              if (error.code === "INVALID_...") {
+              if (error.code === "INVALID_WIFI_SETTINGS") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
+                this._elements.inputErrorReason.textContent = error.message;
                 this._elements.inputError.show();
                 this._state = this._states.PROMPT;
                 return;
