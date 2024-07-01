@@ -62,9 +62,10 @@ if [[ ! -f "${TARGET_FILE}" ]]; then
   exit 1
 fi
 
-# Read the original file line by line, and print all lines that reside between
-# the markers to stdout.
+# Read the original file line by line, and preserve all lines that reside
+# between the start and end markers (i.e., the section contents).
 is_in_marker_section='false'
+section_contents=()
 while IFS='' read -r line; do
   if [[ "${line}" == "${MARKER_END}" ]]; then
     if ! "${is_in_marker_section}"; then
@@ -79,7 +80,7 @@ while IFS='' read -r line; do
     continue
   fi
   if "${is_in_marker_section}"; then
-    echo "${line}"
+    section_contents+=("${line}")
   fi
 done < "${TARGET_FILE}"
 
@@ -87,3 +88,6 @@ if "${is_in_marker_section}"; then
   echo 'Unmatched start marker' >&2
   exit 1
 fi
+
+# Print all lines of the section contents.
+printf "%s\n" "${section_contents[@]}"
