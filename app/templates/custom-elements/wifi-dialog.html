@@ -236,9 +236,6 @@
           this._elements.inputError.hide();
 
           const networkStatus = await getNetworkStatus();
-          if (!networkStatus.wifi) {
-            this._elements.disableButton.disabled = true;
-          }
           if (!networkStatus.ethernet) {
             this._elements.noEthernetWarning.show();
           }
@@ -247,7 +244,6 @@
           if (wifiSettings) {
             this._elements.ssidInput.value = wifiSettings.ssid;
             this._elements.countryCodeInput.value = wifiSettings.countryCode;
-            this._elements.disableButton.disabled = false;
             this._initialWiFiSettings = { ...this._initialWiFiSettings, ...wifiSettings };
           }
 
@@ -276,7 +272,7 @@
             }
           });
           this._elements.enableButton.disabled = !inputChanged || mandatoryInputMissing;
-          this._elements.disableButton.disabled = this._initialWiFiSettings.ssid === "";
+          this._elements.disableButton.disabled = !this._initialWiFiSettings.ssid;
         }
 
         _enable() {
