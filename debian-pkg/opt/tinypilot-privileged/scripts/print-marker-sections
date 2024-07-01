@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Prints the content of a marker sections from a file.
+# Prints the contents of marker sections from a file.
 #
 # If the target file doesn’t contain marker sections, the script doesn’t output
 # anything.
@@ -24,7 +24,7 @@ readonly SCRIPT_DIR
 print_help() {
   cat << EOF
 Usage: ${0##*/} [--help] TARGET_FILE
-Prints the content of a marker sections from a file.
+Prints the contents of marker sections from a file.
   TARGET_FILE   Path to file with marker sections.
   --help        Display this help and exit.
 EOF

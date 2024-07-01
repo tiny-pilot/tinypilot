@@ -16,7 +16,7 @@ prints-help() { #@test
   run print-marker-sections --help
   expected_output="$(cat << EOF
 Usage: print-marker-sections [--help] TARGET_FILE
-Prints the content of a marker sections from a file.
+Prints the contents of marker sections from a file.
   TARGET_FILE   Path to file with marker sections.
   --help        Display this help and exit.
 EOF
