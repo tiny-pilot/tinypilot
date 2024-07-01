@@ -59,6 +59,8 @@ def determine_wifi_settings():
             always `None` for security reasons.
     """
     try:
+        # We cannot read the wpa_supplicant.conf file directly, because it is
+        # owned by the root user.
         config_lines = subprocess.check_output([
             'sudo', '/opt/tinypilot-privileged/scripts/print-marker-sections',
             '/etc/wpa_supplicant/wpa_supplicant.conf'
