@@ -2,8 +2,6 @@ import dataclasses
 import re
 import subprocess
 
-import markers
-
 _CONFIG_FILE = '/etc/wpa_supplicant/wpa_supplicant.conf'
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
@@ -60,9 +58,18 @@ def determine_wifi_settings():
             there is no WiFi configuration present. The `psk` property is
             always `None` for security reasons.
     """
-    config_lines = markers.read_marker_section(_CONFIG_FILE)
+    try:
+        config_lines = subprocess.check_output([
+            'sudo', '/opt/tinypilot-privileged/scripts/print-marker-section',
+            '/etc/wpa_supplicant/wpa_supplicant.conf'
+        ],
+                                               stderr=subprocess.STDOUT,
+                                               universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        raise NetworkError(str(e.output).strip()) from e
+
     wifi = WiFiSettings(None, None, None)
-    for line in config_lines:
+    for line in config_lines.split('\n'):
         match_country = _WIFI_COUNTRY_PATTERN.search(line.strip())
         if match_country:
             wifi.country_code = match_country.group(1)

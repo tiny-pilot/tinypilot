@@ -3,6 +3,7 @@ tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/collect-debug-lo
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/configure-janus
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/disable-wifi
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/enable-wifi
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/print-marker-section /etc/wpa_supplicant/wpa_supplicant.conf
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/read-update-log
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/update
 tinypilot ALL=(ALL) NOPASSWD: /sbin/shutdown
