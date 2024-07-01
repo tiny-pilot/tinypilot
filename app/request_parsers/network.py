@@ -23,6 +23,8 @@ def parse_wifi_settings(request):
     if not isinstance(country_code, str):
         raise errors.InvalidWifiSettings('The country code is not a string.')
     if len(country_code) != 2:
+        # The ISO 3166-1 alpha-2 standard theoretically allows any 2-digit
+        # combination, so we don’t have to eagerly restrict this.
         raise errors.InvalidWifiSettings(
             'The country code must consist of 2 characters.')
     if not country_code.isalpha():
@@ -38,6 +40,8 @@ def parse_wifi_settings(request):
         if not isinstance(psk, str):
             raise errors.InvalidWifiSettings('The password is not a string.')
         if len(psk) < 8 or len(psk) > 63:
+            # Note: this constraint is imposed by the WPA2 standard. We need
+            # to enforce this to prevent underlying commands from failing.
             raise errors.InvalidWifiSettings(
                 'The password must consist of 8-63 characters.')
 

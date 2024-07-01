@@ -9,7 +9,7 @@ def read_marker_section(file_path):
         file_path: the target file path as str.
 
     Returns:
-        List of str
+        List of str.
     """
     in_marker_section = False
     marker_section_lines = []

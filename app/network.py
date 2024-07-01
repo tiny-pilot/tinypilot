@@ -52,12 +52,13 @@ def status():
     return network_status
 
 
-def read_wifi_settings():
-    """Determines the current WiFi settings (if present).
+def determine_wifi_settings():
+    """Determines the current WiFi settings (if set).
 
     Returns:
-        WiFiSettings, where the `psk` property is always `None` for security
-            reasons.
+        WiFiSettings: if the `ssid` and `country_code` attributes are `None`,
+            there is no WiFi configuration present. The `psk` property is
+            always `None` for security reasons.
     """
     config_lines = markers.read_marker_section(_CONFIG_FILE)
     wifi = WiFiSettings(None, None, None)
@@ -76,8 +77,11 @@ def read_wifi_settings():
 def enable_wifi(wifi_settings):
     """Enables a wireless network connection.
 
+    Note: The function is executed in a "fire and forget" manner, to prevent
+    the HTTP request from failing erratically due to a network interruption.
+
     Args:
-        wifi_settings: The desired settings.
+        wifi_settings: The new, desired settings.
 
     Raises:
         NetworkError
@@ -96,6 +100,9 @@ def enable_wifi(wifi_settings):
 
 def disable_wifi():
     """Removes the WiFi settings and disables the wireless connection.
+
+    Note: The function is executed in a "fire and forget" manner, to prevent
+    the HTTP request from failing erratically due to a network interruption.
 
     Raises:
         NetworkError

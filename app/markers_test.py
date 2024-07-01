@@ -34,7 +34,8 @@ Line 5
             mock_file.flush()
 
             lines = markers.read_marker_section(mock_file.name)
-            self.assertEqual(['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5'], lines)
+            self.assertEqual(['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5'],
+                             lines)
 
     def test_returns_empty_list_if_marker_section_is_empty(self):
         with tempfile.NamedTemporaryFile(mode='w') as mock_file:
