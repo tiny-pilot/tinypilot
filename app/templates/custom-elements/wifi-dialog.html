@@ -279,7 +279,7 @@
           enableWifi(
             this._elements.countryCodeInput.value,
             this._elements.ssidInput.value,
-            this._elements.pskInput.value,
+            this._elements.pskInput.value || null,
           )
             .then(() => {
               this._state = this._states.SUCCESS;
