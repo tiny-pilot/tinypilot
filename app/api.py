@@ -206,7 +206,15 @@ def network_status():
     """Returns the current network status (i.e., which interfaces are active).
 
     Returns:
-        Empty response on success, error object otherwise.
+        On success, a JSON data structure with the following properties:
+        ethernet: bool.
+        wifi: bool
+
+        Example:
+        {
+            "ethernet": true,
+            "wifi": false
+        }
     """
     status = network.status()
     return json_response.success({
@@ -232,7 +240,7 @@ def network_wifi_get():
 
         Returns an error object on failure.
     """
-    wifi_settings = network.read_wifi_settings()
+    wifi_settings = network.determine_wifi_settings()
     return json_response.success({
         'countryCode': wifi_settings.country_code,
         'ssid': wifi_settings.ssid,
@@ -243,12 +251,12 @@ def network_wifi_get():
 def network_wifi_enable():
     """Enables a wireless network connection.
 
-    Expects a JSON data structure in the request body that contains the
-    a country code, an SSID, and optionally a password as strings. Example:
+    Expects a JSON data structure in the request body that contains a country
+    code, an SSID, and optionally a password; all as strings. Example:
     {
         "countryCode": "US",
         "ssid": "my-network",
-        "psk": "s3cr3t!!!"
+        "psk": "sup3r-s3cr3t!"
     }
 
     Returns:
