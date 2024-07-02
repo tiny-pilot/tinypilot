@@ -39,7 +39,8 @@ while (( "$#" > 0 )); do
       exit
       ;;
     -*)
-      echo "Illegal option: $1" >&2
+      >&2 echo "Unknown flag: $1"
+      >&2 echo "Use the '--help' flag for more information"
       exit 1
       ;;
     *)
@@ -52,13 +53,15 @@ readonly TARGET_FILE
 
 # Ensure target file is specified.
 if [[ -z "${TARGET_FILE}" ]]; then
-  echo 'Input parameter missing: TARGET_FILE' >&2
+  >&2 echo 'Input parameter missing: TARGET_FILE'
+  >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
 
 # Ensure target file exists and is a file.
 if [[ ! -f "${TARGET_FILE}" ]]; then
-  echo "Not a file: ${TARGET_FILE}" >&2
+  >&2 echo "Not a file: ${TARGET_FILE}"
+  >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
 
@@ -69,7 +72,7 @@ section_contents=()
 while IFS='' read -r line; do
   if [[ "${line}" == "${MARKER_END}" ]]; then
     if ! "${is_in_marker_section}"; then
-      echo 'Unmatched end marker' >&2
+      >&2 echo 'Unmatched end marker'
       exit 1
     fi
     is_in_marker_section='false'
@@ -85,7 +88,7 @@ while IFS='' read -r line; do
 done < "${TARGET_FILE}"
 
 if "${is_in_marker_section}"; then
-  echo 'Unmatched start marker' >&2
+  >&2 echo 'Unmatched start marker'
   exit 1
 fi
 
