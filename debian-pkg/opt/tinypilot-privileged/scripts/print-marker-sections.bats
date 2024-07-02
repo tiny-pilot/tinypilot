@@ -28,31 +28,51 @@ EOF
 
 rejects-missing-input-arg() { #@test
   run print-marker-sections
+  expected_output="$(cat << EOF
+Input parameter missing: TARGET_FILE
+Use the '--help' flag for more information
+EOF
+  )"
 
   [[ "${status}" == 1 ]]
-  [[ "${output}" == 'Input parameter missing: TARGET_FILE' ]]
+  [[ "${output}" == "${expected_output}" ]]
 }
 
 rejects-illegal-flag() { #@test
   run print-marker-sections --foo
+  expected_output="$(cat << EOF
+Unknown flag: --foo
+Use the '--help' flag for more information
+EOF
+  )"
 
   [[ "${status}" == 1 ]]
-  [[ "${output}" == 'Illegal option: --foo' ]]
+  [[ "${output}" == "${expected_output}" ]]
 }
 
 rejects-non-existing-file() { #@test
   run print-marker-sections foo-file.txt
+  expected_output="$(cat << EOF
+Not a file: foo-file.txt
+Use the '--help' flag for more information
+EOF
+  )"
 
   [[ "${status}" == 1 ]]
-  [[ "${output}" == 'Not a file: foo-file.txt' ]]
+  [[ "${output}" == "${expected_output}" ]]
 }
 
 rejects-non-file() { #@test
   tmp_dir="$(mktemp --directory)"
   run print-marker-sections "${tmp_dir}"
+  expected_output="$(cat << EOF
+Not a file: ${tmp_dir}
+Use the '--help' flag for more information
+EOF
+  )"
 
   [[ "${status}" == 1 ]]
-  [[ "${output}" == "Not a file: ${tmp_dir}" ]]
+  [[ "${output}" == "${expected_output}" ]]
 }
 
 empty-output-if-file-has-no-markers() { #@test
