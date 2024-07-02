@@ -40,6 +40,7 @@ while (( "$#" > 0 )); do
       ;;
     -*)
       >&2 echo "Unknown flag: $1"
+      >&2 echo "Use the '--help' flag for more information"
       exit 1
       ;;
     *)
@@ -53,12 +54,14 @@ readonly TARGET_FILE
 # Ensure target file is specified.
 if [[ -z "${TARGET_FILE}" ]]; then
   echo 'Input parameter missing: TARGET_FILE' >&2
+  >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
 
 # Ensure target file exists and is a file.
 if [[ ! -f "${TARGET_FILE}" ]]; then
   echo "Not a file: ${TARGET_FILE}" >&2
+  >&2 echo "Use the '--help' flag for more information"
   exit 1
 fi
 
