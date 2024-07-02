@@ -5,24 +5,13 @@
 
     #initializing,
     #prompt,
-    #changing,
-    #success {
+    #changing {
       display: none;
     }
 
-    :host([state="initializing"]) #initializing {
-      display: block;
-    }
-
-    :host([state="prompt"]) #prompt {
-      display: block;
-    }
-
+    :host([state="initializing"]) #initializing,
+    :host([state="prompt"]) #prompt,
     :host([state="changing"]) #changing {
-      display: block;
-    }
-
-    :host([state="success"]) #success {
       display: block;
     }
 
@@ -137,11 +126,6 @@
     <h3>Applying Changes</h3>
     <progress-spinner></progress-spinner>
   </div>
-
-  <div id="success">
-    <h3>Success</h3>
-    <button class="close-button" type="button">Close</button>
-  </div>
 </template>
 
 <script type="module">
@@ -167,7 +151,6 @@
           INITIALIZING: "initializing",
           PROMPT: "prompt",
           CHANGING: "changing",
-          SUCCESS: "success",
         };
         _statesWithoutDialogClose = new Set([
           this._states.CHANGING,
@@ -230,9 +213,6 @@
           );
         }
 
-        /**
-         * ....
-         */
         async initialize() {
           this._state = this._states.INITIALIZING;
           this._initialWiFiSettings = {
@@ -279,6 +259,7 @@
               inputChanged = true;
             }
           });
+
           let mandatoryInputMissing = false;
           [this._elements.ssidInput, this._elements.countryCodeInput].forEach(
             (el) => {
@@ -287,52 +268,60 @@
               }
             }
           );
+
+          // Enabling is only possible if input was changed and if all
+          // mandatory fields are filled out.
           this._elements.enableButton.disabled =
             !inputChanged || mandatoryInputMissing;
+
+          // Disabling is only possible if WiFi is currently enabled (i.e.,
+          // if there is an initial SSID).
           this._elements.disableButton.disabled =
             !this._initialWiFiSettings.ssid;
         }
 
-        _enable() {
-          enableWifi(
-            this._elements.countryCodeInput.value,
-            this._elements.ssidInput.value,
-            this._elements.pskInput.value || null
-          )
-            .then(() => {
-              this._state = this._states.SUCCESS;
-            })
-            .catch((error) => {
-              if (error.code === "INVALID_WIFI_SETTINGS") {
-                // Display validation errors inline in order to make it more
-                // convenient for the user to correct them.
-                this._elements.inputErrorReason.textContent = error.message;
-                this._elements.inputError.show();
-                this._state = this._states.PROMPT;
-                return;
-              }
-              this.dispatchEvent(
-                new DialogFailedEvent({
-                  title: "Failed to Apply WiFi Settings",
-                  details: error,
-                })
-              );
-            });
+        async _enable() {
+          this._state = this._states.CHANGING;
+          try {
+            await enableWifi(
+              this._elements.countryCodeInput.value,
+              this._elements.ssidInput.value,
+              this._elements.pskInput.value || null
+            );
+          } catch (error) {
+            if (error.code === "INVALID_WIFI_SETTINGS") {
+              // Display validation errors inline in order to make it more
+              // convenient for the user to correct them.
+              this._elements.inputErrorReason.textContent = error.message;
+              this._elements.inputError.show();
+              this._state = this._states.PROMPT;
+              return;
+            }
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Apply WiFi Settings",
+                details: error,
+              })
+            );
+            return;
+          }
+          this.dispatchEvent(new DialogClosedEvent());
         }
 
-        _disable() {
-          disableWifi()
-            .then(() => {
-              this._state = this._states.SUCCESS;
-            })
-            .catch((error) => {
-              this.dispatchEvent(
-                new DialogFailedEvent({
-                  title: "Failed to Disable WiFi",
-                  details: error,
-                })
-              );
-            });
+        async _disable() {
+          this._state = this._states.CHANGING;
+          try {
+            await disableWifi();
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Disable WiFi",
+                details: error,
+              })
+            );
+            return;
+          }
+          this.dispatchEvent(new DialogClosedEvent());
         }
       }
     );
