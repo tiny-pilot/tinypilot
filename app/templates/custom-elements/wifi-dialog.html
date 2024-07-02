@@ -65,10 +65,13 @@
 
   <div id="prompt">
     <h3>WiFi Settings</h3>
-    <p>Enter WiFi settings to access TinyPilot via a wireless network connection.</p>
+    <p>
+      Enter WiFi settings to access TinyPilot via a wireless network connection.
+    </p>
     <inline-message variant="warning" id="no-ethernet-warning">
-      <strong>No Ethernet:</strong> TinyPilot is currently not connected via Ethernet.
-      If you change your WiFi settings, you may lose access to your TinyPilot device until you reconnect an Ethernet cable.
+      <strong>No Ethernet:</strong> TinyPilot is currently not connected via
+      Ethernet. If you change your WiFi settings, you may lose access to your
+      TinyPilot device until you reconnect an Ethernet cable.
     </inline-message>
     <div class="container">
       <div class="container-row">
@@ -172,38 +175,46 @@
         ]);
 
         connectedCallback() {
-          this.attachShadow({mode: "open"}).appendChild(
+          this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
           this._elements = {
-            noEthernetWarning: this.shadowRoot.querySelector("#no-ethernet-warning"),
+            noEthernetWarning: this.shadowRoot.querySelector(
+              "#no-ethernet-warning"
+            ),
             inputError: this.shadowRoot.querySelector("#input-error"),
-            inputErrorReason: this.shadowRoot.querySelector("#input-error-reason"),
+            inputErrorReason: this.shadowRoot.querySelector(
+              "#input-error-reason"
+            ),
             ssidInput: this.shadowRoot.querySelector("#ssid-input"),
             pskInput: this.shadowRoot.querySelector("#psk-input"),
-            countryCodeInput: this.shadowRoot.querySelector("#country-code-input"),
-            enableButton:
-              this.shadowRoot.querySelector("#enable-button"),
-            disableButton:
-              this.shadowRoot.querySelector("#disable-button"),
+            countryCodeInput: this.shadowRoot.querySelector(
+              "#country-code-input"
+            ),
+            enableButton: this.shadowRoot.querySelector("#enable-button"),
+            disableButton: this.shadowRoot.querySelector("#disable-button"),
           };
 
-          ;[
+          [
             this._elements.ssidInput,
             this._elements.pskInput,
             this._elements.countryCodeInput,
-          ].forEach(el => el.addEventListener("input", () => {
-            this._refreshButtons();
-          }));
+          ].forEach((el) =>
+            el.addEventListener("input", () => {
+              this._refreshButtons();
+            })
+          );
           this._elements.enableButton.addEventListener("click", () => {
             this._enable();
           });
           this._elements.disableButton.addEventListener("click", () => {
             this._disable();
           });
-          this.shadowRoot.querySelectorAll(".close-button").forEach(el => el.addEventListener("click", () => {
-            this.dispatchEvent(new DialogClosedEvent());
-          }));
+          this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
+            el.addEventListener("click", () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            })
+          );
         }
 
         get _state() {
@@ -244,7 +255,10 @@
           if (wifiSettings) {
             this._elements.ssidInput.value = wifiSettings.ssid;
             this._elements.countryCodeInput.value = wifiSettings.countryCode;
-            this._initialWiFiSettings = { ...this._initialWiFiSettings, ...wifiSettings };
+            this._initialWiFiSettings = {
+              ...this._initialWiFiSettings,
+              ...wifiSettings,
+            };
           }
 
           this._refreshButtons();
@@ -256,30 +270,34 @@
           [
             [this._elements.ssidInput, this._initialWiFiSettings.ssid],
             [this._elements.pskInput, this._initialWiFiSettings.psk],
-            [this._elements.countryCodeInput, this._initialWiFiSettings.countryCode],
+            [
+              this._elements.countryCodeInput,
+              this._initialWiFiSettings.countryCode,
+            ],
           ].forEach(([el, initialValue]) => {
             if (el.value !== initialValue) {
               inputChanged = true;
             }
           });
           let mandatoryInputMissing = false;
-          [
-            this._elements.ssidInput,
-            this._elements.countryCodeInput,
-          ].forEach((el) => {
-            if (el.value === "") {
-              mandatoryInputMissing = true;
+          [this._elements.ssidInput, this._elements.countryCodeInput].forEach(
+            (el) => {
+              if (el.value === "") {
+                mandatoryInputMissing = true;
+              }
             }
-          });
-          this._elements.enableButton.disabled = !inputChanged || mandatoryInputMissing;
-          this._elements.disableButton.disabled = !this._initialWiFiSettings.ssid;
+          );
+          this._elements.enableButton.disabled =
+            !inputChanged || mandatoryInputMissing;
+          this._elements.disableButton.disabled =
+            !this._initialWiFiSettings.ssid;
         }
 
         _enable() {
           enableWifi(
             this._elements.countryCodeInput.value,
             this._elements.ssidInput.value,
-            this._elements.pskInput.value || null,
+            this._elements.pskInput.value || null
           )
             .then(() => {
               this._state = this._states.SUCCESS;
