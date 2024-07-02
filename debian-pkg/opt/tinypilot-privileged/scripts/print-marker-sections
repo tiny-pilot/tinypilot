@@ -39,7 +39,7 @@ while (( "$#" > 0 )); do
       exit
       ;;
     -*)
-      echo "Illegal option: $1" >&2
+      >&2 echo "Unknown flag: $1"
       exit 1
       ;;
     *)
