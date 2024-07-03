@@ -70,7 +70,7 @@ def determine_wifi_settings():
         raise NetworkError(str(e.output).strip()) from e
 
     wifi = WiFiSettings(None, None, None)
-    for line in config_lines.split('\n'):
+    for line in config_lines.splitlines():
         match_country = _WIFI_COUNTRY_PATTERN.search(line.strip())
         if match_country:
             wifi.country_code = match_country.group(1)
