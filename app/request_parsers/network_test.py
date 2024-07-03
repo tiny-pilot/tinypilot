@@ -51,11 +51,13 @@ class NetworkValidationTest(unittest.TestCase):
                     'ssid': 'my-network',
                     'psk': 's3cr3t!!!'
                 }))
+        with self.assertRaises(errors.MissingFieldError):
             network.parse_wifi_settings(
                 make_mock_request({
                     'countryCode': 'US',
                     'psk': 's3cr3t!!!'
                 }))
+        with self.assertRaises(errors.MissingFieldError):
             network.parse_wifi_settings(
                 make_mock_request({
                     'countryCode': 'US',
