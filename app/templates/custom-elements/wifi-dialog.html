@@ -24,7 +24,7 @@
       text-align: right;
     }
 
-    .container {
+    .input-container {
       display: flex;
       flex-direction: column;
       align-items: start;
@@ -33,14 +33,14 @@
       padding-left: 6em;
     }
 
-    .container-row {
+    .input-row {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5em;
     }
 
-    .button-row {
+    .button-container {
       margin-top: 1em;
     }
   </style>
@@ -62,8 +62,8 @@
       Ethernet. If you change your WiFi settings, you may lose access to your
       TinyPilot device until you reconnect an Ethernet cable.
     </inline-message>
-    <div class="container">
-      <div class="container-row">
+    <div class="input-container">
+      <div class="input-row">
         <label for="ssid-input">SSID:</label>
         <input
           type="text"
@@ -77,7 +77,7 @@
           placeholder="WiFi-Name"
         />
       </div>
-      <div class="container-row">
+      <div class="input-row">
         <label for="psk-input">Password:</label>
         <input
           type="password"
@@ -91,7 +91,7 @@
           placeholder="(hidden)"
         />
       </div>
-      <div class="container-row">
+      <div class="input-row">
         <label for="country-code-input">Country Code:</label>
         <input
           type="text"
@@ -109,9 +109,9 @@
     </div>
     <inline-message variant="error" id="input-error">
       <strong>Invalid WiFi Settings:</strong>
-      <span id="input-error-reason"></span>
+      <span id="input-error-reason"><!-- Filled programmatically --></span>
     </inline-message>
-    <div class="button-row">
+    <div class="button-container">
       <button id="disable-button" class="btn-danger" type="button">
         Disable
       </button>
@@ -153,8 +153,8 @@
           CHANGING: "changing",
         };
         _statesWithoutDialogClose = new Set([
-          this._states.CHANGING,
           this._states.INITIALIZING,
+          this._states.CHANGING,
         ]);
 
         connectedCallback() {
@@ -215,30 +215,18 @@
 
         async initialize() {
           this._state = this._states.INITIALIZING;
-          this._initialWiFiSettings = {
-            ssid: "",
-            psk: "",
-            countryCode: "",
-          };
-          this._elements.ssidInput.value = "";
-          this._elements.pskInput.value = "";
-          this._elements.countryCodeInput.value = "";
+
+          const wifiSettings = await getWifiSettings();
+          this._elements.ssidInput.value = wifiSettings.ssid;
+          this._elements.countryCodeInput.value = wifiSettings.countryCode;
+          this._elements.ssidInput.psk = "";
+          this._initialWiFiSettings = { psk: "", ...wifiSettings };
+
           this._elements.noEthernetWarning.hide();
           this._elements.inputError.hide();
-
           const networkStatus = await getNetworkStatus();
           if (!networkStatus.ethernet) {
             this._elements.noEthernetWarning.show();
-          }
-
-          const wifiSettings = await getWifiSettings();
-          if (wifiSettings) {
-            this._elements.ssidInput.value = wifiSettings.ssid;
-            this._elements.countryCodeInput.value = wifiSettings.countryCode;
-            this._initialWiFiSettings = {
-              ...this._initialWiFiSettings,
-              ...wifiSettings,
-            };
           }
 
           this._refreshButtons();
@@ -246,7 +234,7 @@
         }
 
         _refreshButtons() {
-          let inputChanged = false;
+          let hasInputChanged = false;
           [
             [this._elements.ssidInput, this._initialWiFiSettings.ssid],
             [this._elements.pskInput, this._initialWiFiSettings.psk],
@@ -256,26 +244,26 @@
             ],
           ].forEach(([el, initialValue]) => {
             if (el.value !== initialValue) {
-              inputChanged = true;
+              hasInputChanged = true;
             }
           });
 
-          let mandatoryInputMissing = false;
+          let isMandatoryInputMissing = false;
           [this._elements.ssidInput, this._elements.countryCodeInput].forEach(
             (el) => {
               if (el.value === "") {
-                mandatoryInputMissing = true;
+                isMandatoryInputMissing = true;
               }
             }
           );
 
-          // Enabling is only possible if input was changed and if all
-          // mandatory fields are filled out.
+          // The “Enable” button is unavailable if the user hasn’t made any
+          // changes or if mandatory fields are still missing.
           this._elements.enableButton.disabled =
-            !inputChanged || mandatoryInputMissing;
+            !hasInputChanged || isMandatoryInputMissing;
 
-          // Disabling is only possible if WiFi is currently enabled (i.e.,
-          // if there is an initial SSID).
+          // The “Disable” button is only available if there currently is a
+          // WiFi configuration (i.e., if there is an initial SSID value).
           this._elements.disableButton.disabled =
             !this._initialWiFiSettings.ssid;
         }
@@ -286,6 +274,8 @@
             await enableWifi(
               this._elements.countryCodeInput.value,
               this._elements.ssidInput.value,
+              // The backend expects a value of `null` to indicate an open
+              // WiFi, not an empty string.
               this._elements.pskInput.value || null
             );
           } catch (error) {
@@ -299,7 +289,7 @@
             }
             this.dispatchEvent(
               new DialogFailedEvent({
-                title: "Failed to Apply WiFi Settings",
+                title: "Failed to Enable WiFi",
                 details: error,
               })
             );
