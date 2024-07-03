@@ -7,7 +7,7 @@ def parse_wifi_settings(request):
     """Parses WiFi settings from the request.
 
     Returns:
-        WiFiSettings
+        WifiSettings
 
     Raises:
         InvalidWifiSettings
@@ -45,4 +45,4 @@ def parse_wifi_settings(request):
             raise errors.InvalidWifiSettings(
                 'The password must consist of 8-63 characters.')
 
-    return network.WiFiSettings(country_code.upper(), ssid, psk)
+    return network.WifiSettings(country_code.upper(), ssid, psk)

@@ -21,7 +21,7 @@ class NetworkStatus:
 
 
 @dataclasses.dataclass
-class WiFiSettings:
+class WifiSettings:
     country_code: str
     ssid: str
     psk: str  # Optional.
@@ -53,7 +53,7 @@ def determine_wifi_settings():
     """Determines the current WiFi settings (if set).
 
     Returns:
-        WiFiSettings: if the `ssid` and `country_code` attributes are `None`,
+        WifiSettings: if the `ssid` and `country_code` attributes are `None`,
             there is no WiFi configuration present. The `psk` property is
             always `None` for security reasons.
     """
@@ -69,7 +69,7 @@ def determine_wifi_settings():
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e
 
-    wifi = WiFiSettings(None, None, None)
+    wifi = WifiSettings(None, None, None)
     for line in config_lines.splitlines():
         match_country = _WIFI_COUNTRY_PATTERN.search(line.strip())
         if match_country:
@@ -89,7 +89,7 @@ def enable_wifi(wifi_settings):
     the HTTP request from failing erratically due to a network interruption.
 
     Args:
-        wifi_settings: The new, desired settings (of type WiFiSettings)
+        wifi_settings: The new, desired settings (of type WifiSettings)
 
     Raises:
         NetworkError
