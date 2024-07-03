@@ -195,7 +195,7 @@ export async function changeHostname(newHostname) {
 }
 
 export async function getNetworkStatus() {
-  return fetch("/api/network", {
+  return fetch("/api/network/status", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -214,7 +214,7 @@ export async function getNetworkStatus() {
 }
 
 export async function getWifiSettings() {
-  return fetch("/api/network/wifi", {
+  return fetch("/api/network/settings/wifi", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -233,7 +233,7 @@ export async function getWifiSettings() {
 }
 
 export async function enableWifi(countryCode, ssid, psk) {
-  return fetch("/api/network/wifi", {
+  return fetch("/api/network/settings/wifi", {
     method: "PUT",
     mode: "same-origin",
     cache: "no-cache",
@@ -249,7 +249,7 @@ export async function enableWifi(countryCode, ssid, psk) {
 }
 
 export async function disableWifi() {
-  return fetch("/api/network/wifi", {
+  return fetch("/api/network/settings/wifi", {
     method: "DELETE",
     mode: "same-origin",
     cache: "no-cache",
