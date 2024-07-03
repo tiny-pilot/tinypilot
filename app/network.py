@@ -2,7 +2,6 @@ import dataclasses
 import re
 import subprocess
 
-_CONFIG_FILE = '/etc/wpa_supplicant/wpa_supplicant.conf'
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
 
@@ -22,7 +21,7 @@ class NetworkStatus:
 
 
 @dataclasses.dataclass
-class WiFiSettings:
+class WifiSettings:
     country_code: str
     ssid: str
     psk: str  # Optional.
@@ -54,7 +53,7 @@ def determine_wifi_settings():
     """Determines the current WiFi settings (if set).
 
     Returns:
-        WiFiSettings: if the `ssid` and `country_code` attributes are `None`,
+        WifiSettings: if the `ssid` and `country_code` attributes are `None`,
             there is no WiFi configuration present. The `psk` property is
             always `None` for security reasons.
     """
@@ -70,8 +69,8 @@ def determine_wifi_settings():
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e
 
-    wifi = WiFiSettings(None, None, None)
-    for line in config_lines.split('\n'):
+    wifi = WifiSettings(None, None, None)
+    for line in config_lines.splitlines():
         match_country = _WIFI_COUNTRY_PATTERN.search(line.strip())
         if match_country:
             wifi.country_code = match_country.group(1)
@@ -90,7 +89,7 @@ def enable_wifi(wifi_settings):
     the HTTP request from failing erratically due to a network interruption.
 
     Args:
-        wifi_settings: The new, desired settings.
+        wifi_settings: The new, desired settings (of type WifiSettings)
 
     Raises:
         NetworkError
@@ -102,7 +101,7 @@ def enable_wifi(wifi_settings):
     if wifi_settings.psk:
         args.extend(['--psk', wifi_settings.psk])
     try:
-        return subprocess.Popen(args)
+        subprocess.Popen(args)
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e
 
@@ -117,7 +116,7 @@ def disable_wifi():
         NetworkError
     """
     try:
-        return subprocess.Popen([
+        subprocess.Popen([
             'sudo',
             '/opt/tinypilot-privileged/scripts/disable-wifi',
         ])

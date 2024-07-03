@@ -201,7 +201,7 @@ def hostname_set():
         return json_response.error(e), 500
 
 
-@api_blueprint.route('/network', methods=['GET'])
+@api_blueprint.route('/network/status', methods=['GET'])
 def network_status():
     """Returns the current network status (i.e., which interfaces are active).
 
@@ -223,7 +223,7 @@ def network_status():
     })
 
 
-@api_blueprint.route('/network/wifi', methods=['GET'])
+@api_blueprint.route('/network/settings/wifi', methods=['GET'])
 def network_wifi_get():
     """Returns the current WiFi settings, if present.
 
@@ -247,7 +247,7 @@ def network_wifi_get():
     })
 
 
-@api_blueprint.route('/network/wifi', methods=['PUT'])
+@api_blueprint.route('/network/settings/wifi', methods=['PUT'])
 def network_wifi_enable():
     """Enables a wireless network connection.
 
@@ -273,7 +273,7 @@ def network_wifi_enable():
         return json_response.error(e), 500
 
 
-@api_blueprint.route('/network/wifi', methods=['DELETE'])
+@api_blueprint.route('/network/settings/wifi', methods=['DELETE'])
 def network_wifi_disable():
     """Disables the WiFi network connection.
 
