@@ -219,7 +219,7 @@
           const wifiSettings = await getWifiSettings();
           this._elements.ssidInput.value = wifiSettings.ssid;
           this._elements.countryCodeInput.value = wifiSettings.countryCode;
-          this._elements.ssidInput.psk = "";
+          this._elements.pskInput.value = "";
           this._initialWiFiSettings = { psk: "", ...wifiSettings };
 
           this._elements.noEthernetWarning.hide();
