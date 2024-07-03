@@ -2,7 +2,6 @@ import dataclasses
 import re
 import subprocess
 
-_CONFIG_FILE = '/etc/wpa_supplicant/wpa_supplicant.conf'
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
 
