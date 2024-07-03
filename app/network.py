@@ -89,7 +89,7 @@ def enable_wifi(wifi_settings):
     the HTTP request from failing erratically due to a network interruption.
 
     Args:
-        wifi_settings: The new, desired settings.
+        wifi_settings: The new, desired settings (of type WiFiSettings)
 
     Raises:
         NetworkError
