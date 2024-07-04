@@ -249,28 +249,19 @@
         }
 
         _refreshButtons() {
-          let hasInputChanged = false;
-          [
+          const hasInputChanged = [
             [this._elements.ssidInput, this._initialWiFiSettings.ssid],
             [this._elements.pskInput, this._initialWiFiSettings.psk],
             [
               this._elements.countryCodeInput,
               this._initialWiFiSettings.countryCode,
             ],
-          ].forEach(([el, initialValue]) => {
-            if (el.value !== initialValue) {
-              hasInputChanged = true;
-            }
-          });
+          ].some(([el, initialValue]) => el.value !== initialValue);
 
-          let isMandatoryInputMissing = false;
-          [this._elements.ssidInput, this._elements.countryCodeInput].forEach(
-            (el) => {
-              if (el.value === "") {
-                isMandatoryInputMissing = true;
-              }
-            }
-          );
+          const isMandatoryInputMissing = [
+            this._elements.ssidInput,
+            this._elements.countryCodeInput,
+          ].some((el) => el.value === "");
 
           // The “Enable” button is unavailable if the user hasn’t made any
           // changes or if mandatory fields are still missing.
