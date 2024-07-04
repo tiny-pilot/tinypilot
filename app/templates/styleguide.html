@@ -112,6 +112,10 @@
           class="colorcard"
           style="background-color: var(--brand-blue-light)"
         ></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-blue-lighter)"
+        ></div>
         <br style="clear: both" />
         <div
           class="colorcard"
@@ -330,8 +334,8 @@
 
       <h2 class="section">Inline Message</h2>
       <p>
-        When we want to display a feedback message (error or warning), we can
-        use the inline-message component:
+        When we want to display a prominent feedback message, we can use the
+        inline-message component:
       </p>
       <inline-message variant="error" show>
         <strong>Error:</strong> We use inline errors for “minor” issues that the
@@ -342,6 +346,13 @@
         <strong>Warning:</strong> We use warnings to raise attention about
         potential problems. In contrast to errors, these don’t necessarily
         require fixing for the user to proceed.
+      </inline-message>
+      <br />
+      <inline-message variant="info" show>
+        <strong>Info:</strong> We use info messages to highlight important
+        information to the user, which is special enough to warrant more
+        prominent styling than just regular text. In contrast to warnings, info
+        messages are purely informative and not actionable.
       </inline-message>
       <p>Some notes about usage:</p>
       <ul>
