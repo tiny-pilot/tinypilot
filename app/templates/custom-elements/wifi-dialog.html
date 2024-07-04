@@ -219,8 +219,20 @@
 
         async initialize() {
           this._state = this._states.INITIALIZING;
+          let wifiSettings, networkStatus;
+          try {
+            wifiSettings = await getWifiSettings();
+            networkStatus = await getNetworkStatus();
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Retrieve Wi-Fi Settings",
+                details: error,
+              })
+            );
+            return;
+          }
 
-          const wifiSettings = await getWifiSettings();
           this._elements.ssidInput.value = wifiSettings.ssid;
           this._elements.countryCodeInput.value = wifiSettings.countryCode;
           this._elements.pskInput.value = "";
@@ -228,7 +240,6 @@
 
           this._elements.noEthernetWarning.hide();
           this._elements.inputError.hide();
-          const networkStatus = await getNetworkStatus();
           if (!networkStatus.ethernet) {
             this._elements.noEthernetWarning.show();
           }
