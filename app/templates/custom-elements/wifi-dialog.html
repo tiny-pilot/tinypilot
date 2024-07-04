@@ -1,3 +1,6 @@
+<!-- Remark about the terminology: in the UI, we decided to say `Wi-Fi` instead
+     of `WiFi`, as this is the official spelling. We are not super strict about
+     this for code symbols, however, mainly for simplicity. -->
 <template id="wifi-template">
   <style>
     @import "css/style.css";
@@ -46,20 +49,20 @@
   </style>
 
   <div id="initializing">
-    <h3>Retrieving Current WiFi Settings</h3>
+    <h3>Retrieving Current Wi-Fi Settings</h3>
     <div>
       <progress-spinner></progress-spinner>
     </div>
   </div>
 
   <div id="prompt">
-    <h3>WiFi Settings</h3>
+    <h3>Wi-Fi Settings</h3>
     <p>
       Enter WiFi settings to access TinyPilot via a wireless network connection.
     </p>
     <inline-message variant="warning" id="no-ethernet-warning">
       <strong>No Ethernet:</strong> TinyPilot is currently not connected via
-      Ethernet. If you change your WiFi settings, you may lose access to your
+      Ethernet. If you change your Wi-Fi settings, you may lose access to your
       TinyPilot device until you reconnect an Ethernet cable.
     </inline-message>
     <div class="input-container">
@@ -108,7 +111,7 @@
       </div>
     </div>
     <inline-message variant="error" id="input-error">
-      <strong>Invalid WiFi Settings:</strong>
+      <strong>Invalid Wi-Fi Settings:</strong>
       <span id="input-error-reason"><!-- Filled programmatically --></span>
     </inline-message>
     <div class="button-container">
@@ -289,7 +292,7 @@
             }
             this.dispatchEvent(
               new DialogFailedEvent({
-                title: "Failed to Enable WiFi",
+                title: "Failed to Enable Wi-Fi",
                 details: error,
               })
             );
@@ -305,7 +308,7 @@
           } catch (error) {
             this.dispatchEvent(
               new DialogFailedEvent({
-                title: "Failed to Disable WiFi",
+                title: "Failed to Disable Wi-Fi",
                 details: error,
               })
             );
