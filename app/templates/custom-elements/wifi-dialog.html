@@ -221,8 +221,10 @@
           this._state = this._states.INITIALIZING;
           let wifiSettings, networkStatus;
           try {
-            wifiSettings = await getWifiSettings();
-            networkStatus = await getNetworkStatus();
+            [wifiSettings, networkStatus] = await Promise.all([
+              getWifiSettings(),
+              getNetworkStatus(),
+            ]);
           } catch (error) {
             this.dispatchEvent(
               new DialogFailedEvent({
