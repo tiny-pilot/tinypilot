@@ -102,6 +102,7 @@ test.describe("about dialog", () => {
   test("checks that all license URLs are valid and reachable", async ({
     page,
     baseURL,
+    context,
   }) => {
     const links = await page.locator("a.license").all();
     const paths = await Promise.all(
@@ -111,15 +112,17 @@ test.describe("about dialog", () => {
     await Promise.all(
       paths
         .map((path) => `${baseURL}${path}`)
-        .map((url) =>
-          fetch(url, { signal: AbortSignal.timeout(10000) })
+        .map(async (url) => {
+          const page = await context.newPage();
+          await page
+            .goto(url, { timeout: 10000 })
             .then((res) => {
-              if (res.status !== 200) {
+              if (res.status() !== 200) {
                 failedUrls.push(url);
               }
             })
-            .catch(() => failedUrls.push(url))
-        )
+            .catch(() => failedUrls.push(url));
+        })
     );
     expect(
       failedUrls.length,
