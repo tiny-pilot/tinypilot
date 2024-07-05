@@ -6,8 +6,10 @@ import execute
 import hostname
 import json_response
 import local_system
+import network
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.network
 import request_parsers.paste
 import request_parsers.video_settings
 import update.launcher
@@ -196,6 +198,92 @@ def hostname_set():
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
     except hostname.Error as e:
+        return json_response.error(e), 500
+
+
+@api_blueprint.route('/network/status', methods=['GET'])
+def network_status():
+    """Returns the current network status (i.e., which interfaces are active).
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        ethernet: bool.
+        wifi: bool
+
+        Example:
+        {
+            "ethernet": true,
+            "wifi": false
+        }
+    """
+    status = network.status()
+    return json_response.success({
+        'ethernet': status.ethernet,
+        'wifi': status.wifi,
+    })
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['GET'])
+def network_wifi_get():
+    """Returns the current WiFi settings, if present.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        countryCode: string.
+        ssid: string.
+
+        Example:
+        {
+            "countryCode": "US",
+            "ssid": "my-network"
+        }
+
+        Returns an error object on failure.
+    """
+    wifi_settings = network.determine_wifi_settings()
+    return json_response.success({
+        'countryCode': wifi_settings.country_code,
+        'ssid': wifi_settings.ssid,
+    })
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['PUT'])
+def network_wifi_enable():
+    """Enables a wireless network connection.
+
+    Expects a JSON data structure in the request body that contains a country
+    code, an SSID, and optionally a password; all as strings. Example:
+    {
+        "countryCode": "US",
+        "ssid": "my-network",
+        "psk": "sup3r-s3cr3t!"
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        wifi_settings = request_parsers.network.parse_wifi_settings(
+            flask.request)
+        network.enable_wifi(wifi_settings)
+        return json_response.success()
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    except network.Error as e:
+        return json_response.error(e), 500
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['DELETE'])
+def network_wifi_disable():
+    """Disables the WiFi network connection.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        network.disable_wifi()
+        return json_response.success()
+    except network.Error as e:
         return json_response.error(e), 500
 
 
