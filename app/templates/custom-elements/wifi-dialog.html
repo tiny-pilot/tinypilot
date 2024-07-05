@@ -221,9 +221,7 @@
             })
           );
           Object.entries(COUNTRY_CODES)
-            .sort(([codeA, nameA], [codeB, nameB]) =>
-              nameA.localeCompare(nameB)
-            )
+            .sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB))
             .forEach(([code, name]) =>
               this._elements.countryCodeInput.add(
                 new Option(`${name} (${code})`, code)
