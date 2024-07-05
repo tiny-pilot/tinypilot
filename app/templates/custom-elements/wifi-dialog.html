@@ -8,13 +8,17 @@
 
     #initializing,
     #prompt,
-    #changing {
+    #changing,
+    #success-enabled,
+    #success-disabled {
       display: none;
     }
 
     :host([state="initializing"]) #initializing,
     :host([state="prompt"]) #prompt,
-    :host([state="changing"]) #changing {
+    :host([state="changing"]) #changing,
+    :host([state="success-enabled"]) #success-enabled,
+    :host([state="success-disabled"]) #success-disabled {
       display: block;
     }
 
@@ -119,9 +123,7 @@
       <button id="disable-button" class="btn-danger" type="button">
         Remove
       </button>
-      <button id="enable-button" class="btn-success" type="button">
-        Save
-      </button>
+      <button id="enable-button" class="btn-success" type="button">Save</button>
       <button class="close-button" type="button">Close</button>
     </div>
   </div>
@@ -129,6 +131,22 @@
   <div id="changing">
     <h3>Applying Changes</h3>
     <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="success-enabled">
+    <h3>Wi-Fi Credentials Saved</h3>
+    <p>
+      Your Wi-Fi credentials have been saved. Your TinyPilot device will now
+      automatically try to establish a wireless connection using the settings
+      you entered.
+    </p>
+    <button class="close-button" type="button">Close</button>
+  </div>
+
+  <div id="success-disabled">
+    <h3>Wi-Fi Credentials Removed</h3>
+    <p>Your Wi-Fi credentials have been removed.</p>
+    <button class="close-button" type="button">Close</button>
   </div>
 </template>
 
@@ -155,6 +173,8 @@
           INITIALIZING: "initializing",
           PROMPT: "prompt",
           CHANGING: "changing",
+          SUCCESS_ENABLED: "success-enabled",
+          SUCCESS_DISABLED: "success-disabled",
         };
         _statesWithoutDialogClose = new Set([
           this._states.INITIALIZING,
@@ -303,7 +323,7 @@
             );
             return;
           }
-          this.dispatchEvent(new DialogClosedEvent());
+          this._state = this._states.SUCCESS_ENABLED;
         }
 
         async _disable() {
@@ -319,7 +339,7 @@
             );
             return;
           }
-          this.dispatchEvent(new DialogClosedEvent());
+          this._state = this._states.SUCCESS_DISABLED;
         }
       }
     );
