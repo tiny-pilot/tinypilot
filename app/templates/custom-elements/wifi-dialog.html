@@ -47,6 +47,14 @@
       gap: 0.5em;
     }
 
+    .input-row input {
+      width: 20em;
+    }
+
+    .input-row select {
+      width: 21em;
+    }
+
     .button-container {
       margin-top: 1em;
     }
@@ -76,7 +84,6 @@
         <input
           type="text"
           id="ssid-input"
-          size="30"
           class="monospace"
           autocomplete="off"
           autocorrect="off"
@@ -90,7 +97,6 @@
         <input
           type="password"
           id="psk-input"
-          size="30"
           class="monospace"
           autocomplete="off"
           autocorrect="off"
@@ -100,19 +106,10 @@
         />
       </div>
       <div class="input-row">
-        <label for="country-code-input">Country Code:</label>
-        <input
-          type="text"
-          id="country-code-input"
-          size="4"
-          maxlength="2"
-          class="monospace"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          placeholder="US"
-        />
+        <label for="country-code-input">Country:</label>
+        <select id="country-code-input">
+          <!-- Filled programmatically -->
+        </select>
       </div>
     </div>
     <inline-message variant="error" id="input-error">
@@ -162,6 +159,7 @@
     enableWifi,
     disableWifi,
   } from "/js/controllers.js";
+  import { COUNTRY_CODES } from "/js/wifi.js";
 
   (function () {
     const template = document.querySelector("#wifi-template");
@@ -222,6 +220,15 @@
               this.dispatchEvent(new DialogClosedEvent());
             })
           );
+          Object.entries(COUNTRY_CODES)
+            .sort(([codeA, nameA], [codeB, nameB]) =>
+              nameA.localeCompare(nameB)
+            )
+            .forEach(([code, name]) =>
+              this._elements.countryCodeInput.add(
+                new Option(`${name} (${code})`, code)
+              )
+            );
         }
 
         get _state() {
