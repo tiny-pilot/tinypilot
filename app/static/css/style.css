@@ -103,13 +103,18 @@ img {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+select {
   padding: 0.4rem;
   font-family: inherit;
   font-size: inherit;
   border: 1px solid #666;
   border-radius: var(--border-radius);
   box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
+}
+
+select {
+  padding: 0.5rem;
 }
 
 input[type="text"].monospace,
