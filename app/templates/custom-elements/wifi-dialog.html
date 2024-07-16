@@ -263,6 +263,8 @@
           }
 
           this._elements.ssidInput.value = wifiSettings.ssid;
+          // Preselect the US country code as initial value, (a) as demo value,
+          // and (b) because it probably fits most users anyway.
           this._elements.countryCodeInput.value = wifiSettings.countryCode || "US";
           this._elements.pskInput.value = "";
           this._initialWiFiSettings = { psk: "", ...wifiSettings };
