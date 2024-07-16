@@ -22,6 +22,33 @@ from hid import keyboard as fake_keyboard
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
 
+@api_blueprint.route('/reboot-machine', methods=['GET'])
+def reboot_machine():
+    try:
+        import RPi.GPIO as GPIO
+        from time import sleep 
+        
+        control_pin = 17
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(control_pin, GPIO.OUT)
+        
+        estado = GPIO.input(control_pin)
+        if estado == GPIO.LOW:
+            print("Relé está ativado - Energia passando")
+            
+            GPIO.output(control_pin, GPIO.HIGH) 
+            sleep(5)
+            GPIO.output(control_pin, GPIO.LOW)
+            
+            return json_response.success()
+        else:
+            print("Relé está desativado - Energia interrompida")
+            return json_response.success()
+        
+    except local_system.Error as e:
+        return json_response.error(e), 500
+    
+
 @api_blueprint.route('/debugLogs', methods=['GET'])
 def debug_logs_get():
     """Returns the TinyPilot debug log as a plaintext HTTP response.

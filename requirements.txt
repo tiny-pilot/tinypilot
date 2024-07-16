@@ -6,6 +6,7 @@ Flask==2.3.2
 Flask-SocketIO==5.3.4
 Flask-WTF==1.1.1
 PyYAML==6.0.1
+RPi.GPIO==0.7.1
 
 # Indirect dependencies
 bidict==0.22.1

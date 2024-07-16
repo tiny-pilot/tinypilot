@@ -32,8 +32,8 @@
       {% include child_template.replace('./app/templates/', '') %}
     {% endfor %}
 
-    <div id="app" tabindex="0">
-      <div class="header-bar">
+    <div id="app" tabindex="0" style="display: relative;height: 100vh;background-color:#282B39;">
+      <div class="header-bar" style="display: none">
         <menu-bar id="menu-bar"></menu-bar>
       </div>
       <remote-screen
@@ -41,7 +41,7 @@
         milliseconds-between-mouse-events="600"
       ></remote-screen>
       <on-screen-keyboard id="on-screen-keyboard"></on-screen-keyboard>
-      <div class="footer-bar">
+      <div class="footer-bar" style="display: none">
         <status-bar id="status-bar"></status-bar>
       </div>
 

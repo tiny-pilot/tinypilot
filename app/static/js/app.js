@@ -259,6 +259,75 @@ window.addEventListener("blur", () => {
     );
 });
 
+
+
+const CtrlAltDel = () => {
+  processKeystroke({
+    ctrlLeft: true,
+    key: "Control",
+    code: "ControlLeft",
+  });
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Alt",
+    code: "AltLeft",
+  });
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Delete",
+    code: "Delete",
+  });
+}
+
+const WinR = () => {
+  processKeystroke({
+    metaLeft: true,
+    metaRight: false,
+    altLeft: false,
+    altRight: false,
+    shiftLeft: false,
+    shiftRight: false,
+    ctrlLeft: false,
+    ctrlRight: false,
+    key: 'r',
+    code: 'KeyR'
+  });
+}
+
+const WinE = () => {
+  processKeystroke({
+    metaLeft: true,
+    metaRight: false,
+    altLeft: false,
+    altRight: false,
+    shiftLeft: false,
+    shiftRight: false,
+    ctrlLeft: false,
+    ctrlRight: false,
+    key: 'e',
+    code: 'KeyE'
+  });
+}
+
+window.addEventListener('message', (event) => {
+  switch (event.data.type) {
+    case 'Ctrl-Alt-Del':
+      CtrlAltDel();
+      break;
+    case 'Win-R':
+      WinR();
+      break;
+    case 'Win-E':
+      WinE();
+      break;
+    default:
+      break;
+  }
+
+})
+
 const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 onScreenKeyboard.addEventListener("keyboard-visibility-changed", (evt) => {
   const isVisible = evt.detail.isVisible;
