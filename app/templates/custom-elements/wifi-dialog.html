@@ -261,7 +261,7 @@
           }
 
           this._elements.ssidInput.value = wifiSettings.ssid;
-          this._elements.countryCodeInput.value = wifiSettings.countryCode;
+          this._elements.countryCodeInput.value = wifiSettings.countryCode || "US";
           this._elements.pskInput.value = "";
           this._initialWiFiSettings = { psk: "", ...wifiSettings };
 
