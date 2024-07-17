@@ -223,4 +223,7 @@ cp \
 # Restart Janus to pick up the new config files.
 deb-systemd-invoke restart janus
 
+# Enable systemd-networkd
+systemctl enable --now systemd-networkd
+
 #DEBHELPER#

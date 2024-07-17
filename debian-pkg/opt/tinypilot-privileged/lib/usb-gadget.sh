@@ -16,6 +16,8 @@ export USB_KEYBOARD_FUNCTIONS_DIR="functions/hid.keyboard"
 readonly USB_KEYBOARD_FUNCTIONS_DIR
 export USB_MOUSE_FUNCTIONS_DIR="functions/hid.mouse"
 readonly USB_MOUSE_FUNCTIONS_DIR
+export USB_RNDIS_FUNCTIONS_DIR="functions/rndis.usb0"
+readonly USB_RNDIS_FUNCTIONS_DIR
 export USB_MASS_STORAGE_NAME="mass_storage.0"
 readonly USB_MASS_STORAGE_NAME
 export USB_MASS_STORAGE_FUNCTIONS_DIR="functions/${USB_MASS_STORAGE_NAME}"
