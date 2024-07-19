@@ -223,6 +223,34 @@ cp \
 # Restart Janus to pick up the new config files.
 deb-systemd-invoke restart janus
 
+# Name of the new user
+SAMBA_USER="pi-nas-user"
+
+# Get SMB password
+SAMBA_PWD=$(cat /tmp/smb.pass)
+
+echo "Create SMB user..."
+
+# Create User SMB
+sudo useradd -m -s /bin/bash "$SAMBA_USER"
+
+# Set password User
+sudo usermod --password "$SAMBA_PWD" "$SAMBA_USER"
+
+# Set password SMB
+(echo "$SAMBA_PWD"; echo "$SAMBA_PWD") | sudo smbpasswd -a "$SAMBA_USER"
+
+# Add SMB User on group
+sudo adduser $USER "$SAMBA_USER"
+
+echo "User $SAMBA_USER successfully created and configured"
+
+# Delete SMB pass
+sudo rm /tmp/smb.pass
+
+# Add user tinypilot on group gpio
+usermod -aG gpio tinypilot
+
 # Enable systemd-networkd
 systemctl enable --now systemd-networkd
 
