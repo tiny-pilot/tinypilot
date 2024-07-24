@@ -38,8 +38,7 @@ def determine_network_status():
     Returns:
         A tuple of InterfaceStatus objects for the Ethernet and WiFi interface.
     """
-    return (_inspect_interface('eth0'),
-            _inspect_interface('wlan0'))
+    return (_inspect_interface('eth0'), _inspect_interface('wlan0'))
 
 
 def _inspect_interface(interface_name):
@@ -71,8 +70,14 @@ def _inspect_interface(interface_name):
 
     try:
         ip_cmd_out_raw = subprocess.check_output([
-            'ip', '-json', 'address', 'show', interface_name,
-        ], stderr=subprocess.STDOUT, universal_newlines=True)
+            'ip',
+            '-json',
+            'address',
+            'show',
+            interface_name,
+        ],
+                                                 stderr=subprocess.STDOUT,
+                                                 universal_newlines=True)
     except subprocess.CalledProcessError as e:
         logger.error('Failed to run `ip` command: %s', str(e))
         return status
@@ -92,7 +97,9 @@ def _inspect_interface(interface_name):
     if 'address' in data:
         status.mac_address = data['address'].replace(':', '-')
     if 'addr_info' in data:
-        status.ip_address = next((addr_info['local'] for addr_info in data['addr_info'] if addr_info['family'] == 'inet'), None)
+        status.ip_address = next((addr_info['local']
+                                  for addr_info in data['addr_info']
+                                  if addr_info['family'] == 'inet'), None)
 
     return status
 
