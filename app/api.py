@@ -203,23 +203,44 @@ def hostname_set():
 
 @api_blueprint.route('/network/status', methods=['GET'])
 def network_status():
-    """Returns the current network status (i.e., which interfaces are active).
+    """Returns the current network status - i.e., which interfaces are active,
+    and what properties they have (IP address, MAC address).
 
     Returns:
         On success, a JSON data structure with the following properties:
-        ethernet: bool.
-        wifi: bool
+        ethernet: object
+        wifi: object
+        The object contains the following fields:
+        isConnected: bool
+        ipAddress: string or null
+        macAddress: string or null
 
         Example:
         {
-            "ethernet": true,
-            "wifi": false
+            "ethernet": {
+                "isConnected": true,
+                "ipAddress": "192.168.2.41",
+                "macAddress": "e4:5f:01:98:65:03"
+            },
+            "wifi": {
+                "isConnected": false,
+                "ipAddress": null,
+                "macAddress": null
+            }
         }
     """
-    status = network.status()
+    ethernet, wifi = network.determine_network_status()
     return json_response.success({
-        'ethernet': status.ethernet,
-        'wifi': status.wifi,
+        'ethernet': {
+            'isConnected': ethernet.is_connected,
+            'ipAddress': ethernet.ip_address,
+            'macAddress': ethernet.mac_address,
+        },
+        'wifi': {
+            'isConnected': wifi.is_connected,
+            'ipAddress': wifi.ip_address,
+            'macAddress': wifi.mac_address,
+        },
     })
 
 

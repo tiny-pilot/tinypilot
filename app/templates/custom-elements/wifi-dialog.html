@@ -272,7 +272,7 @@
 
           this._elements.noEthernetWarning.hide();
           this._elements.inputError.hide();
-          if (!networkStatus.ethernet) {
+          if (!networkStatus.ethernet.isConnected) {
             this._elements.noEthernetWarning.show();
           }
 
