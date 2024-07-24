@@ -1,0 +1,143 @@
+<template id="network-status-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    #initializing,
+    #display {
+      display: none;
+    }
+
+    :host([state="initializing"]) #initializing,
+    :host([state="display"]) #display {
+      display: block;
+    }
+
+    .info-container {
+      margin-bottom: 1em;
+    }
+
+    .info div {
+      margin-bottom: 0.5em;
+    }
+  </style>
+
+  <div id="initializing">
+    <h3>Determining Network Status</h3>
+    <div>
+      <progress-spinner></progress-spinner>
+    </div>
+  </div>
+
+  <div id="display">
+    <h3>Network Status</h3>
+    <div class="info-container">
+      <network-status-interface id="status-ethernet"></network-status-interface>
+      <network-status-interface id="status-wifi"></network-status-interface>
+    </div>
+    <div class="button-container">
+      <button class="close-button" type="button">Close</button>
+    </div>
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogCloseStateChangedEvent,
+    DialogFailedEvent,
+  } from "/js/events.js";
+  import { getNetworkStatus } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#network-status-dialog-template");
+
+    customElements.define(
+      "network-status-dialog",
+      class extends HTMLElement {
+        _states = {
+          INITIALIZING: "initializing",
+          DISPLAY: "display",
+        };
+        _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this._elements = {
+            statusEthernet: this.shadowRoot.querySelector("#status-ethernet"),
+            statusWifi: this.shadowRoot.querySelector("#status-wifi"),
+          };
+          this._shouldAutoUpdate = false;
+          this._updateTicker = null;
+          this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
+            el.addEventListener("click", () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            })
+          );
+          ["dialog-closed", "dialog-failed"].forEach((evtName) => {
+            this.addEventListener(evtName, () => {
+              this._shouldAutoUpdate = false;
+              clearTimeout(this._updateTicker);
+            });
+          });
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              !this._statesWithoutDialogClose.has(newValue)
+            )
+          );
+        }
+
+        async initialize() {
+          this._state = this._states.INITIALIZING;
+          await this._update();
+          this._state = this._states.DISPLAY;
+          this._shouldAutoUpdate = true;
+          this._startUpdateLoop();
+        }
+
+        _startUpdateLoop() {
+          // The update loop is based on `setTimeout`, not `setInterval`,
+          // because the latter would continue to trigger even if the
+          // update function lags and happens to be slower than the interval.
+          // That would result in a lot of parallel, pending requests.
+          this._updateTicker = setTimeout(async () => {
+            await this._update();
+            if (this._shouldAutoUpdate) {
+              this._startUpdateLoop();
+            }
+          }, 2500);
+        }
+
+        async _update() {
+          let networkStatus;
+          try {
+            networkStatus = await getNetworkStatus();
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Determine Network Status",
+                details: error,
+              })
+            );
+            return;
+          }
+          this._elements.statusEthernet.update(
+            "Ethernet",
+            networkStatus.ethernet
+          );
+          this._elements.statusWifi.update("Wi-Fi", networkStatus.wifi);
+        }
+      }
+    );
+  })();
+</script>
