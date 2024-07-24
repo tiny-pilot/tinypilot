@@ -106,8 +106,11 @@
         }
 
         /**
-         * @param {string} name
+         * @param {string} name - The display name of the interface
          * @param {object} status
+         * @param {boolean} status.isConnected
+         * @param {string} [status.ipAddress]
+         * @param {string} [status.macAddress]
          */
         update(name, status) {
           this._elements.name.innerText = name;

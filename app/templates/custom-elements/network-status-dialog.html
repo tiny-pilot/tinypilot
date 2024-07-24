@@ -16,10 +16,6 @@
     .info-container {
       margin-bottom: 1em;
     }
-
-    .info div {
-      margin-bottom: 0.5em;
-    }
   </style>
 
   <div id="initializing">
@@ -76,6 +72,10 @@
               this.dispatchEvent(new DialogClosedEvent());
             })
           );
+
+          // For all events that terminate the dialog, make sure to stop the
+          // update ticker, otherwise the status requests would continue to be
+          // fired even when the dialog is not visible anymore.
           ["dialog-closed", "dialog-failed"].forEach((evtName) => {
             this.addEventListener(evtName, () => {
               this._shouldAutoUpdate = false;
@@ -116,6 +116,10 @@
               this._startUpdateLoop();
             }
           }, 2500);
+        }
+
+        _stopUpdateLoop() {
+
         }
 
         async _update() {
