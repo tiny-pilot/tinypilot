@@ -209,6 +209,7 @@ export async function getNetworkStatus() {
           throw new ControllerError(`Missing expected ${field} field`);
         }
         ["isConnected", "ipAddress", "macAddress"].forEach((property) => {
+          // eslint-disable-next-line no-prototype-builtins
           if (!response[field].hasOwnProperty(property)) {
             throw new ControllerError(
               `Missing expected ${field}.${property} field`
