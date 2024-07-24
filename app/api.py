@@ -219,7 +219,7 @@ def network_status():
             "ethernet": {
                 "isConnected": true,
                 "ipAddress": "192.168.2.41",
-                "macAddress": "e4:5f:01:98:65:03"
+                "macAddress": "e4-5f-01-98-65-03"
             },
             "wifi": {
                 "isConnected": false,
