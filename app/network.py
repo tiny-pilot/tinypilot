@@ -38,10 +38,10 @@ def determine_network_status():
     Returns:
         A tuple of InterfaceStatus objects for the Ethernet and WiFi interface.
     """
-    return (_inspect_interface('eth0'), _inspect_interface('wlan0'))
+    return inspect_interface('eth0'), inspect_interface('wlan0')
 
 
-def _inspect_interface(interface_name):
+def inspect_interface(interface_name):
     """Gathers information about a network interface.
 
     This method relies on the JSON output of the `ip` command. If the interface

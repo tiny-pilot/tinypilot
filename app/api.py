@@ -203,8 +203,7 @@ def hostname_set():
 
 @api_blueprint.route('/network/status', methods=['GET'])
 def network_status():
-    """Returns the current network status - i.e., which interfaces are active,
-    and what properties they have (IP address, MAC address).
+    """Returns the current status of the available network interfaces.
 
     Returns:
         On success, a JSON data structure with the following properties:
