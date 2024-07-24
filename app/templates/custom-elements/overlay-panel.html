@@ -61,11 +61,13 @@
         />
       </svg>
     </button>
-    <slot></slot>
+    <slot id="dialog-slot"></slot>
   </dialog>
 </template>
 
 <script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
   (function () {
     const template = document.querySelector("#overlay-panel-template");
 
@@ -99,10 +101,16 @@
               }
             }
           );
+          // Dispatch dialog-closed event into slotted element, to allow the
+          // dialog to react to it if need be (e.g., for clean-ups).
           this.shadowRoot
-            .getElementById("close-button")
-            .addEventListener("click", () => this.show(false));
-
+            .querySelector("#close-button")
+            .addEventListener("click", () =>
+              this.shadowRoot
+                .querySelector("#dialog-slot")
+                .assignedElements()
+                .forEach((el) => el.dispatchEvent(new DialogClosedEvent()))
+            );
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
           this._elements.dialog.addEventListener("cancel", (evt) => {
