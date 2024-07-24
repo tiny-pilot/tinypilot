@@ -31,9 +31,8 @@ class InspectInterfaceTest(unittest.TestCase):
 
     @mock.patch.object(subprocess, 'check_output')
     def test_disregards_command_failure(self, mock_cmd):
-        mock_cmd.side_effect = mock.Mock(side_effect=subprocess.CalledProcessError(
-            returncode=1, cmd='ip'
-        ))
+        mock_cmd.side_effect = mock.Mock(
+            side_effect=subprocess.CalledProcessError(returncode=1, cmd='ip'))
         interface_status = network._inspect_interface('eth0')
         expected = network.InterfaceStatus(False, None, None)
         self.assertEqual(interface_status, expected)
@@ -102,7 +101,8 @@ class InspectInterfaceTest(unittest.TestCase):
             }]
         """
         interface_status = network._inspect_interface('eth0')
-        expected = network.InterfaceStatus(True, "192.168.2.5", "00-b0-d0-63-c2-26")
+        expected = network.InterfaceStatus(True, "192.168.2.5",
+                                           "00-b0-d0-63-c2-26")
         self.assertEqual(interface_status, expected)
 
     @mock.patch.object(subprocess, 'check_output')
