@@ -1,6 +1,10 @@
 import dataclasses
+import json
+import logging
 import re
 import subprocess
+
+logger = logging.getLogger(__name__)
 
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
@@ -15,9 +19,10 @@ class NetworkError(Error):
 
 
 @dataclasses.dataclass
-class NetworkStatus:
-    ethernet: bool
-    wifi: bool
+class InterfaceStatus:
+    is_connected: bool
+    ip_address: str  # May be `None` if interface is disabled.
+    mac_address: str  # May be `None` if interface is disabled.
 
 
 @dataclasses.dataclass
@@ -27,26 +32,76 @@ class WifiSettings:
     psk: str  # Optional.
 
 
-def status():
+def determine_network_status():
     """Checks the connectivity of the network interfaces.
 
     Returns:
-        NetworkStatus
+        A tuple of InterfaceStatus objects for the Ethernet and WiFi interface.
     """
-    network_status = NetworkStatus(False, False)
+    return (_inspect_interface('eth0'), _inspect_interface('wlan0'))
+
+
+def _inspect_interface(interface_name):
+    """Gathers information about a network interface.
+
+    This method relies on the JSON output of the `ip` command. If the interface
+    is available, the JSON structure is an array containing an object, which
+    looks like the following (extra properties omitted for brevity):
+        [{
+            "operstate": "UP",
+            "address": "e4:5f:01:98:65:05",
+            "addr_info": [{"family":"inet", "local":"192.168.12.86"]
+        }]
+    Note that `addr_info` might be empty, e.g. if `operstate` is `DOWN`;
+    it also might contain additional families, such as `inet6` (IPv6).
+
+    In general, we don’t have too much trust in the consistency of the JSON
+    structure, as there is no reliable documentation for it. We try to handle
+    and parse the output in a defensive and graceful way, to maximize
+    robustness and avoid producing erratic failures.
+
+    Args:
+        interface_name: the technical interface name as string, e.g. `eth0`.
+
+    Returns:
+        InterfaceStatus object
+    """
+    status = InterfaceStatus(False, None, None)
+
     try:
-        with open('/sys/class/net/eth0/operstate', encoding='utf-8') as file:
-            eth0 = file.read().strip()
-            network_status.ethernet = eth0 == 'up'
-    except OSError:
-        pass  # We treat this as if the interface was down altogether.
+        ip_cmd_out_raw = subprocess.check_output([
+            'ip',
+            '-json',
+            'address',
+            'show',
+            interface_name,
+        ],
+                                                 stderr=subprocess.STDOUT,
+                                                 universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        logger.error('Failed to run `ip` command: %s', str(e))
+        return status
+
     try:
-        with open('/sys/class/net/wlan0/operstate', encoding='utf-8') as file:
-            wlan0 = file.read().strip()
-            network_status.wifi = wlan0 == 'up'
-    except OSError:
-        pass  # We treat this as if the interface was down altogether.
-    return network_status
+        json_output = json.loads(ip_cmd_out_raw)
+    except json.decoder.JSONDecodeError as e:
+        logger.error('Failed to parse JSON output of `ip` command: %s', str(e))
+        return status
+
+    if len(json_output) == 0:
+        return status
+    data = json_output[0]
+
+    if 'operstate' in data:
+        status.is_connected = data['operstate'] == 'UP'
+    if 'address' in data:
+        status.mac_address = data['address'].replace(':', '-')
+    if 'addr_info' in data:
+        status.ip_address = next((addr_info['local']
+                                  for addr_info in data['addr_info']
+                                  if addr_info['family'] == 'inet'), None)
+
+    return status
 
 
 def determine_wifi_settings():
