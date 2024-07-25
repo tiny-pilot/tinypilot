@@ -50,7 +50,7 @@ def inspect_interface(interface_name):
         [{
             "operstate": "UP",
             "address": "e4:5f:01:98:65:05",
-            "addr_info": [{"family":"inet", "local":"192.168.12.86"]
+            "addr_info": [{"family":"inet", "local":"192.168.12.86"}]
         }]
     Note that `addr_info` might be empty, e.g. if `operstate` is `DOWN`;
     it also might contain additional families, such as `inet6` (IPv6).
