@@ -32,7 +32,7 @@
       <network-status-interface id="status-wifi"></network-status-interface>
     </div>
     <div class="button-container">
-      <button class="close-button" type="button">Close</button>
+      <button id="close-button" type="button">Close</button>
     </div>
   </div>
 </template>
@@ -67,11 +67,11 @@
           };
           this._shouldAutoUpdate = false;
           this._updateTicker = null;
-          this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
-            el.addEventListener("click", () => {
+          this.shadowRoot
+            .querySelector("#close-button")
+            .addEventListener("click", () => {
               this.dispatchEvent(new DialogClosedEvent());
-            })
-          );
+            });
 
           // For all events that terminate the dialog, make sure to stop the
           // update ticker, otherwise the status requests would continue to be
