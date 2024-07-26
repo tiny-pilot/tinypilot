@@ -203,23 +203,58 @@ def hostname_set():
 
 @api_blueprint.route('/network/status', methods=['GET'])
 def network_status():
-    """Returns the current network status (i.e., which interfaces are active).
+    """Returns the current status of the available network interfaces.
 
     Returns:
         On success, a JSON data structure with the following properties:
-        ethernet: bool.
-        wifi: bool
+        ethernet: object
+        wifi: object
+        The object contains the following fields:
+        isConnected: bool
+        ipAddress: string or null
+        macAddress: string or null
 
         Example:
         {
-            "ethernet": true,
-            "wifi": false
+            "ethernet": {
+                "isConnected": true,
+                "ipAddress": "192.168.2.41",
+                "macAddress": "e4-5f-01-98-65-03"
+            },
+            "wifi": {
+                "isConnected": false,
+                "ipAddress": null,
+                "macAddress": null
+            }
         }
     """
-    status = network.status()
+    # In dev mode, return dummy data because attempting to read the actual
+    # settings will fail in most non-Raspberry Pi OS environments.
+    if flask.current_app.debug:
+        return json_response.success({
+            'ethernet': {
+                'isConnected': True,
+                'ipAddress': '192.168.2.8',
+                'macAddress': '00-b0-d0-63-c2-26',
+            },
+            'wifi': {
+                'isConnected': False,
+                'ipAddress': None,
+                'macAddress': None,
+            },
+        })
+    ethernet, wifi = network.determine_network_status()
     return json_response.success({
-        'ethernet': status.ethernet,
-        'wifi': status.wifi,
+        'ethernet': {
+            'isConnected': ethernet.is_connected,
+            'ipAddress': ethernet.ip_address,
+            'macAddress': ethernet.mac_address,
+        },
+        'wifi': {
+            'isConnected': wifi.is_connected,
+            'ipAddress': wifi.ip_address,
+            'macAddress': wifi.mac_address,
+        },
     })
 
 
