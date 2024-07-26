@@ -101,8 +101,13 @@
               }
             }
           );
-          // Dispatch dialog-closed event into slotted element, to allow the
-          // dialog to react to it if need be (e.g., for clean-ups).
+          // Dispatch dialog-closed event into slotted element(s), to allow the
+          // dialog to react to it if need be (e.g., for performing clean-ups).
+          // In theory, there could be multiple elements in the slot, so they
+          // all need to receive the close event – hence the `forEach`. In
+          // reality, we usually only slot a single dialog element, though. It
+          // shouldn’t matter anyway, since the dialog-closed event handler is
+          // idempotent.
           this.shadowRoot
             .querySelector("#close-button")
             .addEventListener("click", () =>
