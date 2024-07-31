@@ -1,0 +1,124 @@
+<template id="network-status-interface-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      display: flex;
+      margin-bottom: 0.75em;
+    }
+
+    #name {
+      width: 39%;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    #data {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      align-items: start;
+      margin-left: 1em;
+    }
+
+    #data div {
+      margin-bottom: 0.3em;
+    }
+
+    .connection-indicator {
+      display: flex;
+      align-items: center;
+    }
+
+    .status-dot {
+      vertical-align: middle;
+      height: 0.9em;
+      width: 0.9em;
+      margin-right: 0.5rem;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    :host([is-connected=""]) .status-dot {
+      background-color: var(--brand-green-bright);
+    }
+
+    :host(:not([is-connected])) .status-dot {
+      background-color: var(--brand-red-bright);
+    }
+
+    .label-connected,
+    .label-disconnected {
+      display: none;
+    }
+
+    :host([is-connected=""]) .label-connected,
+    :host(:not([is-connected])) .label-disconnected {
+      display: inline;
+    }
+
+    #ip-address,
+    #mac-address {
+      margin-left: 0.3em;
+    }
+  </style>
+
+  <div id="name"><!-- Filled programmatically --></div>
+  <div id="data">
+    <div class="connection-indicator">
+      <span class="status-dot status-dot-connected"></span>
+      <span class="label-connected">Connected</span>
+      <span class="label-disconnected">Disconnected</span>
+    </div>
+    <div>
+      IP Address:
+      <span id="ip-address" class="monospace"
+        ><!-- Filled programmatically --></span
+      >
+    </div>
+    <div>
+      MAC Address:
+      <span id="mac-address" class="monospace"
+        ><!-- Filled programmatically --></span
+      >
+    </div>
+  </div>
+</template>
+
+<script type="module">
+  (function () {
+    const template = document.querySelector(
+      "#network-status-interface-template"
+    );
+
+    customElements.define(
+      "network-status-interface",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this._elements = {
+            name: this.shadowRoot.querySelector("#name"),
+            ipAddress: this.shadowRoot.querySelector("#ip-address"),
+            macAddress: this.shadowRoot.querySelector("#mac-address"),
+          };
+        }
+
+        /**
+         * @param {string} name - The display name of the interface
+         * @param {Object} status
+         * @param {boolean} status.isConnected
+         * @param {string} [status.ipAddress]
+         * @param {string} [status.macAddress]
+         */
+        update(name, status) {
+          this._elements.name.innerText = name;
+          this.toggleAttribute("is-connected", status.isConnected);
+          this._elements.ipAddress.innerText = status.ipAddress || "n/a";
+          this._elements.macAddress.innerText = status.macAddress || "n/a";
+        }
+      }
+    );
+  })();
+</script>

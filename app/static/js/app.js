@@ -320,6 +320,20 @@ menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
   document.getElementById("change-hostname-dialog").initialize();
 });
+menuBar.addEventListener("wifi-dialog-requested", () => {
+  // Note: we have to call `initialize()` after `show()`, to ensure that the
+  // dialog is able to focus the main input element.
+  // See https://github.com/tiny-pilot/tinypilot/issues/1770
+  document.getElementById("wifi-overlay").show();
+  document.getElementById("wifi-dialog").initialize();
+});
+menuBar.addEventListener("network-status-dialog-requested", () => {
+  // Note: we have to call `initialize()` after `show()`, to ensure that the
+  // dialog is able to focus the main input element.
+  // See https://github.com/tiny-pilot/tinypilot/issues/1770
+  document.getElementById("network-status-overlay").show();
+  document.getElementById("network-status-dialog").initialize();
+});
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });

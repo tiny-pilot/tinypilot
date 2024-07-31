@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Prints the contents of marker sections from a file.
+#
+# If the target file doesn’t contain marker sections, the script doesn’t output
+# anything.
+# If the target file contains unmatched/orphaned markers, this script fails.
+
+# We don’t use `set -x`, because it would output every single iteration of the
+# while loop when iterating through the lines of the target file, and hence
+# generate a lot of noise.
+
+# Exit on first failure.
+set -e
+
+# Exit on unset variable.
+set -u
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+# shellcheck source=lib/markers.sh
+. "${SCRIPT_DIR}/lib/markers.sh"
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [--help] TARGET_FILE
+Prints the contents of marker sections from a file.
+  TARGET_FILE   Path to file with marker sections.
+  --help        Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+TARGET_FILE=''
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    -*)
+      >&2 echo "Unknown flag: $1"
+      >&2 echo "Use the '--help' flag for more information"
+      exit 1
+      ;;
+    *)
+      TARGET_FILE="$1"
+      shift
+      ;;
+  esac
+done
+readonly TARGET_FILE
+
+# Ensure target file is specified.
+if [[ -z "${TARGET_FILE}" ]]; then
+  >&2 echo 'Input parameter missing: TARGET_FILE'
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+# Ensure target file exists and is a file.
+if [[ ! -f "${TARGET_FILE}" ]]; then
+  >&2 echo "Not a file: ${TARGET_FILE}"
+  >&2 echo "Use the '--help' flag for more information"
+  exit 1
+fi
+
+# Read the original file line by line, and preserve all lines that reside
+# between the start and end markers (i.e., the section contents).
+is_in_marker_section='false'
+section_contents=()
+while IFS='' read -r line; do
+  if [[ "${line}" == "${MARKER_END}" ]]; then
+    if ! "${is_in_marker_section}"; then
+      >&2 echo 'Unmatched end marker'
+      exit 1
+    fi
+    is_in_marker_section='false'
+    continue
+  fi
+  if [[ "${line}" == "${MARKER_START}" ]]; then
+    is_in_marker_section='true'
+    continue
+  fi
+  if "${is_in_marker_section}"; then
+    section_contents+=("${line}")
+  fi
+done < "${TARGET_FILE}"
+
+if "${is_in_marker_section}"; then
+  >&2 echo 'Unmatched start marker'
+  exit 1
+fi
+
+# Print all lines of the section contents.
+printf "%s\n" "${section_contents[@]}"

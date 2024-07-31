@@ -35,8 +35,8 @@ Enable TinyPilot WiFi access point.
                               Defaults to: ${NETWORK_COUNTRY}
 
 Note: Running this script will clear any potentially existing custom static IP
-      configuration that might have been added previously by the set-static-ip
-      script.
+      configuration and also any potentially existing WiFi settings that might
+      have been set up previously.
 
 EOF
 }

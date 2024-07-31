@@ -32,7 +32,7 @@ python3 -m venv venv && \
 To run TinyPilot's build scripts, run:
 
 ```bash
-./dev-scripts/build
+./dev-scripts/check-all
 ```
 
 ### Run end-to-end tests
@@ -163,9 +163,9 @@ To build and install your changes on device, perform the following steps:
    ```
 1. On the device, clone the TinyPilot repo to a temporary directory.
 1. Check out the branch that has your changes.
-1. Run the [`dev-scripts/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
+1. Run the [`dev-scripts/device/install-from-source`](dev-scripts/device/install-from-source) script to build and install your branch's code. For example:
    ```bash
-   sudo dev-scripts/install-from-source
+   sudo dev-scripts/device/install-from-source
    ```
 
 ### Installing a TinyPilot bundle
@@ -188,14 +188,14 @@ curl \
   --silent \
   --show-error \
   --location \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/install-bundle | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/device/install-bundle | \
   sudo bash -s -- \
     url-to-bundle-file # replace this line with your bundle URL
 ```
 
 ### Build a uStreamer Debian package
 
-CircleCI builds the uStreamer Debian package for both `amd64`- and `armhf`-based architectures on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
+CircleCI builds the uStreamer Debian package for the `armhf` architecture on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
 
 Follow these steps:
 
@@ -206,8 +206,7 @@ Follow these steps:
    - If the [`build_debian_package` CircleCI job](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/.circleci/config.yml#L25) fails for some reason, you can manually debug the code in CircleCI by clicking "rerun job with SSH" in the CircleCI dashboard and following their SSH instructions. Remember to cancel the CircleCI job once you're done debugging, in order to reduce CI costs.
 1. When the job completes, go to the "Artifacts" tab of the `build_debian_package` job on CircleCI to find the uStreamer Debian packages.
 
-   - We use `amd64`-based builds only for testing in CircleCI.
-   - We use `armhf`-based builds on physical devices.
+   - We use `armhf`-based builds on physical devices and for testing in CircleCI.
    - [Docker platform names don't match Debian architecture names:](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/Dockerfile#L46C1-L48)
 
      > Docker's platform names don't match Debian's platform names, so we translate
@@ -215,7 +214,6 @@ Follow these steps:
 
      Which means that when Docker's target platform is:
 
-     - `linux/amd64`, CircleCI creates a `amd64` Debian package
      - `linux/arm/v7`, CircleCI creates a `armhf` Debian package
 
 ### Install a uStreamer Debian package

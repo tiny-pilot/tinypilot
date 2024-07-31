@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Starts the backend server in development mode.
 
 # Exit on first failure.
 set -e

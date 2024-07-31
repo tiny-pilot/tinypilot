@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Decode the EDID from the TinyPilot install defaults.
 
 # This script facilitates debugging the EDID and creates helpful logs of EDID

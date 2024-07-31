@@ -1,0 +1,357 @@
+<!-- Remark about the terminology: in the UI, we decided to say `Wi-Fi` instead
+     of `WiFi`, as this is the official spelling. We are not super strict about
+     this for code symbols, however, mainly for simplicity. -->
+<template id="wifi-template">
+  <style>
+    @import "css/style.css";
+    @import "css/button.css";
+
+    #initializing,
+    #prompt,
+    #changing,
+    #success-enabled,
+    #success-disabled {
+      display: none;
+    }
+
+    :host([state="initializing"]) #initializing,
+    :host([state="prompt"]) #prompt,
+    :host([state="changing"]) #changing,
+    :host([state="success-enabled"]) #success-enabled,
+    :host([state="success-disabled"]) #success-disabled {
+      display: block;
+    }
+
+    #input-error {
+      margin-top: 1rem;
+    }
+
+    label {
+      width: 8.5em;
+      text-align: right;
+    }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: 1em;
+      margin-top: 1.5em;
+      padding-left: 6em;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    .input-row input {
+      width: 20em;
+    }
+
+    .input-row select {
+      width: 21em;
+    }
+
+    .button-container {
+      margin-top: 1em;
+    }
+  </style>
+
+  <div id="initializing">
+    <h3>Retrieving Current Wi-Fi Settings</h3>
+    <div>
+      <progress-spinner></progress-spinner>
+    </div>
+  </div>
+
+  <div id="prompt">
+    <h3>Wi-Fi Credentials</h3>
+    <p>
+      Connect your TinyPilot device to a wireless network by entering your Wi-Fi
+      credentials.
+    </p>
+    <inline-message variant="warning" id="no-ethernet-warning">
+      <strong>Warning:</strong>: You are currently connected to your TinyPilot
+      device using Wi-Fi. If you change your settings, you might get
+      disconnected. Consider connecting an Ethernet cable before proceeding.
+    </inline-message>
+    <div class="input-container">
+      <div class="input-row">
+        <label for="ssid-input">Network Name:</label>
+        <input
+          type="text"
+          id="ssid-input"
+          class="monospace"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Wi-Fi SSID"
+        />
+      </div>
+      <div class="input-row">
+        <label for="psk-input">Password:</label>
+        <input
+          type="password"
+          id="psk-input"
+          class="monospace"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="(hidden)"
+        />
+      </div>
+      <div class="input-row">
+        <label for="country-code-input">Country:</label>
+        <select id="country-code-input">
+          <!-- Filled programmatically -->
+        </select>
+      </div>
+    </div>
+    <inline-message variant="error" id="input-error">
+      <strong>Invalid Wi-Fi Settings:</strong>
+      <span id="input-error-reason"><!-- Filled programmatically --></span>
+    </inline-message>
+    <div class="button-container">
+      <button id="disable-button" class="btn-danger" type="button">
+        Remove
+      </button>
+      <button id="enable-button" class="btn-success" type="button">Save</button>
+      <button class="close-button" type="button">Close</button>
+    </div>
+  </div>
+
+  <div id="changing">
+    <h3>Applying Changes</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="success-enabled">
+    <h3>Wi-Fi Credentials Saved</h3>
+    <p>
+      Your Wi-Fi credentials have been saved. When your TinyPilot device is in
+      range of the wireless network, it will automatically try to connect to it.
+    </p>
+    <button class="close-button" type="button">Close</button>
+  </div>
+
+  <div id="success-disabled">
+    <h3>Wi-Fi Credentials Removed</h3>
+    <p>
+      Your Wi-Fi credentials have been removed. Your TinyPilot device will no
+      longer try to connect to the wireless network.
+    </p>
+    <button class="close-button" type="button">Close</button>
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+  } from "/js/events.js";
+  import {
+    getNetworkStatus,
+    getWifiSettings,
+    enableWifi,
+    disableWifi,
+  } from "/js/controllers.js";
+  import { COUNTRY_CODES } from "/js/wifi.js";
+
+  (function () {
+    const template = document.querySelector("#wifi-template");
+
+    customElements.define(
+      "wifi-dialog",
+      class extends HTMLElement {
+        _states = {
+          INITIALIZING: "initializing",
+          PROMPT: "prompt",
+          CHANGING: "changing",
+          SUCCESS_ENABLED: "success-enabled",
+          SUCCESS_DISABLED: "success-disabled",
+        };
+        _statesWithoutDialogClose = new Set([
+          this._states.INITIALIZING,
+          this._states.CHANGING,
+        ]);
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this._elements = {
+            noEthernetWarning: this.shadowRoot.querySelector(
+              "#no-ethernet-warning"
+            ),
+            inputError: this.shadowRoot.querySelector("#input-error"),
+            inputErrorReason: this.shadowRoot.querySelector(
+              "#input-error-reason"
+            ),
+            ssidInput: this.shadowRoot.querySelector("#ssid-input"),
+            pskInput: this.shadowRoot.querySelector("#psk-input"),
+            countryCodeInput: this.shadowRoot.querySelector(
+              "#country-code-input"
+            ),
+            enableButton: this.shadowRoot.querySelector("#enable-button"),
+            disableButton: this.shadowRoot.querySelector("#disable-button"),
+          };
+
+          [
+            this._elements.ssidInput,
+            this._elements.pskInput,
+            this._elements.countryCodeInput,
+          ].forEach((el) =>
+            el.addEventListener("input", () => {
+              this._refreshButtons();
+            })
+          );
+          this._elements.enableButton.addEventListener("click", () => {
+            this._enable();
+          });
+          this._elements.disableButton.addEventListener("click", () => {
+            this._disable();
+          });
+          this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
+            el.addEventListener("click", () => {
+              this.dispatchEvent(new DialogClosedEvent());
+            })
+          );
+          Object.entries(COUNTRY_CODES)
+            .sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB))
+            .forEach(([code, name]) =>
+              this._elements.countryCodeInput.add(
+                new Option(`${name} (${code})`, code)
+              )
+            );
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              !this._statesWithoutDialogClose.has(newValue)
+            )
+          );
+        }
+
+        async initialize() {
+          this._state = this._states.INITIALIZING;
+          let wifiSettings, networkStatus;
+          try {
+            [wifiSettings, networkStatus] = await Promise.all([
+              getWifiSettings(),
+              getNetworkStatus(),
+            ]);
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Retrieve Wi-Fi Settings",
+                details: error,
+              })
+            );
+            return;
+          }
+
+          this._elements.ssidInput.value = wifiSettings.ssid;
+          // Preselect the US country code as initial value, (a) as demo value,
+          // and (b) because it probably fits most users anyway.
+          this._elements.countryCodeInput.value =
+            wifiSettings.countryCode || "US";
+          this._elements.pskInput.value = "";
+          this._initialWiFiSettings = { psk: "", ...wifiSettings };
+
+          this._elements.noEthernetWarning.hide();
+          this._elements.inputError.hide();
+          if (!networkStatus.ethernet.isConnected) {
+            this._elements.noEthernetWarning.show();
+          }
+
+          this._refreshButtons();
+          this._state = this._states.PROMPT;
+        }
+
+        _refreshButtons() {
+          const hasInputChanged = [
+            [this._elements.ssidInput, this._initialWiFiSettings.ssid],
+            [this._elements.pskInput, this._initialWiFiSettings.psk],
+            [
+              this._elements.countryCodeInput,
+              this._initialWiFiSettings.countryCode,
+            ],
+          ].some(([el, initialValue]) => el.value !== initialValue);
+
+          const isMandatoryInputMissing = [
+            this._elements.ssidInput,
+            this._elements.countryCodeInput,
+          ].some((el) => el.value === "");
+
+          // The “Enable” button is unavailable if the user hasn’t made any
+          // changes or if mandatory fields are still missing.
+          this._elements.enableButton.disabled =
+            !hasInputChanged || isMandatoryInputMissing;
+
+          // The “Disable” button is only available if there currently is a
+          // WiFi configuration (i.e., if there is an initial SSID value).
+          this._elements.disableButton.disabled =
+            !this._initialWiFiSettings.ssid;
+        }
+
+        async _enable() {
+          this._state = this._states.CHANGING;
+          try {
+            await enableWifi(
+              this._elements.countryCodeInput.value,
+              this._elements.ssidInput.value,
+              // The backend expects a value of `null` to indicate an open
+              // WiFi, not an empty string.
+              this._elements.pskInput.value || null
+            );
+          } catch (error) {
+            if (error.code === "INVALID_WIFI_SETTINGS") {
+              // Display validation errors inline in order to make it more
+              // convenient for the user to correct them.
+              this._elements.inputErrorReason.textContent = error.message;
+              this._elements.inputError.show();
+              this._state = this._states.PROMPT;
+              return;
+            }
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Enable Wi-Fi",
+                details: error,
+              })
+            );
+            return;
+          }
+          this._state = this._states.SUCCESS_ENABLED;
+        }
+
+        async _disable() {
+          this._state = this._states.CHANGING;
+          try {
+            await disableWifi();
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Disable Wi-Fi",
+                details: error,
+              })
+            );
+            return;
+          }
+          this._state = this._states.SUCCESS_DISABLED;
+        }
+      }
+    );
+  })();
+</script>

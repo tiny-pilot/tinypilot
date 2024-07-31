@@ -6,8 +6,10 @@ import execute
 import hostname
 import json_response
 import local_system
+import network
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.network
 import request_parsers.paste
 import request_parsers.video_settings
 import update.launcher
@@ -196,6 +198,127 @@ def hostname_set():
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
     except hostname.Error as e:
+        return json_response.error(e), 500
+
+
+@api_blueprint.route('/network/status', methods=['GET'])
+def network_status():
+    """Returns the current status of the available network interfaces.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        ethernet: object
+        wifi: object
+        The object contains the following fields:
+        isConnected: bool
+        ipAddress: string or null
+        macAddress: string or null
+
+        Example:
+        {
+            "ethernet": {
+                "isConnected": true,
+                "ipAddress": "192.168.2.41",
+                "macAddress": "e4-5f-01-98-65-03"
+            },
+            "wifi": {
+                "isConnected": false,
+                "ipAddress": null,
+                "macAddress": null
+            }
+        }
+    """
+    # In dev mode, return dummy data because attempting to read the actual
+    # settings will fail in most non-Raspberry Pi OS environments.
+    if flask.current_app.debug:
+        return json_response.success({
+            'ethernet': {
+                'isConnected': True,
+                'ipAddress': '192.168.2.8',
+                'macAddress': '00-b0-d0-63-c2-26',
+            },
+            'wifi': {
+                'isConnected': False,
+                'ipAddress': None,
+                'macAddress': None,
+            },
+        })
+    ethernet, wifi = network.determine_network_status()
+    return json_response.success({
+        'ethernet': {
+            'isConnected': ethernet.is_connected,
+            'ipAddress': ethernet.ip_address,
+            'macAddress': ethernet.mac_address,
+        },
+        'wifi': {
+            'isConnected': wifi.is_connected,
+            'ipAddress': wifi.ip_address,
+            'macAddress': wifi.mac_address,
+        },
+    })
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['GET'])
+def network_wifi_get():
+    """Returns the current WiFi settings, if present.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        countryCode: string.
+        ssid: string.
+
+        Example:
+        {
+            "countryCode": "US",
+            "ssid": "my-network"
+        }
+
+        Returns an error object on failure.
+    """
+    wifi_settings = network.determine_wifi_settings()
+    return json_response.success({
+        'countryCode': wifi_settings.country_code,
+        'ssid': wifi_settings.ssid,
+    })
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['PUT'])
+def network_wifi_enable():
+    """Enables a wireless network connection.
+
+    Expects a JSON data structure in the request body that contains a country
+    code, an SSID, and optionally a password; all as strings. Example:
+    {
+        "countryCode": "US",
+        "ssid": "my-network",
+        "psk": "sup3r-s3cr3t!"
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        wifi_settings = request_parsers.network.parse_wifi_settings(
+            flask.request)
+        network.enable_wifi(wifi_settings)
+        return json_response.success()
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    except network.Error as e:
+        return json_response.error(e), 500
+
+
+@api_blueprint.route('/network/settings/wifi', methods=['DELETE'])
+def network_wifi_disable():
+    """Disables the WiFi network connection.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        network.disable_wifi()
+        return json_response.success()
+    except network.Error as e:
         return json_response.error(e), 500
 
 

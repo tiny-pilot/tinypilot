@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Runs tests and static analysis on JavaScript files.
 
 # Exit on first failure.
 set -e
@@ -12,7 +14,8 @@ set -u
 # Location of app source files.
 SOURCE_DIR="app"
 
-./dev-scripts/lint-frontend
+# Check for JavaScript anti-patterns.
+./node_modules/.bin/eslint "./**/*.js" "./**/*.html"
 
 # Run unit tests.
 ./node_modules/.bin/mocha \
