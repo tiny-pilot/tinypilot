@@ -124,8 +124,10 @@ readonly SCRIPT_DIR
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
 
+# Clear existing TinyPilot network configurations.
 "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 
+# Enable wireless network interface.
 cat <<EOF | tee --append /etc/dhcpcd.conf
 ${MARKER_START}
 interface wlan0
@@ -134,6 +136,7 @@ nohook wpa_supplicant
 ${MARKER_END}
 EOF
 
+# Configure wireless access point.
 cat <<EOF | tee /etc/hostapd/hostapd.conf
 country_code=${NETWORK_COUNTRY}
 interface=wlan0
@@ -150,6 +153,7 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 EOF
 
+# Configure DHCP server for wireless access point.
 cat <<EOF | tee /etc/dnsmasq.conf
 interface=wlan0
 dhcp-range=${NETWORK_AP_CLIENT_IP_RANGE_START},${NETWORK_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
@@ -157,6 +161,7 @@ domain=wlan
 address=/gw.wlan/${NETWORK_AP_IP_ADDRESS}
 EOF
 
+# Backup WPA configurations.
 cp \
   --no-clobber \
   /etc/wpa_supplicant/wpa_supplicant.conf \
@@ -166,11 +171,13 @@ if ! rfkill list wlan | grep -q 'yes'; then
   touch /etc/wpa_supplicant/wlan_enabled
 fi
 
+# Clear WPA configurations.
 cat <<'EOF' | tee /etc/wpa_supplicant/wpa_supplicant.conf
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 EOF
 
+# Start wireless access point.
 rfkill unblock wlan
 systemctl unmask hostapd dnsmasq
 systemctl enable hostapd dnsmasq
