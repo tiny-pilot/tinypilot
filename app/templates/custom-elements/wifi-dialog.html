@@ -136,6 +136,12 @@
       Your Wi-Fi credentials have been saved. When your TinyPilot device is in
       range of the wireless network, it will automatically try to connect to it.
     </p>
+    <p>
+      To monitor the Wi-Fi connection status, open the "Network Status" dialog.
+    </p>
+    <button id="network-status-button" class="btn-action" type="button">
+      Open Network Status
+    </button>
     <button class="close-button" type="button">Close</button>
   </div>
 
@@ -200,6 +206,9 @@
             ),
             enableButton: this.shadowRoot.querySelector("#enable-button"),
             disableButton: this.shadowRoot.querySelector("#disable-button"),
+            networkStatusButton: this.shadowRoot.querySelector(
+              "#network-status-button"
+            ),
           };
 
           [
@@ -216,6 +225,16 @@
           });
           this._elements.disableButton.addEventListener("click", () => {
             this._disable();
+          });
+          this._elements.networkStatusButton.addEventListener("click", () => {
+            this.dispatchEvent(new DialogClosedEvent());
+            const menuBar = document.getElementById("menu-bar");
+            menuBar.dispatchEvent(
+              new CustomEvent("network-status-dialog-requested", {
+                bubbles: true,
+                composed: true,
+              })
+            );
           });
           this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
             el.addEventListener("click", () => {
