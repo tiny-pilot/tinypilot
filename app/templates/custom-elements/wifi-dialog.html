@@ -129,24 +129,6 @@
     <h3>Applying Changes</h3>
     <progress-spinner></progress-spinner>
   </div>
-
-  <div id="success-enabled">
-    <h3>Wi-Fi Credentials Saved</h3>
-    <p>
-      Your Wi-Fi credentials have been saved. When your TinyPilot device is in
-      range of the wireless network, it will automatically try to connect to it.
-    </p>
-    <button class="close-button" type="button">Close</button>
-  </div>
-
-  <div id="success-disabled">
-    <h3>Wi-Fi Credentials Removed</h3>
-    <p>
-      Your Wi-Fi credentials have been removed. Your TinyPilot device will no
-      longer try to connect to the wireless network.
-    </p>
-    <button class="close-button" type="button">Close</button>
-  </div>
 </template>
 
 <script type="module">
@@ -154,6 +136,7 @@
     DialogClosedEvent,
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
+    DialogSuccessEvent,
   } from "/js/events.js";
   import {
     getNetworkStatus,
@@ -173,8 +156,6 @@
           INITIALIZING: "initializing",
           PROMPT: "prompt",
           CHANGING: "changing",
-          SUCCESS_ENABLED: "success-enabled",
-          SUCCESS_DISABLED: "success-disabled",
         };
         _statesWithoutDialogClose = new Set([
           this._states.INITIALIZING,
@@ -333,7 +314,15 @@
             );
             return;
           }
-          this._state = this._states.SUCCESS_ENABLED;
+          this.dispatchEvent(
+            new DialogSuccessEvent({
+              title: "Wi-Fi Credentials Saved",
+              message:
+                "Your Wi-Fi credentials have been saved. When your TinyPilot" +
+                " device is in range of the wireless network, it will" +
+                " automatically try to connect to it.",
+            })
+          );
         }
 
         async _disable() {
@@ -349,7 +338,15 @@
             );
             return;
           }
-          this._state = this._states.SUCCESS_DISABLED;
+          this.dispatchEvent(
+            new DialogSuccessEvent({
+              title: "Wi-Fi Credentials Removed",
+              message:
+                "Your Wi-Fi credentials have been removed. Your TinyPilot" +
+                " device will no longer try to connect to the wireless" +
+                " network.",
+            })
+          );
         }
       }
     );
