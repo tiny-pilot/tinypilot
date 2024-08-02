@@ -32,6 +32,24 @@ export class DialogFailedEvent extends CustomEvent {
   }
 }
 
+export class DialogSuccessEvent extends CustomEvent {
+  /**
+   * Event that closes the dialog and displays the success dialog instead.
+   * @param {Object} successInfo
+   * @param {string} successInfo.title - A concise summary of what successfully
+   *     happened.
+   * @param {string} [successInfo.message] - A user-friendly message that
+   *     explains what this successful state means.
+   */
+  constructor(successInfo) {
+    super("dialog-success", {
+      detail: successInfo,
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
 export class DialogCloseStateChangedEvent extends CustomEvent {
   /**
    * Event that advises a state change affecting the dialog close

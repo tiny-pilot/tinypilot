@@ -1,0 +1,49 @@
+<template id="success-dialog-template">
+  <style>
+    @import "css/style.css";
+
+    #message:empty {
+      display: none;
+    }
+    #spacer {
+      margin-bottom: 2em;
+    }
+  </style>
+
+  <h3 id="title"></h3>
+  <p id="message"></p>
+  <div id="spacer"></div>
+  <button id="close">Close</button>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
+  (function () {
+    const template = document.querySelector("#success-dialog-template");
+
+    customElements.define(
+      "success-dialog",
+      class extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.shadowRoot
+            .getElementById("close")
+            .addEventListener("click", () =>
+              this.dispatchEvent(new DialogClosedEvent())
+            );
+        }
+
+        /**
+         * @see `DialogSuccessEvent` for description of parameters.
+         */
+        setup({ title, message }) {
+          this.shadowRoot.getElementById("title").innerText = title;
+          this.shadowRoot.getElementById("message").innerText = message || "";
+        }
+      }
+    );
+  })();
+</script>

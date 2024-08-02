@@ -143,6 +143,10 @@
           class="colorcard"
           style="background-color: var(--brand-green-light)"
         ></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-green-background)"
+        ></div>
         <br style="clear: both" />
         <div
           class="colorcard"
@@ -560,6 +564,26 @@
                 "  fooBarBaz\n".repeat(80),
             });
             document.getElementById("error-overlay").show();
+          });
+      </script>
+      <!-- Success overlay: -->
+      <overlay-panel id="success-overlay" variant="success">
+        <success-dialog id="success-dialog"></success-dialog>
+      </overlay-panel>
+      <button id="show-success-overlay-btn" class="btn-success">
+        Open Success Overlay
+      </button>
+      <script type="module">
+        document
+          .getElementById("show-success-overlay-btn")
+          .addEventListener("click", () => {
+            document.getElementById("success-dialog").setup({
+              title: "Example Success Message",
+              message:
+                "The title is set in Title Case. The message should be" +
+                " user-friendly and explain what this successful state means.",
+            });
+            document.getElementById("success-overlay").show();
           });
       </script>
       <h3>Loading States</h3>
