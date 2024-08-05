@@ -50,6 +50,11 @@
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-background);
     }
+
+    :host([variant="success"]) #panel {
+      border-top: 0.4rem solid var(--brand-green-bright);
+      background-color: var(--brand-green-background);
+    }
   </style>
 
   <dialog id="panel">
@@ -86,6 +91,10 @@
             this.show(false)
           );
           this.shadowRoot.addEventListener("dialog-failed", () =>
+            // This event is further handled in `app.js`.
+            this.show(false)
+          );
+          this.shadowRoot.addEventListener("dialog-success", () =>
             // This event is further handled in `app.js`.
             this.show(false)
           );

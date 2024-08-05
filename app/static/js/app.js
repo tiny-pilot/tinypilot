@@ -26,6 +26,14 @@ function showError(errorInfo) {
   document.getElementById("error-overlay").show();
 }
 
+/**
+ * @see `DialogSuccessEvent` for parameter `successInfo`
+ */
+function showSuccess(successInfo) {
+  document.getElementById("success-dialog").setup(successInfo);
+  document.getElementById("success-overlay").show();
+}
+
 function isIgnoredKeystroke(code) {
   // Ignore the keystroke if this is a modifier keycode and the modifier was
   // already pressed. Otherwise, something like holding down the Shift key
@@ -404,6 +412,10 @@ document
 
 document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
+});
+
+document.addEventListener("dialog-success", (evt) => {
+  showSuccess(evt.detail);
 });
 
 const shutdownDialog = document.getElementById("shutdown-dialog");
