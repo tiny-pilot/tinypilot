@@ -103,9 +103,7 @@
           );
           this.shadowRoot
             .querySelector("#close-button")
-            .addEventListener("click", () =>
-              this.show(false)
-            );
+            .addEventListener("click", () => this.show(false));
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
           this._elements.dialog.addEventListener("cancel", (evt) => {
@@ -128,13 +126,15 @@
           this.shadowRoot
             .querySelector("#dialog-slot")
             .assignedElements()
-            .forEach((el) => el.dispatchEvent(
-              new CustomEvent("overlay-toggled", {
-                detail: { isShown, overlay: this },
-                bubbles: true,
-                composed: true,
-              })
-            ));
+            .forEach((el) =>
+              el.dispatchEvent(
+                new CustomEvent("overlay-toggled", {
+                  detail: { isShown, overlay: this },
+                  bubbles: true,
+                  composed: true,
+                })
+              )
+            );
         }
 
         isShown() {
