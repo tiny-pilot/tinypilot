@@ -1,6 +1,7 @@
 etc /
 opt /
 usr /
+tmp /
 VERSION opt/tinypilot/
 COPYRIGHT opt/tinypilot/
 LICENSE opt/tinypilot/

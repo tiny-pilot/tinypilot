@@ -32,7 +32,7 @@ python3 -m venv venv && \
 To run TinyPilot's build scripts, run:
 
 ```bash
-./dev-scripts/build
+./dev-scripts/check-all
 ```
 
 ### Run end-to-end tests
@@ -54,7 +54,7 @@ To run TinyPilot's end-to-end tests against a running TinyPilot device, first tu
 If you're planning to contribute code to TinyPilot, it's a good idea to enable the standard Git hooks so that build scripts run before you commit. That way, you can see if basic tests pass in a few seconds rather than waiting a few minutes to watch them run in CircleCI.
 
 ```bash
-./hooks/enable_hooks
+./dev-scripts/enable-git-hooks
 ```
 
 ### Enable mock scripts and passwordless sudo access
@@ -80,6 +80,16 @@ To run TinyPilot on a non-Pi machine, run:
 ```bash
 ./dev-scripts/serve-dev
 ```
+
+### Open dialogs after page load
+
+If you are doing UI development in a dialog, it can be cumbersome to having to open a dialog via the menu after every page refresh.
+
+For convenience, you can append a parameter called `request` to the page URL, and specify the HTML id of the dialog as value. That will open the respective dialog straight away.
+
+Example: `http://localhost:8000?request=about-dialog`
+
+Technically, this assembles a `about-dialog-requested` event and dispatches it to the menu bar component.
 
 ## QA/Testing on a TinyPilot device
 
@@ -153,9 +163,9 @@ To build and install your changes on device, perform the following steps:
    ```
 1. On the device, clone the TinyPilot repo to a temporary directory.
 1. Check out the branch that has your changes.
-1. Run the [`dev-scripts/install-from-source`](dev-scripts/install-from-source) script to build and install your branch's code. For example:
+1. Run the [`dev-scripts/device/install-from-source`](dev-scripts/device/install-from-source) script to build and install your branch's code. For example:
    ```bash
-   sudo dev-scripts/install-from-source
+   sudo dev-scripts/device/install-from-source
    ```
 
 ### Installing a TinyPilot bundle
@@ -178,14 +188,14 @@ curl \
   --silent \
   --show-error \
   --location \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/install-bundle | \
+  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/dev-scripts/device/install-bundle | \
   sudo bash -s -- \
     url-to-bundle-file # replace this line with your bundle URL
 ```
 
 ### Build a uStreamer Debian package
 
-CircleCI builds the uStreamer Debian package for both `amd64`- and `armhf`-based architectures on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
+CircleCI builds the uStreamer Debian package for the `armhf` architecture on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
 
 Follow these steps:
 
@@ -196,8 +206,7 @@ Follow these steps:
    - If the [`build_debian_package` CircleCI job](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/.circleci/config.yml#L25) fails for some reason, you can manually debug the code in CircleCI by clicking "rerun job with SSH" in the CircleCI dashboard and following their SSH instructions. Remember to cancel the CircleCI job once you're done debugging, in order to reduce CI costs.
 1. When the job completes, go to the "Artifacts" tab of the `build_debian_package` job on CircleCI to find the uStreamer Debian packages.
 
-   - We use `amd64`-based builds only for testing in CircleCI.
-   - We use `armhf`-based builds on physical devices.
+   - We use `armhf`-based builds on physical devices and for testing in CircleCI.
    - [Docker platform names don't match Debian architecture names:](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/Dockerfile#L46C1-L48)
 
      > Docker's platform names don't match Debian's platform names, so we translate
@@ -205,7 +214,6 @@ Follow these steps:
 
      Which means that when Docker's target platform is:
 
-     - `linux/amd64`, CircleCI creates a `amd64` Debian package
      - `linux/arm/v7`, CircleCI creates a `armhf` Debian package
 
 ### Install a uStreamer Debian package
@@ -384,7 +392,7 @@ Prefer to change a web component's appearance based on attributes and CSS rules 
 
 For a component that is used within an overlay, there might be certain states that should prevent the user from closing the dialog. That’s typically the case when we are waiting for an action to complete (for example when loading something).
 
-These particular states are listed in the `statesWithoutDialogClose` class property, like so:
+These particular states are listed in the `_statesWithoutDialogClose` class property, like so:
 
 ```javascript
 class extends HTMLElement {
@@ -393,7 +401,7 @@ class extends HTMLElement {
         FETCH_FROM_URL: "fetch-from-url",
         VIEW: "view",
     };
-    statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
+    _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 ```
 
 Note: for consistency, we always use a `Set` here, even if it only contains a single element.
@@ -405,7 +413,7 @@ set _state(newValue) {
     this.setAttribute("state", newValue);
     this.dispatchEvent(
     new DialogCloseStateChangedEvent(
-        !this.statesWithoutDialogClose.has(newValue)
+        !this._statesWithoutDialogClose.has(newValue)
     )
     );
 }

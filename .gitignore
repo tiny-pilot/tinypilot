@@ -74,6 +74,7 @@ node_modules
 
 # Debian package builds
 debian-pkg/releases/
+debian-pkg/tmp/
 
 # End-to-End test data
 e2e-results/

@@ -27,6 +27,7 @@
   --brand-blue-dark: hsl(var(--brand-hue-blue), 51%, 30%);
   --brand-blue-bright: hsl(var(--brand-hue-blue), 90%, 67%);
   --brand-blue-light: hsl(var(--brand-hue-blue), 74%, 79%);
+  --brand-blue-lighter: hsl(var(--brand-hue-blue), 65%, 88%);
 
   --brand-red: hsl(var(--brand-hue-red), 57%, 44%);
   --brand-red-dark: hsl(var(--brand-hue-red), 72%, 29%);
@@ -102,7 +103,8 @@ img {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+select {
   padding: 0.4rem;
   font-family: inherit;
   font-size: inherit;
@@ -111,7 +113,12 @@ input[type="password"] {
   box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
 }
 
-input[type="text"].monospace {
+select {
+  padding: 0.5rem;
+}
+
+input[type="text"].monospace,
+input[type="password"].monospace {
   font-family: "Overpass Mono", monospace;
   /* Since the monospace font has different characteristics than the regular
      font, we need to set the height here explicitly. In the end, the input

@@ -55,6 +55,12 @@ echo "6b65796d696d6570690" > "${USB_STRINGS_DIR}/serialnumber"
 echo "tinypilot" > "${USB_STRINGS_DIR}/manufacturer"
 echo "Multifunction USB Device" > "${USB_STRINGS_DIR}/product"
 
+#Rndis
+mkdir -p "$USB_RNDIS_FUNCTIONS_DIR"
+echo 1 > "${USB_RNDIS_FUNCTIONS_DIR}/protocol" # Rndis
+echo 4 > "${USB_RNDIS_FUNCTIONS_DIR}/subclass" # Boot interface subclass
+echo ef > "${USB_RNDIS_FUNCTIONS_DIR}/class"
+
 # Keyboard
 mkdir -p "$USB_KEYBOARD_FUNCTIONS_DIR"
 echo 1 > "${USB_KEYBOARD_FUNCTIONS_DIR}/protocol" # Keyboard
@@ -156,6 +162,7 @@ CONFIGS_STRINGS_DIR="${USB_CONFIG_DIR}/${USB_STRINGS_DIR}"
 mkdir -p "${CONFIGS_STRINGS_DIR}"
 echo "Config ${USB_CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configuration"
 
+ln -s "${USB_RNDIS_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 ln -s "${USB_KEYBOARD_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 ln -s "${USB_MOUSE_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 

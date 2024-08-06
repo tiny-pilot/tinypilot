@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Configure Docker to support multiarch builds, allowing it to use QEMU to build
 # images targeting different CPU architectures.
 

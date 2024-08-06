@@ -143,7 +143,7 @@
           RESTARTING: "restarting",
           UPDATE_FINISHED: "update-finished",
         };
-        statesWithoutDialogClose = new Set([
+        _statesWithoutDialogClose = new Set([
           this._states.CHECKING,
           this._states.UPDATING,
           this._states.RESTARTING,
@@ -195,7 +195,7 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this.statesWithoutDialogClose.has(newValue)
+              !this._statesWithoutDialogClose.has(newValue)
             )
           );
         }

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Build TinyPilot Debian packages.
 #
 # Usage:

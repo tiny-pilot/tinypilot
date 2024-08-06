@@ -194,6 +194,75 @@ export async function changeHostname(newHostname) {
     .then(() => newHostname);
 }
 
+export async function getNetworkStatus() {
+  return fetch("/api/network/status", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((response) => {
+      ["ethernet", "wifi"].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!response.hasOwnProperty(field)) {
+          throw new ControllerError(`Missing expected ${field} field`);
+        }
+      });
+      return response;
+    });
+}
+
+export async function getWifiSettings() {
+  return fetch("/api/network/settings/wifi", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((response) => {
+      ["countryCode", "ssid"].forEach((field) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!response.hasOwnProperty(field)) {
+          throw new ControllerError(`Missing expected ${field} field`);
+        }
+      });
+      return response;
+    });
+}
+
+export async function enableWifi(countryCode, ssid, psk) {
+  return fetch("/api/network/settings/wifi", {
+    method: "PUT",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ countryCode, ssid, psk }),
+  })
+    .then(processJsonResponse)
+    .then(() => true);
+}
+
+export async function disableWifi() {
+  return fetch("/api/network/settings/wifi", {
+    method: "DELETE",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+  })
+    .then(processJsonResponse)
+    .then(() => true);
+}
+
 export async function checkStatus(baseURL = "") {
   return fetch(baseURL + "/api/status", {
     method: "GET",

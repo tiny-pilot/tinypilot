@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Mock version of /opt/tinypilot-privileged/scripts/print-marker-sections
+
+if [[ "$1" == '/etc/wpa_supplicant/wpa_supplicant.conf' ]]; then
+  cat << EOF
+country=US
+network={
+	ssid="TinyPilot Office"
+	psk=4efa961963891a4adb1f96ed645e96cd096cfb9bf5af086cd46c21c85b5bb98b
+}
+EOF
+fi

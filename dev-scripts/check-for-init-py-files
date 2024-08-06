@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Test if __init__.py file exists in directory containing .py files.
 
 # Exit on first failure.

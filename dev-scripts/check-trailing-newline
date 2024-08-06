@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Verify that all text files end in a trailing newline.
 
 # Exit on first failing command.

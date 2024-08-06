@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Executes all check scripts.
+#
+# It only skips `check-debian-pkg`, because that one has special prerequisites.
+
+# Exit on first failure.
+set -e
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+./dev-scripts/check-bash
+./dev-scripts/check-for-init-files
+./dev-scripts/check-javascript
+./dev-scripts/check-privilege-guard
+./dev-scripts/check-python
+./dev-scripts/check-sql
+./dev-scripts/check-style
+./dev-scripts/check-trailing-whitespace
+./dev-scripts/check-trailing-newline
