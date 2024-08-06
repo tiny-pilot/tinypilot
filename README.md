@@ -64,7 +64,7 @@ You can install TinyPilot on a compatible Raspberry Pi in just two commands.
 curl \
   --silent \
   --show-error \
-  https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh | \
+  https://raw.githubusercontent.com/lucascandido-ti/tinypilot-testviewer/master/get-tinypilot.sh | \
     bash - && \
   sudo reboot
 ```
