@@ -101,20 +101,10 @@
               }
             }
           );
-          // Dispatch dialog-closed event into slotted element(s), to allow the
-          // dialog to react to it if need be (e.g., for performing clean-ups).
-          // In theory, there could be multiple elements in the slot, so they
-          // all need to receive the close event – hence the `forEach`. In
-          // reality, we usually only slot a single dialog element, though. It
-          // shouldn’t matter anyway, since the dialog-closed event handler is
-          // idempotent.
           this.shadowRoot
             .querySelector("#close-button")
             .addEventListener("click", () =>
-              this.shadowRoot
-                .querySelector("#dialog-slot")
-                .assignedElements()
-                .forEach((el) => el.dispatchEvent(new DialogClosedEvent()))
+              this.show(false)
             );
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
@@ -129,13 +119,22 @@
           } else {
             this._elements.dialog.close();
           }
-          this.dispatchEvent(
-            new CustomEvent("overlay-toggled", {
-              detail: { isShown },
-              bubbles: true,
-              composed: true,
-            })
-          );
+          // Dispatch overlay-toggled event into slotted element(s), to allow
+          // the dialog to react to it if need be (e.g., for performing
+          // initializations/clean-ups). In theory, there could be multiple
+          // elements in the slot, so they all need to receive the event – hence
+          // the `forEach`. In reality, we usually only slot a single dialog
+          // element, though.
+          this.shadowRoot
+            .querySelector("#dialog-slot")
+            .assignedElements()
+            .forEach((el) => el.dispatchEvent(
+              new CustomEvent("overlay-toggled", {
+                detail: { isShown, overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            ));
         }
 
         isShown() {
