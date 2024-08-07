@@ -46,7 +46,7 @@ while getopts "hq" opt; do
     esac
 done
 
-if [[ "${EUID}" -ne 0 ]]; then
+if (( "${EUID}" != 0 )); then
   echo "This script requires root privileges." >&2
   echo "Please re-run with sudo:" >&2
   echo "  sudo ${0}" >&2

@@ -22,7 +22,7 @@ Prints the contents of marker sections from a file.
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -34,7 +34,7 @@ Use the '--help' flag for more information
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -46,7 +46,7 @@ Use the '--help' flag for more information
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -58,7 +58,7 @@ Use the '--help' flag for more information
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -71,7 +71,7 @@ Use the '--help' flag for more information
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -84,7 +84,7 @@ line 3
 EOF
   run print-marker-sections "${target_file}"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "" ]]
 }
 
@@ -106,7 +106,7 @@ printed
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -131,7 +131,7 @@ printed
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
@@ -144,7 +144,7 @@ to be printed
 EOF
   run print-marker-sections "${target_file}"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "Unmatched start marker" ]]
 }
 
@@ -157,6 +157,6 @@ final line
 EOF
   run print-marker-sections "${target_file}"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == 'Unmatched end marker' ]]
 }
