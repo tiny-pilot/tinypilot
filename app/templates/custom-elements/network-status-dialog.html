@@ -68,26 +68,21 @@
           this._updateTicker = null;
 
           this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
+            if (evt.detail.isShown) {
+              this._initialize();
               return;
             }
-            this._initialize();
+            // Stop the update ticker when the dialog is closed, otherwise the
+            // status requests would continue to be fired even when the dialog
+            // is not visible anymore.
+            this._shouldAutoUpdate = false;
+            clearTimeout(this._updateTicker);
           });
           this.shadowRoot
             .querySelector("#close-button")
             .addEventListener("click", () => {
               this.dispatchEvent(new DialogClosedEvent());
             });
-          // Stop the update ticker when the dialog is closed, otherwise the
-          // status requests would continue to be fired even when the dialog is
-          // not visible anymore.
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (evt.detail.isShown) {
-              return;
-            }
-            this._shouldAutoUpdate = false;
-            clearTimeout(this._updateTicker);
-          });
         }
 
         get _state() {
