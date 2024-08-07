@@ -231,7 +231,7 @@ document.onload = document.getElementById("app").focus();
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 document.addEventListener("overlay-toggled", (evt) => {
-  overlayTracker.trackStatus(evt.target, evt.detail.isShown);
+  overlayTracker.trackStatus(evt.detail.overlay, evt.detail.isShown);
 });
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =
@@ -314,35 +314,21 @@ menuBar.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-dialog").checkVersion();
 });
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
-  // Note: we have to call `initialize()` after `show()`, to ensure that the
-  // dialog is able to focus the main input element.
-  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("change-hostname-overlay").show();
-  document.getElementById("change-hostname-dialog").initialize();
 });
 menuBar.addEventListener("wifi-dialog-requested", () => {
-  // Note: we have to call `initialize()` after `show()`, to ensure that the
-  // dialog is able to focus the main input element.
-  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("wifi-overlay").show();
-  document.getElementById("wifi-dialog").initialize();
 });
 menuBar.addEventListener("network-status-dialog-requested", () => {
-  // Note: we have to call `initialize()` after `show()`, to ensure that the
-  // dialog is able to focus the main input element.
-  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("network-status-overlay").show();
-  document.getElementById("network-status-dialog").initialize();
 });
 menuBar.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
 menuBar.addEventListener("debug-logs-dialog-requested", () => {
-  document.getElementById("debug-dialog").retrieveLogs();
   document.getElementById("debug-overlay").show();
 });
 menuBar.addEventListener("about-dialog-requested", () => {
-  document.getElementById("about-dialog").initialize();
   document.getElementById("about-overlay").show();
 });
 menuBar.addEventListener("mass-storage-dialog-requested", () => {
@@ -355,15 +341,10 @@ menuBar.addEventListener("static-ip-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
 menuBar.addEventListener("video-settings-dialog-requested", () => {
-  document.getElementById("video-settings-dialog").initialize();
   document.getElementById("video-settings-overlay").show();
 });
 menuBar.addEventListener("paste-dialog-requested", () => {
-  // Note: we have to call `initialize()` after `show()`, to ensure that the
-  // dialog is able to focus the main input element.
-  // See https://github.com/tiny-pilot/tinypilot/issues/1770
   document.getElementById("paste-overlay").show();
-  document.getElementById("paste-dialog").initialize();
 });
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to

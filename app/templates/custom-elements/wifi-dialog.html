@@ -201,6 +201,12 @@
             disableButton: this.shadowRoot.querySelector("#disable-button"),
           };
 
+          this.addEventListener("overlay-toggled", (evt) => {
+            if (!evt.detail.isShown) {
+              return;
+            }
+            this._initialize();
+          });
           [
             this._elements.ssidInput,
             this._elements.pskInput,
@@ -243,7 +249,7 @@
           );
         }
 
-        async initialize() {
+        async _initialize() {
           this._state = this._states.INITIALIZING;
           let wifiSettings, networkStatus;
           try {
