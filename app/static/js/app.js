@@ -387,6 +387,56 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
     code: "Delete",
   });
 });
+menuBar.addEventListener("ctrl-alt-backspace-requested", () => {
+  processKeystroke({
+    ctrlLeft: true,
+    key: "Control",
+    code: "ControlLeft",
+  });
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Alt",
+    code: "AltLeft",
+  });
+  processKeystroke({
+    ctrlLeft: true,
+    altLeft: true,
+    key: "Backspace",
+    code: "Backspace",
+  });
+});
+menuBar.addEventListener("meta-alt-escape-requested", () => {
+  processKeystroke({
+    metaLeft: true,
+    key: "Meta",
+    code: "MetaLeft",
+  });
+  processKeystroke({
+    metaLeft: true,
+    altLeft: true,
+    key: "Alt",
+    code: "AltLeft",
+  });
+  processKeystroke({
+    metaLeft: true,
+    altLeft: true,
+    key: "Esc",
+    code: "Escape",
+  });
+});
+menuBar.addEventListener("alt-tab-requested", () => {
+  processKeystroke({
+    altLeft: true,
+    key: "Alt",
+    code: "AltLeft",
+  });
+  processKeystroke({
+    altLeft: true,
+    key: "Tab",
+    code: "Tab",
+  });
+});
 
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
 
