@@ -268,10 +268,10 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
     'z':
         hid.Keystroke(keycode=hid.KEYCODE_Y),
     'Y':
-        hid.Keystroke(keycode=hid.KEYCODE_Z, 
+        hid.Keystroke(keycode=hid.KEYCODE_Z,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
     'Z':
-        hid.Keystroke(keycode=hid.KEYCODE_Y, 
+        hid.Keystroke(keycode=hid.KEYCODE_Y,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
     '"':
         hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2,
@@ -358,7 +358,7 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
                       modifier=hid.MODIFIER_ALT_GR),
     '\'':
         hid.Keystroke(keycode=hid.KEYCODE_MINUS,
-                      modifier=hid.MODIFIER_ALT_GR),
+                      modifier=hid.MODIFIER_ALT_GR)
 }
 
 def convert(char, language):
