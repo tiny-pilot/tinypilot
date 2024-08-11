@@ -367,6 +367,11 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
     '\\':
         hid.Keystroke(keycode=hid.KEYCODE_MINUS,
                       modifier=hid.MODIFIER_ALT_GR),
+    '´':
+        hid.Keystroke(keycode=hid.KEYCODE_EQUAL_SIGN),
+    '`':
+        hid.Keystroke(keycode=hid.KEYCODE_EQUAL_SIGN,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
 }
 
 def convert(char, language):
