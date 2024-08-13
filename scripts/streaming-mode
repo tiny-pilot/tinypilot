@@ -8,7 +8,7 @@ set -e
 # Exit on unset variable.
 set -u
 
-if [[ "${EUID}" == 0 ]]; then
+if (( "${EUID}" == 0 )); then
   >&2 echo "This script doesn't require root privileges."
   >&2 echo 'Please re-run as tinypilot:'
   >&2 echo "  runuser tinypilot --command '$0 $*'"

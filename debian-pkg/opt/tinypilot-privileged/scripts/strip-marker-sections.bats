@@ -22,28 +22,28 @@ Strips TinyPilot marker sections from a file.
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "${expected_output}" ]]
 }
 
 rejects-missing-input-arg() { #@test
   run strip-marker-sections
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == 'Input parameter missing: TARGET_FILE' ]]
 }
 
 rejects-illegal-flag() { #@test
   run strip-marker-sections --foo
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == 'Illegal option: --foo' ]]
 }
 
 rejects-non-existing-file() { #@test
   run strip-marker-sections foo-file.txt
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == 'Not a file: foo-file.txt' ]]
 }
 
@@ -51,7 +51,7 @@ rejects-non-file() { #@test
   tmp_dir="$(mktemp --directory)"
   run strip-marker-sections "${tmp_dir}"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "Not a file: ${tmp_dir}" ]]
 }
 
@@ -71,7 +71,7 @@ line 3
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "" ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
@@ -92,7 +92,7 @@ EOF
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "" ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
@@ -116,7 +116,7 @@ final line
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "" ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
@@ -145,7 +145,7 @@ final line
 EOF
   )"
 
-  [[ "${status}" == 0 ]]
+  (( "${status}" == 0 ))
   [[ "${output}" == "" ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
@@ -166,7 +166,7 @@ to be stripped
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == "Unmatched start marker" ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
@@ -187,7 +187,7 @@ final line
 EOF
   )"
 
-  [[ "${status}" == 1 ]]
+  (( "${status}" == 1 ))
   [[ "${output}" == 'Unmatched end marker' ]]
   [[ "${actual_contents}" == "${expected_contents}" ]]
 }
