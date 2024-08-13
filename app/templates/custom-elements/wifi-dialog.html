@@ -201,12 +201,7 @@
             disableButton: this.shadowRoot.querySelector("#disable-button"),
           };
 
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
-              return;
-            }
-            this._initialize();
-          });
+          this.addEventListener("overlay-shown", () => this._initialize());
           [
             this._elements.ssidInput,
             this._elements.pskInput,

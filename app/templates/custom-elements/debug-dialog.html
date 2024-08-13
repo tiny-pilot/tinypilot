@@ -104,12 +104,7 @@
               this.shadowRoot.querySelector("#share-logs-button"),
           };
 
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
-              return;
-            }
-            this._initialize();
-          });
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.includeSensitiveData.addEventListener(
             "input",
             (event) => {

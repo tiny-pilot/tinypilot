@@ -230,8 +230,11 @@ document.onload = document.getElementById("app").focus();
 
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
-document.addEventListener("overlay-toggled", (evt) => {
-  overlayTracker.trackStatus(evt.detail.overlay, evt.detail.isShown);
+document.addEventListener("overlay-shown", (evt) => {
+  overlayTracker.trackStatus(evt.detail.overlay, /*isShown=*/ true);
+});
+document.addEventListener("overlay-hidden", (evt) => {
+  overlayTracker.trackStatus(evt.detail.overlay, /*isShown=*/ false);
 });
 document.addEventListener("video-streaming-mode-changed", (evt) => {
   document.getElementById("status-bar").videoStreamIndicator.mode =

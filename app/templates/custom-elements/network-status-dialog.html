@@ -67,11 +67,8 @@
           this._shouldAutoUpdate = false;
           this._updateTicker = null;
 
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (evt.detail.isShown) {
-              this._initialize();
-              return;
-            }
+          this.addEventListener("overlay-shown", () => this._initialize());
+          this.addEventListener("overlay-hidden", () => {
             // Stop the update ticker when the dialog is closed, otherwise the
             // status requests would continue to be fired even when the dialog
             // is not visible anymore.

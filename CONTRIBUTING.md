@@ -388,16 +388,13 @@ This ensures that the elements in the `<div id="initializing">` only appear when
 
 Prefer to change a web component's appearance based on attributes and CSS rules as opposed to JavaScript that manipulates the `.style` attributes of elements within the component.
 
-We can then initialize the component when the dialog is opened by listening for the `overlay-toggled` event:
+We can then initialize the component when the dialog is opened by listening for the `overlay-shown` event:
 
 ```javascript
 connectedCallback() {
-  this.addEventListener("overlay-toggled", (evt) => {
-    if (!evt.detail.isShown) {
-      return;
-    }
-    this._state = this._states.INITIALIZING;
-  });
+  this.addEventListener("overlay-shown", () => {
+    this._state = this._states.INITIALIZING);
+  };
 }
 ```
 

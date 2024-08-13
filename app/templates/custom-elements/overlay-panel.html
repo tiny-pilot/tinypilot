@@ -112,31 +112,39 @@
         show(isShown = true) {
           if (isShown) {
             this._elements.dialog.showModal();
+            this._injectEvent(
+              new CustomEvent("overlay-shown", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            );
           } else {
             this._elements.dialog.close();
-          }
-          // Dispatch overlay-toggled event into slotted element(s), to allow
-          // the dialog to react to it if need be (e.g., for performing
-          // initializations/clean-ups). In theory, there could be multiple
-          // elements in the slot, so they all need to receive the event – hence
-          // the `forEach`. In reality, we usually only slot a single dialog
-          // element, though.
-          this.shadowRoot
-            .querySelector("#dialog-slot")
-            .assignedElements()
-            .forEach((el) =>
-              el.dispatchEvent(
-                new CustomEvent("overlay-toggled", {
-                  detail: { isShown, overlay: this },
-                  bubbles: true,
-                  composed: true,
-                })
-              )
+            this._injectEvent(
+              new CustomEvent("overlay-hidden", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
             );
+          }
         }
 
         isShown() {
           return this._elements.dialog.open;
+        }
+
+        // Dispatch an event into the slotted element(s), to allow the dialog to
+        // react to it if need be (e.g., for performing initializations/
+        // clean-ups). In theory, there could be multiple elements in the slot,
+        // so they all need to receive the event – hence the `forEach`. In
+        // reality, we usually only slot a single dialog element, though.
+        _injectEvent(event) {
+          this.shadowRoot
+            .querySelector("#dialog-slot")
+            .assignedElements()
+            .forEach((el) => el.dispatchEvent(event));
         }
       }
     );

@@ -125,12 +125,7 @@
             futureLocation: this.shadowRoot.getElementById("future-location"),
           };
 
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
-              return;
-            }
-            this._initialize();
-          });
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.hostnameInput.addEventListener("input", () => {
             this._onInputChanged();
           });

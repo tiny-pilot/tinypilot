@@ -274,12 +274,7 @@
             ),
           };
 
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
-              return;
-            }
-            this._initialize();
-          });
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );

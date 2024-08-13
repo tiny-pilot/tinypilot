@@ -82,12 +82,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
-          this.addEventListener("overlay-toggled", (evt) => {
-            if (!evt.detail.isShown) {
-              return;
-            }
-            this._initialize();
-          });
+          this.addEventListener("overlay-shown", () => this._initialize());
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () =>
