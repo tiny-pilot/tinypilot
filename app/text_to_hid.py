@@ -262,6 +262,118 @@ _GB_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
                       modifier=hid.MODIFIER_LEFT_SHIFT),
 }
 
+_DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
+    'y':
+        hid.Keystroke(keycode=hid.KEYCODE_Z),
+    'z':
+        hid.Keystroke(keycode=hid.KEYCODE_Y),
+    'Y':
+        hid.Keystroke(keycode=hid.KEYCODE_Z,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    'Z':
+        hid.Keystroke(keycode=hid.KEYCODE_Y,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '"':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_2,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '§':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_3,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '&':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_6,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '/':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_7,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '(':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_8,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    ')':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_9,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '=':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_0,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '<':
+        hid.Keystroke(keycode=hid.KEYCODE_102ND),
+    '>':
+        hid.Keystroke(keycode=hid.KEYCODE_102ND,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '#':
+        hid.Keystroke(keycode=hid.KEYCODE_HASH),
+    ';':
+        hid.Keystroke(keycode=hid.KEYCODE_COMMA,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    ':':
+        hid.Keystroke(keycode=hid.KEYCODE_PERIOD,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '-':
+        hid.Keystroke(keycode=hid.KEYCODE_FORWARD_SLASH),
+    '_':
+        hid.Keystroke(keycode=hid.KEYCODE_FORWARD_SLASH,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    'ä':
+        hid.Keystroke(keycode=hid.KEYCODE_SINGLE_QUOTE),
+    'Ä':
+        hid.Keystroke(keycode=hid.KEYCODE_SINGLE_QUOTE,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    'ö':
+        hid.Keystroke(keycode=hid.KEYCODE_SEMICOLON),
+    'Ö':
+        hid.Keystroke(keycode=hid.KEYCODE_SEMICOLON,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    'ü':
+        hid.Keystroke(keycode=hid.KEYCODE_LEFT_BRACKET),
+    'Ü':
+        hid.Keystroke(keycode=hid.KEYCODE_LEFT_BRACKET,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '+':
+        hid.Keystroke(keycode=hid.KEYCODE_RIGHT_BRACKET),
+    '*':
+        hid.Keystroke(keycode=hid.KEYCODE_RIGHT_BRACKET,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '~':
+        hid.Keystroke(keycode=hid.KEYCODE_RIGHT_BRACKET,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '|':
+        hid.Keystroke(keycode=hid.KEYCODE_102ND,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '@':
+        hid.Keystroke(keycode=hid.KEYCODE_Q,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '€':
+        hid.Keystroke(keycode=hid.KEYCODE_E,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '{':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_7,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '[':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_8,
+                      modifier=hid.MODIFIER_ALT_GR),
+    ']':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_9,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '}':
+        hid.Keystroke(keycode=hid.KEYCODE_NUMBER_0,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '\'':
+        hid.Keystroke(keycode=hid.KEYCODE_BACKSLASH,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '?':
+        hid.Keystroke(keycode=hid.KEYCODE_MINUS),
+    'ß':
+        hid.Keystroke(keycode=hid.KEYCODE_MINUS,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+    '\\':
+        hid.Keystroke(keycode=hid.KEYCODE_MINUS,
+                      modifier=hid.MODIFIER_ALT_GR),
+    '´':
+        hid.Keystroke(keycode=hid.KEYCODE_EQUAL_SIGN),
+    '`':
+        hid.Keystroke(keycode=hid.KEYCODE_EQUAL_SIGN,
+                      modifier=hid.MODIFIER_LEFT_SHIFT),
+}
+
 
 def convert(char, language):
     """Converts a language character into a HID Keystroke object.
@@ -279,7 +391,8 @@ def convert(char, language):
     try:
         language_map = {
             'en-GB': _GB_CHAR_TO_HID_MAP,
-            'en-US': _US_CHAR_TO_HID_MAP
+            'en-US': _US_CHAR_TO_HID_MAP,
+            'de-DE': _DE_CHAR_TO_HID_MAP
         }[language]
     except KeyError:
         # Default to en-US if no other language matches.
