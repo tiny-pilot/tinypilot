@@ -112,7 +112,6 @@
         }
 
         _populateCredits() {
-          this.shadowRoot.querySelector(".credits").innerHTML = "";
           getLicensingMetadata().then((metadata) => {
             // Sort credits by project name.
             metadata.sort((a, b) => a.name.localeCompare(b.name, "en"));
