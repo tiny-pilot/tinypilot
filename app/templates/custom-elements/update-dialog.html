@@ -117,6 +117,7 @@
     DialogClosedEvent,
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
+    DialogVariantChangedEvent,
   } from "/js/events.js";
   import { UpdateLogsStreamer } from "/js/updatelogs.js";
   import {
@@ -289,6 +290,7 @@
               this._state = this._states.UPDATE_FINISHED;
               this._elements.updateLogs.textContent +=
                 "Update is now complete.\n";
+              this.dispatchEvent(new DialogVariantChangedEvent("success"));
             })
             .catch((error) => {
               this.dispatchEvent(

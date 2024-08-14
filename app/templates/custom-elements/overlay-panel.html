@@ -50,6 +50,11 @@
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-background);
     }
+
+    :host([variant="success"]) #panel {
+      border-top: 0.4rem solid var(--brand-green-bright);
+      background-color: var(--brand-green-background);
+    }
   </style>
 
   <dialog id="panel">
@@ -80,6 +85,7 @@
             dialog: this.shadowRoot.querySelector("#panel"),
           };
           this.show = this.show.bind(this);
+
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
@@ -87,16 +93,16 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
-
-          this.setAttribute("show-close-button", "");
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
-            (e) => {
-              if (e.detail.canBeClosed) {
-                this.setAttribute("show-close-button", "");
-              } else {
-                this.removeAttribute("show-close-button");
-              }
+            ({ detail: canBeClosed }) => {
+              this.toggleAttribute("show-close-button", canBeClosed);
+            }
+          );
+          this.shadowRoot.addEventListener(
+            "dialog-variant-changed",
+            ({ detail: { variant } }) => {
+              this.setAttribute("variant", variant);
             }
           );
           this.shadowRoot
@@ -110,6 +116,8 @@
         }
 
         show(isShown = true) {
+          this.setAttribute("variant", "default");
+          this.toggleAttribute("show-close-button", false);
           if (isShown) {
             this._elements.dialog.showModal();
             this._injectEvent(
