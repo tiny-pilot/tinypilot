@@ -44,6 +44,8 @@ if [[ -n "${CI:-}" ]]; then
 fi
 readonly DOCKER_PROGRESS
 
+cd ..
+
 DOCKER_BUILDKIT=1 docker buildx build \
   --file debian-pkg/Dockerfile \
   --platform "${BUILD_TARGETS}" \

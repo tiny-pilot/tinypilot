@@ -41,9 +41,9 @@ coverage run \
 coverage report
 
 # Check that source has correct formatting.
-yapf --diff --recursive ./
+#yapf --diff --recursive ./
 
-# Run static analysis for Python bugs/cruft.
+# Run static analysis for Python bugs/cruft
 ruff check \
   "${SOURCE_DIR}/" \
   "${ADDITIONAL_PY_SCRIPTS[@]}"

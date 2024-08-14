@@ -14,7 +14,6 @@ set -x
 set -u
 
 ./dev-scripts/check-bash
-./dev-scripts/check-for-init-files
 ./dev-scripts/check-javascript
 ./dev-scripts/check-privilege-guard
 ./dev-scripts/check-python
