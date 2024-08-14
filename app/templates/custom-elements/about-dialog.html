@@ -111,12 +111,12 @@
         }
 
         _populateCredits() {
-          this.shadowRoot.querySelector(".credits").innerHTML = "";
           getLicensingMetadata().then((metadata) => {
             // Sort credits by project name.
             metadata.sort((a, b) => a.name.localeCompare(b.name, "en"));
 
             const creditsDiv = this.shadowRoot.querySelector(".credits");
+            creditsDiv.innerHTML = "";
             for (const project of metadata) {
               // Skip displaying TinyPilot in the list of dependencies, since we
               // display the TinyPilot license in a special way.
