@@ -82,6 +82,7 @@
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
+          this.addEventListener("overlay-shown", () => this._initialize());
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () =>
@@ -89,7 +90,7 @@
             );
         }
 
-        initialize() {
+        _initialize() {
           this._checkVersion();
           this._populateCredits();
         }

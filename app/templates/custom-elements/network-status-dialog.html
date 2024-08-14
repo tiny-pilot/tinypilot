@@ -66,21 +66,20 @@
           };
           this._shouldAutoUpdate = false;
           this._updateTicker = null;
+
+          this.addEventListener("overlay-shown", () => this._initialize());
+          this.addEventListener("overlay-hidden", () => {
+            // Stop the update ticker when the dialog is closed, otherwise the
+            // status requests would continue to be fired even when the dialog
+            // is not visible anymore.
+            this._shouldAutoUpdate = false;
+            clearTimeout(this._updateTicker);
+          });
           this.shadowRoot
             .querySelector("#close-button")
             .addEventListener("click", () => {
               this.dispatchEvent(new DialogClosedEvent());
             });
-
-          // For all events that terminate the dialog, make sure to stop the
-          // update ticker, otherwise the status requests would continue to be
-          // fired even when the dialog is not visible anymore.
-          ["dialog-closed", "dialog-failed"].forEach((evtName) => {
-            this.addEventListener(evtName, () => {
-              this._shouldAutoUpdate = false;
-              clearTimeout(this._updateTicker);
-            });
-          });
         }
 
         get _state() {
@@ -96,7 +95,7 @@
           );
         }
 
-        async initialize() {
+        async _initialize() {
           this._state = this._states.INITIALIZING;
           await this._update();
           this._state = this._states.DISPLAY;

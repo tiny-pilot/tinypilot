@@ -66,8 +66,6 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent } from "/js/events.js";
-
   (function () {
     const template = document.querySelector("#overlay-panel-template");
 
@@ -101,21 +99,9 @@
               }
             }
           );
-          // Dispatch dialog-closed event into slotted element(s), to allow the
-          // dialog to react to it if need be (e.g., for performing clean-ups).
-          // In theory, there could be multiple elements in the slot, so they
-          // all need to receive the close event – hence the `forEach`. In
-          // reality, we usually only slot a single dialog element, though. It
-          // shouldn’t matter anyway, since the dialog-closed event handler is
-          // idempotent.
           this.shadowRoot
             .querySelector("#close-button")
-            .addEventListener("click", () =>
-              this.shadowRoot
-                .querySelector("#dialog-slot")
-                .assignedElements()
-                .forEach((el) => el.dispatchEvent(new DialogClosedEvent()))
-            );
+            .addEventListener("click", () => this.show(false));
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
           this._elements.dialog.addEventListener("cancel", (evt) => {
@@ -126,20 +112,39 @@
         show(isShown = true) {
           if (isShown) {
             this._elements.dialog.showModal();
+            this._injectEvent(
+              new CustomEvent("overlay-shown", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            );
           } else {
             this._elements.dialog.close();
+            this._injectEvent(
+              new CustomEvent("overlay-hidden", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            );
           }
-          this.dispatchEvent(
-            new CustomEvent("overlay-toggled", {
-              detail: { isShown },
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
 
         isShown() {
           return this._elements.dialog.open;
+        }
+
+        // Dispatch an event into the slotted element(s), to allow the dialog to
+        // react to it if need be (e.g., for performing initializations/
+        // clean-ups). In theory, there could be multiple elements in the slot,
+        // so they all need to receive the event – hence the `forEach`. In
+        // reality, we usually only slot a single dialog element, though.
+        _injectEvent(event) {
+          this.shadowRoot
+            .querySelector("#dialog-slot")
+            .assignedElements()
+            .forEach((el) => el.dispatchEvent(event));
         }
       }
     );

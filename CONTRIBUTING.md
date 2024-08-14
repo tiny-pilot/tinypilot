@@ -352,7 +352,7 @@ class extends HTMLElement {
 The class property `_states` can then be used in the JavaScript component code:
 
 ```javascript
-this._state = this._states.FETCH_FROM_URL;
+this._state = this._states.INITIALIZING;
 ```
 
 We then use CSS rules based on the `state` attribute to control the component's appearance:
@@ -387,6 +387,16 @@ We then use CSS rules based on the `state` attribute to control the component's 
 This ensures that the elements in the `<div id="initializing">` only appear when the component's state is `initializing`.
 
 Prefer to change a web component's appearance based on attributes and CSS rules as opposed to JavaScript that manipulates the `.style` attributes of elements within the component.
+
+We can then initialize the component when the dialog is opened by listening for the `overlay-shown` event:
+
+```javascript
+connectedCallback() {
+  this.addEventListener("overlay-shown", () => {
+    this._state = this._states.INITIALIZING);
+  };
+}
+```
 
 ### Disable closing a dialog
 

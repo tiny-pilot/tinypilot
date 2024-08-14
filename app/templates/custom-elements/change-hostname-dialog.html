@@ -125,6 +125,7 @@
             futureLocation: this.shadowRoot.getElementById("future-location"),
           };
 
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.hostnameInput.addEventListener("input", () => {
             this._onInputChanged();
           });
@@ -162,7 +163,7 @@
           this.setAttribute("initial-hostname", initialHostname);
         }
 
-        initialize() {
+        _initialize() {
           this._elements.inputError.hide();
           this._state = this._states.INITIALIZING;
           determineHostname()

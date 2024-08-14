@@ -82,9 +82,6 @@
         constructor() {
           super();
           this.attachShadow({ mode: "open" });
-          // Ensure that these methods always refer to the correct "this",
-          // regardless of where they are called.
-          this.retrieveLogs = this.retrieveLogs.bind(this);
         }
 
         connectedCallback() {
@@ -106,6 +103,8 @@
             shareLogsButton:
               this.shadowRoot.querySelector("#share-logs-button"),
           };
+
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.includeSensitiveData.addEventListener(
             "input",
             (event) => {
@@ -145,7 +144,7 @@
           return this.hasAttribute("include-sensitive-data");
         }
 
-        retrieveLogs() {
+        _initialize() {
           this._state = this._states.LOGS_LOADING;
           getDebugLogs()
             .then((text) => {

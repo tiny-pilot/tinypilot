@@ -273,6 +273,8 @@
               "#stun-validation-error"
             ),
           };
+
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.closeButton.addEventListener("click", () =>
             this.dispatchEvent(new DialogClosedEvent())
           );
@@ -362,7 +364,7 @@
           );
         }
 
-        initialize() {
+        _initialize() {
           this._state = this._states.LOADING;
 
           // Reset all transient view state.

@@ -93,6 +93,8 @@
             cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
             maskInputButton: this.shadowRoot.querySelector("#mask-input"),
           };
+
+          this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.pasteArea.addEventListener("input", () =>
             this._elements.confirmButton.toggleAttribute(
               "disabled",
@@ -118,7 +120,7 @@
           });
         }
 
-        initialize() {
+        _initialize() {
           this.toggleAttribute("mask-input", isPasteAreaMasked());
           this._elements.maskInputButton.checked = isPasteAreaMasked();
           this._elements.pasteArea.value = "";
