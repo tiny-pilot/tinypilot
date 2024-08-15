@@ -95,14 +95,14 @@
           );
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
-            ({ detail: { canBeClosed } }) => {
-              this.toggleAttribute("show-close-button", canBeClosed);
+            (evt) => {
+              this.toggleAttribute("show-close-button", evt.detail.canBeClosed);
             }
           );
           this.shadowRoot.addEventListener(
             "dialog-variant-changed",
-            ({ detail: { variant } }) => {
-              this.setAttribute("variant", variant);
+            (evt) => {
+              this.setAttribute("variant", evt.detail.variant);
             }
           );
           this.shadowRoot
