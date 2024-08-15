@@ -116,8 +116,14 @@
         }
 
         show(isShown = true) {
-          this.setAttribute("variant", "default");
-          this.toggleAttribute("show-close-button", false);
+          this.setAttribute(
+            "variant",
+            this.getAttribute("variant") || "default"
+          );
+          this.toggleAttribute(
+            "show-close-button",
+            !this.hasAttribute("show-close-button")
+          );
           if (isShown) {
             this._elements.dialog.showModal();
             this._injectEvent(
