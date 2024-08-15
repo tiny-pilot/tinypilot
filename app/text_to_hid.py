@@ -334,14 +334,11 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
         hid.Keystroke(keycode=hid.KEYCODE_RIGHT_BRACKET,
                       modifier=hid.MODIFIER_ALT_GR),
     '|':
-        hid.Keystroke(keycode=hid.KEYCODE_102ND,
-                      modifier=hid.MODIFIER_ALT_GR),
+        hid.Keystroke(keycode=hid.KEYCODE_102ND, modifier=hid.MODIFIER_ALT_GR),
     '@':
-        hid.Keystroke(keycode=hid.KEYCODE_Q,
-                      modifier=hid.MODIFIER_ALT_GR),
+        hid.Keystroke(keycode=hid.KEYCODE_Q, modifier=hid.MODIFIER_ALT_GR),
     '€':
-        hid.Keystroke(keycode=hid.KEYCODE_E,
-                      modifier=hid.MODIFIER_ALT_GR),
+        hid.Keystroke(keycode=hid.KEYCODE_E, modifier=hid.MODIFIER_ALT_GR),
     '{':
         hid.Keystroke(keycode=hid.KEYCODE_NUMBER_7,
                       modifier=hid.MODIFIER_ALT_GR),
@@ -363,8 +360,7 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
         hid.Keystroke(keycode=hid.KEYCODE_MINUS,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
     '\\':
-        hid.Keystroke(keycode=hid.KEYCODE_MINUS,
-                      modifier=hid.MODIFIER_ALT_GR),
+        hid.Keystroke(keycode=hid.KEYCODE_MINUS, modifier=hid.MODIFIER_ALT_GR),
     '´':
         hid.Keystroke(keycode=hid.KEYCODE_EQUAL_SIGN),
     '`':
