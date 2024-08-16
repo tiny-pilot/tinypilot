@@ -153,6 +153,7 @@
     DialogClosedEvent,
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
+    DialogVariantChangedEvent,
   } from "/js/events.js";
   import {
     getNetworkStatus,
@@ -334,6 +335,7 @@
             return;
           }
           this._state = this._states.SUCCESS_ENABLED;
+          this.dispatchEvent(new DialogVariantChangedEvent("success"));
         }
 
         async _disable() {
@@ -350,6 +352,7 @@
             return;
           }
           this._state = this._states.SUCCESS_DISABLED;
+          this.dispatchEvent(new DialogVariantChangedEvent("success"));
         }
       }
     );

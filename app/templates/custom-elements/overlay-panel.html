@@ -50,6 +50,11 @@
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-background);
     }
+
+    :host([variant="success"]) #panel {
+      border-top: 0.4rem solid var(--brand-green-bright);
+      background-color: var(--brand-green-background);
+    }
   </style>
 
   <dialog id="panel">
@@ -80,6 +85,11 @@
             dialog: this.shadowRoot.querySelector("#panel"),
           };
           this.show = this.show.bind(this);
+          this._initialAttributes = {
+            variant: this.getAttribute("variant") || "default",
+            showCloseButton: this.hasAttribute("show-close-button") || true,
+          };
+
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
@@ -87,18 +97,15 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
-
-          this.setAttribute("show-close-button", "");
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
-            (e) => {
-              if (e.detail.canBeClosed) {
-                this.setAttribute("show-close-button", "");
-              } else {
-                this.removeAttribute("show-close-button");
-              }
+            (evt) => {
+              this.toggleAttribute("show-close-button", evt.detail.canBeClosed);
             }
           );
+          this.shadowRoot.addEventListener("dialog-variant-changed", (evt) => {
+            this.setAttribute("variant", evt.detail.variant);
+          });
           this.shadowRoot
             .querySelector("#close-button")
             .addEventListener("click", () => this.show(false));
@@ -110,6 +117,14 @@
         }
 
         show(isShown = true) {
+          // Restore element's initial attributes that might have been changed
+          // programmatically.
+          this.setAttribute("variant", this._initialAttributes.variant);
+          this.toggleAttribute(
+            "show-close-button",
+            this._initialAttributes.showCloseButton
+          );
+
           if (isShown) {
             this._elements.dialog.showModal();
             this._injectEvent(
