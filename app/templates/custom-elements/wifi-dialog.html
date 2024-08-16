@@ -4,7 +4,6 @@
 <template id="wifi-template">
   <style>
     @import "css/style.css";
-    @import "css/button.css";
 
     #initializing,
     #prompt,
@@ -160,6 +159,7 @@
     DialogClosedEvent,
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
+    DialogVariantChangedEvent,
   } from "/js/events.js";
   import {
     getNetworkStatus,
@@ -211,6 +211,7 @@
             ),
           };
 
+          this.addEventListener("overlay-shown", () => this._initialize());
           [
             this._elements.ssidInput,
             this._elements.pskInput,
@@ -263,7 +264,7 @@
           );
         }
 
-        async initialize() {
+        async _initialize() {
           this._state = this._states.INITIALIZING;
           let wifiSettings, networkStatus;
           try {
@@ -353,6 +354,7 @@
             return;
           }
           this._state = this._states.SUCCESS_ENABLED;
+          this.dispatchEvent(new DialogVariantChangedEvent("success"));
         }
 
         async _disable() {
@@ -369,6 +371,7 @@
             return;
           }
           this._state = this._states.SUCCESS_DISABLED;
+          this.dispatchEvent(new DialogVariantChangedEvent("success"));
         }
       }
     );

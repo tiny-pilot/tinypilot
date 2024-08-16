@@ -49,6 +49,22 @@ export class DialogCloseStateChangedEvent extends CustomEvent {
   }
 }
 
+export class DialogVariantChangedEvent extends CustomEvent {
+  /**
+   * Event that advises a visual variant style change of the dialog.
+   * @param {("default"|"danger"|"success")} variant
+   */
+  constructor(variant) {
+    super("dialog-variant-changed", {
+      detail: {
+        variant,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
 export class VideoStreamingModeChangedEvent extends CustomEvent {
   /**
    * Event, which indicates that the video streaming mode has changed.

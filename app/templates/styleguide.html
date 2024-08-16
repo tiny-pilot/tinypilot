@@ -143,6 +143,10 @@
           class="colorcard"
           style="background-color: var(--brand-green-light)"
         ></div>
+        <div
+          class="colorcard"
+          style="background-color: var(--brand-green-background)"
+        ></div>
         <br style="clear: both" />
         <div
           class="colorcard"
@@ -560,6 +564,32 @@
                 "  fooBarBaz\n".repeat(80),
             });
             document.getElementById("error-overlay").show();
+          });
+      </script>
+      <!-- Success overlay: -->
+      <overlay-panel id="success-overlay" variant="success">
+        <h3>Example Success Message</h3>
+        <p>
+          This overlay style is used for when the user reaches a successful
+          state.
+        </p>
+        <button id="close-success-overlay-btn">Close</button>
+      </overlay-panel>
+      <button id="show-success-overlay-btn" class="btn-success">
+        Open Success Overlay
+      </button>
+      <script type="module">
+        import { DialogClosedEvent } from "/js/events.js";
+
+        document
+          .getElementById("show-success-overlay-btn")
+          .addEventListener("click", () => {
+            document.getElementById("success-overlay").show();
+          });
+        document
+          .getElementById("close-success-overlay-btn")
+          .addEventListener("click", (evt) => {
+            evt.target.dispatchEvent(new DialogClosedEvent());
           });
       </script>
       <h3>Loading States</h3>

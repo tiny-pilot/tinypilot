@@ -50,6 +50,11 @@
       border-top: 0.4rem solid var(--brand-red-bright);
       background-color: var(--brand-red-background);
     }
+
+    :host([variant="success"]) #panel {
+      border-top: 0.4rem solid var(--brand-green-bright);
+      background-color: var(--brand-green-background);
+    }
   </style>
 
   <dialog id="panel">
@@ -66,8 +71,6 @@
 </template>
 
 <script type="module">
-  import { DialogClosedEvent } from "/js/events.js";
-
   (function () {
     const template = document.querySelector("#overlay-panel-template");
 
@@ -82,6 +85,11 @@
             dialog: this.shadowRoot.querySelector("#panel"),
           };
           this.show = this.show.bind(this);
+          this._initialAttributes = {
+            variant: this.getAttribute("variant") || "default",
+            showCloseButton: this.hasAttribute("show-close-button") || true,
+          };
+
           this.shadowRoot.addEventListener("dialog-closed", () =>
             this.show(false)
           );
@@ -89,33 +97,18 @@
             // This event is further handled in `app.js`.
             this.show(false)
           );
-
-          this.setAttribute("show-close-button", "");
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
-            (e) => {
-              if (e.detail.canBeClosed) {
-                this.setAttribute("show-close-button", "");
-              } else {
-                this.removeAttribute("show-close-button");
-              }
+            (evt) => {
+              this.toggleAttribute("show-close-button", evt.detail.canBeClosed);
             }
           );
-          // Dispatch dialog-closed event into slotted element(s), to allow the
-          // dialog to react to it if need be (e.g., for performing clean-ups).
-          // In theory, there could be multiple elements in the slot, so they
-          // all need to receive the close event – hence the `forEach`. In
-          // reality, we usually only slot a single dialog element, though. It
-          // shouldn’t matter anyway, since the dialog-closed event handler is
-          // idempotent.
+          this.shadowRoot.addEventListener("dialog-variant-changed", (evt) => {
+            this.setAttribute("variant", evt.detail.variant);
+          });
           this.shadowRoot
             .querySelector("#close-button")
-            .addEventListener("click", () =>
-              this.shadowRoot
-                .querySelector("#dialog-slot")
-                .assignedElements()
-                .forEach((el) => el.dispatchEvent(new DialogClosedEvent()))
-            );
+            .addEventListener("click", () => this.show(false));
           // Prevent auto-close behavior of native <dialog> if the user presses
           // the ESC key.
           this._elements.dialog.addEventListener("cancel", (evt) => {
@@ -124,22 +117,49 @@
         }
 
         show(isShown = true) {
+          // Restore element's initial attributes that might have been changed
+          // programmatically.
+          this.setAttribute("variant", this._initialAttributes.variant);
+          this.toggleAttribute(
+            "show-close-button",
+            this._initialAttributes.showCloseButton
+          );
+
           if (isShown) {
             this._elements.dialog.showModal();
+            this._injectEvent(
+              new CustomEvent("overlay-shown", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            );
           } else {
             this._elements.dialog.close();
+            this._injectEvent(
+              new CustomEvent("overlay-hidden", {
+                detail: { overlay: this },
+                bubbles: true,
+                composed: true,
+              })
+            );
           }
-          this.dispatchEvent(
-            new CustomEvent("overlay-toggled", {
-              detail: { isShown },
-              bubbles: true,
-              composed: true,
-            })
-          );
         }
 
         isShown() {
           return this._elements.dialog.open;
+        }
+
+        // Dispatch an event into the slotted element(s), to allow the dialog to
+        // react to it if need be (e.g., for performing initializations/
+        // clean-ups). In theory, there could be multiple elements in the slot,
+        // so they all need to receive the event – hence the `forEach`. In
+        // reality, we usually only slot a single dialog element, though.
+        _injectEvent(event) {
+          this.shadowRoot
+            .querySelector("#dialog-slot")
+            .assignedElements()
+            .forEach((el) => el.dispatchEvent(event));
         }
       }
     );
