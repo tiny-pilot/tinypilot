@@ -61,7 +61,7 @@ set -u
 # Check which OS is running.
 OS_CODENAME="$(grep '^VERSION_CODENAME' /etc/os-release | cut --delimiter '=' --fields 2)"
 
-if [[ "${OS_CODENAME}" == "bullseye" ]]; then
+if [[ "${OS_CODENAME}" == 'bullseye' ]]; then
   # Remove any existing marker sections from the config file.
   "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 else
