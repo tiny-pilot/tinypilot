@@ -65,8 +65,6 @@ if [[ "${OS_CODENAME}" == "bullseye" ]]; then
   # Remove any existing marker sections from the config file.
   "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 else
-  # Bookworm process.
-  # we need the interface here - just assume physical interface for now?
   nmcli connection modify 'Wired connection 1' \
     ipv4.method auto \
     ipv4.addresses '' \

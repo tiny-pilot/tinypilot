@@ -141,8 +141,6 @@ fi
 # Exit on unset variable.
 set -u
 
-set -x
-
 # Check which OS is running.
 OS_CODENAME="$(grep '^VERSION_CODENAME' /etc/os-release | cut --delimiter '=' --fields 2)"
 
@@ -167,7 +165,6 @@ if [[ "${OS_CODENAME}" == "bullseye" ]]; then
     echo "${MARKER_END}"
   } | sudo tee --append "${CONFIG_FILE}" > /dev/null
 else
-  # Bookworm process.
   nmcli connection modify "${INTERFACE}" \
     ipv4.method manual \
     ipv4.addresses "${IP_ADDRESS}" \
