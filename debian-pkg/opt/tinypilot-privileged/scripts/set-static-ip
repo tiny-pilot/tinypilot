@@ -131,31 +131,49 @@ readonly DNS
 
 # Default interface.
 if [[ -z "${INTERFACE}" ]] ; then
-  readonly INTERFACE="eth0"
+  if [[ "${OS_CODENAME}" == "bullseye" ]]; then
+    readonly INTERFACE="eth0"
+  else
+    readonly INTERFACE="Wired connection 1"
+  fi
 fi
 
 # Exit on unset variable.
 set -u
 
-# Remove any existing automated configuration.
-"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+set -x
 
-# Only proceed if no other configuration exists.
-if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
-  echo "An existing configuration exists in ${CONFIG_FILE} for ${INTERFACE}." >&2
-  echo "Please remove the existing configuration and try again." >&2
-  exit 1
+# Check which OS is running.
+OS_CODENAME="$(grep '^VERSION_CODENAME' /etc/os-release | cut --delimiter '=' --fields 2)"
+
+if [[ "${OS_CODENAME}" == "bullseye" ]]; then
+  # Remove any existing automated configuration.
+  "${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
+
+  # Only proceed if no other configuration exists.
+  if grep -q "^interface ${INTERFACE}" "${CONFIG_FILE}" ; then
+    echo "An existing configuration exists in ${CONFIG_FILE} for ${INTERFACE}." >&2
+    echo "Please remove the existing configuration and try again." >&2
+    exit 1
+  fi
+
+  # Write out the new configuration.
+  {
+    echo "${MARKER_START}"
+    echo "interface ${INTERFACE}"
+    echo "static ip_address=${IP_ADDRESS}"
+    echo "static routers=${ROUTERS}"
+    echo "static domain_name_servers=${DNS}"
+    echo "${MARKER_END}"
+  } | sudo tee --append "${CONFIG_FILE}" > /dev/null
+else
+  # Bookworm process.
+  nmcli connection modify "${INTERFACE}" \
+    ipv4.method manual \
+    ipv4.addresses "${IP_ADDRESS}" \
+    ipv4.gateway "${ROUTERS}" \
+    ipv4.dns "${DNS}"
 fi
-
-# Write out the new configuration.
-{
-  echo "${MARKER_START}"
-  echo "interface ${INTERFACE}"
-  echo "static ip_address=${IP_ADDRESS}"
-  echo "static routers=${ROUTERS}"
-  echo "static domain_name_servers=${DNS}"
-  echo "${MARKER_END}"
-} | sudo tee --append "${CONFIG_FILE}" > /dev/null
 
 # Apply changes.
 "${SCRIPT_DIR}/apply-static-ip"
