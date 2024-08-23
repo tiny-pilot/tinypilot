@@ -11,14 +11,14 @@ set -x
 # Exit on unset variable.
 set -u
 
-# Check which OS is running.
-OS_CODENAME="$(grep '^VERSION_CODENAME' /etc/os-release | cut --delimiter '=' --fields 2)"
+# Determine which version of the OS is running.
+OS_VERSION="$(lsb_release --release --short)"
 
 # Ignore hangup signals to avoid exiting the shell when the network interface
 # is flushed and a new IP is assigned. This was an issue when running the script
 # manually via a remote shell.
 trap '' HUP
-if [[ "${OS_CODENAME}" == 'bullseye' ]]; then
+if [[ "${OS_VERSION}" == 11 ]]; then
   ip address flush dev eth0
   systemctl restart \
     dhcpcd.service

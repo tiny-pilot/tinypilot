@@ -58,10 +58,10 @@ fi
 # Exit on unset variable
 set -u
 
-# Check which OS is running.
-OS_CODENAME="$(grep '^VERSION_CODENAME' /etc/os-release | cut --delimiter '=' --fields 2)"
+# Determine which version of the OS is running.
+OS_VERSION="$(lsb_release --release --short)"
 
-if [[ "${OS_CODENAME}" == 'bullseye' ]]; then
+if [[ "${OS_VERSION}" == 11 ]]; then
   # Remove any existing marker sections from the config file.
   "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
 else
