@@ -386,7 +386,7 @@ def convert(char, language):
         language_map = {
             'en-GB': _GB_CHAR_TO_HID_MAP,
             'en-US': _US_CHAR_TO_HID_MAP,
-            'de-DE': _DE_CHAR_TO_HID_MAP
+            'de-DE': _DE_CHAR_TO_HID_MAP,
         }[language]
     except KeyError:
         # Default to en-US if no other language matches.
