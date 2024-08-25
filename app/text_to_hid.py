@@ -355,10 +355,10 @@ _DE_CHAR_TO_HID_MAP = _COMMON_CHAR_TO_HID_MAP | {
         hid.Keystroke(keycode=hid.KEYCODE_BACKSLASH,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
     '?':
-        hid.Keystroke(keycode=hid.KEYCODE_MINUS),
-    'ß':
         hid.Keystroke(keycode=hid.KEYCODE_MINUS,
                       modifier=hid.MODIFIER_LEFT_SHIFT),
+    'ß':
+        hid.Keystroke(keycode=hid.KEYCODE_MINUS),
     '\\':
         hid.Keystroke(keycode=hid.KEYCODE_MINUS, modifier=hid.MODIFIER_ALT_GR),
     '´':
