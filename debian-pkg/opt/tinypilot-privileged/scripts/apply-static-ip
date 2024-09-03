@@ -13,12 +13,13 @@ set -u
 
 # Determine which version of the OS is running.
 OS_VERSION="$(lsb_release --release --short)"
+readonly OS_VERSION
 
 # Ignore hangup signals to avoid exiting the shell when the network interface
 # is flushed and a new IP is assigned. This was an issue when running the script
 # manually via a remote shell.
 trap '' HUP
-if [[ "${OS_VERSION}" == 11 ]]; then
+if (( "${OS_VERSION}" == 11 )); then
   ip address flush dev eth0
   systemctl restart \
     dhcpcd.service

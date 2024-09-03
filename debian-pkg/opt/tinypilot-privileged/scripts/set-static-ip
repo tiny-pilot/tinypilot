@@ -139,8 +139,9 @@ set -u
 
 # Determine which version of the OS is running.
 OS_VERSION="$(lsb_release --release --short)"
+readonly OS_VERSION
 
-if [[ "${OS_VERSION}" == 11 ]]; then
+if (( "${OS_VERSION}" == 11 )); then
   # Remove any existing automated configuration.
   "${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
 
