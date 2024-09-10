@@ -131,7 +131,7 @@
 
         _handleConfirmPaste() {
           const text = this._elements.pasteArea.value;
-          const language = this._browserLanguage();
+          const language = "de-DE";
           pasteText(text, language)
             .then(() => this._closeDialog())
             .catch((error) =>
