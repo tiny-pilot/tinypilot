@@ -23,6 +23,8 @@ class ConvertTextToHidTest(unittest.TestCase):
         self.assertEqual(
             hid.Keystroke(hid.KEYCODE_SINGLE_QUOTE, hid.MODIFIER_LEFT_SHIFT),
             text_to_hid.convert('@', 'en-GB'))
+        self.assertEqual(hid.Keystroke(hid.KEYCODE_Q, hid.MODIFIER_ALT_GR),
+                         text_to_hid.convert('@', 'de-DE'))
 
     def test_defaults_to_us_english_language_mapping(self):
         self.assertEqual(
