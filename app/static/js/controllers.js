@@ -422,3 +422,34 @@ export async function pasteText(text, language) {
     body: JSON.stringify({ text, language }),
   }).then(processJsonResponse);
 }
+
+export async function getAllUserScripts() {
+  return fetch("/api/userScripts", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((response) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!response.hasOwnProperty("userScripts")) {
+        throw new ControllerError("Missing expected scripts field");
+      }
+      return response.userScripts;
+    });
+}
+
+export async function runUserScript(scriptName) {
+  const scriptNameParam = encodeURIComponent(scriptName);
+  return fetch(`/api/userScripts/${scriptNameParam}/run`, {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+  }).then(processJsonResponse);
+}

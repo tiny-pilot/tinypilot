@@ -132,6 +132,10 @@
       top: 0;
     }
 
+    :host(:not([show-user-scripts])) #user-scripts {
+      display: none;
+    }
+
     .item {
       margin: 0;
       padding: 0;
@@ -315,6 +319,15 @@
       </ul>
     </li>
 
+    <li id="user-scripts" class="group" role="presentation">
+      <!-- This submenu is hidden by default. We only show it if the user
+           has uploaded scripts to the device. -->
+      <a role="menuitem">Scripts</a>
+      <ul class="items" role="group">
+        <!-- JavaScript populates this list dynamically. -->
+      </ul>
+    </li>
+
     <!-- The “View” menu contains UI-related settings, which are local to the
          requesting client. -->
     <li class="group" role="presentation">
@@ -484,6 +497,27 @@
               "nav-selected",
               newCursor === cursorListItem.getAttribute("cursor")
             );
+          }
+        }
+
+        set userScripts(userScripts) {
+          this.toggleAttribute("show-user-scripts", userScripts.length > 0);
+          const scriptList = this.shadowRoot.querySelector("#user-scripts ul");
+          for (const userScript of userScripts) {
+            const scriptLink = document.createElement("a");
+            scriptLink.setAttribute("href", "#");
+            scriptLink.setAttribute("role", "menuitem");
+            scriptLink.innerText = userScript;
+            scriptLink.addEventListener("click", (evt) => {
+              this.emitCustomEvent("user-script-run-requested", { userScript });
+              evt.preventDefault();
+            });
+            const listItem = document.createElement("li");
+            listItem.appendChild(scriptLink);
+            listItem.classList.add("script-option", "item", "monospace");
+            listItem.setAttribute("script-name", userScript);
+            listItem.setAttribute("role", "presentation");
+            scriptList.appendChild(listItem);
           }
         }
 

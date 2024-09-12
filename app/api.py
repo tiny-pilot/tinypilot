@@ -15,6 +15,7 @@ import request_parsers.video_settings
 import update.launcher
 import update.settings
 import update.status
+import user_script
 import version
 import video_service
 from hid import keyboard as fake_keyboard
@@ -496,5 +497,43 @@ def paste_post():
     keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
     execute.background_thread(fake_keyboard.send_keystrokes,
                               args=(keyboard_path, keystrokes))
+
+    return json_response.success()
+
+
+@api_blueprint.route('/userScripts', methods=['GET'])
+def user_script_get_all():
+    """Retrieves the list of user-submitted scripts.
+
+    Returns:
+        A JSON data structure with the following properties:
+        - userScripts: array of str
+
+        Example:
+        {
+            "userScripts": [
+                "send-special-keystroke",
+                "connect-to-tailscale"
+            ]
+        }
+    """
+    return json_response.success({
+        'userScripts': user_script.get_all(),
+    })
+
+
+@api_blueprint.route('/userScripts/<user_script_name>/run', methods=['POST'])
+def user_script_run(user_script_name):
+    """Executes a user script.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    # TODO parse and validate `user_script_name` param
+
+    try:
+        user_script.run(user_script_name)
+    except user_script.Error as e:
+        return json_response.error(e), 500
 
     return json_response.success()

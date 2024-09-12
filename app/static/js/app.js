@@ -3,6 +3,7 @@ import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
+import { getAllUserScripts, runUserScript } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -420,6 +421,14 @@ menuBar.addEventListener("alt-tab-requested", () => {
     key: "Tab",
     code: "Tab",
   });
+});
+getAllUserScripts().then((userScripts) => {
+  menuBar.userScripts = userScripts;
+});
+menuBar.addEventListener("user-script-run-requested", (evt) => {
+  runUserScript(evt.detail.userScript).catch(e => {
+    console.error(e);
+  })
 });
 
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
