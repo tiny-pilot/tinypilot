@@ -426,9 +426,9 @@ getAllUserScripts().then((userScripts) => {
   menuBar.userScripts = userScripts;
 });
 menuBar.addEventListener("user-script-run-requested", (evt) => {
-  runUserScript(evt.detail.userScript).catch(e => {
+  runUserScript(evt.detail.userScript).catch((e) => {
     console.error(e);
-  })
+  });
 });
 
 setKeystrokeHistoryStatus(settings.isKeystrokeHistoryEnabled());
