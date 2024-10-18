@@ -105,12 +105,6 @@ To use TinyPilot on untrusted networks, you can upgrade to [TinyPilot Pro](https
 
 As a free alternative, you can adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) and add a self-signed TLS certificate.
 
-## Detailed project updates
-
-If you're interested in seeing what's happening with the project at a granular level, weekly updates appear every Friday on What Got Done:
-
-- [What Got Done: TinyPilot](https://whatgotdone.com/michael/project/tinypilot)
-
 ## See also
 
 - [TinyPilot Wiki](https://github.com/tiny-pilot/tinypilot/wiki): Guides for tasks related to TinyPilot.
