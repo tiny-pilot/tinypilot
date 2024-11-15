@@ -3,7 +3,6 @@
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/tiny-pilot/tinypilot)](https://github.com/tiny-pilot/tinypilot/graphs/contributors)
 [![CircleCI](https://circleci.com/gh/tiny-pilot/tinypilot.svg?style=svg)](https://circleci.com/gh/tiny-pilot/tinypilot)
-[![Reddit](https://img.shields.io/badge/reddit-join-orange?logo=reddit)](https://www.reddit.com/r/tinypilot)
 [![Twitter](https://img.shields.io/twitter/follow/tinypilotkvm?label=Twitter&style=social)](https://twitter.com/tinypilotkvm)
 
 ## Overview
@@ -51,12 +50,11 @@ Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, comp
 
 See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
 
-## Pre-requisites
-
-- Raspberry Pi OS Bullseye (32-bit)
-- python3-venv
-
 ## Simple installation
+
+### Requirements
+
+- A Raspberry Pi 4 running Raspberry Pi OS Bullseye (32-bit)
 
 You can install TinyPilot on a compatible Raspberry Pi in just two commands.
 
