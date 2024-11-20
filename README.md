@@ -33,7 +33,7 @@ Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, comp
 
 ## Build your own
 
-- [Raspberry Pi 4](https://smile.amazon.com/dp/B07TD42S27) (all variants work)
+- [Raspberry Pi 4B](https://smile.amazon.com/dp/B07TD42S27)
 - [HDMI to USB dongle](https://smile.amazon.com/dp/B08CXWPYQ8/)
   - They have no brand name, and there are several variants, but they're all built on the same MacroSilicon 2109 chip.
   - They're available for \$10-15 on eBay and AliExpress.
@@ -54,7 +54,7 @@ See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypi
 
 ### Requirements
 
-- A Raspberry Pi 4 running Raspberry Pi OS Bullseye (32-bit)
+- A Raspberry Pi 4B running Raspberry Pi OS Bullseye (32-bit)
 
 You can install TinyPilot on a compatible Raspberry Pi in just two commands.
 
