@@ -20,12 +20,14 @@ if grep -q "boot=overlay" /proc/cmdline ; then
 fi
 
 # Check if the user is forcing an install.
-if [[ -z "${FORCE_INSTALL+x}" ]]; then
+if [[ -n "${FORCE_INSTALL+x}" ]]; then
+  echo 'Forcing installation on unsupported setup.'
+else
   # Restrict installation to only specific configurations.
 
   # Install only on Raspberry Pi 4 Model B.
   if ! grep --quiet "^Model\s*: Raspberry Pi 4 Model B" /proc/cpuinfo ; then
-    echo 'You are trying to install on incompatible hardware.' >&2
+    echo 'You are trying to install on unsupported hardware.' >&2
     echo 'Visit https://github.com/tiny-pilot/tinypilot/ for more details.' >&2
     exit 1
   fi
@@ -36,8 +38,8 @@ if [[ -z "${FORCE_INSTALL+x}" ]]; then
   # open-source project). Similarly, the the 64-bit version of the Raspberry Pi
   # operating system is based on Debian and its distro ID would be "Debian".
   if [[ "$(lsb_release --id --short)" != 'Raspbian' ]]; then
-    echo "TinyPilot currently only supports the 32-bit version of Raspberry Pi OS 11 \"Bullseye\" " >&2
-    echo "To install TinyPilot, you'll need to install Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
+    echo "TinyPilot currently only supports the 32-bit version of Raspberry Pi OS 11 \"Bullseye\"." >&2
+    echo "To install TinyPilot, you'll need Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
     exit 1
   fi
 
@@ -55,8 +57,6 @@ if [[ -z "${FORCE_INSTALL+x}" ]]; then
     echo "To install TinyPilot, you'll need to downgrade your operating system to Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
     exit 1
   fi
-elif (( "${FORCE_INSTALL}" == 1 )); then
-  echo 'Forcing installation on unsupported setup.'
 fi
 
 # Get the filename of the Janus Debian package.
