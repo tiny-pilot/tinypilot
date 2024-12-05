@@ -262,28 +262,29 @@ window.addEventListener("blur", () => {
     );
 });
 
-const onScreenKeyboard = document.getElementById("on-screen-keyboard");
-onScreenKeyboard.addEventListener("keyboard-visibility-changed", (evt) => {
+document.addEventListener("keyboard-visibility-changed", (evt) => {
   const isVisible = evt.detail.isVisible;
   settings.setKeyboardVisibility(isVisible);
   document.getElementById("menu-bar").isKeyboardVisible = isVisible;
 });
+const onScreenKeyboard = document.getElementById("on-screen-keyboard");
 onScreenKeyboard.show(settings.isKeyboardVisible());
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
-menuBar.addEventListener("cursor-selected", (evt) => {
+
+document.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
-menuBar.addEventListener("keystroke-history-toggled", () => {
+document.addEventListener("keystroke-history-toggled", () => {
   const isEnabled =
     document.getElementById("status-bar").keystrokeHistory.isEnabled;
   setKeystrokeHistoryStatus(!isEnabled);
 });
-menuBar.addEventListener("keyboard-visibility-toggled", () => {
+document.addEventListener("keyboard-visibility-toggled", () => {
   onScreenKeyboard.show(!onScreenKeyboard.isShown());
 });
-menuBar.addEventListener("dedicated-window-requested", () => {
+document.addEventListener("dedicated-window-requested", () => {
   // Open popup window in standalone view mode (without menu bar or status bar).
   // Determine the current size of the remote screen, and take it over as
   // initial size for the popup window. This is just convenience functionality:
@@ -309,47 +310,47 @@ menuBar.addEventListener("dedicated-window-requested", () => {
   // effective approach to ensure proper teardown of the main window resources.
   window.location = "/dedicated-window-placeholder";
 });
-menuBar.addEventListener("shutdown-dialog-requested", () => {
+document.addEventListener("shutdown-dialog-requested", () => {
   document.getElementById("shutdown-overlay").show();
 });
-menuBar.addEventListener("update-dialog-requested", () => {
+document.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-overlay").show();
   document.getElementById("update-dialog").checkVersion();
 });
-menuBar.addEventListener("change-hostname-dialog-requested", () => {
+document.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
 });
-menuBar.addEventListener("wifi-dialog-requested", () => {
+document.addEventListener("wifi-dialog-requested", () => {
   document.getElementById("wifi-overlay").show();
 });
-menuBar.addEventListener("network-status-dialog-requested", () => {
+document.addEventListener("network-status-dialog-requested", () => {
   document.getElementById("network-status-overlay").show();
 });
-menuBar.addEventListener("fullscreen-requested", () => {
+document.addEventListener("fullscreen-requested", () => {
   document.getElementById("remote-screen").fullscreen = true;
 });
-menuBar.addEventListener("debug-logs-dialog-requested", () => {
+document.addEventListener("debug-logs-dialog-requested", () => {
   document.getElementById("debug-overlay").show();
 });
-menuBar.addEventListener("about-dialog-requested", () => {
+document.addEventListener("about-dialog-requested", () => {
   document.getElementById("about-overlay").show();
 });
-menuBar.addEventListener("mass-storage-dialog-requested", () => {
+document.addEventListener("mass-storage-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
-menuBar.addEventListener("wake-on-lan-dialog-requested", () => {
+document.addEventListener("wake-on-lan-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
-menuBar.addEventListener("static-ip-dialog-requested", () => {
+document.addEventListener("static-ip-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
-menuBar.addEventListener("video-settings-dialog-requested", () => {
+document.addEventListener("video-settings-dialog-requested", () => {
   document.getElementById("video-settings-overlay").show();
 });
-menuBar.addEventListener("paste-dialog-requested", () => {
+document.addEventListener("paste-dialog-requested", () => {
   document.getElementById("paste-overlay").show();
 });
-menuBar.addEventListener("ctrl-alt-del-requested", () => {
+document.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
   // better match real user behavior. This ensures that the keystroke history
   // shows the Control, Alt, Delete sequence clearly.
@@ -371,7 +372,7 @@ menuBar.addEventListener("ctrl-alt-del-requested", () => {
     code: "Delete",
   });
 });
-menuBar.addEventListener("ctrl-alt-backspace-requested", () => {
+document.addEventListener("ctrl-alt-backspace-requested", () => {
   processKeystroke({
     ctrlLeft: true,
     key: "Control",
@@ -390,7 +391,7 @@ menuBar.addEventListener("ctrl-alt-backspace-requested", () => {
     code: "Backspace",
   });
 });
-menuBar.addEventListener("meta-alt-escape-requested", () => {
+document.addEventListener("meta-alt-escape-requested", () => {
   processKeystroke({
     metaLeft: true,
     key: "Meta",
@@ -409,7 +410,7 @@ menuBar.addEventListener("meta-alt-escape-requested", () => {
     code: "Escape",
   });
 });
-menuBar.addEventListener("alt-tab-requested", () => {
+document.addEventListener("alt-tab-requested", () => {
   processKeystroke({
     altLeft: true,
     key: "Alt",
@@ -440,8 +441,7 @@ document.addEventListener("dialog-failed", (evt) => {
   showError(evt.detail);
 });
 
-const shutdownDialog = document.getElementById("shutdown-dialog");
-shutdownDialog.addEventListener("shutdown-started", () => {
+document.addEventListener("shutdown-started", () => {
   // Hide the interactive elements of the page during shutdown.
   for (const elementId of ["remote-screen", "on-screen-keyboard"]) {
     document.getElementById(elementId).style.display = "none";
