@@ -160,7 +160,7 @@ fi
 # Run install.
 pushd "${INSTALLER_DIR}"
 sudo \
-  TMPDIR="${TMPDIR}" \
+  --preserve-env=TMPDIR,FORCE_INSTALL \
   ./install
 
 } # Prevent the script from executing until the client downloads the full file.
