@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Mock version of /opt/tinypilot-privileged/scripts/update
+#
+# On device, the `tinypilot-updater` systemd service would facilitate invoking
+# the original script.
+
+echo '======== update-opts ========'
+
+# Output all update-opts for debugging purposes.
+if [[ -d /home/tinypilot/update-opts ]]; then
+  for file in /home/tinypilot/update-opts/*; do
+    echo "${file}: $(cat "${file}")"
+  done
+else
+  echo 'No update opts!'
+fi
+
+echo '============================='

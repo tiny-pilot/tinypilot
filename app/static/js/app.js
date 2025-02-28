@@ -21,7 +21,11 @@ const overlayTracker = new OverlayTracker();
  * @see `DialogFailedEvent` for parameter `errorInfo`
  */
 function showError(errorInfo) {
-  console.error(`${errorInfo.title}:\n${errorInfo.details}`);
+  console.error(
+    `Title: ${errorInfo.title}\nMessage: ${
+      errorInfo.message || "-"
+    }\nDetails: ${errorInfo.details || "-"}`
+  );
   document.getElementById("error-dialog").setup(errorInfo);
   document.getElementById("error-overlay").show();
 }
