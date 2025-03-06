@@ -154,11 +154,14 @@ def enable_wifi(wifi_settings):
         wifi_settings.country_code, '--ssid', wifi_settings.ssid
     ]
     if wifi_settings.psk:
-        args.extend(['--psk', wifi_settings.psk])
+        args.append('--psk')
     try:
         # Ignore pylint since we're not managing the child process.
         # pylint: disable=consider-using-with
-        subprocess.Popen(args)
+        process = subprocess.Popen(args, stdin=subprocess.PIPE, text=True)
+        if wifi_settings.psk:
+            process.communicate(input=wifi_settings.psk)
+
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e
 
