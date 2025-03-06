@@ -7,13 +7,14 @@ set -e
 
 print_help() {
   cat <<EOF
-Usage: ${0##*/} [--help] --country COUNTRY --ssid SSID [--psk PSK]
+Usage: ${0##*/} [--help] --country COUNTRY --ssid SSID [--psk]
 Enables a WiFi network connection.
   --help              Optional. Display this help and exit.
   --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
   --ssid SSID         The name (SSID) of the WiFi network.
-  --psk PSK           Optional. The password for authenticating. If specified,
-                      it must be 8-63 characters in length.
+  --psk               Optional. Authenticate with the WiFi network using a
+                      password read from stdin. The password must be 8-63
+                      characters in length.
 
 Note: this script only stores the WiFi configuration and triggers its
 activation, but it doesn't (and cannot) verify whether the device can actually
@@ -49,13 +50,14 @@ while (( "$#" > 0 )); do
       shift # For flag value.
       ;;
     --psk)
-      if (( "$#" < 2 )); then
-        shift
-        break
+      # Read the password from stdin. Otherwise, prompt the user.
+      if [[ -p /dev/stdin ]]; then
+        WIFI_PSK="$(cat -)"
+      else
+        read -r -s -p 'Provide the WiFi password: ' WIFI_PSK
+        echo
       fi
-      WIFI_PSK="$2"
       shift # For flag name.
-      shift # For flag value.
       ;;
     *)
       >&2 echo "Unknown flag/argument: $1"
@@ -94,7 +96,7 @@ if [[ -n "${WIFI_PSK}" ]]; then
   PSK_LENGTH="$(echo -n "${WIFI_PSK}" | wc --bytes)"
   readonly PSK_LENGTH
   if (( "${PSK_LENGTH}" < 8 || "${PSK_LENGTH}" > 63 )); then
-    >&2 echo 'Invalid argument: PSK'
+    >&2 echo 'Invalid PSK.'
     >&2 echo "Use the '--help' flag for more information"
     exit 1
   fi
@@ -116,7 +118,10 @@ readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
 # Write out the new configuration.
 # shellcheck source=lib/markers.sh
 . "${SCRIPT_DIR}/lib/markers.sh"
-{
+(
+  # Avoid leaking passwords by disabling command tracing in subshell.
+  set +x
+
   echo "${MARKER_START}"
   echo "country=${WIFI_COUNTRY}"
 
@@ -138,7 +143,7 @@ readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
   fi
 
   echo "${MARKER_END}"
-} >> "${CONFIG_FILE}"
+) >> "${CONFIG_FILE}"
 
 # Effectuate changes.
 rfkill unblock wifi
