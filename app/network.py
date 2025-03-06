@@ -158,9 +158,7 @@ def enable_wifi(wifi_settings):
         # pylint: disable=consider-using-with
         if wifi_settings.psk:
             args.append('--psk')
-            process = subprocess.Popen(args,
-                                      stdin=subprocess.PIPE,
-                                      text=True)
+            process = subprocess.Popen(args, stdin=subprocess.PIPE, text=True)
             process.communicate(input=wifi_settings.psk)
         else:
             subprocess.Popen(args)
