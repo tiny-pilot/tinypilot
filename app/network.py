@@ -153,14 +153,17 @@ def enable_wifi(wifi_settings):
         'sudo', '/opt/tinypilot-privileged/scripts/enable-wifi', '--country',
         wifi_settings.country_code, '--ssid', wifi_settings.ssid
     ]
-    if wifi_settings.psk:
-        args.append('--psk')
     try:
         # Ignore pylint since we're not managing the child process.
         # pylint: disable=consider-using-with
-        process = subprocess.Popen(args, stdin=subprocess.PIPE, text=True)
         if wifi_settings.psk:
+            args.append('--psk')
+            process = subprocess.Popen(args,
+                                      stdin=subprocess.PIPE,
+                                      text=True)
             process.communicate(input=wifi_settings.psk)
+        else:
+            subprocess.Popen(args)
 
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e

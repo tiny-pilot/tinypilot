@@ -12,8 +12,9 @@ Enables a WiFi network connection.
   --help              Optional. Display this help and exit.
   --country COUNTRY   A two-digit country code, as of ISO 3166-1 alpha-2.
   --ssid SSID         The name (SSID) of the WiFi network.
-  --psk               Optional. Authenticate using a password read from stdin.
-                      The password must be 8-63 characters in length.
+  --psk               Optional. Authenticate with the WiFi network using a
+                      password read from stdin. The password must be 8-63
+                      characters in length.
 
 Note: this script only stores the WiFi configuration and triggers its
 activation, but it doesn't (and cannot) verify whether the device can actually
