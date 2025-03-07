@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Mock version of /opt/tinypilot-privileged/scripts/read-update-log
+
+# Prepend random characters, to make the caller of the `read-update-log` script
+# believe new log output had been emitted on repetitive calls.
+echo "${RANDOM}: Update in progress..."

@@ -37,6 +37,7 @@
   --brand-green: hsl(var(--brand-hue-green), 50%, 44%);
   --brand-green-dark: hsl(var(--brand-hue-green), 43%, 33%);
   --brand-green-light: hsl(var(--brand-hue-green), 34%, 70%);
+  --brand-green-lighter: hsl(var(--brand-hue-green), 65%, 88%);
   --brand-green-bright: hsl(var(--brand-hue-green), 70%, 45%);
   --brand-green-background: hsl(var(--brand-hue-green), 54%, 95%);
 
@@ -144,6 +145,7 @@ button,
   border: 1px solid var(--brand-metallic-medium);
   background: var(--brand-metallic-light)
     linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 60%);
+  user-select: none;
 }
 
 button:hover,
