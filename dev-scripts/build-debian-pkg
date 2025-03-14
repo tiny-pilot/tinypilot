@@ -20,7 +20,7 @@ Build a TinyPilot Debian package.
                                           "linux/amd64".
   --tinypilot-version TINYPILOT_VERSION   Optional. The version identifier that shall be
                                           assigned. If omitted, defaults to what the
-                                          `git describe --tags --long` command returns.
+                                          "git describe --tags --long" command returns.
 EOF
 }
 
