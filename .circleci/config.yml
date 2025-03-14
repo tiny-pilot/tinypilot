@@ -181,7 +181,8 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Build Debian package
-          command: ./dev-scripts/build-debian-pkg linux/arm/v7
+          command: ./dev-scripts/build-debian-pkg \
+            --build-targets linux/arm/v7
       - run:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/tinypilot*.deb
