@@ -19,8 +19,8 @@ Build a TinyPilot Debian package.
                                           The only supported targets are "linux/arm/v7" and
                                           "linux/amd64".
   --tinypilot-version TINYPILOT_VERSION   Optional. The version identifier that shall be
-                                          assigned. If omitted, defaults to what the
-                                          "git describe --tags --long" command returns.
+                                          assigned. If omitted, defaults to the version string
+                                          for nightly builds, formatted `x.y.z-i+hhhhhhh`.
 EOF
 }
 
