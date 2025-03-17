@@ -1,29 +1,29 @@
 #!/bin/bash
 #
-# Build TinyPilot Debian packages.
-#
-# Usage:
-#   build-debian-pkg [target architectures]
-#
-# target architecture: A comma-separated list of architectures that Docker
-#   accepts for its --platform argument. If omitted, defaults to
-#   "linux/arm/v7,linux/amd64". The only supported targets are linux/arm/v7 and
-#   linux/amd64.
-#
-# Examples
-#  build-debian-pkg "linux/arm/v7"
-#  build-debian-pkg "linux/arm/v7,linux/amd64"
+# Build a TinyPilot Debian package.
 
 # Exit build script on first failure.
 set -e
 
-# Echo commands before executing them, by default to stderr.
-set -x
-
 # Exit on unset variable.
 set -u
 
-BUILD_TARGETS="${1:-linux/arm/v7,linux/amd64}"
+print_help() {
+  cat <<EOF
+Usage: ${0##*/} [--help] [--build-targets BUILD_TARGETS] [--tinypilot-version TINYPILOT_VERSION]
+Build a TinyPilot Debian package.
+  --help                                  Optional. Display this help and exit.
+  --build-targets BUILD_TARGETS           Optional. A comma-separated list of architectures
+                                          that Docker accepts for its --platform argument.
+                                          If omitted, defaults to "linux/arm/v7,linux/amd64".
+                                          The only supported targets are "linux/arm/v7" and
+                                          "linux/amd64".
+  --tinypilot-version TINYPILOT_VERSION   Optional. The version identifier that shall be
+                                          assigned. If omitted, determines the version string
+                                          automatically, in the "x.y.z-i+hhhhhhh" format that
+                                          we use for nightly builds.
+EOF
+}
 
 print_tinypilot_version() {
   # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
@@ -31,8 +31,37 @@ print_tinypilot_version() {
   sed --expression 's/\(-g\([0-9a-f]\{7\}\)\)$/+\2/g'
 }
 
+# Parse command-line arguments.
+BUILD_TARGETS='linux/arm/v7,linux/amd64'
 TINYPILOT_VERSION="$(print_tinypilot_version)"
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    --build-targets)
+      BUILD_TARGETS="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+    --tinypilot-version)
+      TINYPILOT_VERSION="$2"
+      shift # For flag name.
+      shift # For flag value.
+      ;;
+   *)
+      >&2 echo "Unknown argument: $1"
+      >&2 echo "Use the '--help' flag for more information"
+      exit 1
+      ;;
+  esac
+done
+readonly BUILD_TARGETS
 readonly TINYPILOT_VERSION
+
+# Echo commands before executing them, by default to stderr.
+set -x
 
 PKG_VERSION="$(date '+%Y%m%d%H%M%S')"
 readonly PKG_VERSION
