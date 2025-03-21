@@ -27,8 +27,10 @@ EOF
 
 print_tinypilot_version() {
   # Format build hash suffix according to SemVer (`-ghhhhhhh` -> `+hhhhhhh`).
+  # Note that git short hashes are variable in length, so they can contain more
+  # than 7 characters, depending of the overall number of commits.
   git describe --tags --long |
-  sed --expression 's/\(-g\([0-9a-f]\{7\}\)\)$/+\2/g'
+  sed --expression 's/\(-g\([0-9a-f]\{7,\}\)\)$/+\2/g'
 }
 
 # Parse command-line arguments.
