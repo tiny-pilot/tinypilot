@@ -79,3 +79,6 @@ debian-pkg/releases/
 e2e-results/
 /playwright-report/
 /playwright/.cache/
+
+# Dotenv config file
+.env

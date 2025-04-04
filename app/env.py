@@ -1,6 +1,13 @@
 import os
 import pathlib
 
+import dotenv
+
+_config = dotenv.dotenv_values('.env')
+
+GATEKEEPER_BASE_URL = _config.get('GATEKEEPER_BASE_URL',
+                                  'https://gk.tinypilotkvm.com')
+
 _TINYPILOT_HOME_PATH = pathlib.Path(
     os.environ.get('TINYPILOT_HOME_DIR', '/home/tinypilot'))
 

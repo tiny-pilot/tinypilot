@@ -6,6 +6,8 @@ from datetime import date
 
 import flask
 
+import env
+
 
 class Error(Exception):
     pass
@@ -82,7 +84,7 @@ def latest_version():
     """
     try:
         with urllib.request.urlopen(
-                'https://gk.tinypilotkvm.com/community/available-update',
+                f'{env.GATEKEEPER_BASE_URL}/community/available-update',
                 timeout=10) as response:
             response_bytes = response.read()
     except urllib.error.URLError as e:
