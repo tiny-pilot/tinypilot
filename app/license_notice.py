@@ -154,7 +154,7 @@ _LICENSE_METADATA = [
         name='python-dotenv',
         homepage_url='https://github.com/theskumar/python-dotenv',
         license_glob_pattern=
-        './venv/lib/python3.9/site-packages/python_dotenv-*.dist-info/licenses/LICENSE',
+        './venv/lib/python3.*/site-packages/python_dotenv-*.dist-info/licenses/LICENSE',
     ),
     LicenseMetadata(
         name='python-engineio',
