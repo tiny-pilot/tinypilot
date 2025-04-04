@@ -81,6 +81,12 @@ To run TinyPilot on a non-Pi machine, run:
 ./dev-scripts/serve-dev
 ```
 
+Before running the dev server for the first time, set up your `.env` file to (optionally) adjust configuration parameters:
+
+```bash
+cp .env.example .env
+```
+
 ### Open dialogs after page load
 
 If you are doing UI development in a dialog, it can be cumbersome to having to open a dialog via the menu after every page refresh.
