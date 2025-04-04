@@ -8,6 +8,7 @@ tinypilot: hardening-no-relro [opt/tinypilot/venv/lib/python*/site-packages/yaml
 
 # Lintian doesn't recognize the Python interpreter when it's within the
 # virtualenv.
+tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/dotenv*]
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install*]
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/flask]
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip*]
