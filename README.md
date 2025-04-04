@@ -1,4 +1,4 @@
-# TinyPilot
+# TinyPilot!
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/tiny-pilot/tinypilot)](https://github.com/tiny-pilot/tinypilot/graphs/contributors)
