@@ -84,7 +84,7 @@ To run TinyPilot on a non-Pi machine, run:
 Before running the dev server for the first time, set up your `.env` file to (optionally) adjust configuration parameters:
 
 ```bash
-cp .env.example .env
+cp -n .env.example .env
 ```
 
 ### Open dialogs after page load
