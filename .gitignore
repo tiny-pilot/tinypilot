@@ -79,3 +79,8 @@ debian-pkg/releases/
 e2e-results/
 /playwright-report/
 /playwright/.cache/
+
+# Dotenv config file(s), except for the example/blueprint.
+.env
+.env.*
+!.env.example
