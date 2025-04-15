@@ -40,6 +40,7 @@ if [[ "${HAS_PRO_INSTALLED}" = 1 ]]; then
     set -u
   else
     set +x
+    printf '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n'
     printf "You are trying to downgrade from TinyPilot Pro to TinyPilot "
     printf "Community Edition.\n\n"
     printf "You probably want to update to the latest version of TinyPilot "
@@ -121,25 +122,54 @@ else
 fi
 readonly INSTALLER_DIR
 
-# Use a temporary directory within the installer directory so that we take
-# advantage of RAMdisk if we're using one.
+# Ensure that mktemp creates temporary files within the installer directory so
+# that we take advantage of RAMdisk if we're using one.
 readonly TMPDIR="${INSTALLER_DIR}/tmp"
 export TMPDIR
 sudo mkdir "${TMPDIR}"
 
-readonly BUNDLE_FILE="${INSTALLER_DIR}/bundle.tgz"
+#######################################
+# Executes a curl command that returns a non-zero exit code based on the HTTP
+# response status code.
+# Arguments:
+#   Extra curl arguments.
+# Outputs:
+#   HTTP response body.
+# Returns:
+#   0 if HTTP response status code is 2XX–3XX, 1 otherwise.
+#######################################
+strict_curl() {
+  local output_file
+  output_file="$(mktemp)"
+  readonly output_file
+
+  local http_code
+  http_code="$(curl \
+    --location \
+    --silent \
+    --write-out '%{http_code}' \
+    --output "${output_file}" \
+    "$@")"
+  readonly http_code
+
+  cat "${output_file}"
+  if (( "${http_code}" < 200 || "${http_code}" > 399 )); then
+    return 1
+  fi
+}
 
 # Download tarball to RAMdisk.
-HTTP_CODE="$(curl https://gk.tinypilotkvm.com/community/download/latest \
-  --location \
-  --output "${BUNDLE_FILE}" \
-  --write-out '%{http_code}' \
-  --silent)"
-readonly HTTP_CODE
-if [[ "${HTTP_CODE}" != "200" ]]; then
-  echo "Failed to download tarball with HTTP response status code ${HTTP_CODE}." >&2
+BUNDLE_FILE="$(mktemp)"
+if ! strict_curl https://gk.tinypilotkvm.com/community/download/latest \
+  > "${BUNDLE_FILE}"; then
+  set +x
+  >&2 echo '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+  >&2 echo
+  >&2 echo 'Failed to download tarball.'
+  >&2 cat "${BUNDLE_FILE}"
   exit 1
 fi
+readonly BUNDLE_FILE
 
 # Extract tarball to installer directory. The installer directory and all its
 # content must have root ownership.
