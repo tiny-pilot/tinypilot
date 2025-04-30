@@ -126,7 +126,7 @@ readonly INSTALLER_DIR
 # that we take advantage of RAMdisk if we're using one.
 readonly TMPDIR="${INSTALLER_DIR}/tmp"
 export TMPDIR
-sudo mkdir "${TMPDIR}"
+sudo mkdir --mode=1777 "${TMPDIR}"
 
 #######################################
 # Executes a curl command that returns a non-zero exit code based on the HTTP
