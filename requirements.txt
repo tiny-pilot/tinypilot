@@ -23,4 +23,4 @@ python-socketio==5.8.0
 six==1.16.0
 Werkzeug==2.3.8
 WTForms==3.0.1
-zipp==3.16.2
+zipp==3.19.1
