@@ -73,7 +73,9 @@ wget \
 # Download uStreamer Debian package.
 wget \
   --directory-prefix="${BUNDLE_DIR}" \
-  https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.43-20231004144402/ustreamer_5.43-20231004144402_armhf.deb
+  https://output.circle-artifacts.com/output/job/74664cac-e326-42fb-ab55-a8352d8ec07c/artifacts/0/build/ustreamer_6.36-20250502131254_armhf.deb
+  # TODO issue new `ustreamer-debian` release and update download URL. Previous download URL:
+  #https://github.com/tiny-pilot/ustreamer-debian/releases/download/5.43-20231004144402/ustreamer_5.43-20231004144402_armhf.deb
 
 # Download yq binary
 wget \
