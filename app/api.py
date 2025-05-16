@@ -344,8 +344,8 @@ def settings_video_get():
     Returns:
         On success, a JSON data structure with the following properties:
         - streamingMode: string
-        - frameRate: int
-        - defaultFrameRate: int
+        - mjpegFrameRate: int
+        - defaultMjpegFrameRate: int
         - mjpegQuality: int
         - defaultMjpegQuality: int
         - h264Bitrate: int
@@ -354,8 +354,8 @@ def settings_video_get():
         Example of success:
         {
             "streamingMode": "MJPEG",
-            "frameRate": 12,
-            "defaultFrameRate": 30,
+            "mjpegFrameRate": 12,
+            "defaultMjpegFrameRate": 30,
             "mjpegQuality": 80,
             "defaultMjpegQuality": 80,
             "h264Bitrate": 450,
@@ -373,8 +373,8 @@ def settings_video_get():
 
     return json_response.success({
         'streamingMode': streaming_mode,
-        'frameRate': update_settings.ustreamer_desired_fps,
-        'defaultFrameRate': video_service.DEFAULT_FRAME_RATE,
+        'mjpegFrameRate': update_settings.ustreamer_desired_fps,
+        'defaultMjpegFrameRate': video_service.DEFAULT_MJPEG_FRAME_RATE,
         'mjpegQuality': update_settings.ustreamer_quality,
         'defaultMjpegQuality': video_service.DEFAULT_MJPEG_QUALITY,
         'h264Bitrate': update_settings.ustreamer_h264_bitrate,
@@ -396,7 +396,7 @@ def settings_video_put():
     Expects a JSON data structure in the request body that contains the
     following parameters for the video settings:
     - streamingMode: string
-    - frameRate: int
+    - mjpegFrameRate: int
     - mjpegQuality: int
     - h264Bitrate: int
     - h264StunServer: string (hostname or IP address), or null
@@ -408,7 +408,7 @@ def settings_video_put():
     Example of request body:
     {
         "streamingMode": "MJPEG",
-        "frameRate": 12,
+        "mjpegFrameRate": 12,
         "mjpegQuality": 80,
         "h264Bitrate": 450,
         "h264StunServer": "stun.example.com",

@@ -139,10 +139,10 @@
     </div>
     <div class="settings-container">
       <div class="setting setting-mjpeg">
-        <label for="frame-rate-slider">Frame Rate</label>
-        <input type="range" id="frame-rate-slider" min="1" max="30" />
-        <div id="frame-rate-value" class="setting-value"></div>
-        <div id="frame-rate-reset" class="btn-text reset-button">
+        <label for="mjpeg-frame-rate-slider">Frame Rate</label>
+        <input type="range" id="mjpeg-frame-rate-slider" min="1" max="30" />
+        <div id="mjpeg-frame-rate-value" class="setting-value"></div>
+        <div id="mjpeg-frame-rate-reset" class="btn-text reset-button">
           Reset to Default
         </div>
       </div>
@@ -243,11 +243,15 @@
             streamingModeH264Button: this.shadowRoot.querySelector(
               "#streaming-mode-h264-button"
             ),
-            frameRateSlider:
-              this.shadowRoot.querySelector("#frame-rate-slider"),
-            frameRateValue: this.shadowRoot.querySelector("#frame-rate-value"),
-            frameRateRestoreButton:
-              this.shadowRoot.querySelector("#frame-rate-reset"),
+            mjpegFrameRateSlider: this.shadowRoot.querySelector(
+              "#mjpeg-frame-rate-slider"
+            ),
+            mjpegFrameRateValue: this.shadowRoot.querySelector(
+              "#mjpeg-frame-rate-value"
+            ),
+            mjpegFrameRateRestoreButton: this.shadowRoot.querySelector(
+              "#mjpeg-frame-rate-reset"
+            ),
             mjpegQualitySlider: this.shadowRoot.querySelector(
               "#mjpeg-quality-slider"
             ),
@@ -293,13 +297,16 @@
               this._setStreamingMode("H264");
             }
           );
-          this._elements.frameRateSlider.addEventListener("input", (event) => {
-            this._setFrameRate(parseInt(event.target.value, 10));
-          });
-          this._elements.frameRateRestoreButton.addEventListener(
+          this._elements.mjpegFrameRateSlider.addEventListener(
+            "input",
+            (event) => {
+              this._setMjpegFrameRate(parseInt(event.target.value, 10));
+            }
+          );
+          this._elements.mjpegFrameRateRestoreButton.addEventListener(
             "click",
             () => {
-              this._setFrameRate(this._defaultSettings.frameRate);
+              this._setMjpegFrameRate(this._defaultSettings.mjpegFrameRate);
             }
           );
           this._elements.mjpegQualitySlider.addEventListener(
@@ -376,8 +383,8 @@
             .then(
               ({
                 streamingMode,
-                frameRate,
-                defaultFrameRate,
+                mjpegFrameRate,
+                defaultMjpegFrameRate,
                 mjpegQuality,
                 defaultMjpegQuality,
                 h264Bitrate,
@@ -390,9 +397,9 @@
                 this._setStreamingMode(streamingMode);
                 this._initialSettings.streamingMode = streamingMode;
 
-                this._setFrameRate(frameRate);
-                this._initialSettings.frameRate = frameRate;
-                this._defaultSettings.frameRate = defaultFrameRate;
+                this._setMjpegFrameRate(mjpegFrameRate);
+                this._initialSettings.mjpegFrameRate = mjpegFrameRate;
+                this._defaultSettings.mjpegFrameRate = defaultMjpegFrameRate;
 
                 this._setMjpegQuality(mjpegQuality);
                 this._initialSettings.mjpegQuality = mjpegQuality;
@@ -451,16 +458,16 @@
         /**
          * @returns {number}
          */
-        _getFrameRate() {
-          return parseInt(this._elements.frameRateSlider.value, 10);
+        _getMjpegFrameRate() {
+          return parseInt(this._elements.mjpegFrameRateSlider.value, 10);
         }
 
         /**
-         * @param {number} frameRate
+         * @param {number} mjpegFrameRate
          */
-        _setFrameRate(frameRate) {
-          this._elements.frameRateSlider.value = frameRate;
-          this._elements.frameRateValue.innerHTML = `${frameRate} fps`;
+        _setMjpegFrameRate(mjpegFrameRate) {
+          this._elements.mjpegFrameRateSlider.value = mjpegFrameRate;
+          this._elements.mjpegFrameRateValue.innerHTML = `${mjpegFrameRate} fps`;
           this._refreshButtons();
         }
 
@@ -508,7 +515,7 @@
           // Save Button: only enable if the user actually changed some value.
           const hasChangedValues = [
             [this._getStreamingMode(), this._initialSettings.streamingMode],
-            [this._getFrameRate(), this._initialSettings.frameRate],
+            [this._getMjpegFrameRate(), this._initialSettings.mjpegFrameRate],
             [this._getMjpegQuality(), this._initialSettings.mjpegQuality],
             [this._getH264Bitrate(), this._initialSettings.h264Bitrate],
             [h264StunServer, this._initialSettings.h264StunServer],
@@ -520,9 +527,9 @@
           // from the default setting.
           [
             [
-              this._getFrameRate(),
-              this._defaultSettings.frameRate,
-              this._elements.frameRateRestoreButton,
+              this._getMjpegFrameRate(),
+              this._defaultSettings.mjpegFrameRate,
+              this._elements.mjpegFrameRateRestoreButton,
             ],
             [
               this._getMjpegQuality(),
@@ -549,7 +556,7 @@
             this._elements.h264StunSettings.getValue();
           return saveVideoSettings({
             streamingMode: this._getStreamingMode(),
-            frameRate: this._getFrameRate(),
+            mjpegFrameRate: this._getMjpegFrameRate(),
             mjpegQuality: this._getMjpegQuality(),
             h264Bitrate: this._getH264Bitrate(),
             h264StunServer,
