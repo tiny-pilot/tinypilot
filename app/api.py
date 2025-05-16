@@ -421,8 +421,8 @@ def settings_video_put():
     try:
         streaming_mode = \
             request_parsers.video_settings.parse_streaming_mode(flask.request)
-        frame_rate = request_parsers.video_settings.parse_frame_rate(
-            flask.request)
+        mjpeg_frame_rate = \
+            request_parsers.video_settings.parse_mjpeg_frame_rate(flask.request)
         mjpeg_quality = request_parsers.video_settings.parse_mjpeg_quality(
             flask.request)
         h264_bitrate = request_parsers.video_settings.parse_h264_bitrate(
@@ -438,7 +438,7 @@ def settings_video_put():
     except update.settings.LoadSettingsError as e:
         return json_response.error(e), 500
 
-    update_settings.ustreamer_desired_fps = frame_rate
+    update_settings.ustreamer_desired_fps = mjpeg_frame_rate
     update_settings.ustreamer_quality = mjpeg_quality
     update_settings.ustreamer_h264_bitrate = h264_bitrate
     update_settings.janus_stun_server = h264_stun_server

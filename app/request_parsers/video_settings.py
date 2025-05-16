@@ -8,7 +8,7 @@ from request_parsers import json
 _DOMAIN_PATTERN = re.compile(r'^[0-9a-z-.]{1,255}$')
 
 
-def parse_frame_rate(request):
+def parse_mjpeg_frame_rate(request):
     # pylint: disable=unbalanced-tuple-unpacking
     (frame_rate,) = json.parse_json_body(request, required_fields=['frameRate'])
     try:
