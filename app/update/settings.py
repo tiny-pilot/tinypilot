@@ -74,7 +74,7 @@ _DEFAULTS = {
     'tinypilot_keyboard_interface': '/dev/hidg0',
     'tinypilot_mouse_interface': '/dev/hidg1',
     'tinypilot_external_port': 80,
-    'ustreamer_desired_fps': video_service.DEFAULT_FRAME_RATE,
+    'ustreamer_desired_fps': video_service.DEFAULT_MJPEG_FRAME_RATE,
     'ustreamer_edid': _DEFAULT_TC358743_EDID,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
