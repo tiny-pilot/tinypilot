@@ -12,14 +12,14 @@ The following settings are supported and remain configurable through `settings.y
 - `tinypilot_external_tls_port` (Pro only)
 - `tinypilot_manage_tls_keys` (Pro only)
   - Whether TinyPilot manages TLS keys. Users can override this setting if they want to [provide their own TLS keys](https://tinypilotkvm.com/faq/own-tls-key).
-- `ustreamer_desired_fps`
-  - Desired frames per second. Defaults to 30 when not set.
 - `ustreamer_edid`
   - EDID for TC358743 chip.
 - `ustreamer_h264_bitrate`
   - Set the bitrate in Kb/s for the H264 stream (e.g., 2000). The range of allowed values is [25, 20000]. Defaults to 5000 when not set.
 - `ustreamer_quality`
   - Quality of the JPEG encoding from 1 to 100 (best). Defaults to 80 when not set.
+- `ustreamer_desired_fps`
+  - Desired frames per second for MJPEG streaming mode. Defaults to 30 when not set.
 
 ## Deprecated Settings (Legacy)
 
