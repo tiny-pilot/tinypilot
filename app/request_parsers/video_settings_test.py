@@ -12,28 +12,29 @@ def make_mock_request(json_data):
     return mock_request
 
 
-class VideoFrameRateParserTest(unittest.TestCase):
+class VideoMjpegFrameRateParserTest(unittest.TestCase):
 
     def test_reject_integers_out_of_bounds(self):
         with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_frame_rate(make_mock_request({'frameRate': 0}))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'mjpegFrameRate': 0}))
         with self.assertRaises(errors.InvalidVideoSettingError):
-            video_settings.parse_frame_rate(make_mock_request({'frameRate': 31
-                                                              }))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'mjpegFrameRate': 31}))
 
     def test_accept_integers_within_bounds(self):
         self.assertEqual(
             1,
-            video_settings.parse_frame_rate(make_mock_request({'frameRate': 1
-                                                              })))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'mjpegFrameRate': 1})))
         self.assertEqual(
             15,
-            video_settings.parse_frame_rate(make_mock_request({'frameRate': 15
-                                                              })))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'mjpegFrameRate': 15})))
         self.assertEqual(
             30,
-            video_settings.parse_frame_rate(make_mock_request({'frameRate': 30
-                                                              })))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'mjpegFrameRate': 30})))
 
     def test_reject_non_integers(self):
         for value in [
@@ -41,12 +42,13 @@ class VideoFrameRateParserTest(unittest.TestCase):
         ]:
             with self.subTest(value):
                 with self.assertRaises(errors.InvalidVideoSettingError):
-                    video_settings.parse_frame_rate(
-                        make_mock_request({'frameRate': value}))
+                    video_settings.parse_mjpeg_frame_rate(
+                        make_mock_request({'mjpegFrameRate': value}))
 
     def test_reject_incorrect_key(self):
         with self.assertRaises(errors.MissingFieldError):
-            video_settings.parse_frame_rate(make_mock_request({'something': 1}))
+            video_settings.parse_mjpeg_frame_rate(
+                make_mock_request({'something': 1}))
 
 
 class VideoMjpegQualityParserTest(unittest.TestCase):

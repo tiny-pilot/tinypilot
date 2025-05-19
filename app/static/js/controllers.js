@@ -329,8 +329,8 @@ export async function getVideoSettings() {
     .then((data) => {
       [
         "streamingMode",
-        "frameRate",
-        "defaultFrameRate",
+        "mjpegFrameRate",
+        "defaultMjpegFrameRate",
         "mjpegQuality",
         "defaultMjpegQuality",
         "h264Bitrate",
@@ -351,7 +351,7 @@ export async function getVideoSettings() {
 
 export async function saveVideoSettings({
   streamingMode,
-  frameRate,
+  mjpegFrameRate,
   mjpegQuality,
   h264Bitrate,
   h264StunServer,
@@ -368,7 +368,7 @@ export async function saveVideoSettings({
     },
     body: JSON.stringify({
       streamingMode,
-      frameRate,
+      mjpegFrameRate,
       mjpegQuality,
       h264Bitrate,
       h264StunServer,
