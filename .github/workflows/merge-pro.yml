@@ -45,6 +45,7 @@ jobs:
             @${{ github.actor }}, please merge [your changes from the Community repository](https://github.com/tiny-pilot/tinypilot/commit/${{ github.sha }}):
 
             1. Update this branch with latest `master`
+               - Generally, you can use GitHub’s “Update with merge commit”.
                - If there are merge conflicts, it’s best to resolve them locally.
             1. Check whether you need to make any Pro-specific adjustments to the code
             1. Review and approve your changes
