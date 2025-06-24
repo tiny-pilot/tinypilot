@@ -20,4 +20,5 @@ readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 . ./venv/bin/activate
 
+export FLASK_APP='app/main.py'
 flask cli streaming-mode
