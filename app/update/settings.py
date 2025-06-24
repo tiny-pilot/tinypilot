@@ -71,8 +71,6 @@ a9c081406140271f80f07138164038c0
 # Define default values for user-configurable TinyPilot settings. The YAML data
 # in _SETTINGS_FILE_PATH take precedence over these defaults.
 _DEFAULTS = {
-    'tinypilot_keyboard_interface': '/dev/hidg0',
-    'tinypilot_mouse_interface': '/dev/hidg1',
     'tinypilot_external_port': 80,
     'ustreamer_desired_fps': video_service.DEFAULT_MJPEG_FRAME_RATE,
     'ustreamer_edid': _DEFAULT_TC358743_EDID,

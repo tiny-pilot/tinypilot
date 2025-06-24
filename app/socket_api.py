@@ -1,9 +1,9 @@
 import logging
 
-import env
 import flask
 import flask_socketio
 
+import env
 import js_to_hid
 import update_logs
 from hid import keyboard as fake_keyboard
