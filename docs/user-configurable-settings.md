@@ -42,12 +42,12 @@ The following settings are still configurable through `settings.yml`, but we may
 
 The following settings are unsupported and no longer configurable through `settings.yml`:
 
-- `tinypilot_keyboard_interface`
-- `tinypilot_mouse_interface`
 - `tinypilot_debian_package_path`
 - `tinypilot_enable_debug_logging`
 - `tinypilot_install_janus`
 - `tinypilot_interface`
+- `tinypilot_keyboard_interface`
+- `tinypilot_mouse_interface`
 - `tinypilot_port`
 - `ustreamer_brightness`
 - `ustreamer_capture_device`
