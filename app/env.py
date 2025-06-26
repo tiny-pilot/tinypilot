@@ -7,6 +7,8 @@ _config = dotenv.dotenv_values('.env')
 
 GATEKEEPER_BASE_URL = _config.get('GATEKEEPER_BASE_URL',
                                   'https://gk.tinypilotkvm.com')
+KEYBOARD_PATH = _config.get('KEYBOARD_PATH', '/dev/hidg0')
+MOUSE_PATH = _config.get('MOUSE_PATH', '/dev/hidg1')
 
 _TINYPILOT_HOME_PATH = pathlib.Path(
     os.environ.get('TINYPILOT_HOME_DIR', '/home/tinypilot'))

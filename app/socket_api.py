@@ -3,6 +3,7 @@ import logging
 import flask
 import flask_socketio
 
+import env
 import js_to_hid
 import update_logs
 from hid import keyboard as fake_keyboard
@@ -31,7 +32,7 @@ def on_keystroke(message):
         logger.warning_sensitive('Unrecognized key: %s (keycode=%s)',
                                  keystroke.key, keystroke.code)
         return {'success': False}
-    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    keyboard_path = env.KEYBOARD_PATH
     try:
         fake_keyboard.send_keystroke(keyboard_path, hid_keystroke)
     except hid_write.WriteError as e:
@@ -48,7 +49,7 @@ def on_mouse_event(message):
     except mouse_event_request.Error as e:
         logger.error_sensitive('Failed to parse mouse event request: %s', e)
         return {'success': False}
-    mouse_path = flask.current_app.config.get('MOUSE_PATH')
+    mouse_path = env.MOUSE_PATH
     try:
         fake_mouse.send_mouse_event(mouse_path, mouse_move_event.buttons,
                                     mouse_move_event.relative_x,
@@ -63,7 +64,7 @@ def on_mouse_event(message):
 
 @socketio.on('keyRelease')
 def on_key_release():
-    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    keyboard_path = env.KEYBOARD_PATH
     try:
         fake_keyboard.release_keys(keyboard_path)
     except hid_write.WriteError as e:

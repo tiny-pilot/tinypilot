@@ -25,8 +25,6 @@ The following settings are supported and remain configurable through `settings.y
 
 The following settings are still configurable through `settings.yml`, but we may remove configuration support for them in the future:
 
-- `tinypilot_keyboard_interface`
-- `tinypilot_mouse_interface`
 - `ustreamer_drop_same_frames`
   - Number of same frames to drop.
 - `ustreamer_encoder`
@@ -48,6 +46,8 @@ The following settings are unsupported and no longer configurable through `setti
 - `tinypilot_enable_debug_logging`
 - `tinypilot_install_janus`
 - `tinypilot_interface`
+- `tinypilot_keyboard_interface`
+- `tinypilot_mouse_interface`
 - `tinypilot_port`
 - `ustreamer_brightness`
 - `ustreamer_capture_device`

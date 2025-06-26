@@ -2,6 +2,7 @@ import flask
 
 import db.settings
 import debug_logs
+import env
 import execute
 import hostname
 import json_response
@@ -493,7 +494,7 @@ def paste_post():
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
 
-    keyboard_path = flask.current_app.config.get('KEYBOARD_PATH')
+    keyboard_path = env.KEYBOARD_PATH
     execute.background_thread(fake_keyboard.send_keystrokes,
                               args=(keyboard_path, keystrokes))
 
