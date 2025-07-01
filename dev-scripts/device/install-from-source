@@ -36,7 +36,7 @@ find ./bundler/bundle/ -name 'tinypilot*.deb' -delete
 
 mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
 
-./packer/generate-build-ts > ./bundler/bundle/build-timestamp.txt
+./dev-scripts/generate-build-ts > ./bundler/bundle/build-timestamp.txt
 
 ./bundler/create-bundle
 
