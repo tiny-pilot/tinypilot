@@ -33,6 +33,12 @@ if ! ls "${BUNDLE_DIR}/tinypilot"*armhf.deb 1> /dev/null 2>&1; then
   exit 1
 fi
 
+# Ensure that a build timestamp file exists.
+if [[ ! -e "${BUNDLE_DIR}/build-timestamp.txt" ]]; then
+  echo 'Failed to create bundle: no build timestamp file found.' >&2
+  exit 1
+fi
+
 # Prints the TinyPilot release version as populated in the Debian package. The
 # Debian package stores the version string in a header field of its control
 # file. The header is named: `Tinypilot-Version`.
