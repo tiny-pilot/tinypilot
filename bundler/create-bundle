@@ -34,7 +34,7 @@ if ! ls "${BUNDLE_DIR}/tinypilot"*armhf.deb 1> /dev/null 2>&1; then
 fi
 
 # Ensure that a build timestamp file exists.
-if [[ ! -e "${BUNDLE_DIR}/build-timestamp.txt" ]]; then
+if [[ ! -e "./${BUNDLE_DIR}/build-timestamp.txt" ]]; then
   echo 'Failed to create bundle: no build timestamp file found.' >&2
   exit 1
 fi
