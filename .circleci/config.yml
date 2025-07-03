@@ -27,6 +27,21 @@ commands:
               exit 1
             fi
 jobs:
+  generate_timestamp:
+    # The timestamp has to be created upfront to ensure it is the exact same
+    # for all (parallel) build processes.
+    executor: ubuntu
+    steps:
+      - checkout
+      - run:
+          name: Generate build timestamp
+          command: |
+            cd packer && \
+              ./generate-build-ts > build-timestamp.txt
+      - persist_to_workspace:
+          root: ./packer
+          paths:
+            - ./build-timestamp.txt
   check_whitespace:
     executor: ubuntu
     steps:
