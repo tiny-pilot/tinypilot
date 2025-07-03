@@ -3,3 +3,4 @@
 ustreamer_encoder: hw
 ustreamer_format: jpeg
 ustreamer_resolution: "1920x1080"
+ustreamer_desired_fps: 30
