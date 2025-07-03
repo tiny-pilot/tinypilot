@@ -304,7 +304,9 @@ workflows:
       - check_python
       - check_javascript
       - run_e2e_tests
-      - build_debian_package
+      - build_debian_package:
+          requires:
+            - generate_timestamp
       - check_debian_package:
           requires:
             - build_debian_package
@@ -324,3 +326,4 @@ workflows:
           filters:
             branches:
               only: master
+      - generate_timestamp
