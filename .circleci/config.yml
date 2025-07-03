@@ -36,10 +36,10 @@ jobs:
       - run:
           name: Generate build timestamp
           command: |
-            cd packer && \
+            cd dev-scripts && \
               ./generate-build-ts > build-timestamp.txt
       - persist_to_workspace:
-          root: ./packer
+          root: ./dev-scripts
           paths:
             - ./build-timestamp.txt
   check_whitespace:
