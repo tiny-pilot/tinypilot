@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Generate a timestamp in a specific format that we use as build id.
+
+date --iso-8601=minutes | sed 's/://g' | sed 's/+0000/Z/g'

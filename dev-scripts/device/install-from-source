@@ -20,7 +20,7 @@ set -u
 # Change directory to repository root.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
-cd "${SCRIPT_DIR}/.."
+cd "${SCRIPT_DIR}/../.."
 
 ./dev-scripts/build-debian-pkg --build-targets 'linux/arm/v7'
 
@@ -35,6 +35,8 @@ readonly LATEST_DEBIAN_PACKAGE
 find ./bundler/bundle/ -name 'tinypilot*.deb' -delete
 
 mv "${LATEST_DEBIAN_PACKAGE}" ./bundler/bundle/
+
+./dev-scripts/generate-build-ts > ./bundler/bundle/build-timestamp.txt
 
 ./bundler/create-bundle
 
