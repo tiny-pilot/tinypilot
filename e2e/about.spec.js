@@ -6,7 +6,7 @@ test.describe("about dialog", () => {
     await page.getByRole("menuitem", { name: "Help" }).hover();
     await page.getByRole("menuitem", { name: "About" }).click();
     await expect(
-      page.getByRole("heading", { name: "About TinyPilot Pro" })
+      page.getByRole("heading", { name: "About TinyPilot" })
     ).toBeVisible();
   });
 
