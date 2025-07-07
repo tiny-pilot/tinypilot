@@ -32,7 +32,7 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='uStreamer',
         license_url=
-        'https://raw.githubusercontent.com/tiny-pilot/ustreamer/v4.13/LICENSE',
+        'https://raw.githubusercontent.com/tiny-pilot/ustreamer/v6.36/LICENSE',
         homepage_url='https://github.com/pikvm/ustreamer'),
     LicenseMetadata(name='Python',
                     homepage_url='https://python.org',
@@ -44,7 +44,7 @@ _LICENSE_METADATA = [
         name='Janus',
         homepage_url='https://janus.conf.meetecho.com',
         license_url=
-        'https://raw.githubusercontent.com/tiny-pilot/janus-gateway/v1.0.0/COPYING'
+        'https://raw.githubusercontent.com/meetecho/janus-gateway/v1.0.1/COPYING'
     ),
 
     # JavaScript dependencies.
@@ -56,13 +56,14 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='webrtc-adapter',
         homepage_url='https://github.com/webrtcHacks/adapter',
-        license_url=
-        'https://github.com/webrtcHacks/adapter/blob/18a8b4127cbc1376320cac5742d817b5b7dd0085/LICENSE.md',
+        license_glob_pattern=
+        './app/static/third-party/webrtc-adapter/*/adapter.min.js',
     ),
     LicenseMetadata(
         name='socket.io',
         homepage_url='https://socket.io',
-        license_url='https://github.com/socketio/socket.io/blob/4.7.1/LICENSE',
+        license_url=
+        'https://raw.githubusercontent.com/socketio/socket.io/4.7.1/LICENSE',
     ),
 
     # Python dependencies, from requirements.txt.
@@ -75,8 +76,8 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='Flask',
         homepage_url='https://flask.palletsprojects.com',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/Flask-*.dist-info/LICENSE*',
+        license_url=
+        'https://raw.githubusercontent.com/pallets/flask/3.1.1/LICENSE.txt',
     ),
     LicenseMetadata(
         name='Flask-SocketIO',
@@ -88,13 +89,13 @@ _LICENSE_METADATA = [
         name='Flask-WTF',
         homepage_url='https://flask-wtf.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/Flask_WTF-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/flask_wtf-*.dist-info/licenses/LICENSE*'
     ),
     LicenseMetadata(
         name='pyyaml',
         homepage_url='https://pyyaml.org',
-        license_url=
-        'https://raw.githubusercontent.com/yaml/pyyaml/6.0.1/LICENSE',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/PyYAML-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='bidict',
@@ -124,13 +125,19 @@ _LICENSE_METADATA = [
         name='greenlet',
         homepage_url='https://greenlet.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/greenlet-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/greenlet-*.dist-info/licenses/LICENSE*',
+    ),
+    LicenseMetadata(
+        name='h11',
+        homepage_url='https://h11.readthedocs.io',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/h11-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='importlib-metadata',
         homepage_url='https://importlib-metadata.readthedocs.io/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/importlib_metadata-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/importlib_metadata-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='itsdangerous',
@@ -142,7 +149,7 @@ _LICENSE_METADATA = [
         name='Jinja2',
         homepage_url='https://palletsprojects.com/p/jinja/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/jinja2-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/jinja2-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='MarkupSafe',
@@ -160,19 +167,19 @@ _LICENSE_METADATA = [
         name='python-engineio',
         homepage_url='https://github.com/miguelgrinberg/python-engineio',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/python_engineio-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/python_engineio-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='python-socketio',
         homepage_url='https://github.com/miguelgrinberg/python-socketio',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/python_socketio-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/python_socketio-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
-        name='six',
-        homepage_url='https://github.com/benjaminp/six',
+        name='simple-websocket',
+        homepage_url='https://simple-websocket.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/six-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/simple_websocket-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
         name='Werkzeug',
@@ -181,16 +188,22 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/werkzeug-*.dist-info/LICENSE*',
     ),
     LicenseMetadata(
+        name='wsproto',
+        homepage_url='https://wsproto.readthedocs.io',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/wsproto-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
         name='WTForms',
         homepage_url='https://wtforms.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/WTForms-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/wtforms-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='zipp',
         homepage_url='https://github.com/jaraco/zipp',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/zipp-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/zipp-*.dist-info/licenses/LICENSE*',
     ),
 
     # Indirect dependencies through Janus.
@@ -198,12 +211,13 @@ _LICENSE_METADATA = [
         name='libnice',
         homepage_url='https://gitlab.freedesktop.org/libnice/libnice',
         license_url=
-        'https://gitlab.freedesktop.org/libnice/libnice/-/blob/0.1.18/COPYING',
+        'https://gitlab.freedesktop.org/libnice/libnice/-/raw/0.1.18/COPYING',
     ),
     LicenseMetadata(
         name='libsrtp',
         homepage_url='https://github.com/cisco/libsrtp',
-        license_url='https://github.com/cisco/libsrtp/blob/v2.2.0/LICENSE',
+        license_url=
+        'https://raw.githubusercontent.com/cisco/libsrtp/v2.2.0/LICENSE',
     ),
     LicenseMetadata(
         name='libwebsockets',
@@ -214,7 +228,7 @@ _LICENSE_METADATA = [
         # link to Github instead.
         # (See https://github.com/tiny-pilot/tinypilot/pull/1727)
         license_url=
-        'https://github.com/warmcat/libwebsockets/blob/v3.2.2/LICENSE',
+        'https://raw.githubusercontent.com/warmcat/libwebsockets/v3.2.2/LICENSE',
     ),
 
     # Fonts.

@@ -29,3 +29,7 @@ systemd-service-file-refers-to-unusual-wantedby-target
 # user-defined fields, though.
 # https://lintian.debian.org/tags/unknown-field
 unknown-field
+
+# Some files in our Python dependencies are incorrectly marked as executable.
+# https://lintian.debian.org/tags/executable-not-elf-or-script
+executable-not-elf-or-script
