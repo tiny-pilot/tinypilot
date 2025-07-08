@@ -62,7 +62,7 @@ test.describe("about dialog", () => {
       .click();
     const flaskLicensePage = await flaskLicensePagePromise;
     await expect(flaskLicensePage).toHaveURL(
-      new RegExp(".*licensing/Flask/license.*")
+      new RegExp("https://raw.githubusercontent.com/pallets/flask/.*")
     );
     await expect(flaskLicensePage.locator("body")).not.toBeEmpty();
     await flaskLicensePage.close();
@@ -91,9 +91,7 @@ test.describe("about dialog", () => {
       .click();
     const janusLicensePage = await janusLicensePagePromise;
     await expect(janusLicensePage).toHaveURL(
-      new RegExp(
-        "https://raw.githubusercontent.com/tiny-pilot/janus-gateway/.*"
-      )
+      new RegExp("https://raw.githubusercontent.com/meetecho/janus-gateway/.*")
     );
     await expect(janusLicensePage.locator("body")).not.toBeEmpty();
     await janusLicensePage.close();
