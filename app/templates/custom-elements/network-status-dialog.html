@@ -117,6 +117,7 @@
         }
 
         async _update() {
+          // Check Ethernet/WiFi status.
           let networkStatus;
           try {
             networkStatus = await getNetworkStatus();
@@ -129,11 +130,14 @@
             );
             return;
           }
-          this._elements.statusEthernet.update(
+          this._elements.statusEthernet.setEthernetWifi(
             "Ethernet",
             networkStatus.ethernet
           );
-          this._elements.statusWifi.update("Wi-Fi", networkStatus.wifi);
+          this._elements.statusWifi.setEthernetWifi(
+            "Wi-Fi",
+            networkStatus.wifi
+          );
         }
       }
     );

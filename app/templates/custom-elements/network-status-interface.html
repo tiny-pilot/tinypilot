@@ -39,22 +39,17 @@
       display: inline-block;
     }
 
-    :host([is-connected=""]) .status-dot {
+    :host([ethernet-wifi-status="CONNECTED"]) .status-dot {
       background-color: var(--brand-green-bright);
     }
 
-    :host(:not([is-connected])) .status-dot {
+    :host([ethernet-wifi-status="DISCONNECTED"]) .status-dot {
       background-color: var(--brand-red-bright);
     }
 
-    .label-connected,
-    .label-disconnected {
+    :host(:not([network-status-type="ETHERNET_WIFI"])) .ip-address-container,
+    :host(:not([network-status-type="ETHERNET_WIFI"])) .mac-address-container {
       display: none;
-    }
-
-    :host([is-connected=""]) .label-connected,
-    :host(:not([is-connected])) .label-disconnected {
-      display: inline;
     }
 
     #ip-address,
@@ -67,16 +62,15 @@
   <div id="data">
     <div class="connection-indicator">
       <span class="status-dot status-dot-connected"></span>
-      <span class="label-connected">Connected</span>
-      <span class="label-disconnected">Disconnected</span>
+      <span id="label-status"><!-- Filled programmatically --></span>
     </div>
-    <div>
+    <div class="ip-address-container">
       IP Address:
       <span id="ip-address" class="monospace"
         ><!-- Filled programmatically --></span
       >
     </div>
-    <div>
+    <div class="mac-address-container">
       MAC Address:
       <span id="mac-address" class="monospace"
         ><!-- Filled programmatically --></span
@@ -102,6 +96,10 @@
             name: this.shadowRoot.querySelector("#name"),
             ipAddress: this.shadowRoot.querySelector("#ip-address"),
             macAddress: this.shadowRoot.querySelector("#mac-address"),
+            labelStatus: this.shadowRoot.querySelector("#label-status"),
+          };
+          this._networkStatusType = {
+            ETHERNET_WIFI: "ETHERNET_WIFI",
           };
         }
 
@@ -112,9 +110,20 @@
          * @param {string} [status.ipAddress]
          * @param {string} [status.macAddress]
          */
-        update(name, status) {
+        setEthernetWifi(name, status) {
+          this.setAttribute(
+            "network-status-type",
+            this._networkStatusType.ETHERNET_WIFI
+          );
           this._elements.name.innerText = name;
-          this.toggleAttribute("is-connected", status.isConnected);
+          const networkStatus = status.isConnected
+            ? "Connected"
+            : "Disconnected";
+          this._elements.labelStatus.innerText = networkStatus;
+          this.setAttribute(
+            "ethernet-wifi-status",
+            networkStatus.toUpperCase()
+          );
           this._elements.ipAddress.innerText = status.ipAddress || "n/a";
           this._elements.macAddress.innerText = status.macAddress || "n/a";
         }
