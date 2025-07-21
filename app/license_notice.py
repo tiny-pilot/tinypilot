@@ -95,7 +95,7 @@ _LICENSE_METADATA = [
         name='pyyaml',
         homepage_url='https://pyyaml.org',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/PyYAML-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/pyyaml-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='bidict',
@@ -155,7 +155,7 @@ _LICENSE_METADATA = [
         name='MarkupSafe',
         homepage_url='https://palletsprojects.com/p/markupsafe/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/MarkupSafe-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/markupsafe-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='python-dotenv',
