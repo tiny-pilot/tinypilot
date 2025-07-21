@@ -94,8 +94,10 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='pyyaml',
         homepage_url='https://pyyaml.org',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/pyyaml-*.dist-info/licenses/LICENSE*',
+        # We're unable to consistently link to the local license file because of
+        # inconsistent Python package structure.
+        # https://github.com/tiny-pilot/tinypilot/issues/1899
+        license_url='https://raw.githubusercontent.com/yaml/pyyaml/6.0.2/LICENSE',
     ),
     LicenseMetadata(
         name='bidict',
@@ -154,8 +156,10 @@ _LICENSE_METADATA = [
     LicenseMetadata(
         name='MarkupSafe',
         homepage_url='https://palletsprojects.com/p/markupsafe/',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/markupsafe-*.dist-info/licenses/LICENSE*',
+        # We're unable to consistently link to the local license file because of
+        # inconsistent Python package structure.
+        # https://github.com/tiny-pilot/tinypilot/issues/1899
+        license_url='https://raw.githubusercontent.com/pallets/markupsafe/3.0.2/LICENSE.txt',
     ),
     LicenseMetadata(
         name='python-dotenv',
