@@ -44,7 +44,7 @@ _LICENSE_METADATA = [
         name='Janus',
         homepage_url='https://janus.conf.meetecho.com',
         license_url=
-        'https://raw.githubusercontent.com/meetecho/janus-gateway/v1.0.1/COPYING'
+        'https://raw.githubusercontent.com/meetecho/janus-gateway/v1.3.2/COPYING'
     ),
 
     # JavaScript dependencies.
