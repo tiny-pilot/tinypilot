@@ -233,16 +233,20 @@ def network_status():
     # settings will fail in most non-Raspberry Pi OS environments.
     if flask.current_app.debug:
         return json_response.success({
-            'ethernet': {
-                'isConnected': True,
-                'ipAddress': '192.168.2.8',
-                'macAddress': '00-b0-d0-63-c2-26',
-            },
-            'wifi': {
-                'isConnected': False,
-                'ipAddress': None,
-                'macAddress': None,
-            },
+            'interfaces': [
+                {
+                    'name': 'eth0',
+                    'isConnected': True,
+                    'ipAddress': '192.168.2.41',
+                    'macAddress': 'e4-5f-01-98-65-03',
+                },
+                {
+                    'name': 'wlan0',
+                    'isConnected': False,
+                    'ipAddress': None,
+                    'macAddress': None,
+                },
+            ],
         })
     ethernet, wifi = network.determine_network_status()
     return json_response.success({
