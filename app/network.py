@@ -38,8 +38,8 @@ def _get_network_interfaces():
 
     Returns:
         A list of interface names as strings (e.g. ['eth0', 'wlan0']), excluding
-        the loopback interface. Returns None if the command fails or no interfaces
-        are found.
+        the loopback interface. Returns None if the command fails or no
+        interfaces are found.
     """
     try:
         ip_cmd_out_raw = subprocess.check_output([
@@ -52,18 +52,22 @@ def _get_network_interfaces():
                                                  universal_newlines=True)
     except subprocess.CalledProcessError as e:
         logger.error('Failed to run `ip` command: %s', str(e))
-        return
+        return []
 
     try:
         json_output = json.loads(ip_cmd_out_raw)
     except json.decoder.JSONDecodeError as e:
         logger.error('Failed to parse JSON output of `ip` command: %s', str(e))
-        return
+        return []
 
     if len(json_output) == 0:
-        return
+        return []
 
-    return [interface['ifname'] for interface in json_output if interface['ifname'] != 'lo']
+    return [
+        interface['ifname']
+        for interface in json_output
+        if interface['ifname'] != 'lo'
+    ]
 
 
 def determine_network_status():

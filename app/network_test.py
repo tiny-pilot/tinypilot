@@ -112,7 +112,8 @@ class InspectInterfaceTest(unittest.TestCase):
             }]
         """
         self.assertEqual(
-            network.InterfaceStatus('eth0', True, '192.168.2.5', '00-b0-d0-63-c2-26'),
+            network.InterfaceStatus('eth0', True, '192.168.2.5',
+                                    '00-b0-d0-63-c2-26'),
             network.inspect_interface('eth0'),
         )
 
