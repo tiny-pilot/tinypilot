@@ -252,7 +252,7 @@ def network_status():
     return json_response.success({
         'interfaces': [
             {
-                'name': interface.interface_name,
+                'name': interface.name,
                 'isConnected': interface.is_connected,
                 'ipAddress': interface.ip_address,
                 'macAddress': interface.mac_address,
