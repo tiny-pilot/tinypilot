@@ -248,18 +248,16 @@ def network_status():
                 },
             ],
         })
-    ethernet, wifi = network.determine_network_status()
+    network_interfaces = network.determine_network_status()
     return json_response.success({
-        'ethernet': {
-            'isConnected': ethernet.is_connected,
-            'ipAddress': ethernet.ip_address,
-            'macAddress': ethernet.mac_address,
-        },
-        'wifi': {
-            'isConnected': wifi.is_connected,
-            'ipAddress': wifi.ip_address,
-            'macAddress': wifi.mac_address,
-        },
+        'interfaces': [
+            {
+                'name': interface.interface_name,
+                'isConnected': interface.is_connected,
+                'ipAddress': interface.ip_address,
+                'macAddress': interface.mac_address,
+            } for interface in network_interfaces
+        ]
     })
 
 

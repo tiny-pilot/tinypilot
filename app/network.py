@@ -20,6 +20,7 @@ class NetworkError(Error):
 
 @dataclasses.dataclass
 class InterfaceStatus:
+    name: str
     is_connected: bool
     ip_address: str  # May be `None` if interface is disabled.
     mac_address: str  # May be `None` if interface is disabled.
@@ -32,13 +33,51 @@ class WifiSettings:
     psk: str  # Optional.
 
 
+def _get_network_interfaces():
+    """Gets a list of network interface names.
+
+    Returns:
+        A list of interface names as strings (e.g. ['eth0', 'wlan0']), excluding
+        the loopback interface. Returns None if the command fails or no interfaces
+        are found.
+    """
+    try:
+        ip_cmd_out_raw = subprocess.check_output([
+            'ip',
+            '-json',
+            'link',
+            'show',
+        ],
+                                                 stderr=subprocess.STDOUT,
+                                                 universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        logger.error('Failed to run `ip` command: %s', str(e))
+        return
+
+    try:
+        json_output = json.loads(ip_cmd_out_raw)
+    except json.decoder.JSONDecodeError as e:
+        logger.error('Failed to parse JSON output of `ip` command: %s', str(e))
+        return
+
+    if len(json_output) == 0:
+        return
+
+    return [interface['ifname'] for interface in json_output if interface['ifname'] != 'lo']
+
+
 def determine_network_status():
     """Checks the connectivity of the network interfaces.
 
     Returns:
-        A tuple of InterfaceStatus objects for the Ethernet and WiFi interface.
+        A list of InterfaceStatus objects for all available Ethernet and Wi-Fi
+        network interfaces.
     """
-    return inspect_interface('eth0'), inspect_interface('wlan0')
+    interfaces = _get_network_interfaces()
+    if not interfaces:
+        return []
+
+    return [inspect_interface(iface) for iface in interfaces]
 
 
 def inspect_interface(interface_name):
@@ -66,7 +105,7 @@ def inspect_interface(interface_name):
     Returns:
         InterfaceStatus object
     """
-    status = InterfaceStatus(False, None, None)
+    status = InterfaceStatus(interface_name, False, None, None)
 
     try:
         ip_cmd_out_raw = subprocess.check_output([
