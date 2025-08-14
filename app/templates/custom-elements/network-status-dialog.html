@@ -60,7 +60,9 @@
             template.content.cloneNode(true)
           );
           this._elements = {
-            interfacesContainer: this.shadowRoot.querySelector("#interfaces-container"),
+            interfacesContainer: this.shadowRoot.querySelector(
+              "#interfaces-container"
+            ),
           };
           this._shouldAutoUpdate = false;
           this._updateTicker = null;
@@ -129,19 +131,22 @@
             return;
           }
           this._elements.interfacesContainer.innerHTML = "";
-          networkStatus
-            .forEach((iface) => {
-              const interfaceElement = document.createElement("network-status-interface");
-              const displayName = iface.name.startsWith('eth') ? `LAN${parseInt(iface.name.slice(3)) + 1}` :
-                                iface.name.startsWith('wlan') ? 'Wi-Fi' :
-                                iface.name;
-              this._elements.interfacesContainer.appendChild(interfaceElement);
-              interfaceElement.setEthernetWifi(displayName, {
-                isConnected: !!iface.isConnected,
-                ipAddress: iface.ipAddress || null,
-                macAddress: iface.macAddress || null,
-              });
+          networkStatus.forEach((iface) => {
+            const interfaceElement = document.createElement(
+              "network-status-interface"
+            );
+            const displayName = iface.name.startsWith("eth")
+              ? `LAN${parseInt(iface.name.slice(3)) + 1}`
+              : iface.name.startsWith("wlan")
+              ? "Wi-Fi"
+              : iface.name;
+            this._elements.interfacesContainer.appendChild(interfaceElement);
+            interfaceElement.setEthernetWifi(displayName, {
+              isConnected: !!iface.isConnected,
+              ipAddress: iface.ipAddress || null,
+              macAddress: iface.macAddress || null,
             });
+          });
         }
       }
     );
