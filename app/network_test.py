@@ -13,7 +13,7 @@ class InspectInterfaceTest(unittest.TestCase):
     def test_treats_empty_response_as_inactive_interface(self, mock_cmd):
         mock_cmd.return_value = ''
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -21,7 +21,7 @@ class InspectInterfaceTest(unittest.TestCase):
     def test_treats_empty_array_as_inactive_interface(self, mock_cmd):
         mock_cmd.return_value = '[]'
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -29,7 +29,7 @@ class InspectInterfaceTest(unittest.TestCase):
     def test_treats_emtpy_object_as_inactive_interface(self, mock_cmd):
         mock_cmd.return_value = '[{}]'
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -38,7 +38,7 @@ class InspectInterfaceTest(unittest.TestCase):
         mock_cmd.side_effect = mock.Mock(
             side_effect=subprocess.CalledProcessError(returncode=1, cmd='ip'))
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -48,7 +48,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"operstate":"DOWN"}]
         """
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -58,7 +58,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"operstate":"UP"}]
         """
         self.assertEqual(
-            network.InterfaceStatus(True, None, None),
+            network.InterfaceStatus('eth0', True, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -68,7 +68,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"address":"00-b0-d0-63-c2-26"}]
         """
         self.assertEqual(
-            network.InterfaceStatus(False, None, '00-b0-d0-63-c2-26'),
+            network.InterfaceStatus('eth0', False, None, '00-b0-d0-63-c2-26'),
             network.inspect_interface('eth0'),
         )
 
@@ -78,7 +78,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"address":"00:b0:d0:63:c2:26"}]
         """
         self.assertEqual(
-            network.InterfaceStatus(False, None, '00-b0-d0-63-c2-26'),
+            network.InterfaceStatus('eth0', False, None, '00-b0-d0-63-c2-26'),
             network.inspect_interface('eth0'),
         )
 
@@ -88,7 +88,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"addr_info":[{"family":"inet","local":"192.168.2.5"}]}]
         """
         self.assertEqual(
-            network.InterfaceStatus(False, '192.168.2.5', None),
+            network.InterfaceStatus('eth0', False, '192.168.2.5', None),
             network.inspect_interface('eth0'),
         )
 
@@ -98,7 +98,7 @@ class InspectInterfaceTest(unittest.TestCase):
             [{"addr_info":[{"family":"inet6","local":"::ffff:c0a8:205"}]}]
         """
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
 
@@ -112,7 +112,7 @@ class InspectInterfaceTest(unittest.TestCase):
             }]
         """
         self.assertEqual(
-            network.InterfaceStatus(True, '192.168.2.5', '00-b0-d0-63-c2-26'),
+            network.InterfaceStatus('eth0', True, '192.168.2.5', '00-b0-d0-63-c2-26'),
             network.inspect_interface('eth0'),
         )
 
@@ -120,6 +120,6 @@ class InspectInterfaceTest(unittest.TestCase):
     def test_disregards_invalid_json(self, mock_cmd):
         mock_cmd.return_value = '[{"address'
         self.assertEqual(
-            network.InterfaceStatus(False, None, None),
+            network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
