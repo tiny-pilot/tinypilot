@@ -1,6 +1,7 @@
 import dataclasses
 import json
 import logging
+import os
 import re
 import subprocess
 
@@ -34,40 +35,34 @@ class WifiSettings:
 
 
 def _get_network_interfaces():
-    """Gets a list of network interface names.
+    """Get a list of physical network interface names.
+
+    Excludes loopback and virtual interfaces. A device is considered "physical"
+    if /sys/class/net/<if>/device exists (i.e., it’s backed by hardware).
 
     Returns:
-        A list of interface names as strings (e.g. ['eth0', 'wlan0']), excluding
-        the loopback interface. Returns None if the command fails or no
-        interfaces are found.
+        A list of interface names for all available physical network interfaces.
     """
     try:
-        ip_cmd_out_raw = subprocess.check_output([
-            'ip',
-            '-json',
-            'link',
-            'show',
-        ],
-                                                 stderr=subprocess.STDOUT,
-                                                 universal_newlines=True)
-    except subprocess.CalledProcessError as e:
-        logger.error('Failed to run `ip` command: %s', str(e))
-        return []
+        sys_net_path = '/sys/class/net'
+        if not os.path.isdir(sys_net_path):
+            logger.error('/sys/class/net is not available')
+            return []
 
-    try:
-        json_output = json.loads(ip_cmd_out_raw)
-    except json.decoder.JSONDecodeError as e:
-        logger.error('Failed to parse JSON output of `ip` command: %s', str(e))
-        return []
+        names = []
+        for ifname in os.listdir(sys_net_path):
+            # We know we don't want loop out.
+            if ifname == 'lo':
+                continue
+            # If /sys/class/net/<ifname>/device exists, the interface appears
+            # to be hardware.
+            if os.path.exists(os.path.join(sys_net_path, ifname, 'device')):
+                names.append(ifname)
 
-    if len(json_output) == 0:
+        return sorted(names)
+    except Exception as e:
+        logger.error('Failed to list interfaces from /sys/class/net: %s', e)
         return []
-
-    return [
-        interface['ifname']
-        for interface in json_output
-        if interface['ifname'] != 'lo'
-    ]
 
 
 def determine_network_status():
