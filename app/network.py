@@ -60,8 +60,8 @@ def _get_network_interfaces():
                 names.append(ifname)
 
         return sorted(names)
-    except Exception as e:
-        logger.error('Failed to list interfaces from /sys/class/net: %s', e)
+    except (OSError) as e:
+        logger.error('Failed to list interfaces from /sys/class/net: %s', str(e))
         return []
 
 
