@@ -203,21 +203,23 @@ export async function getNetworkStatus() {
   })
     .then(processJsonResponse)
     .then((response) => {
-      ["ethernet", "wifi"].forEach((field) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!response.hasOwnProperty(field)) {
-          throw new ControllerError(`Missing expected ${field} field`);
-        }
-        ["isConnected", "ipAddress", "macAddress"].forEach((property) => {
-          // eslint-disable-next-line no-prototype-builtins
-          if (!response[field].hasOwnProperty(property)) {
-            throw new ControllerError(
-              `Missing expected ${field}.${property} field`
-            );
+      let interfaces;
+      if (Array.isArray(response.interfaces)) {
+        interfaces = response.interfaces;
+      }
+      interfaces.forEach((iface) => {
+        ["name", "isConnected", "ipAddress", "macAddress"].forEach(
+          (property) => {
+            // eslint-disable-next-line no-prototype-builtins
+            if (!iface.hasOwnProperty(property)) {
+              throw new ControllerError(
+                `Missing expected interfaces[].${property} field`
+              );
+            }
           }
-        });
+        );
       });
-      return response;
+      return interfaces;
     });
 }
 
