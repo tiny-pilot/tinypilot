@@ -15,7 +15,7 @@ set -x
 if grep -q "boot=overlay" /proc/cmdline ; then
   echo 'The read-only filesystem is enabled.' >&2
   echo 'Disable the read-only filesystem before proceeding.' >&2
-  echo 'See https://tinypilotkvm.com/faq/read-only-filesystem for details.' >&2
+  echo 'See https://docs.tinypilotkvm.com/article/37-how-do-i-enable-the-read-only-filesystem for details.' >&2
   exit 1
 fi
 

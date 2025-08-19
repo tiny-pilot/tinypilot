@@ -11,7 +11,7 @@ The following settings are supported and remain configurable through `settings.y
 - `tinypilot_external_port`
 - `tinypilot_external_tls_port` (Pro only)
 - `tinypilot_manage_tls_keys` (Pro only)
-  - Whether TinyPilot manages TLS keys. Users can override this setting if they want to [provide their own TLS keys](https://tinypilotkvm.com/faq/own-tls-key).
+  - Whether TinyPilot manages TLS keys. Users can override this setting if they want to [provide their own TLS keys](https://docs.tinypilotkvm.com/article/36-how-do-i-use-my-own-tls-keys).
 - `ustreamer_edid`
   - EDID for TC358743 chip.
 - `ustreamer_h264_bitrate`
