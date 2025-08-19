@@ -1,9 +1,9 @@
 import dataclasses
 import json
 import logging
-import os
 import re
 import subprocess
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -34,36 +34,31 @@ class WifiSettings:
     psk: str  # Optional.
 
 
-def _get_network_interfaces():
+def get_network_interfaces():
     """Get a list of physical network interface names.
 
     Excludes loopback and virtual interfaces. A device is considered "physical"
-    if /sys/class/net/<if>/device exists (i.e., it’s backed by hardware).
+    if /sys/class/net/<ifname>/device exists (i.e., it’s backed by hardware).
 
     Returns:
         A list of interface names for all available physical network interfaces.
     """
-    try:
-        sys_net_path = '/sys/class/net'
-        if not os.path.isdir(sys_net_path):
-            logger.error('/sys/class/net is not available')
-            return []
-
-        names = []
-        for ifname in os.listdir(sys_net_path):
-            # We know we don't want loop out.
-            if ifname == 'lo':
-                continue
-            # If /sys/class/net/<ifname>/device exists, the interface appears
-            # to be hardware.
-            if os.path.exists(os.path.join(sys_net_path, ifname, 'device')):
-                names.append(ifname)
-
-        return sorted(names)
-    except (OSError) as e:
-        logger.error('Failed to list interfaces from /sys/class/net: %s',
-                     str(e))
+    sys_net_path = Path('/sys/class/net')
+    if not sys_net_path.is_dir():
+        logger.debug('/sys/class/net is not available')
         return []
+
+    names = []
+    for iface_path in sys_net_path.iterdir():
+        # We know we don't want loopback.
+        if iface_path.name == 'lo':
+            continue
+        # If /sys/class/net/<ifname>/device exists, the interface appears
+        # to be hardware.
+        if (iface_path / 'device').exists():
+            names.append(iface_path.name)
+
+    return sorted(names)
 
 
 def determine_network_status():
@@ -73,10 +68,7 @@ def determine_network_status():
         A list of InterfaceStatus objects for all available Ethernet and Wi-Fi
         network interfaces.
     """
-    interfaces = _get_network_interfaces()
-    if not interfaces:
-        return []
-
+    interfaces = get_network_interfaces()
     return [inspect_interface(iface) for iface in interfaces]
 
 

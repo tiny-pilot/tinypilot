@@ -203,23 +203,11 @@ export async function getNetworkStatus() {
   })
     .then(processJsonResponse)
     .then((response) => {
-      let interfaces;
-      if (Array.isArray(response.interfaces)) {
-        interfaces = response.interfaces;
+      // eslint-disable-next-line no-prototype-builtins
+      if (!response.hasOwnProperty("interfaces")) {
+        throw new ControllerError("Missing expected interfaces field");
       }
-      interfaces.forEach((iface) => {
-        ["name", "isConnected", "ipAddress", "macAddress"].forEach(
-          (property) => {
-            // eslint-disable-next-line no-prototype-builtins
-            if (!iface.hasOwnProperty(property)) {
-              throw new ControllerError(
-                `Missing expected interfaces[].${property} field`
-              );
-            }
-          }
-        );
-      });
-      return interfaces;
+      return response.interfaces;
     });
 }
 

@@ -141,11 +141,7 @@
               ? "Wi-Fi"
               : iface.name;
             this._elements.interfacesContainer.appendChild(interfaceElement);
-            interfaceElement.setEthernetWifi(displayName, {
-              isConnected: !!iface.isConnected,
-              ipAddress: iface.ipAddress || null,
-              macAddress: iface.macAddress || null,
-            });
+            interfaceElement.setEthernetWifi(displayName, iface);
           });
         }
       }
