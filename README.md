@@ -25,9 +25,9 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
 
-### [TinyPilot Voyager 2a](https://tinypilotkvm.com/product/tinypilot-voyager2a)
+### [TinyPilot Voyager 2a](https://tinypilotkvm.com/products/tinypilot-voyager-2a/)
 
-[![Photo of TinyPilot Voyager 2a](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/product/tinypilot-voyager2a)
+[![Photo of TinyPilot Voyager 2a](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/products/tinypilot-voyager-2a/)
 
 Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
@@ -42,7 +42,7 @@ Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, comp
 - [microSD card](https://smile.amazon.com/dp/B073K14CVB/) (Class 10, 8 GB or larger)
 - [HDMI to HDMI cable](https://smile.amazon.com/dp/B014I8SSD0/)
   - Or \[other\] to HDMI, depending on how your target machine displays output.
-- (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/product/tinypilot-power-connector): Supports continuous power when the target computer turns off.
+- (Optional) [A USB-C OTG split connector](https://tinypilotkvm.com/products/tinypilot-power-connector): Supports continuous power when the target computer turns off.
   - Requires two additional [USB-A to microUSB cables](https://smile.amazon.com/dp/B01JPDTZXK/) and a [3 Amp power adapter](https://smile.amazon.com/dp/B0728HB18G).
   - If you're using this split connector, choose a USB-C to USB-A cable that's [12" or shorter](https://smile.amazon.com/dp/B012V56D2A/) to minimize voltage drop along the cable.
 - (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/) - If your target system has VGA output.
@@ -99,7 +99,7 @@ You can read more details about the logs [in the wiki](https://github.com/tiny-p
 
 TinyPilot does not support authentication or transport-level encryption. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
 
-To use TinyPilot on untrusted networks, you can upgrade to [TinyPilot Pro](https://tinypilotkvm.com/product/tinypilot-pro), which adds password-based authentication and TLS for end-to-end encryption.
+To use TinyPilot on untrusted networks, you can upgrade to [TinyPilot Pro](https://tinypilotkvm.com/products/tinypilot-pro), which adds password-based authentication and TLS for end-to-end encryption.
 
 As a free alternative, you can adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) and add a self-signed TLS certificate.
 
@@ -122,13 +122,13 @@ TinyPilot would not be possible without the excellent and generous work from man
 
 For news about major TinyPilot releases and other updates about the project, sign up for the TinyPilot mailing list:
 
-- [TinyPilot Mailing List](https://tinypilotkvm.com/about)
+- [TinyPilot Mailing List](https://tinypilotkvm.com/pages/about)
 
 ## Upgrade to Pro
 
 TinyPilot Pro includes additional features for professional users, including:
 
-- [Virtual drive mounting and booting](https://tinypilotkvm.com/blog/whats-new-in-1-5#boot-into-a-virtual-disk-drive)
+- [Virtual drive mounting and booting](https://tinypilotkvm.com/blogs/news/tinypilot-adds-virtual-storage-bandwidth-tuning#boot-into-a-virtual-disk-drive)
 - Password-based authentication
 
-Support the project and upgrade to Pro at <https://tinypilotkvm.com/product/tinypilot-pro>.
+Support the project and upgrade to Pro at <https://tinypilotkvm.com/products/tinypilot-pro>.
