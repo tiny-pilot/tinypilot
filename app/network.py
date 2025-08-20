@@ -50,7 +50,7 @@ def get_network_interfaces():
 
     names = []
     for iface_path in sys_net_path.iterdir():
-        # We know we don't want loopback.
+        # We know we don't want the loopback interface.
         if iface_path.name == 'lo':
             continue
         # If /sys/class/net/<ifname>/device exists, the interface appears

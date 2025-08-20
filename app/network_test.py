@@ -1,5 +1,7 @@
 import subprocess
+import tempfile
 import unittest
+from pathlib import Path
 from unittest import mock
 
 import network
@@ -124,3 +126,48 @@ class InspectInterfaceTest(unittest.TestCase):
             network.InterfaceStatus('eth0', False, None, None),
             network.inspect_interface('eth0'),
         )
+
+
+class GetNetworkInterfacesTest(unittest.TestCase):
+
+    @mock.patch.object(network, 'Path')
+    def test_returns_empty_when_sys_class_net_missing(self, mock_path):
+        fake_path = mock.Mock()
+        fake_path.is_dir.return_value = False
+        mock_path.return_value = fake_path
+        self.assertEqual([], network.get_network_interfaces())
+
+    @mock.patch.object(network, 'Path')
+    def test_returns_empty_when_directory_has_no_interfaces(self, mock_path):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sys_class_net_dir = Path(tmpdir)
+            mock_path.return_value = sys_class_net_dir
+            self.assertEqual([], network.get_network_interfaces())
+
+    @mock.patch.object(network, 'Path')
+    def test_excludes_loopback_and_virtual_interfaces(self, mock_path):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sys_class_net_dir = Path(tmpdir)
+            # Physical interfaces (with 'device')
+            (sys_class_net_dir / 'eth0' / 'device').mkdir(parents=True)
+            (sys_class_net_dir / 'wlan0' / 'device').mkdir(parents=True)
+            # Loopback (no 'device' in the path).
+            (sys_class_net_dir / 'lo').mkdir()
+            # Some virtual interface (no 'device' in the path).
+            (sys_class_net_dir / 'veth0').mkdir()
+
+            mock_path.return_value = sys_class_net_dir
+            self.assertEqual(['eth0', 'wlan0'],
+                             network.get_network_interfaces())
+
+    @mock.patch.object(network, 'Path')
+    def test_returns_sorted_interface_names(self, mock_path):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sys_class_net_dir = Path(tmpdir)
+            # Create in unsorted order.
+            (sys_class_net_dir / 'wlan0' / 'device').mkdir(parents=True)
+            (sys_class_net_dir / 'eth0' / 'device').mkdir(parents=True)
+
+            mock_path.return_value = sys_class_net_dir
+            self.assertEqual(['eth0', 'wlan0'],
+                             network.get_network_interfaces())
