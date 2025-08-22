@@ -20,11 +20,16 @@ server {
 
     index index.html;
 
+    # Prevent NGINX from revealing its version number.
+    server_tokens off;
+
     proxy_buffers 16 16k;
     proxy_buffer_size 16k;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_http_version 1.1;
+
+    include /etc/nginx/snippets/security-headers.conf;
 
     error_page 502 /502.html;
 
@@ -77,6 +82,10 @@ server {
         # to the `Last-Modified` header, so we make that seem recent.
         add_header Last-Modified $date_gmt;
         add_header Cache-Control 'public, max-age=10s';
+
+        # Redefine header directives, as they are not inherited here:
+        # See https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header
+        include /etc/nginx/snippets/security-headers.conf;
     }
     location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
         root "/opt/tinypilot/app/static";
