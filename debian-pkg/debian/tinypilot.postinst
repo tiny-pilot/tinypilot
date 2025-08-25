@@ -151,8 +151,11 @@ fi
 
 # Add NGINX snippets.
 cp \
-  /usr/share/tinypilot/nginx_security_headers.conf \
-  /etc/nginx/snippets/security-headers.conf
+  /usr/share/tinypilot/nginx_request_headers.conf \
+  /etc/nginx/snippets/request-headers.conf
+cp \
+  /usr/share/tinypilot/nginx_response_headers.conf \
+  /etc/nginx/snippets/response-headers.conf
 
 # Disable default NGINX server.
 rm -f \
