@@ -57,7 +57,7 @@ server {
         proxy_pass http://janus-ws;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
-        
+
         # Redefine request headers as they've been overwritten in this block.
         # See https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header
         include /etc/nginx/snippets/request-headers.conf;
