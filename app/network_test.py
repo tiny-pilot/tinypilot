@@ -130,44 +130,38 @@ class InspectInterfaceTest(unittest.TestCase):
 
 class GetNetworkInterfacesTest(unittest.TestCase):
 
-    @mock.patch.object(network, 'Path')
-    def test_returns_empty_when_sys_class_net_missing(self, mock_path):
-        fake_path = mock.Mock()
-        fake_path.is_dir.return_value = False
-        mock_path.return_value = fake_path
-        self.assertEqual([], network.get_network_interfaces())
+    def test_returns_empty_list_when_path_is_not_a_directory(self):
+        with tempfile.NamedTemporaryFile() as mock_file:
+            with mock.patch.object(network, '_INTERFACES_DIR', mock_file.name):
+                self.assertEqual([], network.get_network_interfaces())
 
-    @mock.patch.object(network, 'Path')
-    def test_returns_empty_when_directory_has_no_interfaces(self, mock_path):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            sys_class_net_dir = Path(tmpdir)
-            mock_path.return_value = sys_class_net_dir
-            self.assertEqual([], network.get_network_interfaces())
+    def test_returns_empty_list_when_directory_has_no_interfaces(self):
+        with tempfile.TemporaryDirectory() as mock_dir:
+            with mock.patch.object(network, '_INTERFACES_DIR', mock_dir):
+                self.assertEqual([], network.get_network_interfaces())
 
-    @mock.patch.object(network, 'Path')
-    def test_excludes_loopback_and_virtual_interfaces(self, mock_path):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            sys_class_net_dir = Path(tmpdir)
-            # Physical interfaces (with 'device')
-            (sys_class_net_dir / 'eth0' / 'device').mkdir(parents=True)
-            (sys_class_net_dir / 'wlan0' / 'device').mkdir(parents=True)
+    def test_excludes_loopback_and_virtual_interfaces(self):
+        with tempfile.TemporaryDirectory() as mock_dir:
+            mock_net_interfaces_dir = Path(mock_dir)
+            # Physical interfaces (with 'device').
+            (mock_net_interfaces_dir / 'eth0' / 'device').mkdir(parents=True)
+            (mock_net_interfaces_dir / 'wlan0' / 'device').mkdir(parents=True)
             # Loopback (no 'device' in the path).
-            (sys_class_net_dir / 'lo').mkdir()
+            (mock_net_interfaces_dir / 'lo').mkdir()
             # Some virtual interface (no 'device' in the path).
-            (sys_class_net_dir / 'veth0').mkdir()
+            (mock_net_interfaces_dir / 'veth0').mkdir()
+            with mock.patch.object(network, '_INTERFACES_DIR',
+                                   mock_net_interfaces_dir):
+                self.assertEqual(['eth0', 'wlan0'],
+                                 network.get_network_interfaces())
 
-            mock_path.return_value = sys_class_net_dir
-            self.assertEqual(['eth0', 'wlan0'],
-                             network.get_network_interfaces())
-
-    @mock.patch.object(network, 'Path')
-    def test_returns_sorted_interface_names(self, mock_path):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            sys_class_net_dir = Path(tmpdir)
+    def test_returns_sorted_interface_names(self):
+        with tempfile.TemporaryDirectory() as mock_dir:
+            mock_net_interfaces_dir = Path(mock_dir)
             # Create in unsorted order.
-            (sys_class_net_dir / 'wlan0' / 'device').mkdir(parents=True)
-            (sys_class_net_dir / 'eth0' / 'device').mkdir(parents=True)
-
-            mock_path.return_value = sys_class_net_dir
-            self.assertEqual(['eth0', 'wlan0'],
-                             network.get_network_interfaces())
+            (mock_net_interfaces_dir / 'wlan0' / 'device').mkdir(parents=True)
+            (mock_net_interfaces_dir / 'eth0' / 'device').mkdir(parents=True)
+            with mock.patch.object(network, '_INTERFACES_DIR',
+                                   mock_net_interfaces_dir):
+                self.assertEqual(['eth0', 'wlan0'],
+                                 network.get_network_interfaces())
