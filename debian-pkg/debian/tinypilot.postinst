@@ -149,6 +149,14 @@ if [[ ! -L "${TINYPILOT_USTREAMER_OVERRIDES_FILE}" ]]; then
     "${TINYPILOT_USTREAMER_OVERRIDES_FILE}"
 fi
 
+# Add NGINX snippets.
+cp \
+  /usr/share/tinypilot/nginx_request_headers.conf \
+  /etc/nginx/snippets/request-headers.conf
+cp \
+  /usr/share/tinypilot/nginx_response_headers.conf \
+  /etc/nginx/snippets/response-headers.conf
+
 # Disable default NGINX server.
 rm -f \
   /etc/nginx/sites-enabled/default
