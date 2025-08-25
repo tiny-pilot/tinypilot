@@ -49,7 +49,7 @@ def get_network_interfaces():
         logger.debug('%s is not available', str(_INTERFACES_DIR))
         return []
 
-    names = []
+    interface_names = []
     for iface_path in sys_net_path.iterdir():
         # We know we don't want the loopback interface.
         if iface_path.name == 'lo':
@@ -57,9 +57,9 @@ def get_network_interfaces():
         # If /sys/class/net/<ifname>/device exists, the interface appears
         # to be hardware.
         if (iface_path / 'device').exists():
-            names.append(iface_path.name)
+            interface_names.append(iface_path.name)
 
-    return sorted(names)
+    return sorted(interface_names)
 
 
 def determine_network_status():
