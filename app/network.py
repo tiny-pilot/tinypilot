@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
+_INTERFACES_DIR = '/sys/class/net'
 
 
 class Error(Exception):
@@ -43,9 +44,9 @@ def get_network_interfaces():
     Returns:
         A list of interface names for all available physical network interfaces.
     """
-    sys_net_path = Path('/sys/class/net')
+    sys_net_path = Path(_INTERFACES_DIR)
     if not sys_net_path.is_dir():
-        logger.debug('/sys/class/net is not available')
+        logger.debug('%s is not available', str(_INTERFACES_DIR))
         return []
 
     names = []
