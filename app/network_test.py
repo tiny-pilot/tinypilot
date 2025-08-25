@@ -135,6 +135,12 @@ class GetNetworkInterfacesTest(unittest.TestCase):
             with mock.patch.object(network, '_INTERFACES_DIR', mock_file.name):
                 self.assertEqual([], network.get_network_interfaces())
 
+    def test_returns_empty_list_when_path_does_not_exist(self):
+        with tempfile.TemporaryDirectory() as mock_dir:
+            with mock.patch.object(network, '_INTERFACES_DIR',
+                                   f'{mock_dir}/path/does/not/exist'):
+                self.assertEqual([], network.get_network_interfaces())
+
     def test_returns_empty_list_when_directory_has_no_interfaces(self):
         with tempfile.TemporaryDirectory() as mock_dir:
             with mock.patch.object(network, '_INTERFACES_DIR', mock_dir):
@@ -151,7 +157,7 @@ class GetNetworkInterfacesTest(unittest.TestCase):
             # Some virtual interface (no 'device' in the path).
             (mock_net_interfaces_dir / 'veth0').mkdir()
             with mock.patch.object(network, '_INTERFACES_DIR',
-                                   mock_net_interfaces_dir):
+                                   str(mock_net_interfaces_dir)):
                 self.assertEqual(['eth0', 'wlan0'],
                                  network.get_network_interfaces())
 
@@ -162,6 +168,6 @@ class GetNetworkInterfacesTest(unittest.TestCase):
             (mock_net_interfaces_dir / 'wlan0' / 'device').mkdir(parents=True)
             (mock_net_interfaces_dir / 'eth0' / 'device').mkdir(parents=True)
             with mock.patch.object(network, '_INTERFACES_DIR',
-                                   mock_net_interfaces_dir):
+                                   str(mock_net_interfaces_dir)):
                 self.assertEqual(['eth0', 'wlan0'],
                                  network.get_network_interfaces())
