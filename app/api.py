@@ -207,55 +207,59 @@ def network_status():
     """Returns the current status of the available network interfaces.
 
     Returns:
-        On success, a JSON data structure with the following properties:
-        ethernet: object
-        wifi: object
-        The object contains the following fields:
-        isConnected: bool
-        ipAddress: string or null
-        macAddress: string or null
+        On success, a JSON data structure with the following:
+        interfaces: array of objects, where each object represents a network
+            interface with the following properties:
+            name: string
+            isConnected: boolean
+            ipAddress: string or null
+            macAddress: string or null
 
         Example:
         {
-            "ethernet": {
-                "isConnected": true,
-                "ipAddress": "192.168.2.41",
-                "macAddress": "e4-5f-01-98-65-03"
-            },
-            "wifi": {
-                "isConnected": false,
-                "ipAddress": null,
-                "macAddress": null
-            }
+            "interfaces": [
+                {
+                    "name": "eth0",
+                    "isConnected": true,
+                    "ipAddress": "192.168.2.41",
+                    "macAddress": "e4-5f-01-98-65-03"
+                },
+                {
+                    "name": "wlan0",
+                    "isConnected": false,
+                    "ipAddress": null,
+                    "macAddress": null
+                }
+            ]
         }
     """
     # In dev mode, return dummy data because attempting to read the actual
     # settings will fail in most non-Raspberry Pi OS environments.
     if flask.current_app.debug:
         return json_response.success({
-            'ethernet': {
-                'isConnected': True,
-                'ipAddress': '192.168.2.8',
-                'macAddress': '00-b0-d0-63-c2-26',
-            },
-            'wifi': {
-                'isConnected': False,
-                'ipAddress': None,
-                'macAddress': None,
-            },
+            'interfaces': [
+                {
+                    'name': 'eth0',
+                    'isConnected': True,
+                    'ipAddress': '192.168.2.41',
+                    'macAddress': 'e4-5f-01-98-65-03',
+                },
+                {
+                    'name': 'wlan0',
+                    'isConnected': False,
+                    'ipAddress': None,
+                    'macAddress': None,
+                },
+            ],
         })
-    ethernet, wifi = network.determine_network_status()
+    network_interfaces = network.determine_network_status()
     return json_response.success({
-        'ethernet': {
-            'isConnected': ethernet.is_connected,
-            'ipAddress': ethernet.ip_address,
-            'macAddress': ethernet.mac_address,
-        },
-        'wifi': {
-            'isConnected': wifi.is_connected,
-            'ipAddress': wifi.ip_address,
-            'macAddress': wifi.mac_address,
-        },
+        'interfaces': [{
+            'name': interface.name,
+            'isConnected': interface.is_connected,
+            'ipAddress': interface.ip_address,
+            'macAddress': interface.mac_address,
+        } for interface in network_interfaces]
     })
 
 

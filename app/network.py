@@ -3,11 +3,13 @@ import json
 import logging
 import re
 import subprocess
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 _WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
 _WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
+_INTERFACES_DIR = '/sys/class/net'
 
 
 class Error(Exception):
@@ -20,6 +22,7 @@ class NetworkError(Error):
 
 @dataclasses.dataclass
 class InterfaceStatus:
+    name: str
     is_connected: bool
     ip_address: str  # May be `None` if interface is disabled.
     mac_address: str  # May be `None` if interface is disabled.
@@ -32,13 +35,42 @@ class WifiSettings:
     psk: str  # Optional.
 
 
+def get_network_interfaces():
+    """Get a list of physical network interface names.
+
+    Excludes loopback and virtual interfaces. A device is considered "physical"
+    if /sys/class/net/<ifname>/device exists (i.e., it’s backed by hardware).
+
+    Returns:
+        A list of interface names for all available physical network interfaces.
+    """
+    sys_net_path = Path(_INTERFACES_DIR)
+    if not sys_net_path.is_dir():
+        logger.debug('%s is not available', str(_INTERFACES_DIR))
+        return []
+
+    interface_names = []
+    for iface_path in sys_net_path.iterdir():
+        # We know we don't want the loopback interface.
+        if iface_path.name == 'lo':
+            continue
+        # If /sys/class/net/<ifname>/device exists, the interface appears
+        # to be hardware.
+        if (iface_path / 'device').exists():
+            interface_names.append(iface_path.name)
+
+    return sorted(interface_names)
+
+
 def determine_network_status():
     """Checks the connectivity of the network interfaces.
 
     Returns:
-        A tuple of InterfaceStatus objects for the Ethernet and WiFi interface.
+        A list of InterfaceStatus objects for all available Ethernet and Wi-Fi
+        network interfaces.
     """
-    return inspect_interface('eth0'), inspect_interface('wlan0')
+    interfaces = get_network_interfaces()
+    return [inspect_interface(iface) for iface in interfaces]
 
 
 def inspect_interface(interface_name):
@@ -66,7 +98,7 @@ def inspect_interface(interface_name):
     Returns:
         InterfaceStatus object
     """
-    status = InterfaceStatus(False, None, None)
+    status = InterfaceStatus(interface_name, False, None, None)
 
     try:
         ip_cmd_out_raw = subprocess.check_output([
