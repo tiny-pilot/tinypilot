@@ -20,11 +20,15 @@ server {
 
     index index.html;
 
+    # Prevent NGINX from revealing its version number.
+    server_tokens off;
+
     proxy_buffers 16 16k;
     proxy_buffer_size 16k;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_http_version 1.1;
+
+    include /etc/nginx/snippets/request-headers.conf;
+    include /etc/nginx/snippets/response-headers.conf;
 
     error_page 502 /502.html;
 
@@ -32,13 +36,10 @@ server {
         proxy_pass http://tinypilot;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
-        # Since this is a connection upgrade, we don't inherit the settings from
-        # above. We need these so that nginx forwards requests properly to
-        # Flask-SocketIO.
-        # See: https://github.com/miguelgrinberg/Flask-SocketIO/issues/1501#issuecomment-802082048
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Redefine request headers, as they've been overwritten in this block.
+        # See https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header
+        include /etc/nginx/snippets/request-headers.conf;
     }
     location /state {
         proxy_pass http://ustreamer;
@@ -56,12 +57,10 @@ server {
         proxy_pass http://janus-ws;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Scheme $scheme;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # Redefine request headers, as they've been overwritten in this block.
+        # See https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header
+        include /etc/nginx/snippets/request-headers.conf;
     }
     location / {
         proxy_pass http://tinypilot;
@@ -77,6 +76,10 @@ server {
         # to the `Last-Modified` header, so we make that seem recent.
         add_header Last-Modified $date_gmt;
         add_header Cache-Control 'public, max-age=10s';
+
+        # Redefine response headers, as they've been overwritten in this block.
+        # See https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header
+        include /etc/nginx/snippets/response-headers.conf;
     }
     location ~* ^/.+\.(jpg|jpeg|png|ico)$ {
         root "/opt/tinypilot/app/static";
