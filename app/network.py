@@ -102,7 +102,7 @@ def inspect_interface(interface_name):
 
     try:
         ip_cmd_out_raw = subprocess.check_output([
-            'ip',
+            '/usr/bin/ip',
             '-json',
             'address',
             'show',
