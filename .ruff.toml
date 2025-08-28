@@ -9,6 +9,7 @@ select = [
   "F", # Enable pyflakes rules.
   "I", # Enable isort rules.
   "Q", # Enable flake8-quotes rules.
+  "S", # Enable flake8-bandit rules.
   ]
 ignore = [
   # Disable rules that require everything to have a docstring.

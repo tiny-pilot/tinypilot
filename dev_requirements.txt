@@ -1,5 +1,6 @@
 --requirement requirements.txt
 
+bandit==1.8.6
 coverage==7.2.7
 pylint==2.14.2
 ruff==0.12.10
