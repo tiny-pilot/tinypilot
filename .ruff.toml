@@ -1,10 +1,15 @@
 src = ["app"]
 
+# Assume Python 3.9.
+target-version = "py39"
+
+[lint]
 select = [
   "D", # Enable pydocstyle rules.
   "F", # Enable pyflakes rules.
   "I", # Enable isort rules.
   "Q", # Enable flake8-quotes rules.
+  "S", # Enable flake8-bandit rules.
   ]
 ignore = [
   # Disable rules that require everything to have a docstring.
@@ -26,10 +31,7 @@ exclude = [
     "venv",
 ]
 
-# Assume Python 3.9
-target-version = "py39"
-
-[flake8-quotes]
+[lint.flake8-quotes]
 # Use consistent quotes regardless of whether it allows us to minimize escape
 # sequences.
 avoid-escape = false
@@ -38,9 +40,9 @@ docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
 
-[isort]
+[lint.isort]
 force-single-line = true
 force-to-top = ["log"]
 
-[pydocstyle]
+[lint.pydocstyle]
 convention = "google"

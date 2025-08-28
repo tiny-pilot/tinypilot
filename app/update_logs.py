@@ -33,7 +33,7 @@ def read():
     """
     logger.info('Running read-update-log')
     try:
-        output = subprocess.check_output(['sudo', _READ_SCRIPT_PATH],
+        output = subprocess.check_output(['/usr/bin/sudo', _READ_SCRIPT_PATH],
                                          stderr=subprocess.STDOUT,
                                          universal_newlines=True)
     except subprocess.CalledProcessError as e:

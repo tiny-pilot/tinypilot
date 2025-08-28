@@ -33,7 +33,7 @@ def _restart_ustreamer():
     logger.info('Triggering ustreamer restart...')
     try:
         subprocess.check_output(
-            ['sudo', '/usr/sbin/service', 'ustreamer', 'restart'],
+            ['/usr/bin/sudo', '/usr/sbin/service', 'ustreamer', 'restart'],
             stderr=subprocess.STDOUT,
             universal_newlines=True)
     except subprocess.CalledProcessError as e:
@@ -53,10 +53,11 @@ def _restart_janus():
     """
     logger.info('Writing janus configuration...')
     try:
-        subprocess.check_output(
-            ['sudo', '/opt/tinypilot-privileged/scripts/configure-janus'],
-            stderr=subprocess.STDOUT,
-            universal_newlines=True)
+        subprocess.check_output([
+            '/usr/bin/sudo', '/opt/tinypilot-privileged/scripts/configure-janus'
+        ],
+                                stderr=subprocess.STDOUT,
+                                universal_newlines=True)
     except subprocess.CalledProcessError as e:
         logger.error('Failed to configure janus: %s', e)
         return
@@ -64,7 +65,7 @@ def _restart_janus():
     logger.info('Triggering janus restart...')
     try:
         subprocess.check_output(
-            ['sudo', '/usr/sbin/service', 'janus', 'restart'],
+            ['/usr/bin/sudo', '/usr/sbin/service', 'janus', 'restart'],
             stderr=subprocess.STDOUT,
             universal_newlines=True)
     except subprocess.CalledProcessError as e:

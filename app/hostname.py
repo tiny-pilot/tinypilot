@@ -43,8 +43,8 @@ def change(new_hostname):
     """
     try:
         return subprocess.check_output([
-            'sudo', '/opt/tinypilot-privileged/scripts/change-hostname',
-            new_hostname
+            '/usr/bin/sudo',
+            '/opt/tinypilot-privileged/scripts/change-hostname', new_hostname
         ],
                                        stderr=subprocess.STDOUT,
                                        universal_newlines=True)
