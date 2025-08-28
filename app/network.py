@@ -148,7 +148,8 @@ def determine_wifi_settings():
         # We cannot read the wpa_supplicant.conf file directly, because it is
         # owned by the root user.
         config_lines = subprocess.check_output([
-            'sudo', '/opt/tinypilot-privileged/scripts/print-marker-sections',
+            '/usr/bin/sudo',
+            '/opt/tinypilot-privileged/scripts/print-marker-sections',
             '/etc/wpa_supplicant/wpa_supplicant.conf'
         ],
                                                stderr=subprocess.STDOUT,
@@ -182,8 +183,8 @@ def enable_wifi(wifi_settings):
         NetworkError
     """
     args = [
-        'sudo', '/opt/tinypilot-privileged/scripts/enable-wifi', '--country',
-        wifi_settings.country_code, '--ssid', wifi_settings.ssid
+        '/usr/bin/sudo', '/opt/tinypilot-privileged/scripts/enable-wifi',
+        '--country', wifi_settings.country_code, '--ssid', wifi_settings.ssid
     ]
     try:
         # Ignore pylint since we're not managing the child process.
@@ -212,7 +213,7 @@ def disable_wifi():
         # Ignore pylint since we're not managing the child process.
         # pylint: disable=consider-using-with
         subprocess.Popen([
-            'sudo',
+            '/usr/bin/sudo',
             '/opt/tinypilot-privileged/scripts/disable-wifi',
         ])
     except subprocess.CalledProcessError as e:

@@ -36,7 +36,7 @@ def run_update_script():
     logger.info('Launching update script: %s',
                 update.launcher.UPDATE_SCRIPT_PATH)
     try:
-        subprocess.run(['sudo', update.launcher.UPDATE_SCRIPT_PATH],
+        subprocess.run(['/usr/bin/sudo', update.launcher.UPDATE_SCRIPT_PATH],
                        check=True,
                        timeout=_UPDATE_TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:

@@ -36,4 +36,4 @@ def start_async():
     # Ignore pylint since we're not managing the child process.
     # pylint: disable=consider-using-with
     subprocess.Popen(
-        ('sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
+        ('/usr/bin/sudo', '/usr/sbin/service', 'tinypilot-updater', 'start'))
