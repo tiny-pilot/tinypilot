@@ -29,7 +29,9 @@ def _exec_shutdown(restart_after):
         param = '--poweroff'
 
     try:
-        result = subprocess.run(
+        # The command arguments are trusted because they aren't based on user
+        # input.
+        result = subprocess.run(  # noqa: S603
             ['/usr/bin/sudo', '/sbin/shutdown', param, 'now'],
             capture_output=True,
             text=True,

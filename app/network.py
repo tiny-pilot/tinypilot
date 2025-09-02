@@ -101,15 +101,18 @@ def inspect_interface(interface_name):
     status = InterfaceStatus(interface_name, False, None, None)
 
     try:
-        ip_cmd_out_raw = subprocess.check_output([
-            '/usr/bin/ip',
-            '-json',
-            'address',
-            'show',
-            interface_name,
-        ],
-                                                 stderr=subprocess.STDOUT,
-                                                 universal_newlines=True)
+        # The command arguments are trusted because they aren't based on user
+        # input.
+        ip_cmd_out_raw = subprocess.check_output(  # noqa: S603
+            [
+                '/usr/bin/ip',
+                '-json',
+                'address',
+                'show',
+                interface_name,
+            ],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
     except subprocess.CalledProcessError as e:
         logger.error('Failed to run `ip` command: %s', str(e))
         return status
@@ -182,6 +185,8 @@ def enable_wifi(wifi_settings):
     Raises:
         NetworkError
     """
+    # The command arguments are trusted because the WiFi settings are validated
+    # by the caller.
     args = [
         '/usr/bin/sudo', '/opt/tinypilot-privileged/scripts/enable-wifi',
         '--country', wifi_settings.country_code, '--ssid', wifi_settings.ssid
@@ -191,10 +196,11 @@ def enable_wifi(wifi_settings):
         # pylint: disable=consider-using-with
         if wifi_settings.psk:
             args.append('--psk')
-            process = subprocess.Popen(args, stdin=subprocess.PIPE, text=True)
+            process = subprocess.Popen(  # noqa: S603
+                args, stdin=subprocess.PIPE, text=True)
             process.communicate(input=wifi_settings.psk)
         else:
-            subprocess.Popen(args)
+            subprocess.Popen(args)  # noqa: S603
 
     except subprocess.CalledProcessError as e:
         raise NetworkError(str(e.output).strip()) from e

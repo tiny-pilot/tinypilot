@@ -33,9 +33,12 @@ def read():
     """
     logger.info('Running read-update-log')
     try:
-        output = subprocess.check_output(['/usr/bin/sudo', _READ_SCRIPT_PATH],
-                                         stderr=subprocess.STDOUT,
-                                         universal_newlines=True)
+        # The command arguments are trusted because they aren't based on user
+        # input.
+        output = subprocess.check_output(  # noqa: S603
+            ['/usr/bin/sudo', _READ_SCRIPT_PATH],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise UpdateLogsReadError(str(e.output).strip()) from e
     logger.info('read-update-log completed successfully')
