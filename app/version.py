@@ -83,7 +83,8 @@ def latest_version():
             to the Gatekeeper API.
     """
     try:
-        with urllib.request.urlopen(
+        # The URL is trusted because it's not based on user input.
+        with urllib.request.urlopen(  # noqa: S310
                 f'{env.GATEKEEPER_BASE_URL}/community/available-update',
                 timeout=10) as response:
             response_bytes = response.read()
