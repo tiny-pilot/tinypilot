@@ -11,7 +11,6 @@ from werkzeug import exceptions
 # app-wide logger class before any other module loads it.
 import log
 import api
-import cli
 import json_response
 import license_notice
 import secret_key
