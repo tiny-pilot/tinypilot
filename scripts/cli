@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Helper script to invoke the CLI entrypoint of the TinyPilot app.
+# See `app/cli/main.py` for more info, including the available subcommands.
+#
+# Example of usage:
+#     ./scripts/cli streaming-mode
+
+
+# Exit on first failure.
+set -e
+
+# Exit on unset variable.
+set -u
+
+if (( "${EUID}" == 0 )); then
+  >&2 echo "This script doesn't require root privileges."
+  >&2 echo 'Please re-run as tinypilot:'
+  >&2 echo "  runuser tinypilot --command '$0 $*'"
+  exit 1
+fi
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR
+cd "${SCRIPT_DIR}/.."
+
+. venv/bin/activate
+python -m app.cli.main "${@:1}"
