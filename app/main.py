@@ -49,7 +49,6 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 app.register_blueprint(api.api_blueprint)
 app.register_blueprint(license_notice.blueprint)
 app.register_blueprint(views.views_blueprint)
-app.register_blueprint(cli.cli_blueprint)
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)
