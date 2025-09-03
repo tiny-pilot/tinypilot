@@ -42,11 +42,15 @@ def change(new_hostname):
         new_hostname: The new hostname as string.
     """
     try:
-        return subprocess.check_output([
-            'sudo', '/opt/tinypilot-privileged/scripts/change-hostname',
-            new_hostname
-        ],
-                                       stderr=subprocess.STDOUT,
-                                       universal_newlines=True)
+        # The command arguments are trusted because the new hostname is
+        # validated by the caller.
+        return subprocess.check_output(  # noqa: S603
+            [
+                '/usr/bin/sudo',
+                '/opt/tinypilot-privileged/scripts/change-hostname',
+                new_hostname
+            ],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise HostnameChangeError(str(e.output).strip()) from e

@@ -36,9 +36,12 @@ def run_update_script():
     logger.info('Launching update script: %s',
                 update.launcher.UPDATE_SCRIPT_PATH)
     try:
-        subprocess.run(['sudo', update.launcher.UPDATE_SCRIPT_PATH],
-                       check=True,
-                       timeout=_UPDATE_TIMEOUT_SECONDS)
+        # The command arguments are trusted because they aren't based on user
+        # input.
+        subprocess.run(  # noqa: S603
+            ['/usr/bin/sudo', update.launcher.UPDATE_SCRIPT_PATH],
+            check=True,
+            timeout=_UPDATE_TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:
         logger.error('Update process timed out')
         return make_update_result(update_error='The update timed out')
