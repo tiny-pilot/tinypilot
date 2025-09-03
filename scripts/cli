@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# Prints TinyPilot's preferred video streaming mode, either H264 or MJPEG.
+# Helper script to invoke the CLI entrypoint of the TinyPilot app.
+# See `app/cli/main.py` for more info, including the available subcommands.
+#
+# Example of usage:
+#     ./scripts/cli streaming-mode
+
 
 # Exit on first failure.
 set -e
@@ -18,7 +23,6 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
-. ./venv/bin/activate
 
-export FLASK_APP='app/main.py'
-flask cli streaming-mode
+. venv/bin/activate
+python -m app.cli.main "${@:1}"
