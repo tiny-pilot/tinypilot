@@ -149,6 +149,23 @@ jobs:
       - run:
           name: Run build script
           command: ./dev-scripts/check-javascript
+  check_security:
+    executor: python
+    steps:
+      - checkout
+      - run:
+          name: Create virtual environment
+          command: python3 -m venv venv
+      - run:
+          name: Install requirements
+          command: |
+            . venv/bin/activate
+            pip install --requirement dev_requirements.txt
+      - run:
+          name: Run Static Application Security Testing (SAST) on files
+          command: |
+            . venv/bin/activate
+            ./dev-scripts/check-security
   run_e2e_tests:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
@@ -303,6 +320,7 @@ workflows:
       - decode_edid
       - check_python
       - check_javascript
+      - check_security
       - run_e2e_tests
       - build_debian_package:
           requires:
