@@ -70,7 +70,7 @@ var Janus = (function (factory) {
 				return callback(error);
 			}, 1000);
 			this.cache[pending] = callback;
-			window.postMessage({ type: 'janusGetScreen', id: pending }, '*');
+			window.postMessage({ type: 'janusGetScreen', id: pending });
 		},
 		init: function () {
 			let cache = {};
