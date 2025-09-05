@@ -5,7 +5,7 @@
     "@playwright/test": "1.35.1",
     "eslint": "8.44.0",
     "eslint-plugin-html": "7.1.0",
-    "mocha": "10.2.0",
+    "mocha": "10.8.2",
     "playwright": "1.35.1",
     "prettier": "2.8.8"
   }
