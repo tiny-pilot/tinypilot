@@ -84,6 +84,7 @@ def latest_version():
     """
     try:
         # The URL is trusted because it's not based on user input.
+        # pylint: disable=line-too-long
         with urllib.request.urlopen(  # noqa: S310 # nosemgrep: dynamic-urllib-use-detected
                 f'{env.GATEKEEPER_BASE_URL}/community/available-update',
                 timeout=10) as response:
