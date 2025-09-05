@@ -75,7 +75,9 @@ def _create():
     Raises:
         IOError: If an error occured while accessing the secret key file.
     """
-    logger.info('Creating new flask secret key at %s', _SECRET_KEY_FILE)
+    # We're only logging the secret key file path, which isn't sensitive.
+    logger.info(  # nosemgrep: python-logger-credential-disclosure
+        'Creating new flask secret key at %s', _SECRET_KEY_FILE)
     secret_key = os.urandom(_SECRET_KEY_BYTE_LENGTH)
     with atomic_file.create(_SECRET_KEY_FILE,
                             chmod_mode=_SECRET_KEY_FILE_PERMS) as file:
