@@ -18,6 +18,7 @@ set -u
 ./dev-scripts/check-javascript
 ./dev-scripts/check-privilege-guard
 ./dev-scripts/check-python
+./dev-scripts/check-security
 ./dev-scripts/check-sql
 ./dev-scripts/check-style
 ./dev-scripts/check-trailing-whitespace
