@@ -58,8 +58,20 @@ fi
 # Exit on unset variable
 set -u
 
-# Remove any existing marker sections from the config file.
-"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
+# Determine which version of the OS is running.
+OS_VERSION="$(lsb_release --release --short)"
+readonly OS_VERSION
+
+if (( "${OS_VERSION}" == 11 )); then
+  # Remove any existing marker sections from the config file.
+  "${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
+else
+  nmcli connection modify 'Wired connection 1' \
+    ipv4.method auto \
+    ipv4.addresses '' \
+    ipv4.gateway '' \
+    ipv4.dns ''
+fi
 
 # Apply changes.
 "${SCRIPT_DIR}/apply-static-ip"
