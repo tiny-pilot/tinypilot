@@ -625,3 +625,5 @@ To resolve this issue, we simply removed the wildcard origin:
  		init: function () {
  			let cache = {};
 ```
+
+Note that this patch should be reapplied whenever we update `janus.js`.
