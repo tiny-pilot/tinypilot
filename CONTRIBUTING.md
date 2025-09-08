@@ -601,3 +601,29 @@ const confirmDeleteButton = document.querySelector("#delete .confirm-btn");
   - You are responsible for fixing formatting and tests to ensure that your code passes build checks in CI.
 
 I try to review all PRs within one business day. If you've been waiting longer than this, feel free to comment on the PR to verify that it's on my radar.
+
+## Quirks of this project
+
+### Patch security in `janus.js`
+
+Semgrep flagged `janus.js` as allowing any origin (i.e., `*`) to listen for [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage#targetorigin) messages: [`javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration`](https://semgrep.dev/r?q=javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration)
+
+Janus only uses `postMessage` for a seemingly outdated [Janus WebRTC Screensharing chrome extension](https://chromewebstore.google.com/detail/janus-webrtc-screensharin/hapfgfdkleiggjjpfpenajgdnfckjpaj?hl=fil&gl=001), which we don't use.
+
+To resolve this issue, we simply removed the wildcard origin:
+
+```diff
+--- app/static/third-party/janus-gateway/1.3.2/janus.js
++++ app/static/third-party/janus-gateway/1.3.2/janus.js
+@@ -70,7 +70,7 @@ var Janus = (function (factory) {
+ 				return callback(error);
+ 			}, 1000);
+ 			this.cache[pending] = callback;
+-			window.postMessage({ type: 'janusGetScreen', id: pending }, '*');
++			window.postMessage({ type: 'janusGetScreen', id: pending });
+ 		},
+ 		init: function () {
+ 			let cache = {};
+```
+
+Note that this patch should be reapplied whenever we update `janus.js`.

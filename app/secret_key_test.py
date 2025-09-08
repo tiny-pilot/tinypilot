@@ -27,7 +27,9 @@ class SecretKeyTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as mock_secret_key_file:
             mock_secret_key_file.write(b'0' * 32)
             mock_secret_key_file.flush()
-            os.chmod(mock_secret_key_file.name, 0o700)
+            # We're testing that insecure file permissions aren't accepted.
+            os.chmod(  # nosemgrep: insecure-file-permissions
+                mock_secret_key_file.name, 0o700)
 
             with mock.patch.object(secret_key, '_SECRET_KEY_FILE',
                                    mock_secret_key_file.name):

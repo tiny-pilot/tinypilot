@@ -3,6 +3,8 @@
 echo "This script is now DEPRECATED." >&2
 echo "Please switch to https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/get-tinypilot.sh" >&2
 
+# The URL is trusted.
+# nosemgrep: curl-pipe-bash
 curl \
   --silent \
   --show-error \

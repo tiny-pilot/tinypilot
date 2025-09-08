@@ -9,6 +9,8 @@ set -u
 # Exit on first error.
 set -e
 
+# The URL is trusted.
+# nosemgrep: curl-pipe-bash
 curl \
   --silent \
   --show-error \

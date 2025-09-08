@@ -317,8 +317,10 @@ def _get_project_metadata(project_name):
     return None
 
 
-def _make_plaintext_response(response_body):
-    response = flask.make_response(response_body, 200)
+def _make_plaintext_response(text):
+    # The content is rendered as plain text which mitigates the risk of XSS.
+    response = flask.make_response(  # nosemgrep: make-response-with-unknown-content
+        text, 200)
     response.mimetype = 'text/plain'
     return response
 

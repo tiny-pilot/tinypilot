@@ -130,7 +130,9 @@ def create_or_open(db_path):
             transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
             # SQlite doesn’t allow prepared statements for PRAGMA queries.
             # That’s okay here, since we know our query is safe.
-            transaction.execute(f'PRAGMA user_version={i+1}')
+            # pylint: disable=line-too-long
+            transaction.execute(  # nosemgrep: formatted-sql-query, sqlalchemy-execute-raw-query
+                f'PRAGMA user_version={i+1}')
         logger.info('Applied migration, counter is now at %d', i + 1)
 
     return connection
