@@ -86,11 +86,7 @@
 </template>
 
 <script type="module">
-  import {
-    addUser,
-    updateUserPassword,
-    deleteUser,
-  } from "/js/controllers.js";
+  import { addUser, updateUserPassword, deleteUser } from "/js/controllers.js";
 
   class UserAddedEvent extends CustomEvent {
     /**
@@ -305,7 +301,7 @@
           }
           return (
             this._elements.passwordInput.value.length > 0 &&
-              this._elements.passwordConfirmInput.value.length > 0
+            this._elements.passwordConfirmInput.value.length > 0
           );
         }
 
@@ -339,10 +335,7 @@
                 await updateUserPassword(this._username, password);
               }
             } else {
-              await addUser(
-                this._elements.usernameInput.value,
-                password
-              );
+              await addUser(this._elements.usernameInput.value, password);
             }
           } catch (error) {
             this._userInputError = error.message;
