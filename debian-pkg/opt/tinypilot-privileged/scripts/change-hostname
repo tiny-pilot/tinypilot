@@ -73,3 +73,6 @@ printf "%s\n127.0.1.1 %s\n%s\n%s\n" \
 # `hostnamectl`. `hostnamectl hostname xyz` is only supported on the Bookworm
 # version.
 hostnamectl set-hostname "${NEW_HOSTNAME}"
+
+# On next boot, update the TLS certificate to match the new hostname.
+systemctl enable update-tls-cert-common-name

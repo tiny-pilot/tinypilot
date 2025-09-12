@@ -1,0 +1,48 @@
+<!--
+We generally prevent users from viewing or changing security settings while on
+an HTTP connection. Sensitive data (e.g. when entering a new password) would be
+transferred in plain-text that way, which is vulnerable to man-in-the-middle
+attacks.
+-->
+
+<template id="secure-connection-required-template">
+  <style>
+    @import "css/style.css";
+  </style>
+
+  <h3>Security Settings Unavailable</h3>
+  <p>
+    You can only view or change security-related settings over a secure
+    connection (HTTPS).
+  </p>
+  <a class="btn btn-action" id="btn-https-redirect">Use Secure Connection</a>
+  <button id="btn-close" type="button">Close</button>
+</template>
+
+<script type="module">
+  import { DialogClosedEvent } from "/js/events.js";
+
+  const template = document.querySelector(
+    "#secure-connection-required-template"
+  );
+
+  customElements.define(
+    "secure-connection-required-dialog",
+    class extends HTMLElement {
+      connectedCallback() {
+        this.attachShadow({ mode: "open" }).appendChild(
+          template.content.cloneNode(true)
+        );
+
+        const httpsHref = window.location.href.replace("http", "https");
+        this.shadowRoot.querySelector("#btn-https-redirect").href = httpsHref;
+
+        this.shadowRoot
+          .querySelector("#btn-close")
+          .addEventListener("click", () => {
+            this.dispatchEvent(new DialogClosedEvent());
+          });
+      }
+    }
+  );
+</script>

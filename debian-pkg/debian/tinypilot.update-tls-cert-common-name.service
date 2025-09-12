@@ -1,0 +1,11 @@
+[Unit]
+Description=TinyPilot TLS certificate name updater
+After=syslog.target network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/tinypilot-privileged/services/update-tls-cert-common-name
+
+[Install]
+WantedBy=local-fs.target

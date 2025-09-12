@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Ensure that nginx's TLS key matches the current device hostname.
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Treat undefined environment variables as errors.
+set -u
+
+# Exit on first error.
+set -e
+
+# Cycle the TLS keys.
+/opt/tinypilot-privileged/scripts/cycle-nginx-tls-keys
+
+# Restart the nginx service
+systemctl restart nginx
+
+# Disable the service, as it only should run when manually enabled.
+systemctl disable update-tls-cert-common-name

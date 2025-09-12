@@ -1,7 +1,14 @@
 import db_connection
 
-# We just store one license key at a time, so the row id is fixed.
-_ROW_ID = 1
+# We store one license key at a time, per license level.
+
+
+class Error(Exception):
+    pass
+
+
+class NoLicenseStoredError(Error):
+    code = 'NO_LICENSE_STORED'
 
 
 class Licenses:
@@ -9,15 +16,24 @@ class Licenses:
     def __init__(self):
         self._db_connection = db_connection.get()
 
-    def save(self, license_key):
+    def save(self, license_key, license_level):
         self._db_connection.execute(
-            'INSERT OR REPLACE INTO licenses(id, license_key) VALUES (?, ?)',
-            [_ROW_ID, license_key])
+            'INSERT OR REPLACE INTO licenses(license_key, license_level)'
+            ' VALUES (?, ?)', [license_key, license_level])
 
-    def get(self):
+    def get(self, license_level):
         cursor = self._db_connection.execute(
-            'SELECT license_key FROM licenses WHERE id=?', [_ROW_ID])
+            'SELECT license_key FROM licenses WHERE license_level = ?',
+            [license_level])
         row = cursor.fetchone()
         if not row:
-            return None
+            raise NoLicenseStoredError(
+                f'There is no {license_level} license stored')
         return row[0]
+
+    def delete(self, license_level):
+        cursor = self._db_connection.execute(
+            'DELETE FROM licenses WHERE license_level = ?', [license_level])
+        if cursor.rowcount == 0:
+            raise NoLicenseStoredError(
+                f'There is no {license_level} license stored')

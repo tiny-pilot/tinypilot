@@ -1,0 +1,109 @@
+<template id="manage-users-list-item-template">
+  <style>
+    @import "css/style.css";
+
+    :host {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-color: #333;
+      border-style: solid;
+      border-width: 0 0 1px;
+      padding: 0.75rem 1rem;
+    }
+
+    :host(:not([is-current-user])) #current-user-indicator {
+      display: none;
+    }
+
+    #username {
+      font-family: "Overpass Mono", monospace;
+    }
+
+    .indicator {
+      font-weight: 600;
+      margin-left: 0.7em;
+      font-size: 0.9em;
+    }
+
+    .indicator:before {
+      content: "(";
+    }
+
+    .indicator:after {
+      content: ")";
+    }
+
+    #current-user-indicator {
+      color: var(--brand-green);
+    }
+
+    button {
+      margin: 0 0 0 auto;
+    }
+  </style>
+  <span id="username"></span>
+  <span id="current-user-indicator" class="indicator">You</span>
+  <button type="button" id="edit-btn">Edit</button>
+</template>
+
+<script type="module">
+  class ClickEditEvent extends CustomEvent {
+    /**
+     * An event indicating that the user has clicked the "edit" button on the UI.
+     */
+    constructor() {
+      super("click-edit", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  (function () {
+    const template = document.querySelector("#manage-users-list-item-template");
+
+    customElements.define(
+      "manage-users-list-item",
+      class extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+          this.role = "listitem";
+          this._elements = {
+            username: this.shadowRoot.querySelector("#username"),
+            editButton: this.shadowRoot.querySelector("#edit-btn"),
+          };
+          this._elements.editButton.addEventListener("click", () => {
+            this.dispatchEvent(new ClickEditEvent());
+          });
+        }
+
+        /**
+         * @param {Object} user - (As returned by the backend.)
+         * @param {string} user.username
+         */
+        init(user) {
+          this._elements.username.textContent = user.username;
+        }
+
+        get isCurrentUser() {
+          return this.hasAttribute("is-current-user");
+        }
+
+        set isCurrentUser(enabled) {
+          if (enabled) {
+            this.setAttribute("is-current-user", "");
+          } else {
+            this.removeAttribute("is-current-user");
+          }
+        }
+      }
+    );
+  })();
+</script>

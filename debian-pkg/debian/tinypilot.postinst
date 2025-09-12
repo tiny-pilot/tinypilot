@@ -60,6 +60,23 @@ runuser tinypilot \
 deactivate
 popd
 
+# Manage TLS keys if not specified otherwise.
+if ! grep \
+    --silent \
+    --fixed-strings \
+    --regexp 'tinypilot_manage_tls_keys: no' \
+    --regexp 'tinypilot_manage_tls_keys: false' \
+    "${TINYPILOT_SETTINGS_FILE}"; then
+  # Generate NGINX CA keys.
+  if [[ ! -e /etc/ssl/certs/tinypilot-ca.crt ]]; then
+    /opt/tinypilot-privileged/scripts/generate-nginx-ca-keypair
+  fi
+  # Generate NGINX TLS keys.
+  if [[ ! -e /etc/ssl/certs/tinypilot-nginx.crt ]]; then
+    /opt/tinypilot-privileged/scripts/cycle-nginx-tls-keys
+  fi
+fi
+
 tc358743_overlay_enabled='false'
 if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
   tc358743_overlay_enabled='true'

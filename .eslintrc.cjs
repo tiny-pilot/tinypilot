@@ -40,5 +40,10 @@ module.exports = {
     "one-var-declaration-per-line": "error",
     "prefer-const": "error",
   },
-  ignorePatterns: ["app/static/third-party", "playwright-report", "venv"],
+  ignorePatterns: [
+    "app/static/third-party",
+    "app/templates/components/debug-mode.html",
+    "playwright-report",
+    "venv",
+  ],
 };

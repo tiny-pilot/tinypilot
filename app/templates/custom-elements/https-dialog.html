@@ -1,0 +1,144 @@
+<template id="https-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/toggle.css";
+
+    #loading,
+    #edit {
+      display: none;
+    }
+
+    :host([state="loading"]) #loading {
+      display: block;
+    }
+
+    :host([state="edit"]) #edit {
+      display: block;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.5em 0;
+    }
+
+    .toggle {
+      margin-right: 0.75rem;
+    }
+  </style>
+
+  <div id="loading">
+    <h3>Retrieving HTTPS Settings</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="edit">
+    <h3>Manage HTTPS Connection</h3>
+    <div class="toggle-container">
+      <label class="toggle">
+        <input type="checkbox" id="requires-https" />
+        <span class="toggle-slider"></span>
+      </label>
+      Require encrypted connection (HTTPS)
+    </div>
+
+    <button class="close-btn" type="button">Close</button>
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+    SecureConnectionRequiredEvent,
+  } from "/js/events.js";
+  import { requiresHttps, setRequiresHttps } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#https-dialog-template");
+
+    customElements.define(
+      "https-dialog",
+      class extends HTMLElement {
+        _states = {
+          LOADING: "loading",
+          EDIT: "edit",
+        };
+        _statesWithoutDialogClose = new Set([this._states.LOADING]);
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+
+          this._elements = {
+            requiresHttpsCheckbox:
+              this.shadowRoot.querySelector("#requires-https"),
+          };
+          this.addEventListener("overlay-shown", () => this._initialize());
+          this.shadowRoot
+            .querySelectorAll(".close-btn")
+            .forEach((buttonElement) =>
+              buttonElement.addEventListener("click", () => {
+                this.dispatchEvent(new DialogClosedEvent());
+              })
+            );
+          this._elements.requiresHttpsCheckbox.addEventListener(
+            "input",
+            (event) => this._setRequiresHttps(event.target.checked)
+          );
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue)
+            )
+          );
+        }
+
+        async _initialize() {
+          if (SecureConnectionRequiredEvent.isApplicable()) {
+            this.dispatchEvent(new SecureConnectionRequiredEvent());
+            return;
+          }
+
+          this._state = this._states.LOADING;
+
+          try {
+            this._elements.requiresHttpsCheckbox.checked =
+              await requiresHttps();
+            this._state = this._states.EDIT;
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Load HTTPS Settings",
+                details: error,
+              })
+            );
+          }
+        }
+
+        async _setRequiresHttps(shouldBeRequired) {
+          try {
+            await setRequiresHttps(shouldBeRequired);
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Change HTTPS Settings",
+                details: error,
+              })
+            );
+          }
+        }
+      }
+    );
+  })();
+</script>

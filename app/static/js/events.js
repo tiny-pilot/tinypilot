@@ -80,3 +80,31 @@ export class VideoStreamingModeChangedEvent extends CustomEvent {
     });
   }
 }
+
+export class SecureConnectionRequiredEvent extends CustomEvent {
+  /**
+   * Event that will trigger the “secure connection required” dialog. For
+   * security reasons, we require an HTTPS connection for all dialogs that
+   * facilitate security-related settings. Such security-related dialogs
+   * shouldn’t open on an HTTP connection, but instead defer to the “secure
+   * connection required” dialog by dispatching this event upon initialization.
+   */
+  constructor() {
+    super("secure-connection-required", {
+      bubbles: true,
+      composed: true,
+    });
+  }
+
+  /**
+   * Checks whether the preconditions are met for this event to be dispatched.
+   * @returns {boolean}
+   */
+  static isApplicable() {
+    // Suppress ESLint warnings about undefined variables.
+    // `isInDebugMode` is defined in app/templates/components/debug-mode.html,
+    // which is available globally on the page.
+    /* global isInDebugMode */
+    return !isInDebugMode() && window.location.protocol === "http:";
+  }
+}
