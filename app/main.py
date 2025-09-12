@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import logging
 import os
 
@@ -11,6 +12,8 @@ from werkzeug import exceptions
 # app-wide logger class before any other module loads it.
 import log
 import api
+import db.settings
+import db_connection
 import json_response
 import license_notice
 import secret_key
@@ -37,10 +40,20 @@ logger.info('Starting app')
 
 app = flask.Flask(__name__, static_url_path='')
 app.config.update(
+    REMEMBER_COOKIE_HTTPONLY=True,
     SECRET_KEY=secret_key.get_or_create(),
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Strict',
+    PERMANENT_SESSION_LIFETIME=datetime.timedelta(days=90),
     TEMPLATES_AUTO_RELOAD=True,
     WTF_CSRF_TIME_LIMIT=None,
 )
+
+# Configure cookie security.
+with app.app_context():
+    is_session_cookie_secure = (not debug and
+                                db.settings.Settings().requires_https())
+    app.config.update(SESSION_COOKIE_SECURE=is_session_cookie_secure)
 
 # Configure CSRF protection.
 csrf = flask_wtf.csrf.CSRFProtect(app)
@@ -48,6 +61,38 @@ csrf = flask_wtf.csrf.CSRFProtect(app)
 app.register_blueprint(api.api_blueprint)
 app.register_blueprint(license_notice.blueprint)
 app.register_blueprint(views.views_blueprint)
+
+
+@app.before_request
+def check_proxy_https_redirect():
+    """Checks whether the client has connected with HTTPS and handles redirect.
+
+    The upstream proxy (in production) must set the `X-Forwarded-Proto` header
+    to either `http` or `https`. In development there is no proxy, so we skip
+    this mechanism locally.
+    """
+    if flask.current_app.debug:
+        return None
+
+    proxy_protocol = flask.request.headers.get('X-Forwarded-Proto')
+    if not proxy_protocol:
+        return flask.Response(
+            'Request is missing required X-Forwarded-Proto header', status=400)
+
+    settings = db.settings.Settings()
+    if settings.requires_https() and proxy_protocol != 'https':
+        redirect_url = flask.request.url.replace(f'{proxy_protocol}://',
+                                                 'https://', 1)
+        logger.info('Redirecting %s request to HTTPS: %s',
+                    proxy_protocol.upper(), redirect_url)
+        return flask.redirect(redirect_url, code=307)
+
+    return None
+
+
+@app.teardown_appcontext
+def close_connection(_):
+    db_connection.close()
 
 
 @app.errorhandler(flask_wtf.csrf.CSRFError)

@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Generates an nginx CA keypair.
+
+# Exit script on first failure.
+set -e
+
+# Check for root privileges.
+if (( "${EUID}" != 0 )); then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo $0 $*" >&2
+  exit 1
+fi
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Don't generate anything if any of the files already exist.
+readonly TINYPILOT_CA_CERTIFICATE_KEY='/etc/ssl/private/tinypilot-ca.key'
+readonly TINYPILOT_CA_CERTIFICATE='/etc/ssl/certs/tinypilot-ca.crt'
+readonly TINYPILOT_CA_CSR='/etc/ssl/csr/tinypilot-ca.csr'
+
+if [[ -e "${TINYPILOT_CA_CERTIFICATE_KEY}" ]] || \
+   [[ -e "${TINYPILOT_CA_CERTIFICATE}" ]] || \
+   [[ -e "${TINYPILOT_CA_CSR}" ]] ; then
+  exit 1
+fi
+
+TINYPILOT_CA_CERTIFICATE_DIR="$(dirname "${TINYPILOT_CA_CSR}")"
+readonly TINYPILOT_CA_CERTIFICATE_DIR
+
+# Create the directory and set permissions.
+install \
+  --mode 0700 \
+  --owner root \
+  --group root \
+  --directory "${TINYPILOT_CA_CERTIFICATE_DIR}"
+
+# Generate the CA key and CSR.
+TINYPILOT_CA_CERTIFICATE_KEY_DIR="$(dirname "${TINYPILOT_CA_CERTIFICATE_KEY}")"
+readonly TINYPILOT_CA_CERTIFICATE_KEY_DIR
+
+# Create directories if required.
+mkdir -p "${TINYPILOT_CA_CERTIFICATE_KEY_DIR}"
+
+# Generate the key and the CSR at the same time.
+openssl req \
+  -new \
+  -newkey rsa:4096 \
+  -nodes \
+  -keyout "${TINYPILOT_CA_CERTIFICATE_KEY}" \
+  -out "${TINYPILOT_CA_CSR}" \
+  -subj "/CN=tinypilot-ca" \
+  -addext "subjectAltName = DNS:tinypilot-ca" \
+  -addext "basicConstraints = critical,CA:TRUE"
+
+# Sign the key and output the .crt file.
+TINYPILOT_CA_CERT_DIR="$(dirname "${TINYPILOT_CA_CERTIFICATE}")"
+readonly TINYPILOT_CA_CERT_DIR
+
+# Create directory if required.
+mkdir -p "${TINYPILOT_CA_CERT_DIR}"
+
+# On Raspberry Pi OS, the pre-installed openssl version is 1.1.x, so we're
+# using semantics compatible with that version of openssl. If we ever migrate
+# to openssl versions >= 3.0, we could use -copy_extensions=copyall to simplify
+# the extensions options.
+
+# Sign the CA CSR.
+openssl x509 \
+  -req \
+  -signkey "${TINYPILOT_CA_CERTIFICATE_KEY}" \
+  -in "${TINYPILOT_CA_CSR}" \
+  -out "${TINYPILOT_CA_CERTIFICATE}" \
+  -days 3650 \
+  -extensions v3_req \
+  -extfile /dev/stdin << EOF
+[ v3_req ]
+subjectAltName = DNS:tinypilot-ca
+basicConstraints = critical,CA:TRUE
+subjectKeyIdentifier=hash
+EOF
