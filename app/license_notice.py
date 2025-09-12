@@ -92,6 +92,12 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/flask_wtf-*.dist-info/licenses/LICENSE*'
     ),
     LicenseMetadata(
+        name='passlib',
+        homepage_url='https://passlib.readthedocs.io',
+        license_glob_pattern=
+        './venv/lib/python3.*/site-packages/passlib-*.dist-info/LICENSE*',
+    ),
+    LicenseMetadata(
         name='pyyaml',
         homepage_url='https://pyyaml.org',
         # We're unable to consistently link to the local license file because of
