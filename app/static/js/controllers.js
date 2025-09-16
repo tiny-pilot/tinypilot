@@ -207,7 +207,7 @@ export async function deleteAllUsers() {
   }).then(processJsonResponse);
 }
 
-export async function addUser(username, password) {
+export async function addUser(username, password, role) {
   return fetch("/api/user", {
     method: "POST",
     headers: {
@@ -218,7 +218,7 @@ export async function addUser(username, password) {
     mode: "same-origin",
     cache: "no-cache",
     redirect: "error",
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password, role }),
   })
     .then(processJsonResponse)
     .then((data) => {
