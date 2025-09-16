@@ -31,6 +31,9 @@ class Role(enum.IntEnum):
     The roles are hierarchical, so they strictly “inherit” from each other. The
     top-most role has most privileges; subsequent roles have fewer privileges:
     - ADMIN satisfies ADMIN
+    - ADMIN satisfies OPERATOR
+    - OPERATOR does not satisfy ADMIN
+    - OPERATOR satisfies OPERATOR
 
     Note that the integer value of a role is an implementation detail. When
     serializing a `Role` value, for example, always use the stringified role
@@ -42,6 +45,9 @@ class Role(enum.IntEnum):
     """
     # Admins have full access to and full control of the device.
     ADMIN = 1
+    # Operators can only use the device to interact with the target machine,
+    # but they cannot manage the device itself.
+    OPERATOR = 2
 
 
 @dataclasses.dataclass
@@ -53,6 +59,20 @@ class User:
 
 class Error(Exception):
     pass
+
+
+class OneAdminRequiredError(Error):
+    """Raised to prevent that the system wouldn’t have any admin user.
+
+    Without any admin user, the system would effectively be in a locked state
+    where no one can manage the settings anymore. (Including e.g. creating a
+    new admin user, or otherwise elevating a user’s privileges.)
+
+    Note that the purpose of this error is to protect the system’s integrity as
+    a whole. In addition to that, we may also carry out separate checks (e.g.
+    in the API layer) to prevent the current user from accidentally locking
+    themselves out individually (without violating the system integrity).
+    """
 
 
 def _user_from_strings(username, role, credentials_last_changed):
@@ -72,7 +92,12 @@ def register(username, password, role):
     Raises:
         db.users.UserAlreadyExistsError: If a user with the given username
             already exists on the system.
+        OneAdminRequiredError
     """
+    if len(get_all_accounts()) == 0 and role != Role.ADMIN:
+        raise OneAdminRequiredError(
+            'The very first user account on the system must have admin role.')
+
     logger.info_sensitive('Adding user %s with role %s', username, role)
     db.users.Users().add(username=username,
                          password_hash=password_check.generate_hash(password),
@@ -104,6 +129,32 @@ def change_password(username, new_password):
     video_service.restart()
 
 
+def change_role(username, new_role):
+    """Changes the role of the account with the given username.
+
+    Args:
+        username: (str)
+        new_role: (Role)
+
+    Raises:
+        db.users.UserDoesNotExistError: If a user with the given username
+            does not exist on the system.
+        OneAdminRequiredError: If the user with the given username is the last
+            remaining admin on the system.
+    """
+    all_admins = [u for u in get_all_accounts() if u.role == Role.ADMIN]
+    if len(all_admins) == 1 and all_admins[0].username == username:
+        raise OneAdminRequiredError(
+            'Cannot change the role of last remaining admin user on the system.'
+        )
+
+    db.users.Users().change_role(username=username,
+                                 new_role=new_role,
+                                 credentials_change_time=utc.now())
+    logger.info_sensitive('Changed role of user %s', username)
+    video_service.restart()
+
+
 def delete_account(username):
     """Deletes an account from the system.
 
@@ -113,7 +164,16 @@ def delete_account(username):
     Raises:
         db.users.UserDoesNotExistError: If a user with the given username
             does not exist on the system.
+        OneAdminRequiredError: If the user with the given username is the last
+            remaining admin while other users still exist on the system.
     """
+    users = get_all_accounts()
+    all_admins = [u for u in users if u.role == Role.ADMIN]
+    if len(users) > 1 and len(
+            all_admins) == 1 and all_admins[0].username == username:
+        raise OneAdminRequiredError(
+            'Cannot delete last remaining admin user on the system.')
+
     db.users.Users().delete(username)
     logger.info_sensitive('Deleted user %s', username)
     video_service.restart()

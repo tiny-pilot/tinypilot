@@ -335,7 +335,11 @@
                 await updateUserPassword(this._username, password);
               }
             } else {
-              await addUser(this._elements.usernameInput.value, password);
+              await addUser(
+                this._elements.usernameInput.value,
+                password,
+                "ADMIN"
+              );
             }
           } catch (error) {
             this._userInputError = error.message;

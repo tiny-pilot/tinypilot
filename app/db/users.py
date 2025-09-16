@@ -46,6 +46,16 @@ class Users:
         if cursor.rowcount == 0:
             raise UserDoesNotExistError(f'User does not exist: {username}')
 
+    def change_role(self, username, new_role, credentials_change_time):
+        cursor = self._db_connection.execute(
+            'UPDATE users'
+            ' SET auth_role = ?, credentials_last_changed = ?'
+            ' WHERE username = ?',
+            [new_role.name,
+             _to_iso_string(credentials_change_time), username])
+        if cursor.rowcount == 0:
+            raise UserDoesNotExistError(f'User does not exist: {username}')
+
     def delete(self, username):
         cursor = self._db_connection.execute(
             'DELETE FROM users WHERE username = ?', [username])

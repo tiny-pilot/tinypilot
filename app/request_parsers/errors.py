@@ -40,3 +40,7 @@ class InvalidVideoSettingStunAddressError(Error):
 
 class UnsupportedPastedCharacterError(Error):
     pass
+
+
+class InvalidUserRoleError(Error):
+    pass

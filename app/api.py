@@ -112,12 +112,13 @@ def user_post():
         Returns error object on failure.
     """
     try:
-        username, password = request_parsers.create_user.parse(flask.request)
+        username, password, role = request_parsers.create_user.parse(
+            flask.request)
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
 
     try:
-        auth.register(username, password, auth.Role.ADMIN)
+        auth.register(username, password, role)
     except db.users.UserAlreadyExistsError as e:
         return json_response.error(e), 409
     if len(auth.get_all_accounts()) == 1:
@@ -184,7 +185,7 @@ def user_delete():
 
 
 @api_blueprint.route('/auth', methods=['GET'])
-@required_auth(auth.Role.ADMIN)
+@required_auth(auth.Role.OPERATOR)
 def auth_get():
     """Checks whether the user is authenticated.
 
@@ -324,14 +325,15 @@ def users_get():
 
     Returns:
         On success, a JSON data structure with the following properties:
-        users: array of objects containing usernames (as strings).
+        users: array of objects containing usernames and roles (as strings).
         currentUsername: The username (as string) of the currently logged-in
             user or null if not logged in.
 
         Example:
         {
             "users": [{
-                "username": "little-hamster"
+                "username": "little-hamster",
+                "role": "ADMIN"
             }],
             "currentUsername": "little-hamster"
         }
@@ -341,6 +343,7 @@ def users_get():
     return json_response.success({
         'users': [{
             'username': u.username,
+            'role': u.role.name,
         } for u in auth.get_all_accounts()],
         'currentUsername': session.get_username(),
     })
@@ -360,7 +363,7 @@ def users_delete():
 
 
 @api_blueprint.route('/version', methods=['GET'])
-@required_auth(auth.Role.ADMIN)
+@required_auth(auth.Role.OPERATOR)
 def version_get():
     """Retrieves the current installed version of TinyPilot.
 
@@ -791,7 +794,7 @@ def settings_video_apply_post():
 
 
 @api_blueprint.route('/paste', methods=['POST'])
-@required_auth(auth.Role.ADMIN)
+@required_auth(auth.Role.OPERATOR)
 def paste_post():
     """Pastes text onto the target machine.
 

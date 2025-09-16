@@ -354,6 +354,9 @@ menuBar.addEventListener("video-settings-dialog-requested", () => {
 menuBar.addEventListener("paste-dialog-requested", () => {
   document.getElementById("paste-overlay").show();
 });
+menuBar.addEventListener("ssh-dialog-requested", () => {
+  document.getElementById("feature-pro-overlay").show();
+});
 menuBar.addEventListener("https-dialog-requested", () => {
   document.getElementById("https-overlay").show();
 });
