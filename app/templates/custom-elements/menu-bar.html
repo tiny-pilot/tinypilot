@@ -180,6 +180,12 @@
     }
     {% endif %}
 
+    {% if not is_admin %}
+    .admin-only {
+      display: none;
+    }
+    {% endif %}
+
     .pro-badge:after {
       position: absolute;
       display: block;
@@ -216,7 +222,7 @@
     role="menubar"
   >
     <!-- The “System” menu is used for managing the TinyPilot device itself. -->
-    <li class="group" role="presentation">
+    <li class="group admin-only" role="presentation">
       <a role="menuitem">System</a>
       <ul class="items" role="group">
         <li class="item subgroup" role="presentation">

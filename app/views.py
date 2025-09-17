@@ -53,6 +53,7 @@ def index_get():
         is_standalone_mode=_is_standalone_mode(),
         custom_elements_files=find_files.custom_elements_files(),
         requires_authentication=auth.is_authentication_required(),
+        is_admin=session.is_auth_valid(satisfies_role=auth.Role.ADMIN),
     )
 
 
