@@ -90,12 +90,13 @@
             showCloseButton: this.hasAttribute("show-close-button") || true,
           };
 
-          this.shadowRoot.addEventListener("dialog-closed", () =>
-            this.show(false)
-          );
-          this.shadowRoot.addEventListener("dialog-failed", () =>
-            // This event is further handled in `app.js`.
-            this.show(false)
+          [
+            "dialog-closed",
+            // The following events are further handled in `app.js`.
+            "dialog-failed",
+            "secure-connection-required",
+          ].forEach((eventId) =>
+            this.shadowRoot.addEventListener(eventId, () => this.show(false))
           );
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",

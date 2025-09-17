@@ -1,0 +1,349 @@
+<template id="manage-users-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/toggle.css";
+
+    #loading,
+    #edit,
+    #disable-auth,
+    #manage-user {
+      display: none;
+    }
+
+    :host([state="loading"]) #loading {
+      display: block;
+    }
+
+    :host([state="edit"]) #edit {
+      display: block;
+    }
+
+    :host([state="disable-auth"]) #disable-auth {
+      display: block;
+    }
+
+    :host([state="manage-user"]) #manage-user {
+      display: block;
+    }
+
+    :host(:not([show-user-list])) .user-list-table,
+    :host(:not([show-user-list])) .add-user-btn {
+      display: none;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .toggle {
+      margin-right: 0.75rem;
+    }
+
+    .user-list-table {
+      margin: 1.25rem auto;
+      max-width: 35rem;
+    }
+
+    .user-list-header {
+      font-size: 0.9rem;
+      text-align: left;
+      margin: 1rem auto 0 auto;
+      padding-left: 1rem;
+      color: #2d2d2d;
+      border-bottom: 1px solid #333;
+    }
+
+    .add-user-btn {
+      margin: 1rem;
+    }
+  </style>
+
+  <div id="loading">
+    <h3>Retrieving Users</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="edit">
+    <h3>Manage Users</h3>
+    <div class="toggle-container">
+      <label class="toggle">
+        <input type="checkbox" id="require-authentication" />
+        <span class="toggle-slider"></span>
+      </label>
+      Require username and password
+    </div>
+    <div class="user-list-table">
+      <div class="user-list-header">Username</div>
+      <div class="user-list" role="list"></div>
+    </div>
+    <button class="btn btn-action add-user-btn">Add User</button>
+    <button class="close-btn" type="button">Close</button>
+  </div>
+
+  <div id="disable-auth">
+    <h3>Disable User Authentication</h3>
+    <p>
+      Turning off authentication will remove all authorized TinyPilot users.<br />
+      Do you want to continue?
+    </p>
+    <button class="confirm-btn btn-danger">Delete All Users</button>
+    <button class="deny-btn">Back</button>
+  </div>
+
+  <div id="manage-user">
+    <h3>User Authentication</h3>
+    <manage-users-form />
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+    SecureConnectionRequiredEvent,
+  } from "/js/events.js";
+  import { getUsers, deleteAllUsers } from "/js/controllers.js";
+
+  class AllUsersRemovedEvent extends CustomEvent {
+    /**
+     * An event indicating that all the users have been successfully removed from the system.
+     */
+    constructor() {
+      super("all-users-removed", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  (function () {
+    const template = document.querySelector("#manage-users-dialog-template");
+
+    customElements.define(
+      "manage-users-dialog",
+      class extends HTMLElement {
+        _states = {
+          LOADING: "loading",
+          EDIT: "edit",
+          DISABLE_AUTH: "disable-auth",
+          MANAGE_USER: "manage-user",
+        };
+        _statesWithoutDialogClose = new Set([
+          this._states.LOADING,
+          this._states.DISABLE_AUTH,
+          this._states.MANAGE_USER,
+        ]);
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true)
+          );
+
+          this._shouldReloadPageOnClose = false;
+          this._handleOverlayHiddenEvent =
+            this._handleOverlayHiddenEvent.bind(this);
+
+          this._elements = {
+            userList: this.shadowRoot.querySelector("#edit .user-list"),
+            addUserButton: this.shadowRoot.querySelector("#edit .add-user-btn"),
+            manageUserForm: this.shadowRoot.querySelector(
+              "#manage-user manage-users-form"
+            ),
+            requireAuthCheckbox: this.shadowRoot.querySelector(
+              "#require-authentication"
+            ),
+            confirmDisableAuthButton: this.shadowRoot.querySelector(
+              "#disable-auth .confirm-btn"
+            ),
+            denyDisableAuthButton: this.shadowRoot.querySelector(
+              "#disable-auth .deny-btn"
+            ),
+          };
+          this.addEventListener("overlay-shown", () => this._initialize());
+          this.addEventListener(
+            "overlay-hidden",
+            this._handleOverlayHiddenEvent
+          );
+          this.shadowRoot
+            .querySelectorAll(".close-btn")
+            .forEach((buttonElement) =>
+              buttonElement.addEventListener("click", () => {
+                this.dispatchEvent(new DialogClosedEvent());
+              })
+            );
+          this._elements.requireAuthCheckbox.addEventListener(
+            "input",
+            (event) => {
+              if (event.target.checked) {
+                event.target.checked = false;
+                this._elements.manageUserForm.initForCreating(
+                  /*isVeryFirstUser=*/ true
+                );
+                this._state = this._states.MANAGE_USER;
+              } else {
+                // No need for the user to confirm if there aren't any users.
+                if (
+                  this.shadowRoot.querySelector("manage-users-list-item") ===
+                  null
+                ) {
+                  this._truncateUserList();
+                  return;
+                }
+                event.target.checked = true;
+                this._state = this._states.DISABLE_AUTH;
+              }
+            }
+          );
+          this._elements.confirmDisableAuthButton.addEventListener(
+            "click",
+            async () => {
+              this._elements.confirmDisableAuthButton.disabled = true;
+              try {
+                await deleteAllUsers();
+              } catch (error) {
+                this.dispatchEvent(
+                  new DialogFailedEvent({
+                    title: "Failed to Remove All Users",
+                    details: error,
+                  })
+                );
+                return;
+              } finally {
+                this._elements.confirmDisableAuthButton.disabled = false;
+              }
+              this.dispatchEvent(new AllUsersRemovedEvent());
+              this._truncateUserList();
+              this._state = this._states.EDIT;
+            }
+          );
+          this._elements.denyDisableAuthButton.addEventListener("click", () => {
+            this._state = this._states.EDIT;
+          });
+          this._elements.manageUserForm.addEventListener(
+            "click-cancel",
+            (event) => {
+              event.stopPropagation();
+              this._state = this._states.EDIT;
+            }
+          );
+          this._elements.addUserButton.addEventListener("click", () => {
+            this._elements.manageUserForm.initForCreating(
+              /*isVeryFirstUser=*/ false
+            );
+            this._state = this._states.MANAGE_USER;
+          });
+
+          for (const eventName of [
+            "user-added",
+            "user-removed",
+            "all-users-removed",
+          ]) {
+            this.addEventListener(eventName, () => {
+              // Note: After the user alters authentication credentials and
+              // closes this dialog, we have to refresh the page to account for
+              // the following changes of the system state:
+              // - The video service was restarted by the backend, so the remote
+              //   screen needs to re-connect to the stream.
+              // - The navbar menu needs to show/hide the "Logout" button.
+              this._shouldReloadPageOnClose = true;
+              // Reinitialize the dialog in order to refresh the user list.
+              this._initialize();
+            });
+          }
+        }
+
+        disconnectedCallback() {
+          document.removeEventListener(
+            "overlay-hidden",
+            this._handleOverlayHiddenEvent
+          );
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue)
+            )
+          );
+        }
+
+        get showUserList() {
+          return this.hasAttribute("show-user-list");
+        }
+
+        set showUserList(enabled) {
+          if (enabled) {
+            this.setAttribute("show-user-list", "");
+          } else {
+            this.removeAttribute("show-user-list");
+          }
+        }
+
+        async _initialize() {
+          if (SecureConnectionRequiredEvent.isApplicable()) {
+            this.dispatchEvent(new SecureConnectionRequiredEvent());
+            return;
+          }
+
+          this._state = this._states.LOADING;
+          this._truncateUserList();
+
+          try {
+            const userData = await getUsers();
+            for (const user of userData.users) {
+              const userListItem = document.createElement(
+                "manage-users-list-item"
+              );
+              this._elements.userList.appendChild(userListItem);
+              userListItem.init(user);
+              if (user.username === userData.currentUsername) {
+                userListItem.isCurrentUser = true;
+              }
+              userListItem.addEventListener("click-edit", (event) => {
+                event.stopPropagation();
+                this._elements.manageUserForm.initForEditing(
+                  user.username === userData.currentUsername,
+                  user.username
+                );
+                this._state = this._states.MANAGE_USER;
+              });
+            }
+            if (userData.users.length > 0) {
+              this._elements.requireAuthCheckbox.checked = true;
+              this.showUserList = true;
+            }
+            this._state = this._states.EDIT;
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Load Users",
+                details: error,
+              })
+            );
+          }
+        }
+
+        _truncateUserList() {
+          this._elements.requireAuthCheckbox.checked = false;
+          this._elements.userList.textContent = "";
+          this.showUserList = false;
+        }
+
+        _handleOverlayHiddenEvent() {
+          if (this._shouldReloadPageOnClose) {
+            location.reload();
+          }
+        }
+      }
+    );
+  })();
+</script>

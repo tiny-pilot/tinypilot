@@ -1,4 +1,3 @@
-import datetime
 import sqlite3
 
 import db_connection
@@ -21,14 +20,15 @@ class Users:
     def __init__(self):
         self._db_connection = db_connection.get()
 
-    def add(self, username, password_hash, credentials_change_time):
+    def add(self, username, password_hash, credentials_change_time, role):
         try:
             self._db_connection.execute(
                 'INSERT'
-                ' INTO users(username, password_hash, credentials_last_changed)'
-                ' VALUES (?, ?, ?)', [
+                ' INTO users(username, password_hash,'
+                ' credentials_last_changed, auth_role)'
+                ' VALUES (?, ?, ?, ?)', [
                     username, password_hash,
-                    _to_iso_string(credentials_change_time)
+                    _to_iso_string(credentials_change_time), role.name
                 ])
         except sqlite3.IntegrityError as e:
             raise UserAlreadyExistsError(
@@ -46,6 +46,16 @@ class Users:
         if cursor.rowcount == 0:
             raise UserDoesNotExistError(f'User does not exist: {username}')
 
+    def change_role(self, username, new_role, credentials_change_time):
+        cursor = self._db_connection.execute(
+            'UPDATE users'
+            ' SET auth_role = ?, credentials_last_changed = ?'
+            ' WHERE username = ?',
+            [new_role.name,
+             _to_iso_string(credentials_change_time), username])
+        if cursor.rowcount == 0:
+            raise UserDoesNotExistError(f'User does not exist: {username}')
+
     def delete(self, username):
         cursor = self._db_connection.execute(
             'DELETE FROM users WHERE username = ?', [username])
@@ -55,11 +65,20 @@ class Users:
     def delete_all(self):
         self._db_connection.execute('DELETE FROM users')
 
+    def get(self, username):
+        cursor = self._db_connection.execute(
+            'SELECT username, auth_role, credentials_last_changed'
+            ' FROM users WHERE username=? LIMIT 1', [username])
+        row = cursor.fetchone()
+        if not row:
+            raise UserDoesNotExistError(f'User does not exist: {username}')
+        return row[0], row[1], row[2]
+
     def get_all(self):
         cursor = self._db_connection.execute(
-            'SELECT username FROM users ORDER BY id')
-        users = [u[0] for u in cursor.fetchall()]
-        return users
+            'SELECT username, auth_role, credentials_last_changed'
+            ' FROM users ORDER BY id')
+        return cursor.fetchall()
 
     def get_password_hash(self, username):
         cursor = self._db_connection.execute(
@@ -69,15 +88,6 @@ class Users:
         if not row:
             return None
         return row[0]
-
-    def get_credentials_last_changed(self, username):
-        cursor = self._db_connection.execute(
-            'SELECT credentials_last_changed'
-            ' FROM users WHERE username=? LIMIT 1', [username])
-        row = cursor.fetchone()
-        if not row:
-            return None
-        return datetime.datetime.fromisoformat(row[0])
 
 
 def _to_iso_string(timestamp):

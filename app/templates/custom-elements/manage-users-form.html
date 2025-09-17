@@ -1,0 +1,377 @@
+<template id="manage-users-form-template">
+  <style>
+    @import "css/style.css";
+
+    .form-container {
+      display: grid;
+      grid-template-columns: 17em 1fr;
+      gap: 1rem;
+      text-align: left;
+      align-items: center;
+      margin-bottom: 1em;
+    }
+
+    .form-container > *:nth-child(2n-1) {
+      text-align: right;
+      min-width: 9rem;
+      margin-right: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      max-width: 14rem;
+    }
+
+    :host([is-disabled]) {
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    :host([is-editing]) #username-input,
+    :host([is-editing]) #add-btn {
+      display: none;
+    }
+
+    :host(:not([is-editing])) #username-static-input,
+    :host(:not([is-editing])) #update-btn,
+    :host(:not([is-editing])) #remove-btn {
+      display: none;
+    }
+
+    #username-static-input {
+      font-size: 1rem;
+    }
+
+    #remove-btn {
+      margin-right: 2.5rem;
+    }
+  </style>
+
+  <div class="form-container">
+    <label for="username-input">Username:</label>
+    <div>
+      <span id="username-static-input" class="monospace"></span>
+      <input
+        type="text"
+        name="username"
+        id="username-input"
+        class="monospace"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        required
+      />
+    </div>
+
+    <label for="password-input">Password:</label>
+    <input type="password" name="password" id="password-input" />
+
+    <label for="password-confirm-input">Confirm password:</label>
+    <input
+      type="password"
+      name="password-confirm"
+      id="password-confirm-input"
+    />
+  </div>
+
+  <inline-message variant="error" id="error">
+    <strong>Error:</strong>
+    <span id="error-message"><!-- Filled programmatically --></span>
+  </inline-message>
+  <button id="remove-btn" class="btn-danger">Remove User</button>
+  <button id="add-btn" class="btn-success">Add User</button>
+  <button id="update-btn" class="btn-success">Save User</button>
+  <button id="cancel-btn" type="button">Back</button>
+</template>
+
+<script type="module">
+  import { addUser, updateUserPassword, deleteUser } from "/js/controllers.js";
+
+  class UserAddedEvent extends CustomEvent {
+    /**
+     * An event indicating that a single user has been successfully added to the
+     * system.
+     */
+    constructor() {
+      super("user-added", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  class UserRemovedEvent extends CustomEvent {
+    /**
+     * An event indicating that a single user has been successfully removed from
+     * the system.
+     */
+    constructor() {
+      super("user-removed", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  class ClickCancelEvent extends CustomEvent {
+    /**
+     * An event indicating that the user has clicked the "cancel" button on the
+     * UI.
+     */
+    constructor() {
+      super("click-cancel", {
+        bubbles: true,
+        composed: true,
+      });
+    }
+  }
+
+  (function () {
+    const template = document.querySelector("#manage-users-form-template");
+
+    customElements.define(
+      "manage-users-form",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this._username = "";
+        }
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this._elements = {
+            usernameInput: this.shadowRoot.querySelector("#username-input"),
+            usernameStaticInput: this.shadowRoot.querySelector(
+              "#username-static-input"
+            ),
+            passwordInput: this.shadowRoot.querySelector("#password-input"),
+            passwordConfirmInput: this.shadowRoot.querySelector(
+              "#password-confirm-input"
+            ),
+            addButton: this.shadowRoot.querySelector("#add-btn"),
+            updateButton: this.shadowRoot.querySelector("#update-btn"),
+            removeButton: this.shadowRoot.querySelector("#remove-btn"),
+            cancelButton: this.shadowRoot.querySelector("#cancel-btn"),
+            userInputError: this.shadowRoot.querySelector("#error"),
+            userInputErrorMessage:
+              this.shadowRoot.querySelector("#error-message"),
+          };
+
+          // Clear error and update save button depending on user input.
+          for (const [eventName, element] of [
+            ["input", this._elements.usernameInput],
+            ["input", this._elements.passwordInput],
+            ["input", this._elements.passwordConfirmInput],
+          ]) {
+            element.addEventListener(eventName, () => {
+              this._userInputError = null;
+              this._resetAllButtons();
+            });
+          }
+
+          this._elements.removeButton.addEventListener(
+            "click",
+            this._handleClickRemoveButton.bind(this)
+          );
+          this._elements.cancelButton.addEventListener("click", () => {
+            this.dispatchEvent(new ClickCancelEvent());
+          });
+          [this._elements.addButton, this._elements.updateButton].forEach(
+            (el) =>
+              el.addEventListener("click", () => {
+                this._handleSubmitForm();
+              })
+          );
+          [
+            this._elements.usernameInput,
+            this._elements.passwordInput,
+            this._elements.passwordConfirmInput,
+          ].forEach((el) =>
+            el.addEventListener("keydown", (evt) => {
+              if (evt.code === "Enter") {
+                if (this._isEditing) {
+                  this._elements.updateButton.click();
+                } else {
+                  this._elements.addButton.click();
+                }
+              }
+            })
+          );
+        }
+
+        get _isDisabled() {
+          return this.hasAttribute("is-disabled");
+        }
+
+        set _isDisabled(enabled) {
+          if (enabled) {
+            this.setAttribute("is-disabled", "");
+          } else {
+            this.removeAttribute("is-disabled");
+          }
+        }
+
+        get _isEditing() {
+          return this.hasAttribute("is-editing");
+        }
+
+        set _isEditing(enabled) {
+          if (enabled) {
+            this.setAttribute("is-editing", "");
+          } else {
+            this.removeAttribute("is-editing");
+          }
+        }
+
+        set _userInputError(message) {
+          const userInputError = this._elements.userInputError;
+          const userInputErrorMessage = this._elements.userInputErrorMessage;
+          if (message) {
+            userInputErrorMessage.innerText = message;
+            userInputError.show();
+            return;
+          }
+          userInputError.hide();
+          userInputErrorMessage.innerText = "";
+        }
+
+        /**
+         * Initialize the component for creating a new user account.
+         * @param {boolean} isVeryFirstUser - Whether the created account is
+         *        the very first account on the system.
+         */
+        initForCreating(isVeryFirstUser) {
+          this._init({ isCurrentUser: isVeryFirstUser });
+        }
+
+        /**
+         * Initialize the component for editing an existing user account.
+         * @param {boolean} isCurrentUser - Whether the current user edits
+         *        their own account.
+         * @param {string} username - The username of an existing user account.
+         */
+        initForEditing(isCurrentUser, username) {
+          this._init({ isCurrentUser, username });
+        }
+
+        _init({ isCurrentUser = false, username = null }) {
+          this._username = username || "";
+          this._isEditing = this._username.length > 0;
+          this.toggleAttribute("is-current-user", isCurrentUser);
+          this._isDisabled = false;
+          this._userInputError = null;
+          this._resetUsernameElements();
+          this._resetPasswordElements();
+          this._resetAllButtons();
+        }
+
+        _resetUsernameElements() {
+          this._elements.usernameInput.value = "";
+          this._elements.usernameStaticInput.textContent = this._username;
+        }
+
+        _resetPasswordElements() {
+          this._elements.passwordInput.value = "";
+          this._elements.passwordConfirmInput.value = "";
+          if (this._isEditing) {
+            this._elements.passwordInput.placeholder = "(hidden)";
+            this._elements.passwordConfirmInput.placeholder = "(hidden)";
+          } else {
+            this._elements.passwordInput.removeAttribute("placeholder");
+            this._elements.passwordConfirmInput.removeAttribute("placeholder");
+          }
+        }
+
+        _canAdd() {
+          if (this._isEditing) {
+            return false;
+          }
+          return (
+            this._elements.usernameInput.value.length > 0 &&
+            this._elements.passwordInput.value.length > 0 &&
+            this._elements.passwordConfirmInput.value.length > 0
+          );
+        }
+
+        _canUpdate() {
+          if (!this._isEditing) {
+            return false;
+          }
+          return (
+            this._elements.passwordInput.value.length > 0 &&
+            this._elements.passwordConfirmInput.value.length > 0
+          );
+        }
+
+        _canRemove() {
+          return this._isEditing;
+        }
+
+        _resetAllButtons() {
+          this._elements.addButton.disabled = !this._canAdd();
+          this._elements.updateButton.disabled = !this._canUpdate();
+          this._elements.removeButton.disabled = !this._canRemove();
+        }
+
+        async _handleSubmitForm() {
+          if (this._isDisabled) return;
+          this._isDisabled = true;
+
+          // Retrieve values from form.
+          const password = this._elements.passwordInput.value;
+          const passwordConfirm = this._elements.passwordConfirmInput.value;
+          if (password !== passwordConfirm) {
+            this._userInputError = "Passwords do not match";
+            this._isDisabled = false;
+            return;
+          }
+
+          // Send applicable values to backend.
+          try {
+            if (this._isEditing) {
+              if (password) {
+                await updateUserPassword(this._username, password);
+              }
+            } else {
+              await addUser(
+                this._elements.usernameInput.value,
+                password,
+                "ADMIN"
+              );
+            }
+          } catch (error) {
+            this._userInputError = error.message;
+            this._isDisabled = false;
+            return;
+          }
+
+          this.dispatchEvent(new UserAddedEvent());
+        }
+
+        async _handleClickRemoveButton(evt) {
+          evt.preventDefault();
+          if (this._isDisabled) return;
+          this._isDisabled = true;
+          try {
+            await deleteUser(this._username);
+          } catch (error) {
+            if (error.code === "UNABLE_TO_DELETE_CURRENT_USER") {
+              this._userInputError =
+                "It's not possible to delete your own account while other " +
+                "user accounts still exist. To remove your account, please " +
+                "remove all other accounts first.";
+            } else {
+              this._userInputError = error.message;
+            }
+            this._isDisabled = false;
+            return;
+          }
+          this.dispatchEvent(new UserRemovedEvent());
+        }
+      }
+    );
+  })();
+</script>

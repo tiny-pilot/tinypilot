@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page_title_prefix }}TinyPilot - Log In</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <style>
+      @import "css/style.css";
+
+      .navbar {
+        display: flex;
+        height: 45px;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 2rem;
+        color: white;
+        background-color: var(--brand-metallic-dark);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .logo {
+        position: relative;
+        box-sizing: border-box;
+        height: 90%;
+      }
+
+      .logo img {
+        height: 100%;
+        position: relative;
+      }
+
+      #login {
+        background-color: #fff;
+        max-width: 600px;
+        margin: 200px auto;
+        padding: 2rem;
+        border: 1px solid #666666;
+        border-radius: var(--border-radius);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      h2 {
+        margin-bottom: 0.5rem;
+      }
+
+      .form-grid label {
+        text-align: right;
+      }
+
+      .form-grid input {
+        max-width: 15rem;
+      }
+
+      #error-container {
+        display: none;
+      }
+
+      #error-container p {
+        font-size: 0.9em;
+        color: #666;
+      }
+
+      #login-btn {
+        margin: 0;
+      }
+    </style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% include "custom-elements/inline-message.html" %}
+    <div class="navbar">
+      <div class="brand logo">
+        <img src="/img/logo.svg" alt="TinyPilot logo" />
+      </div>
+    </div>
+
+    <form method="post">
+      <div id="login" class="form-grid">
+        <div><!-- grid spacer --></div>
+        <h2>Log In</h2>
+
+        <label for="username"><b>Username</b></label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+        />
+
+        <label for="password"><b>Password</b></label>
+        <input type="password" name="password" id="password" required />
+
+        <div><!-- grid spacer --></div>
+        <div>
+          <div id="error-container">
+            <inline-message variant="error" id="error" show>
+              <strong>Error: </strong>
+              <span id="error-message"><!-- Filled programmatically --></span>
+            </inline-message>
+            <p>
+              Forgot your password? See the
+              <a
+                href="https://tinypilotkvm.com/faq/reset-password"
+                target="_blank"
+              >
+                TinyPilot website
+              </a>
+              for instructions on resetting your password.
+            </p>
+          </div>
+        </div>
+
+        <div><!-- grid spacer --></div>
+        <div>
+          <button id="login-btn" class="btn-success" type="submit">
+            Log In
+          </button>
+        </div>
+      </div>
+    </form>
+    <script type="module">
+      import { login } from "/js/controllers.js";
+      import { determineRedirectParams } from "/js/login.js";
+
+      function sendLoginRequest(username, password) {
+        login(username, password)
+          .then(() => {
+            const pageUrl = new URL(window.location);
+            const redirectQuery = pageUrl.searchParams.get("redirect");
+            const redirectParams = determineRedirectParams(redirectQuery);
+            pageUrl.pathname = redirectParams.pathname;
+            pageUrl.search = redirectParams.search;
+            window.location.replace(pageUrl);
+          })
+          .catch((error) => {
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.innerText = error.message;
+            const errorContainer = document.getElementById("error-container");
+            errorContainer.style.display = "block";
+          });
+      }
+
+      for (const inputElement of document.querySelectorAll("input")) {
+        inputElement.addEventListener("input", () => {
+          const errorMessage = document.getElementById("error-message");
+          errorMessage.innerText = "&nbsp;";
+          const errorContainer = document.getElementById("error-container");
+          errorContainer.style.display = "none";
+        });
+      }
+
+      document.querySelector("form").addEventListener("submit", (evt) => {
+        evt.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        sendLoginRequest(username, password);
+      });
+    </script>
+  </body>
+</html>

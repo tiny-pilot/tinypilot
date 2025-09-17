@@ -72,6 +72,10 @@ a9c081406140271f80f07138164038c0
 # in _SETTINGS_FILE_PATH take precedence over these defaults.
 _DEFAULTS = {
     'tinypilot_external_port': 80,
+    'tinypilot_external_tls_port': 443,
+    # Whether TinyPilot manages TLS keys. Users can override this in their
+    # settings file if they want to provide their own TLS keys.
+    'tinypilot_manage_tls_keys': True,
     'ustreamer_desired_fps': video_service.DEFAULT_MJPEG_FRAME_RATE,
     'ustreamer_edid': _DEFAULT_TC358743_EDID,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,

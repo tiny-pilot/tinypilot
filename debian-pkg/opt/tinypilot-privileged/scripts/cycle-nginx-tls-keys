@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# Cycles the nginx TLS keys if the user isn't managing them themselves.
+
+# Exit script on first failure.
+set -e
+
+# Check for root privileges.
+if (( "${EUID}" != 0 )); then
+  echo "This script requires root privileges." >&2
+  echo "Please re-run with sudo:" >&2
+  echo "  sudo $0 $*" >&2
+  exit 1
+fi
+
+# Echo commands before executing them, by default to stderr.
+set -x
+
+# Exit on unset variable.
+set -u
+
+# Sanity check TLS manage keys.
+readonly TLS_KEYS_NO='tinypilot_manage_tls_keys: no'
+readonly TLS_KEYS_FALSE='tinypilot_manage_tls_keys: false'
+readonly SETTINGS_FILE='/home/tinypilot/settings.yml'
+
+# Don't make changes if the user is managing their own TLS keys.
+if [[ -f "${SETTINGS_FILE}" ]]; then
+  if grep --quiet "${TLS_KEYS_NO}" "${SETTINGS_FILE}" || \
+     grep --quiet "${TLS_KEYS_FALSE}" "${SETTINGS_FILE}"; then
+    exit 0
+  fi
+fi
+
+# Create both the TLS cert key and the CSR.
+readonly TINYPILOT_TLS_CERTIFICATE_KEY='/etc/ssl/private/tinypilot-nginx.key'
+readonly TINYPILOT_TLS_CERTIFICATE_CSR='/etc/ssl/csr/tinypilot-nginx.csr'
+HOSTNAME="$(hostname)"
+readonly HOSTNAME
+SUBJECT_ALT_NAME="DNS:${HOSTNAME}, DNS:${HOSTNAME}.local, DNS:${HOSTNAME}.localdomain"
+# Add the static IP address as a subject alt name.
+# Note: The static IP regex pattern must match the pattern in
+# `app/static_ip.py`.
+STATIC_IP="$(
+  sed \
+    --regexp-extended \
+    --expression 's/^static\s+ip_address=(.+)$/\1/p' \
+    --silent \
+    /etc/dhcpcd.conf | \
+    sed 's/\/.*//')"
+readonly STATIC_IP
+if [[ -n "${STATIC_IP}" ]]; then
+  SUBJECT_ALT_NAME+=", IP:${STATIC_IP}"
+fi
+readonly SUBJECT_ALT_NAME
+
+openssl req \
+  -new \
+  -nodes \
+  -newkey rsa:4096 \
+  -keyout "${TINYPILOT_TLS_CERTIFICATE_KEY}" \
+  -out "${TINYPILOT_TLS_CERTIFICATE_CSR}" \
+  -subj "/CN=tinypilot" \
+  -addext "subjectAltName=${SUBJECT_ALT_NAME}"
+
+readonly TINYPILOT_CA_CERTIFICATE='/etc/ssl/certs/tinypilot-ca.crt'
+readonly TINYPILOT_CA_CERTIFICATE_KEY='/etc/ssl/private/tinypilot-ca.key'
+readonly TINYPILOT_TLS_CERTIFICATE='/etc/ssl/certs/tinypilot-nginx.crt'
+
+# On Raspberry Pi OS, the pre-installed openssl version is 1.1.x, so we're
+# using semantics compatible with that version of openssl. If we ever migrate
+# to openssl versions >= 3.0, we could use -copy_extensions=copyall to simplify
+# the extensions options.
+# In 1.1.1n, we also need to use use a serial number too, which isn't required
+# in openssl versions >= 3.0
+
+# Generate a 160 bit serial number.
+SERIAL_NUMBER="$(openssl rand -hex 20)"
+readonly SERIAL_NUMBER
+readonly HEX_PREFIX_SERIAL_NUMBER="0x${SERIAL_NUMBER}"
+
+# Sign the TLS CSR with the TinyPilot CA Cert key.
+openssl x509 \
+  -req \
+  -CA "${TINYPILOT_CA_CERTIFICATE}" \
+  -CAkey "${TINYPILOT_CA_CERTIFICATE_KEY}" \
+  -set_serial "${HEX_PREFIX_SERIAL_NUMBER}" \
+  -in "${TINYPILOT_TLS_CERTIFICATE_CSR}" \
+  -days 825 \
+  -out "${TINYPILOT_TLS_CERTIFICATE}" \
+  -extensions v3_req \
+  -extfile /dev/stdin << EOF
+[ v3_req ]
+subjectAltName=${SUBJECT_ALT_NAME}
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
+EOF

@@ -6,6 +6,7 @@ Flask==3.1.1
 Flask-SocketIO==5.5.1
 Flask-WTF==1.2.2
 python-dotenv==1.1.1
+passlib==1.7.4
 PyYAML==6.0.2
 
 # Indirect dependencies

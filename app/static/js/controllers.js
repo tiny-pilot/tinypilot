@@ -178,6 +178,154 @@ export async function determineHostname() {
     });
 }
 
+export async function getUsers() {
+  return fetch("/api/users")
+    .then(processJsonResponse)
+    .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!data.hasOwnProperty("users")) {
+        throw new ControllerError("Missing expected users field");
+      }
+      // eslint-disable-next-line no-prototype-builtins
+      if (!data.hasOwnProperty("currentUsername")) {
+        throw new ControllerError("Missing expected currentUsername field");
+      }
+      return { users: data.users, currentUsername: data.currentUsername };
+    });
+}
+
+export async function deleteAllUsers() {
+  return fetch("/api/users", {
+    method: "DELETE",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+  }).then(processJsonResponse);
+}
+
+export async function addUser(username, password, role) {
+  return fetch("/api/user", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    body: JSON.stringify({ username, password, role }),
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!data.hasOwnProperty("username")) {
+        throw new ControllerError("Missing expected username field");
+      }
+      return { username: data.username };
+    });
+}
+
+export async function updateUserPassword(username, password) {
+  return fetch("/api/user/password", {
+    method: "PUT",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    body: JSON.stringify({ username, password }),
+  }).then(processJsonResponse);
+}
+
+export async function deleteUser(username) {
+  return fetch("/api/user", {
+    method: "DELETE",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username }),
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!data.hasOwnProperty("username")) {
+        throw new ControllerError("Missing expected username field");
+      }
+      return { username: data.username };
+    });
+}
+
+export async function login(username, password) {
+  return fetch("/api/auth", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    body: JSON.stringify({ username, password }),
+  }).then(processJsonResponse);
+}
+
+export async function logout() {
+  return fetch("/api/logout", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+    },
+    credentials: "same-origin",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  }).then(processJsonResponse);
+}
+
+export async function requiresHttps() {
+  return fetch("/api/settings/requiresHttps", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!data.hasOwnProperty("requiresHttps")) {
+        throw new ControllerError("Missing expected requiresHttps field");
+      }
+      return data.requiresHttps;
+    });
+}
+
+export async function setRequiresHttps(shouldBeRequired) {
+  return fetch("/api/settings/requiresHttps", {
+    method: "PUT",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ requiresHttps: shouldBeRequired }),
+  }).then(processJsonResponse);
+}
+
 export async function changeHostname(newHostname) {
   return fetch("/api/hostname", {
     method: "PUT",

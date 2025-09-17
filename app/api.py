@@ -1,6 +1,10 @@
+import logging
+
 import flask
 
+import auth
 import db.settings
+import db.users
 import debug_logs
 import env
 import execute
@@ -8,11 +12,16 @@ import hostname
 import json_response
 import local_system
 import network
+import request_parsers.create_user
+import request_parsers.credentials
+import request_parsers.delete_user
 import request_parsers.errors
 import request_parsers.hostname
 import request_parsers.network
 import request_parsers.paste
+import request_parsers.requires_https
 import request_parsers.video_settings
+import session
 import update.launcher
 import update.settings
 import update.status
@@ -22,8 +31,207 @@ from hid import keyboard as fake_keyboard
 
 api_blueprint = flask.Blueprint('api', __name__, url_prefix='/api')
 
+logger = logging.getLogger(__name__)
+
+
+class Error(Exception):
+    pass
+
+
+class NotAuthenticatedError(Error):
+    pass
+
+
+class UnableToDeleteCurrentUserError(Error):
+    code = 'UNABLE_TO_DELETE_CURRENT_USER'
+
+
+def _required_auth_level_decorator(required_auth_level):
+
+    def decorator(view_func):
+        view_func.required_auth_level = required_auth_level
+        return view_func
+
+    return decorator
+
+
+def required_auth(satisfies_role):
+    """Decorator to specify the minimum required auth level for an endpoint.
+
+    See `session.is_auth_valid` for details on the auth rules.
+
+    Args:
+        satisfies_role: A role value that is at least required to access this
+            endpoint.
+    """
+    return _required_auth_level_decorator(satisfies_role)
+
+
+def no_auth_required():
+    """Decorator to exempt an endpoint from any auth check altogether.
+
+    The endpoint will be publicly accessible by anyone, regardless of the
+    system’s current authentication requirements.
+    """
+    return _required_auth_level_decorator(None)
+
+
+@api_blueprint.before_request
+def enforce_auth():
+    """Enforce client authentication checks by default."""
+    view_func = flask.current_app.view_functions[flask.request.endpoint]
+
+    try:
+        required_auth_level = getattr(view_func, 'required_auth_level')
+    except AttributeError as e:
+        # This is an internal check for us that should help to enforce putting
+        # an auth-related annotation on every endpoint. This error is not
+        # supposed to ever make it past the development stage.
+        raise Error(f'CODE ERROR: Missing auth annotation on '
+                    f'{flask.request.endpoint} endpoint') from e
+
+    # No authentication/authorization is required for this endpoint. Every
+    # visitor (even with invalid session) can access this endpoint.
+    if required_auth_level is None:
+        return None
+
+    # Check whether the current session satisfies the required role.
+    if not session.is_auth_valid(required_auth_level):
+        return json_response.error(NotAuthenticatedError('Not authorized')), 401
+
+    return None
+
+
+@api_blueprint.route('/user', methods=['POST'])
+@required_auth(auth.Role.ADMIN)
+def user_post():
+    """Adds a new user to the system.
+
+    Returns:
+        On success, a JSON data structure with a property "username" (str).
+        Returns error object on failure.
+    """
+    try:
+        username, password, role = request_parsers.create_user.parse(
+            flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+
+    try:
+        auth.register(username, password, role)
+    except db.users.UserAlreadyExistsError as e:
+        return json_response.error(e), 409
+    if len(auth.get_all_accounts()) == 1:
+        session.login(username)
+    return json_response.success({'username': username})
+
+
+@api_blueprint.route('/user/password', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
+def user_password_put():
+    """Updates an existing user's password.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        username, password = request_parsers.credentials.parse_credentials(
+            flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+
+    try:
+        auth.change_password(username, password)
+    except db.users.UserDoesNotExistError as e:
+        return json_response.error(e), 404
+
+    if username == session.get_username():
+        # If the currently logged-in user's credentials have changed, refresh
+        # their session.
+        session.login(username)
+
+    return json_response.success()
+
+
+@api_blueprint.route('/user', methods=['DELETE'])
+@required_auth(auth.Role.ADMIN)
+def user_delete():
+    """Removes a user from the system.
+
+    Returns:
+        On success, a JSON data structure with a property "username" (str).
+        Returns error object on failure.
+    """
+    try:
+        username = request_parsers.delete_user.parse_delete(flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+
+    if username == session.get_username() and len(auth.get_all_accounts()) > 1:
+        return json_response.error(
+            UnableToDeleteCurrentUserError(
+                'Unable to remove currently logged-in user while other users'
+                ' exist')), 409
+
+    try:
+        auth.delete_account(username)
+    except db.users.UserDoesNotExistError as e:
+        return json_response.error(e), 404
+
+    if username == session.get_username():
+        session.logout()
+
+    return json_response.success({'username': username})
+
+
+@api_blueprint.route('/auth', methods=['GET'])
+@required_auth(auth.Role.OPERATOR)
+def auth_get():
+    """Checks whether the user is authenticated.
+
+    This is an internal endpoint queried by our NGINX proxy to check for the
+    authentication state of the backend.
+    """
+    return json_response.success()
+
+
+@api_blueprint.route('/auth', methods=['POST'])
+@no_auth_required()
+def auth_post():
+    """Authenticates a user with username and password.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    logger.info_sensitive(
+        'Login request from IP %s',
+        flask.request.headers.get('X-Forwarded-For', flask.request.remote_addr))
+    try:
+        username, password = request_parsers.credentials.parse_credentials(
+            flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    if auth.can_authenticate(username, password):
+        session.login(username)
+        return json_response.success()
+    return json_response.error(
+        NotAuthenticatedError('Invalid username and password')), 401
+
+
+@api_blueprint.route('/logout', methods=['POST'])
+@no_auth_required()
+def logout_post():
+    """Logs out the current user and clears the session.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    session.logout()
+    return json_response.success()
+
 
 @api_blueprint.route('/debugLogs', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def debug_logs_get():
     """Returns the TinyPilot debug log as a plaintext HTTP response.
 
@@ -37,6 +245,7 @@ def debug_logs_get():
 
 
 @api_blueprint.route('/shutdown', methods=['POST'])
+@required_auth(auth.Role.ADMIN)
 def shutdown_post():
     """Triggers shutdown of the system.
 
@@ -51,6 +260,7 @@ def shutdown_post():
 
 
 @api_blueprint.route('/restart', methods=['POST'])
+@required_auth(auth.Role.ADMIN)
 def restart_post():
     """Triggers restart of the system.
 
@@ -65,6 +275,7 @@ def restart_post():
 
 
 @api_blueprint.route('/update', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def update_get():
     """Fetches the state of the latest update job.
 
@@ -86,6 +297,7 @@ def update_get():
 
 
 @api_blueprint.route('/update', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
 def update_put():
     """Initiates job to update TinyPilot to the latest version available.
 
@@ -106,7 +318,52 @@ def update_put():
     return json_response.success()
 
 
+@api_blueprint.route('/users', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
+def users_get():
+    """Lists all known users and indicates the currently logged-in user.
+
+    Returns:
+        On success, a JSON data structure with the following properties:
+        users: array of objects containing usernames and roles (as strings).
+        currentUsername: The username (as string) of the currently logged-in
+            user or null if not logged in.
+
+        Example:
+        {
+            "users": [{
+                "username": "little-hamster",
+                "role": "ADMIN"
+            }],
+            "currentUsername": "little-hamster"
+        }
+
+        Returns error object on failure.
+    """
+    return json_response.success({
+        'users': [{
+            'username': u.username,
+            'role': u.role.name,
+        } for u in auth.get_all_accounts()],
+        'currentUsername': session.get_username(),
+    })
+
+
+@api_blueprint.route('/users', methods=['DELETE'])
+@required_auth(auth.Role.ADMIN)
+def users_delete():
+    """Removes all users from the system.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    auth.delete_all_accounts()
+    session.logout()
+    return json_response.success()
+
+
 @api_blueprint.route('/version', methods=['GET'])
+@required_auth(auth.Role.OPERATOR)
 def version_get():
     """Retrieves the current installed version of TinyPilot.
 
@@ -128,6 +385,7 @@ def version_get():
 
 
 @api_blueprint.route('/latestRelease', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def latest_release_get():
     """Retrieves the latest version of TinyPilot.
 
@@ -159,6 +417,7 @@ def latest_release_get():
 
 
 @api_blueprint.route('/hostname', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def hostname_get():
     """Determines the hostname of the machine.
 
@@ -180,6 +439,7 @@ def hostname_get():
 
 
 @api_blueprint.route('/hostname', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
 def hostname_set():
     """Changes the machine’s hostname.
 
@@ -203,6 +463,7 @@ def hostname_set():
 
 
 @api_blueprint.route('/network/status', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def network_status():
     """Returns the current status of the available network interfaces.
 
@@ -264,6 +525,7 @@ def network_status():
 
 
 @api_blueprint.route('/network/settings/wifi', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def network_wifi_get():
     """Returns the current WiFi settings, if present.
 
@@ -288,6 +550,7 @@ def network_wifi_get():
 
 
 @api_blueprint.route('/network/settings/wifi', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
 def network_wifi_enable():
     """Enables a wireless network connection.
 
@@ -314,6 +577,7 @@ def network_wifi_enable():
 
 
 @api_blueprint.route('/network/settings/wifi', methods=['DELETE'])
+@required_auth(auth.Role.ADMIN)
 def network_wifi_disable():
     """Disables the WiFi network connection.
 
@@ -328,6 +592,7 @@ def network_wifi_disable():
 
 
 @api_blueprint.route('/status', methods=['GET'])
+@no_auth_required()
 def status_get():
     """Checks the status of TinyPilot.
 
@@ -342,7 +607,58 @@ def status_get():
     return response
 
 
+@api_blueprint.route('/settings/requiresHttps', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
+def settings_requires_https_get():
+    """Returns whether the server requires the client to connect via HTTPS.
+
+    Note that the server itself doesn’t handle TLS currently. It only checks how
+    the client has connected to the upstream proxy server.
+
+    Returns:
+        A JSON data structure with the following properties:
+        requiresHttps: bool.
+
+        Example:
+        {
+            "requiresHttps": true
+        }
+    """
+    return json_response.success(
+        {'requiresHttps': db.settings.Settings().requires_https()})
+
+
+@api_blueprint.route('/settings/requiresHttps', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
+def settings_requires_https_put():
+    """Stores whether the server should require the client to connect via HTTPS.
+
+    Expects a JSON data structure in the request body that contains the new
+    setting `requiresHttps` as bool. Example:
+    {
+        "requiresHttps": true
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        should_be_required = request_parsers.requires_https.parse(flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    db.settings.Settings().set_requires_https(should_be_required)
+
+    # Configure cookie security.
+    is_session_cookie_secure = (not flask.current_app.debug and
+                                should_be_required)
+    flask.current_app.config.update(
+        SESSION_COOKIE_SECURE=is_session_cookie_secure)
+
+    return json_response.success()
+
+
 @api_blueprint.route('/settings/video', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
 def settings_video_get():
     """Retrieves the current video settings.
 
@@ -392,6 +708,7 @@ def settings_video_get():
 
 
 @api_blueprint.route('/settings/video', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
 def settings_video_put():
     """Saves new video settings.
 
@@ -461,6 +778,7 @@ def settings_video_put():
 
 
 @api_blueprint.route('/settings/video/apply', methods=['POST'])
+@required_auth(auth.Role.ADMIN)
 def settings_video_apply_post():
     """Applies the current video settings found in the settings file.
 
@@ -476,6 +794,7 @@ def settings_video_apply_post():
 
 
 @api_blueprint.route('/paste', methods=['POST'])
+@required_auth(auth.Role.OPERATOR)
 def paste_post():
     """Pastes text onto the target machine.
 
@@ -489,9 +808,6 @@ def paste_post():
         "text": "Hello, World!",
         "language": "en-US"
     }
-
-    Returns:
-        Empty response on success, error object otherwise.
     """
     try:
         keystrokes = request_parsers.paste.parse_keystrokes(flask.request)

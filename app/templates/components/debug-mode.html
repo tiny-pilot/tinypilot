@@ -1,0 +1,13 @@
+<!--
+{# Note: This file places comments in front of Jinja syntax so that our HTML/JS
+   formatting tools don't choke on Jinja's non-HTML syntax. #}
+-->
+<script>
+  function isInDebugMode() {
+    // {% if not config['DEBUG'] %}
+    return false;
+    // {% else %}
+    return true;
+    // {% endif %}
+  }
+</script>
