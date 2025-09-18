@@ -48,7 +48,7 @@ Voyager 2a is TinyPilot's professional-grade KVM over IP device. Its quiet, comp
 - (Optional) [VGA to HDMI Adapter](https://smile.amazon.com/dp/B07121Y1Z3/) - If your target system has VGA output.
   - Alternatively, you can replace the VGA to HDMI adapter and HDMI to USB dongle with a [VGA to USB adapter](https://smile.amazon.com/dp/B08GYXZC3D).
 
-See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
+See ["TinyPilot: Build a KVM Over IP for Under \$100"]([https://mtlynch.io/tinypilot/#how-to-build-your-own-tinypilot](https://tinypilotkvm.com/blogs/insights/build-a-kvm-over-ip-under-100)) for a more detailed tutorial on how to assemble these parts to create a TinyPilot.
 
 ## Simple installation
 
@@ -97,11 +97,9 @@ You can read more details about the logs [in the wiki](https://github.com/tiny-p
 
 ## Security considerations
 
-TinyPilot does not support authentication or transport-level encryption. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
+TinyPilot supports password-based authentication and transport-level encryption with HTTPS. We strongly recommend adding a password to your TinyPilot interface. Otherwise, anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
 
-To use TinyPilot on untrusted networks, you can upgrade to [TinyPilot Pro](https://tinypilotkvm.com/products/tinypilot-pro), which adds password-based authentication and TLS for end-to-end encryption.
-
-As a free alternative, you can adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) and add a self-signed TLS certificate.
+For more granular access control, you can upgrade to [TinyPilot Pro](https://tinypilotkvm.com/products/tinypilot-pro), which adds password-based role-based-access-control.
 
 ## See also
 
