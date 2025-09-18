@@ -409,12 +409,20 @@ export async function disableWifi() {
     .then(() => true);
 }
 
-export async function checkStatus(baseURL = "") {
+/**
+ * Checks the status of the TinyPilot server.
+ * @param {string} [baseURL] - The URL origin of the TinyPilot server.
+ * @param {AbortSignal} [signal] - The signal that can be used to abort the
+ * asynchronous request.
+ * @returns {Promise<Response>} https://developer.mozilla.org/en-US/docs/Web/API/Response
+ */
+export async function checkStatus(baseURL = "", signal) {
   return fetch(baseURL + "/api/status", {
     method: "GET",
     mode: "cors",
     cache: "no-cache",
     redirect: "error",
+    signal,
   })
     .then(processJsonResponse)
     .then(() => true);

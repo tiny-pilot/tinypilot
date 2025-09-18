@@ -15,6 +15,6 @@ if (( "${EUID}" != 0 )); then
   exit 1
 fi
 
-journalctl -u tinypilot-updater \
+journalctl -u tinypilot-updater --namespace tinypilot-updater \
   | grep tinypilot-update-svc \
   | sed -E 's/^.*tinypilot-update-svc\[[0-9]+\]: //g'

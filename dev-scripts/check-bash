@@ -11,6 +11,17 @@ set -x
 # Exit on unset variable.
 set -u
 
+# Some of our bash tests have particular requirements (i.e., mount a disk image)
+# that require root privileges. This unfortunately has the unintended
+# consequence of escalating the privileges of all bash tests.
+# https://github.com/tiny-pilot/tinypilot-pro/issues/1337
+if (( "${EUID}" != 0 )); then
+  >&2 echo 'This script requires root privileges.'
+  >&2 echo 'Please re-run with sudo:'
+  >&2 echo "  sudo $0 $*"
+  >&2 exit 1
+fi
+
 # Run static analysis with shellcheck.
 BASH_SCRIPTS=()
 while read -r filepath; do

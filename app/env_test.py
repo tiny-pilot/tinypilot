@@ -33,8 +33,8 @@ class EnvTest(unittest.TestCase):
             env.abs_path_in_home_dir('/foo')
 
     def test_rejects_path_traversal_outside_home_dir(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(env.PathNotRelativeToHomeDirectoryError):
             env.abs_path_in_home_dir('../foo')
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(env.PathNotRelativeToHomeDirectoryError):
             env.abs_path_in_home_dir('foo/../../bar')

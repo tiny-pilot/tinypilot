@@ -136,6 +136,18 @@ print_info "Checking if mouse jiggler is enabled..."
   echo "Mouse jiggler: ${MOUSE_JIGGLER_STATUS}"
 } >> "${LOG_FILE}"
 
+print_info "Checking storage..."
+{
+  # Get the available space and total size of the root directory.
+  DF_OUTPUT="$(df --output=avail,size --human-readable / | tail -1)"
+  readonly DF_OUTPUT
+  AVAILABLE_DISK_SPACE="$(echo "${DF_OUTPUT}" | awk '{print $1}')"
+  readonly AVAILABLE_DISK_SPACE
+  TOTAL_DISK_SIZE="$(echo "${DF_OUTPUT}" | awk '{print $2}')"
+  readonly TOTAL_DISK_SIZE
+  echo "Disk space: ${AVAILABLE_DISK_SPACE}iB free (of ${TOTAL_DISK_SIZE}iB)"
+} >> "${LOG_FILE}"
+
 print_info "Checking temperature..."
 {
   vcgencmd measure_temp | sed 's/temp=/CPU Temperature: /g'

@@ -319,7 +319,6 @@ menuBar.addEventListener("shutdown-dialog-requested", () => {
 });
 menuBar.addEventListener("update-dialog-requested", () => {
   document.getElementById("update-overlay").show();
-  document.getElementById("update-dialog").checkVersion();
 });
 menuBar.addEventListener("change-hostname-dialog-requested", () => {
   document.getElementById("change-hostname-overlay").show();
@@ -342,17 +341,20 @@ menuBar.addEventListener("about-dialog-requested", () => {
 menuBar.addEventListener("mass-storage-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
+menuBar.addEventListener("video-settings-dialog-requested", () => {
+  document.getElementById("video-settings-overlay").show();
+});
+menuBar.addEventListener("paste-dialog-requested", () => {
+  document.getElementById("paste-overlay").show();
+});
 menuBar.addEventListener("wake-on-lan-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
 menuBar.addEventListener("static-ip-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();
 });
-menuBar.addEventListener("video-settings-dialog-requested", () => {
-  document.getElementById("video-settings-overlay").show();
-});
-menuBar.addEventListener("paste-dialog-requested", () => {
-  document.getElementById("paste-overlay").show();
+menuBar.addEventListener("tailscale-dialog-requested", () => {
+  document.getElementById("feature-pro-overlay").show();
 });
 menuBar.addEventListener("ssh-dialog-requested", () => {
   document.getElementById("feature-pro-overlay").show();

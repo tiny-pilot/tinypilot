@@ -24,7 +24,15 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        /* Even if we install the CA on dev machine from which we launch the
+            e2e test, Chrome still rejects TinyPilot's CA-signed certificate for
+            some reason, so we have to ignore certificate errors. */
+        launchOptions: {
+          args: ["--ignore-certificate-errors"],
+        },
+      },
     },
   ],
 

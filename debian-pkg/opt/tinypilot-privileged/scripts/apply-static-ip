@@ -17,4 +17,5 @@ set -u
 trap '' HUP
 ip address flush dev eth0
 systemctl restart \
-  dhcpcd.service
+  dhcpcd.service \
+  update-tls-cert-common-name

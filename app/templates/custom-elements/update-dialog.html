@@ -1,6 +1,7 @@
 <template id="update-dialog-template">
   <style>
     @import "css/style.css";
+    @import "css/icons.css";
 
     #checking,
     #update-available,
@@ -43,6 +44,29 @@
       margin: 1rem 0;
     }
 
+    .versions-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .version {
+      border: 1px solid black;
+      border-radius: 0.2rem;
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+    }
+
+    .version-number {
+      font-size: 1rem;
+    }
+
+    .version-label {
+      font-size: 0.8rem;
+      color: #444;
+      text-transform: uppercase;
+    }
+
     #update-container details {
       margin-top: 1rem;
     }
@@ -61,7 +85,7 @@
       display: none;
     }
 
-    :host([update-kind="automatic"]) #update-prompt-automatic {
+    :host([update-prompt="automatic"]) #update-prompt-automatic {
       display: block;
     }
   </style>
@@ -73,6 +97,17 @@
 
   <div id="update-available">
     <h3>Update TinyPilot</h3>
+    <div class="versions-info">
+      <div class="version version-local">
+        <div class="version-number monospace"></div>
+        <div class="version-label">Your version</div>
+      </div>
+      <div class="icon-long-arrow"></div>
+      <div class="version version-latest">
+        <div class="version-number monospace"></div>
+        <div class="version-label">Latest version</div>
+      </div>
+    </div>
     <update-prompt-automatic
       id="update-prompt-automatic"
     ></update-prompt-automatic>
@@ -81,6 +116,12 @@
 
   <div id="latest">
     <h3>No Updates Available</h3>
+    <div class="versions-info">
+      <div class="version version-local">
+        <div class="version-number monospace"></div>
+        <div class="version-label">Your version</div>
+      </div>
+    </div>
     <p>You are running the latest version of TinyPilot.</p>
     <button id="ok-latest" type="button">Close</button>
   </div>
@@ -162,6 +203,9 @@
               "#update-prompt-automatic"
             ),
           };
+          this.addEventListener("overlay-shown", () => {
+            this._checkVersion();
+          });
           this.shadowRoot
             .getElementById("ok-latest")
             .addEventListener("click", () => {
@@ -172,19 +216,17 @@
             .addEventListener("click", () => {
               location.reload();
             });
-
           this._elements.updatePromptAutomatic.addEventListener(
             "update-prompt-confirmed",
             () => {
               this._doUpdate();
             }
           );
-          this._elements.updatePromptAutomatic.addEventListener(
-            "update-prompt-canceled",
-            () => {
+          [this._elements.updatePromptAutomatic].forEach((promptElement) => {
+            promptElement.addEventListener("update-prompt-canceled", () => {
               this.dispatchEvent(new DialogClosedEvent());
-            }
-          );
+            });
+          });
         }
 
         get _state() {
@@ -201,17 +243,38 @@
         }
 
         _renderPrompt(updateInfo) {
-          if (updateInfo.kind !== "automatic") {
-            throw new Error(`Unsupported update kind: ${updateInfo.kind}`);
-          }
-          this.setAttribute("update-kind", updateInfo.kind);
+          const prompt = (() => {
+            if (updateInfo.kind === "automatic") {
+              // For the `automatic` kind, there is no data attached, so we
+              // don’t have to initialize anything here.
+              return "automatic";
+            }
+            throw new Error(
+              `No matching prompt for update: ${JSON.stringify(updateInfo)}`
+            );
+          })();
+          this.setAttribute("update-prompt", prompt);
         }
 
-        checkVersion() {
+        /**
+         * Checks for newer available versions of TinyPilot.
+         */
+        _checkVersion() {
           this._state = this._states.CHECKING;
 
           Promise.all([getVersion(), getLatestRelease()])
             .then(([localVersion, latestRelease]) => {
+              this.shadowRoot
+                .querySelectorAll(".version-local .version-number")
+                .forEach((e) => {
+                  e.innerText = localVersion.version;
+                });
+              this.shadowRoot
+                .querySelectorAll(".version-latest .version-number")
+                .forEach((e) => {
+                  e.innerText = latestRelease.version;
+                });
+
               if (localVersion.version === latestRelease.version) {
                 this._state = this._states.LATEST;
               } else {

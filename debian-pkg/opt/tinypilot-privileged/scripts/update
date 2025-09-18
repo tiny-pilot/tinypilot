@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Triggers an update of the system.
+
 # Echo commands before executing them, by default to stderr.
 set -x
 
@@ -9,6 +11,7 @@ set -u
 # Exit on first error.
 set -e
 
+# Hand over to latest `get-tinypilot.sh` script.
 # The URL is trusted.
 # nosemgrep: curl-pipe-bash
 curl \
