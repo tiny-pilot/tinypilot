@@ -95,14 +95,6 @@ This log is useful if you [file a bug report](https://github.com/tiny-pilot/tiny
 
 You can read more details about the logs [in the wiki](https://github.com/tiny-pilot/tinypilot/wiki/Troubleshooting-and-Diagnostics).
 
-## Security considerations
-
-TinyPilot does not support authentication or transport-level encryption. You should only use TinyPilot on networks that you trust. Anyone who accesses the TinyPilot URL can shutdown or restart your Pi and type arbitrary commands into the device to which your Pi is connected.
-
-To use TinyPilot on untrusted networks, you can upgrade to [TinyPilot Pro](https://tinypilotkvm.com/products/tinypilot-pro), which adds password-based authentication and TLS for end-to-end encryption.
-
-As a free alternative, you can adjust your Nginx configuration (included by default with the installation) to require [HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) and add a self-signed TLS certificate.
-
 ## See also
 
 - [TinyPilot Wiki](https://github.com/tiny-pilot/tinypilot/wiki): Guides for tasks related to TinyPilot.
@@ -128,7 +120,18 @@ For news about major TinyPilot releases and other updates about the project, sig
 
 TinyPilot Pro includes additional features for professional users, including:
 
-- [Virtual drive mounting and booting](https://tinypilotkvm.com/blogs/news/tinypilot-adds-virtual-storage-bandwidth-tuning#boot-into-a-virtual-disk-drive)
-- Password-based authentication
+- [Boot into a virtual disk drive](https://tinypilotkvm.com/blogs/news/tinypilot-adds-virtual-storage-bandwidth-tuning#boot-into-a-virtual-disk-drive)
+- [Load virtual disk drive from URL](https://tinypilotkvm.com/blogs/news/whats-new-in-1-5-1#load-virtual-disk-drive-from-url)
+- [Control TinyPilot programmatically](https://tinypilotkvm.com/blogs/news/tinypilots-july-release-improves-update-experience#control-tinypilot-programmatically)
+- [Mount virtual media in CD-ROM mode](https://tinypilotkvm.com/blogs/news/whats-new-in-tinypilots-september-2021-update#mount-virtual-media-in-cd-rom-mode)
+- [Wake on LAN](https://tinypilotkvm.com/blogs/news/whats-new-in-tinypilots-september-2021-update#wake-on-lan)
+- [Manage SSH access from the web interface](https://tinypilotkvm.com/blogs/news/whats-new-in-2022-01#manage-ssh-access-from-the-web)
+- [Assign a static IP address from the web interface](https://tinypilotkvm.com/blogs/news/tinypilot-static-ip-update-menu-improvements#assign-your-tinypilot-a-static-ip-address)
+- [Easily transfer files using a virtual USB drive](https://tinypilotkvm.com/blogs/news/tinypilot-virtual-usb-file-transfer-touchscreen-support#easily-transfer-files-using-a-virtual-usb-drive)
+- [Manage Wi-Fi connections from the web interface](https://tinypilotkvm.com/blogs/news/manage-wifi-and-network-status-tinypilot#manage-tinypilots-wi-fi-connection)
+- [Execute scripts from the web interface](https://tinypilotkvm.com/blogs/news/whats-new-in-tinypilots-march-2025-update#execute-scripts-from-the-web-interface)
+- [Save files to virtual media](https://tinypilotkvm.com/blogs/news/tinypilot-security-tailscale-user-roles#save-files-with-virtual-media)
+- [User roles](https://tinypilotkvm.com/blogs/news/tinypilot-security-tailscale-user-roles#user-roles)
+- [Tailscale integration](https://tinypilotkvm.com/blogs/news/tinypilot-security-tailscale-user-roles#connect-to-tailscale-in-seconds)
 
 Support the project and upgrade to Pro at <https://tinypilotkvm.com/products/tinypilot-pro>.
