@@ -11,6 +11,7 @@ Environment=PYTHONPATH=/opt/tinypilot/app
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=tinypilot-update-svc
+LogNamespace=tinypilot-updater
 TimeoutSec=900
 KillSignal=SIGKILL
 

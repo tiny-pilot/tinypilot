@@ -54,6 +54,14 @@ describe("determineFutureOrigin", () => {
       ),
       "https://new-tinypilot"
     );
+    assert.strictEqual(
+      determineFutureOrigin(
+        new URL("https://10.0.0.123/"),
+        undefined,
+        "new-tinypilot"
+      ),
+      "https://new-tinypilot"
+    );
   });
   it("maintains port number", () => {
     assert.strictEqual(

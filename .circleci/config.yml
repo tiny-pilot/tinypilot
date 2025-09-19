@@ -3,6 +3,9 @@ executors:
   ubuntu:
     docker:
       - image: cimg/base:2024.02
+  ubuntu-machine:
+    machine:
+      image: ubuntu-2204:2024.01.2
   python:
     docker:
       - image: cimg/python:3.9.17
@@ -42,6 +45,9 @@ jobs:
           root: ./dev-scripts
           paths:
             - ./build-timestamp.txt
+  ##############################################################################
+  # Test and build
+  ##############################################################################
   check_whitespace:
     executor: ubuntu
     steps:
@@ -53,7 +59,8 @@ jobs:
           name: Check that all text files end in a trailing newline
           command: ./dev-scripts/check-trailing-newline
   check_bash:
-    executor: ubuntu
+    # Use machine executor to allow for mounting a filesystem.
+    executor: ubuntu-machine
     steps:
       - checkout
       - run:
@@ -78,7 +85,7 @@ jobs:
             shellcheck --version
       - run:
           name: Run tests and static analysis on bash scripts
-          command: ./dev-scripts/check-bash
+          command: sudo ./dev-scripts/check-bash
   check_privilege_guard:
     executor: ubuntu
     steps:
