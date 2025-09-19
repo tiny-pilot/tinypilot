@@ -18,30 +18,3 @@
   border-right: var(--width) solid transparent;
   border-top: var(--height) solid var(--brand-creme-light);
 }
-
-.icon-long-arrow {
-  position: relative;
-  width: 20px;
-}
-
-.icon-long-arrow:before {
-  position: absolute;
-  content: "";
-  top: -1px;
-  left: 0;
-  width: 90%;
-  height: 2px;
-  background: #000;
-}
-
-.icon-long-arrow:after {
-  position: absolute;
-  content: "";
-  top: -5px;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 10px solid #000;
-}
