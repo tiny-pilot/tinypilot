@@ -267,13 +267,13 @@
                 .querySelectorAll(".version-local .version-number")
                 .forEach((e) => {
                   // Strip commit hash from version string.
-                  e.innerText = localVersion.version.split('+', 1)[0];
+                  e.innerText = localVersion.version.split("+", 1)[0];
                 });
               this.shadowRoot
                 .querySelectorAll(".version-latest .version-number")
                 .forEach((e) => {
                   // Strip commit hash from version string.
-                  e.innerText = latestRelease.version.split('+', 1)[0];
+                  e.innerText = latestRelease.version.split("+", 1)[0];
                 });
 
               if (localVersion.version === latestRelease.version) {
