@@ -71,7 +71,7 @@ readonly BUNDLE_FILENAME="tinypilot-${TINYPILOT_VARIANT}-${TIMESTAMP}-${TINYPILO
 # Download Janus Debian package.
 wget \
   --directory-prefix="${BUNDLE_DIR}" \
-  https://github.com/tiny-pilot/janus-debian/releases/download/1.3.2-20250808114245/janus_1.3.2-20250808114245_armhf.deb
+  https://output.circle-artifacts.com/output/job/09da6342-3af3-4923-bcef-0ca2bc056925/artifacts/0/build/janus_1.3.2-20250925151258_armhf.deb
 
 # Download uStreamer Debian package.
 wget \
