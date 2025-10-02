@@ -69,8 +69,7 @@ export async function getLatestRelease() {
     .then(processJsonResponse)
     .then((updateInfo) => {
       ["version", "kind", "data"].forEach((field) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!updateInfo.hasOwnProperty(field)) {
+        if (!Object.hasOwn(updateInfo, field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
       });
@@ -87,8 +86,7 @@ export async function getVersion() {
   })
     .then(processJsonResponse)
     .then((versionResponse) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!versionResponse.hasOwnProperty("version")) {
+      if (!Object.hasOwn(versionResponse, "version")) {
         throw new ControllerError("Missing expected version field");
       }
       return versionResponse;
@@ -149,12 +147,10 @@ export async function getUpdateStatus() {
   })
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("status")) {
+      if (!Object.hasOwn(data, "status")) {
         throw new ControllerError("Missing expected status field");
       }
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("updateError")) {
+      if (!Object.hasOwn(data, "updateError")) {
         throw new ControllerError("Missing expected updateError field");
       }
       return { status: data.status, updateError: data.updateError };
@@ -170,8 +166,7 @@ export async function determineHostname() {
   })
     .then(processJsonResponse)
     .then((hostnameResponse) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!hostnameResponse.hasOwnProperty("hostname")) {
+      if (!Object.hasOwn(hostnameResponse, "hostname")) {
         throw new ControllerError("Missing expected hostname field");
       }
       return hostnameResponse.hostname;
@@ -182,12 +177,10 @@ export async function getUsers() {
   return fetch("/api/users")
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("users")) {
+      if (!Object.hasOwn(data, "users")) {
         throw new ControllerError("Missing expected users field");
       }
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("currentUsername")) {
+      if (!Object.hasOwn(data, "currentUsername")) {
         throw new ControllerError("Missing expected currentUsername field");
       }
       return { users: data.users, currentUsername: data.currentUsername };
@@ -222,8 +215,7 @@ export async function addUser(username, password, role) {
   })
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("username")) {
+      if (!Object.hasOwn(data, "username")) {
         throw new ControllerError("Missing expected username field");
       }
       return { username: data.username };
@@ -259,8 +251,7 @@ export async function deleteUser(username) {
   })
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("username")) {
+      if (!Object.hasOwn(data, "username")) {
         throw new ControllerError("Missing expected username field");
       }
       return { username: data.username };
@@ -304,8 +295,7 @@ export async function requiresHttps() {
   })
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("requiresHttps")) {
+      if (!Object.hasOwn(data, "requiresHttps")) {
         throw new ControllerError("Missing expected requiresHttps field");
       }
       return data.requiresHttps;
@@ -351,8 +341,7 @@ export async function getNetworkStatus() {
   })
     .then(processJsonResponse)
     .then((response) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!response.hasOwnProperty("interfaces")) {
+      if (!Object.hasOwn(response, "interfaces")) {
         throw new ControllerError("Missing expected interfaces field");
       }
       return response.interfaces;
@@ -369,8 +358,7 @@ export async function getWifiSettings() {
     .then(processJsonResponse)
     .then((response) => {
       ["countryCode", "ssid"].forEach((field) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!response.hasOwnProperty(field)) {
+        if (!Object.hasOwn(response, field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
       });
@@ -455,8 +443,7 @@ export async function textToShareableUrl(text) {
   })
     .then(processJsonResponse)
     .then((data) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!data.hasOwnProperty("id")) {
+      if (!Object.hasOwn(data, "id")) {
         throw new ControllerError("Missing expected id field");
       }
       return data;
@@ -486,8 +473,7 @@ export async function getVideoSettings() {
         "h264StunPort",
         "defaultH264StunPort",
       ].forEach((field) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!data.hasOwnProperty(field)) {
+        if (!Object.hasOwn(data, field)) {
           throw new ControllerError(`Missing expected ${field} field`);
         }
       });
