@@ -289,10 +289,13 @@
             wifiSettings.countryCode || "US";
           this._elements.pskInput.value = "";
           this._initialWiFiSettings = { psk: "", ...wifiSettings };
-
+          // Show ethernet warning when no ethernet interfaces are connected.
           this._elements.noEthernetWarning.hide();
           this._elements.inputError.hide();
-          if (!networkStatus.ethernet.isConnected) {
+          const noEthernetConnected = networkStatus
+            .filter((iface) => iface.name.startsWith("eth"))
+            .every((iface) => !iface.isConnected);
+          if (noEthernetConnected) {
             this._elements.noEthernetWarning.show();
           }
 
