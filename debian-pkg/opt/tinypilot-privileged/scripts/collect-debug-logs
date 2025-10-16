@@ -192,6 +192,14 @@ print_info "Checking TinyPilot streaming mode..."
   printf "\n\n"
 } >> "${LOG_FILE}"
 
+print_info "Checking status of HDMI capture chip..."
+{
+  echo "HDMI capture chip status"
+  echo "Power: $(/opt/tinypilot-privileged/scripts/check-hdmi-status --power)"
+  echo "Signal: $(/opt/tinypilot-privileged/scripts/check-hdmi-status --signal)"
+  printf "\n"
+} >> "${LOG_FILE}"
+
 print_info "Checking TinyPilot settings..."
 {
   printf "TinyPilot settings.yml\n"

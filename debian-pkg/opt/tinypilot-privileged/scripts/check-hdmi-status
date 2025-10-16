@@ -1,0 +1,107 @@
+#!/bin/bash
+#
+# This script checks the status of the HDMI capture chip.
+# It reports the status as output on stdout (either as 'true' or 'false').
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+if (( "${EUID}" != 0 )); then
+  >&2 echo 'This script requires root privileges.'
+  >&2 echo 'Please re-run with sudo:'
+  >&2 echo "  sudo $0 $*"
+  >&2 exit 1
+fi
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [--help | --power | --signal]
+
+Options:
+  --help      Display this help and exit.
+  --power     Check whether the capture chip is powered on.
+  --signal    Check whether the capture chip receives signal.
+              (This implies that the chip is powered on.)
+EOF
+}
+
+# Parse command-line arguments.
+if [[ $# -eq 0 ]]; then
+  print_help
+  exit 1
+fi
+
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    --power)
+      ACTION='power'
+      shift
+      ;;
+    --signal)
+      ACTION='signal'
+      shift
+      ;;
+    *)
+      >&2 echo "Unknown option: $1"
+      print_help >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Validate that ACTION is set.
+if [[ -z "${ACTION:-}" ]]; then
+  >&2 echo 'Error: please specify a valid flag.'
+  print_help >&2
+  exit 1
+fi
+readonly ACTION
+
+readonly VIDEO_DEVICE='/dev/video0'
+
+# Check for power.
+if [[ "${ACTION:-}" == 'power' ]]; then
+  # The output of the '--get-ctrl power_present' command is either
+  # 'power_present: 0' or 'power_present: 1'.
+  # Note that on devices prior to Voyager 3, the output will stay
+  # 'power_present: 1' persistently once the chip had been powered on
+  # initially.
+  OUTPUT="$(v4l2-ctl --device "${VIDEO_DEVICE}" --get-ctrl power_present)"
+  readonly OUTPUT
+  if [[ "${OUTPUT}" == 'power_present: 1' ]]; then
+    echo 'true'
+  else
+    echo 'false'
+  fi
+
+# Check whether there is an active signal.
+elif [[ "${ACTION:-}" == 'signal' ]]; then
+  # If there is signal, the output of '--get-input' will look like so:
+  #
+  #    Video input : 0 (Camera 0: ok)
+  #
+  # Otherwise, the output will look like so:
+  #
+  #    Video input : 0 (Camera 0: no signal, no sync lock)
+  #
+  # For reference, the output is assembled here:
+  # https://git.linuxtv.org/v4l-utils.git/tree/utils/v4l2-ctl/v4l2-ctl-io.cpp#n122
+  OUTPUT="$(v4l2-ctl --device "${VIDEO_DEVICE}" --get-input)"
+  readonly OUTPUT
+  if [[ "${OUTPUT}" == *'(Camera 0: ok)'* ]]; then
+    echo 'true'
+  else
+    echo 'false'
+  fi
+
+else
+  print_help
+  exit 1
+fi

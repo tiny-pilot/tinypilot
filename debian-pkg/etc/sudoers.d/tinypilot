@@ -1,4 +1,5 @@
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/change-hostname
+tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/check-hdmi-status
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/collect-debug-logs
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/configure-janus
 tinypilot ALL=(ALL) NOPASSWD: /opt/tinypilot-privileged/scripts/disable-wifi
