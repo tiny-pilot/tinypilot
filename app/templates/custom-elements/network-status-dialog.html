@@ -12,12 +12,6 @@
       display: block;
     }
 
-    :host(:not([show-status-eth0])) #status-eth0,
-    :host(:not([show-status-eth1])) #status-eth1,
-    :host(:not([show-status-wlan0])) #status-wlan0 {
-      display: none;
-    }
-
     .info-container {
       margin-bottom: 1em;
     }
@@ -32,10 +26,8 @@
 
   <div id="display">
     <h3>Network Status</h3>
-    <div class="info-container">
-      <network-status-interface id="status-eth0"></network-status-interface>
-      <network-status-interface id="status-eth1"></network-status-interface>
-      <network-status-interface id="status-wlan0"></network-status-interface>
+    <div class="info-container" id="interfaces-container">
+      <!-- Filled programmatically -->
     </div>
     <div class="button-container">
       <button id="close-button" type="button">Close</button>
@@ -63,14 +55,19 @@
         };
         _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 
+        constructor() {
+          super();
+          this._interfaceElements = {};
+        }
+
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
           );
           this._elements = {
-            statusEth0: this.shadowRoot.querySelector("#status-eth0"),
-            statusEth1: this.shadowRoot.querySelector("#status-eth1"),
-            statusWlan0: this.shadowRoot.querySelector("#status-wlan0"),
+            interfacesContainer: this.shadowRoot.querySelector(
+              "#interfaces-container"
+            ),
           };
           this._shouldAutoUpdate = false;
           this._updateTicker = null;
@@ -138,39 +135,32 @@
             );
             return;
           }
-          // Transform the network status array into an object, using the
-          // network interface names as keys.
-          const networkStatusMap = networkStatus.reduce(
-            (result, item) => ({ ...result, [item.name]: item }),
-            {}
+          networkStatus.forEach((iface) => {
+            let interfaceElement = this._interfaceElements[iface.name];
+            if (!interfaceElement) {
+              interfaceElement = document.createElement(
+                "network-status-interface"
+              );
+              this._interfaceElements[iface.name] = interfaceElement;
+              this._elements.interfacesContainer.appendChild(interfaceElement);
+            }
+            const displayName = iface.name.startsWith("eth")
+              ? `LAN${parseInt(iface.name.slice(3)) + 1}`
+              : iface.name.startsWith("wlan")
+              ? "Wi-Fi"
+              : iface.name;
+            interfaceElement.setEthernetWifi(displayName, iface);
+          });
+          const availableInterfaceNames = networkStatus.map(
+            (iface) => iface.name
           );
-          // Update each network status individually instead of recreating each
-          // DOM element in a loop to avoid a flash of unstyled content.
-          // https://github.com/tiny-pilot/tinypilot-pro/issues/1648
-          if ("eth0" in networkStatusMap) {
-            this._elements.statusEth0.setEthernetWifi(
-              "LAN1",
-              networkStatusMap.eth0
-            );
-          }
-          this.toggleAttribute("show-status-eth0", "eth0" in networkStatusMap);
-          if ("eth1" in networkStatusMap) {
-            this._elements.statusEth1.setEthernetWifi(
-              "LAN2",
-              networkStatusMap.eth1
-            );
-          }
-          this.toggleAttribute("show-status-eth1", "eth1" in networkStatusMap);
-          if ("wlan0" in networkStatusMap) {
-            this._elements.statusWlan0.setEthernetWifi(
-              `Wi-Fi`,
-              networkStatusMap.wlan0
-            );
-          }
-          this.toggleAttribute(
-            "show-status-wlan0",
-            "wlan0" in networkStatusMap
-          );
+          // Remove unavailable network interface elements.
+          Object.keys(this._interfaceElements)
+            .filter((key) => !availableInterfaceNames.includes(key))
+            .forEach((interfaceName) => {
+              this._interfaceElements[interfaceName].remove();
+              delete this._interfaceElements[interfaceName];
+            });
         }
       }
     );
