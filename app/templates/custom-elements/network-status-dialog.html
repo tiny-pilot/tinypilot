@@ -130,29 +130,31 @@
             );
             return;
           }
-          const seen = new Set();
-          const container = this._elements.interfacesContainer;
+          const existingInterfaceNames = new Set();
+          const interfacesContainer = this._elements.interfacesContainer;
           networkStatus.forEach((iface) => {
             const displayName = iface.name.startsWith("eth")
               ? `LAN${parseInt(iface.name.slice(3)) + 1}`
               : iface.name.startsWith("wlan")
               ? "Wi-Fi"
               : iface.name;
-            // Find existing row by name and create if missing.
-            let row = Array.from(container.children).find(
-              (el) => el.dataset && el.dataset.name === iface.name
-            );
-            if (!row) {
-              row = document.createElement("network-status-interface");
-              row.dataset.name = iface.name;
-              container.appendChild(row);
+            // Find existing interface element by name and create if missing.
+            let interfaceElement = Array.from(
+              interfacesContainer.children
+            ).find((el) => el.dataset && el.dataset.name === iface.name);
+            if (!interfaceElement) {
+              interfaceElement = document.createElement(
+                "network-status-interface"
+              );
+              interfaceElement.dataset.name = iface.name;
+              interfacesContainer.appendChild(interfaceElement);
             }
-            row.setEthernetWifi(displayName, iface);
-            seen.add(iface.name);
+            interfaceElement.setEthernetWifi(displayName, iface);
+            existingInterfaceNames.add(iface.name);
           });
           // Remove rows that are no longer present in the latest status.
-          Array.from(container.children).forEach((el) => {
-            if (!seen.has(el.dataset && el.dataset.name)) {
+          Array.from(interfacesContainer.children).forEach((el) => {
+            if (!existingInterfaceNames.has(el.dataset && el.dataset.name)) {
               el.remove();
             }
           });
