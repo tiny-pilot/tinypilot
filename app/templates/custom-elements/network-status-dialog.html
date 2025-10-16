@@ -130,18 +130,31 @@
             );
             return;
           }
-          this._elements.interfacesContainer.innerHTML = "";
+          const seen = new Set();
+          const container = this._elements.interfacesContainer;
           networkStatus.forEach((iface) => {
-            const interfaceElement = document.createElement(
-              "network-status-interface"
-            );
             const displayName = iface.name.startsWith("eth")
               ? `LAN${parseInt(iface.name.slice(3)) + 1}`
               : iface.name.startsWith("wlan")
               ? "Wi-Fi"
               : iface.name;
-            this._elements.interfacesContainer.appendChild(interfaceElement);
-            interfaceElement.setEthernetWifi(displayName, iface);
+            // Find existing row by name and create if missing.
+            let row = Array.from(container.children).find(
+              (el) => el.dataset && el.dataset.name === iface.name
+            );
+            if (!row) {
+              row = document.createElement("network-status-interface");
+              row.dataset.name = iface.name;
+              container.appendChild(row);
+            }
+            row.setEthernetWifi(displayName, iface);
+            seen.add(iface.name);
+          });
+          // Remove rows that are no longer present in the latest status.
+          Array.from(container.children).forEach((el) => {
+            if (!seen.has(el.dataset && el.dataset.name)) {
+              el.remove();
+            }
           });
         }
       }
