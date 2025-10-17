@@ -55,6 +55,11 @@
         };
         _statesWithoutDialogClose = new Set([this._states.INITIALIZING]);
 
+        constructor() {
+          super();
+          this._interfaceElements = {};
+        }
+
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
             template.content.cloneNode(true)
@@ -130,19 +135,32 @@
             );
             return;
           }
-          this._elements.interfacesContainer.innerHTML = "";
           networkStatus.forEach((iface) => {
-            const interfaceElement = document.createElement(
-              "network-status-interface"
-            );
+            let interfaceElement = this._interfaceElements[iface.name];
+            if (!interfaceElement) {
+              interfaceElement = document.createElement(
+                "network-status-interface"
+              );
+              this._interfaceElements[iface.name] = interfaceElement;
+              this._elements.interfacesContainer.appendChild(interfaceElement);
+            }
             const displayName = iface.name.startsWith("eth")
               ? `LAN${parseInt(iface.name.slice(3)) + 1}`
               : iface.name.startsWith("wlan")
               ? "Wi-Fi"
               : iface.name;
-            this._elements.interfacesContainer.appendChild(interfaceElement);
             interfaceElement.setEthernetWifi(displayName, iface);
           });
+          const availableInterfaceNames = networkStatus.map(
+            (iface) => iface.name
+          );
+          // Remove unavailable network interface elements.
+          Object.keys(this._interfaceElements)
+            .filter((key) => !availableInterfaceNames.includes(key))
+            .forEach((interfaceName) => {
+              this._interfaceElements[interfaceName].remove();
+              delete this._interfaceElements[interfaceName];
+            });
         }
       }
     );
