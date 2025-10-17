@@ -22,9 +22,11 @@ Usage: ${0##*/} [--help | --power | --signal]
 
 Options:
   --help      Display this help and exit.
-  --power     Check whether the capture chip is powered on.
+  --power     Check whether a powered HDMI cable is connected to the capture
+              chip. Note: this may not produce accurate results on Voyager 2a
+              hardware (or earlier).
   --signal    Check whether the capture chip receives signal.
-              (This implies that the chip is powered on.)
+              (This implies that a powered HDMI cable is connected.)
 EOF
 }
 
@@ -70,9 +72,9 @@ readonly VIDEO_DEVICE='/dev/video0'
 if [[ "${ACTION:-}" == 'power' ]]; then
   # The output of the '--get-ctrl power_present' command is either
   # 'power_present: 0' or 'power_present: 1'.
-  # Note that on devices prior to Voyager 3, the output will stay
-  # 'power_present: 1' persistently once the chip had been powered on
-  # initially.
+  # Note that on devices prior to Voyager 3, the behavior of this command may
+  # be unexpected, as it can persistently report 'power_present: 1', even if
+  # no powered HDMI cable is connected (anymore).
   OUTPUT="$(v4l2-ctl --device "${VIDEO_DEVICE}" --get-ctrl power_present)"
   readonly OUTPUT
   if [[ "${OUTPUT}" == 'power_present: 1' ]]; then
