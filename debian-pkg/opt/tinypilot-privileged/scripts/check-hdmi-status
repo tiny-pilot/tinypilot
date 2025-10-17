@@ -43,10 +43,18 @@ while (( "$#" > 0 )); do
       exit
       ;;
     --power)
+      if [[ -n "${ACTION:-}" ]]; then
+         >&2 echo 'Error: please only specify one flag.'
+         exit 1
+      fi
       ACTION='power'
       shift
       ;;
     --signal)
+      if [[ -n "${ACTION:-}" ]]; then
+         >&2 echo 'Error: please only specify one flag.'
+         exit 1
+      fi
       ACTION='signal'
       shift
       ;;
