@@ -136,6 +136,12 @@ print_info "Checking if mouse jiggler is enabled..."
   echo "Mouse jiggler: ${MOUSE_JIGGLER_STATUS}"
 } >> "${LOG_FILE}"
 
+print_info "Checking status of USB data connection (HID)..."
+{
+  echo "USB data connected: $(runuser tinypilot --command '/opt/tinypilot/scripts/check-usb-data-status')"
+  printf "\n"
+} >> "${LOG_FILE}"
+
 print_info "Checking storage..."
 {
   # Get the available space and total size of the root directory.
