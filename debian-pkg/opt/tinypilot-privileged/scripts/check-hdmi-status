@@ -2,6 +2,10 @@
 #
 # This script checks the status of the HDMI capture chip.
 # It reports the status as output on stdout (either as 'true' or 'false').
+#
+# Note: the script only supports checking tc358743 capture chips, whose input
+# is mapped to /dev/video0. This applies to e.g. Voyager 2a hardware products,
+# but not necessarily to Community/Hobbyist configurations.
 
 # Exit on unset variable.
 set -u
@@ -29,6 +33,19 @@ Options:
               (This implies that a powered HDMI cable is connected.)
 EOF
 }
+
+readonly VIDEO_DEVICE='/dev/video0'
+
+# Check hardware preconditions.
+if ! [[ -e "${VIDEO_DEVICE}" ]]; then
+  >&2 echo "Error: no video input device mapped to '${VIDEO_DEVICE}'."
+  exit 1
+fi
+
+if ! grep -q 'dtoverlay=tc358743' /boot/config.txt; then
+  >&2 echo 'Error: no tc358743 capture chip found.'
+  exit 1
+fi
 
 # Parse command-line arguments.
 if [[ $# -eq 0 ]]; then
@@ -73,8 +90,6 @@ if [[ -z "${ACTION:-}" ]]; then
   exit 1
 fi
 readonly ACTION
-
-readonly VIDEO_DEVICE='/dev/video0'
 
 # Check for power.
 if [[ "${ACTION:-}" == 'power' ]]; then
