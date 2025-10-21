@@ -57,7 +57,7 @@ readonly UDC
 # Check whether the UDC is self-powered or whether it receives power from the
 # attached target machine. We use the latter as an indication for a successful
 # data connection (see docstring commentary above).
-IS_SELFPOWERED="$(cat /sys/devices/platform/soc/${UDC}/udc/${UDC}/is_selfpowered)"
+IS_SELFPOWERED="$(cat "/sys/devices/platform/soc/${UDC}/udc/${UDC}/is_selfpowered")"
 readonly IS_SELFPOWERED
 
 if [[ "${IS_SELFPOWERED}" == 0 ]]; then
