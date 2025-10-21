@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# This script checks the status of the USB data connection (for transmitting
+# HID signals).
+# It reports the status as output on stdout (either as 'true' or 'false').
+#
+# Note that we cannot directly check the healthiness of the USB data connection
+# in a reliable way, but we can merely infer it by querying its power state:
+# when the TinyPilot device is connected to the target machine via the USB
+# data cable, TinyPilot’s USB chip starts to draw power through the USB cable.
+# That acts as indication that the target machine is turned on, and that it
+# should physically be able to communicate via the USB connection. However,
+# it doesn’t necessarily guarantee that the target machine will actually
+# accept and process incoming HID signals successfully.
+
+# Exit on unset variable.
+set -u
+
+# Exit on first error.
+set -e
+
+if (( "${EUID}" == 0 )); then
+  >&2 echo "This script doesn't require root privileges."
+  >&2 echo 'Please re-run as tinypilot:'
+  >&2 echo "  runuser tinypilot --command '$0 $*'"
+  exit 1
+fi
+
+print_help() {
+  cat << EOF
+Usage: ${0##*/} [--help | --power | --signal]
+
+Options:
+  --help      Display this help and exit.
+EOF
+}
+
+# Parse command-line arguments.
+while (( "$#" > 0 )); do
+  case "$1" in
+    --help)
+      print_help
+      exit
+      ;;
+    *)
+      >&2 echo "Unknown option: $1"
+      print_help >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Determine UDC identifier (UDC="USB device controller").
+UDC="$(cat /sys/kernel/config/usb_gadget/g1/UDC)"
+readonly UDC
+
+# Check whether the UDC is self-powered or whether it receives power from the
+# attached target machine. We use the latter as an indication for a successful
+# data connection (see docstring commentary above).
+IS_SELFPOWERED="$(cat "/sys/devices/platform/soc/${UDC}/udc/${UDC}/is_selfpowered")"
+readonly IS_SELFPOWERED
+
+if [[ "${IS_SELFPOWERED}" == 0 ]]; then
+  echo 'true'
+else
+  echo 'false'
+fi
