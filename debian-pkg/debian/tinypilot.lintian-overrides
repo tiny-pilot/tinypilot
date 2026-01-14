@@ -1,10 +1,7 @@
 # Suppress complaints about third-party dependencies we don't control.
-tinypilot: embedded-javascript-library opt/tinypilot/venv/lib/python*/site-packages/werkzeug/debug/shared/jquery.js please use libjs-jquery
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/greenlet/tests/test_version.py]
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py]
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/setuptools/command/easy_install.py]
-tinypilot: embedded-library libyaml opt/tinypilot/venv/lib/python*/site-packages/yaml/*.so
-tinypilot: hardening-no-relro [opt/tinypilot/venv/lib/python*/site-packages/yaml/*.so]
 tinypilot: national-encoding opt/tinypilot/venv/lib/python*/site-packages/passlib/tests/sample1c.cfg
 
 # Lintian doesn't recognize the Python interpreter when it's within the
