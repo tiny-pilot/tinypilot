@@ -26,7 +26,7 @@ override_dh_virtualenv:
 	# Use the venv directory because that's where we've historically kept it.
 	dh_virtualenv \
 		--requirements=requirements.txt \
-		--install-suffix venv \
+		--install-suffix=venv \
 		--skip-install \
 		--upgrade-pip
 	# dh_virtualenv doesn't remove __pycache__ directories, so we clean them up
