@@ -11,44 +11,56 @@ set -x
 # Exit on unset variable.
 set -u
 
-# Location of app source files.
-SOURCE_DIR="app"
-
-ADDITIONAL_PY_SCRIPTS=()
-ADDITIONAL_PY_SCRIPTS+=("scripts/render-template")
-ADDITIONAL_PY_SCRIPTS+=("scripts/update-service")
-
-# Location of virtualenv.
-VIRTUALENV_DIR=venv
-
-./dev-scripts/check-for-init-py-files
-
 # Delete pyc files from previous builds.
 find . \
-  -name "*.pyc" \
+  -name '*.pyc' \
   -type f \
-  -not -path "./${VIRTUALENV_DIR}/*" \
+  -not -path './venv/*' \
   -delete
 
 # Run unit tests and calculate code coverage.
 # Load module `app.log` to initialize our custom logger.
 coverage run \
-  --source "$SOURCE_DIR" \
-  --omit "*_test.py" \
+  --source app/ \
+  --omit '*_test.py' \
   --module \
-    unittest discover --pattern "*_test.py" \
+    unittest discover --pattern '*_test.py' \
     app.log
 coverage report
+
+# Check for Python init files.
+INIT_FILES_OK=true
+while read -r directory; do
+  if [[ ! -f "${directory}/__init__.py" ]]; then
+    printf "Directory missing __init__.py file: %s\n" "${directory}" >&2
+    INIT_FILES_OK=false
+  fi
+done < <(
+  find . \
+    -type f \
+    -name '*.py' \
+    -not -path './venv/*' \
+    -not -path './.git/*' \
+    -exec dirname {} \; \
+    | sort --unique
+)
+"${INIT_FILES_OK}" || exit 1
 
 # Check that source has correct formatting.
 yapf --diff --recursive ./
 
+# Gather names of all Python scripts in the scripts/ folder.
+PYTHON_SCRIPTS=()
+mapfile -t PYTHON_SCRIPTS < <(grep -rl '^#!.*python' scripts/)
+readonly PYTHON_SCRIPTS
+
 # Run static analysis for Python bugs/cruft.
 ruff check \
-  "${SOURCE_DIR}/" \
-  "${ADDITIONAL_PY_SCRIPTS[@]}"
+  app/ \
+  "${PYTHON_SCRIPTS[@]}"
 
 # Check for other style violations.
-PYTHONPATH="${SOURCE_DIR}" \
+PYTHONPATH='app/' \
   pylint \
-  "${SOURCE_DIR}" "${ADDITIONAL_PY_SCRIPTS[@]}"
+  app/ \
+  "${PYTHON_SCRIPTS[@]}"
