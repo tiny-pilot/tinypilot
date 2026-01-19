@@ -27,7 +27,7 @@ TinyPilot official hardware packages give you everything you need to run TinyPil
 
 ### [TinyPilot Voyager 3](https://tinypilotkvm.com/products/tinypilot-voyager-3)
 
-[![Photo of TinyPilot Voyager 3](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/products/tinypilot-voyager-2a/)
+[![Photo of TinyPilot Voyager 3](https://raw.githubusercontent.com/tiny-pilot/tinypilot/master/readme-assets/voyager2a-600px.webp)](https://tinypilotkvm.com/products/tinypilot-voyager-3)
 
 Voyager 3 is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
 
