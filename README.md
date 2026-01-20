@@ -23,15 +23,30 @@ Turn your Raspberry Pi into a browser-based KVM.
 
 ## Official builds
 
-TinyPilot official hardware packages give you everything you need to run TinyPilot and allows you to fund TinyPilot's development for future improvements.
-
 ### [TinyPilot Voyager 3](https://tinypilotkvm.com/products/tinypilot-voyager-3)
+
+[TinyPilot Voyager 3](https://tinypilotkvm.com/products/tinypilot-voyager-3) is TinyPilot’s latest professional-grade KVM over IP device, trusted by IT teams in small offices and Fortune 10 companies, with plug-and-play set up backed by a 12-month warranty and expert priority support.
 
 [![Photo of TinyPilot Voyager 3](https://github.com/user-attachments/assets/4c90ca50-743c-4b29-b99c-2b777451f482)](https://tinypilotkvm.com/products/tinypilot-voyager-3)
 
-Voyager 3 is TinyPilot's professional-grade KVM over IP device. Its quiet, compact design makes it a great fit for professional environments such as offices, data centers, and server rooms.
+**What you get:**
+
+- Rugged [rack-mountable design](https://tinypilotkvm.com/products/voyager-3-rack-shelf) with ultra-quiet active cooling
+- Status screen with vital system information
+- HDMI loop output provides video passthrough to a local monitor
+- 1920x1200 video capture for better compatibility
+- PoE option available for flexible deployment ([Voyager 3 Plus](https://tinypilotkvm.com/products/tinypilot-voyager-3?variant=46978111733952))
+- Optional additional Ethernet interface ([Voyager 3 Plus](https://tinypilotkvm.com/products/tinypilot-voyager-3?variant=46978111733952))
+- FCC/CE compliant
+- [TinyPilot Pro software](https://tinypilotkvm.com/products/tinypilot-pro) included with lifetime updates
+- 12-month extendable warranty
+- Expert priority support
+
+**[Shop Voyager 3 →](https://tinypilotkvm.com/products/tinypilot-voyager-3)**
 
 ## Build your own
+
+Want to build your own device to run TinyPilot? You can assemble a DIY version using a Raspberry Pi 4b and a USB capture dongle. This is a great option for hobbyists and those on a tight budget.
 
 - [Raspberry Pi 4B](https://smile.amazon.com/dp/B07TD42S27)
 - [HDMI to USB dongle](https://smile.amazon.com/dp/B08CXWPYQ8/)
