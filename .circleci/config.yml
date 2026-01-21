@@ -188,9 +188,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create virtual environment
-          command: python3 -m venv venv
-      - run:
           name: Install Python requirements of main app
           command: |
             python3 -m venv venv
