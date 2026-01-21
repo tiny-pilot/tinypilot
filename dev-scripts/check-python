@@ -51,7 +51,9 @@ yapf --diff --recursive ./
 
 # Gather names of all Python scripts in the scripts/ folder.
 PYTHON_SCRIPTS=()
-mapfile -t PYTHON_SCRIPTS < <(grep -rl '^#!.*python' scripts/)
+while read -r line; do
+  PYTHON_SCRIPTS+=("${line}")
+done < <(grep --recursive --files-with-matches '^#!.*python' scripts/)
 readonly PYTHON_SCRIPTS
 
 # Run static analysis for Python bugs/cruft.
