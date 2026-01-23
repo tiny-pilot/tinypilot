@@ -18,6 +18,7 @@ import request_parsers.delete_user
 import request_parsers.errors
 import request_parsers.hostname
 import request_parsers.network
+import request_parsers.password
 import request_parsers.paste
 import request_parsers.requires_https
 import request_parsers.video_settings
@@ -126,10 +127,48 @@ def user_post():
     return json_response.success({'username': username})
 
 
+@api_blueprint.route('/currentUser/password', methods=['PUT'])
+@required_auth(auth.Role.OPERATOR)
+def current_user_password_put():
+    """Updates the current user's own password.
+
+    Accepts a JSON request body with only a "password" field. The username is
+    derived from the current session, preventing privilege escalation attacks
+    where a user might attempt to change another user's password.
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    current_username = session.get_username()
+    if not current_username:
+        return json_response.error(
+            NotAuthenticatedError('Not authenticated')), 401
+
+    try:
+        password = request_parsers.password.parse_password(flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+
+    try:
+        auth.change_password(current_username, password)
+    except db.users.UserDoesNotExistError as e:
+        # This is a safeguard, this scenario should never occur.
+        return json_response.error(e), 404
+
+    # Refresh the session with the new credentials.
+    session.login(current_username)
+
+    return json_response.success()
+
+
 @api_blueprint.route('/user/password', methods=['PUT'])
 @required_auth(auth.Role.ADMIN)
 def user_password_put():
-    """Updates an existing user's password.
+    """Updates an existing user's password (ADMIN only).
+
+    The purpose of this endpoint is for admin users to manage passwords
+    of any user of the system. For (operator) users to change their
+    own password, they should use the /currentUser/password endpoint.
 
     Returns:
         Empty response on success, error object otherwise.

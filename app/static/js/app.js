@@ -365,6 +365,9 @@ menuBar.addEventListener("https-dialog-requested", () => {
 menuBar.addEventListener("manage-users-dialog-requested", () => {
   document.getElementById("manage-users-overlay").show();
 });
+menuBar.addEventListener("change-password-dialog-requested", () => {
+  document.getElementById("change-password-overlay").show();
+});
 menuBar.addEventListener("ctrl-alt-del-requested", () => {
   // Even though only the final keystroke matters, send them one at a time to
   // better match real user behavior. This ensures that the keystroke history
