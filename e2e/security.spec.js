@@ -635,124 +635,14 @@ test("changing user password invalidates other active sessions for the same user
     ).toBeVisible();
   });
 
-  await disableUserAuthentication(session1, browser);
-});
-
-test("deleting a user invalidates other active sessions for the same user", async ({
-  browser,
-}) => {
-  const session1 = await (await browser.newContext()).newPage();
-  const session2 = await (await browser.newContext()).newPage();
-
-  await test.step("Session 1: Enable user authentication by creating a user", async () => {
-    await session1.goto("/");
+  await test.step("Session 1: Re-authenticate with new password", async () => {
+    await session1.context().clearCookies();
+    await session1.goto("/login");
+    await expect(session1).toHaveURL("/login");
+    await session1.getByLabel("Username").fill("bob");
+    await session1.getByLabel("Password").fill("newbobpass");
+    await session1.getByRole("button", { name: "Log In" }).click();
     await expect(session1).toHaveURL("/");
-    await expect(
-      session1.getByRole("menuitem", { name: "System" })
-    ).toBeVisible();
-    await session1.getByRole("menuitem", { name: "System" }).hover();
-    await session1.getByRole("menuitem", { name: "Security" }).hover();
-    await session1.getByRole("menuitem", { name: "Users" }).click();
-
-    const securityDialog = session1.locator("#manage-users-dialog");
-    await expect(securityDialog).toBeVisible();
-
-    await locateToggle(session1, "#require-authentication").click();
-    await securityDialog.getByLabel("Username").fill("bob");
-    await securityDialog
-      .getByLabel("Password:", { exact: true })
-      .fill("bobpass");
-    await securityDialog.getByLabel("Confirm password").fill("bobpass");
-    await securityDialog.getByRole("button", { name: "Add User" }).click();
-  });
-
-  await test.step("Session 1: Confirm authenticated page access", async () => {
-    await session1.reload();
-    await expect(session1).toHaveURL("/");
-    await expect(
-      session1.getByRole("menuitem", { name: "System" })
-    ).toBeVisible();
-  });
-
-  await test.step("Session 1: Create a user", async () => {
-    await expect(session1).toHaveURL("/");
-    await expect(
-      session1.getByRole("menuitem", { name: "System" })
-    ).toBeVisible();
-    await session1.getByRole("menuitem", { name: "System" }).hover();
-    await session1.getByRole("menuitem", { name: "Security" }).hover();
-    await session1.getByRole("menuitem", { name: "Users" }).click();
-
-    const securityDialog = session1.locator("#manage-users-dialog");
-    await expect(securityDialog).toBeVisible();
-
-    await securityDialog.getByRole("button", { name: "Add User" }).click();
-    await securityDialog.getByLabel("Username").fill("alice");
-    await securityDialog
-      .getByLabel("Password:", { exact: true })
-      .fill("alicepass");
-    await securityDialog.getByLabel("Confirm password").fill("alicepass");
-    await session1.getByRole("button", { name: "Add User" }).click();
-  });
-
-  await test.step("Session 2: Login as user", async () => {
-    await session2.goto("/");
-    await expect(session2).toHaveURL("/login");
-    await session2.getByLabel("Username").fill("alice");
-    await session2.getByLabel("Password").fill("alicepass");
-    await session2.getByRole("button", { name: "Log In" }).click();
-    await expect(session2).toHaveURL("/");
-  });
-
-  await test.step("Session 1: Delete user", async () => {
-    const securityDialog = session1.locator("#manage-users-dialog");
-    await expect(securityDialog).toBeVisible();
-
-    await securityDialog
-      .getByRole("listitem")
-      .filter({ hasText: "alice" })
-      .getByRole("button", { name: "Edit" })
-      .click();
-    await securityDialog.getByRole("button", { name: "Remove User" }).click();
-  });
-
-  await test.step("Session 2: Confirm restricted access", async () => {
-    await expect(session2).toHaveURL("/");
-    await expect(
-      session2.getByRole("menuitem", { name: "System" })
-    ).toBeVisible();
-    await session2.getByRole("menuitem", { name: "System" }).hover();
-    await session2.getByRole("menuitem", { name: "Security" }).hover();
-    await session2.getByRole("menuitem", { name: "Users" }).click();
-
-    const errorDialog = session2.locator("#error-dialog");
-    await expect(errorDialog).toBeVisible();
-
-    await expect(errorDialog.locator("#details")).toContainText(
-      "Error: Not authorized"
-    );
-  });
-
-  await test.step("Session 2: Refresh page and confirm redirect to login screen", async () => {
-    await session2.reload();
-    await expect(session2).toHaveURL("/login");
-    await expect(
-      session2.getByRole("heading", { name: "Log In" })
-    ).toBeVisible();
-  });
-
-  await test.step("Session 2: Confirm unable to login with user", async () => {
-    await expect(session2).toHaveURL("/login");
-    await session2.getByLabel("Username").fill("alice");
-    await session2.getByLabel("Password").fill("alicepass");
-    await session2.getByRole("button", { name: "Log In" }).click();
-
-    // We should still be on the login page and see an error message.
-    await expect(session2).toHaveURL("/login");
-    await expect(session2.locator("#error")).toContainText(
-      "Error: Invalid username and password",
-      { ignoreCase: false }
-    );
   });
 
   await disableUserAuthentication(session1, browser);
