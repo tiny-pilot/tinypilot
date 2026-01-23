@@ -237,6 +237,21 @@ export async function updateUserPassword(username, password) {
   }).then(processJsonResponse);
 }
 
+export async function updateCurrentUserPassword(password) {
+  return fetch("/api/currentUser/password", {
+    method: "PUT",
+    headers: {
+      "X-CSRFToken": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    body: JSON.stringify({ password }),
+  }).then(processJsonResponse);
+}
+
 export async function deleteUser(username) {
   return fetch("/api/user", {
     method: "DELETE",

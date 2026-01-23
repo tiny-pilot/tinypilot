@@ -242,7 +242,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
 
     // We should now see a menu item for logging out.
     await page.getByRole("menuitem", { name: "System" }).hover();
-    await expect(page.getByRole("menuitem", { name: "Logout" })).toBeVisible();
+    await expect(page.getByRole("menuitem", { name: "alice" })).toBeVisible();
   });
 
   // Visiting the TinyPilot app should prompt us for credentials, and alice's
@@ -265,6 +265,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
 
     // Verify we can log out.
     await guestPage.getByRole("menuitem", { name: "System" }).hover();
+    await guestPage.getByRole("menuitem", { name: "alice" }).hover();
     await guestPage.getByRole("menuitem", { name: "Logout" }).click();
 
     await expect(guestPage).toHaveURL("/login");
@@ -290,6 +291,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
 
     // Verify we can log out.
     await guestPage.getByRole("menuitem", { name: "System" }).hover();
+    await guestPage.getByRole("menuitem", { name: "bob" }).hover();
     await guestPage.getByRole("menuitem", { name: "Logout" }).click();
 
     await expect(guestPage).toHaveURL("/login");
@@ -405,7 +407,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
       .fill("validPassword123");
     await page.getByRole("button", { name: "Add User" }).click();
 
-    await expect(page.locator("#error")).toHaveText(
+    await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Username must be 1-20 characters in length",
       { ignoreCase: false }
     );
@@ -422,7 +424,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
       .fill("validPassword123");
     await page.getByRole("button", { name: "Add User" }).click();
 
-    await expect(page.locator("#error")).toHaveText(
+    await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Username can only contain characters a-z, A-Z, 0-9, or .-_",
       { ignoreCase: false }
     );
@@ -437,7 +439,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
     await page.getByLabel("Confirm password:", { exact: true }).fill("xyz456");
     await page.getByRole("button", { name: "Add User" }).click();
 
-    await expect(page.locator("#error")).toHaveText(
+    await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Passwords do not match",
       { ignoreCase: false }
     );
@@ -452,7 +454,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
     await page.getByLabel("Confirm password:", { exact: true }).fill("short");
     await page.getByRole("button", { name: "Add User" }).click();
 
-    await expect(page.locator("#error")).toHaveText(
+    await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Password must be 6-60 characters in length",
       { ignoreCase: false }
     );
@@ -631,6 +633,16 @@ test("changing user password invalidates other active sessions for the same user
     await expect(
       session2.getByRole("heading", { name: "Log In" })
     ).toBeVisible();
+  });
+
+  await test.step("Session 1: Re-authenticate with new password", async () => {
+    await session1.context().clearCookies();
+    await session1.goto("/login");
+    await expect(session1).toHaveURL("/login");
+    await session1.getByLabel("Username").fill("bob");
+    await session1.getByLabel("Password").fill("newbobpass");
+    await session1.getByRole("button", { name: "Log In" }).click();
+    await expect(session1).toHaveURL("/");
   });
 
   await disableUserAuthentication(session1, browser);

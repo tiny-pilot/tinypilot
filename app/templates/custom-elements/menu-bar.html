@@ -137,6 +137,11 @@
       padding: 0;
     }
 
+    .group-right-aligned .items {
+      left: auto;
+      right: -1em;
+    }
+
     .group ul a:hover {
       background: var(--brand-metallic-light);
     }
@@ -168,17 +173,6 @@
       position: absolute;
       right: 10px;
     }
-
-    #logout-button {
-      font-size: 0.92em;
-      text-transform: uppercase;
-    }
-
-    {% if not requires_authentication %}
-    #logout-button {
-      display: none;
-    }
-    {% endif %}
 
     {% if not is_admin %}
     .admin-only {
@@ -425,9 +419,22 @@
   </ul>
 
   <div style="flex: 1; margin-right: 2em"><!-- Spacer --></div>
-  <div id="logout-button">
-    <a data-onclick-event="logout-requested" role="menuitem">Logout</a>
-  </div>
+
+  {% if current_username %}
+  <li class="group group-right-aligned" role="presentation">
+    <a role="menuitem" id="account-menu-label">{{ current_username }}</a>
+    <ul class="items" role="group">
+      <li class="item" role="presentation">
+        <a data-onclick-event="change-password-dialog-requested" role="menuitem"
+          >Change My Password</a
+        >
+      </li>
+      <li class="item" role="presentation">
+        <a data-onclick-event="logout-requested" role="menuitem">Logout</a>
+      </li>
+    </ul>
+  </li>
+  {% endif %}
 </template>
 
 <script type="module">
