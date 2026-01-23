@@ -8,14 +8,15 @@ const locateToggle = (page, cssSelector) => {
 };
 
 /**
- * Enable user authentication and create test users.
+ * Enable user authentication and create test users with specified roles.
  *
  * @param {Page} page - A Playwright Page object representing an authenticated
  *     browser session.
  * @param {string} username - The username to create.
  * @param {string} password - The password for the user.
+ * @param {string} role - The role for the user (ADMIN or OPERATOR).
  */
-async function setupUserAuthentication(page, username, password) {
+async function setupUserAuthentication(page, username, password, role) {
   await page.goto("/");
   await page.getByRole("menuitem", { name: "System" }).hover();
   await page.getByRole("menuitem", { name: "Security" }).hover();
@@ -54,6 +55,14 @@ async function setupUserAuthentication(page, username, password) {
     .getByLabel("Password:", { exact: true })
     .fill(password);
   await page.getByLabel("Confirm password:", { exact: true }).fill(password);
+
+  // Select role.
+  if (role === "OPERATOR") {
+    await page.getByLabel("Operator").click();
+  } else {
+    await page.getByLabel("Administrator").click();
+  }
+
   await page.getByRole("button", { name: "Add User" }).click();
   await expect(
     dialog.getByRole("heading", { name: "Manage Users" })
@@ -146,20 +155,25 @@ async function loginAsUser(page, username, password) {
 }
 
 test.describe("change password", () => {
-  test("user can change their own password", async ({ browser }) => {
-    const userPage = await (await browser.newContext()).newPage();
+  test("ADMIN user can change their own password", async ({ browser }) => {
+    const adminPage = await (await browser.newContext()).newPage();
     const newPage = await (await browser.newContext()).newPage();
 
-    await test.step("Setup: Enable authentication and create user", async () => {
-      await setupUserAuthentication(userPage, "login-user", "loginpass");
+    await test.step("Setup: Enable authentication and create ADMIN user", async () => {
+      await setupUserAuthentication(
+        adminPage,
+        "admin-user",
+        "adminpass",
+        "ADMIN"
+      );
     });
 
-    await test.step("User logs in with original password", async () => {
-      await loginAsUser(newPage, "login-user", "loginpass");
+    await test.step("Admin logs in with original password", async () => {
+      await loginAsUser(newPage, "admin-user", "adminpass");
     });
 
-    await test.step("User opens change password dialog", async () => {
-      await newPage.getByRole("menuitem", { name: "login-user" }).hover();
+    await test.step("Admin opens change password dialog", async () => {
+      await newPage.getByRole("menuitem", { name: "admin-user" }).hover();
       await newPage
         .getByRole("menuitem", { name: "Change My Password" })
         .click();
@@ -169,17 +183,17 @@ test.describe("change password", () => {
       await expect(changePasswordForm).toBeVisible();
     });
 
-    await test.step("User enters new password", async () => {
+    await test.step("Admin enters new password", async () => {
       const changePasswordForm = newPage.locator("change-password-dialog");
       await changePasswordForm
         .locator("input[name='password']")
-        .fill("newloginpass123");
+        .fill("newadminpass123");
       await changePasswordForm
         .locator("input[name='password-confirm']")
-        .fill("newloginpass123");
+        .fill("newadminpass123");
     });
 
-    await test.step("User saves password", async () => {
+    await test.step("Admin saves password", async () => {
       const saveButton = newPage
         .locator("change-password-dialog")
         .getByRole("button", { name: "Save Password" });
@@ -190,27 +204,226 @@ test.describe("change password", () => {
       await expect(changePasswordForm).not.toBeVisible();
     });
 
-    await test.step("User logs out and logs in with new password", async () => {
-      await newPage.getByRole("menuitem", { name: "login-user" }).hover();
+    await test.step("Admin logs out and logs in with new password", async () => {
+      await newPage.getByRole("menuitem", { name: "admin-user" }).hover();
       await newPage.getByRole("menuitem", { name: "Logout" }).click();
       await expect(newPage).toHaveURL("/login");
 
-      await loginAsUser(newPage, "login-user", "newloginpass123");
+      await loginAsUser(newPage, "admin-user", "newadminpass123");
       await expect(
-        newPage.getByRole("menuitem", { name: "login-user" })
+        newPage.getByRole("menuitem", { name: "admin-user" })
       ).toBeVisible();
     });
 
     await test.step("Cleanup: Disable authentication", async () => {
       await disableUserAuthentication(
-        userPage,
+        adminPage,
         browser,
-        "login-user",
-        "newloginpass123"
+        "admin-user",
+        "newadminpass123"
       );
     });
 
-    await userPage.close();
+    await adminPage.close();
     await newPage.close();
+  });
+
+  test("OPERATOR user can change their own password", async ({ browser }) => {
+    const adminPage = await (await browser.newContext()).newPage();
+    const operatorPage = await (await browser.newContext()).newPage();
+
+    await test.step("Setup: Enable authentication and create ADMIN user", async () => {
+      await setupUserAuthentication(
+        adminPage,
+        "admin-user",
+        "adminpass",
+        "ADMIN"
+      );
+    });
+
+    await test.step("Setup: Create OPERATOR user", async () => {
+      // Use admin page to create an operator user.
+      await adminPage.getByRole("menuitem", { name: "System" }).hover();
+      await adminPage.getByRole("menuitem", { name: "Security" }).hover();
+      await adminPage.getByRole("menuitem", { name: "Users" }).click();
+
+      const dialog = adminPage.locator("#manage-users-dialog");
+      await expect(
+        dialog.getByRole("heading", { name: "Manage Users" })
+      ).toBeVisible();
+
+      await adminPage.getByRole("button", { name: "Add User" }).click();
+      await expect(
+        dialog.getByRole("heading", { name: "User Authentication" })
+      ).toBeVisible();
+
+      await adminPage
+        .getByRole("textbox", { name: "Username" })
+        .fill("operator-user");
+      await adminPage
+        .locator("#manage-users-dialog")
+        .getByLabel("Password:", { exact: true })
+        .fill("operatorpass");
+      await adminPage
+        .getByLabel("Confirm password:", { exact: true })
+        .fill("operatorpass");
+
+      // Select OPERATOR role.
+      await adminPage.getByLabel("Operator").click();
+
+      await adminPage.getByRole("button", { name: "Add User" }).click();
+      await expect(
+        dialog.getByRole("heading", { name: "Manage Users" })
+      ).toBeVisible();
+
+      await dialog.getByRole("button", { name: "Close", exact: true }).click();
+    });
+
+    await test.step("Operator logs in with original password", async () => {
+      await loginAsUser(operatorPage, "operator-user", "operatorpass");
+    });
+
+    await test.step("Operator opens change password dialog", async () => {
+      await operatorPage
+        .getByRole("menuitem", { name: "operator-user" })
+        .hover();
+      await operatorPage
+        .getByRole("menuitem", { name: "Change My Password" })
+        .click();
+
+      // Wait for the change password form to be visible.
+      const changePasswordForm = operatorPage.locator("change-password-dialog");
+      await expect(changePasswordForm).toBeVisible();
+    });
+
+    await test.step("Operator enters new password", async () => {
+      const changePasswordForm = operatorPage.locator("change-password-dialog");
+      await changePasswordForm
+        .locator("input[name='password']")
+        .fill("newoperatorpass456");
+      await changePasswordForm
+        .locator("input[name='password-confirm']")
+        .fill("newoperatorpass456");
+    });
+
+    await test.step("Operator saves password", async () => {
+      const saveButton = operatorPage
+        .locator("change-password-dialog")
+        .getByRole("button", { name: "Save Password" });
+      await saveButton.click();
+
+      // Dialog should close after successful password change
+      const changePasswordForm = operatorPage.locator("change-password-dialog");
+      await expect(changePasswordForm).not.toBeVisible();
+    });
+
+    await test.step("Operator logs out and logs in with new password", async () => {
+      await operatorPage
+        .getByRole("menuitem", { name: "operator-user" })
+        .hover();
+      await operatorPage.getByRole("menuitem", { name: "Logout" }).click();
+      await expect(operatorPage).toHaveURL("/login");
+
+      await loginAsUser(operatorPage, "operator-user", "newoperatorpass456");
+      await expect(
+        operatorPage.getByRole("menuitem", { name: "operator-user" })
+      ).toBeVisible();
+    });
+
+    await test.step("Cleanup: Disable authentication", async () => {
+      await disableUserAuthentication(
+        adminPage,
+        browser,
+        "admin-user",
+        "adminpass"
+      );
+    });
+
+    await adminPage.close();
+    await operatorPage.close();
+  });
+
+  test("change password validation", async ({ browser }) => {
+    const adminPage = await (await browser.newContext()).newPage();
+    const userPage = await (await browser.newContext()).newPage();
+
+    await test.step("Setup: Enable authentication and create ADMIN user", async () => {
+      await setupUserAuthentication(
+        adminPage,
+        "admin-user",
+        "adminpass",
+        "ADMIN"
+      );
+    });
+
+    // Login and navigate to "Change My Password" dialog.
+    await test.step("Admin logs in", async () => {
+      await loginAsUser(userPage, "admin-user", "adminpass");
+    });
+    await userPage.getByRole("menuitem", { name: "admin-user" }).hover();
+    await userPage
+      .getByRole("menuitem", { name: "Change My Password" })
+      .click();
+
+    const changePasswordForm = userPage.locator("change-password-dialog");
+    await expect(changePasswordForm).toBeVisible();
+    const saveButton = changePasswordForm.getByRole("button", {
+      name: "Save Password",
+    });
+
+    await test.step("Not confirmed", async () => {
+      await changePasswordForm
+        .locator("input[name='password']")
+        .fill("newpass1");
+      await saveButton.isDisabled();
+
+      await changePasswordForm.locator("input[name='password']").fill("");
+      await changePasswordForm
+        .locator("input[name='password-confirm']")
+        .fill("a");
+      await saveButton.isDisabled();
+    });
+
+    await test.step("Mismatched passwords", async () => {
+      await changePasswordForm
+        .locator("input[name='password']")
+        .fill("newpass1");
+      await changePasswordForm
+        .locator("input[name='password-confirm']")
+        .fill("newpass2");
+
+      await saveButton.click();
+
+      await expect(changePasswordForm.locator("#error-message")).toHaveText(
+        "Passwords do not match",
+        { ignoreCase: false }
+      );
+    });
+
+    await test.step("Too short password", async () => {
+      await changePasswordForm.locator("input[name='password']").fill("short");
+      await changePasswordForm
+        .locator("input[name='password-confirm']")
+        .fill("short");
+
+      await saveButton.click();
+
+      await expect(changePasswordForm.locator("#error-message")).toHaveText(
+        "Password must be 6-60 characters in length",
+        { ignoreCase: false }
+      );
+    });
+
+    await test.step("Cleanup: Disable authentication", async () => {
+      await disableUserAuthentication(
+        adminPage,
+        browser,
+        "admin-user",
+        "adminpass"
+      );
+    });
+
+    await adminPage.close();
+    await userPage.close();
   });
 });
