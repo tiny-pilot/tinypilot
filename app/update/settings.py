@@ -33,41 +33,6 @@ import video_service
 
 _SETTINGS_FILE_PATH = env.abs_path_in_home_dir('settings.yml')
 
-# To create a new EDID:
-#  1. Convert the existing EDID to binary using "edid2bin".
-#  2. Edit the binary using "AW EDID Editor v.02.00.13".
-#  3. Save the new EDID in binary format.
-#  4. Convert the binary EDID to a hex EDID using "make-edid".
-#    - Use the "--yaml" option if required.
-
-# Note: You may need to perform a few extra steps in order for the EDID
-# to conform to edid-decode's check - but only if the "Display Range Limits"
-# block changes. This is due to a bug in AW EDID Editor v.02.00.13 that doesn't
-# set the correct bytes.
-# To work around this:
-#  1. Open the new EDID in "AW EDID Editor v.3.0.10".
-#  2. Save the EDID to set correct bytes in the "Display Range Limits" block
-#  3. Re-open the EDID in "AW EDID Editor v.02.00.13" and re-set
-#     the screen size dimensions to 0 (both vertical and horizontal)
-_DEFAULT_TC358743_EDID = """
-00ffffffffffff005262769800888888
-2d1e0103800000781aee91a3544c9926
-0f50547fef8081c08140810081809500
-a9c081406140271f80f07138164038c0
-350000000000001eec2c80a070381a40
-3020350000000000001e000000fc0054
-696e7950696c6f740a202020000000fd
-00185a125010000a20202020202001aa
-02031ef14b010204131f2021223c3d3e
-2309070766030c00300080e2007f0000
-00000000000000000000000000000000
-00000000000000000000000000000000
-00000000000000000000000000000000
-00000000000000000000000000000000
-00000000000000000000000000000000
-0000000000000000000000000000008e
-""".strip()
-
 # Define default values for user-configurable TinyPilot settings. The YAML data
 # in _SETTINGS_FILE_PATH take precedence over these defaults.
 _DEFAULTS = {
@@ -77,7 +42,7 @@ _DEFAULTS = {
     # settings file if they want to provide their own TLS keys.
     'tinypilot_manage_tls_keys': True,
     'ustreamer_desired_fps': video_service.DEFAULT_MJPEG_FRAME_RATE,
-    'ustreamer_edid': _DEFAULT_TC358743_EDID,
+    'ustreamer_edid': video_service.DEFAULT_EDID,
     'ustreamer_quality': video_service.DEFAULT_MJPEG_QUALITY,
     'ustreamer_h264_bitrate': video_service.DEFAULT_H264_BITRATE,
     'janus_stun_server': video_service.DEFAULT_H264_STUN_SERVER,

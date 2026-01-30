@@ -28,15 +28,55 @@ adduser \
 
 chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
 
-# Enable the dwc2 kernel driver, which we need to emulate USB devices with USB
-# OTG.
-readonly MODULES_PATH='/etc/modules'
-if ! grep --quiet '^dwc2$' "${MODULES_PATH}" ; then
-  echo 'dwc2' | tee --append "${MODULES_PATH}"
-fi
 readonly BOOT_CONFIG_PATH='/boot/config.txt'
-if ! grep --quiet '^dtoverlay=dwc2$' "${BOOT_CONFIG_PATH}" ; then
-  echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
+
+# Determine product identifiers.
+# Products released before voyager-3 don't have an explicit product family and
+# are guessed based on the contents of their boot config.
+readonly PRODUCT_FAMILY_FILE='/etc/tinypilot/product-family'
+if [[ -f "${PRODUCT_FAMILY_FILE}" ]]; then
+  PRODUCT_FAMILY="$(cat "${PRODUCT_FAMILY_FILE}")"
+elif grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}"; then
+  # Assume a Voyager product if a TC358743 chip is used.
+  PRODUCT_FAMILY='voyager'
+else
+  # Otherwise, assume a Hobbyist product.
+  PRODUCT_FAMILY='hobbyist'
+fi
+readonly PRODUCT_FAMILY
+# Products released before voyager-3 don't have an explicit product model and
+# cannot be reliably guessed. As a result, their product model is an empty
+# string.
+readonly PRODUCT_MODEL_FILE='/etc/tinypilot/product-model'
+if [[ -f "${PRODUCT_MODEL_FILE}" ]]; then
+  PRODUCT_MODEL="$(cat "${PRODUCT_MODEL_FILE}")"
+fi
+readonly PRODUCT_MODEL="${PRODUCT_MODEL:-}"
+
+# Set boot config.
+if [[ -n "${PRODUCT_FAMILY}" && -n "${PRODUCT_MODEL}" ]]; then
+  # Set universal static boot config.
+  cp \
+    /usr/share/tinypilot/boot_config.txt \
+    "${BOOT_CONFIG_PATH}"
+else
+  # Generate legacy boot config.
+  if ! grep --quiet '^dtoverlay=dwc2$' "${BOOT_CONFIG_PATH}"; then
+    echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
+  fi
+  if [[ "${PRODUCT_FAMILY}" == 'voyager' ]]; then
+    # Enable TC358743-audio overlay in /boot/config.txt.
+    # Note that the tc358743-audio overlay depends on the tc358743 overlay.
+    sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
+    sed --in-place '/dtoverlay=tc358743/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
+
+    # Set GPU memory to 256MB in /boot/config.txt
+    if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
+      sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
+    else
+      echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
+    fi
+  fi
 fi
 
 # Create TinyPilot settings file if it doesn't already exist.
@@ -77,32 +117,18 @@ if ! grep \
   fi
 fi
 
-tc358743_overlay_enabled='false'
-if grep --silent '^dtoverlay=tc358743$' "${BOOT_CONFIG_PATH}" ; then
-  tc358743_overlay_enabled='true'
-
-  # Enable TC358743-audio overlay in /boot/config.txt.
-  # Note that the tc358743-audio overlay depends on the tc358743 overlay.
-  sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
-  sed --in-place '/dtoverlay=tc358743/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
-
-  # Set GPU memory to 256MB in /boot/config.txt
-  if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
-    sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
-  else
-    echo 'gpu_mem=256' | tee --append "${BOOT_CONFIG_PATH}"
-  fi
-
-  # Populate TinyPilot's EDID.
-  mkdir -p /home/ustreamer/edids
+# Populate TinyPilot's EDID.
+readonly TINYPILOT_EDID_FILE="${TINYPILOT_HOME_DIR}/edid.hex"
+if [[ "${PRODUCT_FAMILY}" == 'voyager' ]]; then
   pushd /opt/tinypilot
   . venv/bin/activate
   runuser tinypilot \
     --command 'PYTHONPATH=/opt/tinypilot/app ./scripts/render-template' \
     <<< '{{ ustreamer_edid }}' \
-    > /home/ustreamer/edids/tc358743-edid.hex
+    > "${TINYPILOT_EDID_FILE}"
   deactivate
-  chmod 0644 /home/ustreamer/edids/tc358743-edid.hex
+  chown "${TINYPILOT_USER}:${TINYPILOT_GROUP}" "${TINYPILOT_EDID_FILE}"
+  chmod 0644 "${TINYPILOT_EDID_FILE}"
   popd
 fi
 
@@ -114,12 +140,19 @@ video: {
 }
 EOF
 
-# Append audio settings if TC358743 support is enabled.
+# Append Janus audio settings.
 # (acap = “audio capture”)
-if "${tc358743_overlay_enabled}" ; then
+if [[ "${PRODUCT_FAMILY}" == 'voyager' && -z "${PRODUCT_MODEL}" ]]; then
   cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 acap: {
     device = "hw:1"
+    tc358743 = "/dev/video0"
+}
+EOF
+elif [[ "${PRODUCT_FAMILY}" == 'voyager' && "${PRODUCT_MODEL}" == '3' ]]; then
+  cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
+acap: {
+    device = "hw:0"
     tc358743 = "/dev/video0"
 }
 EOF
@@ -131,9 +164,10 @@ readonly USTREAMER_LAUNCHER_CONFIG_DIR="${USTREAMER_LAUNCHER_BASE_DIR}/configs.d
 mkdir -p "${USTREAMER_LAUNCHER_CONFIG_DIR}"
 
 # Figure out which uStreamer settings file to use.
-USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
-if "${tc358743_overlay_enabled}" ; then
+if [[ "${PRODUCT_FAMILY}" == 'voyager' ]]; then
   USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/tc358743.yml"
+else
+  USTREAMER_CONFIG_TARGET="${USTREAMER_LAUNCHER_BASE_DIR}/config-library/hdmi-to-usb.yml"
 fi
 readonly USTREAMER_CONFIG_TARGET
 

@@ -25,8 +25,11 @@ if [[ -n "${FORCE_INSTALL+x}" ]]; then
 else
   # Restrict installation to only specific configurations.
 
-  # Install only on Raspberry Pi 4 Model B.
-  if ! grep --quiet "^Model\s*: Raspberry Pi 4 Model B" /proc/cpuinfo ; then
+  # Install only on supported hardware:
+  # - Raspberry Pi 4 Model B (e.g., Voyager 2)
+  if ! grep --quiet \
+    --regexp '^Model\s*: Raspberry Pi 4 Model B' \
+    /proc/cpuinfo; then
     echo 'You are trying to install on unsupported hardware.' >&2
     echo 'Visit https://github.com/tiny-pilot/tinypilot/ for more details.' >&2
     exit 1

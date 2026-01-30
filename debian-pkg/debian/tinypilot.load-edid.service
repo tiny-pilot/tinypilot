@@ -1,6 +1,7 @@
 [Unit]
-Description=Load EDID for TC358743 HDMI capture chip.
+Description=Load EDID.
 After=syslog.target
+ConditionPathExists=/home/tinypilot/edid.hex
 # Give up if we restart on failure 20 times within 5 minutes (300 seconds).
 StartLimitIntervalSec=300
 StartLimitBurst=20
@@ -8,12 +9,8 @@ StartLimitBurst=20
 [Service]
 Type=oneshot
 User=root
-ExecCondition=grep \
-  --regexp '^dtoverlay=tc358743$' \
-  --silent \
-  /boot/config.txt
 ExecStart=v4l2-ctl \
-  --set-edid=file=/home/ustreamer/edids/tc358743-edid.hex \
+  --set-edid=file=/home/tinypilot/edid.hex \
   --fix-edid-checksums
 Restart=on-failure
 RestartSec=2

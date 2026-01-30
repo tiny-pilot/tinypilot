@@ -6,4 +6,4 @@ pylint==2.14.2
 ruff==0.12.10
 semgrep==1.79.0
 sqlfluff==1.3.2
-yapf==0.40.1
+yapf==0.43.0

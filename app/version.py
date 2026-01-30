@@ -82,13 +82,18 @@ def latest_version():
         VersionRequestError: If an error occurred while making an HTTP request
             to the Gatekeeper API.
     """
+    # The URL is trusted because it's not based on user input.
+    url = f'{env.GATEKEEPER_BASE_URL}/community/available-update'
     try:
-        # The URL is trusted because it's not based on user input.
         # pylint: disable=line-too-long
         with urllib.request.urlopen(  # noqa: S310 # nosemgrep: dynamic-urllib-use-detected
-                f'{env.GATEKEEPER_BASE_URL}/community/available-update',
+                url,
                 timeout=10) as response:
             response_bytes = response.read()
+    except urllib.error.HTTPError as e:
+        message = e.fp.read().decode('utf-8').strip()
+        raise VersionRequestError(
+            f'Failed to request latest available version: {message}') from e
     except urllib.error.URLError as e:
         if (isinstance(e.reason, ssl.SSLCertVerificationError) and
                 e.reason.verify_message == 'certificate is not yet valid'):

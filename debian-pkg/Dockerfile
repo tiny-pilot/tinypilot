@@ -4,12 +4,13 @@
 
 FROM debian:bullseye-20220328-slim AS build
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN set -exu && \
     apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      debhelper \
-      dh-virtualenv \
-      dpkg-dev
+    apt-get install --yes --no-install-recommends \
+      dpkg-dev \
+      devscripts \
+      equivs
 
 # Docker populates this value from the --platform argument. See
 # https://docs.docker.com/build/building/multi-platform/
@@ -73,15 +74,34 @@ Source: ${PKG_NAME}
 Section: net
 Priority: optional
 Maintainer: TinyPilot Support <support@tinypilotkvm.com>
-Build-Depends: debhelper (>= 11)
+Build-Depends:
+  debhelper (>= 11),
+  dh-virtualenv,
+  python3-dev,
+  python3-pip,
+  python3-venv
 
 Package: ${PKG_NAME}
 Architecture: ${PKG_ARCH}
-Depends: \${shlibs:Depends}, adduser, janus, nginx, python3, python3-pip, python3-venv, sudo, ustreamer
+Depends: \${shlibs:Depends},
+  \${misc:Depends},
+  adduser,
+  janus,
+  nginx,
+  python3,
+  sudo,
+  ustreamer
 Homepage: https://tinypilotkvm.com
 Description: Simple, easy-to-use KVM over IP
 XBS-Tinypilot-Version: ${TINYPILOT_VERSION}
 EOF
+
+# Install build dependencies based on Debian control file.
+RUN mk-build-deps \
+      --tool 'apt-get --option Debug::pkgProblemResolver=yes --no-install-recommends --yes -qq' \
+      --install \
+      --remove \
+      control
 
 RUN set -exu && \
     cat >changelog <<EOF

@@ -1,3 +1,4 @@
+import io
 import json
 import tempfile
 import urllib.error
@@ -8,7 +9,7 @@ from unittest import mock
 import version
 
 
-class VersionTest(TestCase):
+class LocalVersionTest(TestCase):
 
     def setUp(self):
         # Run all unit tests with debug mode disabled.
@@ -62,6 +63,18 @@ class VersionTest(TestCase):
                                    mock_version_file.name):
                 with self.assertRaises(version.VersionFileError):
                     version.local_version()
+
+
+class LatestVersionTest(TestCase):
+
+    def setUp(self):
+        # Run all unit tests with version's debug mode enabled.
+        version_is_debug_patch = mock.patch.object(version,
+                                                   '_is_debug',
+                                                   return_value=True)
+        self.addCleanup(version_is_debug_patch.stop)
+        version_is_debug_patch.start()
+
 
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_when_request_is_successful(self, mock_urlopen):
@@ -123,14 +136,20 @@ class VersionTest(TestCase):
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_raises_request_error_when_request_fails(
             self, mock_urlopen):
-        mock_urlopen.side_effect = urllib.error.URLError(
-            'dummy error from gatekeeper', None)
+        urlopen_mock = mock.Mock(side_effect=urllib.error.HTTPError(
+            '127.0.0.1', 400, '400 Bad Request', None, io.BytesIO(
+                b'bad request')))
+        mock_urlopen.return_value.__enter__ = urlopen_mock
 
-        with self.assertRaises(version.VersionRequestError):
+        with self.assertRaises(version.VersionRequestError) as ctx:
             version.latest_version()
 
+        self.assertEqual(
+            'Failed to request latest available version: bad request',
+            str(ctx.exception))
 
-class DebugModeVersionTest(TestCase):
+
+class DebugModeLocalVersionTest(TestCase):
 
     def test_local_version_returns_dummy_version_when_in_debug_mode(self):
         # Enable debug mode.

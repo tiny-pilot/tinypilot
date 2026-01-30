@@ -13,7 +13,7 @@ export DEB_BUILD_OPTIONS=noddebs
 	dh $@ --with python-virtualenv
 
 override_dh_installsystemd:
-	dh_installsystemd --name=load-tc358743-edid --no-start
+	dh_installsystemd --name=load-edid --no-start
 	dh_installsystemd --name=tinypilot
 	dh_installsystemd --name=update-tls-cert-common-name
 	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
