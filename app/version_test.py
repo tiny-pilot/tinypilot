@@ -75,7 +75,6 @@ class LatestVersionTest(TestCase):
         self.addCleanup(version_is_debug_patch.stop)
         version_is_debug_patch.start()
 
-
     @mock.patch.object(urllib.request, 'urlopen')
     def test_latest_version_when_request_is_successful(self, mock_urlopen):
         mock_response = mock.Mock()
