@@ -104,7 +104,9 @@ jobs:
           name: Install requirements and run lint script
           command: |
             . venv/bin/activate
-            pip install --requirement dev_requirements.txt
+            pip install \
+              --requirement requirements.txt \
+              --requirement requirements_dev.txt
             ./dev-scripts/check-sql
   check_style:
     executor: node
@@ -136,7 +138,9 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install --requirement dev_requirements.txt
+            pip install \
+              --requirement requirements.txt \
+              --requirement requirements_dev.txt
       - run:
           name: Run check script
           command: |
@@ -163,7 +167,9 @@ jobs:
           name: Install requirements
           command: |
             . venv/bin/activate
-            pip install --requirement dev_requirements.txt
+            pip install \
+              --requirement requirements.txt \
+              --requirement requirements_dev.txt
       - run:
           name: Run Static Application Security Testing (SAST) on files
           command: |
@@ -188,7 +194,9 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install --requirement dev_requirements.txt
+            pip install \
+              --requirement requirements.txt \
+              --requirement requirements_dev.txt
       - run:
           name: Install node dependencies
           command: npm install

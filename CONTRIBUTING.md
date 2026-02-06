@@ -21,7 +21,9 @@ To install TinyPilot's dev packages, run the following command:
 ```bash
 python3 -m venv venv && \
   . venv/bin/activate && \
-  pip install --requirement dev_requirements.txt && \
+  pip install \
+    --requirement requirements.txt \
+    --requirement requirements_dev.txt && \
   npm install && \
   sudo npx playwright install-deps && \
   ./dev-scripts/enable-multiarch-docker
@@ -275,7 +277,7 @@ We don't use any Python package management tools because we want to limit comple
 1. `awk '/^\s*$/ || !a[tolower($0)]++' requirements.txt | tee requirements.txt` to delete duplicate lines.
 1. Update `app/license_notice.py` to match any changes in `requirements.txt`.
 
-We don't track indirect dependencies for our dev dependencies (in `dev_requirements.txt`), so you can update those by simply changing the version number for any package.
+We don't track indirect dependencies for our dev dependencies (in `requirements_dev.txt`), so you can update those by simply changing the version number for any package.
 
 ### Building an ARMv7 bundle on a dev system
 
