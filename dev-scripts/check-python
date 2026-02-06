@@ -20,13 +20,13 @@ find . \
 
 # Run unit tests and calculate code coverage.
 # Load module `app.log` to initialize our custom logger.
-coverage run \
+./venv/bin/coverage run \
   --source app/ \
   --omit '*_test.py' \
   --module \
     unittest discover --pattern '*_test.py' \
     app.log
-coverage report
+./venv/bin/coverage report
 
 # Check for Python init files.
 INIT_FILES_OK=true
@@ -47,7 +47,14 @@ done < <(
 "${INIT_FILES_OK}" || exit 1
 
 # Check that source has correct formatting.
-yapf --diff --recursive ./
+./venv/bin/yapf \
+  --diff \
+  --recursive \
+  ./
+
+# Run static analysis for Python bugs/cruft.
+./venv/bin/ruff check \
+  ./
 
 # Gather names of all Python scripts in the scripts/ folder.
 PYTHON_SCRIPTS=()
@@ -56,13 +63,8 @@ while read -r line; do
 done < <(grep --recursive --files-with-matches '^#!.*python' scripts/)
 readonly PYTHON_SCRIPTS
 
-# Run static analysis for Python bugs/cruft.
-ruff check \
-  app/ \
-  "${PYTHON_SCRIPTS[@]}"
-
 # Check for other style violations.
 PYTHONPATH='app/' \
-  pylint \
+  ./venv/bin/pylint \
   app/ \
   "${PYTHON_SCRIPTS[@]}"
