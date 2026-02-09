@@ -1,0 +1,30 @@
+{
+  "folders": [
+    {
+      "name": "TinyPilot App",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "[markdown]": {
+      "editor.formatOnSave": false
+    },
+    "[python]": {
+      "editor.defaultFormatter": "eeyore.yapf",
+      "editor.formatOnSave": true,
+      "editor.tabSize": 4
+    },
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+    "pylint.enabled": true
+  },
+  "extensions": {
+    "recommendations": [
+      "charliermarsh.ruff",
+      "esbenp.prettier-vscode",
+      "ms-python.pylint",
+      "ms-python.python"
+    ]
+  }
+}
