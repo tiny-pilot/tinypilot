@@ -21,6 +21,7 @@ To install TinyPilot's dev packages, run the following command:
 ```bash
 python3 -m venv venv && \
   . venv/bin/activate && \
+  pip install --upgrade pip && \
   pip install \
     --requirement requirements.txt \
     --requirement requirements_dev.txt && \
