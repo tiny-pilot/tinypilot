@@ -104,6 +104,7 @@ jobs:
           name: Install requirements and run lint script
           command: |
             . venv/bin/activate
+            pip install --upgrade pip
             pip install \
               --requirement requirements.txt \
               --requirement requirements_dev.txt
@@ -138,6 +139,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
+            pip install --upgrade pip
             pip install \
               --requirement requirements.txt \
               --requirement requirements_dev.txt
@@ -167,6 +169,7 @@ jobs:
           name: Install requirements
           command: |
             . venv/bin/activate
+            pip install --upgrade pip
             pip install \
               --requirement requirements.txt \
               --requirement requirements_dev.txt
@@ -194,6 +197,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
+            pip install --upgrade pip
             pip install \
               --requirement requirements.txt \
               --requirement requirements_dev.txt
