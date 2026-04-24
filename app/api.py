@@ -693,6 +693,16 @@ def settings_requires_https_put():
     flask.current_app.config.update(
         SESSION_COOKIE_SECURE=is_session_cookie_secure)
 
+    # Force the session cookie to be re-issued with the updated Secure flag.
+    # This is important when HTTPS is being disabled: the browser will reject
+    # a non-Secure Set-Cookie sent from an HTTP origin if a Secure cookie with
+    # the same name already exists. By re-issuing the cookie, while the request
+    # is still over HTTPS, the browser accepts the new non-Secure cookie and
+    # replaces the old Secure one. Without this, every subsequent HTTP request
+    # would arrive with no session cookie, causing CSRF validation to fail with
+    # "CSRF session token is missing".
+    flask.session.modified = True
+
     return json_response.success()
 
 
