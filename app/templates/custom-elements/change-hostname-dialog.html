@@ -4,7 +4,7 @@
 
     #initializing,
     #prompt,
-    #changing {
+    #success {
       display: none;
     }
 
@@ -16,7 +16,7 @@
       display: block;
     }
 
-    :host([state="changing"]) #changing {
+    :host([state="success"]) #success {
       display: block;
     }
 
@@ -68,28 +68,40 @@
     <button id="cancel-hostname-change" type="button">Close</button>
   </div>
 
-  <div id="changing">
-    <h3>Changing Hostname</h3>
-    <p>
-      Waiting for TinyPilot to reboot at
-      <a href="" id="future-location"><!-- Filled programmatically --></a>
-      <br />
-      You will be redirected automatically.
-    </p>
-    <progress-spinner></progress-spinner>
+  <div id="success">
+    <h3>Hostname Changed</h3>
+    <div>
+      <p>
+        TinyPilot is restarting. After it’s restarted, open TinyPilot at its new
+        URL:
+      </p>
+      <p>
+        <a href="" id="future-location" target="_blank"
+          ><!-- Filled programmatically --></a
+        >
+      </p>
+      <p>
+        <inline-message show="" variant="info">
+          <strong>Note:</strong> This process usually takes about 30 seconds. If
+          the link does not work yet, wait a few seconds and try again.
+        </inline-message>
+      </p>
+      <!-- We don’t show a “Close” button here, because the user is supposed to
+           navigate to the new location, as TinyPilot isn’t reachable anymore
+           under the now outdated hostname of the current browser tab. -->
+    </div>
   </div>
 </template>
 
 <script type="module">
-  import { poll } from "/js/poll.js";
   import {
     DialogClosedEvent,
     DialogFailedEvent,
     DialogCloseStateChangedEvent,
+    DialogVariantChangedEvent,
   } from "/js/events.js";
   import {
     changeHostname,
-    checkStatus,
     determineHostname,
     shutdown,
   } from "/js/controllers.js";
@@ -104,10 +116,10 @@
         _states = {
           INITIALIZING: "initializing",
           PROMPT: "prompt",
-          CHANGING: "changing",
+          SUCCESS: "success",
         };
         _statesWithoutDialogClose = new Set([
-          this._states.CHANGING,
+          this._states.SUCCESS,
           this._states.INITIALIZING,
         ]);
 
@@ -165,6 +177,7 @@
         }
 
         _initialize() {
+          this.dispatchEvent(new DialogVariantChangedEvent("default"));
           this._elements.inputError.hide();
           this._state = this._states.INITIALIZING;
           determineHostname()
@@ -208,8 +221,8 @@
             .then((redirectURL) => {
               this._elements.futureLocation.innerText = redirectURL;
               this._elements.futureLocation.href = redirectURL;
-              this._state = this._states.CHANGING;
-              return this._waitForReboot(redirectURL);
+              this.dispatchEvent(new DialogVariantChangedEvent("success"));
+              this._state = this._states.SUCCESS;
             })
             .catch((error) => {
               if (error.code === "INVALID_HOSTNAME") {
@@ -222,37 +235,6 @@
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Change Hostname",
-                  details: error,
-                })
-              );
-            });
-        }
-
-        _waitForReboot(futureLocation) {
-          // Try to reach the future location. Note:
-          // - The timeout behaviour of `fetch` is browser-dependent.
-          // - It’s not possible to tell exactly when the new hostname will
-          //   actually be reachable, because of DNS propagation and caching.
-          // - The `status` endpoint is the only one that allows requests
-          //   from everywhere (due to CORS), so it’s safe to request from
-          //   the “old” location.
-          return poll({
-            fn: () => checkStatus(futureLocation),
-            validate: (isUpAndRunning) => isUpAndRunning === true,
-            interval: 3 * 1000,
-            timeout: 180 * 1000,
-          })
-            .then(() => {
-              window.location = futureLocation;
-            })
-            .catch((error) => {
-              this.dispatchEvent(
-                new DialogFailedEvent({
-                  title: "Failed to Redirect",
-                  message:
-                    "Cannot reach TinyPilot under the new hostname. The device " +
-                    "may have failed to reboot, or your browser is failing to " +
-                    "resolve the new hostname.",
                   details: error,
                 })
               );
