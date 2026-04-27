@@ -117,7 +117,8 @@ def record_failure(ip_address, username):
                 # We're knowingly logging a user's username, which is
                 # sensitive, but we've also marked the log as sensitive so it
                 # can later be scrubbed.
-                logger.info_sensitive(  # nosemgrep: python-logger-credential-disclosure
+                # nosemgrep: python-logger-credential-disclosure
+                logger.info_sensitive(
                     'Locking out user %s for %d seconds after %d failed'
                     ' login attempts', username, _USERNAME_LOCKOUT_SECONDS,
                     count)

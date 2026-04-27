@@ -261,7 +261,8 @@ def auth_post():
     try:
         login_rate_limit.check(source_ip, username)
     except login_rate_limit.TooManyAttemptsError as e:
-        logger.info_sensitive(  # nosemgrep: python-logger-credential-disclosure
+        # nosemgrep: python-logger-credential-disclosure
+        logger.info_sensitive(
             'Rejecting login for user %s from IP %s: rate-limited', username,
             source_ip)
         return json_response.error(e), 429
