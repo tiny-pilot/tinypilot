@@ -227,8 +227,7 @@ jobs:
       - run:
           name: Build Debian package
           command: |
-            ./dev-scripts/build-debian-pkg \
-              --build-targets linux/arm/v7
+            ./dev-scripts/build-debian-pkg
       - run:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/tinypilot*.deb

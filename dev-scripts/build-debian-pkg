@@ -10,14 +10,9 @@ set -u
 
 print_help() {
   cat <<EOF
-Usage: ${0##*/} [--help] [--build-targets BUILD_TARGETS] [--tinypilot-version TINYPILOT_VERSION]
+Usage: ${0##*/} [--help] [--tinypilot-version TINYPILOT_VERSION]
 Build a TinyPilot Debian package.
   --help                                  Optional. Display this help and exit.
-  --build-targets BUILD_TARGETS           Optional. A comma-separated list of architectures
-                                          that Docker accepts for its --platform argument.
-                                          If omitted, defaults to "linux/arm/v7,linux/amd64".
-                                          The only supported targets are "linux/arm/v7" and
-                                          "linux/amd64".
   --tinypilot-version TINYPILOT_VERSION   Optional. The version identifier that shall be
                                           assigned. If omitted, determines the version string
                                           automatically, in the "x.y.z-i+hhhhhhh" format that
@@ -34,18 +29,12 @@ print_tinypilot_version() {
 }
 
 # Parse command-line arguments.
-BUILD_TARGETS='linux/arm/v7,linux/amd64'
 TINYPILOT_VERSION="$(print_tinypilot_version)"
 while (( "$#" > 0 )); do
   case "$1" in
     --help)
       print_help
       exit
-      ;;
-    --build-targets)
-      BUILD_TARGETS="$2"
-      shift # For flag name.
-      shift # For flag value.
       ;;
     --tinypilot-version)
       TINYPILOT_VERSION="$2"
@@ -59,7 +48,6 @@ while (( "$#" > 0 )); do
       ;;
   esac
 done
-readonly BUILD_TARGETS
 readonly TINYPILOT_VERSION
 
 # Echo commands before executing them, by default to stderr.
@@ -77,7 +65,7 @@ readonly DOCKER_PROGRESS
 
 DOCKER_BUILDKIT=1 docker buildx build \
   --file debian-pkg/Dockerfile \
-  --platform "${BUILD_TARGETS}" \
+  --platform 'linux/arm/v7' \
   --build-arg TINYPILOT_VERSION="${TINYPILOT_VERSION}" \
   --build-arg PKG_VERSION="${PKG_VERSION}" \
   --target=artifact \
