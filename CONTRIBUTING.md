@@ -294,7 +294,7 @@ Once your dev system is configured for multi-architecture Docker builds, you can
 TARGET_PLATFORM='linux/arm/v7'
 
 (rm debian-pkg/releases/tinypilot*.deb || true) && \
-  ./dev-scripts/build-debian-pkg --build-targets "${TARGET_PLATFORM}" && \
+  ./dev-scripts/build-debian-pkg && \
   mv debian-pkg/releases/tinypilot*.deb bundler/bundle && \
   ./bundler/create-bundle
 ```
