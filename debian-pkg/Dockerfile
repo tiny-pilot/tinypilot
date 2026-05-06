@@ -35,8 +35,8 @@ ARG PKG_BUILD_NUMBER='1'
 RUN cat | bash <<'EOF'
 set -exu
 case "${TARGETPLATFORM}" in
-  'linux/arm/v7')
-    PKG_ARCH='armhf'
+  'linux/arm64')
+    PKG_ARCH='arm64'
     ;;
   *)
     echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2
