@@ -32,7 +32,7 @@ test.describe("debug logs dialog", () => {
     await page.getByRole("menuitem", { name: "System" }).hover();
     await page.getByRole("menuitem", { name: "Logs" }).click();
     await expect(
-      page.getByRole("heading", { name: "Debug Logs" })
+      page.getByRole("heading", { name: "Debug Logs" }),
     ).toBeVisible();
   });
 
@@ -43,16 +43,16 @@ test.describe("debug logs dialog", () => {
     await page.getByRole("button", { name: "Copy" }).click();
     const copiedUrl = await readClipboardContents(page);
     await expect(copiedUrl).toMatch(
-      new RegExp("^https://logs.tinypilotkvm.com/.*")
+      new RegExp("^https://logs.tinypilotkvm.com/.*"),
     );
 
     await expect(page.locator("#logs-success .logs-output")).toContainText(
-      "TinyPilot version: "
+      "TinyPilot version: ",
     );
 
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await expect(
-      page.getByRole("heading", { name: "Debug Logs" })
+      page.getByRole("heading", { name: "Debug Logs" }),
     ).not.toBeVisible();
   });
 });

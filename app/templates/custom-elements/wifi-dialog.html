@@ -189,25 +189,25 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._elements = {
             noEthernetWarning: this.shadowRoot.querySelector(
-              "#no-ethernet-warning"
+              "#no-ethernet-warning",
             ),
             inputError: this.shadowRoot.querySelector("#input-error"),
             inputErrorReason: this.shadowRoot.querySelector(
-              "#input-error-reason"
+              "#input-error-reason",
             ),
             ssidInput: this.shadowRoot.querySelector("#ssid-input"),
             pskInput: this.shadowRoot.querySelector("#psk-input"),
             countryCodeInput: this.shadowRoot.querySelector(
-              "#country-code-input"
+              "#country-code-input",
             ),
             enableButton: this.shadowRoot.querySelector("#enable-button"),
             disableButton: this.shadowRoot.querySelector("#disable-button"),
             networkStatusButton: this.shadowRoot.querySelector(
-              "#network-status-button"
+              "#network-status-button",
             ),
           };
 
@@ -219,7 +219,7 @@
           ].forEach((el) =>
             el.addEventListener("input", () => {
               this._refreshButtons();
-            })
+            }),
           );
           this._elements.enableButton.addEventListener("click", () => {
             this._enable();
@@ -234,20 +234,20 @@
               new CustomEvent("network-status-dialog-requested", {
                 bubbles: true,
                 composed: true,
-              })
+              }),
             );
           });
           this.shadowRoot.querySelectorAll(".close-button").forEach((el) =>
             el.addEventListener("click", () => {
               this.dispatchEvent(new DialogClosedEvent());
-            })
+            }),
           );
           Object.entries(COUNTRY_CODES)
             .sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB))
             .forEach(([code, name]) =>
               this._elements.countryCodeInput.add(
-                new Option(`${name} (${code})`, code)
-              )
+                new Option(`${name} (${code})`, code),
+              ),
             );
         }
 
@@ -259,8 +259,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -277,7 +277,7 @@
               new DialogFailedEvent({
                 title: "Failed to Retrieve Wi-Fi Settings",
                 details: error,
-              })
+              }),
             );
             return;
           }
@@ -337,7 +337,7 @@
               this._elements.ssidInput.value,
               // The backend expects a value of `null` to indicate an open
               // WiFi, not an empty string.
-              this._elements.pskInput.value || null
+              this._elements.pskInput.value || null,
             );
           } catch (error) {
             if (error.code === "INVALID_WIFI_SETTINGS") {
@@ -352,7 +352,7 @@
               new DialogFailedEvent({
                 title: "Failed to Enable Wi-Fi",
                 details: error,
-              })
+              }),
             );
             return;
           }
@@ -369,14 +369,14 @@
               new DialogFailedEvent({
                 title: "Failed to Disable Wi-Fi",
                 details: error,
-              })
+              }),
             );
             return;
           }
           this._state = this._states.SUCCESS_DISABLED;
           this.dispatchEvent(new DialogVariantChangedEvent("success"));
         }
-      }
+      },
     );
   })();
 </script>

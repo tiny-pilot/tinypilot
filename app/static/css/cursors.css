@@ -15,7 +15,9 @@
 }
 
 *[cursor="dot"] > * {
-  cursor: url("/img/dot-cursor.png") 6 6, auto !important;
+  cursor:
+    url("/img/dot-cursor.png") 6 6,
+    auto !important;
 }
 
 *[cursor="pointer"] > * {

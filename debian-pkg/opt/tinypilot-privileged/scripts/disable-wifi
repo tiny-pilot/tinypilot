@@ -34,12 +34,9 @@ set -x
 # Exit on unset variable.
 set -u
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-readonly SCRIPT_DIR
-readonly CONFIG_FILE='/etc/wpa_supplicant/wpa_supplicant.conf'
+# Delete the connection (ignore errors if it doesn't exist). The connection is
+# recreated by enable-wifi or enable-wifi-ap when WiFi is re-enabled.
+nmcli connection delete 'tinypilot-wlan0' 2>/dev/null || true
 
-# Remove any existing automated configuration.
-"${SCRIPT_DIR}/strip-marker-sections" "${CONFIG_FILE}"
-
-# Effectuate changes. This will disable the WiFi connection instantly.
-rfkill block wlan
+# Disable the wireless radio.
+nmcli radio wifi off

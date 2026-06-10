@@ -8,8 +8,8 @@ The steps below show you how to quickly set up a development environment for Tin
 
 ### Requirements
 
-- Python 3.9 or higher
-- Node.js 18.16.1 or higher
+- Python 3.13 or higher
+- Node.js 24.13.1 or higher
 - [shellcheck](https://github.com/koalaman/shellcheck#installing)
 - [bats](https://bats-core.readthedocs.io/en/stable/installation.html)
 - Docker 20.10.x or higher
@@ -146,7 +146,18 @@ By the way, for flashing the ready-made disk images of TinyPilot Pro, we recomme
 
 ### Initialize system on Voyager hardware
 
-If you want to initialize a new system on Voyager hardware, you first need to set some configuration in place to make TinyPilot work with Voyager’s video capture chip.
+If you want to initialize a new system on Voyager hardware using the bundle installer, you first need to set some configuration in place so that it knows what hardware it runs on.
+
+#### Voyager 3
+
+```bash
+# Create hardware/product identifiers.
+mkdir -p /etc/tinypilot
+echo 'voyager' > /etc/tinypilot/product-family
+echo '3' > /etc/tinypilot/product-model
+```
+
+#### Voyager 2 / 2a
 
 ```bash
 # Create tinypilot system user and group.
@@ -159,7 +170,7 @@ adduser \
     tinypilot
 
 # Add uStreamer configuration.
-echo "dtoverlay=tc358743" | sudo tee --append /boot/config.txt
+echo "dtoverlay=tc358743" | sudo tee --append /boot/firmware/config.txt
 ```
 
 ### Install from source
@@ -204,7 +215,7 @@ curl \
 
 ### Build a uStreamer Debian package
 
-CircleCI builds the uStreamer Debian package for the `armhf` architecture on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
+CircleCI builds the uStreamer Debian package for the `arm64` architecture on every commit to the [`ustreamer-debian` repo](https://github.com/tiny-pilot/ustreamer-debian), which is stored as a CircleCI artifact.
 
 Follow these steps:
 
@@ -214,16 +225,14 @@ Follow these steps:
 1. Click the `build_debian_package` job.
    - If the [`build_debian_package` CircleCI job](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/.circleci/config.yml#L25) fails for some reason, you can manually debug the code in CircleCI by clicking "rerun job with SSH" in the CircleCI dashboard and following their SSH instructions. Remember to cancel the CircleCI job once you're done debugging, in order to reduce CI costs.
 1. When the job completes, go to the "Artifacts" tab of the `build_debian_package` job on CircleCI to find the uStreamer Debian packages.
-
-   - We use `armhf`-based builds on physical devices and for testing in CircleCI.
+   - We use `arm64`-based builds on physical devices and for testing in CircleCI.
    - [Docker platform names don't match Debian architecture names:](https://github.com/tiny-pilot/ustreamer-debian/blob/2ace4a1d22a3c9108f5285e3dff0290c60e5b1cf/Dockerfile#L46C1-L48)
 
      > Docker's platform names don't match Debian's platform names, so we translate
      > the platform name from the Docker version to the Debian version...
 
      Which means that when Docker's target platform is:
-
-     - `linux/arm/v7`, CircleCI creates a `armhf` Debian package
+     - `linux/arm64`, CircleCI creates a `arm64` Debian package
 
 ### Install a uStreamer Debian package
 
@@ -280,7 +289,7 @@ We don't use any Python package management tools because we want to limit comple
 
 We don't track indirect dependencies for our dev dependencies (in `requirements_dev.txt`), so you can update those by simply changing the version number for any package.
 
-### Building an ARMv7 bundle on a dev system
+### Building an ARM64 bundle on a dev system
 
 To build a TinyPilot install bundle on your dev system, you first need to configure a Docker builder for multi-architecture builds using QEMU. You only need to perform this step once per system:
 
@@ -288,10 +297,10 @@ To build a TinyPilot install bundle on your dev system, you first need to config
 ./dev-scripts/enable-multiarch-docker
 ```
 
-Once your dev system is configured for multi-architecture Docker builds, you can build install ARMv7 TinyPilot bundles with the following commands:
+Once your dev system is configured for multi-architecture Docker builds, you can build install ARM64 TinyPilot bundles with the following commands:
 
 ```bash
-TARGET_PLATFORM='linux/arm/v7'
+TARGET_PLATFORM='linux/arm64'
 
 (rm debian-pkg/releases/tinypilot*.deb || true) && \
   ./dev-scripts/build-debian-pkg --build-targets "${TARGET_PLATFORM}" && \
@@ -538,10 +547,10 @@ const confirmCreateButton = document.querySelector("#confirm-create-btn");
 const confirmDeleteButton = document.querySelector("#confirm-delete-btn");
 
 const confirmCreateButtonContainer = document.querySelector(
-  "#create .btn-container"
+  "#create .btn-container",
 );
 const confirmDeleteButtonContainer = document.querySelector(
-  "#delete .btn-container"
+  "#delete .btn-container",
 );
 ```
 

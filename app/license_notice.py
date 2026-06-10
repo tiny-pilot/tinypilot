@@ -66,7 +66,7 @@ _LICENSE_METADATA = [
         'https://raw.githubusercontent.com/socketio/socket.io/4.7.1/LICENSE',
     ),
 
-    # Python dependencies, from requirements.txt.
+    # Python dependencies, from requirements.txt of main app.
     LicenseMetadata(
         name='eventlet',
         homepage_url='https://eventlet.net',
@@ -77,13 +77,13 @@ _LICENSE_METADATA = [
         name='Flask',
         homepage_url='https://flask.palletsprojects.com',
         license_url=
-        'https://raw.githubusercontent.com/pallets/flask/3.1.1/LICENSE.txt',
+        'https://raw.githubusercontent.com/pallets/flask/3.1.3/LICENSE.txt',
     ),
     LicenseMetadata(
         name='Flask-SocketIO',
         homepage_url='https://flask-socketio.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/Flask_SocketIO-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/flask_socketio-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='Flask-WTF',
@@ -104,7 +104,7 @@ _LICENSE_METADATA = [
         # inconsistent Python package structure.
         # https://github.com/tiny-pilot/tinypilot/issues/1899
         license_url=
-        'https://raw.githubusercontent.com/yaml/pyyaml/6.0.2/LICENSE',
+        'https://raw.githubusercontent.com/yaml/pyyaml/6.0.3/LICENSE',
     ),
     LicenseMetadata(
         name='bidict',
@@ -143,12 +143,6 @@ _LICENSE_METADATA = [
         './venv/lib/python3.*/site-packages/h11-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
-        name='importlib-metadata',
-        homepage_url='https://importlib-metadata.readthedocs.io/',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/importlib_metadata-*.dist-info/licenses/LICENSE*',
-    ),
-    LicenseMetadata(
         name='itsdangerous',
         homepage_url='https://palletsprojects.com/p/itsdangerous/',
         license_glob_pattern=
@@ -167,7 +161,7 @@ _LICENSE_METADATA = [
         # inconsistent Python package structure.
         # https://github.com/tiny-pilot/tinypilot/issues/1899
         license_url=
-        'https://raw.githubusercontent.com/pallets/markupsafe/3.0.2/LICENSE.txt',
+        'https://raw.githubusercontent.com/pallets/markupsafe/3.0.3/LICENSE.txt',
     ),
     LicenseMetadata(
         name='python-dotenv',
@@ -197,25 +191,19 @@ _LICENSE_METADATA = [
         name='Werkzeug',
         homepage_url='https://palletsprojects.com/p/werkzeug/',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/werkzeug-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/werkzeug-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='wsproto',
         homepage_url='https://wsproto.readthedocs.io',
         license_glob_pattern=
-        './venv/lib/python3.*/site-packages/wsproto-*.dist-info/LICENSE*',
+        './venv/lib/python3.*/site-packages/wsproto-*.dist-info/licenses/LICENSE*',
     ),
     LicenseMetadata(
         name='WTForms',
         homepage_url='https://wtforms.readthedocs.io',
         license_glob_pattern=
         './venv/lib/python3.*/site-packages/wtforms-*.dist-info/licenses/LICENSE*',
-    ),
-    LicenseMetadata(
-        name='zipp',
-        homepage_url='https://github.com/jaraco/zipp',
-        license_glob_pattern=
-        './venv/lib/python3.*/site-packages/zipp-*.dist-info/licenses/LICENSE*',
     ),
 
     # Indirect dependencies through Janus.

@@ -46,33 +46,11 @@ while (( "$#" > 0 )); do
   esac
 done
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 readonly SCRIPT_DIR
-# shellcheck source=lib/markers.sh
-. "${SCRIPT_DIR}/lib/markers.sh"
 
-# Clear existing TinyPilot network configurations.
-"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
-
-# Restore previously backed up WPA configurations.
-if [[ -e /etc/wpa_supplicant/wpa_supplicant.conf.bak ]]; then
-  mv \
-    /etc/wpa_supplicant/wpa_supplicant.conf.bak \
-    /etc/wpa_supplicant/wpa_supplicant.conf
-fi
-
-# Disable WPA.
-if [[ -e /etc/wpa_supplicant/wlan_enabled ]]; then
-  rm --force /etc/wpa_supplicant/wlan_enabled
-else
-  rfkill block wlan
-fi
-
-# Stop wireless access point.
-systemctl stop hostapd dnsmasq
-rm --force \
-  /etc/hostapd/hostapd.conf \
-  /etc/dnsmasq.conf
-apt remove hostapd dnsmasq --yes
+# Delegate to disable-wifi — the disable action is identical regardless of
+# whether the connection is in client or AP mode.
+"${SCRIPT_DIR}/disable-wifi"
 
 echo 'TinyPilot has disabled its WiFi access point.'

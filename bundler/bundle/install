@@ -27,37 +27,36 @@ else
 
   # Install only on supported hardware:
   # - Raspberry Pi 4 Model B (e.g., Voyager 2)
+  # - Compute Module 4 (e.g., Voyager 3)
   if ! grep --quiet \
     --regexp '^Model\s*: Raspberry Pi 4 Model B' \
+    --regexp '^Model\s*: Raspberry Pi Compute Module 4' \
     /proc/cpuinfo; then
     echo 'You are trying to install on unsupported hardware.' >&2
     echo 'Visit https://github.com/tiny-pilot/tinypilot/ for more details.' >&2
     exit 1
   fi
 
-  # Prevent installation on 64-bit operating systems.
-  # Note: the distro ID is called "Raspbian" because the 32-bit version of the
-  # Raspberry Pi operating system is based on Raspbian repos (an independent
-  # open-source project). Similarly, the the 64-bit version of the Raspberry Pi
-  # operating system is based on Debian and its distro ID would be "Debian".
-  if [[ "$(lsb_release --id --short)" != 'Raspbian' ]]; then
-    echo "TinyPilot currently only supports the 32-bit version of Raspberry Pi OS 11 \"Bullseye\"." >&2
-    echo "To install TinyPilot, you'll need Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
+  # Prevent installation on 32-bit / non-64-bit operating systems.
+  # Note: the distro ID for 64-bit Raspberry Pi OS is called "Debian"; for the
+  # 32-bit version, it would say "Raspbian".
+  if [[ "$(uname --machine)" != "aarch64" || "$(lsb_release --id --short)" != 'Debian' ]]; then
+    echo "TinyPilot currently only supports the 64-bit version of Raspberry Pi OS 13 \"Trixie\"." >&2
+    echo "To install TinyPilot, you'll need Raspberry Pi OS 13 \"Trixie\" (64-bit)." >&2
     exit 1
   fi
 
-  # Prevent installation on OS versions lower than Raspberry Pi OS 11 "Bullseye".
-  if (( "$(lsb_release --release --short)" < 11 )); then
-    echo "TinyPilot no longer supports Raspberry Pi OS 10 \"Buster\" or lower." >&2
-    echo "To install TinyPilot, you'll need to upgrade your operating system to Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
+  # Prevent installation on OS versions lower than Raspberry Pi OS 13 "Trixie".
+  if (( "$(lsb_release --release --short)" < 13 )); then
+    echo "TinyPilot no longer supports Raspberry Pi OS 11 \"Bullseye\" or lower." >&2
+    echo "To install TinyPilot, you'll need to upgrade your operating system to Raspberry Pi OS 13 \"Trixie\" (64-bit)." >&2
     exit 1
   fi
 
-  # Prevent installation on Raspberry Pi OS 12 "Bookworm".
-  if (( "$(lsb_release --release --short)" > 11 )); then
-    echo "TinyPilot is not yet compatible with Raspberry Pi OS 12 \"Bookworm\"." >&2
-    echo "You can track our progress by visiting https://github.com/tiny-pilot/tinypilot/issues/1668" >&2
-    echo "To install TinyPilot, you'll need to downgrade your operating system to Raspberry Pi OS 11 \"Bullseye\" (32-bit)." >&2
+  # Prevent installation on Raspberry Pi OS 13+.
+  if (( "$(lsb_release --release --short)" > 13 )); then
+    echo "TinyPilot is not compatible with Raspberry Pi OS greater than version 13 \"Trixie\"." >&2
+    echo "To install TinyPilot, you'll need to downgrade your operating system to Raspberry Pi OS 13 \"Trixie\" (64-bit)." >&2
     exit 1
   fi
 fi

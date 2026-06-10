@@ -9,9 +9,7 @@ StartLimitBurst=20
 [Service]
 Type=oneshot
 User=root
-ExecStart=v4l2-ctl \
-  --set-edid=file=/home/tinypilot/edid.hex \
-  --fix-edid-checksums
+ExecStart=v4l2-ctl --set-edid=file=/home/tinypilot/edid.hex
 Restart=on-failure
 RestartSec=2
 

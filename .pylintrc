@@ -112,7 +112,7 @@ docstring-min-length=60
 [STRING]
 check-quote-consistency=no
 
-[ELIF]
+[REFACTORING]
 
 # Maximum number of nested blocks for function / method body
 max-nested-blocks=5
@@ -177,6 +177,10 @@ init-import=no
 # not used).
 dummy-variables-rgx=(_+[a-zA-Z0-9_]*?$)|dummy
 
+# Argument names that match this expression will be ignored. Default to name
+# with leading underscore
+ignored-argument-names=_.*
+
 [CLASSES]
 
 # List of method names used to declare (i.e. assign) instance attributes.
@@ -196,10 +200,6 @@ exclude-protected=_asdict,_fields,_replace,_source,_make
 
 # Maximum number of arguments for function / method
 max-args=10
-
-# Argument names that match this expression will be ignored. Default to name
-# with leading underscore
-ignored-argument-names=_.*
 
 # Maximum number of locals for function / method body
 max-locals=30
@@ -236,4 +236,4 @@ analyse-fallback-blocks=no
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

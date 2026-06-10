@@ -17,6 +17,6 @@ readonly SCRIPT_DIR
 cd "${SCRIPT_DIR}/.."
 
 sqlfluff lint \
-  --disable_progress_bar \
+  --disable-progress-bar \
   --dialect sqlite \
   app/db/migrations

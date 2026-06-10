@@ -1,5 +1,6 @@
 import io
 import json
+import ssl
 import tempfile
 import urllib.error
 import urllib.request
@@ -146,6 +147,17 @@ class LatestVersionTest(TestCase):
         self.assertEqual(
             'Failed to request latest available version: bad request',
             str(ctx.exception))
+
+    @mock.patch.object(urllib.request, 'urlopen')
+    def test_latest_version_raises_request_error_when_cert_is_not_valid_yet(
+            self, mock_urlopen):
+        cert_err = ssl.SSLCertVerificationError()
+        cert_err.verify_message = 'certificate is not yet valid'
+        urlopen_mock = mock.Mock(side_effect=urllib.error.URLError(cert_err))
+        mock_urlopen.return_value.__enter__ = urlopen_mock
+
+        with self.assertRaises(version.CertificateNotYetValidError):
+            version.latest_version()
 
 
 class DebugModeLocalVersionTest(TestCase):

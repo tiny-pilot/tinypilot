@@ -42,7 +42,7 @@ if ! [[ -e "${VIDEO_DEVICE}" ]]; then
   exit 1
 fi
 
-if ! grep -q 'dtoverlay=tc358743' /boot/config.txt; then
+if ! grep -q 'dtoverlay=tc358743' /boot/firmware/config.txt; then
   >&2 echo 'Error: no tc358743 capture chip found.'
   exit 1
 fi

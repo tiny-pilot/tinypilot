@@ -145,11 +145,11 @@
           this._elements = {
             usernameInput: this.shadowRoot.querySelector("#username-input"),
             usernameStaticInput: this.shadowRoot.querySelector(
-              "#username-static-input"
+              "#username-static-input",
             ),
             passwordInput: this.shadowRoot.querySelector("#password-input"),
             passwordConfirmInput: this.shadowRoot.querySelector(
-              "#password-confirm-input"
+              "#password-confirm-input",
             ),
             addButton: this.shadowRoot.querySelector("#add-btn"),
             updateButton: this.shadowRoot.querySelector("#update-btn"),
@@ -174,7 +174,7 @@
 
           this._elements.removeButton.addEventListener(
             "click",
-            this._handleClickRemoveButton.bind(this)
+            this._handleClickRemoveButton.bind(this),
           );
           this._elements.cancelButton.addEventListener("click", () => {
             this.dispatchEvent(new ClickCancelEvent());
@@ -183,7 +183,7 @@
             (el) =>
               el.addEventListener("click", () => {
                 this._handleSubmitForm();
-              })
+              }),
           );
           [
             this._elements.usernameInput,
@@ -198,7 +198,7 @@
                   this._elements.addButton.click();
                 }
               }
-            })
+            }),
           );
         }
 
@@ -339,7 +339,7 @@
               await addUser(
                 this._elements.usernameInput.value,
                 password,
-                "ADMIN"
+                "ADMIN",
               );
             }
           } catch (error) {
@@ -371,7 +371,7 @@
           }
           this.dispatchEvent(new UserRemovedEvent());
         }
-      }
+      },
     );
   })();
 </script>

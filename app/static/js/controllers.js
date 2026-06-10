@@ -35,7 +35,7 @@ async function processJsonResponse(response) {
     const bodyText = await response.text();
     throw new ControllerError(
       "Malformed API response, content type must be JSON.\n" +
-        `Response status: ${status}\n\n${bodyText}`
+        `Response status: ${status}\n\n${bodyText}`,
     );
   }
 
@@ -44,7 +44,7 @@ async function processJsonResponse(response) {
     jsonBody = await response.json();
   } catch (jsonParseError) {
     throw new ControllerError(
-      "Malformed API response, JSON body cannot be parsed.\n" + jsonParseError
+      "Malformed API response, JSON body cannot be parsed.\n" + jsonParseError,
     );
   }
 
@@ -55,7 +55,7 @@ async function processJsonResponse(response) {
   // Reject otherwise:
   throw new ControllerError(
     jsonBody.message || "Unknown error: " + JSON.stringify(jsonBody),
-    jsonBody.code
+    jsonBody.code,
   );
 }
 

@@ -37,7 +37,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this.history = this.shadowRoot.getElementById("history");
           this.isEnabled = true;
@@ -76,7 +76,7 @@
             this.history.removeChild(keystroke);
           }, 500);
         }
-      }
+      },
     );
   })();
 </script>

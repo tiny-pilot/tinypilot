@@ -3,7 +3,7 @@ from hid import write as hid_write
 
 def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
                      vertical_wheel_delta, horizontal_wheel_delta):
-    # pylint: disable=invalid-name
+    # pylint: disable=invalid-name,too-many-positional-arguments
     x, y = _scale_mouse_coordinates(relative_x, relative_y)
 
     buf = [0] * 7

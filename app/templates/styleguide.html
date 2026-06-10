@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <!-- This page is available when you launch TinyPilot in debug mode by running
 
@@ -443,11 +443,11 @@
             document.getElementById("overlay-with-primary-action").show();
           });
         Array.from(
-          document.getElementsByClassName("close-overlay-with-primary-action")
+          document.getElementsByClassName("close-overlay-with-primary-action"),
         ).forEach((button) =>
           button.addEventListener("click", (evt) => {
             evt.target.dispatchEvent(new DialogClosedEvent());
-          })
+          }),
         );
       </script>
       <!-- Overlay with feature: -->
@@ -512,10 +512,10 @@
 
         function setDialogState(newState /* = "initial" or "secondary" */) {
           document.getElementById(
-            "overlay-with-feature-initial-state"
+            "overlay-with-feature-initial-state",
           ).style.display = newState === "initial" ? "block" : "none";
           document.getElementById(
-            "overlay-with-feature-secondary-state"
+            "overlay-with-feature-secondary-state",
           ).style.display = newState === "initial" ? "none" : "block";
         }
         document
@@ -539,7 +539,7 @@
           .forEach((el) =>
             el.addEventListener("click", () => {
               setDialogState("initial");
-            })
+            }),
           );
       </script>
       <!-- Error overlay: -->

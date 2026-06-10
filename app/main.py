@@ -17,9 +17,16 @@ import db_connection
 import json_response
 import license_notice
 import secret_key
+import silence_eventlet_fork_noise
 import socket_api
 import views
 from find_files import find as find_files
+
+# Silence eventlet's post-fork AssertionError under Python 3.13.
+# Must run after socket_api is imported (which triggers engineio to
+# auto-select its eventlet async driver and thereby load
+# eventlet.green.threading), and before any process fork.
+silence_eventlet_fork_noise.apply()
 
 host = os.environ.get('HOST', '127.0.0.1')
 port = int(os.environ.get('PORT', 48000))

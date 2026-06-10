@@ -238,113 +238,113 @@
             saveButton: this.shadowRoot.querySelector("#edit .save-btn"),
             closeButton: this.shadowRoot.querySelector(".close-btn"),
             streamingModeMjpegButton: this.shadowRoot.querySelector(
-              "#streaming-mode-mjpeg-button"
+              "#streaming-mode-mjpeg-button",
             ),
             streamingModeH264Button: this.shadowRoot.querySelector(
-              "#streaming-mode-h264-button"
+              "#streaming-mode-h264-button",
             ),
             mjpegFrameRateSlider: this.shadowRoot.querySelector(
-              "#mjpeg-frame-rate-slider"
+              "#mjpeg-frame-rate-slider",
             ),
             mjpegFrameRateValue: this.shadowRoot.querySelector(
-              "#mjpeg-frame-rate-value"
+              "#mjpeg-frame-rate-value",
             ),
             mjpegFrameRateRestoreButton: this.shadowRoot.querySelector(
-              "#mjpeg-frame-rate-reset"
+              "#mjpeg-frame-rate-reset",
             ),
             mjpegQualitySlider: this.shadowRoot.querySelector(
-              "#mjpeg-quality-slider"
+              "#mjpeg-quality-slider",
             ),
             mjpegQualityValue: this.shadowRoot.querySelector(
-              "#mjpeg-quality-value"
+              "#mjpeg-quality-value",
             ),
             mjpegQualityRestoreButton: this.shadowRoot.querySelector(
-              "#mjpeg-quality-reset"
+              "#mjpeg-quality-reset",
             ),
             h264BitrateSlider: this.shadowRoot.querySelector(
-              "#h264-bitrate-slider"
+              "#h264-bitrate-slider",
             ),
             h264BitrateValue: this.shadowRoot.querySelector(
-              "#h264-bitrate-value"
+              "#h264-bitrate-value",
             ),
             h264BitrateRestoreButton: this.shadowRoot.querySelector(
-              "#h264-bitrate-reset"
+              "#h264-bitrate-reset",
             ),
             h264StunSettings: this.shadowRoot.querySelector(
-              "video-settings-h264-stun"
+              "video-settings-h264-stun",
             ),
             h264StunValidationError: this.shadowRoot.querySelector(
-              "#stun-validation-error"
+              "#stun-validation-error",
             ),
           };
 
           this.addEventListener("overlay-shown", () => this._initialize());
           this._elements.closeButton.addEventListener("click", () =>
-            this.dispatchEvent(new DialogClosedEvent())
+            this.dispatchEvent(new DialogClosedEvent()),
           );
           this._elements.saveButton.addEventListener("click", () =>
-            this._saveSettings()
+            this._saveSettings(),
           );
           this._elements.streamingModeMjpegButton.addEventListener(
             "click",
             () => {
               this._setStreamingMode("MJPEG");
-            }
+            },
           );
           this._elements.streamingModeH264Button.addEventListener(
             "click",
             () => {
               this._setStreamingMode("H264");
-            }
+            },
           );
           this._elements.mjpegFrameRateSlider.addEventListener(
             "input",
             (event) => {
               this._setMjpegFrameRate(parseInt(event.target.value, 10));
-            }
+            },
           );
           this._elements.mjpegFrameRateRestoreButton.addEventListener(
             "click",
             () => {
               this._setMjpegFrameRate(this._defaultSettings.mjpegFrameRate);
-            }
+            },
           );
           this._elements.mjpegQualitySlider.addEventListener(
             "input",
             (event) => {
               this._setMjpegQuality(parseInt(event.target.value, 10));
-            }
+            },
           );
           this._elements.mjpegQualityRestoreButton.addEventListener(
             "click",
             () => {
               this._setMjpegQuality(this._defaultSettings.mjpegQuality);
-            }
+            },
           );
           this._elements.h264BitrateSlider.addEventListener(
             "input",
             (event) => {
               this._setH264Bitrate(parseInt(event.target.value, 10));
-            }
+            },
           );
           this._elements.h264BitrateRestoreButton.addEventListener(
             "click",
             () => {
               this._setH264Bitrate(this._defaultSettings.h264Bitrate);
-            }
+            },
           );
           this._elements.h264StunSettings.addEventListener(
             "h264-stun-value-changed",
             () => {
               this._refreshButtons();
               this._elements.h264StunValidationError.hide();
-            }
+            },
           );
           this._elements.h264StunSettings.addEventListener(
             "h264-stun-submission-requested",
             () => {
               this._elements.saveButton.click();
-            }
+            },
           );
           this.shadowRoot
             .querySelector("#advanced-settings-show-button")
@@ -366,8 +366,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -411,7 +411,7 @@
 
                 this._elements.h264StunSettings.initialize(
                   h264StunServer,
-                  h264StunPort
+                  h264StunPort,
                 );
                 this._initialSettings.h264StunServer = h264StunServer;
                 this._defaultSettings.h264StunServer = defaultH264StunServer;
@@ -420,14 +420,14 @@
 
                 this._refreshButtons();
                 this._state = this._states.EDIT;
-              }
+              },
             )
             .catch((error) => {
               this.dispatchEvent(
                 new DialogFailedEvent({
                   title: "Failed to Load Video Settings",
                   details: error,
-                })
+                }),
               );
             });
         }
@@ -445,11 +445,11 @@
         _setStreamingMode(streamingMode) {
           this._elements.streamingModeMjpegButton.classList.toggle(
             "disabled",
-            streamingMode === "MJPEG"
+            streamingMode === "MJPEG",
           );
           this._elements.streamingModeH264Button.classList.toggle(
             "disabled",
-            streamingMode === "H264"
+            streamingMode === "H264",
           );
           this.setAttribute("streaming-mode", streamingMode);
           this._refreshButtons();
@@ -544,7 +544,7 @@
           ].forEach(([actualValue, defaultValue, resetButton]) => {
             resetButton.classList.toggle(
               "reset-button-hidden",
-              actualValue === defaultValue
+              actualValue === defaultValue,
             );
           });
         }
@@ -571,7 +571,7 @@
                 fn: isMjpegStreamAvailable,
                 validate: (isAvailable) => isAvailable,
                 interval: 1000,
-              })
+              }),
             )
             .then(() => {
               // Note: After the video stream stops, it doesn't try to
@@ -594,11 +594,11 @@
                 new DialogFailedEvent({
                   title: "Failed to Change Video Settings",
                   details: error,
-                })
+                }),
               );
             });
         }
-      }
+      },
     );
   })();
 </script>

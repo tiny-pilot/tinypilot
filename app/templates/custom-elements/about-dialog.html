@@ -80,13 +80,13 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this.addEventListener("overlay-shown", () => this._initialize());
           this.shadowRoot
             .querySelector(".close-btn")
             .addEventListener("click", () =>
-              this.dispatchEvent(new DialogClosedEvent())
+              this.dispatchEvent(new DialogClosedEvent()),
             );
         }
 
@@ -106,7 +106,7 @@
                 new DialogFailedEvent({
                   title: "Failed to Retrieve Version Information",
                   details: error,
-                })
+                }),
               );
             });
         }
@@ -130,7 +130,7 @@
               credit.populate(
                 project.name,
                 project.licenseUrl,
-                project.homepageUrl
+                project.homepageUrl,
               );
             }
           });
@@ -144,7 +144,7 @@
           const parts = version.split("+");
           return `${parts[0]}  [${parts[1]}]`;
         }
-      }
+      },
     );
   })();
 </script>

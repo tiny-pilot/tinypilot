@@ -79,7 +79,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._elements = {
             dialog: this.shadowRoot.querySelector("#panel"),
@@ -96,13 +96,13 @@
             "dialog-failed",
             "secure-connection-required",
           ].forEach((eventId) =>
-            this.shadowRoot.addEventListener(eventId, () => this.show(false))
+            this.shadowRoot.addEventListener(eventId, () => this.show(false)),
           );
           this.shadowRoot.addEventListener(
             "dialog-close-state-changed",
             (evt) => {
               this.toggleAttribute("show-close-button", evt.detail.canBeClosed);
-            }
+            },
           );
           this.shadowRoot.addEventListener("dialog-variant-changed", (evt) => {
             this.setAttribute("variant", evt.detail.variant);
@@ -123,7 +123,7 @@
           this.setAttribute("variant", this._initialAttributes.variant);
           this.toggleAttribute(
             "show-close-button",
-            this._initialAttributes.showCloseButton
+            this._initialAttributes.showCloseButton,
           );
 
           if (isShown) {
@@ -133,7 +133,7 @@
                 detail: { overlay: this },
                 bubbles: true,
                 composed: true,
-              })
+              }),
             );
           } else {
             this._elements.dialog.close();
@@ -142,7 +142,7 @@
                 detail: { overlay: this },
                 bubbles: true,
                 composed: true,
-              })
+              }),
             );
           }
         }
@@ -162,7 +162,7 @@
             .assignedElements()
             .forEach((el) => el.dispatchEvent(event));
         }
-      }
+      },
     );
   })();
 </script>

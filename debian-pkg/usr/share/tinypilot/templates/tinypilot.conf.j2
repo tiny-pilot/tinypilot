@@ -13,8 +13,9 @@ upstream janus-ws {
 server {
     listen {{ tinypilot_external_port }};
     listen [::]:{{ tinypilot_external_port }};
-    listen {{ tinypilot_external_tls_port }} ssl http2;
-    listen [::]:{{ tinypilot_external_tls_port }} ssl http2;
+    listen {{ tinypilot_external_tls_port }} ssl;
+    listen [::]:{{ tinypilot_external_tls_port }} ssl;
+    http2 on;
 
     server_name tinypilot;
 

@@ -2,7 +2,7 @@
 -- `settings.py`). Since sqlite doesn’t natively support that operation, we
 -- have to use an intermediate table.
 
-CREATE TABLE __settings__(
+CREATE TABLE __settings__ (
     id INTEGER PRIMARY KEY,
     requires_https INTEGER
 );

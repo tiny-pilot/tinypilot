@@ -58,7 +58,7 @@ export class KeyboardState {
    */
   _fixInternalModifierStates(evt) {
     for (const [modifierProp, possibleCodes] of Object.entries(
-      modifierPropToKeyCodesMapping
+      modifierPropToKeyCodesMapping,
     )) {
       const isModifierPressed = evt[modifierProp];
       // In case the event reports the modifier to be released, we can just take

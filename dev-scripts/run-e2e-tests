@@ -87,6 +87,8 @@ else
   readonly TINYPILOT_HOME_DIR
 fi
 
+npx playwright install chromium
+
 # To avoid an "unbound variable" error, we only expand the PLAYWRIGHT_ARGS when
 # the array is not empty.
 # https://stackoverflow.com/a/7577209/3769045

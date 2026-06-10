@@ -169,3 +169,72 @@ class GetNetworkInterfacesTest(unittest.TestCase):
             with mock.patch.object(network, '_INTERFACES_DIR', mock_dir):
                 self.assertEqual(['eth0', 'wlan0'],
                                  network.get_network_interfaces())
+
+
+class DetermineWifiSettingsTest(unittest.TestCase):
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_empty_settings_when_connection_missing(self, mock_cmd):
+        """When tinypilot-wlan0 doesn't exist, nmcli exits non-zero."""
+        mock_cmd.side_effect = subprocess.CalledProcessError(returncode=10,
+                                                             cmd='nmcli')
+        result = network.determine_wifi_settings()
+        self.assertIsNone(result.country_code)
+        self.assertIsNone(result.ssid)
+        self.assertIsNone(result.psk)
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_empty_settings_when_connection_not_wifi(self, mock_cmd):
+        """When the connection isn't a wifi connection, nmcli returns empty."""
+        # Format: 802-11-wireless.mode\n802-11-wireless.ssid\n.
+        mock_cmd.return_value = ''
+        result = network.determine_wifi_settings()
+        self.assertIsNone(result.country_code)
+        self.assertIsNone(result.ssid)
+        self.assertIsNone(result.psk)
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_empty_settings_when_in_ap_mode(self, mock_cmd):
+        """When tinypilot-wlan0 is in AP mode, return empty client settings."""
+        # Format: 802-11-wireless.mode\n802-11-wireless.ssid\n.
+        mock_cmd.return_value = 'ap\nTinyPilotWiFi\n'
+        result = network.determine_wifi_settings()
+        self.assertIsNone(result.country_code)
+        self.assertIsNone(result.ssid)
+        self.assertIsNone(result.psk)
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_wifi_client_settings(self, mock_cmd):
+        """When tinypilot-wlan0 is configured in infrastructure mode."""
+        mock_cmd.side_effect = [
+            # Format: 802-11-wireless.mode\n802-11-wireless.ssid\n.
+            'infrastructure\nMyNetwork\n',
+            # Format: iw reg get output.
+            'country US: DFS-FCC\n',
+        ]
+        result = network.determine_wifi_settings()
+        self.assertEqual('US', result.country_code)
+        self.assertEqual('MyNetwork', result.ssid)
+        self.assertIsNone(result.psk)
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_none_country_when_iw_reg_unset(self, mock_cmd):
+        """When regulatory domain is not set (country 00)."""
+        mock_cmd.side_effect = [
+            'infrastructure\nMyNetwork\n',
+            'country 00: DFS-UNSET\n',
+        ]
+        result = network.determine_wifi_settings()
+        self.assertIsNone(result.country_code)
+        self.assertEqual('MyNetwork', result.ssid)
+
+    @mock.patch.object(subprocess, 'check_output')
+    def test_returns_none_country_when_iw_fails(self, mock_cmd):
+        """When iw reg get fails, country is None."""
+        mock_cmd.side_effect = [
+            'infrastructure\nMyNetwork\n',
+            subprocess.CalledProcessError(returncode=1, cmd='iw'),
+        ]
+        result = network.determine_wifi_settings()
+        self.assertIsNone(result.country_code)
+        self.assertEqual('MyNetwork', result.ssid)

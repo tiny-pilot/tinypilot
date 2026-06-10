@@ -27,17 +27,17 @@
     class extends HTMLElement {
       connectedCallback() {
         this.attachShadow({ mode: "open" }).appendChild(
-          template.content.cloneNode(true)
+          template.content.cloneNode(true),
         );
         this._elements = {
           cancelUpgradeToPro: this.shadowRoot.getElementById(
-            "cancel-upgrade-to-pro"
+            "cancel-upgrade-to-pro",
           ),
         };
         this._elements.cancelUpgradeToPro.addEventListener("click", () => {
           this.dispatchEvent(new DialogClosedEvent());
         });
       }
-    }
+    },
   );
 </script>

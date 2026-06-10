@@ -6,14 +6,14 @@ test.describe("about dialog", () => {
     await page.getByRole("menuitem", { name: "Help" }).hover();
     await page.getByRole("menuitem", { name: "About" }).click();
     await expect(
-      page.getByRole("heading", { name: "About TinyPilot" })
+      page.getByRole("heading", { name: "About TinyPilot" }),
     ).toBeVisible();
   });
 
   test("closes about dialog", async ({ page }) => {
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await expect(
-      page.getByRole("heading", { name: "About TinyPilot" })
+      page.getByRole("heading", { name: "About TinyPilot" }),
     ).not.toBeVisible();
     await page.close();
   });
@@ -23,7 +23,7 @@ test.describe("about dialog", () => {
     await page.getByRole("link", { name: "MIT license" }).click();
     const licensePage = await licensePagePromise;
     await expect(licensePage.locator("body")).toContainText(
-      "Copyright 2022 TinyPilot, LLC"
+      "Copyright 2022 TinyPilot, LLC",
     );
     await licensePage.close();
   });
@@ -33,7 +33,7 @@ test.describe("about dialog", () => {
     await page.getByRole("link", { name: "Privacy Policy" }).click();
     const privacyPolicyPage = await privacyPolicyPagePromise;
     await expect(privacyPolicyPage.locator("body")).toContainText(
-      "PRIVACY POLICY"
+      "PRIVACY POLICY",
     );
     await privacyPolicyPage.close();
   });
@@ -46,7 +46,7 @@ test.describe("about dialog", () => {
       .click();
     const flaskProjectPage = await flaskProjectPagePromise;
     await expect(flaskProjectPage).toHaveURL(
-      new RegExp("https://flask.palletsprojects.com.*")
+      new RegExp("https://flask.palletsprojects.com.*"),
     );
     // We assert the presence of some text so the trace report shows the page render.
     await expect(flaskProjectPage.locator("body")).not.toBeEmpty();
@@ -62,7 +62,7 @@ test.describe("about dialog", () => {
       .click();
     const flaskLicensePage = await flaskLicensePagePromise;
     await expect(flaskLicensePage).toHaveURL(
-      new RegExp("https://raw.githubusercontent.com/pallets/flask/.*")
+      new RegExp("https://raw.githubusercontent.com/pallets/flask/.*"),
     );
     await expect(flaskLicensePage.locator("body")).not.toBeEmpty();
     await flaskLicensePage.close();
@@ -76,7 +76,7 @@ test.describe("about dialog", () => {
       .click();
     const janusProjectPage = await janusProjectPagePromise;
     await expect(janusProjectPage).toHaveURL(
-      new RegExp("https://janus.conf.meetecho.com.*")
+      new RegExp("https://janus.conf.meetecho.com.*"),
     );
     await expect(janusProjectPage.locator("body")).not.toBeEmpty();
     await janusProjectPage.close();
@@ -91,7 +91,7 @@ test.describe("about dialog", () => {
       .click();
     const janusLicensePage = await janusLicensePagePromise;
     await expect(janusLicensePage).toHaveURL(
-      new RegExp("https://raw.githubusercontent.com/meetecho/janus-gateway/.*")
+      new RegExp("https://raw.githubusercontent.com/meetecho/janus-gateway/.*"),
     );
     await expect(janusLicensePage.locator("body")).not.toBeEmpty();
     await janusLicensePage.close();
@@ -104,7 +104,7 @@ test.describe("about dialog", () => {
   }) => {
     const links = await page.locator("a.license").all();
     const paths = await Promise.all(
-      links.map((link) => link.getAttribute("href"))
+      links.map((link) => link.getAttribute("href")),
     );
     const failedUrls = [];
     await Promise.all(
@@ -120,11 +120,11 @@ test.describe("about dialog", () => {
               }
             })
             .catch(() => failedUrls.push(url));
-        })
+        }),
     );
     expect(
       failedUrls.length,
-      `License link broken for URLs: ${failedUrls.join(", ")}`
+      `License link broken for URLs: ${failedUrls.join(", ")}`,
     ).toBe(0);
   });
 });

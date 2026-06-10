@@ -1,18 +1,16 @@
+# Lintian complains about unnecessary use of the ldconfig trigger even though
+# this package doesn't include any triggers.
+tinypilot: package-has-unnecessary-activation-of-ldconfig-trigger
+
 # Suppress complaints about third-party dependencies we don't control.
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/greenlet/tests/test_version.py]
 tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/pip*]
-tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py]
-tinypilot: script-not-executable [opt/tinypilot/venv/lib/python*/site-packages/setuptools/command/easy_install.py]
-tinypilot: national-encoding opt/tinypilot/venv/lib/python*/site-packages/passlib/tests/sample1c.cfg
+tinypilot: national-encoding [opt/tinypilot/venv/lib/python*/site-packages/passlib/tests/sample1c.cfg]
 
 # Lintian doesn't recognize the Python interpreter when it's within the
 # virtualenv.
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/dotenv*]
-tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/easy_install*]
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/flask]
 tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/pip*]
-tinypilot: unusual-interpreter /opt/tinypilot/venv/bin/python [opt/tinypilot/venv/bin/wheel*]
 tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/greenlet/tests/test_version.py]
 tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/pip*]
-tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/pkg_resources/_vendor/appdirs.py]
-tinypilot: unusual-interpreter python [opt/tinypilot/venv/lib/python*/site-packages/setuptools/command/easy_install.py]

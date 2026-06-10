@@ -93,49 +93,58 @@ def create_or_open(db_path):
     logger.debug('Reading SQLite database from %s', db_path)
     connection = sqlite3.connect(db_path, isolation_level=None)
 
-    # The `user_version` property tells us how many of the migrations were
-    # already run in the past.
-    cursor = connection.execute('PRAGMA user_version')
-    initial_migrations_counter = cursor.fetchone()[0]
+    try:
+        # The `user_version` property tells us how many of the migrations were
+        # already run in the past.
+        cursor = connection.execute('PRAGMA user_version')
+        initial_migrations_counter = cursor.fetchone()[0]
 
-    if initial_migrations_counter == len(_MIGRATIONS):
-        # TODO(jotaen) Remove this early return clause once we use a persistent
-        #   database connection. Currently, this method is called on every
-        #   single request, so it would pollute our logs.
+        if initial_migrations_counter == len(_MIGRATIONS):
+            # TODO(jotaen) Remove this early return clause once we use
+            #   a persistent database connection. Currently, this method
+            #   is called on every single request, so it would pollute
+            #   our logs.
+            return connection
+
+        logger.info('Migration counter: %s/%s (actual/total)',
+                    initial_migrations_counter, len(_MIGRATIONS))
+
+        if initial_migrations_counter > len(_MIGRATIONS):
+            # This case is very unlikely in practice. It might
+            # theoretically happen if someone uses a recent version of
+            # a database with an older version of the code. (E.g., if
+            # they have manually transferred a database file to another
+            # device that is not running the latest code.)
+            raise AssertionError('The database file is not compatible with the'
+                                 ' current version of the app.')
+
+        for i in range(initial_migrations_counter, len(_MIGRATIONS)):
+            # By using the connection object as context manager,
+            # sqlite3 will automatically commit or rollback any ongoing
+            # transaction when exiting the scope.
+            with connection as transaction:
+                # The connection uses `isolation_level=None`
+                # (SQLite's manual autocommit mode), so without an
+                # explicit `BEGIN` each statement would be committed
+                # immediately rather than atomically. See:
+                # https://docs.python.org/3.13/library/sqlite3.html#transaction-control-via-the-isolation-level-attribute
+                # Note that the `BEGIN` must be embedded in the script passed to
+                # `executescript`, not issued via a separate preceding
+                # `transaction.execute('BEGIN')`, because `executescript`
+                # implicitly issues a `COMMIT` before executing its script
+                # argument if there is an open transaction.
+                transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
+                # SQlite doesn’t allow prepared statements for PRAGMA queries.
+                # That’s okay here, since we know our query is safe.
+                # pylint: disable=line-too-long
+                transaction.execute(  # nosemgrep: formatted-sql-query, sqlalchemy-execute-raw-query
+                    f'PRAGMA user_version={i+1}')
+            logger.info('Applied migration, counter is now at %d', i + 1)
+
         return connection
-
-    logger.info('Migration counter: %s/%s (actual/total)',
-                initial_migrations_counter, len(_MIGRATIONS))
-
-    if initial_migrations_counter > len(_MIGRATIONS):
-        # This case is very unlikely in practice. It might theoretically happen
-        # if someone uses a recent version of a database with an older version
-        # of the code. (E.g., if they have manually transferred a database file
-        # to another device that is not running the latest code.)
-        raise AssertionError('The database file is not compatible with the'
-                             ' current version of the app.')
-
-    for i in range(initial_migrations_counter, len(_MIGRATIONS)):
-        # By using the connection object as context manager, sqlite3 will
-        # automatically commit or rollback any ongoing transaction when exiting
-        # the scope.
-        with connection as transaction:
-            # Without an explicit `BEGIN`, the sqlite3 library would autocommit
-            # structural modifications immediately. See:
-            # https://docs.python.org/3.9/library/sqlite3.html#controlling-transactions
-            # Note that the `BEGIN` cannot be executed in a separate, preceding
-            # `transaction.execute('BEGIN')` command, because
-            # `transaction.executescript` automatically issues a `COMMIT` before
-            # executing its script argument.
-            transaction.executescript('BEGIN; ' + _MIGRATIONS[i])
-            # SQlite doesn’t allow prepared statements for PRAGMA queries.
-            # That’s okay here, since we know our query is safe.
-            # pylint: disable=line-too-long
-            transaction.execute(  # nosemgrep: formatted-sql-query, sqlalchemy-execute-raw-query
-                f'PRAGMA user_version={i+1}')
-        logger.info('Applied migration, counter is now at %d', i + 1)
-
-    return connection
+    except Exception:
+        connection.close()
+        raise
 
 
 def _read_migrations():

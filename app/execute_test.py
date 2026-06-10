@@ -20,8 +20,8 @@ import execute
 # This was observed on a 2021 Macbook Pro M1 Max running OSX Ventura 13.2.1.
 #
 # [1] https://github.com/python/cpython/commit/17a5588740b3d126d546ad1a13bdac4e028e6d50
-# [2] https://docs.python.org/3.9/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
-# [3] https://docs.python.org/3.9/library/pickle.html#what-can-be-pickled-and-unpickled:~:text=(using%20def%2C%20not%20lambda)
+# [2] https://docs.python.org/3.13/library/multiprocessing.html#contexts-and-start-methods
+# [3] https://docs.python.org/3.13/library/pickle.html#what-can-be-pickled-and-unpickled
 # [4] https://github.com/tiny-pilot/tinypilot/issues/1713
 
 
@@ -34,7 +34,7 @@ def sleep_1_second():
 
 
 def raise_exception():
-    raise Exception('Child exception')
+    raise ValueError('Child exception')
 
 
 def return_string():
@@ -104,7 +104,7 @@ class ExecuteTest(unittest.TestCase):
 
     def test_execute_with_timeout_child_exception(self):
         with silence_stderr():
-            with self.assertRaises(Exception) as ctx:
+            with self.assertRaises(ValueError) as ctx:
                 execute.with_timeout(raise_exception, timeout_in_seconds=0.5)
         self.assertEqual('Child exception', str(ctx.exception))
 

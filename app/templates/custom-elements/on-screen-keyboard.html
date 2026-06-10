@@ -303,14 +303,14 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
 
           this.addEventListener("keyclick", (evt) => {
             this.onKeyClick(
               evt.detail.key,
               evt.detail.code,
-              evt.detail.isModifier
+              evt.detail.isModifier,
             );
           });
           this.addEventListener("keyrelease", (evt) => {
@@ -330,7 +330,7 @@
               detail: { isVisible },
               bubbles: true,
               composed: true,
-            })
+            }),
           );
         }
 
@@ -357,7 +357,7 @@
           // pressed and held).
           return (
             this.shadowRoot.querySelectorAll(
-              `keyboard-key[code=${keyCode}][pressed=true]`
+              `keyboard-key[code=${keyCode}][pressed=true]`,
             ).length > 0
           );
         }
@@ -381,7 +381,7 @@
               altKey:
                 this.isModifierKeyPressed("AltLeft") ||
                 this.isModifierKeyPressed("AltRight"),
-            })
+            }),
           );
         }
 
@@ -403,7 +403,7 @@
           // other modifier is pressed at the same time.
           if (
             ["ShiftLeft", "ShiftRight"].some((m) =>
-              this.isModifierKeyPressed(m)
+              this.isModifierKeyPressed(m),
             ) &&
             [
               "MetaLeft",
@@ -454,7 +454,7 @@
           // pressed.
           return key;
         }
-      }
+      },
     );
   })();
 </script>

@@ -8,4 +8,4 @@ ADD COLUMN license_level TEXT NOT NULL DEFAULT 'ENTERPRISE';
 
 -- Ensure that only a single license of each type can be stored.
 CREATE UNIQUE INDEX IF NOT EXISTS idx_licenses_license_level
-ON licenses(license_level);
+ON licenses (license_level);

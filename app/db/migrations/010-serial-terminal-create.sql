@@ -1,6 +1,6 @@
 -- Create a table for storing serial terminal settings.
 
-CREATE TABLE IF NOT EXISTS serial_terminal(
+CREATE TABLE IF NOT EXISTS serial_terminal (
     id INTEGER PRIMARY KEY,
     port TEXT NOT NULL UNIQUE,
     baud_rate INTEGER NOT NULL,

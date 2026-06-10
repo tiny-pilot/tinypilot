@@ -1,6 +1,7 @@
 import dataclasses
 import json
 import ssl
+import urllib.error
 import urllib.request
 from datetime import date
 

@@ -65,7 +65,7 @@
 <script type="module">
   (function () {
     const template = document.querySelector(
-      "#keystroke-history-event-template"
+      "#keystroke-history-event-template",
     );
 
     customElements.define(
@@ -76,7 +76,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this.keystroke = this.shadowRoot.getElementById("keystroke");
           this.status = "pending";
@@ -98,7 +98,7 @@
         fadeOut() {
           this.keystroke.classList.add("hide");
         }
-      }
+      },
     );
   })();
 </script>

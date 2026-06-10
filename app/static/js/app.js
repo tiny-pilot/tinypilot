@@ -25,7 +25,7 @@ function showError(errorInfo) {
   console.error(
     `Title: ${errorInfo.title}\nMessage: ${
       errorInfo.message || "-"
-    }\nDetails: ${errorInfo.details || "-"}`
+    }\nDetails: ${errorInfo.details || "-"}`,
   );
   document.getElementById("error-dialog").setup(errorInfo);
   document.getElementById("error-overlay").show();
@@ -42,7 +42,7 @@ function isIgnoredKeystroke(code) {
 function recalculateMouseEventThrottle(
   currentThrottle,
   lastRtt,
-  lastWriteSucceeded
+  lastWriteSucceeded,
 ) {
   const maxThrottleInMilliseconds = 2000;
   if (!lastWriteSucceeded) {
@@ -164,7 +164,7 @@ function sendMouseEvent(
   relativeX,
   relativeY,
   verticalWheelDelta,
-  horizontalWheelDelta
+  horizontalWheelDelta,
 ) {
   if (!connectedToServer) {
     return;
@@ -187,9 +187,9 @@ function sendMouseEvent(
         recalculateMouseEventThrottle(
           remoteScreen.millisecondsBetweenMouseEvents,
           requestRtt,
-          response.success
+          response.success,
         );
-    }
+    },
   );
 }
 
@@ -263,7 +263,7 @@ window.addEventListener("blur", () => {
   keyboardState
     .getAllPressedKeys()
     .forEach((keyCode) =>
-      onKeyUp(new KeyboardEvent("keyup", { code: keyCode }))
+      onKeyUp(new KeyboardEvent("keyup", { code: keyCode })),
     );
 });
 
@@ -303,7 +303,7 @@ menuBar.addEventListener("dedicated-window-requested", () => {
     // the existing page causes the browser to garbage collect resources that
     // the popup tries to access.
     // https://github.com/tiny-pilot/tinypilot/issues/1609
-    `popup=true,noopener,width=${width},height=${height}`
+    `popup=true,noopener,width=${width},height=${height}`,
   );
 
   // Redirect the user to a placeholder page. We can’t keep the main window
@@ -464,7 +464,7 @@ document
       evt.detail.relativeX,
       evt.detail.relativeY,
       evt.detail.verticalWheelDelta,
-      evt.detail.horizontalWheelDelta
+      evt.detail.horizontalWheelDelta,
     );
   });
 

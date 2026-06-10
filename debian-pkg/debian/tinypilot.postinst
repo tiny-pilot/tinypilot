@@ -28,7 +28,7 @@ adduser \
 
 chown -R "${TINYPILOT_USER}:${TINYPILOT_GROUP}" /opt/tinypilot
 
-readonly BOOT_CONFIG_PATH='/boot/config.txt'
+readonly BOOT_CONFIG_PATH='/boot/firmware/config.txt'
 
 # Determine product identifiers.
 # Products released before voyager-3 don't have an explicit product family and
@@ -65,12 +65,12 @@ else
     echo 'dtoverlay=dwc2' | tee --append "${BOOT_CONFIG_PATH}"
   fi
   if [[ "${PRODUCT_FAMILY}" == 'voyager' ]]; then
-    # Enable TC358743-audio overlay in /boot/config.txt.
+    # Enable TC358743-audio boot config overlay.
     # Note that the tc358743-audio overlay depends on the tc358743 overlay.
     sed --in-place --expression '/dtoverlay=tc358743-audio/d' "${BOOT_CONFIG_PATH}"
     sed --in-place '/dtoverlay=tc358743/ a dtoverlay=tc358743-audio' "${BOOT_CONFIG_PATH}"
 
-    # Set GPU memory to 256MB in /boot/config.txt
+    # Set GPU memory to 256MB in boot config.
     if grep --silent '^gpu_mem=' "${BOOT_CONFIG_PATH}" ; then
       sed --in-place '/^gpu_mem=/ c\gpu_mem=256' "${BOOT_CONFIG_PATH}"
     else
@@ -142,17 +142,20 @@ EOF
 
 # Append Janus audio settings.
 # (acap = “audio capture”)
-if [[ "${PRODUCT_FAMILY}" == 'voyager' && -z "${PRODUCT_MODEL}" ]]; then
+#
+# We reference the capture card by its ALSA id ("tc358743") rather than a
+# numeric index (e.g. "hw:0"). Card numbers are assigned in driver-probe
+# order and are not stable across kernels: on Debian Trixie the vc4-hdmi
+# cards take indices 0 and 1, which pushes the capture card to index 2, so a
+# hardcoded "hw:0"/"hw:1" silently opens the wrong card. The card id is tied
+# to the driver and stays put. To find the id to pin, list the cards with:
+#   cat /proc/asound/cards    (or: arecord -l)
+# and use the name shown in brackets as "hw:CARD=<id>". See
+# https://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html#pcm_dev_names_hw
+if [[ "${PRODUCT_FAMILY}" == 'voyager' ]]; then
   cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
 acap: {
-    device = "hw:1"
-    tc358743 = "/dev/video0"
-}
-EOF
-elif [[ "${PRODUCT_FAMILY}" == 'voyager' && "${PRODUCT_MODEL}" == '3' ]]; then
-  cat <<EOF >> "${JANUS_PLUGIN_USTREAMER_CONFIG}"
-acap: {
-    device = "hw:0"
+    device = "hw:CARD=tc358743"
     tc358743 = "/dev/video0"
 }
 EOF

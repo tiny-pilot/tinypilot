@@ -42,4 +42,4 @@ if [[ ! -f install ]]; then
 fi
 
 # List Debian package contents.
-dpkg --contents tinypilot*armhf.deb
+dpkg --contents tinypilot*arm64.deb

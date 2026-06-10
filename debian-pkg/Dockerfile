@@ -2,7 +2,7 @@
 # Enable here-documents:
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md#here-documents
 
-FROM debian:bullseye-20220328-slim AS build
+FROM debian:trixie-20260421-slim AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN set -exu && \
@@ -38,8 +38,8 @@ case "${TARGETPLATFORM}" in
   'linux/amd64')
     PKG_ARCH='amd64'
     ;;
-  'linux/arm/v7')
-    PKG_ARCH='armhf'
+  'linux/arm64')
+    PKG_ARCH='arm64'
     ;;
   *)
     echo "Unrecognized target platform: ${TARGETPLATFORM}" >&2
@@ -57,6 +57,8 @@ WORKDIR /releases/placeholder-pkg-id
 
 COPY ./debian-pkg ./
 COPY ./COPYRIGHT ./
+# We need a lower-case variant to adhere to Debian package conventions:
+COPY ./COPYRIGHT ./copyright
 COPY ./LICENSE ./
 COPY ./README.md ./
 COPY ./requirements.txt ./
@@ -65,7 +67,10 @@ COPY ./scripts ./scripts
 
 RUN echo "${TINYPILOT_VERSION}" > VERSION
 
-WORKDIR /releases/placeholder-pkg-id/debian
+WORKDIR debian
+
+ENV APP_BUILD_DEPS='libyaml-dev'
+
 
 RUN set -exu && \
     PKG_ARCH="$(cat /tmp/pkg-arch)" && \
@@ -75,11 +80,12 @@ Section: net
 Priority: optional
 Maintainer: TinyPilot Support <support@tinypilotkvm.com>
 Build-Depends:
-  debhelper (>= 11),
+  debhelper (>= 13),
   dh-virtualenv,
   python3-dev,
   python3-pip,
-  python3-venv
+  python3-venv,
+  ${APP_BUILD_DEPS}
 
 Package: ${PKG_NAME}
 Architecture: ${PKG_ARCH}
@@ -105,7 +111,7 @@ RUN mk-build-deps \
 
 RUN set -exu && \
     cat >changelog <<EOF
-tinypilot (${PKG_VERSION}) bullseye; urgency=medium
+tinypilot (${PKG_VERSION}) trixie; urgency=medium
 
   * Latest TinyPilot release.
 

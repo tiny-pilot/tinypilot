@@ -37,22 +37,7 @@ readonly TINYPILOT_TLS_CERTIFICATE_KEY='/etc/ssl/private/tinypilot-nginx.key'
 readonly TINYPILOT_TLS_CERTIFICATE_CSR='/etc/ssl/csr/tinypilot-nginx.csr'
 HOSTNAME="$(hostname)"
 readonly HOSTNAME
-SUBJECT_ALT_NAME="DNS:${HOSTNAME}, DNS:${HOSTNAME}.local, DNS:${HOSTNAME}.localdomain"
-# Add the static IP address as a subject alt name.
-# Note: The static IP regex pattern must match the pattern in
-# `app/static_ip.py`.
-STATIC_IP="$(
-  sed \
-    --regexp-extended \
-    --expression 's/^static\s+ip_address=(.+)$/\1/p' \
-    --silent \
-    /etc/dhcpcd.conf | \
-    sed 's/\/.*//')"
-readonly STATIC_IP
-if [[ -n "${STATIC_IP}" ]]; then
-  SUBJECT_ALT_NAME+=", IP:${STATIC_IP}"
-fi
-readonly SUBJECT_ALT_NAME
+readonly SUBJECT_ALT_NAME="DNS:${HOSTNAME}, DNS:${HOSTNAME}.local, DNS:${HOSTNAME}.localdomain"
 
 openssl req \
   -new \

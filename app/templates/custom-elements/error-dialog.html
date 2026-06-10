@@ -67,12 +67,12 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this.shadowRoot
             .getElementById("close")
             .addEventListener("click", () =>
-              this.dispatchEvent(new DialogClosedEvent())
+              this.dispatchEvent(new DialogClosedEvent()),
             );
         }
 
@@ -95,7 +95,7 @@
             .initialize(/*getLogsTextCb=*/ () => String(details));
           this.toggleAttribute("is-shareable", details && isShareable);
         }
-      }
+      },
     );
   })();
 </script>

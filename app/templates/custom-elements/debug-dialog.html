@@ -97,7 +97,7 @@
 
           this._elements = {
             includeSensitiveData: this.shadowRoot.getElementById(
-              "include-sensitive-data"
+              "include-sensitive-data",
             ),
             logsText: this.shadowRoot.querySelector("#logs-success .logs"),
             shareLogsButton:
@@ -110,11 +110,11 @@
             (event) => {
               this.includeSensitiveData = !event.target.checked;
               this._renderLogDisplayText();
-            }
+            },
           );
           this.shadowRoot.querySelectorAll(".close-btn").forEach((el) => {
             el.addEventListener("click", () =>
-              this.dispatchEvent(new DialogClosedEvent())
+              this.dispatchEvent(new DialogClosedEvent()),
             );
           });
         }
@@ -127,8 +127,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -160,7 +160,7 @@
                 new DialogFailedEvent({
                   title: "Error Retrieving Debug Logs",
                   details: error,
-                })
+                }),
               );
             });
         }
@@ -182,10 +182,10 @@
             : this._logText.redacted;
           this._elements.logsText.textContent = logsDisplayText;
           this._elements.shareLogsButton.initialize(
-            /*getLogsTextCb=*/ () => logsDisplayText
+            /*getLogsTextCb=*/ () => logsDisplayText,
           );
         }
-      }
+      },
     );
   })();
 </script>

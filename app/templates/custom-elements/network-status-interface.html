@@ -82,7 +82,7 @@
 <script type="module">
   (function () {
     const template = document.querySelector(
-      "#network-status-interface-template"
+      "#network-status-interface-template",
     );
 
     customElements.define(
@@ -90,7 +90,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._elements = {
             name: this.shadowRoot.querySelector("#name"),
@@ -113,7 +113,7 @@
         setEthernetWifi(name, status) {
           this.setAttribute(
             "network-status-type",
-            this._networkStatusType.ETHERNET_WIFI
+            this._networkStatusType.ETHERNET_WIFI,
           );
           this._elements.name.innerText = name;
           const networkStatus = status.isConnected
@@ -122,12 +122,12 @@
           this._elements.labelStatus.innerText = networkStatus;
           this.setAttribute(
             "ethernet-wifi-status",
-            networkStatus.toUpperCase()
+            networkStatus.toUpperCase(),
           );
           this._elements.ipAddress.innerText = status.ipAddress || "n/a";
           this._elements.macAddress.innerText = status.macAddress || "n/a";
         }
-      }
+      },
     );
   })();
 </script>

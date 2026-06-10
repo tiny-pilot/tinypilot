@@ -61,7 +61,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._handleCloseOnOutsideClick =
             this._handleCloseOnOutsideClick.bind(this);
@@ -71,14 +71,14 @@
             dropdownItems: this.shadowRoot.getElementById("dropdown-items"),
           };
           this._elements.dropdownButton.addEventListener("click", () =>
-            this._toggleDropdown()
+            this._toggleDropdown(),
           );
         }
 
         disconnectedCallback() {
           document.removeEventListener(
             "click",
-            this._handleCloseOnOutsideClick
+            this._handleCloseOnOutsideClick,
           );
         }
 
@@ -105,7 +105,7 @@
           this._elements.dropdownItems.style.display = "none";
           document.removeEventListener(
             "click",
-            this._handleCloseOnOutsideClick
+            this._handleCloseOnOutsideClick,
           );
         }
 
@@ -122,7 +122,7 @@
           }
           this._closeDropdown();
         }
-      }
+      },
     );
   })();
 </script>
