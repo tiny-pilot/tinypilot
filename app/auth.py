@@ -222,6 +222,11 @@ def can_authenticate(username, password):
     password_hash = db.users.Users().get_password_hash(username)
 
     if not password_hash:
+        # Run a dummy hash verification so the response time matches that of
+        # a real authentication attempt. Otherwise, an attacker could probe
+        # the system to enumerate valid usernames by observing how long the
+        # response takes.
+        password_check.dummy_verify(password)
         logger.info_sensitive('Cannot authenticate, no such user %s', username)
         return False
 

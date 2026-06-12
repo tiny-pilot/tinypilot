@@ -11,6 +11,7 @@ import execute
 import hostname
 import json_response
 import local_system
+import login_rate_limit
 import network
 import request_parsers.create_user
 import request_parsers.credentials
@@ -242,17 +243,34 @@ def auth_post():
     Returns:
         Empty response on success, error object otherwise.
     """
-    logger.info_sensitive(
-        'Login request from IP %s',
-        flask.request.headers.get('X-Forwarded-For', flask.request.remote_addr))
+    source_ip = flask.request.headers.get('X-Forwarded-For',
+                                          flask.request.remote_addr)
+    # X-Forwarded-For may contain a comma-separated list; the left-most entry
+    # is the original client. Use only that entry as the rate-limit key.
+    if source_ip:
+        source_ip = source_ip.split(',')[0].strip()
+    logger.info_sensitive('Login request from IP %s', source_ip)
     try:
         username, password = request_parsers.credentials.parse_credentials(
             flask.request)
     except request_parsers.errors.Error as e:
         return json_response.error(e), 400
+    # Enforce rate-limit/lockout *before* checking the password, so we don’t
+    # leak signal about valid usernames or correct passwords once the limiter
+    # has tripped.
+    try:
+        login_rate_limit.check(source_ip, username)
+    except login_rate_limit.TooManyAttemptsError as e:
+        # nosemgrep: python-logger-credential-disclosure
+        logger.info_sensitive(
+            'Rejecting login for user %s from IP %s: rate-limited', username,
+            source_ip)
+        return json_response.error(e), 429
     if auth.can_authenticate(username, password):
+        login_rate_limit.record_success(username)
         session.login(username)
         return json_response.success()
+    login_rate_limit.record_failure(source_ip, username)
     return json_response.error(
         NotAuthenticatedError('Invalid username and password')), 401
 
