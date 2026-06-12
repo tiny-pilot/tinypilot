@@ -24,7 +24,7 @@ describe("determineRedirectParams", () => {
       {
         pathname: "/foo/bar-baz",
         search: "test=123&question=what?",
-      }
+      },
     );
   });
 
@@ -67,16 +67,16 @@ describe("determineRedirectParams", () => {
       {
         pathname: "/",
         search: "",
-      }
+      },
     );
     assert.deepStrictEqual(
       determineRedirectParams(
-        "data:text/html,Open <a href='http://evil.com'>TinyPilot</a>"
+        "data:text/html,Open <a href='http://evil.com'>TinyPilot</a>",
       ),
       {
         pathname: "/",
         search: "",
-      }
+      },
     );
     assert.deepStrictEqual(determineRedirectParams("//evil-site.com"), {
       pathname: "/",

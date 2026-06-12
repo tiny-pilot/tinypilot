@@ -89,7 +89,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._state = this._states.PROMPT;
 
@@ -118,8 +118,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -145,14 +145,14 @@
                   new DialogFailedEvent({
                     title: "Failed to Restart TinyPilot Device",
                     details: error,
-                  })
+                  }),
                 );
               } else {
                 this.dispatchEvent(
                   new DialogFailedEvent({
                     title: "Failed to Shut Down TinyPilot Device",
                     details: error,
-                  })
+                  }),
                 );
               }
             });
@@ -164,10 +164,10 @@
               detail: { restart },
               bubbles: true,
               composed: true,
-            })
+            }),
           );
         }
-      }
+      },
     );
   })();
 </script>

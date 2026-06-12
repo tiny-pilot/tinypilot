@@ -70,7 +70,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
 
           this._elements = {
@@ -83,11 +83,11 @@
             .forEach((buttonElement) =>
               buttonElement.addEventListener("click", () => {
                 this.dispatchEvent(new DialogClosedEvent());
-              })
+              }),
             );
           this._elements.requiresHttpsCheckbox.addEventListener(
             "input",
-            (event) => this._setRequiresHttps(event.target.checked)
+            (event) => this._setRequiresHttps(event.target.checked),
           );
         }
 
@@ -99,8 +99,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue)
-            )
+              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -121,7 +121,7 @@
               new DialogFailedEvent({
                 title: "Failed to Load HTTPS Settings",
                 details: error,
-              })
+              }),
             );
           }
         }
@@ -134,11 +134,11 @@
               new DialogFailedEvent({
                 title: "Failed to Change HTTPS Settings",
                 details: error,
-              })
+              }),
             );
           }
         }
-      }
+      },
     );
   })();
 </script>

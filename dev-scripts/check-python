@@ -41,6 +41,7 @@ done < <(
     -name '*.py' \
     -not -path './venv/*' \
     -not -path './.git/*' \
+    -not -path './node_modules/*' \
     -exec dirname {} \; \
     | sort --unique
 )
@@ -50,6 +51,7 @@ done < <(
 ./venv/bin/yapf \
   --diff \
   --recursive \
+  --exclude 'node_modules/*' \
   ./
 
 # Run static analysis for Python bugs/cruft.

@@ -51,7 +51,7 @@ class UpdateResultTest(unittest.TestCase):
         self.assertEqual(
             update.result.Result(
                 error=None,
-                timestamp=datetime.datetime.utcfromtimestamp(0),
+                timestamp=datetime.datetime.fromtimestamp(0, datetime.UTC),
             ), update.result.read(io.StringIO('{}')))
 
     def test_writes_success_result_accurately(self):

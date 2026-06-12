@@ -23,7 +23,7 @@ attacks.
   import { DialogClosedEvent } from "/js/events.js";
 
   const template = document.querySelector(
-    "#secure-connection-required-template"
+    "#secure-connection-required-template",
   );
 
   customElements.define(
@@ -31,7 +31,7 @@ attacks.
     class extends HTMLElement {
       connectedCallback() {
         this.attachShadow({ mode: "open" }).appendChild(
-          template.content.cloneNode(true)
+          template.content.cloneNode(true),
         );
 
         const httpsHref = window.location.href.replace("http", "https");
@@ -43,6 +43,6 @@ attacks.
             this.dispatchEvent(new DialogClosedEvent());
           });
       }
-    }
+    },
   );
 </script>

@@ -87,7 +87,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
         }
 
@@ -98,7 +98,7 @@
         set connected(isConnected) {
           this.setAttribute("connected", isConnected);
         }
-      }
+      },
     );
   })();
 </script>

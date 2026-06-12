@@ -23,7 +23,7 @@ async function setupUserAuthentication(page, username, password) {
 
   const dialog = page.locator("#manage-users-dialog");
   await expect(
-    dialog.getByRole("heading", { name: "Manage Users" })
+    dialog.getByRole("heading", { name: "Manage Users" }),
   ).toBeVisible();
 
   // Enable authentication if not already enabled.
@@ -37,13 +37,13 @@ async function setupUserAuthentication(page, username, password) {
   if (!isChecked) {
     await authToggle.click();
     await expect(
-      dialog.getByRole("heading", { name: "User Authentication" })
+      dialog.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
   } else {
     // Already enabled, add user directly.
     await page.getByRole("button", { name: "Add User" }).click();
     await expect(
-      dialog.getByRole("heading", { name: "User Authentication" })
+      dialog.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
   }
 
@@ -57,7 +57,7 @@ async function setupUserAuthentication(page, username, password) {
 
   await page.getByRole("button", { name: "Add User" }).click();
   await expect(
-    dialog.getByRole("heading", { name: "Manage Users" })
+    dialog.getByRole("heading", { name: "Manage Users" }),
   ).toBeVisible();
 
   await dialog.getByRole("button", { name: "Close", exact: true }).click();
@@ -98,7 +98,7 @@ async function disableUserAuthentication(page, browser, username, password) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Disable User Authentication",
-      })
+      }),
     ).toBeVisible();
     await securityDialog
       .getByRole("button", { name: "Delete All Users" })
@@ -108,7 +108,7 @@ async function disableUserAuthentication(page, browser, username, password) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Manage Users",
-      })
+      }),
     ).toBeVisible();
     await securityDialog
       .getByRole("button", { name: "Close", exact: true })
@@ -116,7 +116,7 @@ async function disableUserAuthentication(page, browser, username, password) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Manage Users",
-      })
+      }),
     ).not.toBeVisible();
   });
 
@@ -125,7 +125,7 @@ async function disableUserAuthentication(page, browser, username, password) {
     await guestPage.goto("/");
     await expect(guestPage).toHaveURL("/");
     await expect(
-      guestPage.getByRole("menuitem", { name: "System" })
+      guestPage.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 }
@@ -152,12 +152,7 @@ test.describe("change password", () => {
     const newPage = await (await browser.newContext()).newPage();
 
     await test.step("Setup: Enable authentication and create ADMIN user", async () => {
-      await setupUserAuthentication(
-        adminPage,
-        "admin-user",
-        "adminpass",
-        "ADMIN"
-      );
+      await setupUserAuthentication(adminPage, "admin-user", "adminpass");
     });
 
     await test.step("Admin logs in with original password", async () => {
@@ -203,7 +198,7 @@ test.describe("change password", () => {
 
       await loginAsUser(newPage, "admin-user", "newadminpass123");
       await expect(
-        newPage.getByRole("menuitem", { name: "admin-user" })
+        newPage.getByRole("menuitem", { name: "admin-user" }),
       ).toBeVisible();
     });
 
@@ -212,7 +207,7 @@ test.describe("change password", () => {
         adminPage,
         browser,
         "admin-user",
-        "newadminpass123"
+        "newadminpass123",
       );
     });
 
@@ -225,12 +220,7 @@ test.describe("change password", () => {
     const userPage = await (await browser.newContext()).newPage();
 
     await test.step("Setup: Enable authentication and create ADMIN user", async () => {
-      await setupUserAuthentication(
-        adminPage,
-        "admin-user",
-        "adminpass",
-        "ADMIN"
-      );
+      await setupUserAuthentication(adminPage, "admin-user", "adminpass");
     });
 
     // Login and navigate to "Change My Password" dialog.
@@ -273,7 +263,7 @@ test.describe("change password", () => {
 
       await expect(changePasswordForm.locator("#error-message")).toHaveText(
         "Passwords do not match",
-        { ignoreCase: false }
+        { ignoreCase: false },
       );
     });
 
@@ -287,7 +277,7 @@ test.describe("change password", () => {
 
       await expect(changePasswordForm.locator("#error-message")).toHaveText(
         "Password must be 6-60 characters in length",
-        { ignoreCase: false }
+        { ignoreCase: false },
       );
     });
 
@@ -296,7 +286,7 @@ test.describe("change password", () => {
         adminPage,
         browser,
         "admin-user",
-        "adminpass"
+        "adminpass",
       );
     });
 

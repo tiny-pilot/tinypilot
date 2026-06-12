@@ -140,7 +140,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
 
           this._shouldReloadPageOnClose = false;
@@ -151,29 +151,29 @@
             userList: this.shadowRoot.querySelector("#edit .user-list"),
             addUserButton: this.shadowRoot.querySelector("#edit .add-user-btn"),
             manageUserForm: this.shadowRoot.querySelector(
-              "#manage-user manage-users-form"
+              "#manage-user manage-users-form",
             ),
             requireAuthCheckbox: this.shadowRoot.querySelector(
-              "#require-authentication"
+              "#require-authentication",
             ),
             confirmDisableAuthButton: this.shadowRoot.querySelector(
-              "#disable-auth .confirm-btn"
+              "#disable-auth .confirm-btn",
             ),
             denyDisableAuthButton: this.shadowRoot.querySelector(
-              "#disable-auth .deny-btn"
+              "#disable-auth .deny-btn",
             ),
           };
           this.addEventListener("overlay-shown", () => this._initialize());
           this.addEventListener(
             "overlay-hidden",
-            this._handleOverlayHiddenEvent
+            this._handleOverlayHiddenEvent,
           );
           this.shadowRoot
             .querySelectorAll(".close-btn")
             .forEach((buttonElement) =>
               buttonElement.addEventListener("click", () => {
                 this.dispatchEvent(new DialogClosedEvent());
-              })
+              }),
             );
           this._elements.requireAuthCheckbox.addEventListener(
             "input",
@@ -181,7 +181,7 @@
               if (event.target.checked) {
                 event.target.checked = false;
                 this._elements.manageUserForm.initForCreating(
-                  /*isVeryFirstUser=*/ true
+                  /*isVeryFirstUser=*/ true,
                 );
                 this._state = this._states.MANAGE_USER;
               } else {
@@ -196,7 +196,7 @@
                 event.target.checked = true;
                 this._state = this._states.DISABLE_AUTH;
               }
-            }
+            },
           );
           this._elements.confirmDisableAuthButton.addEventListener(
             "click",
@@ -209,7 +209,7 @@
                   new DialogFailedEvent({
                     title: "Failed to Remove All Users",
                     details: error,
-                  })
+                  }),
                 );
                 return;
               } finally {
@@ -218,7 +218,7 @@
               this.dispatchEvent(new AllUsersRemovedEvent());
               this._truncateUserList();
               this._state = this._states.EDIT;
-            }
+            },
           );
           this._elements.denyDisableAuthButton.addEventListener("click", () => {
             this._state = this._states.EDIT;
@@ -228,11 +228,11 @@
             (event) => {
               event.stopPropagation();
               this._state = this._states.EDIT;
-            }
+            },
           );
           this._elements.addUserButton.addEventListener("click", () => {
             this._elements.manageUserForm.initForCreating(
-              /*isVeryFirstUser=*/ false
+              /*isVeryFirstUser=*/ false,
             );
             this._state = this._states.MANAGE_USER;
           });
@@ -259,7 +259,7 @@
         disconnectedCallback() {
           document.removeEventListener(
             "overlay-hidden",
-            this._handleOverlayHiddenEvent
+            this._handleOverlayHiddenEvent,
           );
         }
 
@@ -271,8 +271,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue)
-            )
+              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -301,7 +301,7 @@
             const userData = await getUsers();
             for (const user of userData.users) {
               const userListItem = document.createElement(
-                "manage-users-list-item"
+                "manage-users-list-item",
               );
               this._elements.userList.appendChild(userListItem);
               userListItem.init(user);
@@ -312,7 +312,7 @@
                 event.stopPropagation();
                 this._elements.manageUserForm.initForEditing(
                   user.username === userData.currentUsername,
-                  user.username
+                  user.username,
                 );
                 this._state = this._states.MANAGE_USER;
               });
@@ -327,7 +327,7 @@
               new DialogFailedEvent({
                 title: "Failed to Load Users",
                 details: error,
-              })
+              }),
             );
           }
         }
@@ -343,7 +343,7 @@
             location.reload();
           }
         }
-      }
+      },
     );
   })();
 </script>

@@ -54,7 +54,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
         }
 
@@ -69,7 +69,7 @@
         get keystrokeHistory() {
           return this.shadowRoot.getElementById("keystroke-history");
         }
-      }
+      },
     );
   })();
 </script>

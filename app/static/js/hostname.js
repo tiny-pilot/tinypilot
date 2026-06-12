@@ -18,7 +18,7 @@
 export function determineFutureOrigin(
   currentLocation,
   oldHostname,
-  newHostname
+  newHostname,
 ) {
   const protocol = currentLocation.protocol + "//";
   let fqdn = currentLocation.hostname;

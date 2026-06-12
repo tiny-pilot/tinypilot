@@ -42,6 +42,7 @@
     DialogFailedEvent,
   } from "/js/events.js";
   import { getNetworkStatus } from "/js/controllers.js";
+  import { getNetworkInterfaceDisplayName } from "/js/network-interface.js";
 
   (function () {
     const template = document.querySelector("#network-status-dialog-template");
@@ -62,11 +63,11 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._elements = {
             interfacesContainer: this.shadowRoot.querySelector(
-              "#interfaces-container"
+              "#interfaces-container",
             ),
           };
           this._shouldAutoUpdate = false;
@@ -95,8 +96,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -131,7 +132,7 @@
               new DialogFailedEvent({
                 title: "Failed to Determine Network Status",
                 details: error,
-              })
+              }),
             );
             return;
           }
@@ -139,20 +140,16 @@
             let interfaceElement = this._interfaceElements[iface.name];
             if (!interfaceElement) {
               interfaceElement = document.createElement(
-                "network-status-interface"
+                "network-status-interface",
               );
               this._interfaceElements[iface.name] = interfaceElement;
               this._elements.interfacesContainer.appendChild(interfaceElement);
             }
-            const displayName = iface.name.startsWith("eth")
-              ? `LAN${parseInt(iface.name.slice(3)) + 1}`
-              : iface.name.startsWith("wlan")
-              ? "Wi-Fi"
-              : iface.name;
+            const displayName = getNetworkInterfaceDisplayName(iface.name);
             interfaceElement.setEthernetWifi(displayName, iface);
           });
           const availableInterfaceNames = networkStatus.map(
-            (iface) => iface.name
+            (iface) => iface.name,
           );
           // Remove unavailable network interface elements.
           Object.keys(this._interfaceElements)
@@ -162,7 +159,7 @@
               delete this._interfaceElements[interfaceName];
             });
         }
-      }
+      },
     );
   })();
 </script>

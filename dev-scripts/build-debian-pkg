@@ -15,8 +15,8 @@ Build a TinyPilot Debian package.
   --help                                  Optional. Display this help and exit.
   --build-targets BUILD_TARGETS           Optional. A comma-separated list of architectures
                                           that Docker accepts for its --platform argument.
-                                          If omitted, defaults to "linux/arm/v7,linux/amd64".
-                                          The only supported targets are "linux/arm/v7" and
+                                          If omitted, defaults to "linux/arm64,linux/amd64".
+                                          The only supported targets are "linux/arm64" and
                                           "linux/amd64".
   --tinypilot-version TINYPILOT_VERSION   Optional. The version identifier that shall be
                                           assigned. If omitted, determines the version string
@@ -34,7 +34,7 @@ print_tinypilot_version() {
 }
 
 # Parse command-line arguments.
-BUILD_TARGETS='linux/arm/v7,linux/amd64'
+BUILD_TARGETS='linux/arm64,linux/amd64'
 TINYPILOT_VERSION="$(print_tinypilot_version)"
 while (( "$#" > 0 )); do
   case "$1" in

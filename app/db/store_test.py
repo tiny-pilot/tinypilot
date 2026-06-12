@@ -31,6 +31,7 @@ class StoreTest(unittest.TestCase):
             self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection.close)
             self.assertEqual(['first', 'second'], all_tables(connection))
             self.assertEqual(2, migrations_counter(connection))
 
@@ -40,6 +41,7 @@ class StoreTest(unittest.TestCase):
     def test_processes_multistatement_migrations(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection.close)
             self.assertEqual(['first', 'second'], all_tables(connection))
             self.assertEqual(1, migrations_counter(connection))
 
@@ -47,6 +49,7 @@ class StoreTest(unittest.TestCase):
     def test_noop_if_no_migrations_are_specified(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection.close)
             self.assertEqual(0, migrations_counter(connection))
 
     def test_applies_migrations_on_initialization(self):
@@ -58,6 +61,7 @@ class StoreTest(unittest.TestCase):
                     'ALTER TABLE third RENAME TO second',
             ]):
                 connection = db.store.create_or_open(temp_file.name)
+                self.addCleanup(connection.close)
                 self.assertEqual(3, migrations_counter(connection))
                 self.assertEqual(['first', 'second'], all_tables(connection))
 
@@ -72,6 +76,7 @@ class StoreTest(unittest.TestCase):
                     'CREATE TABLE third(id INTEGER)',  # <-- this one is new
                 ]):
                 connection = db.store.create_or_open(temp_file.name)
+                self.addCleanup(connection.close)
                 self.assertEqual(4, migrations_counter(connection))
                 self.assertEqual(['first', 'second', 'third'],
                                  all_tables(connection))
@@ -84,6 +89,7 @@ class StoreTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as temp_file:
             # Set up a database manually and initialize it with a schema.
             connection1 = sqlite3.connect(temp_file.name, isolation_level=None)
+            self.addCleanup(connection1.close)
             connection1.execute('CREATE TABLE zero(id INTEGER)')
 
             # Now, open that same database through our migration manager. Since
@@ -91,6 +97,7 @@ class StoreTest(unittest.TestCase):
             # it just applies the migrations and leaves the previous schema
             # intact.
             connection2 = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection2.close)
             self.assertEqual(['zero', 'first', 'second'],
                              all_tables(connection2))
             self.assertEqual(2, migrations_counter(connection2))
@@ -103,11 +110,13 @@ class StoreTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as temp_file:
             # Opening the file for the first time applies all migrations.
             connection1 = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection1.close)
             self.assertEqual(2, migrations_counter(connection1))
 
             # Now, open the same file once again. This time, it should skip
             # all migrations. (If it didn’t, this would raise SQL errors.)
             connection2 = db.store.create_or_open(temp_file.name)
+            self.addCleanup(connection2.close)
             self.assertEqual(2, migrations_counter(connection2))
 
     @mock.patch(
@@ -124,6 +133,7 @@ class StoreTest(unittest.TestCase):
                 db.store.create_or_open(temp_file.name)
 
             connection = sqlite3.connect(temp_file.name, isolation_level=None)
+            self.addCleanup(connection.close)
 
             # The migration is supposed to be aborted on first error, and the
             # state of the last successful migration should be effective.
@@ -144,6 +154,7 @@ class StoreTest(unittest.TestCase):
                 db.store.create_or_open(temp_file.name)
 
             connection = sqlite3.connect(temp_file.name, isolation_level=None)
+            self.addCleanup(connection.close)
 
             # The multi-statement migration must be atomic – so instead of it
             # being partially applied, it should be rolled backed altogether.
@@ -155,6 +166,7 @@ class StoreTest(unittest.TestCase):
     def test_aborts_if_migration_counter_is_incompatible(self):
         with tempfile.NamedTemporaryFile() as temp_file:
             connection = sqlite3.connect(temp_file.name, isolation_level=None)
+            self.addCleanup(connection.close)
             connection.execute('PRAGMA user_version=2')
 
             # The `user_version` can’t be greater than 1, because there is just

@@ -40,7 +40,8 @@ def read(result_file):
         error = None
     return Result(error=error,
                   timestamp=raw_result.get(
-                      'timestamp', datetime.datetime.utcfromtimestamp(0)))
+                      'timestamp',
+                      datetime.datetime.fromtimestamp(0, datetime.UTC)))
 
 
 def write(result, result_file):

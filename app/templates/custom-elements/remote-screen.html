@@ -118,16 +118,16 @@
                   detail: mouseEvent,
                   bubbles: true,
                   composed: true,
-                })
+                }),
               );
-            }
+            },
           );
         }
 
         connectedCallback() {
           super.connectedCallback && super.connectedCallback();
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
 
           this._elements = {
@@ -163,7 +163,7 @@
           // attempting to autocomplete text. Instead of listening for keydown
           // events, we listen for input events.
           const mobileKeyboard = this.shadowRoot.getElementById(
-            "mobile-keyboard-input"
+            "mobile-keyboard-input",
           );
           mobileKeyboard.addEventListener("input", () => {
             // Force the autocomplete sequence to restart.
@@ -237,7 +237,7 @@
 
         get millisecondsBetweenMouseEvents() {
           return parseInt(
-            this.getAttribute("milliseconds-between-mouse-events")
+            this.getAttribute("milliseconds-between-mouse-events"),
           );
         }
 
@@ -525,7 +525,7 @@
             return this._elements.image;
           }
         }
-      }
+      },
     );
   })();
 </script>

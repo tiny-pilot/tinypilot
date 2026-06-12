@@ -37,7 +37,7 @@ def get():
 
 def _is_update_process_running():
     lines = subprocess.check_output(
-        ('ps', '-auxwe')).decode('utf-8').splitlines()
+        ('/usr/bin/ps', '-auxwe')).decode('utf-8').splitlines()
     for line in lines:
         if update.launcher.UPDATE_SCRIPT_PATH in line:
             return True

@@ -22,7 +22,9 @@ class CheckAuthTest(unittest.TestCase):
     def test_grants_full_access_if_auth_requirement_is_off(
             self, mock_get_db, mock_username, mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             mock_username.return_value = None
             mock_credentials.return_value = None
@@ -42,7 +44,9 @@ class CheckAuthTest(unittest.TestCase):
                                                    mock_username,
                                                    mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             admin = auth.get_account('admin')
 
@@ -64,7 +68,9 @@ class CheckAuthTest(unittest.TestCase):
                                                       mock_username,
                                                       mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             auth.register('operator', 'p4ssw0rd', auth.Role.OPERATOR)
             operator = auth.get_account('operator')
@@ -86,7 +92,9 @@ class CheckAuthTest(unittest.TestCase):
     def test_denies_access_for_anonymous_visitor_if_auth_requirement_is_on(
             self, mock_get_db, mock_username, mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             mock_username.return_value = None
             mock_credentials.return_value = None
 
@@ -115,7 +123,9 @@ class CheckAuthTest(unittest.TestCase):
                                                    mock_username,
                                                    mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             admin = auth.get_account('admin')
 
@@ -143,7 +153,9 @@ class CheckAuthTest(unittest.TestCase):
     def test_denies_access_if_role_had_changed(self, mock_get_db, mock_username,
                                                mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
@@ -176,7 +188,9 @@ class CheckAuthTest(unittest.TestCase):
     def test_denies_access_if_session_corrupt(self, mock_get_db, mock_username,
                                               mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             admin = auth.get_account('admin')
 
@@ -205,7 +219,9 @@ class CheckAuthTest(unittest.TestCase):
     def test_denies_access_if_user_is_deleted(self, mock_get_db, mock_username,
                                               mock_credentials):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             auth.register('second-admin', 'p4ssw0rd', auth.Role.ADMIN)
             admin = auth.get_account('admin')

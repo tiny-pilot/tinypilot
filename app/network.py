@@ -7,8 +7,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-_WIFI_COUNTRY_PATTERN = re.compile(r'^\s*country=(.+)$')
-_WIFI_SSID_PATTERN = re.compile(r'^\s*ssid="(.+)"$')
+_WIFI_COUNTRY_PATTERN = re.compile(r'^country\s+([A-Z]{2}):')
 _INTERFACES_DIR = '/sys/class/net'
 
 
@@ -30,9 +29,19 @@ class InterfaceStatus:
 
 @dataclasses.dataclass
 class WifiSettings:
+    """WiFi client connection settings.
+
+    Attributes:
+        country_code: 2-letter ISO 3166-1 alpha-2 regulatory country code.
+            `None` when the regulatory domain is unset or unknown.
+        ssid: WiFi network name. `None` when no WiFi client is configured.
+        psk: WPA2-PSK passphrase. `None` for open networks. When reading
+            existing settings, this is always `None` because stored credentials
+            are never exposed back to callers.
+    """
     country_code: str
     ssid: str
-    psk: str  # Optional.
+    psk: str
 
 
 def get_network_interfaces():
@@ -96,7 +105,7 @@ def inspect_interface(interface_name):
         interface_name: the technical interface name as string, e.g. `eth0`.
 
     Returns:
-        InterfaceStatus object
+        InterfaceStatus object.
     """
     status = InterfaceStatus(interface_name, False, None, None)
 
@@ -140,37 +149,68 @@ def inspect_interface(interface_name):
 
 
 def determine_wifi_settings():
-    """Determines the current WiFi settings (if set).
+    """Determines the current WiFi client settings.
+
+    Reads directly from NetworkManager via nmcli (unprivileged). Country code
+    is read from the kernel regulatory domain via iw.
 
     Returns:
-        WifiSettings: if the `ssid` and `country_code` attributes are `None`,
-            there is no WiFi configuration present. The `psk` property is
-            always `None` for security reasons.
+        WifiSettings object.
+    """
+    # Query SSID and mode from the tinypilot-wlan0 connection. nmcli exits
+    # non-zero when the connection doesn't exist, which we treat as "no WiFi
+    # configured".
+    try:
+        # The command arguments are trusted because they aren't based on user
+        # input.
+        props_output = subprocess.check_output(  # noqa: S603
+            [
+                '/usr/bin/nmcli', '--get-values',
+                '802-11-wireless.mode,802-11-wireless.ssid', 'connection',
+                'show', 'tinypilot-wlan0'
+            ],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
+    except subprocess.CalledProcessError:
+        return WifiSettings(None, None, None)
+
+    # nmcli returns empty output when the connection exists but isn't a wifi
+    # connection, which we also treat as "no WiFi configured".
+    try:
+        mode, ssid = props_output.splitlines()
+    except ValueError:
+        return WifiSettings(None, None, None)
+
+    # In AP mode, the SSID is the hotspot name, not a WiFi client setting.
+    if mode != 'infrastructure':
+        return WifiSettings(None, None, None)
+
+    return WifiSettings(country_code=_read_wifi_country(), ssid=ssid, psk=None)
+
+
+def _read_wifi_country():
+    """Reads the WiFi regulatory country code from the kernel.
+
+    Returns:
+        The 2-letter country code, or None if not set or unreadable.
     """
     try:
-        # We cannot read the wpa_supplicant.conf file directly, because it is
-        # owned by the root user.
-        config_lines = subprocess.check_output([
-            '/usr/bin/sudo',
-            '/opt/tinypilot-privileged/scripts/print-marker-sections',
-            '/etc/wpa_supplicant/wpa_supplicant.conf'
-        ],
-                                               stderr=subprocess.STDOUT,
-                                               universal_newlines=True)
-    except subprocess.CalledProcessError as e:
-        raise NetworkError(str(e.output).strip()) from e
+        output = subprocess.check_output(  # noqa: S603
+            ['/usr/sbin/iw', 'reg', 'get'],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True)
+    except subprocess.CalledProcessError:
+        return None
 
-    wifi = WifiSettings(None, None, None)
-    for line in config_lines.splitlines():
-        match_country = _WIFI_COUNTRY_PATTERN.search(line.strip())
-        if match_country:
-            wifi.country_code = match_country.group(1)
-            continue
-        match_ssid = _WIFI_SSID_PATTERN.search(line.strip())
-        if match_ssid:
-            wifi.ssid = match_ssid.group(1)
-            continue
-    return wifi
+    for line in output.splitlines():
+        match = _WIFI_COUNTRY_PATTERN.search(line)
+        if match:
+            country = match.group(1)
+            # '00' means unset.
+            if country == '00':
+                return None
+            return country
+    return None
 
 
 def enable_wifi(wifi_settings):

@@ -38,7 +38,7 @@ async function disableUserAuthentication(page, browser) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Disable User Authentication",
-      })
+      }),
     ).toBeVisible();
     await securityDialog
       .getByRole("button", { name: "Delete All Users" })
@@ -48,7 +48,7 @@ async function disableUserAuthentication(page, browser) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Manage Users",
-      })
+      }),
     ).toBeVisible();
     await securityDialog
       .getByRole("button", { name: "Close", exact: true })
@@ -56,7 +56,7 @@ async function disableUserAuthentication(page, browser) {
     await expect(
       securityDialog.getByRole("heading", {
         name: "Manage Users",
-      })
+      }),
     ).not.toBeVisible();
   });
 
@@ -65,7 +65,7 @@ async function disableUserAuthentication(page, browser) {
     await guestPage.goto("/");
     await expect(guestPage).toHaveURL("/");
     await expect(
-      guestPage.getByRole("menuitem", { name: "System" })
+      guestPage.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 }
@@ -101,11 +101,11 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
     await page.getByRole("menuitem", { name: "Security" }).hover();
     await page.getByRole("menuitem", { name: "Users" }).click();
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
     await locateToggle(page, "#require-authentication").click();
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
   });
 
@@ -120,14 +120,14 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
       .fill("alicepass");
     await page.getByRole("button", { name: "Add User" }).click();
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
   });
 
   await test.step("Create the 'bob' user", async () => {
     await page.getByRole("button", { name: "Add User" }).click();
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
     await page.getByRole("textbox", { name: "Username" }).fill("bob");
     await page
@@ -137,7 +137,7 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
     await page.getByLabel("Confirm password:", { exact: true }).fill("bobpass");
     await page.getByRole("button", { name: "Add User" }).click();
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
   });
 
@@ -145,7 +145,7 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
     await bobPage.goto("/");
     await expect(bobPage).toHaveURL("/login");
     await expect(
-      bobPage.getByRole("heading", { name: "Log In" })
+      bobPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
     await bobPage.getByLabel("Username").fill("bob");
     await bobPage.getByLabel("Password").fill("bobpass");
@@ -163,7 +163,7 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
       .getByRole("button", { name: "Edit" })
       .click();
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
     await page
       .locator("#manage-users-dialog")
@@ -182,7 +182,7 @@ test("invalidates an authenticated session", async ({ page, browser }) => {
   await test.step("Verify auto-logout", async () => {
     await expect(bobPage).toHaveURL("/login");
     await expect(
-      bobPage.getByRole("heading", { name: "Log In" })
+      bobPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
   });
 
@@ -196,14 +196,14 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     await page.getByRole("menuitem", { name: "Security" }).hover();
     await page.getByRole("menuitem", { name: "Users" }).click();
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
     await locateToggle(page, "#require-authentication").click();
   });
 
   await test.step("Add a user named alice", async () => {
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
     await page.getByRole("textbox", { name: "Username" }).fill("alice");
     await page
@@ -217,14 +217,14 @@ test("adds and removes user authentication", async ({ page, browser }) => {
 
     // We should be back on Manage Users page.
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Add User" }).click();
   });
 
   await test.step("Add a user named bob", async () => {
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
     await page.getByRole("textbox", { name: "Username" }).fill("bob");
     await page
@@ -236,7 +236,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
 
     // We should be back on Manage Users page.
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Close", exact: true }).click();
 
@@ -254,7 +254,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     // We should be redirected to the login page.
     await expect(guestPage).toHaveURL("/login");
     await expect(
-      guestPage.getByRole("heading", { name: "Log In" })
+      guestPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
 
     await guestPage.getByLabel("Username").fill("alice");
@@ -280,7 +280,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     // We should be redirected to the login page.
     await expect(guestPage).toHaveURL("/login");
     await expect(
-      guestPage.getByRole("heading", { name: "Log In" })
+      guestPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
 
     await guestPage.getByLabel("Username").fill("bob");
@@ -306,7 +306,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     // We should be redirected to the login page.
     await expect(guestPage).toHaveURL("/login");
     await expect(
-      guestPage.getByRole("heading", { name: "Log In" })
+      guestPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
 
     await guestPage.getByLabel("Username").fill("alice");
@@ -317,7 +317,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     await expect(guestPage).toHaveURL("/login");
     await expect(guestPage.locator("#error")).toContainText(
       "Error: Invalid username and password",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 
@@ -331,10 +331,10 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     // We should be redirected to the login page, and the originally requested
     // URL should be included in the ?redirect query parameter.
     await expect(guestPage).toHaveURL(
-      "/login?redirect=%2F%3FviewMode%3Dstandalone"
+      "/login?redirect=%2F%3FviewMode%3Dstandalone",
     );
     await expect(
-      guestPage.getByRole("heading", { name: "Log In" })
+      guestPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
 
     await guestPage.getByLabel("Username").fill("bob");
@@ -354,7 +354,7 @@ test("adds and removes user authentication", async ({ page, browser }) => {
     // Redirect param is: https://evil.com
     await guestPage.goto("/login?redirect=https%3A%2F%2Fevil.com");
     await expect(
-      guestPage.getByRole("heading", { name: "Log In" })
+      guestPage.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
 
     await guestPage.getByLabel("Username").fill("bob");
@@ -380,13 +380,13 @@ test.describe("rejects invalid input for creating a new user", async () => {
     await page.getByRole("menuitem", { name: "Security" }).hover();
     await page.getByRole("menuitem", { name: "Users" }).click();
     await expect(
-      page.getByRole("heading", { name: "Manage Users" })
+      page.getByRole("heading", { name: "Manage Users" }),
     ).toBeVisible();
 
     await locateToggle(page, "#require-authentication").click();
 
     await expect(
-      page.getByRole("heading", { name: "User Authentication" })
+      page.getByRole("heading", { name: "User Authentication" }),
     ).toBeVisible();
 
     // Verify the Add User button is disabled before we populate any fields.
@@ -409,7 +409,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
 
     await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Username must be 1-20 characters in length",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 
@@ -426,7 +426,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
 
     await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Username can only contain characters a-z, A-Z, 0-9, or .-_",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 
@@ -441,7 +441,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
 
     await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Passwords do not match",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 
@@ -456,7 +456,7 @@ test.describe("rejects invalid input for creating a new user", async () => {
 
     await expect(page.locator("#manage-users-dialog #error")).toHaveText(
       "Error: Password must be 6-60 characters in length",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 });
@@ -471,7 +471,7 @@ test("turning on user authentication invalidates other active sessions", async (
     await session1.goto("/");
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 
@@ -479,7 +479,7 @@ test("turning on user authentication invalidates other active sessions", async (
     await session2.goto("/");
     await expect(session2).toHaveURL("/");
     await expect(
-      session2.getByRole("menuitem", { name: "System" })
+      session2.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 
@@ -487,7 +487,7 @@ test("turning on user authentication invalidates other active sessions", async (
     await session1.goto("/");
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session1.getByRole("menuitem", { name: "System" }).hover();
     await session1.getByRole("menuitem", { name: "Security" }).hover();
@@ -509,14 +509,14 @@ test("turning on user authentication invalidates other active sessions", async (
     await session1.reload();
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 
   await test.step("Session 2: Confirm restricted access", async () => {
     await expect(session2).toHaveURL("/");
     await expect(
-      session2.getByRole("menuitem", { name: "System" })
+      session2.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session2.getByRole("menuitem", { name: "System" }).hover();
     await session2.getByRole("menuitem", { name: "Security" }).hover();
@@ -526,7 +526,7 @@ test("turning on user authentication invalidates other active sessions", async (
     await expect(errorDialog).toBeVisible();
 
     await expect(errorDialog.locator("#details")).toContainText(
-      "Error: Not authorized"
+      "Error: Not authorized",
     );
   });
 
@@ -534,7 +534,7 @@ test("turning on user authentication invalidates other active sessions", async (
     await session2.reload();
     await expect(session2).toHaveURL("/login");
     await expect(
-      session2.getByRole("heading", { name: "Log In" })
+      session2.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
   });
 
@@ -551,7 +551,7 @@ test("changing user password invalidates other active sessions for the same user
     await session1.goto("/");
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session1.getByRole("menuitem", { name: "System" }).hover();
     await session1.getByRole("menuitem", { name: "Security" }).hover();
@@ -573,7 +573,7 @@ test("changing user password invalidates other active sessions for the same user
     await session1.reload();
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 
@@ -589,7 +589,7 @@ test("changing user password invalidates other active sessions for the same user
   await test.step("Session 1: Change user password", async () => {
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session1.getByRole("menuitem", { name: "System" }).hover();
     await session1.getByRole("menuitem", { name: "Security" }).hover();
@@ -613,7 +613,7 @@ test("changing user password invalidates other active sessions for the same user
   await test.step("Session 2: Confirm restricted access", async () => {
     await expect(session2).toHaveURL("/");
     await expect(
-      session2.getByRole("menuitem", { name: "System" })
+      session2.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session2.getByRole("menuitem", { name: "System" }).hover();
     await session2.getByRole("menuitem", { name: "Security" }).hover();
@@ -623,7 +623,7 @@ test("changing user password invalidates other active sessions for the same user
     await expect(errorDialog).toBeVisible();
 
     await expect(errorDialog.locator("#details")).toContainText(
-      "Error: Not authorized"
+      "Error: Not authorized",
     );
   });
 
@@ -631,7 +631,7 @@ test("changing user password invalidates other active sessions for the same user
     await session2.reload();
     await expect(session2).toHaveURL("/login");
     await expect(
-      session2.getByRole("heading", { name: "Log In" })
+      session2.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
   });
 
@@ -658,7 +658,7 @@ test("deleting a user invalidates other active sessions for the same user", asyn
     await session1.goto("/");
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session1.getByRole("menuitem", { name: "System" }).hover();
     await session1.getByRole("menuitem", { name: "Security" }).hover();
@@ -680,14 +680,14 @@ test("deleting a user invalidates other active sessions for the same user", asyn
     await session1.reload();
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
   });
 
   await test.step("Session 1: Create a user", async () => {
     await expect(session1).toHaveURL("/");
     await expect(
-      session1.getByRole("menuitem", { name: "System" })
+      session1.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session1.getByRole("menuitem", { name: "System" }).hover();
     await session1.getByRole("menuitem", { name: "Security" }).hover();
@@ -729,7 +729,7 @@ test("deleting a user invalidates other active sessions for the same user", asyn
   await test.step("Session 2: Confirm restricted access", async () => {
     await expect(session2).toHaveURL("/");
     await expect(
-      session2.getByRole("menuitem", { name: "System" })
+      session2.getByRole("menuitem", { name: "System" }),
     ).toBeVisible();
     await session2.getByRole("menuitem", { name: "System" }).hover();
     await session2.getByRole("menuitem", { name: "Security" }).hover();
@@ -739,7 +739,7 @@ test("deleting a user invalidates other active sessions for the same user", asyn
     await expect(errorDialog).toBeVisible();
 
     await expect(errorDialog.locator("#details")).toContainText(
-      "Error: Not authorized"
+      "Error: Not authorized",
     );
   });
 
@@ -747,7 +747,7 @@ test("deleting a user invalidates other active sessions for the same user", asyn
     await session2.reload();
     await expect(session2).toHaveURL("/login");
     await expect(
-      session2.getByRole("heading", { name: "Log In" })
+      session2.getByRole("heading", { name: "Log In" }),
     ).toBeVisible();
   });
 
@@ -761,7 +761,7 @@ test("deleting a user invalidates other active sessions for the same user", asyn
     await expect(session2).toHaveURL("/login");
     await expect(session2.locator("#error")).toContainText(
       "Error: Invalid username and password",
-      { ignoreCase: false }
+      { ignoreCase: false },
     );
   });
 

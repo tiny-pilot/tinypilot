@@ -8,25 +8,25 @@ describe("determineFutureOrigin", () => {
       determineFutureOrigin(
         new URL("https://old-tinypilot/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot"
+      "https://new-tinypilot",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("https://old-tinypilot.local/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot.local"
+      "https://new-tinypilot.local",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("https://old-tinypilot.domain.local/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot.domain.local"
+      "https://new-tinypilot.domain.local",
     );
   });
   it("returns origin using only new hostname", () => {
@@ -34,33 +34,33 @@ describe("determineFutureOrigin", () => {
       determineFutureOrigin(
         new URL("https://old-tinypilot/"),
         undefined,
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot"
+      "https://new-tinypilot",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("https://old-tinypilot.local/"),
         undefined,
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot"
+      "https://new-tinypilot",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("https://old-tinypilot.domain.local/"),
         undefined,
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot"
+      "https://new-tinypilot",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("https://10.0.0.123/"),
         undefined,
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot"
+      "https://new-tinypilot",
     );
   });
   it("maintains port number", () => {
@@ -68,9 +68,9 @@ describe("determineFutureOrigin", () => {
       determineFutureOrigin(
         new URL("https://old-tinypilot:8080/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "https://new-tinypilot:8080"
+      "https://new-tinypilot:8080",
     );
   });
   it("maintains protocol", () => {
@@ -78,17 +78,17 @@ describe("determineFutureOrigin", () => {
       determineFutureOrigin(
         new URL("http://old-tinypilot/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "http://new-tinypilot"
+      "http://new-tinypilot",
     );
     assert.strictEqual(
       determineFutureOrigin(
         new URL("ftp://old-tinypilot/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "ftp://new-tinypilot"
+      "ftp://new-tinypilot",
     );
   });
   it("strips pathname", () => {
@@ -96,9 +96,9 @@ describe("determineFutureOrigin", () => {
       determineFutureOrigin(
         new URL("http://old-tinypilot/some-path/"),
         "old-tinypilot",
-        "new-tinypilot"
+        "new-tinypilot",
       ),
-      "http://new-tinypilot"
+      "http://new-tinypilot",
     );
   });
 });

@@ -113,80 +113,73 @@ if (( "${#NETWORK_COUNTRY}" != 2 )); then
   exit 1
 fi
 
-readonly NETWORK_AP_IP_ADDRESS='192.168.50.1'
-readonly NETWORK_AP_CLIENT_IP_RANGE_START='192.168.50.2'
-readonly NETWORK_AP_CLIENT_IP_RANGE_END='192.168.50.100'
+# Set country code (persists to /boot/firmware/cmdline.txt and applies via
+# iw reg set).
+raspi-config nonint do_wifi_country "${NETWORK_COUNTRY}"
 
-apt install hostapd dnsmasq --yes
+# Enable the wireless radio in case it was previously disabled.
+nmcli radio wifi on
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-readonly SCRIPT_DIR
-# shellcheck source=lib/markers.sh
-. "${SCRIPT_DIR}/lib/markers.sh"
+readonly CONNECTION_NAME='tinypilot-wlan0'
 
-# Clear existing TinyPilot network configurations.
-"${SCRIPT_DIR}/strip-marker-sections" /etc/dhcpcd.conf
+# Ensure exactly one tinypilot-wlan0 connection exists (singleton).
+CONN_COUNT="$(nmcli --get-values connection.uuid \
+  connection show "${CONNECTION_NAME}" 2>/dev/null \
+  | wc -l | tr -d ' ')"
+readonly CONN_COUNT
 
-# Enable wireless network interface.
-cat <<EOF | tee --append /etc/dhcpcd.conf
-${MARKER_START}
-interface wlan0
-static ip_address=${NETWORK_AP_IP_ADDRESS}/24
-nohook wpa_supplicant
-${MARKER_END}
-EOF
-
-# Configure wireless access point.
-cat <<EOF | tee /etc/hostapd/hostapd.conf
-country_code=${NETWORK_COUNTRY}
-interface=wlan0
-ssid=${NETWORK_NAME}
-hw_mode=g
-channel=7
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_passphrase=${NETWORK_PASSWORD}
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
-EOF
-
-# Configure DHCP server for wireless access point.
-cat <<EOF | tee /etc/dnsmasq.conf
-interface=wlan0
-dhcp-range=${NETWORK_AP_CLIENT_IP_RANGE_START},${NETWORK_AP_CLIENT_IP_RANGE_END},255.255.255.0,24h
-domain=wlan
-address=/gw.wlan/${NETWORK_AP_IP_ADDRESS}
-EOF
-
-# Backup WPA configurations.
-cp \
-  --no-clobber \
-  /etc/wpa_supplicant/wpa_supplicant.conf \
-  /etc/wpa_supplicant/wpa_supplicant.conf.bak
-
-if ! rfkill list wlan | grep -q 'yes'; then
-  touch /etc/wpa_supplicant/wlan_enabled
+if (( CONN_COUNT == 0 )); then
+  # No connection exists — create one. An SSID is required when creating a
+  # wifi connection.
+  nmcli connection add \
+    type wifi \
+    con-name "${CONNECTION_NAME}" \
+    ifname wlan0 \
+    wifi.ssid "${NETWORK_NAME}" \
+    connection.autoconnect yes \
+    connection.autoconnect-priority 0
+elif (( CONN_COUNT > 1 )); then
+  # Duplicates — delete all and recreate.
+  nmcli connection delete "${CONNECTION_NAME}" 2>/dev/null || true
+  nmcli connection add \
+    type wifi \
+    con-name "${CONNECTION_NAME}" \
+    ifname wlan0 \
+    wifi.ssid "${NETWORK_NAME}" \
+    connection.autoconnect yes \
+    connection.autoconnect-priority 0
 fi
 
-# Clear WPA configurations.
-cat <<'EOF' | tee /etc/wpa_supplicant/wpa_supplicant.conf
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-EOF
+# AP's static IP address in CIDR notation. NM uses this as the gateway
+# address for wlan0 and as the subnet for its internal dnsmasq DHCP server.
+readonly NETWORK_AP_IP_ADDRESS='192.168.50.1/24'
 
-# Start wireless access point.
-rfkill unblock wlan
-systemctl unmask hostapd dnsmasq
-systemctl enable hostapd dnsmasq
-systemctl restart hostapd dnsmasq
+# Modify to AP mode. NM's shared mode automatically runs an internal dnsmasq
+# instance for DHCP serving to AP clients.
+# Avoid leaking the password in command tracing.
+set +x
+nmcli connection modify "${CONNECTION_NAME}" \
+  wifi.mode ap \
+  wifi.band bg \
+  wifi.channel 7 \
+  wifi.ssid "${NETWORK_NAME}" \
+  wifi-sec.key-mgmt wpa-psk \
+  wifi-sec.psk "${NETWORK_PASSWORD}" \
+  wifi-sec.psk-flags 0 \
+  ipv4.method shared \
+  ipv4.addresses "${NETWORK_AP_IP_ADDRESS}" \
+  ipv4.gateway "" \
+  ipv4.dns ""
+set -x
+
+# Return as soon as NM accepts the activation request, so the script doesn't
+# block on activation-layer problems when the configuration has already been
+# saved successfully.
+nmcli --wait 0 connection up "${CONNECTION_NAME}"
 
 cat <<EOF
 TinyPilot is now running a WiFi access point with the following details:
 SSID: ${NETWORK_NAME}
 Country: ${NETWORK_COUNTRY}
-IP Address: ${NETWORK_AP_IP_ADDRESS}
-IP Range: ${NETWORK_AP_CLIENT_IP_RANGE_START} - ${NETWORK_AP_CLIENT_IP_RANGE_END}
+IP Range: ${NETWORK_AP_IP_ADDRESS}
 EOF

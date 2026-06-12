@@ -5,13 +5,16 @@ executors:
       - image: cimg/base:2024.02
   ubuntu-machine:
     machine:
-      image: ubuntu-2204:2024.01.2
+      image: ubuntu-2404:2025.09.1
+  debian:
+    docker:
+      - image: debian:trixie-20260421-slim
   python:
     docker:
-      - image: cimg/python:3.9.17
+      - image: cimg/python:3.13.12
   node:
     docker:
-      - image: cimg/node:18.16.1
+      - image: cimg/node:24.13.1
 commands:
   check_project_env_vars:
     steps:
@@ -182,12 +185,12 @@ jobs:
     docker:
       # To run tests against the dev server, Playwright needs a CircleCI image
       # with Python, Node, and a browser. While the check_python and
-      # check_javascript steps use python-3.9.17 and node-18.16.1 respectively,
+      # check_javascript steps use python-3.13.12 and node-24.13.1 respectively,
       # the CircleCI image with *both* python and node in the closest versions
-      # is python:3.9.17-browsers. It has python-3.9.17 and node-18.16.0.
+      # is python:3.13.12-browsers. It has python-3.13.12 and node-24.13.0.
       #
       # See: https://circleci.com/developer/images/image/cimg/python#tagging-scheme
-      - image: cimg/python:3.9.17-browsers
+      - image: cimg/python:3.13.12-browsers
     environment:
       NODE_ENV: development
     steps:
@@ -228,7 +231,7 @@ jobs:
           name: Build Debian package
           command: |
             ./dev-scripts/build-debian-pkg \
-              --build-targets linux/arm/v7
+              --build-targets linux/arm64
       - run:
           name: Print Debian package contents
           command: dpkg --contents debian-pkg/releases/tinypilot*.deb
@@ -237,17 +240,20 @@ jobs:
           paths:
             - "*.deb"
   check_debian_package:
-    executor: ubuntu
+    executor: debian
     steps:
       - checkout
       - attach_workspace:
           at: ./
       - run:
-          name: Update apt packages
-          command: sudo apt-get update
-      - run:
           name: Install lintian
-          command: sudo apt-get install -y lintian=2.114.0ubuntu1
+          command: |
+            set -eux
+            # Add a snapshot source so that the lintian version can be pinned.
+            echo 'deb https://snapshot.debian.org/archive/debian/20250329T031528Z/ trixie main' \
+              > /etc/apt/sources.list.d/snapshot.list
+            apt-get update
+            apt-get install --yes lintian=2.122.0
       - run:
           name: Print lintian version
           command: lintian --version

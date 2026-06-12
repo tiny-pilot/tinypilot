@@ -62,7 +62,7 @@ describe("KeyboardState", () => {
       assert.strictEqual(true, keyboardState.isKeyPressed("KeyF"));
       assert.deepEqual(
         new Set(["KeyE", "AltLeft", "ControlLeft", "KeyF"]),
-        new Set(keyboardState.getAllPressedKeys())
+        new Set(keyboardState.getAllPressedKeys()),
       );
     });
   });

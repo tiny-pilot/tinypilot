@@ -13,8 +13,9 @@ class SettingsTest(unittest.TestCase):
     @mock.patch.object(db.settings, 'db_connection')
     def test_preserves_data_across_connections(self, mock_db_connection):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_db_connection.get.return_value = db.store.create_or_open(
-                temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
             settings = db.settings.Settings()
             initial_value = settings.requires_https()
             settings.set_requires_https(not initial_value)
@@ -26,16 +27,18 @@ class SettingsTest(unittest.TestCase):
     @mock.patch.object(db.settings, 'db_connection')
     def test_requires_https_by_default(self, mock_db_connection):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_db_connection.get.return_value = db.store.create_or_open(
-                temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
             settings = db.settings.Settings()
             self.assertEqual(True, settings.requires_https())
 
     @mock.patch.object(db.settings, 'db_connection')
     def test_can_change_https_requirement(self, mock_db_connection):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_db_connection.get.return_value = db.store.create_or_open(
-                temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
             settings = db.settings.Settings()
             settings.set_requires_https(False)
             self.assertEqual(False, settings.requires_https())
@@ -43,8 +46,9 @@ class SettingsTest(unittest.TestCase):
     @mock.patch.object(db.settings, 'db_connection')
     def test_streaming_mode_default(self, mock_db_connection):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_db_connection.get.return_value = db.store.create_or_open(
-                temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
             settings = db.settings.Settings()
             self.assertEqual(db.settings.StreamingMode.MJPEG,
                              settings.get_streaming_mode())
@@ -52,8 +56,9 @@ class SettingsTest(unittest.TestCase):
     @mock.patch.object(db.settings, 'db_connection')
     def test_can_change_streaming_mode(self, mock_db_connection):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_db_connection.get.return_value = db.store.create_or_open(
-                temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
             settings = db.settings.Settings()
             settings.set_streaming_mode(db.settings.StreamingMode.H264)
             self.assertEqual(db.settings.StreamingMode.H264,

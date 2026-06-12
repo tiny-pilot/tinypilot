@@ -14,9 +14,10 @@ set -u
 while read -r file; do
   lintian \
     --check \
-    --no-tag-display-limit \
     --suppress-tags-from-file .lintianignore \
-    --no-cfg \
     --fail-on warning,error \
+    --no-cfg \
+    --tag-display-limit 0 \
+    --verbose \
     "${file}"
 done < <(ls -- *.deb)

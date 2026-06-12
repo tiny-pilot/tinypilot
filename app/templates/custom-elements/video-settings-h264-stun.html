@@ -119,7 +119,7 @@
 <script type="module">
   (function () {
     const template = document.querySelector(
-      "#video-settings-h264-stun-template"
+      "#video-settings-h264-stun-template",
     );
 
     class InputChangedEvent extends CustomEvent {
@@ -145,14 +145,14 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
 
           // Compile JS representation of all available STUN dropdown options.
           this._options = Array.from(
             this.shadowRoot.querySelectorAll(
-              "dropdown-button li[data-stun-option-id]"
-            )
+              "dropdown-button li[data-stun-option-id]",
+            ),
           ).map((element) => {
             const option = {
               id: element.dataset.stunOptionId,
@@ -187,12 +187,12 @@
           this._options.forEach((option) =>
             this.shadowRoot
               .querySelector(
-                `dropdown-button li[data-stun-option-id=${option.id}]`
+                `dropdown-button li[data-stun-option-id=${option.id}]`,
               )
               .addEventListener("click", () => {
                 this._select(option);
                 this.dispatchEvent(new InputChangedEvent());
-              })
+              }),
           );
         }
 
@@ -206,7 +206,7 @@
         getValue() {
           // Determine currently selected option.
           const selectedOption = this._findOption(
-            (option) => option.id === this.getAttribute("selection")
+            (option) => option.id === this.getAttribute("selection"),
           );
 
           // If the selection is “custom”, read the data from the input fields.
@@ -239,7 +239,7 @@
           // “custom”.
           const selectedOption = this._findOption(
             (option) =>
-              option.server === h264StunServer && option.port === h264StunPort
+              option.server === h264StunServer && option.port === h264StunPort,
           );
           if (selectedOption.id === "custom") {
             this._elements.server.value = h264StunServer;
@@ -252,9 +252,9 @@
           this._options.forEach((option) =>
             this.shadowRoot
               .querySelector(
-                `dropdown-button li[data-stun-option-id=${option.id}]`
+                `dropdown-button li[data-stun-option-id=${option.id}]`,
               )
-              .classList.toggle("disabled", newOption.id === option.id)
+              .classList.toggle("disabled", newOption.id === option.id),
           );
           this.setAttribute("selection", newOption.id);
         }
@@ -272,7 +272,7 @@
             this._options.find((option) => option.id === "custom")
           );
         }
-      }
+      },
     );
   })();
 </script>

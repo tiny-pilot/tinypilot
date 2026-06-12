@@ -24,11 +24,17 @@ override_dh_installsystemd:
 override_dh_virtualenv:
 	# Skip install because TinyPilot doesn't need to run setup.py to install.
 	# Use the venv directory because that's where we've historically kept it.
+	# Build some packages from source instead of using pre-built manylinux
+	# wheels so that their dependencies are linked against system libraries
+	# rather than bundling their own copies, which Lintian flags as
+	# embedded-library errors.
 	dh_virtualenv \
 		--requirements=requirements.txt \
+		--extra-pip-arg '--no-binary=pyyaml' \
 		--install-suffix=venv \
 		--skip-install \
-		--upgrade-pip
+		--upgrade-pip \
+		--verbose
 	# dh_virtualenv doesn't remove __pycache__ directories, so we clean them up
 	# manually.
 	find . -type d -name __pycache__ -prune -exec rm -rf {} \;

@@ -1,6 +1,7 @@
 # Auto-generated files/folders.
 **/__pycache__
 **/*.py[cod]
+**/venv/
 
 # Test files.
 **/*_test.py

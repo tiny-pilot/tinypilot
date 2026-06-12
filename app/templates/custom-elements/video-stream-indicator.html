@@ -103,7 +103,7 @@
       class extends HTMLElement {
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
         }
 
@@ -152,7 +152,7 @@
             }, DELAY_SECONDS * 1000);
           }
         }
-      }
+      },
     );
   })();
 </script>

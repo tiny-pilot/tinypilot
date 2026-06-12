@@ -2,11 +2,13 @@
   "name": "tinypilot",
   "type": "module",
   "devDependencies": {
-    "@playwright/test": "1.35.1",
-    "eslint": "8.44.0",
-    "eslint-plugin-html": "7.1.0",
-    "mocha": "10.8.2",
-    "playwright": "1.35.1",
-    "prettier": "2.8.8"
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.60.0",
+    "eslint": "10.4.0",
+    "eslint-plugin-html": "8.1.4",
+    "globals": "17.6.0",
+    "mocha": "11.7.6",
+    "playwright": "1.60.0",
+    "prettier": "3.8.3"
   }
 }

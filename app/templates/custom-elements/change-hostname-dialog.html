@@ -125,7 +125,7 @@
 
         connectedCallback() {
           this.attachShadow({ mode: "open" }).appendChild(
-            template.content.cloneNode(true)
+            template.content.cloneNode(true),
           );
           this._elements = {
             inputError: this.shadowRoot.getElementById("input-error"),
@@ -133,7 +133,7 @@
             changeAndRestart:
               this.shadowRoot.getElementById("change-and-restart"),
             cancelHostnameChange: this.shadowRoot.getElementById(
-              "cancel-hostname-change"
+              "cancel-hostname-change",
             ),
             futureLocation: this.shadowRoot.getElementById("future-location"),
           };
@@ -163,8 +163,8 @@
           this.setAttribute("state", newValue);
           this.dispatchEvent(
             new DialogCloseStateChangedEvent(
-              !this._statesWithoutDialogClose.has(newValue)
-            )
+              !this._statesWithoutDialogClose.has(newValue),
+            ),
           );
         }
 
@@ -177,6 +177,7 @@
         }
 
         _initialize() {
+          this._elements.changeAndRestart.disabled = false;
           this.dispatchEvent(new DialogVariantChangedEvent("default"));
           this._elements.inputError.hide();
           this._state = this._states.INITIALIZING;
@@ -193,7 +194,7 @@
                 new DialogFailedEvent({
                   title: "Failed to Determine Hostname",
                   details: error,
-                })
+                }),
               );
             });
         }
@@ -207,6 +208,7 @@
         }
 
         _doChangeHostname() {
+          this._elements.changeAndRestart.disabled = true;
           changeHostname(this._elements.hostnameInput.value)
             .then((newHostname) => {
               return shutdown(/*restart=*/ true).then(() => newHostname);
@@ -215,7 +217,7 @@
               return determineFutureOrigin(
                 new URL(window.location),
                 this.initialHostname,
-                newHostname
+                newHostname,
               );
             })
             .then((redirectURL) => {
@@ -223,8 +225,10 @@
               this._elements.futureLocation.href = redirectURL;
               this.dispatchEvent(new DialogVariantChangedEvent("success"));
               this._state = this._states.SUCCESS;
+              this._elements.changeAndRestart.disabled = false;
             })
             .catch((error) => {
+              this._elements.changeAndRestart.disabled = false;
               if (error.code === "INVALID_HOSTNAME") {
                 // Display validation errors inline in order to make it more
                 // convenient for the user to correct them.
@@ -236,11 +240,11 @@
                 new DialogFailedEvent({
                   title: "Failed to Change Hostname",
                   details: error,
-                })
+                }),
               );
             });
         }
-      }
+      },
     );
   })();
 </script>

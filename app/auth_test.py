@@ -36,7 +36,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_can_authenticate_with_valid_credentials(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             self.assertTrue(auth.can_authenticate('pilot', 'p4ssw0rd'))
@@ -45,7 +47,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_register_duplicate_users(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', '12345', auth.Role.ADMIN)
             with self.assertRaises(db.users.UserAlreadyExistsError):
@@ -55,7 +59,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_fails_if_first_user_is_not_admin(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             with self.assertRaises(auth.OneAdminRequiredError):
                 auth.register('pilot', '12345', auth.Role.OPERATOR)
@@ -64,7 +70,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_authenticate_with_wrong_password(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             self.assertFalse(auth.can_authenticate('pilot', '12345'))
@@ -72,7 +80,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_authenticate_when_no_user_is_registered(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             self.assertFalse(auth.can_authenticate('pilot', '12345'))
 
@@ -80,7 +90,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_authenticate_with_unknown_user(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             self.assertFalse(auth.can_authenticate('someone-else', 'p4ssw0rd'))
@@ -89,7 +101,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_authenticate_after_account_deletion(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
@@ -104,7 +118,9 @@ class AuthTest(unittest.TestCase):
     def test_cannot_delete_last_remaining_admin_while_other_users_exist(
             self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
 
@@ -133,7 +149,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_delete_unknown_user(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             with self.assertRaises(db.users.UserDoesNotExistError):
                 auth.delete_account('pilot')
@@ -142,7 +160,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_authenticate_after_all_accounts_deleted(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             auth.register('new-pilot', 'pa55word', auth.Role.ADMIN)
@@ -155,7 +175,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_system_supports_multiple_user_accounts(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             auth.register('new-pilot', 'pa55word', auth.Role.ADMIN)
@@ -166,7 +188,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_authentication_required_when_users_exist(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             self.assertFalse(auth.is_authentication_required())
 
@@ -182,7 +206,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_can_authenticate_after_changing_password(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             auth.change_password('pilot', 'pa55word')
@@ -193,7 +219,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_change_credentials_of_unknown_user(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
@@ -209,7 +237,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_cannot_change_role_of_last_remaining_admin(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('admin', 'p4ssw0rd', auth.Role.ADMIN)
             with self.assertRaises(auth.OneAdminRequiredError):
@@ -219,7 +249,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_get_account(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             self.assertEqual([], auth.get_all_accounts())
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
@@ -237,7 +269,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_get_all_accounts(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             self.assertEqual([], auth.get_all_accounts())
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
@@ -259,7 +293,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_sets_credentials_timestamp_on_registration(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             before = utc.now()
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
@@ -272,7 +308,9 @@ class AuthTest(unittest.TestCase):
     def test_updates_credentials_timestamp_when_changing_password(
             self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             initial_timestamp = auth.get_account(
@@ -293,7 +331,9 @@ class AuthTest(unittest.TestCase):
     def test_updates_credentials_timestamp_when_changing_role(
             self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
@@ -317,7 +357,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_updates_role_when_changing_role(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
@@ -332,7 +374,9 @@ class AuthTest(unittest.TestCase):
     @mock.patch.object(db.users.db_connection, 'get')
     def test_raises_if_user_does_not_exist(self, mock_get_db):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             with self.assertRaises(db.users.UserDoesNotExistError):
                 auth.get_account('pilot')
@@ -342,7 +386,9 @@ class AuthTest(unittest.TestCase):
     def test_restarts_video_service_after_credentials_change(
             self, mock_get_db, mock_video_service_restart):
         with tempfile.NamedTemporaryFile() as temp_file:
-            mock_get_db.return_value = db.store.create_or_open(temp_file.name)
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
 
             # Create dummy admin user to satisfy the “one admin required”
             # constraint.
