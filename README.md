@@ -69,7 +69,7 @@ See ["TinyPilot: Build a KVM Over IP for Under \$100"](https://mtlynch.io/tinypi
 
 ### Requirements
 
-- A Raspberry Pi 4B running Raspberry Pi OS Bullseye (32-bit)
+- A Raspberry Pi 4B running Raspberry Pi OS Trixie (64-bit)
 
 You can install TinyPilot on a compatible Raspberry Pi in just two commands.
 
