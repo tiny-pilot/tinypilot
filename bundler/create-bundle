@@ -24,9 +24,6 @@ cd ./bundler
 readonly BUNDLE_DIR='bundle'
 readonly OUTPUT_DIR='dist'
 
-# Exclude the AMD64 package from the production bundle.
-rm -f "${BUNDLE_DIR}/tinypilot"*amd64.deb
-
 # Ensure that a TinyPilot Debian package exists.
 if ! ls "${BUNDLE_DIR}/tinypilot"*arm64.deb 1> /dev/null 2>&1; then
   echo 'Failed to create bundle: no TinyPilot Debian package found.' >&2

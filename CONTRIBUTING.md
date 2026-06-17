@@ -300,10 +300,8 @@ To build a TinyPilot install bundle on your dev system, you first need to config
 Once your dev system is configured for multi-architecture Docker builds, you can build install ARM64 TinyPilot bundles with the following commands:
 
 ```bash
-TARGET_PLATFORM='linux/arm64'
-
 (rm debian-pkg/releases/tinypilot*.deb || true) && \
-  ./dev-scripts/build-debian-pkg --build-targets "${TARGET_PLATFORM}" && \
+  ./dev-scripts/build-debian-pkg && \
   mv debian-pkg/releases/tinypilot*.deb bundler/bundle && \
   ./bundler/create-bundle
 ```
