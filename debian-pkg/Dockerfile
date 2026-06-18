@@ -35,9 +35,6 @@ ARG PKG_BUILD_NUMBER='1'
 RUN cat | bash <<'EOF'
 set -exu
 case "${TARGETPLATFORM}" in
-  'linux/amd64')
-    PKG_ARCH='amd64'
-    ;;
   'linux/arm64')
     PKG_ARCH='arm64'
     ;;
