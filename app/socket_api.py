@@ -100,11 +100,12 @@ def on_mouse_event(message):
         logger.error_sensitive('Failed to parse mouse event request: %s', e)
         return {'success': False}
     try:
-        fake_mouse.send_mouse_event(
-            env.MOUSE_ABSOLUTE_PATH, mouse_move_event.buttons,
-            mouse_move_event.relative_x, mouse_move_event.relative_y,
-            mouse_move_event.vertical_wheel_delta,
-            mouse_move_event.horizontal_wheel_delta)
+        fake_mouse.send_mouse_event(env.MOUSE_ABSOLUTE_PATH,
+                                    mouse_move_event.buttons,
+                                    mouse_move_event.relative_x,
+                                    mouse_move_event.relative_y,
+                                    mouse_move_event.vertical_wheel_delta,
+                                    mouse_move_event.horizontal_wheel_delta)
     except hid_write.WriteError as e:
         logger.error_sensitive('Failed to forward mouse event: %s', e)
         return {'success': False}
