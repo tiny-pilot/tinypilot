@@ -45,7 +45,7 @@ class Settings:
         """Retrieves the preferred streaming mode for the remote screen.
 
         Returns:
-            A `StreamingMode` value.
+            A `StreamingMode` instance.
         """
         cursor = self._db_connection.execute(
             'SELECT streaming_mode FROM settings WHERE id=?', [_ROW_ID])
@@ -56,7 +56,7 @@ class Settings:
         """Stores the preferred streaming mode.
 
         Args:
-            streaming_mode: `StreamingMode` value.
+            streaming_mode: `StreamingMode` instance.
         """
         self._db_connection.execute(
             'UPDATE settings SET streaming_mode=? WHERE id=?',

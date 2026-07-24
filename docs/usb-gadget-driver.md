@@ -18,7 +18,7 @@ Examples for possible operations:
 
 ```bash
 # Set up config for a USB mouse.
-mkdir -p functions/hid.mouse
+mkdir -p functions/hid.mouse_absolute
 
 # Make mass storage behave like a CD-ROM drive.
 echo 1 > functions/mass_storage.0/lun.0/cdrom
@@ -31,14 +31,14 @@ The `configfs` files and folders must be in line with a specific, predefined str
 - `/sys/kernel/config/usb_gadget/`: Contains a sub-folder per gadget configuration.
   - `g1/`: We have a single gadget registered right now, which is identified by `g1`. Among other items, this folder contains:
     - `UDC`: While the gadget is activated, this contains the name of the USB device controller (hence the acronym). If the gadget is deactivated, this file is empty. That means, the active-state of the gadget can be controlled through the value in this file.
-    - `functions/`: Contains the actual configurations for the USB interface features. Creating a sub-folder (e.g. `hid.mouse` for the USB mouse) will automatically set up the internal file structure of that new folder. These functions need to be symlinked from the `configs/c.1` folder, otherwise they won’t have any effect. Example items:
-      - `hid.mouse/`: USB mouse config
+    - `functions/`: Contains the actual configurations for the USB interface features. Creating a sub-folder (e.g. `hid.mouse_absolute` for the USB mouse) will automatically set up the internal file structure of that new folder. These functions need to be symlinked from the `configs/c.1` folder, otherwise they won’t have any effect. Example items:
+      - `hid.mouse_absolute/`: USB mouse config (absolute positioning, on `/dev/hidg1`)
       - `hid.keyboard/`: USB keyboard config
       - `mass_storage.0`: USB mass storage config
     - `configs/`: This folder contains the complete and authoritative configurations for the USB gadget. There could be multiple ones, but we only use one right now, which is identified by `c.1`.
       - `c.1/`: Among others:
         - `strings/`: Device info, like the serial number or the manufacturer name.
-        - `hid.mouse/`: Example of a symlink to the `functions/hid.mouse` folder. It only allows a symlink here, you can’t create the configuration in place.
+        - `hid.mouse_absolute/`: Example of a symlink to the `functions/hid.mouse_absolute` folder. It only allows a symlink here, you can’t create the configuration in place.
 
 ## Behaviour
 

@@ -3,7 +3,7 @@ import unittest
 from request_parsers import mouse_event
 
 
-class MouseEventTest(unittest.TestCase):
+class AbsoluteMouseEventTest(unittest.TestCase):
 
     def test_parses_valid_mouse_event(self):
         self.assertEqual(

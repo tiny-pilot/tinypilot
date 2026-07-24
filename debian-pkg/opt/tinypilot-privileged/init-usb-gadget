@@ -101,11 +101,11 @@ if [[ -f "${USB_KEYBOARD_FUNCTIONS_DIR}/no_out_endpoint" ]]; then
   echo 1 > "${USB_KEYBOARD_FUNCTIONS_DIR}/no_out_endpoint"
 fi
 
-# Mouse
-mkdir -p "$USB_MOUSE_FUNCTIONS_DIR"
-echo 0 > "${USB_MOUSE_FUNCTIONS_DIR}/protocol"
-echo 0 > "${USB_MOUSE_FUNCTIONS_DIR}/subclass"
-echo 7 > "${USB_MOUSE_FUNCTIONS_DIR}/report_length"
+# Absolute mouse
+mkdir -p "$USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR"
+echo 0 > "${USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR}/protocol"
+echo 0 > "${USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR}/subclass"
+echo 7 > "${USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR}/report_length"
 # Write the report descriptor
 D=$(mktemp)
 {
@@ -147,7 +147,7 @@ echo -ne \\x95\\x01      #   REPORT_COUNT (1)
 echo -ne \\x81\\x06      #   INPUT (Data,Var,Rel)
 echo -ne \\xC0           # END_COLLECTION
 } >> "$D"
-cp "$D" "${USB_MOUSE_FUNCTIONS_DIR}/report_desc"
+cp "$D" "${USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR}/report_desc"
 
 mkdir -p "${USB_CONFIG_DIR}"
 echo 250 > "${USB_CONFIG_DIR}/MaxPower"
@@ -157,6 +157,6 @@ mkdir -p "${CONFIGS_STRINGS_DIR}"
 echo "Config ${USB_CONFIG_INDEX}: ECM network" > "${CONFIGS_STRINGS_DIR}/configuration"
 
 ln -s "${USB_KEYBOARD_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
-ln -s "${USB_MOUSE_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
+ln -s "${USB_MOUSE_ABSOLUTE_FUNCTIONS_DIR}" "${USB_CONFIG_DIR}/"
 
 usb_gadget_activate

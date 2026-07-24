@@ -15,9 +15,9 @@ export DEB_BUILD_OPTIONS=noddebs
 override_dh_installsystemd:
 	dh_installsystemd --name=load-edid --no-start
 	dh_installsystemd --name=tinypilot
-	dh_installsystemd --name=update-tls-cert-common-name
-	dh_installsystemd --name=tinypilot-updater --no-start --no-enable
-	dh_installsystemd --name=usb-gadget --no-start
+	dh_installsystemd --name=update-tls-cert-common-name --no-start --no-enable
+	dh_installsystemd --name=tinypilot-updater --no-start --no-enable --no-stop-on-upgrade
+	dh_installsystemd --name=usb-gadget --no-start --no-stop-on-upgrade
 	dh_installsystemd --name=ustreamer
 	dh_installsystemd --name=janus
 

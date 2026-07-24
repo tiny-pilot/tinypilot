@@ -4,7 +4,7 @@
 To test:
   $ PYTHONPATH="${PWD}/app" ./scripts/render-template <<'EOF'
 KEYBOARD_PATH = '{{ tinypilot_keyboard_interface }}'
-MOUSE_PATH = '{{ tinypilot_mouse_interface }}'
+MOUSE_ABSOLUTE_PATH = '{{ tinypilot_mouse_interface }}'
 EOF
 """
 

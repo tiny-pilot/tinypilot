@@ -1,7 +1,13 @@
 [Unit]
 Description=TinyPilot - RPi-based virtual KVM
-BindsTo=nginx.service
-After=syslog.target network.target nginx.service
+# TinyPilot binds 127.0.0.1 and relies on nginx to proxy it to the network.
+# Wants= (rather than BindsTo=) prevents an nginx restart (e.g., TLS cert
+# cycling) from stopping TinyPilot and dropping the user's session. Not using
+# After=nginx keeps TinyPilot from inheriting nginx's wait on
+# network-online.target, so it can start in parallel and is usually ready to
+# serve before nginx accepts connections, avoiding 502 errors.
+Wants=nginx.service
+After=syslog.target
 StartLimitIntervalSec=0
 
 [Service]
