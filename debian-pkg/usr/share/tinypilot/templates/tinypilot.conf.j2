@@ -1,6 +1,11 @@
 upstream tinypilot {
     server 127.0.0.1:48000 fail_timeout=1s max_fails=600;
 }
+
+# Throttle login attempts per client IP to mitigate online brute force.
+# The client IP is nginx's direct peer ($binary_remote_addr), which cannot
+# be spoofed by request headers.
+limit_req_zone $binary_remote_addr zone=tp_auth:1m rate=10r/m;
 upstream ustreamer {
     server 127.0.0.1:48001 fail_timeout=1s max_fails=600;
 }
@@ -88,6 +93,21 @@ server {
     }
     location /ca.crt {
         alias "/etc/ssl/certs/tinypilot-ca.crt";
+    }
+    # Rate-limit login attempts (POST /api/auth) at the edge. The internal
+    # `location = /auth` block below is used by `auth_request` subrequests
+    # for session validation and is not affected.
+    location = /api/auth {
+        limit_req zone=tp_auth burst=5 nodelay;
+        limit_req_status 429;
+        # Return a JSON body on 429 so the login form’s error banner
+        # renders cleanly instead of nginx’s default HTML page.
+        error_page 429 = @rate_limited;
+        proxy_pass http://tinypilot;
+    }
+    location @rate_limited {
+        default_type application/json;
+        return 429 '{"code":429,"message":"Too many login attempts. Please wait a minute and try again."}';
     }
     location / {
         proxy_pass http://tinypilot;

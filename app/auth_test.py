@@ -5,6 +5,7 @@ from unittest import mock
 import auth
 import db.store
 import db.users
+import password as password_check
 import utc
 import video_service
 
@@ -96,6 +97,20 @@ class AuthTest(unittest.TestCase):
 
             auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
             self.assertFalse(auth.can_authenticate('someone-else', 'p4ssw0rd'))
+
+    @mock.patch.object(video_service, 'restart', do_nothing)
+    @mock.patch.object(password_check, 'dummy_verify')
+    @mock.patch.object(db.users.db_connection, 'get')
+    def test_unknown_user_still_runs_dummy_verify_to_equalize_timing(
+            self, mock_get_db, mock_dummy_verify):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_get_db.return_value = db_conn
+            self.addCleanup(db_conn.close)
+
+            auth.register('pilot', 'p4ssw0rd', auth.Role.ADMIN)
+            self.assertFalse(auth.can_authenticate('someone-else', 'p4ssw0rd'))
+            mock_dummy_verify.assert_called_once_with('p4ssw0rd')
 
     @mock.patch.object(video_service, 'restart', do_nothing)
     @mock.patch.object(db.users.db_connection, 'get')
