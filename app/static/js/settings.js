@@ -10,6 +10,7 @@ const defaults = {
   cursor: "default",
   isKeyboardVisible: true,
   isPasteAreaMasked: false,
+  hasSeenSetupPasswordNudge: false,
 };
 
 // Initialize any undefined settings to their default values.
@@ -64,5 +65,19 @@ export function isPasteAreaMasked() {
 
 export function setPasteAreaMasked(isMasked) {
   settings["isPasteAreaMasked"] = isMasked;
+  persistSettings();
+}
+
+export function hasSeenSetupPasswordNudge() {
+  return settings["hasSeenSetupPasswordNudge"];
+}
+
+export function markSetupPasswordNudgeSeen() {
+  settings["hasSeenSetupPasswordNudge"] = true;
+  persistSettings();
+}
+
+export function clearSetupPasswordNudgeSeen() {
+  settings["hasSeenSetupPasswordNudge"] = false;
   persistSettings();
 }

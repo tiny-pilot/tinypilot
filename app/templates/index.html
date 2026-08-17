@@ -10,6 +10,50 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <style>
+      #setup-password-nudge-banner {
+        position: fixed;
+        top: var(--menu-bar-height, 45px);
+        width: 100%;
+        background-color: var(--brand-orange-light);
+        border-bottom: 1px solid var(--brand-orange-dark);
+        color: #000;
+        text-align: center;
+        padding: 0.35rem 2.4rem 0.35rem 1rem;
+        font-size: 1rem;
+        z-index: 0;
+        box-sizing: border-box;
+      }
+
+      #setup-password-nudge-banner a {
+        color: var(--brand-blue);
+        font-weight: bold;
+        margin-left: 0.5rem;
+      }
+
+      #setup-password-nudge-dismiss {
+        position: absolute;
+        top: 50%;
+        right: 0.4rem;
+        transform: translateY(-50%);
+        width: 1.6rem;
+        padding: 0;
+        margin: 0;
+        border: 1px solid black;
+        opacity: 0.55;
+        line-height: 0;
+      }
+
+      #setup-password-nudge-dismiss svg {
+        display: block;
+        margin: 0.2rem;
+      }
+
+      #setup-password-nudge-banner[hidden] {
+        display: none;
+      }
+    </style>
+
     {% if is_standalone_mode %}
     <style>
       .header-bar,
@@ -32,9 +76,38 @@
       {% include child_template.replace('./app/templates/', '') %}
     {% endfor %}
 
-    <div id="app" tabindex="0">
+    <div
+      id="app"
+      tabindex="0"
+      data-authentication-required="{{ 'true' if authentication_required else 'false' }}"
+      {%
+      if
+      is_debug
+      %}data-debug="true"
+      {%
+      endif
+      %}
+    >
       <div class="header-bar">
         <menu-bar id="menu-bar"></menu-bar>
+      </div>
+      <div id="setup-password-nudge-banner" hidden>
+        Consider turning on user authentication to restrict access to your
+        TinyPilot's web interface.
+        <a id="setup-password-nudge-link" href="#">Manage Users</a>
+        <button
+          id="setup-password-nudge-dismiss"
+          type="button"
+          title="Dismiss notification"
+          aria-label="Dismiss notification"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+            <path
+              fill="#fff"
+              d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+            />
+          </svg>
+        </button>
       </div>
       <remote-screen
         id="remote-screen"

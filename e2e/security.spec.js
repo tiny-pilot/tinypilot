@@ -70,6 +70,101 @@ async function disableUserAuthentication(page, browser) {
   });
 }
 
+/**
+ * Ensure no users exist and authentication is not required.
+ *
+ * Unlike disableUserAuthentication(), this is a no-op when the system is
+ * already in the open (no-auth) state.
+ *
+ * @param {Page} page - A Playwright Page object.
+ */
+async function ensureAuthenticationDisabled(page) {
+  await page.goto("/");
+  const authRequired = await page
+    .locator("#app")
+    .getAttribute("data-authentication-required");
+  if (authRequired === "false") {
+    return;
+  }
+
+  await expect(page.getByRole("menuitem", { name: "System" })).toBeVisible();
+  await page.getByRole("menuitem", { name: "System" }).hover();
+  await page.getByRole("menuitem", { name: "Security" }).hover();
+  await page.getByRole("menuitem", { name: "Users" }).click();
+
+  const securityDialog = page.locator("#manage-users-dialog");
+  await expect(securityDialog).toBeVisible();
+
+  const authToggle = locateToggle(page, "#require-authentication");
+  if (await authToggle.locator("#require-authentication").isChecked()) {
+    await authToggle.click();
+    await expect(
+      securityDialog.getByRole("heading", {
+        name: "Disable User Authentication",
+      }),
+    ).toBeVisible();
+    await securityDialog
+      .getByRole("button", { name: "Delete All Users" })
+      .click();
+    await expect(
+      securityDialog.getByRole("heading", {
+        name: "Manage Users",
+      }),
+    ).toBeVisible();
+  }
+
+  await securityDialog
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
+  await expect(
+    securityDialog.getByRole("heading", {
+      name: "Manage Users",
+    }),
+  ).not.toBeVisible();
+}
+
+test.describe("password setup nudge", () => {
+  test("shows once when authentication is disabled", async ({ page }) => {
+    await ensureAuthenticationDisabled(page);
+
+    await page.clock.install();
+    await page.goto("/?resetPasswordNudge");
+    await page.clock.fastForward(3000);
+
+    const banner = page.locator("#setup-password-nudge-banner");
+    await expect(banner).toBeVisible();
+    await expect(banner).toContainText(
+      "Consider turning on user authentication to restrict access to your TinyPilot's web interface.",
+    );
+
+    await banner.getByRole("button", { name: "Dismiss notification" }).click();
+    await expect(banner).toBeHidden();
+
+    await page.goto("/");
+    await page.clock.fastForward(3000);
+    await expect(banner).toBeHidden();
+  });
+
+  test("Manage Users link opens the users dialog", async ({ page }) => {
+    await ensureAuthenticationDisabled(page);
+
+    await page.clock.install();
+    await page.goto("/?resetPasswordNudge");
+    await page.clock.fastForward(3000);
+
+    await page.locator("#setup-password-nudge-link").click();
+    await expect(page.locator("#manage-users-dialog")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Manage Users" }),
+    ).toBeVisible();
+
+    await page
+      .locator("#manage-users-dialog")
+      .getByRole("button", { name: "Close", exact: true })
+      .click();
+  });
+});
+
 /*
  *
  * This test is split between two browser session contexts as follows:

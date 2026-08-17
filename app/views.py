@@ -54,6 +54,7 @@ def index_get():
         custom_elements_files=find_files.custom_elements_files(),
         is_admin=session.is_auth_valid(satisfies_role=auth.Role.ADMIN),
         current_username=session.get_username(),
+        authentication_required=auth.is_authentication_required(),
     )
 
 

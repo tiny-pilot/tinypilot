@@ -3,7 +3,7 @@ import { KeyboardState } from "./keyboardstate.js";
 import { sendKeystroke } from "./keystrokes.js";
 import * as settings from "./settings.js";
 import { OverlayTracker } from "./overlays.js";
-import { logout } from "./controllers.js";
+import { getUsers, logout } from "./controllers.js";
 
 // Suppress ESLint warnings about undefined variables.
 // `io` is defined by the Socket.IO library, which is globally available on the
@@ -277,6 +277,125 @@ onScreenKeyboard.show(settings.isKeyboardVisible());
 
 const menuBar = document.getElementById("menu-bar");
 menuBar.cursor = settings.getScreenCursor();
+
+const SETUP_PASSWORD_NUDGE_DELAY_MS = 15_000;
+const SETUP_PASSWORD_NUDGE_DEBUG_DELAY_MS = 3_000;
+
+function getMenuBarHeight() {
+  const menuBar = document.getElementById("menu-bar");
+  return menuBar ? menuBar.getBoundingClientRect().height : 45;
+}
+
+function setRemoteScreenTopOffset(menuBarHeight, bannerHeight = 0) {
+  const remoteScreen = document.getElementById("remote-screen");
+  // The remote-screen component treats --menu-bar-height as total top chrome offset.
+  remoteScreen.style.setProperty(
+    "--menu-bar-height",
+    `${menuBarHeight + bannerHeight}px`,
+  );
+}
+
+function hideSetupPasswordNudgeBanner() {
+  const banner = document.getElementById("setup-password-nudge-banner");
+  if (!banner) {
+    return;
+  }
+  banner.hidden = true;
+  setRemoteScreenTopOffset(getMenuBarHeight());
+}
+
+function dismissSetupPasswordNudge() {
+  settings.markSetupPasswordNudgeSeen();
+  hideSetupPasswordNudgeBanner();
+}
+
+function showSetupPasswordNudgeBanner() {
+  const banner = document.getElementById("setup-password-nudge-banner");
+  if (!banner) {
+    return;
+  }
+  const menuBarHeight = getMenuBarHeight();
+  banner.style.top = `${menuBarHeight}px`;
+  banner.hidden = false;
+  const bannerHeight = banner.getBoundingClientRect().height;
+  setRemoteScreenTopOffset(menuBarHeight, bannerHeight);
+}
+
+function scheduleSetupPasswordNudge() {
+  const appElement = document.getElementById("app");
+  const pageUrl = new URL(window.location);
+  const isDebugMode = appElement.dataset.debug === "true";
+
+  if (isDebugMode && pageUrl.searchParams.has("resetPasswordNudge")) {
+    settings.clearSetupPasswordNudgeSeen();
+  }
+
+  if (appElement.dataset.authenticationRequired !== "false") {
+    return;
+  }
+  if (settings.hasSeenSetupPasswordNudge()) {
+    return;
+  }
+  if (pageUrl.searchParams.get("viewMode") === "standalone") {
+    return;
+  }
+
+  const delayMs = isDebugMode
+    ? SETUP_PASSWORD_NUDGE_DEBUG_DELAY_MS
+    : SETUP_PASSWORD_NUDGE_DELAY_MS;
+
+  setTimeout(async () => {
+    if (settings.hasSeenSetupPasswordNudge()) {
+      return;
+    }
+
+    try {
+      const { users } = await getUsers();
+      if (users.length > 0) {
+        return;
+      }
+    } catch {
+      return;
+    }
+
+    showSetupPasswordNudgeBanner();
+  }, delayMs);
+}
+
+scheduleSetupPasswordNudge();
+
+document
+  .getElementById("setup-password-nudge-dismiss")
+  .addEventListener("click", () => {
+    dismissSetupPasswordNudge();
+  });
+
+document
+  .getElementById("setup-password-nudge-link")
+  .addEventListener("click", (evt) => {
+    evt.preventDefault();
+    dismissSetupPasswordNudge();
+    menuBar.dispatchEvent(
+      new CustomEvent("manage-users-dialog-requested", {
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  });
+
+document
+  .getElementById("manage-users-overlay")
+  .addEventListener("overlay-hidden", async () => {
+    try {
+      const { users } = await getUsers();
+      if (users.length > 0) {
+        hideSetupPasswordNudgeBanner();
+      }
+    } catch {
+      // Ignore — don't disrupt the page if the check fails.
+    }
+  });
+
 menuBar.addEventListener("cursor-selected", (evt) => {
   setCursor(evt.detail.cursor);
 });
