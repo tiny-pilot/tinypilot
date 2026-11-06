@@ -62,6 +62,31 @@ class Settings:
             'UPDATE settings SET streaming_mode=? WHERE id=?',
             [streaming_mode.value, _ROW_ID])
 
+    def invert_scroll_direction(self):
+        """Retrieves whether the mouse wheel scroll direction is inverted.
+
+        If there is no setting in the database, it defaults to False.
+
+        Returns:
+            bool.
+        """
+        cursor = self._db_connection.execute(
+            'SELECT invert_scroll_direction FROM settings WHERE id=?',
+            [_ROW_ID])
+        # Reminder: the `invert_scroll_direction` column is of type integer.
+        raw_value = _fetch_single_value(cursor, 0)
+        return raw_value > 0  # Convert integer value to bool.
+
+    def set_invert_scroll_direction(self, should_invert):
+        """Stores whether the mouse wheel scroll direction is inverted.
+
+        Args:
+            should_invert: bool.
+        """
+        self._db_connection.execute(
+            'UPDATE settings SET invert_scroll_direction=? WHERE id=?',
+            [should_invert, _ROW_ID])
+
 
 def _fetch_single_value(connection_cursor, default_value):
     """Helper method to resolve a query for one single value."""
