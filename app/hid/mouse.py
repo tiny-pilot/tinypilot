@@ -1,10 +1,23 @@
 from hid import write as hid_write
 
 
-def send_mouse_event(mouse_path, buttons, relative_x, relative_y,
-                     vertical_wheel_delta, horizontal_wheel_delta):
+def send_mouse_event(mouse_path,
+                     buttons,
+                     relative_x,
+                     relative_y,
+                     vertical_wheel_delta,
+                     horizontal_wheel_delta,
+                     *,
+                     invert_scroll_direction=False):
     # pylint: disable=invalid-name,too-many-positional-arguments
     x, y = _scale_mouse_coordinates(relative_x, relative_y)
+
+    if invert_scroll_direction:
+        # Reverse both wheel axes. This compensates for target machines that
+        # use "natural" scrolling, which would otherwise scroll in the opposite
+        # direction from what the user intended in the browser.
+        vertical_wheel_delta = -vertical_wheel_delta
+        horizontal_wheel_delta = -horizontal_wheel_delta
 
     buf = [0] * 7
     buf[0] = buttons

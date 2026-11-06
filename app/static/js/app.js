@@ -481,6 +481,9 @@ menuBar.addEventListener("ssh-dialog-requested", () => {
 menuBar.addEventListener("https-dialog-requested", () => {
   document.getElementById("https-overlay").show();
 });
+menuBar.addEventListener("mouse-settings-dialog-requested", () => {
+  document.getElementById("mouse-settings-overlay").show();
+});
 menuBar.addEventListener("manage-users-dialog-requested", () => {
   document.getElementById("manage-users-overlay").show();
 });
