@@ -20,7 +20,9 @@ server {
     listen [::]:{{ tinypilot_external_port }};
     listen {{ tinypilot_external_tls_port }} ssl;
     listen [::]:{{ tinypilot_external_tls_port }} ssl;
-    http2 on;
+    # HTTP/2 is off. CVE-2026-123007 and CVE-2026-123633 allow
+    # unauthenticated code execution in nginx when HTTP/2 is enabled.
+    http2 off;
 
     server_name tinypilot;
 
