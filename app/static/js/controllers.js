@@ -331,6 +331,38 @@ export async function setRequiresHttps(shouldBeRequired) {
   }).then(processJsonResponse);
 }
 
+export async function getInvertScrollDirection() {
+  return fetch("/api/settings/invertScrollDirection", {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+  })
+    .then(processJsonResponse)
+    .then((data) => {
+      if (!Object.hasOwn(data, "invertScrollDirection")) {
+        throw new ControllerError(
+          "Missing expected invertScrollDirection field",
+        );
+      }
+      return data.invertScrollDirection;
+    });
+}
+
+export async function setInvertScrollDirection(shouldInvert) {
+  return fetch("/api/settings/invertScrollDirection", {
+    method: "PUT",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "error",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCsrfToken(),
+    },
+    body: JSON.stringify({ invertScrollDirection: shouldInvert }),
+  }).then(processJsonResponse);
+}
+
 export async function changeHostname(newHostname) {
   return fetch("/api/hostname", {
     method: "PUT",

@@ -17,6 +17,7 @@ import request_parsers.credentials
 import request_parsers.delete_user
 import request_parsers.errors
 import request_parsers.hostname
+import request_parsers.invert_scroll_direction
 import request_parsers.network
 import request_parsers.password
 import request_parsers.paste
@@ -703,6 +704,53 @@ def settings_requires_https_put():
     # "CSRF session token is missing".
     flask.session.modified = True
 
+    return json_response.success()
+
+
+@api_blueprint.route('/settings/invertScrollDirection', methods=['GET'])
+@required_auth(auth.Role.ADMIN)
+def settings_invert_scroll_direction_get():
+    """Returns whether the mouse wheel scroll direction is inverted.
+
+    Returns:
+        A JSON data structure with the following properties:
+        invertScrollDirection: bool.
+
+        Example:
+        {
+            "invertScrollDirection": false
+        }
+    """
+    return json_response.success({
+        'invertScrollDirection':
+            db.settings.Settings().invert_scroll_direction()
+    })
+
+
+@api_blueprint.route('/settings/invertScrollDirection', methods=['PUT'])
+@required_auth(auth.Role.ADMIN)
+def settings_invert_scroll_direction_put():
+    """Stores whether the mouse wheel scroll direction should be inverted.
+
+    Inverting the scroll direction compensates for target machines that use
+    “natural” scrolling (e.g., macOS), which would otherwise scroll in the
+    opposite direction from what the user intended in the browser.
+
+    Expects a JSON data structure in the request body that contains the new
+    setting `invertScrollDirection` as bool. Example:
+    {
+        "invertScrollDirection": true
+    }
+
+    Returns:
+        Empty response on success, error object otherwise.
+    """
+    try:
+        should_invert = request_parsers.invert_scroll_direction.parse(
+            flask.request)
+    except request_parsers.errors.Error as e:
+        return json_response.error(e), 400
+    db.settings.Settings().set_invert_scroll_direction(should_invert)
     return json_response.success()
 
 

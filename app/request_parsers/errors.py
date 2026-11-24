@@ -30,6 +30,10 @@ class InvalidRequiresHttpsPropError(Error):
     pass
 
 
+class InvalidInvertScrollDirectionPropError(Error):
+    pass
+
+
 class InvalidVideoSettingError(Error):
     pass
 

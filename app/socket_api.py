@@ -6,6 +6,7 @@ import flask
 import flask_socketio
 
 import auth
+import db.settings
 import env
 import js_to_hid
 import session
@@ -26,6 +27,12 @@ socketio.on_namespace(update_logs.Namespace('/updateLogs'))
 # `@monitor_auth`. The timestamp is when the next authentication check is due
 # for the respective socket connection.
 _auth_expiry_timestamps = {}
+
+# Caches the “invert scroll direction” setting, so that we don’t have to query
+# the database on every single mouse event. The cache expires quickly, so that
+# changes to the setting take effect promptly.
+_INVERT_SCROLL_DIRECTION_CACHE_TTL = datetime.timedelta(seconds=1)
+_invert_scroll_direction_cache = {'value': None, 'expires_at': None}
 
 
 def monitor_auth(handler):
@@ -66,6 +73,20 @@ def monitor_auth(handler):
     return handler_with_auth_check
 
 
+def _should_invert_scroll_direction():
+    """Returns whether the mouse wheel scroll direction is inverted.
+
+    The underlying setting is cached for a short amount of time, see
+    `_invert_scroll_direction_cache`.
+    """
+    cache = _invert_scroll_direction_cache
+    now = utc.now()
+    if cache['expires_at'] is None or now > cache['expires_at']:
+        cache['value'] = db.settings.Settings().invert_scroll_direction()
+        cache['expires_at'] = now + _INVERT_SCROLL_DIRECTION_CACHE_TTL
+    return cache['value']
+
+
 @socketio.on('keystroke')
 @monitor_auth
 def on_keystroke(message):
@@ -100,12 +121,14 @@ def on_mouse_event(message):
         logger.error_sensitive('Failed to parse mouse event request: %s', e)
         return {'success': False}
     try:
-        fake_mouse.send_mouse_event(env.MOUSE_ABSOLUTE_PATH,
-                                    mouse_move_event.buttons,
-                                    mouse_move_event.relative_x,
-                                    mouse_move_event.relative_y,
-                                    mouse_move_event.vertical_wheel_delta,
-                                    mouse_move_event.horizontal_wheel_delta)
+        fake_mouse.send_mouse_event(
+            env.MOUSE_ABSOLUTE_PATH,
+            mouse_move_event.buttons,
+            mouse_move_event.relative_x,
+            mouse_move_event.relative_y,
+            mouse_move_event.vertical_wheel_delta,
+            mouse_move_event.horizontal_wheel_delta,
+            invert_scroll_direction=_should_invert_scroll_direction())
     except hid_write.WriteError as e:
         logger.error_sensitive('Failed to forward mouse event: %s', e)
         return {'success': False}

@@ -63,3 +63,25 @@ class SettingsTest(unittest.TestCase):
             settings.set_streaming_mode(db.settings.StreamingMode.H264)
             self.assertEqual(db.settings.StreamingMode.H264,
                              settings.get_streaming_mode())
+
+    @mock.patch.object(db.settings, 'db_connection')
+    def test_invert_scroll_direction_is_off_by_default(self,
+                                                       mock_db_connection):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
+            settings = db.settings.Settings()
+            self.assertEqual(False, settings.invert_scroll_direction())
+
+    @mock.patch.object(db.settings, 'db_connection')
+    def test_can_change_invert_scroll_direction(self, mock_db_connection):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            db_conn = db.store.create_or_open(temp_file.name)
+            mock_db_connection.get.return_value = db_conn
+            self.addCleanup(db_conn.close)
+            settings = db.settings.Settings()
+            settings.set_invert_scroll_direction(True)
+            self.assertEqual(True, settings.invert_scroll_direction())
+            settings.set_invert_scroll_direction(False)
+            self.assertEqual(False, settings.invert_scroll_direction())

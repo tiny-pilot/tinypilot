@@ -1,0 +1,148 @@
+<template id="mouse-settings-dialog-template">
+  <style>
+    @import "css/style.css";
+    @import "css/toggle.css";
+
+    #loading,
+    #edit {
+      display: none;
+    }
+
+    :host([state="loading"]) #loading {
+      display: block;
+    }
+
+    :host([state="edit"]) #edit {
+      display: block;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.5em 0;
+    }
+
+    .toggle {
+      margin-right: 0.75rem;
+    }
+  </style>
+
+  <div id="loading">
+    <h3>Retrieving Mouse Settings</h3>
+    <progress-spinner></progress-spinner>
+  </div>
+
+  <div id="edit">
+    <h3>Mouse Settings</h3>
+    <p>
+      If scrolling moves the target machine’s screen in the opposite direction
+      from what you expect, turn on inverted scrolling. This typically happens
+      when both the target machine and the computer you’re connecting from use
+      “natural” scrolling (e.g., macOS).
+    </p>
+    <div class="toggle-container">
+      <label class="toggle">
+        <input type="checkbox" id="invert-scroll-direction" />
+        <span class="toggle-slider"></span>
+      </label>
+      Invert scroll direction
+    </div>
+
+    <button class="close-btn" type="button">Close</button>
+  </div>
+</template>
+
+<script type="module">
+  import {
+    DialogClosedEvent,
+    DialogFailedEvent,
+    DialogCloseStateChangedEvent,
+  } from "/js/events.js";
+  import {
+    getInvertScrollDirection,
+    setInvertScrollDirection,
+  } from "/js/controllers.js";
+
+  (function () {
+    const template = document.querySelector("#mouse-settings-dialog-template");
+
+    customElements.define(
+      "mouse-settings-dialog",
+      class extends HTMLElement {
+        _states = {
+          LOADING: "loading",
+          EDIT: "edit",
+        };
+        _statesWithoutDialogClose = new Set([this._states.LOADING]);
+
+        connectedCallback() {
+          this.attachShadow({ mode: "open" }).appendChild(
+            template.content.cloneNode(true),
+          );
+
+          this._elements = {
+            invertScrollDirectionCheckbox: this.shadowRoot.querySelector(
+              "#invert-scroll-direction",
+            ),
+          };
+          this.addEventListener("overlay-shown", () => this._initialize());
+          this.shadowRoot
+            .querySelectorAll(".close-btn")
+            .forEach((buttonElement) =>
+              buttonElement.addEventListener("click", () => {
+                this.dispatchEvent(new DialogClosedEvent());
+              }),
+            );
+          this._elements.invertScrollDirectionCheckbox.addEventListener(
+            "input",
+            (event) => this._setInvertScrollDirection(event.target.checked),
+          );
+        }
+
+        get _state() {
+          return this.getAttribute("state");
+        }
+
+        set _state(newValue) {
+          this.setAttribute("state", newValue);
+          this.dispatchEvent(
+            new DialogCloseStateChangedEvent(
+              /*canBeClosed=*/ !this._statesWithoutDialogClose.has(newValue),
+            ),
+          );
+        }
+
+        async _initialize() {
+          this._state = this._states.LOADING;
+
+          try {
+            this._elements.invertScrollDirectionCheckbox.checked =
+              await getInvertScrollDirection();
+            this._state = this._states.EDIT;
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Load Mouse Settings",
+                details: error,
+              }),
+            );
+          }
+        }
+
+        async _setInvertScrollDirection(shouldInvert) {
+          try {
+            await setInvertScrollDirection(shouldInvert);
+          } catch (error) {
+            this.dispatchEvent(
+              new DialogFailedEvent({
+                title: "Failed to Change Mouse Settings",
+                details: error,
+              }),
+            );
+          }
+        }
+      },
+    );
+  })();
+</script>
