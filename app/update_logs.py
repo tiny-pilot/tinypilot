@@ -4,6 +4,8 @@ import subprocess
 
 import flask_socketio
 
+import auth
+import session
 import threads
 
 _READ_SCRIPT_PATH = '/opt/tinypilot-privileged/scripts/read-update-log'
@@ -73,6 +75,9 @@ class Namespace(flask_socketio.Namespace):
         self.client_count = 0
 
     def on_start(self):
+        if not session.is_auth_valid(satisfies_role=auth.Role.ADMIN):
+            flask_socketio.disconnect()
+            return
         # Only stream the update logs once.
         if self.is_streaming:
             return
@@ -90,7 +95,10 @@ class Namespace(flask_socketio.Namespace):
         self.is_streaming = False
 
     def on_connect(self):
+        if not session.is_auth_valid(satisfies_role=auth.Role.ADMIN):
+            return False
         self.client_count += 1
+        return True
 
     def on_disconnect(self):
         self.client_count -= 1
