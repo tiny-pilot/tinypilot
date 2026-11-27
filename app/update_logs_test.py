@@ -41,7 +41,7 @@ class UpdateLogsTest(unittest.TestCase):
     @mock.patch('update_logs.session.is_auth_valid', return_value=True)
     def test_on_connect_allows_admin(self, mock_is_auth_valid):
         namespace = update_logs.Namespace('/updateLogs')
-        namespace.on_connect()
+        self.assertTrue(namespace.on_connect())
         self.assertEqual(1, namespace.client_count)
         mock_is_auth_valid.assert_called_once_with(
             satisfies_role=update_logs.auth.Role.ADMIN)

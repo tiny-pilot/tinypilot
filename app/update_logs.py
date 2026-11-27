@@ -98,6 +98,7 @@ class Namespace(flask_socketio.Namespace):
         if not session.is_auth_valid(satisfies_role=auth.Role.ADMIN):
             return False
         self.client_count += 1
+        return True
 
     def on_disconnect(self):
         self.client_count -= 1
