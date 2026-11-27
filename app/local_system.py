@@ -1,6 +1,8 @@
 import logging
 import subprocess
 
+import flask
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,7 +24,17 @@ def restart():
     return _exec_shutdown(restart_after=True)
 
 
+def _is_debug():
+    return flask.current_app.debug
+
+
 def _exec_shutdown(restart_after):
+    # In debug mode, don't actually shut down or restart the system, as that
+    # would be disruptive to a developer running the app locally.
+    if _is_debug():
+        logger.info('Skipping system shutdown because app is in debug mode')
+        return True
+
     if restart_after:
         param = '--reboot'
     else:
